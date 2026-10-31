@@ -17,20 +17,14 @@ export default function VanNotCoveredScreen() {
     {
       icon: "plus" as const,
       title: "Visit a practice",
-      desc: "Nearest clinic is 4.2 miles away — same-day slots most days.",
-      route: "/(patient)/booking/clinic-picker" as const,
+      desc: "Book a visit at one of our clinics.",
+      route: "/(patient)/booking/service-catalog" as const,
     },
     {
       icon: "video" as const,
       title: "Video consult",
-      desc: "A dentist can assess, prescribe and refer — often within 15 minutes.",
-      route: "/(patient)/video/intake" as const,
-    },
-    {
-      icon: "bell" as const,
-      title: "Notify me when coverage expands",
-      desc: "The van route grows monthly — we'll email when your postcode is added.",
-      route: "/(patient)/(tabs)/home" as const,
+      desc: "Book a video appointment: a dentist can assess, prescribe and refer.",
+      route: "/(patient)/booking/service-catalog?channel=video" as const,
     },
   ];
 

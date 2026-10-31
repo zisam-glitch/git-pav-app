@@ -120,10 +120,11 @@ export default function BookingSummaryScreen() {
       // 1. Create draft appointment
       const appt = await createAppointment({
         serviceId: service.id,
-        // This flow books clinic visits; video and van have their own flows.
+        // Clinic visits and video consults are booked here; van visits use the
+        // van dispatch flow.
         channel: channel ?? "clinic",
         clinicianId: clinician?.id ?? slot.clinicianId,
-        clinicId: clinic?.id ?? slot.clinicId,
+        clinicId: channel === "video" ? undefined : clinic?.id ?? slot.clinicId,
         startTimeUtc: startTime,
         endTimeUtc: endTime,
         slotId: slot.id,
@@ -281,10 +282,10 @@ export default function BookingSummaryScreen() {
 
           <View style={styles.row}>
             <ThemedText variant="subhead" style={styles.label}>
-              Practice:
+              {channel === "video" ? "Where:" : "Practice:"}
             </ThemedText>
             <ThemedText variant="body" style={styles.value}>
-              {clinic?.name || "Pav Dental Clinic"}
+              {channel === "video" ? "Video consultation" : clinic?.name ?? "—"}
             </ThemedText>
           </View>
 

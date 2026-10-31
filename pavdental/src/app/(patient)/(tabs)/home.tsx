@@ -23,6 +23,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { fetchActiveVanRequest } from "@/features/van/van-api";
 import { useBookingStore } from "@/features/booking/booking-store";
+import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
 import { useServices, useRewards, useMyAppointments } from "@/features/hooks/use-dental-api";
 import { DentalService } from "@/features/booking/booking-types";
 import { formatGbp } from "@/features/booking/booking-api";
@@ -57,7 +58,7 @@ export default function PatientHomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const user = useCurrentUser();
-  const { setService } = useBookingStore();
+  const { setService, setChannel } = useBookingStore();
   const params = useLocalSearchParams<{ triageModal?: string }>();
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [showEmergencyModal, setShowEmergencyModal] = useState<boolean>(false);
@@ -109,7 +110,9 @@ export default function PatientHomeScreen() {
       pricePence: srv.pricePence,
       depositPence: srv.depositPence ?? Math.round((srv.pricePence || 0) * 0.25),
     });
-    router.push("/(patient)/booking/clinic-picker" as never);
+    const channel = bookingChannelFor(srv);
+    setChannel(channel);
+    router.push(firstBookingStep(channel) as never);
   };
 
   return (
@@ -332,7 +335,7 @@ export default function PatientHomeScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Speak to a dentist via video"
-          onPress={() => router.push("/(patient)/video/intake" as never)}
+          onPress={() => router.push("/(patient)/booking/service-catalog?channel=video" as never)}
           style={({ pressed }) => [styles.quickTile, pressed && { opacity: 0.85 }]}
         >
           <View style={styles.quickIconWrap}>

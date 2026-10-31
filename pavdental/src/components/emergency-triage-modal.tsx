@@ -112,7 +112,9 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
   const handleStartVideo = () => {
     safeHaptics.impactAsync("light").catch(() => {});
     onClose();
-    router.push("/(patient)/video/intake" as never);
+    // A video consult is a booked appointment (the clinician sees the triage
+    // before letting the patient in), so this books the video service.
+    router.push("/(patient)/booking/service-catalog?channel=video" as never);
   };
 
   const handleCallHotline = () => {
@@ -310,7 +312,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
               onPress={handleBookEmergency}
             />
             <Button
-              title="Start 15-min video triage now"
+              title="Book a video triage"
               variant="secondary"
               size="md"
               onPress={handleStartVideo}

@@ -267,13 +267,13 @@ export default function VanServiceAreaScreen() {
                       title="Book central practice clinic"
                       variant="primary"
                       size="sm"
-                      onPress={() => router.push("/(patient)/booking/clinic-picker" as any)}
+                      onPress={() => router.push("/(patient)/booking/service-catalog" as any)}
                     />
                     <Button
-                      title="Instant video consult (15 min)"
+                      title="Book a video consult"
                       variant="secondary"
                       size="sm"
-                      onPress={() => router.push("/(patient)/video/intake" as any)}
+                      onPress={() => router.push("/(patient)/booking/service-catalog?channel=video" as any)}
                     />
                   </View>
                 </View>
@@ -323,7 +323,7 @@ export default function VanServiceAreaScreen() {
                   title="View clinics instead"
                   variant="ghost"
                   size="sm"
-                  onPress={() => router.push("/(patient)/booking/clinic-picker" as any)}
+                  onPress={() => router.push("/(patient)/booking/service-catalog" as any)}
                 />
               </View>
             </Card>

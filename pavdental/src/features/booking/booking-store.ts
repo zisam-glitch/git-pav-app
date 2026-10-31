@@ -27,7 +27,9 @@ export const useBookingStore = create<BookingDraftState>((set) => ({
   slot: null,
   holdExpiresAt: null,
 
-  setChannel: (channel) => set({ channel }),
+  // A video consult has no clinic, so switching to video drops any clinic left
+  // from an earlier booking.
+  setChannel: (channel) => set(channel === "video" ? { channel, clinic: null } : { channel }),
   setService: (service) => set({ service }),
   setClinic: (clinic) => set({ clinic }),
   setClinician: (clinician) => set({ clinician }),

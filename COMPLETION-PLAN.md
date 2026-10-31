@@ -19,6 +19,13 @@ doc made a claim, I checked it against the code; several were stale (see R3).
 | 31 Oct | e2e suite left its van shift open (its stop cleanup skipped phases and ignored the errors), which blocked the seeded operator. It now ends the shift | ✅ |
 | 31 Oct | **J4 video consult.** Found: every "video consult" button opened the triage with no appointment, so the patient answered everything and was then told the consult couldn't be found. Also, every service was booked as a clinic visit (including the video-only triage), and the server accepted it. Fixed: those buttons now book the video service (catalog `?channel=video`; video skips the clinic step), the confirmation screen and the appointment page open the triage for the booked appointment, and the server refuses a channel the service doesn't offer. The whole journey (book → deposit → triage → waiting → clinician queue → admit → room tokens → end → summary) checked against a running backend | ✅ |
 | 31 Oct | Removed claims the app can't back up: a fake "Add to calendar" button, a "confirmation email" the server never sends, "4.2 miles away / same-day slots", "often within 15 minutes", a "notify me" option that did nothing, and invented fallback names ("Dental Checkup", "Pav Dental Central Practice", "Pav Dental Clinic", "Pav Dental Van #1") | ✅ |
+| 31 Oct | **J10 clinician day.** Checked against a running backend: today's schedule, the patient record (profile, chart, plans), notes saved and read back, prescription issued with a signed PDF link, complete and no-show. Fixed: once a consult was under way (`in_progress`, e.g. after letting a video patient in), the schedule hid its buttons, so the clinician couldn't get back to the room or the record. Removed the invented "Verified Patient" and "Dental Consultation" fallbacks | ✅ |
+| 31 Oct | **J6 records.** Clinician saves the chart (the app's exact request) → patient sees it, history recorded; clinician creates a plan → patient signs it (`accepted`) | ✅ |
+| 31 Oct | **J1 sign-up and onboarding.** register → verify email → profile, address, medical history → consents, checked with the app's exact requests. Locally there was no way past "Verify your email" (no email is sent): added `npm run dev:verify-email-code` | ✅ |
+| 31 Oct | **J3 cancel.** 100% refund with 129 h notice, 50% with 33 h, slot freed both times. Reschedule still doesn't work (decision 9) | ✅ (reschedule ⚠️) |
+| 31 Oct | **J7 messages.** Patient → practice and → care team; both reach the staff and clinician inboxes; staff reply reaches the patient; mark read | ✅ |
+| 31 Oct | **J8 / J9 account.** Dependants (after the parent's date of birth is set), rewards, referrals, data export (SAR), account deletion (password checked, erasure request opened, sign-in blocked). Fixed: saving a card in local mock mode handed Stripe a fake secret, and the app said "Card Added" even when Stripe returned no card. Added the missing way to log a brushing session (the insights chart had nothing to fill it) | ✅ (saved cards need Stripe test keys to check for real) |
+| 31 Oct | Flaky backend test: `audit-chain-concurrency` fails about once in four full parallel runs and passes on rerun. Queued as a separate investigation | ⚠️ |
 | 31 Oct | Emergency modal button "Start 15-min video triage now" changed to "Book a video triage". **Clinical wording: needs clinician review** | ⚠️ review |
 
 ## How this was verified
@@ -291,5 +298,9 @@ finance application) or delete the endpoint and its tests. **M6** (server triage
   wrong treatment. It should use the plan item's `serviceId`, or send the patient to the catalog.
 - **"Deposit paid"** on the appointment page shows the service's deposit amount, not what was paid
   (`depositPaidPence`).
+- **Tooth numbering.** The chart numbers teeth 1–32 (US Universal system). UK dentists usually use
+  FDI (11–48) or Palmer notation. Clinical decision.
+- **Prescribing is only reachable from the video consult room.** A clinician seeing a patient in the clinic
+  or van has no prescription screen. Is that intended?
 - **Seed data is in London** (Canary Wharf clinic, London van sectors). The practice address in the
   website docs is Bradford. Check which is right before any shared test environment.

@@ -6,7 +6,13 @@ import { useStripe } from "@stripe/stripe-react-native";
 import { ThemedText, Card, Button, AppIcon, ProgressPills, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
-import { formatGbp, createAppointment, createPaymentIntent, newBookingAttemptKey } from "@/features/booking/booking-api";
+import {
+  formatGbp,
+  createAppointment,
+  createPaymentIntent,
+  confirmAppointment,
+  newBookingAttemptKey,
+} from "@/features/booking/booking-api";
 import { useRewards } from "@/features/hooks/use-dental-api";
 import { useDependants } from "@/features/account/account-hooks";
 
@@ -127,6 +133,16 @@ export default function BookingSummaryScreen() {
       // 2. Create PaymentIntent on the server — amount is server-authoritative
       const intent = await createPaymentIntent(appt.id, useVoucher && voucherFits ? voucher!.voucherCode : undefined);
 
+      // Local development runs Stripe in mock mode: there is no card to take,
+      // so the server confirms the mock intent directly (never reachable when
+      // deployed: the server rejects mock keys in staging and production).
+      if (intent.isMock) {
+        await confirmAppointment(appt.id, intent.paymentIntentId);
+        setIsProcessing(false);
+        router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);
+        return;
+      }
+
       // 3. Validate that we have a real payment intent
       if (!intent.clientSecret) {
         throw new Error("Payment setup failed - no client secret received");
@@ -180,7 +196,10 @@ export default function BookingSummaryScreen() {
         return;
       }
 
-      // 6. Payment collected — Stripe webhook will confirm the appointment server-side
+      // 6. Payment collected. Ask the server to confirm now; the Stripe webhook
+      // confirms the same way, so if this call fails the webhook still will
+      // and the confirmed screen waits for it.
+      await confirmAppointment(appt.id, intent.paymentIntentId).catch(() => {});
       setIsProcessing(false);
       router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);
     } catch (err: any) {

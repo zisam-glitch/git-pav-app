@@ -31,14 +31,14 @@ export default function ClinicianScheduleScreen() {
         id: a.id,
         patientId: a.patientId || a.patient?.id,
         time: new Date(a.startTimeUtc).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
-        type: a.channel || "video",
+        type: a.channel,
         // A child booked by their guardian is the one being seen.
         patientName: a.dependant
           ? `${a.dependant.firstName} ${a.dependant.lastName} (${a.dependant.age}y)${a.patient ? `, with ${a.patient.firstName} ${a.patient.lastName}` : ""}`
           : a.patient
           ? `${a.patient.firstName} ${a.patient.lastName}${a.patient.age ? ` (${a.patient.age}y)` : ""}`
-          : (a.patientName || "Verified Patient"),
-        chiefComplaint: a.service?.name || a.serviceName || "Dental Consultation",
+          : (a.patientName || "Patient"),
+        chiefComplaint: a.service?.name || a.serviceName || "",
         photosAttached: a.intraoralPhotos?.length || 0,
         status: a.status === "confirmed" ? "ready_to_connect" : a.status,
       }))
@@ -109,7 +109,9 @@ export default function ClinicianScheduleScreen() {
             <View style={styles.sessionList}>
               {sessions.map((s: any) => {
                 const isVideo = s.type === "video";
-                const isReady = s.status === "ready_to_connect";
+                // A consult already under way (the patient was let in, or the
+                // visit started) still needs its room and record.
+                const isReady = s.status === "ready_to_connect" || s.status === "in_progress";
                 return (
                   <Card
                     key={s.id}

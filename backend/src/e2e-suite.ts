@@ -576,16 +576,27 @@ async function runE2ESuite() {
     );
     console.log(`✓ PASSED: Route Optimization (${opt.message})`);
 
-    // Cleanup: complete the extra stops so later steps start from a clean queue
+    // Cleanup: complete the extra stops so later steps start from a clean queue.
+    // A queued stop has to go through every phase; skipping one is refused.
     for (const id of extraIds) {
-      for (const phase of ["in_treatment", "completed"]) {
-        await fetch(`${baseUrl}/api/van/requests/${id}/phase`, {
+      for (const phase of ["en_route", "on_site", "in_treatment", "completed"]) {
+        const cleanupRes = await fetch(`${baseUrl}/api/van/requests/${id}/phase`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${operatorToken}` },
           body: JSON.stringify({ phase }),
         });
+        assert(cleanupRes.status === 200, `Cleanup phase ${phase} failed: ${await cleanupRes.text()}`);
       }
     }
+
+    // End the shift, as an operator does at the end of the day. A shift left
+    // open blocks every other operator from starting one on this van.
+    const endShiftRes = await fetch(`${baseUrl}/api/van/shift/end`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${operatorToken}` },
+    });
+    assert(endShiftRes.status === 200, `Van shift end failed (${endShiftRes.status})`);
+    console.log("✓ PASSED: Van Shift Ended");
 
     // ─── Account & Onboarding Flow (Steps 23–27) ─────────────────────────
 

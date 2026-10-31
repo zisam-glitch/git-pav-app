@@ -41,6 +41,32 @@ export async function postcodeToCoordinates(postcode: string): Promise<Point | n
   }
 }
 
+/**
+ * Nearest UK postcode to a GPS point (postcodes.io reverse lookup), in the
+ * standard spaced form ("SW1A 1AA"). Same 3s budget as the forward lookup;
+ * null when there is no postcode nearby or the lookup fails.
+ */
+export async function coordinatesToPostcode(point: Point): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `https://api.postcodes.io/postcodes?lon=${encodeURIComponent(point.lng)}&lat=${encodeURIComponent(point.lat)}&limit=1`,
+      { signal: AbortSignal.timeout(POSTCODE_GEOCODE_TIMEOUT_MS) }
+    );
+    const data = (await response.json()) as { status: number; result?: { postcode?: string }[] | null };
+    const postcode = data.status === 200 ? data.result?.[0]?.postcode : undefined;
+    return postcode ? formatUkPostcode(postcode) : null;
+  } catch (error) {
+    console.error("Reverse postcode lookup error:", safeError(error));
+    return null;
+  }
+}
+
+/** "sw1a1aa" / "SW1A 1AA" → "SW1A 1AA". */
+export function formatUkPostcode(postcode: string): string {
+  const cleaned = postcode.toUpperCase().replace(/\s/g, "");
+  return cleaned.length >= 5 ? `${cleaned.slice(0, -3)} ${cleaned.slice(-3)}` : cleaned;
+}
+
 export interface Polygon {
   type: "Polygon";
   coordinates: number[][][]; // GeoJSON format: [outerRing, ...holeRings]

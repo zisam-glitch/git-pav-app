@@ -82,7 +82,9 @@ export default function VanServiceAreaScreen() {
       }
 
       setLocationCoverage({
-        postcode: result.activeSector || "GPS Location",
+        // The server's nearest postcode (null if it couldn't find one; the
+        // patient types it on the next screen). Never the sector name.
+        postcode: result.postcode ?? "",
         lat: coords.lat,
         lng: coords.lng,
         isCovered: result.isCovered,
@@ -131,7 +133,7 @@ export default function VanServiceAreaScreen() {
       }
 
       setLocationCoverage({
-        postcode: result.activeSector || postcode.toUpperCase().trim(),
+        postcode: result.postcode ?? postcode.toUpperCase().trim(),
         lat,
         lng,
         isCovered: result.isCovered,
@@ -233,9 +235,11 @@ export default function VanServiceAreaScreen() {
                   label={isVanOnline ? "Van on shift" : "Van off duty"}
                   variant={isVanOnline ? "success" : "default"}
                 />
-                <ThemedText variant="caption" style={styles.vanUnit}>
-                  {coverageResult?.assignedVan || "Pav Dental Van #1"}
-                </ThemedText>
+                {coverageResult?.assignedVan ? (
+                  <ThemedText variant="caption" style={styles.vanUnit}>
+                    {coverageResult.assignedVan}
+                  </ThemedText>
+                ) : null}
               </View>
 
               {/* Live Dispatch Status */}

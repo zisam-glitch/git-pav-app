@@ -43,6 +43,7 @@ interface VanDispatchDraftState {
     serviceDepositPence?: number | null;
   }) => void;
   setAccessDetails: (details: Partial<{
+    postcode: string;
     addressLine1: string;
     addressLine2: string;
     city: string;
@@ -71,7 +72,7 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
 
   addressLine1: "",
   addressLine2: "",
-  city: "London",
+  city: "",
   parkingType: "private_driveway",
   gateCode: "",
   accessNotes: "",
@@ -124,7 +125,7 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
       serviceDepositPence: null,
       addressLine1: "",
       addressLine2: "",
-      city: "London",
+      city: "",
       parkingType: "private_driveway",
       gateCode: "",
       accessNotes: "",

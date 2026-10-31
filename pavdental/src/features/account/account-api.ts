@@ -104,7 +104,7 @@ export const accountApi = {
     throw new Error(err.error ?? "Failed to set default");
   },
 
-  createSetupIntent: async (): Promise<{ clientSecret: string }> => {
+  createSetupIntent: async (): Promise<{ clientSecret: string; isMock?: boolean }> => {
     const res = await authFetch("/api/payments/setup-intent", { method: "POST" });
     if (!res.ok) {
       const err: { error?: string } = await res.json().catch(() => ({}));

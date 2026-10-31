@@ -35,7 +35,18 @@ export default function PaymentMethodsScreen() {
     setIsSaving(true);
     try {
       // 1. Ask the server for a SetupIntent client secret
-      const { clientSecret } = await accountApi.createSetupIntent();
+      const { clientSecret, isMock } = await accountApi.createSetupIntent();
+
+      // Local development runs Stripe in mock mode, which can't save a card:
+      // say so rather than handing Stripe a secret it can't open.
+      if (isMock) {
+        Alert.alert(
+          "Not available in test mode",
+          "This server is running without Stripe keys, so cards can't be saved. Add Stripe test keys to the backend to try it."
+        );
+        setIsSaving(false);
+        return;
+      }
 
       // 2. Let Stripe tokenise the card — raw PAN never leaves the SDK
       const { setupIntent, error } = await confirmSetupIntent(clientSecret, {
@@ -51,11 +62,13 @@ export default function PaymentMethodsScreen() {
         return;
       }
 
-      // 3. Tell our server to store the resulting paymentMethodId
-      if (setupIntent?.paymentMethodId) {
-        await accountApi.attachPaymentMethod(setupIntent.paymentMethodId);
-        queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
+      // 3. Tell our server to store the resulting paymentMethodId. Without one
+      // nothing was saved, so don't say it was.
+      if (!setupIntent?.paymentMethodId) {
+        throw new Error("Your card wasn't saved. Please try again.");
       }
+      await accountApi.attachPaymentMethod(setupIntent.paymentMethodId);
+      queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
 
       try {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

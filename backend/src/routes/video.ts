@@ -14,10 +14,15 @@ import { encryptField, decryptField } from "../lib/encryption";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
+import { isPlaceholderCredential } from "../config/placeholder";
 
 const router = Router();
 
-const DAILY_API_KEY = process.env.DAILY_API_KEY || "daily_dev_placeholder";
+// A missing or template key (`replace_with_daily_api_key`) means video is
+// not set up, so rooms are refused rather than requested with a junk key.
+const DAILY_API_KEY = isPlaceholderCredential(process.env.DAILY_API_KEY)
+  ? "daily_dev_placeholder"
+  : process.env.DAILY_API_KEY!.trim();
 
 const ALLOWED_IMAGE_MIMES = new Set(["image/jpeg", "image/png", "image/webp"]);
 

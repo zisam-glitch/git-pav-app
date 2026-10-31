@@ -16,6 +16,7 @@
 
 import crypto from "crypto";
 import { env } from "../config/env";
+import { isPlaceholderCredential } from "../config/placeholder";
 
 const KEY_SCHEME = "v2:";
 const KEK_SALT = "pavdental-kek-salt-v2";
@@ -38,7 +39,10 @@ export interface EncryptedData {
 }
 
 function masterKey(): string {
-  const rawKey = process.env.ENCRYPTION_KEY || env.encryptionKey;
+  // The template value from .env.example counts as unset (env.ts then gives
+  // the dev key; deployed environments refuse to start without a real one).
+  const fromProcess = process.env.ENCRYPTION_KEY;
+  const rawKey = (isPlaceholderCredential(fromProcess) ? undefined : fromProcess) || env.encryptionKey;
   if (!rawKey || rawKey.length < 32 || rawKey.includes("default-key")) {
     throw new Error(
       "CRITICAL: ENCRYPTION_KEY must be configured with at least 32 characters. Static fallback keys are forbidden."

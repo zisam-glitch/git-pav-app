@@ -191,6 +191,11 @@ router.post("/appointments", requireAuth, validateBody(createAppointmentSchema),
     if (!service.isActive) {
       return { error: "This service is no longer offered", status: 409 };
     }
+    // A service is only booked on a channel it offers (a video triage can't be
+    // a clinic visit, a whitening can't be a video call).
+    if (!service.supportedChannels.includes(channel)) {
+      return { error: "This treatment can't be booked that way. Please choose another option.", status: 400 };
+    }
 
     // Validate triage data if provided
     if (triageData) {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Pressable, ScrollView, Linking } from "react-native";
+import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, Input } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
+import { dailyJoinUrl, openVideoCall } from "@/features/video/open-call";
 
 export default function ClinicianConsultRoomScreen() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function ClinicianConsultRoomScreen() {
   const [activeTab, setActiveTab] = useState<"video" | "triage" | "chart">("video");
   const [selectedTooth, setSelectedTooth] = useState<number>(1);
   // The private Daily room for this appointment and the clinician's owner
-  // token. The call runs in the browser; the token is what lets them in.
+  // token. The call runs in an in-app browser window; the token is what lets them in.
   const [joinUrl, setJoinUrl] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(0);
   const [roomError, setRoomError] = useState<string | null>(null);
@@ -70,7 +71,7 @@ export default function ClinicianConsultRoomScreen() {
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data?.url && data?.token) {
-          setJoinUrl(`${data.url}?t=${encodeURIComponent(data.token)}`);
+          setJoinUrl(dailyJoinUrl(data.url, data.token));
         } else {
           setRoomError(data?.error || "Could not open the video room. Try again from your schedule.");
         }
@@ -219,7 +220,7 @@ export default function ClinicianConsultRoomScreen() {
                 title="Join video call"
                 disabled={!joinUrl}
                 loading={!joinUrl && !roomError}
-                onPress={() => joinUrl && Linking.openURL(joinUrl).catch(() => setRoomError("Couldn't open the video call."))}
+                onPress={() => joinUrl && openVideoCall(joinUrl).catch(() => setRoomError("Couldn't open the video call."))}
               />
               <Button
                 title={admitted ? "Patient let in" : "Let patient in"}

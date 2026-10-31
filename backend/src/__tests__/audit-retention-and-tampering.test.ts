@@ -1,9 +1,11 @@
 import http from "http";
 import crypto from "crypto";
+import type { Prisma } from "@prisma/client";
 import app from "../server";
 import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
 import {
+  appendAuditLogInTransaction,
   createAuditLogWithIntegrity,
   verifyAuditIntegrity,
   applyAuditRetentionPolicy,
@@ -12,6 +14,25 @@ import {
   legacyAuditHashAllowed,
 } from "../lib/audit-integrity";
 import { communicationService } from "../lib/communication-service";
+
+// Every suite shares one audit chain, and some verify all of it while this one
+// runs. Tampering therefore happens only inside a transaction that is always
+// rolled back: other connections never see the broken chain, and nothing has
+// to be put back by hand.
+class RolledBack extends Error {}
+async function inRolledBackTransaction(fn: (tx: Prisma.TransactionClient) => Promise<void>) {
+  await prisma
+    .$transaction(
+      async (tx) => {
+        await fn(tx);
+        throw new RolledBack();
+      },
+      { maxWait: 10_000, timeout: 20_000 }
+    )
+    .catch((err) => {
+      if (!(err instanceof RolledBack)) throw err;
+    });
+}
 
 describe("CS-20: Audit chain across replicas, retention, and security outcomes", () => {
   let server: http.Server;
@@ -100,32 +121,27 @@ describe("CS-20: Audit chain across replicas, retention, and security outcomes",
       expect(preArchiveCheck.valid).toBe(true);
       expect(preArchiveCheck.checkedCount).toBeGreaterThanOrEqual(2);
 
-      // 3. Simulate retention archiving on the older log
-      await prisma.auditLog.update({
-        where: { id: log1.id },
-        data: { archived: true, archivedAt: new Date() },
-      });
+      await inRolledBackTransaction(async (tx) => {
+        // 3. Simulate retention archiving on the older log
+        await tx.auditLog.update({
+          where: { id: log1.id },
+          data: { archived: true, archivedAt: new Date() },
+        });
 
-      try {
         // 4. Append another log after retention
-        const log3 = await createAuditLogWithIntegrity({
+        const log3 = await appendAuditLogInTransaction(tx, {
           action: "retention.test.step3",
           actorId: patientUser.id,
           metadata: { step: 3 },
         });
 
         // 5. Verify integrity: log2 and log3 must verify cleanly chaining from archived predecessor log1
-        const postArchiveCheck = await verifyAuditIntegrity({ fromId: log2.id });
+        const postArchiveCheck = await verifyAuditIntegrity({ fromId: log2.id }, tx);
         expect(postArchiveCheck.valid).toBe(true);
         expect(postArchiveCheck.issues).toEqual([]);
         expect(postArchiveCheck.checkedCount).toBeGreaterThanOrEqual(2); // log2 and log3
-      } finally {
-        // Restore log1 so the unarchived chain remains contiguous for subsequent test suites
-        await prisma.auditLog.update({
-          where: { id: log1.id },
-          data: { archived: false, archivedAt: null },
-        });
-      }
+        expect(BigInt(postArchiveCheck.lastId!)).toBe(log3.id);
+      });
     });
   });
 
@@ -143,26 +159,20 @@ describe("CS-20: Audit chain across replicas, retention, and security outcomes",
       let check = await verifyAuditIntegrity({ fromId: log.id });
       expect(check.valid).toBe(true);
 
-      // Tamper with metadata directly in database
-      await prisma.auditLog.update({
-        where: { id: log.id },
-        data: { metadata: { sensitive: "tampered_value" } },
+      await inRolledBackTransaction(async (tx) => {
+        // Tamper with metadata directly in database
+        await tx.auditLog.update({
+          where: { id: log.id },
+          data: { metadata: { sensitive: "tampered_value" } },
+        });
+
+        // Verification must immediately detect tampering
+        const tampered = await verifyAuditIntegrity({ fromId: log.id }, tx);
+        expect(tampered.valid).toBe(false);
+        expect(tampered.issues.some((issue) => issue.includes(String(log.id)))).toBe(true);
       });
 
-      try {
-        // Verification must immediately detect tampering
-        check = await verifyAuditIntegrity({ fromId: log.id });
-        expect(check.valid).toBe(false);
-        expect(check.issues.some((issue) => issue.includes(String(log.id)))).toBe(true);
-      } finally {
-        // Restore original metadata
-        await prisma.auditLog.update({
-          where: { id: log.id },
-          data: { metadata: { sensitive: "original" } },
-        });
-      }
-
-      // Verification succeeds again
+      // Verification succeeds again once the tampering is rolled back
       check = await verifyAuditIntegrity({ fromId: log.id });
       expect(check.valid).toBe(true);
     });
@@ -174,15 +184,15 @@ describe("CS-20: Audit chain across replicas, retention, and security outcomes",
 
       expect((await verifyAuditIntegrity({ fromId: logA.id })).valid).toBe(true);
 
-      // Delete middle row (simulating DB tampering / row deletion)
-      await prisma.auditLog.delete({ where: { id: logB.id } });
+      await inRolledBackTransaction(async (tx) => {
+        // Delete middle row (simulating DB tampering / row deletion)
+        await tx.auditLog.delete({ where: { id: logB.id } });
 
-      try {
-        const check = await verifyAuditIntegrity({ fromId: logA.id });
+        const check = await verifyAuditIntegrity({ fromId: logA.id }, tx);
         expect(check.valid).toBe(false);
         // The row that chained off B is the one that breaks. That's C, unless
         // another suite wrote a row between B and C.
-        const afterB = await prisma.auditLog.findFirstOrThrow({
+        const afterB = await tx.auditLog.findFirstOrThrow({
           where: {
             OR: [
               { timestampUtc: { gt: logB.timestampUtc } },
@@ -193,23 +203,10 @@ describe("CS-20: Audit chain across replicas, retention, and security outcomes",
         });
         expect(afterB.id <= logC.id).toBe(true);
         expect(check.issues.some((i) => i.includes(`log ${afterB.id} `))).toBe(true);
-      } finally {
-        // Restore row so concurrent test suites in CI don't see a broken chain
-        await prisma.auditLog.create({
-          data: {
-            id: logB.id,
-            action: logB.action,
-            actorId: logB.actorId,
-            resourceId: logB.resourceId,
-            sessionId: logB.sessionId,
-            ipHash: logB.ipHash,
-            metadata: logB.metadata as any,
-            integrityHash: logB.integrityHash,
-            timestampUtc: logB.timestampUtc,
-            archived: false,
-          },
-        });
-      }
+      });
+
+      // Rolling back restores B, and the chain verifies again
+      expect((await verifyAuditIntegrity({ fromId: logA.id })).valid).toBe(true);
     });
   });
 

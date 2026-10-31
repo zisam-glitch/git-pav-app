@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { env } from "../config/env";
@@ -99,100 +100,112 @@ export function scrubAuditMetadata(meta: unknown, seen = new WeakSet()): unknown
   return out;
 }
 
-// Audit log integrity using hash chains
-// Each log entry contains a hash of the previous entry to detect tampering
-export async function createAuditLogWithIntegrity(data: {
+export type AuditLogInput = {
   action: string;
   actorId?: string | null;
   resourceId?: string | null;
   sessionId?: string | null;
   ipHash?: string | null;
   metadata?: any;
-}) {
-  const append = async (db: Pick<typeof prisma, "auditLog">) => {
-    // Get the most recent non-archived audit log for hash chaining
-    const lastLog =
-      typeof db.auditLog?.findFirst === "function"
-        ? await db.auditLog.findFirst({
-            where: { archived: false },
-            orderBy: [{ timestampUtc: "desc" }, { id: "desc" }],
-            select: { integrityHash: true, id: true, timestampUtc: true },
-          })
-        : null;
+};
 
-    // AU-2: If there are no active logs (e.g. all previous logs were archived by retention),
-    // seed the chain off the last archived row so the chain stays unbroken across retention boundaries.
-    let previousHash = lastLog?.integrityHash || "";
-    let previousTimestamp = lastLog?.timestampUtc;
+/**
+ * Appends one entry inside a transaction the caller already holds. Takes the
+ * chain lock on that transaction, so the lock lasts until the caller commits
+ * or rolls back. createAuditLogWithIntegrity is the normal entry point; this is
+ * for work that must see its own append before deciding to commit (for example
+ * tests that tamper with the chain and roll back, so no other connection ever
+ * sees a broken chain).
+ */
+export async function appendAuditLogInTransaction(tx: Prisma.TransactionClient, data: AuditLogInput) {
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(${AUDIT_CHAIN_LOCK_KEY}::bigint)`;
+  return appendAuditLog(tx, data);
+}
 
-    if (!lastLog && typeof db.auditLog?.findFirst === "function") {
-      const lastArchived = await db.auditLog.findFirst({
-        where: { archived: true },
-        orderBy: [{ timestampUtc: "desc" }, { id: "desc" }],
-        select: { integrityHash: true, timestampUtc: true },
-      });
-      if (lastArchived) {
-        previousHash = lastArchived.integrityHash || "";
-        previousTimestamp = lastArchived.timestampUtc;
-      }
-    }
-
-    // Strictly after the previous entry: verification orders by timestamp then id,
-    // so an equal timestamp could sort out of chain order.
-    let now = new Date();
-    if (previousTimestamp && now.getTime() <= previousTimestamp.getTime()) {
-      now = new Date(previousTimestamp.getTime() + 1);
-    }
-    const nowIso = now.toISOString();
-
-    const sanitizedMetadata = scrubAuditMetadata(data.metadata) ?? {};
-
-    // Create HMAC hash chain covering all audit fields (AU-3)
-    const dataString = buildAuditDataString({
-      action: data.action,
-      actorId: data.actorId ?? null,
-      resourceId: data.resourceId ?? null,
-      sessionId: data.sessionId ?? null,
-      ipHash: data.ipHash ?? null,
-      metadata: sanitizedMetadata,
-      timestamp: nowIso,
-    });
-
-    const integrityHash = computeAuditIntegrityHash(previousHash, dataString);
-
-    return db.auditLog.create({
-      data: {
-        action: data.action,
-        actorId: data.actorId ?? null,
-        resourceId: data.resourceId ?? null,
-        sessionId: data.sessionId ?? null,
-        ipHash: data.ipHash ?? null,
-        metadata: sanitizedMetadata as any,
-        integrityHash,
-        timestampUtc: now,
-        archived: false,
-      },
-    });
-  };
-
+// Audit log integrity using hash chains
+// Each log entry contains a hash of the previous entry to detect tampering
+export async function createAuditLogWithIntegrity(data: AuditLogInput) {
   const run = () =>
     typeof prisma.$transaction === "function"
       ? prisma.$transaction(
-          async (tx) => {
-            await tx.$executeRaw`SELECT pg_advisory_xact_lock(${AUDIT_CHAIN_LOCK_KEY}::bigint)`;
-            return append(tx);
-          },
+          (tx) => appendAuditLogInTransaction(tx, data),
           // Time spent waiting for the chain lock counts against the timeout.
           // Prisma's 5 s default dropped entries when another process held the
           // lock for a while under load, so allow a longer queue.
           { maxWait: AUDIT_TX_MAX_WAIT_MS, timeout: AUDIT_TX_TIMEOUT_MS }
         )
-      : append(prisma);
+      : appendAuditLog(prisma, data);
 
   const resultPromise = auditWriteQueue.then(run, run);
   auditWriteQueue = resultPromise.catch(() => {});
   (globalThis as { __pavAuditWriteQueue?: Promise<unknown> }).__pavAuditWriteQueue = auditWriteQueue;
   return resultPromise;
+}
+
+async function appendAuditLog(db: Pick<typeof prisma, "auditLog">, data: AuditLogInput) {
+  // Get the most recent non-archived audit log for hash chaining
+  const lastLog =
+    typeof db.auditLog?.findFirst === "function"
+      ? await db.auditLog.findFirst({
+          where: { archived: false },
+          orderBy: [{ timestampUtc: "desc" }, { id: "desc" }],
+          select: { integrityHash: true, id: true, timestampUtc: true },
+        })
+      : null;
+
+  // AU-2: If there are no active logs (e.g. all previous logs were archived by retention),
+  // seed the chain off the last archived row so the chain stays unbroken across retention boundaries.
+  let previousHash = lastLog?.integrityHash || "";
+  let previousTimestamp = lastLog?.timestampUtc;
+
+  if (!lastLog && typeof db.auditLog?.findFirst === "function") {
+    const lastArchived = await db.auditLog.findFirst({
+      where: { archived: true },
+      orderBy: [{ timestampUtc: "desc" }, { id: "desc" }],
+      select: { integrityHash: true, timestampUtc: true },
+    });
+    if (lastArchived) {
+      previousHash = lastArchived.integrityHash || "";
+      previousTimestamp = lastArchived.timestampUtc;
+    }
+  }
+
+  // Strictly after the previous entry: verification orders by timestamp then id,
+  // so an equal timestamp could sort out of chain order.
+  let now = new Date();
+  if (previousTimestamp && now.getTime() <= previousTimestamp.getTime()) {
+    now = new Date(previousTimestamp.getTime() + 1);
+  }
+  const nowIso = now.toISOString();
+
+  const sanitizedMetadata = scrubAuditMetadata(data.metadata) ?? {};
+
+  // Create HMAC hash chain covering all audit fields (AU-3)
+  const dataString = buildAuditDataString({
+    action: data.action,
+    actorId: data.actorId ?? null,
+    resourceId: data.resourceId ?? null,
+    sessionId: data.sessionId ?? null,
+    ipHash: data.ipHash ?? null,
+    metadata: sanitizedMetadata,
+    timestamp: nowIso,
+  });
+
+  const integrityHash = computeAuditIntegrityHash(previousHash, dataString);
+
+  return db.auditLog.create({
+    data: {
+      action: data.action,
+      actorId: data.actorId ?? null,
+      resourceId: data.resourceId ?? null,
+      sessionId: data.sessionId ?? null,
+      ipHash: data.ipHash ?? null,
+      metadata: sanitizedMetadata as any,
+      integrityHash,
+      timestampUtc: now,
+      archived: false,
+    },
+  });
 }
 
 export type VerifyAuditOptions =
@@ -215,8 +228,16 @@ export function legacyAuditHashAllowed(timestampUtc: Date, afterKeyedRow: boolea
 }
 
 // Verify audit log integrity by checking hash chain (AU-2, AU-3)
-export async function verifyAuditIntegrity(options: VerifyAuditOptions = 1000) {
-  await auditWriteQueue.catch(() => {});
+//
+// `db` defaults to the shared client. Pass a transaction client to verify what
+// that transaction sees, including its own uncommitted changes. The in-process
+// write queue is only awaited on the shared client: queued writes may be
+// waiting on a chain lock the caller's transaction holds.
+export async function verifyAuditIntegrity(
+  options: VerifyAuditOptions = 1000,
+  db: Pick<typeof prisma, "auditLog"> = prisma
+) {
+  if (db === prisma) await auditWriteQueue.catch(() => {});
 
   const limit = typeof options === "number" ? options : options.limit ?? 1000;
   const offset = typeof options === "object" ? options.offset ?? 0 : 0;
@@ -233,7 +254,7 @@ export async function verifyAuditIntegrity(options: VerifyAuditOptions = 1000) {
   }
 
   const order = newest ? "desc" : "asc";
-  const rows = await prisma.auditLog.findMany({
+  const rows = await db.auditLog.findMany({
     where: whereClause,
     orderBy: [{ timestampUtc: order }, { id: order }],
     take: limit,
@@ -268,7 +289,7 @@ export async function verifyAuditIntegrity(options: VerifyAuditOptions = 1000) {
   let previousHash = "";
   const firstLog = logs[0];
 
-  const predecessor = await prisma.auditLog.findFirst({
+  const predecessor = await db.auditLog.findFirst({
     where: {
       OR: [
         { timestampUtc: { lt: firstLog.timestampUtc } },

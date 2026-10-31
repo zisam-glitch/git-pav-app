@@ -61,6 +61,15 @@ There's no email or SMS locally, so after entering the password, run:
 npm run dev:login-code -- doctor@pavdental.com
 ```
 
+New accounts are sent an email verification code, and locally that email
+isn't sent either. To get past the app's "Verify your email" screen, run:
+
+```bash
+npm run dev:verify-email-code -- someone@example.test
+```
+
+It prints a code to type in, and a `pavdental://verify-email?token=…` link.
+
 ## 3. Mobile app
 
 ```bash

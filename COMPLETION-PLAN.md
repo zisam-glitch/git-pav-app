@@ -15,6 +15,11 @@ doc made a claim, I checked it against the code; several were stale (see R3).
 | 31 Oct | M1: clinic booking confirms with mock Stripe, and asks the server to confirm after a real payment | ✅ (checked against a running backend: hold → appointment → deposit → `confirmed`) |
 | 31 Oct | B5: `prisma generate` step written up in `docs/LOCAL-DEV.md`, not automated: a `postinstall` would break the Dockerfile, which runs `npm ci` before copying the schema | ✅ |
 | 31 Oct | `docs/LOCAL-DEV.md` for backend + mobile (new, written from the verified steps) | ✅ |
+| 31 Oct | **J5 van request.** Found: no van request from the app could pass validation. The app sent the coverage *sector name* ("WC - West Central London") as the postcode, in a read-only field with a made-up "SW1A 1AA" fallback. Fixed: GPS checks now look up the nearest real postcode, the patient can edit it, and invented city, postcode and van-name defaults are gone. The whole journey (shift → coverage → request → accept → en route → on site → in treatment → completed → shift end) checked against a running backend | ✅ |
+| 31 Oct | e2e suite left its van shift open (its stop cleanup skipped phases and ignored the errors), which blocked the seeded operator. It now ends the shift | ✅ |
+| 31 Oct | **J4 video consult.** Found: every "video consult" button opened the triage with no appointment, so the patient answered everything and was then told the consult couldn't be found. Also, every service was booked as a clinic visit (including the video-only triage), and the server accepted it. Fixed: those buttons now book the video service (catalog `?channel=video`; video skips the clinic step), the confirmation screen and the appointment page open the triage for the booked appointment, and the server refuses a channel the service doesn't offer. The whole journey (book → deposit → triage → waiting → clinician queue → admit → room tokens → end → summary) checked against a running backend | ✅ |
+| 31 Oct | Removed claims the app can't back up: a fake "Add to calendar" button, a "confirmation email" the server never sends, "4.2 miles away / same-day slots", "often within 15 minutes", a "notify me" option that did nothing, and invented fallback names ("Dental Checkup", "Pav Dental Central Practice", "Pav Dental Clinic", "Pav Dental Van #1") | ✅ |
+| 31 Oct | Emergency modal button "Start 15-min video triage now" changed to "Book a video triage". **Clinical wording: needs clinician review** | ⚠️ review |
 
 ## How this was verified
 
@@ -268,3 +273,23 @@ finance application) or delete the endpoint and its tests. **M6** (server triage
 6. Keep Google sign-in on the website (W3)?
 7. Which is the canonical production domain: `pavdental.com` or `pavdental.co.uk` (M7)?
 8. Move `neo-financial-ios/` out of the repo (R1)?
+9. **Reschedule (new, J3).** The "Reschedule" button on an appointment doesn't work: it opens the slot
+   picker, which ignores it, and the backend has no reschedule endpoint. What happens to the deposit
+   on a reschedule, and is there a late-reschedule rule? This touches how payments are handled, so it needs your call.
+10. **Video "now" (new, J4).** The emergency modal used to promise a video triage "now", but video
+    consults are booked slots (the earliest is at least an hour away, within the rota). Is an on-demand
+    queue wanted, or are booked slots enough for v1?
+11. **Stuck van shifts (new, B6).** If an operator forgets to end a shift, nobody else can start one
+    on that van: shifts don't time out and there's no admin control to end one. Should stale
+    shifts end automatically after a set time with no location updates, should staff get an end-shift
+    button, or both?
+
+### Other new findings (not yet fixed)
+
+- **Treatment plan → booking** (`records/plans/[id].tsx`) matches the plan to a service by fuzzy
+  name, then falls back to "any restorative service", then to the first service. A plan can book the
+  wrong treatment. It should use the plan item's `serviceId`, or send the patient to the catalog.
+- **"Deposit paid"** on the appointment page shows the service's deposit amount, not what was paid
+  (`depositPaidPence`).
+- **Seed data is in London** (Canary Wharf clinic, London van sectors). The practice address in the
+  website docs is Bradford. Check which is right before any shared test environment.

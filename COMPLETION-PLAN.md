@@ -5,6 +5,17 @@ Date: 31 Oct 2026 · Commit audited: `main` @ `a59bd50` (271 commits)
 This plan was built from the code, not from the existing docs in `docs/`. Where a
 doc made a claim, I checked it against the code; several were stale (see R3).
 
+## Progress
+
+| Date | Item | Status |
+|---|---|---|
+| 31 Oct | Baseline on a local Postgres+PostGIS and Redis: backend Jest 511/511, e2e 34/34, mobile `test:all` green | ✅ |
+| 31 Oct | M2: video calls open in an in-app browser window | ✅ (still needs a test call on real phones) |
+| 31 Oct | B1: template keys in `.env.example` run in local mode instead of calling Stripe, Postmark, Twilio or Daily with junk keys. **Also found:** the template `ENCRYPTION_KEY` crashed the backend on startup; fixed the same way | ✅ |
+| 31 Oct | M1: clinic booking confirms with mock Stripe, and asks the server to confirm after a real payment | ✅ (checked against a running backend: hold → appointment → deposit → `confirmed`) |
+| 31 Oct | B5: `prisma generate` step written up in `docs/LOCAL-DEV.md`, not automated: a `postinstall` would break the Dockerfile, which runs `npm ci` before copying the schema | ✅ |
+| 31 Oct | `docs/LOCAL-DEV.md` for backend + mobile (new, written from the verified steps) | ✅ |
+
 ## How this was verified
 
 | Check | Result |

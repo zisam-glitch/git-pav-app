@@ -3,21 +3,32 @@ import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { ThemedText, Card, Badge, Button, AppIcon } from "@/components";
 import { requestDataAccessExport } from "@/features/records/records-api";
 import { authFetch } from "@/features/auth/auth-api";
+import { type ConsentHistoryEntry, consentLabel, sortHistory } from "@/features/account/consents";
 import { colors, spacing, type, radius } from "@/theme";
 
 export default function ConsentScreen() {
   const [isExporting, setIsExporting] = useState(false);
   const [isUpdatingMarketing, setIsUpdatingMarketing] = useState(false);
   const [activeConsents, setActiveConsents] = useState<any[]>([]);
+  // Every grant and withdrawal, newest first, so the patient can see what they
+  // agreed to and when (UK GDPR Article 7).
+  const [history, setHistory] = useState<ConsentHistoryEntry[] | null>(null);
   const [, setIsLoadingConsents] = useState(true);
 
   const fetchConsents = async () => {
     try {
       setIsLoadingConsents(true);
-      const res = await authFetch("/api/consents/current");
+      const [res, historyRes] = await Promise.all([
+        authFetch("/api/consents/current"),
+        authFetch("/api/consents/history?includeWithdrawn=true"),
+      ]);
       if (res.ok) {
         const data = await res.json();
         setActiveConsents(Array.isArray(data) ? data : []);
+      }
+      if (historyRes.ok) {
+        const data = await historyRes.json();
+        setHistory(sortHistory(Array.isArray(data) ? data : []));
       }
     } catch {
       // Offline fallback
@@ -91,7 +102,7 @@ export default function ConsentScreen() {
   };
 
   const formatDate = (isoString?: string) => {
-    if (!isoString) return "Recorded";
+    if (!isoString) return "—";
     try {
       return new Date(isoString).toLocaleDateString("en-GB", {
         day: "numeric",
@@ -133,7 +144,7 @@ export default function ConsentScreen() {
           </ThemedText>
           <View style={styles.metaRow}>
             <ThemedText variant="caption" style={styles.metaText}>
-              Version: {healthDataConsent?.version ? `v${healthDataConsent.version}` : "v1"}
+              Version: {healthDataConsent?.version ? `v${healthDataConsent.version}` : "—"}
             </ThemedText>
             <ThemedText variant="caption" style={styles.metaText}>
               Signed: {formatDate(healthDataConsent?.grantedAt)}
@@ -153,7 +164,7 @@ export default function ConsentScreen() {
           </ThemedText>
           <View style={styles.metaRow}>
             <ThemedText variant="caption" style={styles.metaText}>
-              Version: {treatmentConsent?.version ? `v${treatmentConsent.version}` : "v1"}
+              Version: {treatmentConsent?.version ? `v${treatmentConsent.version}` : "—"}
             </ThemedText>
             <ThemedText variant="caption" style={styles.metaText}>
               Signed: {formatDate(treatmentConsent?.grantedAt)}
@@ -187,6 +198,36 @@ export default function ConsentScreen() {
             loading={isUpdatingMarketing}
             onPress={handleToggleMarketingConsent}
           />
+        </Card>
+      </View>
+
+      {/* Consent history */}
+      <View style={styles.section}>
+        <ThemedText variant="subhead" style={styles.sectionTitle}>
+          CONSENT HISTORY
+        </ThemedText>
+        <Card style={styles.card}>
+          {history === null ? (
+            <ThemedText variant="caption" style={styles.cardDesc}>
+              Your consent history couldn't be loaded.
+            </ThemedText>
+          ) : history.length === 0 ? (
+            <ThemedText variant="caption" style={styles.cardDesc}>
+              No consents recorded yet.
+            </ThemedText>
+          ) : (
+            history.map((entry) => (
+              <View key={entry.id} style={styles.historyRow}>
+                <ThemedText variant="body">
+                  {consentLabel(entry.consentType)} · v{entry.version}
+                </ThemedText>
+                <ThemedText variant="caption" style={styles.metaText}>
+                  Given {formatDate(entry.grantedAt)}
+                  {entry.withdrawnAt ? ` · withdrawn ${formatDate(entry.withdrawnAt)}` : ""}
+                </ThemedText>
+              </View>
+            ))
+          )}
         </Card>
       </View>
 
@@ -226,6 +267,10 @@ export default function ConsentScreen() {
 }
 
 const styles = StyleSheet.create({
+  historyRow: {
+    gap: spacing.xxs,
+    paddingVertical: spacing.xs,
+  },
   banner: {
     alignItems: "center",
     backgroundColor: colors.systemBackground,

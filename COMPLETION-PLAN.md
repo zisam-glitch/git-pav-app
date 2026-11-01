@@ -297,18 +297,18 @@ finance application) or delete the endpoint and its tests. **M6** (server triage
     shifts end automatically after a set time with no location updates, should staff get an end-shift
     button, or both?
 
-### Phase 4: unused endpoints waiting on a decision
+### Phase 4: unused endpoints (decided 1 Nov)
 
-| Endpoint | What it is | Suggestion |
-|---|---|---|
-| `GET /api/van/queue`, `GET /api/van/requests/incoming` | Older operator views, replaced by `/api/van/shift/current` | Delete |
-| `DELETE /api/notifications/tokens/:token` | Unregister a push token. Sign-out already does this, and turning push off is a saved preference the server honours | Delete |
-| `POST /api/audit/log` + the app's `src/lib/audit-logger.ts` | Client-side audit events. The app's logger only prints to the console in dev and nothing calls it; the server already audits every request | Delete both |
-| `POST /api/consents/data-deletion-request` | Asks for erasure without closing the account; "Delete account" already closes the account and opens an erasure request | Delete, or keep as a "keep my account, erase my data" option |
-| `POST /api/auth/mfa/verify-session` (+ `requireMFA` middleware) | Step-up check for sensitive actions; no route uses it | Delete, or decide which actions need it |
-| `POST /api/triage/check`, `GET /api/triage/emergency-info` | Server-side red-flag triage; the app's emergency modal works entirely on the phone | Clinical decision |
-| `POST /api/financing/apply` | Deliberately retired (returns 410 with the finance page link) | Keep |
-| `GET/POST /api/audit/integrity|retention|failures`, `GET /api/audit/logs` | Admin operations tools (curl or ops scripts) | Keep |
+| Endpoint | Outcome |
+|---|---|
+| `GET /api/van/queue`, `GET /api/van/requests/incoming` | **Deleted** (replaced by `/api/van/shift/current`) |
+| `DELETE /api/notifications/tokens/:token` | **Deleted** (sign-out removes the token; push off is a saved preference) |
+| `POST /api/audit/log` + the app's `audit-logger.ts` | **Deleted** (the server audits every request) |
+| `POST /api/auth/mfa/verify-session` + `middleware/mfa.ts` | **Deleted** (no route used a step-up check). The login still writes `MfaVerification` rows that nothing reads; dropping the table needs a migration, so left for now |
+| `POST /api/consents/data-deletion-request` | **Deleted** (patients ask for erasure with "Delete account") |
+| `POST /api/triage/check`, `GET /api/triage/emergency-info` | Waiting: clinical decision |
+| `POST /api/financing/apply` | Kept: deliberately retired, returns 410 with the finance page link |
+| `GET/POST /api/audit/integrity\|retention\|failures`, `GET /api/audit/logs` | Kept: admin operations tools |
 
 - **Consent wording (legal):** "Recall & preventive reminders", which are checkup reminders, is recorded as *marketing*
   consent. Check whether recall reminders are really marketing under PECR/GDPR.

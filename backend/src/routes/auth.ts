@@ -12,7 +12,6 @@ import { communicationService } from "../lib/communication-service";
 import { revokeSessions } from "../lib/session-revocation";
 import { redis } from "../lib/redis";
 import { pseudonymiseIp } from "../lib/audit-security";
-import { requireMFA, verifyMFAForRequest } from "../middleware/mfa";
 import { safeError } from "../lib/log-safety";
 
 const router = Router();
@@ -639,11 +638,6 @@ router.post("/mfa/disable", requireAuth, async (req: AuthRequest, res: Response)
 
   await prisma.user.update({ where: { id: user.id }, data: { mfaEnabled: false } });
   return res.json({ message: "Two-step sign-in turned off" });
-});
-
-// ─── POST /api/auth/mfa/verify-session ───────────────────────────────────────────
-router.post("/mfa/verify-session", requireAuth, async (req: AuthRequest, res: Response) => {
-  return verifyMFAForRequest(req, res);
 });
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

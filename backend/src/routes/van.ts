@@ -474,57 +474,6 @@ router.get("/shift/current", requireAuth, requireRole("operator"), async (req: A
   return res.json({ shift, van, queue: decryptedQueue, incoming: sanitizedIncoming });
 });
 
-// ─── OPERATOR — Queue Management ──────────────────────────────────────────────
-
-// GET /api/van/requests/incoming
-router.get("/requests/incoming", requireAuth, requireRole("operator"), async (req: AuthRequest, res: Response) => {
-  const opProfile = await getOperatorProfile(req.user!.sub);
-
-  const shift = await getActiveShift(opProfile.id);
-  if (!shift) return res.json([]);
-
-  const incoming = await prisma.vanServiceRequest.findMany({
-    where: { shiftId: shift.id, status: "pending" },
-    include: {
-      patient: { select: { firstName: true, lastName: true } },
-      service: { select: { name: true, durationMinutes: true } },
-    },
-    orderBy: { requestedAt: "asc" },
-  });
-
-  // Sanitize incoming requests to remove sensitive data before acceptance
-  const sanitizedIncoming = incoming.map(sanitizeIncomingRequest);
-
-  return res.json(sanitizedIncoming);
-});
-
-// GET /api/van/queue
-router.get("/queue", requireAuth, requireRole("operator"), async (req: AuthRequest, res: Response) => {
-  const opProfile = await getOperatorProfile(req.user!.sub);
-
-  const shift = await getActiveShift(opProfile.id);
-  if (!shift) return res.json([]);
-
-  const queue = await prisma.vanServiceRequest.findMany({
-    where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] } },
-    include: {
-      patient: { select: { firstName: true, lastName: true } },
-      service: { select: { name: true, durationMinutes: true } },
-    },
-    orderBy: { queuePosition: "asc" },
-  });
-
-  const decryptedQueue = await Promise.all(
-    queue.map(async (item) => ({
-      ...item,
-      accessDetails: item.accessDetails ? await decryptAccessDetails(item.accessDetails) : item.accessDetails,
-      notes: item.notes ? await decryptString(item.notes) : item.notes,
-    }))
-  );
-
-  return res.json(decryptedQueue);
-});
-
 // POST /api/van/requests/:id/accept
 //
 // Safe to tap twice or retry (VR-1). Accepts on one shift run one at a time

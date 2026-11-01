@@ -406,30 +406,14 @@ describe("CS-19: Reminders and Push That Behave", () => {
       await prisma.pushToken.deleteMany({ where: { token: deadToken } });
     });
 
-    it("deactivates push token via DELETE /api/notifications/tokens/:token", async () => {
-      const token = `ExponentPushToken[DELETE_${Date.now()}]`;
-      await prisma.pushToken.create({
-        data: {
-          userId: testUser.id,
-          token,
-          platform: "ios",
-          active: true,
-        },
-      });
-
-      const res = await fetch(`${baseUrl}/api/notifications/tokens/${encodeURIComponent(token)}`, {
+    it("has no separate token delete route: sign-out removes the token", async () => {
+      // Turning push off is a saved preference the server honours, and
+      // signing out deactivates the device's token (see /api/auth/logout).
+      const res = await fetch(`${baseUrl}/api/notifications/tokens/${encodeURIComponent("ExponentPushToken[x]")}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${testAuthToken}` },
       });
-
-      expect(res.status).toBe(200);
-      const body = await res.json() as any;
-      expect(body.deactivated).toBe(true);
-
-      const record = await prisma.pushToken.findUnique({ where: { token } });
-      expect(record?.active).toBe(false);
-
-      await prisma.pushToken.deleteMany({ where: { token } });
+      expect(res.status).toBe(404);
     });
 
     it("deactivates push token on POST /api/auth/logout with pushToken in body", async () => {

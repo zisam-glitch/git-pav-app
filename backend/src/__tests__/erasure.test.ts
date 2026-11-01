@@ -1,7 +1,7 @@
 import http from "http";
 import crypto from "crypto";
 import argon2 from "argon2";
-import { erasureDueDate, retentionEndDate } from "../lib/erasure";
+import { erasureDueDate, openErasureRequest, retentionEndDate } from "../lib/erasure";
 
 // CS-23: erasure requests go to the DPO's queue with a one-month deadline.
 // Erasing removes login, contact and payment details but keeps the clinical
@@ -67,6 +67,12 @@ describe("erasure", () => {
       const token = signAccessToken({ sub: user.id, role: "patient", sessionId: crypto.randomUUID() });
       return { user, profile, token };
     }
+
+    // A patient's erasure request, opened the way "Delete account" opens one.
+    const requestErasure = async (userId: string, reason?: string) => {
+      const request = await openErasureRequest(userId, "patient_request", reason);
+      return { status: 202, body: { erasureRequestId: request.id, dueBy: request.dueAt.toISOString() } };
+    };
 
     const appointment = (patientId: string, startTimeUtc: Date, status: "confirmed" | "completed" | "cancelled") =>
       prisma.appointment.create({
@@ -157,7 +163,7 @@ describe("erasure", () => {
       await prisma.notificationHistory.create({ data: { userId: user.id, type: "reminder", title: "Synthetic", body: "Synthetic" } });
       await prisma.patientProfile.update({ where: { id: profile.id }, data: { stripeCustomerId: `cus_mock_${tag}` } });
 
-      const requested = await call("POST", "/api/consents/data-deletion-request", token, { reason: "Synthetic" });
+      const requested = await requestErasure(user.id, "Synthetic");
       expect(requested.status).toBe(202);
       expect(requested.body.dueBy).toBeTruthy();
 
@@ -193,9 +199,9 @@ describe("erasure", () => {
     });
 
     it("won't erase while bookings are upcoming", async () => {
-      const { profile, token } = await makePatient("Booked");
+      const { user, profile } = await makePatient("Booked");
       await appointment(profile.id, new Date(Date.now() + 3 * 86400000), "confirmed");
-      const requested = await call("POST", "/api/consents/data-deletion-request", token, {});
+      const requested = await requestErasure(user.id);
       expect(requested.status).toBe(202);
 
       const blocked = await call("POST", `/api/admin/erasure-requests/${requested.body.erasureRequestId}/complete`, adminToken);
@@ -204,13 +210,13 @@ describe("erasure", () => {
       expect((await prisma.erasureRequest.findUniqueOrThrow({ where: { id: requested.body.erasureRequestId } })).status).toBe("pending");
 
       // A second request while one is open returns the same one.
-      const again = await call("POST", "/api/consents/data-deletion-request", token, {});
+      const again = await requestErasure(user.id);
       expect(again.body.erasureRequestId).toBe(requested.body.erasureRequestId);
     });
 
     it("rejects a request only with a note", async () => {
-      const { token } = await makePatient("Rejected");
-      const requested = await call("POST", "/api/consents/data-deletion-request", token, {});
+      const { user } = await makePatient("Rejected");
+      const requested = await requestErasure(user.id);
       const path = `/api/admin/erasure-requests/${requested.body.erasureRequestId}/reject`;
       expect((await call("POST", path, adminToken, {})).status).toBe(400);
       expect((await call("POST", path, adminToken, { note: "Identity not confirmed" })).status).toBe(200);

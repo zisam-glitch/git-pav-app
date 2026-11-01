@@ -1,43 +1,11 @@
 import { Router, Request, Response } from "express";
 import { requireAuth, requireRole, AuthRequest } from "../middleware/auth";
-import { pseudonymiseIp } from "../lib/audit-security";
-import { createAuditLogWithIntegrity, verifyAuditIntegrity, applyAuditRetentionPolicy, checkAuditFailures } from "../lib/audit-integrity";
+import { verifyAuditIntegrity, applyAuditRetentionPolicy, checkAuditFailures } from "../lib/audit-integrity";
 import { prisma } from "../lib/prisma";
 
 const router = Router();
 
 const MIN_ARCHIVE_DAYS = 365;
-
-// ─── POST /api/audit/log ──────────────────────────────────────────────────────
-// Used by the mobile app DSPT audit logger for client-side events
-// Client events go into the chain under a "client." prefix, so the app can't
-// write an entry that reads like a server event (for example a fake
-// UNAUTHORIZED_ACCESS_ATTEMPT) (CS-09, AR-1).
-const CLIENT_ACTION = /^[A-Za-z0-9_.-]{1,64}$/;
-
-router.post("/log", requireAuth, async (req: AuthRequest, res: Response) => {
-  const { action, resourceId } = req.body;
-
-  if (typeof action !== "string" || !CLIENT_ACTION.test(action)) {
-    return res.status(400).json({ error: "action must be 1-64 letters, digits, '.', '_' or '-'" });
-  }
-  if (resourceId !== undefined && resourceId !== null && (typeof resourceId !== "string" || resourceId.length > 128)) {
-    return res.status(400).json({ error: "resourceId must be a string of up to 128 characters" });
-  }
-
-  await createAuditLogWithIntegrity({
-    action: `client.${action}`,
-    actorId: req.user!.sub,
-    resourceId: resourceId || null,
-    sessionId: req.user!.sessionId,
-    ipHash: pseudonymiseIp(req.ip || ""),
-    // Client metadata is untrusted and can contain special-category health
-    // data, so it is intentionally not retained in the audit record.
-    metadata: { source: "mobile-client" },
-  });
-
-  return res.status(201).json({ status: "recorded" });
-});
 
 // ─── GET /api/audit/logs ──────────────────────────────────────────────────────
 // Admin / DSPT officer access only

@@ -1,6 +1,7 @@
 import http from "http";
 import crypto from "crypto";
 import { postcodeSector, sanitizeIncomingRequest } from "../routes/van";
+import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 
 // CS-09, the rest: the app can't send itself notifications or fake receipts
 // (NT-1), can't write server-looking audit entries or archive recent ones
@@ -51,21 +52,17 @@ describe("client-reachable abuse paths", () => {
     expect((await call("POST", "/api/notifications/send-receipt", token, { appointmentId: crypto.randomUUID(), amountPence: 100, paymentMethod: "card" })).status).toBe(404);
   });
 
-  it("files client audit events under client. and refuses odd action names", async () => {
-    const { user, token } = await makeUser("patient", "audit");
-    expect((await call("POST", "/api/audit/log", token, { action: "UNAUTHORIZED_ACCESS_ATTEMPT" })).status).toBe(201);
-    const actions = (await prisma.auditLog.findMany({ where: { actorId: user.id }, select: { action: true } })).map((e) => e.action);
-    expect(actions).toContain("client.UNAUTHORIZED_ACCESS_ATTEMPT");
-    expect(actions).not.toContain("UNAUTHORIZED_ACCESS_ATTEMPT");
-    expect((await call("POST", "/api/audit/log", token, { action: "<script>" })).status).toBe(400);
-    expect((await call("POST", "/api/audit/log", token, {})).status).toBe(400);
+  it("has no client-callable audit write route", async () => {
+    // Only the server writes audit entries; clients can't add their own.
+    const { token } = await makeUser("patient", "audit");
+    expect((await call("POST", "/api/audit/log", token, { action: "UNAUTHORIZED_ACCESS_ATTEMPT" })).status).toBe(404);
   });
 
   it("never archives audit entries less than a year old", async () => {
     const { user, token } = await makeUser("admin", "archive");
-    await call("POST", "/api/audit/log", token, { action: "archive-probe" });
+    await createAuditLogWithIntegrity({ action: "test.archive-probe", actorId: user.id });
     expect((await call("POST", "/api/audit/retention", token, { retentionDays: 1 })).status).toBe(200);
-    const entry = await prisma.auditLog.findFirstOrThrow({ where: { actorId: user.id, action: "client.archive-probe" } });
+    const entry = await prisma.auditLog.findFirstOrThrow({ where: { actorId: user.id, action: "test.archive-probe" } });
     expect(entry.archived).toBe(false);
   });
 

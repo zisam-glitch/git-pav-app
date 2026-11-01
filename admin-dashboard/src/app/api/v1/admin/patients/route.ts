@@ -40,7 +40,7 @@ export async function GET(request: Request) {
       name: u.name,
       email: u.email,
       phone: u.phone,
-      date_of_birth: null,
+      // Town and postcode only; the full address stays in the app record.
       address: u.details,
       created_at: u.createdAt,
     }));

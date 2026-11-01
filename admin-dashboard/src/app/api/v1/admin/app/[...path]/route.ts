@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth/middleware";
 import { pavApi } from "@/lib/pav-api.server";
 
 // Passes the dashboard's opening hours, rota, erasure, team, dentist profile, inbox, referral voucher, app
-// appointment and audit log screens through to
+// appointment, audit log and van service area screens through to
 // the app backend's /api/admin endpoints, as the signed-in staff member. Only the
 // routes below are forwarded; anything else is a 404.
 const SEG = "[A-Za-z0-9_-]{1,64}";
@@ -19,6 +19,7 @@ const ALLOWED: Record<string, RegExp[]> = {
     /^services$/,
     /^messages$/,
     /^users$/,
+    /^operators$/,
     new RegExp(`^referral-vouchers/${SEG}$`),
     /^appointments$/,
     /^audit-logs$/,
@@ -45,13 +46,18 @@ const ALLOWED: Record<string, RegExp[]> = {
     /^vans$/,
     new RegExp(`^vans/${SEG}/polygons$`),
     new RegExp(`^vans/${SEG}/assignments$`),
+    new RegExp(`^vans/${SEG}/assignments/${SEG}/end$`),
     /^services$/,
     new RegExp(`^erasure-requests/${SEG}/complete$`),
     new RegExp(`^erasure-requests/${SEG}/reject$`),
     new RegExp(`^messages/${SEG}/reply$`),
     new RegExp(`^referral-vouchers/${SEG}/use$`),
   ],
-  DELETE: [new RegExp(`^clinics/${SEG}/closures/${DATE}$`), new RegExp(`^clinicians/${SEG}/overrides/${DATE}$`)],
+  DELETE: [
+    new RegExp(`^clinics/${SEG}/closures/${DATE}$`),
+    new RegExp(`^clinicians/${SEG}/overrides/${DATE}$`),
+    new RegExp(`^vans/${SEG}/polygons/${SEG}$`),
+  ],
 };
 
 type Context = { params: Promise<{ path: string[] }> };

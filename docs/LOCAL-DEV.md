@@ -93,7 +93,37 @@ npx expo start
   npx expo run:android
   ```
 
-## 4. Checks
+## 4. Staff dashboard (the app's back office)
+
+The dashboard signs staff in with their app account and calls the backend's
+`/api/admin/*` endpoints. Run it on port 3001 so it doesn't clash with the
+backend:
+
+```bash
+cd admin-dashboard
+npm ci
+```
+
+Create `admin-dashboard/.env.local` (git ignores it) with:
+
+```
+PAV_API_URL="http://localhost:3000"
+ADMIN_JWT_SECRET="any-long-random-string-for-local-use"
+NEXT_PUBLIC_APP_URL="http://localhost:3001"
+```
+
+```bash
+npx next dev -p 3001
+```
+
+Sign in at http://localhost:3001/auth/v1/login as `admin@pavdental.com`, then
+get the security code with `npm run dev:login-code -- admin@pavdental.com` in
+`backend/`. The website screens (shop, blog, forms) use the dashboard's own
+database, which is an embedded one locally when `DATABASE_URL` is blank.
+
+`next dev` rewrites `admin-dashboard/AGENTS.md`; don't commit that change.
+
+## 5. Checks
 
 Backend. The suites need the database and Redis, and **no dev server running**:
 its background jobs write to the same database and make some tests flaky.

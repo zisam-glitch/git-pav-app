@@ -188,10 +188,40 @@ export const updateServiceSchema = partialWithoutDefaults(createServiceSchema)
 /** Service ids are slugs, not uuids (seeded "srv_checkup", or "srv_" plus 8 hex characters). */
 export const serviceIdParamsSchema = z.object({ id: z.string().regex(/^[A-Za-z0-9_-]{1,64}$/) }).strict();
 
+// A GeoJSON position is [longitude, latitude].
+const position = z
+  .tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)])
+  .rest(z.number());
+// A closed ring: at least four positions, the last the same as the first.
+const linearRing = z
+  .array(position)
+  .min(4)
+  .max(5000)
+  .refine((ring) => ring[0][0] === ring[ring.length - 1][0] && ring[0][1] === ring[ring.length - 1][1], {
+    message: "Each ring must end where it starts",
+  });
+
+/**
+ * A van's service area: one GeoJSON Polygon (outer ring, then any holes).
+ * The database stores it as geometry(Polygon, 4326), so a MultiPolygon is
+ * added as separate areas.
+ */
+export const vanServiceAreaGeoJsonSchema = z
+  .object({
+    type: z.literal("Polygon"),
+    coordinates: z.array(linearRing).min(1).max(50),
+  })
+  .strict();
+
 export const assignVanPolygonSchema = z.object({
   sectorName: z.string().trim().min(2).max(100),
-  polygonGeoJson: z.record(z.string(), z.unknown()).optional(),
+  // Required: a missing shape used to be filled with a made-up box over
+  // central London, which then counted as real coverage.
+  polygonGeoJson: vanServiceAreaGeoJsonSchema,
 }).strict();
+
+export const vanPolygonParamsSchema = z.object({ id: uuid, polygonId: uuid }).strict();
+export const vanAssignmentParamsSchema = z.object({ id: uuid, assignmentId: uuid }).strict();
 
 export const assignVanOperatorSchema = z.object({
   operatorId: uuid,

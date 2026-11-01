@@ -7,6 +7,7 @@ import { env } from "../config/env";
 import { prisma } from "../lib/prisma";
 import { awardVisitPoints } from "../lib/rewards";
 import { londonTimeToUtc } from "../lib/availability";
+import { getCoverageBackend } from "../lib/van-coverage";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { passwordResetService } from "../lib/otp-service";
@@ -29,6 +30,8 @@ import {
   assignVanPolygonSchema,
   assignVanOperatorSchema,
   idParamsSchema,
+  vanAssignmentParamsSchema,
+  vanPolygonParamsSchema,
   serviceIdParamsSchema,
   updateClinicSchema,
   updateServiceSchema,
@@ -102,6 +105,10 @@ router.get("/users", requireAuth, requireRole("admin"), validateQuery(adminUsers
     whereClause.OR = [
       { email: { contains: search, mode: "insensitive" } },
       { phone: { contains: search, mode: "insensitive" } },
+      { patientProfile: { firstName: { contains: search, mode: "insensitive" } } },
+      { patientProfile: { lastName: { contains: search, mode: "insensitive" } } },
+      { clinicianProfile: { fullName: { contains: search, mode: "insensitive" } } },
+      { operatorProfile: { fullName: { contains: search, mode: "insensitive" } } },
     ];
   }
 
@@ -124,13 +131,16 @@ router.get("/users", requireAuth, requireRole("admin"), validateQuery(adminUsers
     const name = u.patientProfile
       ? `${u.patientProfile.firstName} ${u.patientProfile.lastName}`.trim()
       : u.clinicianProfile?.fullName || u.operatorProfile?.fullName || u.email.split("@")[0];
-    const details = u.clinicianProfile
-      ? `GDC #${u.clinicianProfile.gdcNumber} · ${u.clinicianProfile.roleTitle}`
-      : u.patientProfile
-        ? [u.patientProfile.city, u.patientProfile.postcode].filter(Boolean).join(", ") || "Registered Patient"
-        : u.operatorProfile
-          ? "Mobile Van Operator"
-          : "System Administrator";
+    // Described by what the account actually is: a patient without a profile
+    // used to fall through to "System Administrator".
+    let details: string;
+    if (u.clinicianProfile) details = `GDC #${u.clinicianProfile.gdcNumber} · ${u.clinicianProfile.roleTitle}`;
+    else if (u.patientProfile)
+      details = [u.patientProfile.city, u.patientProfile.postcode].filter(Boolean).join(", ") || "No address yet";
+    else if (u.operatorProfile) details = "Mobile Van Operator";
+    else if (u.role === "patient") details = "Profile not set up";
+    else if (u.role === "admin") details = "Practice staff (admin)";
+    else details = `No ${u.role} profile`;
 
     return {
       id: u.id,
@@ -303,13 +313,16 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
 
 // ─── GET /api/admin/vans ──────────────────────────────────────────────────────
 router.get("/vans", requireAuth, requireRole("admin"), async (_req: AuthRequest, res: Response) => {
+  const now = new Date();
   const vans = await prisma.van.findMany({
     include: {
-      servicePolygons: { select: { id: true, sectorName: true } },
+      servicePolygons: { select: { id: true, sectorName: true, polygonGeoJson: true, createdAt: true } },
+      // Every operator assigned now (a van can have more than one), plus any
+      // that start later. Ended assignments are left out.
       assignments: {
+        where: { OR: [{ endsAt: null }, { endsAt: { gt: now } }] },
         include: { operator: { select: { fullName: true, phone: true } } },
         orderBy: { startsAt: "desc" },
-        take: 5,
       },
       _count: { select: { appointments: true } },
     },
@@ -401,26 +414,28 @@ router.post("/vans/:id/polygons", requireAuth, requireRole("admin"), validatePar
     return res.status(404).json({ error: "Van not found" });
   }
 
-  const defaultGeoJson = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [-0.15, 51.48],
-        [-0.15, 51.55],
-        [-0.05, 51.55],
-        [-0.05, 51.48],
-        [-0.15, 51.48],
-      ],
-    ],
-  };
+  // PostGIS stores a ring that crosses itself, but answers "is this address
+  // inside?" unreliably for it, so such shapes are refused with the reason.
+  if ((await getCoverageBackend()).mode === "postgis") {
+    const [check] = await prisma.$queryRaw<{ valid: boolean; reason: string }[]>`
+      SELECT ST_IsValid(g) AS valid, ST_IsValidReason(g) AS reason
+      FROM (SELECT ST_GeomFromGeoJSON(${JSON.stringify(polygonGeoJson)}) AS g) AS shape`;
+    if (!check?.valid) {
+      return res.status(400).json({ error: `That shape isn't a valid area: ${check?.reason ?? "invalid geometry"}` });
+    }
+  }
 
-  const polygon = await prisma.vanServicePolygon.create({
-    data: {
-      vanId,
-      sectorName,
-      polygonGeoJson: (polygonGeoJson ?? defaultGeoJson) as any,
-    },
-  });
+  let polygon;
+  try {
+    polygon = await prisma.vanServicePolygon.create({
+      data: { vanId, sectorName, polygonGeoJson: polygonGeoJson as Prisma.InputJsonValue },
+    });
+  } catch (err) {
+    // The database turns the GeoJSON into a PostGIS polygon and refuses shapes
+    // it can't use (for example a ring that crosses itself).
+    console.warn("[ADMIN] Van service area refused:", safeError(err));
+    return res.status(400).json({ error: "That shape isn't a valid area. Check the ring doesn't cross itself." });
+  }
 
   await createAuditLogWithIntegrity({
     action: "admin.van_polygon_assigned",
@@ -447,13 +462,21 @@ router.post("/vans/:id/assignments", requireAuth, requireRole("admin"), validate
   if (!van) return res.status(404).json({ error: "Van not found" });
   if (!operator) return res.status(404).json({ error: "Operator not found" });
 
-  const assignment = await prisma.vanOperatorAssignment.create({
-    data: {
-      vanId,
-      operatorId,
-      startsAt: startsAt ? new Date(startsAt) : new Date(),
-      endsAt: endsAt ? new Date(endsAt) : null,
-    },
+  const starts = startsAt ? new Date(startsAt) : new Date();
+  const ends = endsAt ? new Date(endsAt) : null;
+  if (ends && ends <= starts) {
+    return res.status(400).json({ error: "The assignment must end after it starts" });
+  }
+
+  // An operator drives one van at a time: a new assignment ends any open one.
+  const assignment = await prisma.$transaction(async (tx) => {
+    await tx.vanOperatorAssignment.updateMany({
+      where: { operatorId, OR: [{ endsAt: null }, { endsAt: { gt: starts } }], startsAt: { lte: starts } },
+      data: { endsAt: starts },
+    });
+    return tx.vanOperatorAssignment.create({
+      data: { vanId, operatorId, startsAt: starts, endsAt: ends },
+    });
   });
 
   await createAuditLogWithIntegrity({
@@ -466,6 +489,100 @@ router.post("/vans/:id/assignments", requireAuth, requireRole("admin"), validate
   });
 
   return res.status(201).json(assignment);
+});
+
+// ─── POST /api/admin/vans/:id/assignments/:assignmentId/end ──────────────────
+// Ends an operator's assignment to a van now. A shift already under way keeps
+// running; the operator can't start a new one on this van afterwards.
+router.post(
+  "/vans/:id/assignments/:assignmentId/end",
+  requireAuth,
+  requireRole("admin"),
+  validateParams(vanAssignmentParamsSchema),
+  async (req: AuthRequest, res: Response) => {
+    const vanId = String(req.params.id);
+    const assignmentId = String(req.params.assignmentId);
+    const now = new Date();
+    const assignment = await prisma.vanOperatorAssignment.findFirst({ where: { id: assignmentId, vanId } });
+    if (!assignment) return res.status(404).json({ error: "Assignment not found" });
+    if (assignment.endsAt && assignment.endsAt <= now) {
+      return res.status(409).json({ error: "This assignment has already ended" });
+    }
+    const ended = await prisma.vanOperatorAssignment.update({
+      where: { id: assignmentId },
+      data: { endsAt: now },
+    });
+    await createAuditLogWithIntegrity({
+      action: "admin.van_operator_unassigned",
+      actorId: req.user!.sub,
+      resourceId: assignmentId,
+      sessionId: req.user!.sessionId,
+      ipHash: pseudonymiseIp(req.ip || ""),
+      metadata: { vanId, operatorId: assignment.operatorId, assignmentId },
+    });
+    return res.json(ended);
+  }
+);
+
+// ─── DELETE /api/admin/vans/:id/polygons/:polygonId ───────────────────────────
+// Removes one service area. Patients there are no longer covered by this van.
+router.delete(
+  "/vans/:id/polygons/:polygonId",
+  requireAuth,
+  requireRole("admin"),
+  validateParams(vanPolygonParamsSchema),
+  async (req: AuthRequest, res: Response) => {
+    const vanId = String(req.params.id);
+    const polygonId = String(req.params.polygonId);
+    const polygon = await prisma.vanServicePolygon.findFirst({ where: { id: polygonId, vanId } });
+    if (!polygon) return res.status(404).json({ error: "Service area not found" });
+    await prisma.vanServicePolygon.delete({ where: { id: polygonId } });
+    await createAuditLogWithIntegrity({
+      action: "admin.van_polygon_removed",
+      actorId: req.user!.sub,
+      resourceId: polygonId,
+      sessionId: req.user!.sessionId,
+      ipHash: pseudonymiseIp(req.ip || ""),
+      metadata: { vanId, sectorName: polygon.sectorName, polygonId },
+    });
+    return res.status(204).end();
+  }
+);
+
+// ─── GET /api/admin/operators ─────────────────────────────────────────────────
+// Van operators with the van they're assigned to now, if any.
+router.get("/operators", requireAuth, requireRole("admin"), async (_req: AuthRequest, res: Response) => {
+  const now = new Date();
+  const operators = await prisma.operatorProfile.findMany({
+    include: {
+      user: { select: { email: true, isActive: true } },
+      assignments: {
+        where: { startsAt: { lte: now }, OR: [{ endsAt: null }, { endsAt: { gt: now } }] },
+        include: { van: { select: { id: true, name: true } } },
+        orderBy: { startsAt: "desc" },
+        take: 1,
+      },
+    },
+    orderBy: { fullName: "asc" },
+  });
+  return res.json(
+    operators.map((o) => ({
+      id: o.id,
+      fullName: o.fullName,
+      phone: o.phone,
+      email: o.user.email,
+      isActive: o.user.isActive,
+      currentAssignment: o.assignments[0]
+        ? {
+            id: o.assignments[0].id,
+            vanId: o.assignments[0].van.id,
+            vanName: o.assignments[0].van.name,
+            startsAt: o.assignments[0].startsAt,
+            endsAt: o.assignments[0].endsAt,
+          }
+        : null,
+    }))
+  );
 });
 
 // ─── POST /api/admin/clinicians ───────────────────────────────────────────────

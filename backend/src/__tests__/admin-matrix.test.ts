@@ -301,6 +301,11 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
         headers: { Authorization: `Bearer ${adminToken}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           sectorName: "Chelsea & Fulham Sector",
+          // A shape is required: there's no default area any more.
+          polygonGeoJson: {
+            type: "Polygon",
+            coordinates: [[[-0.2, 51.47], [-0.2, 51.49], [-0.17, 51.49], [-0.17, 51.47], [-0.2, 51.47]]],
+          },
         }),
       });
 

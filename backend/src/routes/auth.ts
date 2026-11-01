@@ -609,6 +609,38 @@ router.post("/mfa/verify", requireAuth, async (req: AuthRequest, res: Response) 
   return res.json({ message: "MFA enabled successfully" });
 });
 
+// ─── POST /api/auth/mfa/disable ──────────────────────────────────────────────
+// A patient turns two-step sign-in off with their password and a fresh code
+// (from /mfa/request). Staff always sign in with a code, so they can't.
+router.post("/mfa/disable", requireAuth, async (req: AuthRequest, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "Unauthorised" });
+  const { password, code } = (req.body ?? {}) as { password?: unknown; code?: unknown };
+  if (typeof password !== "string" || !password || typeof code !== "string" || !code.trim()) {
+    return res.status(400).json({ error: "Your password and a security code are required" });
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
+  if (!user) return res.status(404).json({ error: "User not found" });
+  if (MFA_REQUIRED_ROLES.includes(user.role)) {
+    return res.status(409).json({ error: "Staff accounts always use two-step sign-in" });
+  }
+  if (!user.mfaEnabled) return res.json({ message: "Two-step sign-in is already off" });
+
+  const rateLimitKey = `mfa-disable:${user.id}`;
+  if (await rateLimiter.isRateLimited(rateLimitKey, 5, 900)) {
+    return res.status(429).json({ error: "Too many attempts. Please try again later." });
+  }
+  if (!(await argon2.verify(user.passwordHash, password))) {
+    return res.status(403).json({ error: "Password confirmation failed" });
+  }
+  if (!(await otpService.verifyOTP(user.id, code.trim(), "mfa_step_up"))) {
+    return res.status(400).json({ error: "Invalid or expired code" });
+  }
+
+  await prisma.user.update({ where: { id: user.id }, data: { mfaEnabled: false } });
+  return res.json({ message: "Two-step sign-in turned off" });
+});
+
 // ─── POST /api/auth/mfa/verify-session ───────────────────────────────────────────
 router.post("/mfa/verify-session", requireAuth, async (req: AuthRequest, res: Response) => {
   return verifyMFAForRequest(req, res);

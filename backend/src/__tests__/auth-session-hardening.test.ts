@@ -8,7 +8,7 @@ import authRoutes from "../routes/auth";
 import patientRoutes from "../routes/patients";
 import notificationRoutes from "../routes/notifications";
 import { signAccessToken } from "../lib/jwt";
-import { otpService, rateLimiter } from "../lib/otp-service";
+import { otpService, phoneChangePurpose, rateLimiter } from "../lib/otp-service";
 import { getNextQuietHoursEnd, scheduleAppointmentReminderLadder, processDueScheduledNotifications } from "../lib/background-jobs";
 import { attachOptionalAuth } from "../middleware/auth";
 import { buildRateLimiters } from "../middleware/rate-limits";
@@ -125,7 +125,7 @@ describe("CS-54: Auth and Session Hardening", () => {
       const { code } = await otpService.createAndSendOTP({
         userId: testUserId,
         phone: "+447700900333",
-        purpose: "phone_change",
+        purpose: phoneChangePurpose("+447700900333"),
       });
 
       const res = await fetch(`${baseUrl}/api/patients/${testProfileId}/profile`, {
@@ -184,7 +184,7 @@ describe("CS-54: Auth and Session Hardening", () => {
       expect(reqRes.status).toBe(200);
 
       const mfaCodeRow = await prisma.mfaCode.findFirst({
-        where: { userId: testUserId, purpose: "phone_change" },
+        where: { userId: testUserId, purpose: phoneChangePurpose("+447700900555") },
         orderBy: { createdAt: "desc" },
       });
       expect(mfaCodeRow).toBeTruthy();
@@ -193,7 +193,7 @@ describe("CS-54: Auth and Session Hardening", () => {
       const { code } = await otpService.createAndSendOTP({
         userId: testUserId,
         phone: "+447700900555",
-        purpose: "phone_change",
+        purpose: phoneChangePurpose("+447700900555"),
       });
 
       const verRes = await fetch(`${baseUrl}/api/patients/${testProfileId}/phone/verify`, {
@@ -215,6 +215,30 @@ describe("CS-54: Auth and Session Hardening", () => {
       const dbUser = await prisma.user.findUnique({ where: { id: testUserId } });
       expect(dbUser?.phone).toBe("+447700900555");
       expect(dbUser?.phoneVerified).toBe(true);
+    });
+
+    it("won't verify a different number with a code sent to another one", async () => {
+      // A code really sent to +447700900666...
+      const { code } = await otpService.createAndSendOTP({
+        userId: testUserId,
+        phone: "+447700900666",
+        purpose: phoneChangePurpose("+447700900666"),
+      });
+      // ...can't be used to mark +447700900777 as verified.
+      const verRes = await fetch(`${baseUrl}/api/patients/${testProfileId}/phone/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${userToken}` },
+        body: JSON.stringify({ newPhone: "+447700900777", code }),
+      });
+      expect(verRes.status).toBe(400);
+      const viaProfile = await fetch(`${baseUrl}/api/patients/${testProfileId}/profile`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${userToken}` },
+        body: JSON.stringify({ phone: "+447700900777", phoneOtp: code }),
+      });
+      expect(viaProfile.status).toBe(400);
+      const dbUser = await prisma.user.findUnique({ where: { id: testUserId } });
+      expect(dbUser?.phone).not.toBe("+447700900777");
     });
   });
 

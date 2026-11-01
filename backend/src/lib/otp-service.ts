@@ -314,7 +314,9 @@ export const twoFactorService = new TwoFactorService();
 export const rateLimiter = new RateLimiter();
 
 /** What a one-time code is for. A code verifies only its own purpose (OT-2). */
-export type OtpPurpose = "mfa" | "phone_login" | "mfa_step_up" | "phone_change";
+export type OtpPurpose = "mfa" | "phone_login" | "mfa_step_up" | `phone_change:${string}`;
+
+export { phoneChangePurpose } from "./phone-change-purpose";
 
 /** Wrong guesses a code takes before it's burned (OT-2). */
 export const OTP_MAX_ATTEMPTS = 5;

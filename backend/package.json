@@ -15,6 +15,7 @@
     "hours:defaults": "tsx scripts/apply-default-opening-hours.ts",
     "dev:login-code": "tsx scripts/dev-login-code.ts",
     "dev:verify-email-code": "tsx scripts/dev-verify-email-code.ts",
+    "dev:phone-code": "tsx scripts/dev-phone-code.ts",
     "rewrap:encrypted": "tsx scripts/rewrap-encrypted-fields.ts",
     "consents:backfill": "tsx scripts/backfill-consents.ts",
     "phi:backfill": "tsx scripts/backfill-phi-encryption.ts",

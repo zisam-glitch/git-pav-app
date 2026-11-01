@@ -28,6 +28,9 @@ doc made a claim, I checked it against the code; several were stale (see R3).
 | 1 Nov | **Phase 2: van service areas and operators.** New dashboard page *Vans & Service Areas*: each van's areas (preview, remove, add by pasting GeoJSON from e.g. geojson.io), every operator currently on the van (end assignment), assign an operator (shown with email; assigning ends their other van). Backend: area shape now required and checked (closed ring, valid coordinates, no self-crossing via PostGIS); the made-up central-London box used when no shape was sent is gone; new endpoints to remove an area, list operators, end an assignment; vans list returns shapes and all current operators. Checked in a browser against a running backend | ✅ (drawing on a map instead of pasting GeoJSON would need a map library and tile provider: follow-up) |
 | 1 Nov | Staff screens for the app checked in a browser: app appointments, opening hours, rota, team, dentist profiles, inbox (reply sent), patients, referral vouchers, erasure requests (erase completed), audit log. All load with no errors | ✅ |
 | 1 Nov | **Patient directory** showed "System Administrator" as the address of patients without a profile, and a Date of Birth column that was always empty. Now labelled by account type, the column is "Area" (town, postcode), the empty column is gone, and patients can be found by name | ✅ |
+| 1 Nov | **Phase 4: phone change.** Found: a code sent to one number could mark a *different* number as verified (codes weren't tied to the number). Codes are now bound to the number they were sent to. The app's personal-info screen sends a code when the number changes and only saves it once the code is entered. Added `npm run dev:phone-code` for local use | ✅ |
+| 1 Nov | **Phase 4: consent history.** The consent screen lists every consent given and withdrawn. The invented "v1" and "Recorded" shown for consents never given are gone | ✅ |
+| 1 Nov | **Phase 4: two-step sign-in for patients.** The backend could turn it on but not off. Added `POST /api/auth/mfa/disable` (password and a fresh code; staff refused) and a card on the security screen | ✅ |
 | 31 Oct | Flaky backend test: `audit-chain-concurrency` fails about once in four full parallel runs and passes on rerun. Queued as a separate investigation | ⚠️ |
 | 31 Oct | Emergency modal button "Start 15-min video triage now" changed to "Book a video triage". **Clinical wording: needs clinician review** | ⚠️ review |
 
@@ -293,6 +296,22 @@ finance application) or delete the endpoint and its tests. **M6** (server triage
     on that van: shifts don't time out and there's no admin control to end one. Should stale
     shifts end automatically after a set time with no location updates, should staff get an end-shift
     button, or both?
+
+### Phase 4: unused endpoints waiting on a decision
+
+| Endpoint | What it is | Suggestion |
+|---|---|---|
+| `GET /api/van/queue`, `GET /api/van/requests/incoming` | Older operator views, replaced by `/api/van/shift/current` | Delete |
+| `DELETE /api/notifications/tokens/:token` | Unregister a push token. Sign-out already does this, and turning push off is a saved preference the server honours | Delete |
+| `POST /api/audit/log` + the app's `src/lib/audit-logger.ts` | Client-side audit events. The app's logger only prints to the console in dev and nothing calls it; the server already audits every request | Delete both |
+| `POST /api/consents/data-deletion-request` | Asks for erasure without closing the account; "Delete account" already closes the account and opens an erasure request | Delete, or keep as a "keep my account, erase my data" option |
+| `POST /api/auth/mfa/verify-session` (+ `requireMFA` middleware) | Step-up check for sensitive actions; no route uses it | Delete, or decide which actions need it |
+| `POST /api/triage/check`, `GET /api/triage/emergency-info` | Server-side red-flag triage; the app's emergency modal works entirely on the phone | Clinical decision |
+| `POST /api/financing/apply` | Deliberately retired (returns 410 with the finance page link) | Keep |
+| `GET/POST /api/audit/integrity|retention|failures`, `GET /api/audit/logs` | Admin operations tools (curl or ops scripts) | Keep |
+
+- **Consent wording (legal):** "Recall & preventive reminders", which are checkup reminders, is recorded as *marketing*
+  consent. Check whether recall reminders are really marketing under PECR/GDPR.
 
 ### Other new findings (not yet fixed)
 

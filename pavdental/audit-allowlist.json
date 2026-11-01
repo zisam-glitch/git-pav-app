@@ -1,14 +1,14 @@
 [
   {
-    "advisory": "GHSA-86w9-cpqp-85rv",
-    "package": "node-forge (via @expo/cli)",
-    "reason": "Only the Expo CLI uses it, on developer machines and in EAS builds. It isn't in the app bundle. Clears when Expo ships a CLI with node-forge 1.4.1 or later.",
-    "reviewBy": "2027-01-31"
-  },
-  {
     "advisory": "GHSA-mrhx-c7xc-m3w5",
     "package": "zod 3 (via @expo/cli)",
     "reason": "Only the Expo CLI's copy is affected; the app itself uses zod 4.6.7. Clears when Expo updates its CLI.",
+    "reviewBy": "2027-01-31"
+  },
+  {
+    "advisory": "GHSA-qr28-fpjm-wq7f",
+    "package": "decode-uri-component 0.2.2 (via expo-router > query-string 7)",
+    "reason": "In the app bundle: Expo Router parses route and deep-link query strings with it. The risk is slow decoding (denial of service) of a crafted percent-encoded URL on the patient's own phone, not data exposure. The fix (0.5.1) is a new major version that query-string 7 doesn't support, so forcing it could break routing. Clears when Expo Router moves to a fixed query-string; recheck on each Expo SDK update.",
     "reviewBy": "2027-01-31"
   }
 ]

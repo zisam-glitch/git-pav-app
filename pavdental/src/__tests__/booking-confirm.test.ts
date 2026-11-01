@@ -40,7 +40,7 @@ async function run() {
 
   const calls: { url: string; init: RequestInit }[] = [];
   const realFetch = global.fetch;
-  global.fetch = (async (url: string, init: RequestInit = {}) => {
+  (globalThis as { fetch: unknown }).fetch = async (url: string, init: RequestInit = {}) => {
     calls.push({ url: String(url), init });
     if (String(url).includes("bad-appt")) {
       return new Response(JSON.stringify({ error: "Payment does not belong to this appointment" }), { status: 409 });
@@ -48,7 +48,7 @@ async function run() {
     return new Response(JSON.stringify({ id: "appt-1", appointmentStatus: "confirmed", depositPaidPence: 2000 }), {
       status: 200,
     });
-  }) as typeof fetch;
+  };
 
   try {
     const result = await confirmAppointment("appt-1", "pi_mock_appt1");

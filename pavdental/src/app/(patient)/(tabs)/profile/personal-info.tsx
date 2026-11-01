@@ -34,8 +34,8 @@ export default function PersonalInfoScreen() {
       setPendingPhone(null);
       setCode("");
       Alert.alert("Phone number updated", "Your new number is verified.", [{ text: "Done", onPress: () => router.back() }]);
-    } catch (error: any) {
-      setCodeError(error?.message || "That code didn't work. Check it and try again.");
+    } catch (error: unknown) {
+      setCodeError(error instanceof Error ? error.message : "That code didn't work. Check it and try again.");
     } finally {
       setVerifying(false);
     }
@@ -47,8 +47,8 @@ export default function PersonalInfoScreen() {
       await accountApi.requestPhoneChange(userId, pendingPhone);
       setCodeError(null);
       Alert.alert("Code sent", `We've sent a new code to ${pendingPhone}.`);
-    } catch (error: any) {
-      setCodeError(error?.message || "We couldn't send a new code.");
+    } catch (error: unknown) {
+      setCodeError(error instanceof Error ? error.message : "We couldn't send a new code.");
     }
   };
 

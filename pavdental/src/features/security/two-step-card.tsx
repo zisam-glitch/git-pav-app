@@ -39,8 +39,8 @@ export function TwoStepCard() {
     try {
       await accountApi.requestSecurityCode();
       setStep(next);
-    } catch (err: any) {
-      setError(err?.message ?? "We couldn't send a security code");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "We couldn't send a security code");
     } finally {
       setBusy(false);
     }
@@ -60,8 +60,8 @@ export function TwoStepCard() {
         setNotice("Two-step sign-in is off.");
       }
       reset();
-    } catch (err: any) {
-      setError(err?.message ?? "That didn't work");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "That didn't work");
     } finally {
       setBusy(false);
     }

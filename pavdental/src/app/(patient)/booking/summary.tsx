@@ -140,7 +140,7 @@ export default function BookingSummaryScreen() {
       if (intent.isMock) {
         await confirmAppointment(appt.id, intent.paymentIntentId);
         setIsProcessing(false);
-        router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);
+        router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as never);
         return;
       }
 

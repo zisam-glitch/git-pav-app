@@ -200,4 +200,20 @@ assert(
   ".env.example documents local LAN IP configuration for physical devices"
 );
 
-console.log("\n🎉 ALL 17 CS-43 / RB-08 BUILD CONFIGURATION TESTS PASSED!\n");
+// Apple Pay only works when the app asks Stripe for the same merchant ID the
+// iOS entitlement grants.
+{
+  const layout = fs.readFileSync(path.join(__dirname, "../app/_layout.tsx"), "utf8");
+  const ids = [...layout.matchAll(/merchantIdentifier="([^"]+)"/g)].map((m) => m[1]);
+  assert(ids.length > 0 && ids.every((id) => id === "merchant.com.pavdental.app"), `StripeProvider uses the entitled merchant ID: ${ids.join(", ")}`);
+}
+
+// Release builds never sign in a fake patient or show the role switcher:
+// both are for screenshot and simulator builds only.
+for (const profile of ["preview", "production"] as const) {
+  const env = (easConfig.build?.[profile]?.env ?? {}) as Record<string, string>;
+  assert(env.EXPO_PUBLIC_DEMO_LOGIN !== "true", `${profile} profile doesn't turn on the demo login`);
+  assert(env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER !== "true", `${profile} profile doesn't turn on the role switcher`);
+}
+
+console.log("\n🎉 ALL CS-43 / RB-08 BUILD CONFIGURATION TESTS PASSED!\n");

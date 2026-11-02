@@ -37,6 +37,29 @@ assert(payload.postcode === "SW1A 1AA", "postcode typed on the address screen is
 assert(SERVER_POSTCODE.test(payload.postcode), "sent postcode passes the server's UK postcode rule");
 assert(payload.lat === 51.5014 && payload.lng === -0.1419, "sends the location from the coverage check");
 
+// ─── Optional fields left blank (the screen passes undefined) ────────────────
+// A blank flat number used to crash the review screen: the payload builder
+// called .trim() on undefined.
+store.setAccessDetails({
+  addressLine1: "1 Example Street",
+  addressLine2: undefined,
+  city: "London",
+  postcode: "SW1A 1AA",
+  parkingType: "private_driveway",
+  gateCode: undefined,
+  accessNotes: undefined,
+});
+let blankPayload: ReturnType<typeof store.getAccessDetailsPayload> | null = null;
+try {
+  blankPayload = useVanStore.getState().getAccessDetailsPayload();
+} catch (err) {
+  console.error(err);
+}
+assert(blankPayload !== null, "review screen can build the request when optional fields are blank");
+assert(blankPayload?.addressLine2 === undefined, "a blank flat number is left out of the request");
+assert(blankPayload?.gateCode === undefined && blankPayload?.accessNotes === undefined, "blank gate code and notes are left out");
+assert(useVanStore.getState().addressLine2 === "", "the draft keeps a blank flat number as an empty string");
+
 // ─── The screens never use the sector name or a made-up postcode ─────────────
 const read = (p: string) => readFileSync(join(__dirname, "../app/(patient)/van", p), "utf8");
 const serviceArea = read("service-area.tsx");

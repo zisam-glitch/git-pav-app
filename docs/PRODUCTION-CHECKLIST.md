@@ -30,6 +30,7 @@ Tick each section in order. Each one says how to check it worked.
 | AWS S3 (or an S3-compatible store via `S3_ENDPOINT`) | Patient documents, prescription PDFs, triage photos | A private bucket in the UK/EU |
 | Sentry | Error tracking for backend, app and dashboard | Events are scrubbed of health data in code |
 | Expo (EAS) | App builds, store submission, push notifications | Needed for `eas init` |
+| Google Cloud (Maps Platform) | The live van map in the app, and road routes and drive times | Billing must be on; set a budget alert |
 | Apple Developer + Google Play | Store listings, push credentials, deep links | Apple Team ID is needed in step 6 |
 
 ---
@@ -57,6 +58,7 @@ Put these in the host's secret store (Render, or whichever host). Never in the r
 | `PRACTICE_NAME`, `PRACTICE_ADDRESS`, `PRACTICE_PHONE` | Printed on prescriptions and messages |
 | `SENTRY_DSN`, `SENTRY_ENVIRONMENT` | From Sentry |
 | `TRUST_PROXY` | Hops in front of the server (usually `1`) so rate limits see real client IPs |
+| `GOOGLE_ROUTES_API_KEY` | Optional. A key restricted to the **Routes API** (and the server's IPs if fixed): road routes on the patient's map and traffic-aware van ETAs. Without it the map draws a straight dashed line and ETAs use a distance estimate. `GOOGLE_MAP_API` is accepted too |
 | `RETENTION_ENFORCE` | `false` until the DPO approves; then `true` deletes van location history older than 30 days |
 | **Never set** `ALLOW_DEV_DEFAULTS` | The server refuses to start with it in staging or production |
 
@@ -131,6 +133,24 @@ appointment shows as confirmed in the app and under App Appointments in the dash
 - [ ] Sign out removes push (no more notifications on that phone)
 
 ---
+
+## 5a. The live van map (Google Maps)
+
+1. In Google Cloud, enable **Maps SDK for Android**, **Maps SDK for iOS** and **Routes API**.
+2. Create three keys, each restricted:
+   - Android: "Android apps", package `com.pavdental.app` + your signing SHA-1s (EAS keystore
+     and Play App Signing); API: Maps SDK for Android.
+   - iOS: "iOS apps", bundle ID `com.pavdental.app`; API: Maps SDK for iOS.
+   - Server: API: Routes API only (step 2, `GOOGLE_ROUTES_API_KEY`).
+3. Add the app keys to EAS (`--visibility sensitive`, for preview and production):
+   `GOOGLE_MAPS_ANDROID_API_KEY`, `GOOGLE_MAPS_IOS_API_KEY`. `pavdental/app.config.js` passes
+   them to the maps plugin at build time. A Maps key in a mobile app is always readable from
+   the app itself, so the restrictions are what protect it.
+4. Set a budget alert in Google Cloud Billing.
+
+Without the keys: iPhones show Apple Maps, Android shows the status panel, and the line is
+straight. **Check it:** on a preview build, request a van; once the operator is driving,
+the van moves on the map along the road route.
 
 ## 6. Deep links (email links that open the app)
 

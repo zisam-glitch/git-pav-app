@@ -5,7 +5,7 @@
 import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
-import { decodePolyline, trackingView } from "../features/van/tracking";
+import { decodePolyline, trackingSheet, trackingView } from "../features/van/tracking";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -96,5 +96,40 @@ assert(!/AIza[0-9A-Za-z_-]{20,}/.test(appJson), "no Google key is committed in a
 const screen = readFileSync(join(__dirname, "../app/(patient)/van/live-track.tsx"), "utf8");
 assert(screen.includes("<VanTrackingMap view={trackingView(request)}"), "live tracking shows the map");
 assert(screen.includes("{vanComing ? ("), "the fallback panel only draws a van that's actually coming");
+
+// ─── What the sheet says at each stage ───────────────────────────────────────
+const sheetBase = { queuePosition: 1, route: null, etaSeconds: null, etaSecondsSnapshot: 480, etaLabel: "5–15 min" };
+const sPending = trackingSheet({ ...sheetBase, status: "pending", phase: "queued" });
+assert(sPending.step === 0 && sPending.etaMinutes === 8, "pending: first step, ETA from the dispatch estimate");
+const sQueued = trackingSheet({ ...sheetBase, status: "accepted", phase: "queued", queuePosition: 3 });
+assert(sQueued.step === 1 && sQueued.title.includes("#3"), "queued: says where the patient is in line");
+const sDriving = trackingSheet({
+  ...sheetBase,
+  status: "in_progress",
+  phase: "en_route",
+  route: { encodedPolyline: "_p~iF~ps|U", distanceMeters: 2100, durationSeconds: 400 },
+});
+assert(sDriving.step === 2 && sDriving.etaMinutes === 7 && sDriving.title === "Arriving in 7 min", "driving: ETA from the road route");
+const sDrivingNoRoute = trackingSheet({ ...sheetBase, status: "in_progress", phase: "en_route", etaSecondsSnapshot: null });
+assert(sDrivingNoRoute.etaMinutes === null && sDrivingNoRoute.etaText === "5–15 min", "driving without a route: falls back to the server's range");
+const sHere = trackingSheet({ ...sheetBase, status: "in_progress", phase: "on_site" });
+assert(sHere.etaMinutes === null && sHere.etaText === null, "arrived: no arrival countdown once the van is parked");
+const sTreating = trackingSheet({ ...sheetBase, status: "in_progress", phase: "in_treatment" });
+assert(sTreating.etaMinutes === null && sTreating.step === 4, "treating: no countdown, fifth step");
+const sDone = trackingSheet({ ...sheetBase, status: "completed", phase: "in_treatment" });
+assert(sDone.step === 5 && sDone.tone === "done", "completed: all steps done");
+for (const st of ["declined", "expired", "cancelled"] as const) {
+  const sheet = trackingSheet({ ...sheetBase, status: st, phase: "queued" });
+  assert(sheet.tone === "stopped" && sheet.etaMinutes === null, `${st}: stopped, no ETA`);
+}
+
+// ─── The browser map ─────────────────────────────────────────────────────────
+const webMap = readFileSync(join(__dirname, "../features/van/van-tracking-map.web.tsx"), "utf8");
+assert(webMap.includes("process.env.EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY"), "web map reads its own browser key");
+assert(!/GOOGLE_MAP_API|GOOGLE_ROUTES_API_KEY/.test(webMap), "web map never uses the server or app keys");
+assert(webMap.includes('state === "failed"') && webMap.includes('<View key="fallback"'), "web map falls back to the status panel, in its own element");
+const loader = readFileSync(join(__dirname, "../features/van/google-maps-web.ts"), "utf8");
+assert(loader.includes("gm_authFailure"), "a key Google refuses switches to the fallback");
+assert(screen.includes("bottomInset={sheetHeight}"), "the map is framed above the sheet");
 
 console.log("\n🎉 ALL VAN MAP TESTS PASSED (0 FAILURES)!\n");

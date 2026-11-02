@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Alert, ActivityIndicator, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThemedText, Card, Button, Badge, AppIcon } from "@/components";
+import { ThemedText, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchVanRequest, fetchActiveVanRequest, cancelVanRequest, retryDepositAuthorization, presentVanDepositSheet, DepositCanceledError } from "@/features/van/van-api";
-import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
+import type { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { useStripe } from "@stripe/stripe-react-native";
-import { toLabel } from "@/lib/text";
-import { trackingView } from "@/features/van/tracking";
+import { trackingSheet, trackingView } from "@/features/van/tracking";
 import { VanTrackingMap } from "@/features/van/van-tracking-map";
 
 export default function VanLiveTrackScreen() {
@@ -20,6 +19,7 @@ export default function VanLiveTrackScreen() {
 
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
   const [isAuthorizing, setIsAuthorizing] = useState(false);
+  const [sheetHeight, setSheetHeight] = useState(0);
 
   // Poll request status every 5s
   const { data: apiRequest, isLoading } = useQuery<VanServiceRequest | null>({
@@ -153,30 +153,22 @@ export default function VanLiveTrackScreen() {
 
   const phase: VanStopPhase = request?.phase ?? "queued";
   const status = request?.status ?? "pending";
-  const etaLabel =
-    request?.etaLabel ||
-    (request?.etaSecondsSnapshot
-      ? `~${Math.round(request.etaSecondsSnapshot / 60)} min`
-      : "Calculating...");
+  const sheet = trackingSheet(request);
 
   const isTerminal = ["declined", "expired", "completed", "cancelled"].includes(status);
   const canCancel = !isTerminal && phase !== "in_treatment";
+  const dotColor = {
+    waiting: colors.warning,
+    moving: colors.success,
+    arrived: colors.success,
+    treating: colors.ink,
+    done: colors.success,
+    stopped: colors.danger,
+  }[sheet.tone];
 
-  // Step indices for progress bar
-  const getStepIndex = () => {
-    if (status === "pending") return 0;
-    if (status === "accepted" && phase === "queued") return 1;
-    if (phase === "en_route") return 2;
-    if (phase === "on_site") return 3;
-    if (phase === "in_treatment") return 4;
-    if (status === "completed") return 5;
-    return 0;
-  };
-  const currentStep = getStepIndex();
-
-  // Shown where no map can be drawn (web, or an Android build without a Maps
-  // key). The van only appears once it's actually on its way.
-  const vanComing = request ? trackingView(request).van !== null : false;
+  // Shown where no map can be drawn (web without a key, or an Android build
+  // without one). The van only appears once it's actually on its way.
+  const vanComing = trackingView(request).van !== null;
   const statusPanel = (
     <View style={styles.mapBackground}>
       {vanComing ? (
@@ -190,13 +182,13 @@ export default function VanLiveTrackScreen() {
           </View>
         </>
       ) : null}
-      {/* Destination marker */}
-      <View style={styles.homeMarker}>
+      {/* Destination marker, kept clear of the sheet */}
+      <View style={[styles.homeMarker, { bottom: sheetHeight + spacing.lg }]}>
         <View style={[styles.markerBubble, styles.markerBubbleHome]}>
           <AppIcon name="mapPin" size={20} color={colors.ink} />
         </View>
         <ThemedText variant="caption" style={styles.homeLabel} numberOfLines={1}>
-          {request?.accessDetails?.addressLine1 || "Your address"}
+          {request.accessDetails?.addressLine1 || "Your address"}
         </ThemedText>
       </View>
     </View>
@@ -209,137 +201,82 @@ export default function VanLiveTrackScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.container}>
-        {/* Top Header */}
-        <View style={styles.topFloat}>
-          <View style={styles.backRow}>
-            <Button
-              title="Close"
-              variant="secondary"
-              size="sm"
-              accessibilityLabel="Close live tracking"
-              onPress={() => router.replace("/(patient)/(tabs)/home")}
-            />
-            <Badge
-              label={
-                status === "pending"
-                  ? "Operator review"
-                  : status === "accepted"
-                  ? "In live queue"
-                  : toLabel(status)
-              }
-              variant={
-                status === "accepted"
-                  ? "success"
-                  : status === "pending"
-                  ? "warning"
-                  : "default"
-              }
-            />
-          </View>
-        </View>
-
         {/* Live map: the van (once it's coming), the route and the patient's
-            address. Where no map can be drawn, the branded panel below. */}
+            address, framed above the sheet. Where no map can be drawn, the
+            panel above. */}
         <View style={styles.mapArea}>
-          {request ? (
-            <VanTrackingMap view={trackingView(request)} fallback={statusPanel} />
-          ) : (
-            statusPanel
-          )}
+          <VanTrackingMap view={trackingView(request)} bottomInset={sheetHeight} fallback={statusPanel} />
         </View>
 
-        {/* Bottom Dispatch Control Sheet */}
-        <Card style={styles.bottomCard}>
-          {/* Status Headline */}
-          <View style={styles.statusHeader}>
-            <View style={styles.statusDotRow}>
-              <View
-                style={[
-                  styles.statusPulse,
-                  {
-                    backgroundColor:
-                      status === "declined" || status === "expired" || status === "cancelled"
-                        ? colors.danger
-                        : phase === "in_treatment"
-                        ? colors.ink
-                        : phase === "on_site"
-                        ? colors.warning
-                        : colors.success,
-                  },
-                ]}
-              />
-              <ThemedText variant="headline" style={styles.statusTitle}>
-                {status === "pending"
-                  ? "Request Sent · Awaiting Operator"
-                  : status === "declined"
-                  ? "Request Declined by Operator"
-                  : status === "expired"
-                  ? "Request Timed Out"
-                  : status === "completed"
-                  ? "Clinical Visit Completed!"
-                  : status === "cancelled"
-                  ? "Visit Cancelled"
-                  : phase === "en_route"
-                  ? "Van En Route to Location"
-                  : phase === "on_site"
-                  ? "Van Arrived On Site"
-                  : phase === "in_treatment"
-                  ? "Appointment In Treatment"
-                  : `Accepted · Queue Position #${request?.queuePosition || 1}`}
+        <View style={styles.topFloat} pointerEvents="box-none">
+          <Pressable
+            style={styles.closeButton}
+            accessibilityRole="button"
+            accessibilityLabel="Close live tracking"
+            onPress={() => router.replace("/(patient)/(tabs)/home")}
+          >
+            <AppIcon name="close" size={18} color={colors.ink} />
+          </Pressable>
+        </View>
+
+        {/* Bottom sheet */}
+        <View style={styles.sheet} onLayout={(e) => setSheetHeight(e.nativeEvent.layout.height)}>
+          <View style={styles.grabber} />
+
+          <View style={styles.headline}>
+            <View style={styles.headlineText}>
+              <View style={styles.statusDotRow}>
+                <View style={[styles.statusDot, { backgroundColor: dotColor }]} />
+                <ThemedText variant="caption" style={styles.statusKicker}>
+                  {sheet.tone === "stopped" ? "Ended" : STEP_LABELS[sheet.step]}
+                </ThemedText>
+              </View>
+              <ThemedText variant="title" style={styles.sheetTitle} accessibilityRole="header">
+                {sheet.title}
+              </ThemedText>
+              <ThemedText variant="subhead" style={styles.sheetSubtitle}>
+                {sheet.subtitle}
               </ThemedText>
             </View>
-
-            {!isTerminal && (
-              <ThemedText variant="headline" style={styles.etaText}>
-                {etaLabel}
-              </ThemedText>
-            )}
+            {sheet.etaMinutes !== null ? (
+              <View style={styles.etaPill} accessibilityLabel={`About ${sheet.etaMinutes} minutes away`}>
+                <ThemedText style={styles.etaNumber}>{sheet.etaMinutes}</ThemedText>
+                <ThemedText variant="caption" style={styles.etaUnit}>
+                  min
+                </ThemedText>
+              </View>
+            ) : sheet.etaText && !isTerminal ? (
+              <View style={styles.etaPill}>
+                <ThemedText variant="caption" style={styles.etaRange}>
+                  {sheet.etaText}
+                </ThemedText>
+              </View>
+            ) : null}
           </View>
 
-          {/* Stepper / Timeline */}
-          {!isTerminal && (
-            <View style={styles.stepperContainer}>
-              {[
-                { label: "Request", step: 0 },
-                { label: "Queued", step: 1 },
-                { label: "Driving", step: 2 },
-                { label: "Arrived", step: 3 },
-                { label: "Treating", step: 4 },
-              ].map((s, idx) => {
-                const isPassed = currentStep >= s.step;
-                const isCurrent = currentStep === s.step;
-                return (
-                  <View key={s.step} style={styles.stepItem}>
-                    <View
-                      style={[
-                        styles.stepDot,
-                        isPassed && styles.stepDotPassed,
-                        isCurrent && styles.stepDotCurrent,
-                      ]}
-                    >
-                      <ThemedText
-                        variant="caption"
-                        style={[styles.stepNum, isPassed && styles.stepNumPassed]}
-                      >
-                        {idx + 1}
-                      </ThemedText>
-                    </View>
-                    <ThemedText
-                      variant="caption"
-                      style={[styles.stepLabel, isCurrent && styles.stepLabelCurrent]}
-                    >
-                      {s.label}
-                    </ThemedText>
-                  </View>
-                );
-              })}
+          {/* Progress: request, queued, driving, arrived, treating */}
+          {sheet.tone !== "stopped" && (
+            <View
+              style={styles.progress}
+              accessibilityRole="progressbar"
+              accessibilityLabel={`Step ${Math.min(sheet.step + 1, 5)} of 5: ${STEP_LABELS[sheet.step]}`}
+            >
+              {STEP_LABELS.slice(0, 5).map((label, idx) => (
+                <View
+                  key={label}
+                  style={[
+                    styles.progressSegment,
+                    idx < sheet.step && styles.progressDone,
+                    idx === sheet.step && styles.progressCurrent,
+                  ]}
+                />
+              ))}
             </View>
           )}
 
-          {/* Dynamic Instructions */}
-          {status === "pending" && request?.depositAuthorized === false && (
+          {status === "pending" && request.depositAuthorized === false && (
             <View style={styles.depositBanner}>
               <ThemedText variant="caption" style={styles.depositBannerText}>
                 <ThemedText variant="caption" style={styles.boldText}>
@@ -360,50 +297,42 @@ export default function VanLiveTrackScreen() {
             <View style={styles.pendingAlertBox}>
               <ThemedText variant="caption" style={styles.pendingText}>
                 <ThemedText variant="caption" style={styles.boldText}>
-                  Operator decision countdown:
+                  {secondsRemaining !== null ? formatTimer(secondsRemaining) : "4:00"} left
                 </ThemedText>{" "}
-                {secondsRemaining !== null ? formatTimer(secondsRemaining) : "4:00"}. If the operator cannot take the stop, your request will automatically expire.
+                for a van to accept. If none can, the request ends and any deposit hold is released.
               </ThemedText>
             </View>
           )}
 
-          {phase === "en_route" && (
-            <View style={styles.infoBox}>
-              <ThemedText variant="caption" style={styles.infoText}>
-                Our surgical van is in transit to{" "}
-                <ThemedText variant="caption" style={styles.boldText}>
-                  {request?.accessDetails?.addressLine1}
-                </ThemedText>
-                . Please ensure parking access is unobstructed.
+          {/* Vehicle */}
+          <View style={styles.vehicleRow}>
+            <View style={styles.vehicleAvatar}>
+              <AppIcon name="truck" size={20} color={colors.ink} />
+            </View>
+            <View style={styles.vehicleInfo}>
+              <ThemedText variant="subhead" style={styles.vehicleName} numberOfLines={1}>
+                {request.van?.name || "Pav Dental van"}
+              </ThemedText>
+              <ThemedText variant="caption" style={styles.vehicleSub} numberOfLines={1}>
+                {request.service?.name || "Dental visit"}
               </ThemedText>
             </View>
-          )}
-
-          {phase === "on_site" && (
-            <View style={styles.infoBox}>
-              <ThemedText variant="caption" style={styles.infoText}>
-                The van has parked at your property. Please meet the clinician outside or answer the buzzer.
-              </ThemedText>
-            </View>
-          )}
-
-          {/* Vehicle & Procedure Details */}
-          <View style={styles.driverRow}>
-            <View style={styles.driverAvatar}>
-              <AppIcon name="truck" size={18} color={colors.ink} />
-            </View>
-            <View style={styles.driverInfo}>
-              <ThemedText variant="subhead" style={styles.driverName}>
-                {request?.van?.name || "Pav Dental Mobile Surgery Unit #1"}
-              </ThemedText>
-              <ThemedText variant="caption" style={styles.driverSub}>
-                {request?.service?.name || "Dental Checkup"} · Reg:{" "}
-                {request?.van?.registrationPlate || "PV24 DEN"}
-              </ThemedText>
-            </View>
+            {request.van?.registrationPlate ? (
+              <View style={styles.plate} accessibilityLabel={`Registration ${request.van.registrationPlate}`}>
+                <ThemedText style={styles.plateText}>{request.van.registrationPlate}</ThemedText>
+              </View>
+            ) : null}
           </View>
 
-          {/* Action Buttons */}
+          {/* Destination */}
+          <View style={styles.addressRow}>
+            <AppIcon name="mapPin" size={16} color={colors.secondaryLabel} />
+            <ThemedText variant="caption" style={styles.addressText} numberOfLines={1}>
+              {[request.accessDetails?.addressLine1, request.accessDetails?.postcode].filter(Boolean).join(", ") ||
+                "Your address"}
+            </ThemedText>
+          </View>
+
           {status === "completed" && (
             <Button
               title="View treatment summary & records"
@@ -435,32 +364,28 @@ export default function VanLiveTrackScreen() {
               onPress={handleCancel}
             />
           )}
-        </Card>
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
+// One per sheet step; the first five are the progress bar's segments.
+const STEP_LABELS = ["Request sent", "Queued", "Driving", "Arrived", "Treating", "Completed"];
+
 const styles = StyleSheet.create({
-  backRow: {
+  addressRow: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: spacing.xs,
+  },
+  addressText: {
+    color: colors.secondaryLabel,
+    flex: 1,
   },
   boldText: {
     color: colors.label,
     fontWeight: "700",
-  },
-  bottomCard: {
-    backgroundColor: colors.systemBackground,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    bottom: 0,
-    gap: spacing.sm,
-    left: 0,
-    padding: spacing.md,
-    position: "absolute",
-    right: 0,
   },
   centerContainer: {
     alignItems: "center",
@@ -469,38 +394,70 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     justifyContent: "center",
   },
-  container: {
-    flex: 1,
-  },
-  driverAvatar: {
+  closeButton: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
+    backgroundColor: colors.systemBackground,
     borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
+    shadowColor: colors.alwaysBlack,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
     width: 40,
   },
-  driverInfo: {
+  container: {
     flex: 1,
-    gap: 2,
   },
-  driverName: {
-    color: colors.label,
-  },
-  driverRow: {
-    alignItems: "center",
-    backgroundColor: colors.systemBackground,
-    borderRadius: radius.md,
-    flexDirection: "row",
+  depositBanner: {
+    backgroundColor: colors.warningSubtle,
+    borderRadius: radius.sm,
     gap: spacing.sm,
     padding: spacing.sm,
   },
-  driverSub: {
-    color: colors.secondaryLabel,
+  depositBannerText: {
+    color: colors.warning,
+    lineHeight: 16,
   },
-  etaText: {
-    color: colors.ink,
+  etaNumber: {
+    color: colors.onInk,
+    fontSize: 24,
     fontWeight: "700",
+    lineHeight: 28,
+  },
+  etaPill: {
+    alignItems: "center",
+    backgroundColor: colors.ink,
+    borderRadius: radius.md,
+    justifyContent: "center",
+    minWidth: 56,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  etaRange: {
+    color: colors.onInk,
+    fontWeight: "700",
+  },
+  etaUnit: {
+    color: colors.onInk,
+    opacity: 0.8,
+  },
+  grabber: {
+    alignSelf: "center",
+    backgroundColor: colors.separator,
+    borderRadius: radius.full,
+    height: 5,
+    marginBottom: spacing.xs,
+    width: 40,
+  },
+  headline: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
+  headlineText: {
+    flex: 1,
+    gap: 2,
   },
   homeLabel: {
     color: colors.label,
@@ -508,10 +465,24 @@ const styles = StyleSheet.create({
   },
   homeMarker: {
     alignItems: "center",
-    bottom: "25%",
     maxWidth: "45%",
     position: "absolute",
     right: "8%",
+  },
+  loadingText: {
+    color: colors.secondaryLabel,
+  },
+  mapArea: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    backgroundColor: colors.inkSubtle,
+  },
+  mapBackground: {
+    flex: 1,
+    position: "relative",
   },
   markerBubble: {
     alignItems: "center",
@@ -524,44 +495,46 @@ const styles = StyleSheet.create({
   markerBubbleHome: {
     backgroundColor: colors.systemBackground,
   },
-  infoBox: {
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-  },
-  infoText: {
-    color: colors.ink,
-    lineHeight: 16,
-  },
-  loadingText: {
-    color: colors.secondaryLabel,
-  },
-  mapArea: {
-    backgroundColor: colors.inkSubtle,
-    flex: 1,
-  },
-  mapBackground: {
-    flex: 1,
-    position: "relative",
-  },
   pendingAlertBox: {
     backgroundColor: colors.warningSubtle,
     borderRadius: radius.sm,
     padding: spacing.sm,
   },
-  depositBanner: {
-    backgroundColor: colors.warningSubtle,
-    borderRadius: radius.sm,
-    gap: spacing.sm,
-    padding: spacing.sm,
-  },
-  depositBannerText: {
-    color: colors.warning,
-    lineHeight: 16,
-  },
   pendingText: {
     color: colors.warning,
     lineHeight: 16,
+  },
+  plate: {
+    backgroundColor: colors.systemBackground,
+    borderColor: colors.ink,
+    borderRadius: radius.xs,
+    borderWidth: 1.5,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: 2,
+  },
+  plateText: {
+    color: colors.ink,
+    fontSize: 13,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  progress: {
+    flexDirection: "row",
+    gap: 4,
+    marginVertical: spacing.xs,
+  },
+  progressCurrent: {
+    backgroundColor: colors.ink,
+    opacity: 0.45,
+  },
+  progressDone: {
+    backgroundColor: colors.ink,
+  },
+  progressSegment: {
+    backgroundColor: colors.separator,
+    borderRadius: radius.full,
+    flex: 1,
+    height: 4,
   },
   pulseRing: {
     borderColor: colors.ink,
@@ -577,10 +550,10 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     borderStyle: "dashed",
     borderWidth: 1.5,
-    height: "50%",
+    height: "40%",
     left: "30%",
     position: "absolute",
-    top: "25%",
+    top: "15%",
     transform: [{ rotate: "35deg" }],
     width: 2,
   },
@@ -588,72 +561,48 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
   },
+  sheet: {
+    backgroundColor: colors.systemBackground,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    bottom: 0,
+    gap: spacing.sm,
+    left: 0,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.xs,
+    position: "absolute",
+    right: 0,
+    shadowColor: colors.alwaysBlack,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+  },
+  sheetSubtitle: {
+    color: colors.secondaryLabel,
+  },
+  sheetTitle: {
+    color: colors.label,
+  },
+  statusDot: {
+    borderRadius: radius.full,
+    height: 8,
+    width: 8,
+  },
   statusDotRow: {
     alignItems: "center",
     flexDirection: "row",
-    flex: 1,
     gap: spacing.xs,
   },
-  statusHeader: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  statusPulse: {
-    borderRadius: radius.full,
-    height: 10,
-    width: 10,
-  },
-  statusTitle: {
-    color: colors.label,
-    flex: 1,
-  },
-  stepDot: {
-    alignItems: "center",
-    backgroundColor: colors.separator,
-    borderRadius: radius.full,
-    height: 20,
-    justifyContent: "center",
-    width: 20,
-  },
-  stepDotCurrent: {
-    backgroundColor: colors.ink,
-    borderWidth: 2,
-    borderColor: colors.onInk,
-  },
-  stepDotPassed: {
-    backgroundColor: colors.ink,
-  },
-  stepItem: {
-    alignItems: "center",
-    gap: 3,
-  },
-  stepLabel: {
-    color: colors.tertiaryLabel,
-    fontSize: 11,
-  },
-  stepLabelCurrent: {
-    color: colors.ink,
-    fontWeight: "700",
-  },
-  stepNum: {
-    color: colors.onInk,
-    fontSize: 11,
-    fontWeight: "700",
-  },
-  stepNumPassed: {
-    color: colors.onInk,
-  },
-  stepperContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
+  statusKicker: {
+    color: colors.secondaryLabel,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+    textTransform: "uppercase",
   },
   topFloat: {
     left: spacing.md,
     position: "absolute",
-    right: spacing.md,
     top: spacing.md,
     zIndex: 10,
   },
@@ -661,6 +610,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     left: "25%",
     position: "absolute",
-    top: "30%",
+    top: "20%",
+  },
+  vehicleAvatar: {
+    alignItems: "center",
+    backgroundColor: colors.inkSubtle,
+    borderRadius: radius.full,
+    height: 44,
+    justifyContent: "center",
+    width: 44,
+  },
+  vehicleInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  vehicleName: {
+    color: colors.label,
+    fontWeight: "600",
+  },
+  vehicleRow: {
+    alignItems: "center",
+    borderColor: colors.separator,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    flexDirection: "row",
+    gap: spacing.sm,
+    paddingTop: spacing.sm,
+  },
+  vehicleSub: {
+    color: colors.secondaryLabel,
   },
 });

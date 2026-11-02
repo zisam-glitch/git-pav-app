@@ -8,6 +8,8 @@ import type { TrackingView } from "./tracking";
 
 type Props = {
   view: TrackingView;
+  /** Height of the sheet covering the bottom of the map, so the route stays above it. */
+  bottomInset?: number;
   /** Shown instead of the map where it can't be drawn (Android build without a key). */
   fallback: React.ReactNode;
 };
@@ -24,21 +26,23 @@ function hasGoogleKey(): boolean {
  * and the road route (or a dashed straight line when there's no route).
  * Google Maps when the build has a key; Apple Maps on iPhone otherwise.
  */
-export function VanTrackingMap({ view, fallback }: Props) {
+export function VanTrackingMap({ view, fallback, bottomInset = 0 }: Props) {
   const mapRef = useRef<MapView>(null);
   const google = hasGoogleKey();
   const { home, van, path, isRoadRoute } = view;
 
   // Keep the van, the address and the route in view as the van moves.
-  const fitKey = van ? `${van.latitude.toFixed(4)},${van.longitude.toFixed(4)}:${path.length}` : "home";
+  const fitKey = `${van ? `${van.latitude.toFixed(4)},${van.longitude.toFixed(4)}` : "home"}:${path.length}:${Math.round(bottomInset)}`;
   useEffect(() => {
     const points = [home, ...(van ? [van] : []), ...path];
     if (points.length < 2) return;
     mapRef.current?.fitToCoordinates(points, {
-      edgePadding: { top: 80, right: 60, bottom: 80, left: 60 },
+      // mapPadding (below) already keeps the area under the sheet out of the fit.
+      edgePadding: { top: 100, right: 60, bottom: 60, left: 60 },
       animated: true,
     });
-    // Re-fit only when fitKey changes: the van moved noticeably or the route changed.
+    // Re-fit only when fitKey changes: the van moved noticeably, the route
+    // changed or the sheet changed height.
   }, [fitKey]);
 
   if (Platform.OS === "android" && !google) return <>{fallback}</>;
@@ -50,6 +54,7 @@ export function VanTrackingMap({ view, fallback }: Props) {
       provider={google ? PROVIDER_GOOGLE : undefined}
       initialRegion={{ ...home, latitudeDelta: 0.03, longitudeDelta: 0.03 }}
       showsUserLocation={false}
+      mapPadding={{ top: 0, right: 0, bottom: bottomInset, left: 0 }}
       toolbarEnabled={false}
       accessibilityLabel={van ? "Map showing the dental van on its way to your address" : "Map showing your address"}
     >

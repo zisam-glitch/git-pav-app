@@ -64,3 +64,85 @@ export function trackingView(request: Pick<VanServiceRequest, "status" | "phase"
     ? { home, van, path: road, isRoadRoute: true }
     : { home, van, path: [van, home], isRoadRoute: false };
 }
+
+export type SheetTone = "waiting" | "moving" | "arrived" | "treating" | "done" | "stopped";
+
+export type TrackingSheet = {
+  /** The big line at the top of the sheet. */
+  title: string;
+  /** One line under it. */
+  subtitle: string;
+  /** Minutes until the van arrives: only while it's queued or driving. */
+  etaMinutes: number | null;
+  /** Fallback ETA text from the server ("5–15 min") when there are no minutes. */
+  etaText: string | null;
+  /** 0 request, 1 queued, 2 driving, 3 arrived, 4 treating, 5 done. */
+  step: number;
+  tone: SheetTone;
+};
+
+type SheetInput = Pick<
+  VanServiceRequest,
+  "status" | "phase" | "queuePosition" | "route" | "etaSeconds" | "etaSecondsSnapshot" | "etaLabel"
+>;
+
+const minutes = (seconds: number | null | undefined) =>
+  seconds != null && seconds > 0 ? Math.max(1, Math.round(seconds / 60)) : null;
+
+/**
+ * What the live-tracking sheet says at each stage. The arrival time shows
+ * only before the van gets there: once it's parked, a countdown means nothing.
+ */
+export function trackingSheet(request: SheetInput): TrackingSheet {
+  const { status, phase } = request;
+  const base = { etaMinutes: null, etaText: null };
+
+  if (status === "declined") {
+    return { ...base, title: "No van could take this visit", subtitle: "Any deposit hold has been released.", step: 0, tone: "stopped" };
+  }
+  if (status === "expired") {
+    return { ...base, title: "Request timed out", subtitle: "No van accepted in time. Any deposit hold has been released.", step: 0, tone: "stopped" };
+  }
+  if (status === "cancelled") {
+    return { ...base, title: "Visit cancelled", subtitle: "This van visit won't go ahead.", step: 0, tone: "stopped" };
+  }
+  if (status === "completed") {
+    return { ...base, title: "Visit complete", subtitle: "Thanks for choosing Pav Dental.", step: 5, tone: "done" };
+  }
+  if (status === "pending") {
+    return {
+      title: "Finding your van",
+      subtitle: "The van team is reviewing your request.",
+      etaMinutes: minutes(request.etaSecondsSnapshot),
+      etaText: request.etaLabel ?? null,
+      step: 0,
+      tone: "waiting",
+    };
+  }
+  if (phase === "en_route") {
+    const eta = minutes(request.route?.durationSeconds) ?? minutes(request.etaSeconds) ?? minutes(request.etaSecondsSnapshot);
+    return {
+      title: eta ? `Arriving in ${eta} min` : "Your van is on its way",
+      subtitle: "Please keep the parking space clear.",
+      etaMinutes: eta,
+      etaText: eta ? null : request.etaLabel ?? null,
+      step: 2,
+      tone: "moving",
+    };
+  }
+  if (phase === "on_site") {
+    return { ...base, title: "Your van is here", subtitle: "Please meet the clinician outside or answer the door.", step: 3, tone: "arrived" };
+  }
+  if (phase === "in_treatment") {
+    return { ...base, title: "Treatment in progress", subtitle: "We'll let you know when you're all done.", step: 4, tone: "treating" };
+  }
+  const position = request.queuePosition ?? 1;
+  return {
+    title: position > 1 ? `Van accepted · you're #${position} in line` : "Van accepted · you're next",
+    subtitle: position > 1 ? "The van will head to you after its current visits." : "The van will head to you shortly.",
+    etaMinutes: minutes(request.etaSeconds) ?? minutes(request.etaSecondsSnapshot),
+    etaText: request.etaLabel ?? null,
+    step: 1,
+    tone: "waiting",
+  };
+}

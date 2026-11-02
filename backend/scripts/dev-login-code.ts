@@ -7,6 +7,8 @@
 //
 // Sign in with the password first (the app asks for a code), then run this
 // and enter the code it prints. Only the newest code works.
+// Reads backend/.env, as the server does, so `npm run` works in a fresh checkout.
+import "dotenv/config";
 import { createHash, randomInt } from "crypto";
 import { PrismaClient } from "@prisma/client";
 

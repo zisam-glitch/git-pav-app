@@ -7,6 +7,8 @@
 // Enter the code on the app's "Verify your email" screen (or open the printed
 // link on the simulator). Earlier codes for the account keep working until
 // they expire.
+// Reads backend/.env, as the server does, so `npm run` works in a fresh checkout.
+import "dotenv/config";
 import { createHash, randomBytes } from "crypto";
 import { PrismaClient } from "@prisma/client";
 

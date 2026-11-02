@@ -5,6 +5,8 @@
 //   npm run dev:phone-code -- patient@pavdental.com "+447700900123"
 //
 // Use the same number you typed in the app; the code only works for it.
+// Reads backend/.env, as the server does, so `npm run` works in a fresh checkout.
+import "dotenv/config";
 import { createHash, randomInt } from "crypto";
 import { PrismaClient } from "@prisma/client";
 import { phoneChangePurpose } from "../src/lib/phone-change-purpose";

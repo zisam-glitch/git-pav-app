@@ -200,6 +200,18 @@ assert(
   ".env.example documents local LAN IP configuration for physical devices"
 );
 
+// Sentry's source-map upload runs in every native build and fails the build
+// without a Sentry org, project and token. A .env copied from the template has
+// none, so local builds must skip the upload; release builds must not.
+assert(
+  /^SENTRY_DISABLE_AUTO_UPLOAD=true$/m.test(envExampleContent),
+  ".env.example skips the Sentry upload, so `npx expo run:ios` builds without Sentry secrets"
+);
+for (const profile of ["preview", "production"] as const) {
+  const env = (easConfig.build?.[profile]?.env ?? {}) as Record<string, string>;
+  assert(env.SENTRY_DISABLE_AUTO_UPLOAD !== "true", `${profile} profile still uploads source maps to Sentry`);
+}
+
 // Apple Pay only works when the app asks Stripe for the same merchant ID the
 // iOS entitlement grants.
 {

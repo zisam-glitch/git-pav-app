@@ -92,6 +92,24 @@ npx expo start
   ```bash
   npx expo run:android
   ```
+- **Google Maps on the phone:** put `GOOGLE_MAP_API=<key>` in `pavdental/.env`
+  (git-ignored) before the first native build. The van tracking map then uses
+  Google; without it, iPhone builds show Apple Maps. Re-run
+  `npx expo prebuild -p ios` after adding or changing the key.
+- **Sentry:** `.env.example` sets `SENTRY_DISABLE_AUTO_UPLOAD=true`. Without it,
+  every local native build fails at the source-map upload step.
+- **iOS simulator without an Apple signing certificate.** The app's
+  entitlements (Apple Pay, associated domains) make `expo run:ios` ask for a
+  certificate even for the simulator. Build with ad hoc signing instead, then
+  run Metro with `npx expo start`:
+  ```bash
+  SENTRY_DISABLE_AUTO_UPLOAD=true xcodebuild -workspace ios/PavDental.xcworkspace -scheme PavDental -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath ios/build CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= build
+  ```
+  ```bash
+  xcrun simctl install booted ios/build/Build/Products/Debug-iphonesimulator/PavDental.app
+  ```
+  Don't turn signing off altogether (`CODE_SIGNING_ALLOWED=NO`): the app then
+  has no Keychain access, and sign-in and push setup fail.
 
 ## 4. Staff dashboard (the app's back office)
 

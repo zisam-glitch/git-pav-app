@@ -4,13 +4,17 @@ import { objectStorage } from "../lib/object-storage";
 import { rewrapVanAccessDetails } from "../lib/rewrap";
 import { prisma } from "../lib/prisma";
 import { env } from "../config/env";
+import { isPlaceholderCredential } from "../config/placeholder";
 
 // CS-13 (EN-1, EN-3): encrypted data survives a change of AWS_REGION or
 // KMS_KEY_ID, records written before the fix still decrypt and can be moved
 // onto the current key, and download URLs aren't signed with the master key.
 // Synthetic values only.
 
-const MASTER = process.env.ENCRYPTION_KEY || "dev_clinical_envelope_kek_32_bytes_minimum_key";
+// The master key the service uses: a template value from .env.example ("replace…")
+// is ignored in favour of the dev key, as in lib/encryption.ts masterKey().
+const fromProcess = process.env.ENCRYPTION_KEY;
+const MASTER = (isPlaceholderCredential(fromProcess) ? undefined : fromProcess) || env.encryptionKey!;
 
 const service = (keyId: string, region = "eu-west-2") => new EncryptionService({ keyId, region, algorithm: "aes-256-gcm" });
 

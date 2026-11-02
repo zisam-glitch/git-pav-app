@@ -30,6 +30,7 @@ import { Route as OralHygieneRouteImport } from './routes/oral-hygiene'
 import { Route as PetitionRouteImport } from './routes/petition'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RootCanalRouteImport } from './routes/root-canal'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SignInRouteImport } from './routes/sign-in'
@@ -38,6 +39,7 @@ import { Route as TeamRouteImport } from './routes/team'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ToothExtractionRouteImport } from './routes/tooth-extraction'
 import { Route as VacanciesRouteImport } from './routes/vacancies'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as VirtualDentistryRouteImport } from './routes/virtual-dentistry'
 import { Route as WhiteningRouteImport } from './routes/whitening'
 import { Route as BlogsSlugRouteImport } from './routes/blogs_.$slug'
@@ -150,6 +152,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RootCanalRoute = RootCanalRouteImport.update({
   id: '/root-canal',
   path: '/root-canal',
@@ -188,6 +195,11 @@ const ToothExtractionRoute = ToothExtractionRouteImport.update({
 const VacanciesRoute = VacanciesRouteImport.update({
   id: '/vacancies',
   path: '/vacancies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VirtualDentistryRoute = VirtualDentistryRouteImport.update({
@@ -243,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/petition': typeof PetitionRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
@@ -251,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/tooth-extraction': typeof ToothExtractionRoute
   '/vacancies': typeof VacanciesRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/virtual-dentistry': typeof VirtualDentistryRoute
   '/whitening': typeof WhiteningRoute
   '/blogs/$slug': typeof BlogsSlugRoute
@@ -280,6 +294,7 @@ export interface FileRoutesByTo {
   '/petition': typeof PetitionRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
@@ -288,6 +303,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/tooth-extraction': typeof ToothExtractionRoute
   '/vacancies': typeof VacanciesRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/virtual-dentistry': typeof VirtualDentistryRoute
   '/whitening': typeof WhiteningRoute
   '/blogs/$slug': typeof BlogsSlugRoute
@@ -318,6 +334,7 @@ export interface FileRoutesById {
   '/petition': typeof PetitionRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
@@ -326,6 +343,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/tooth-extraction': typeof ToothExtractionRoute
   '/vacancies': typeof VacanciesRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/virtual-dentistry': typeof VirtualDentistryRoute
   '/whitening': typeof WhiteningRoute
   '/blogs_/$slug': typeof BlogsSlugRoute
@@ -357,6 +375,7 @@ export interface FileRouteTypes {
     | '/petition'
     | '/pricing'
     | '/privacy'
+    | '/reset-password'
     | '/root-canal'
     | '/shop'
     | '/sign-in'
@@ -365,6 +384,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/tooth-extraction'
     | '/vacancies'
+    | '/verify-email'
     | '/virtual-dentistry'
     | '/whitening'
     | '/blogs/$slug'
@@ -394,6 +414,7 @@ export interface FileRouteTypes {
     | '/petition'
     | '/pricing'
     | '/privacy'
+    | '/reset-password'
     | '/root-canal'
     | '/shop'
     | '/sign-in'
@@ -402,6 +423,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/tooth-extraction'
     | '/vacancies'
+    | '/verify-email'
     | '/virtual-dentistry'
     | '/whitening'
     | '/blogs/$slug'
@@ -431,6 +453,7 @@ export interface FileRouteTypes {
     | '/petition'
     | '/pricing'
     | '/privacy'
+    | '/reset-password'
     | '/root-canal'
     | '/shop'
     | '/sign-in'
@@ -439,6 +462,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/tooth-extraction'
     | '/vacancies'
+    | '/verify-email'
     | '/virtual-dentistry'
     | '/whitening'
     | '/blogs_/$slug'
@@ -469,6 +493,7 @@ export interface RootRouteChildren {
   PetitionRoute: typeof PetitionRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RootCanalRoute: typeof RootCanalRoute
   ShopRoute: typeof ShopRoute
   SignInRoute: typeof SignInRoute
@@ -477,6 +502,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ToothExtractionRoute: typeof ToothExtractionRoute
   VacanciesRoute: typeof VacanciesRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   VirtualDentistryRoute: typeof VirtualDentistryRoute
   WhiteningRoute: typeof WhiteningRoute
   BlogsSlugRoute: typeof BlogsSlugRoute
@@ -634,6 +660,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/root-canal': {
       id: '/root-canal'
       path: '/root-canal'
@@ -688,6 +721,13 @@ declare module '@tanstack/react-router' {
       path: '/vacancies'
       fullPath: '/vacancies'
       preLoaderRoute: typeof VacanciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/virtual-dentistry': {
@@ -757,6 +797,7 @@ const rootRouteChildren: RootRouteChildren = {
   PetitionRoute: PetitionRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RootCanalRoute: RootCanalRoute,
   ShopRoute: ShopRoute,
   SignInRoute: SignInRoute,
@@ -765,6 +806,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ToothExtractionRoute: ToothExtractionRoute,
   VacanciesRoute: VacanciesRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   VirtualDentistryRoute: VirtualDentistryRoute,
   WhiteningRoute: WhiteningRoute,
   BlogsSlugRoute: BlogsSlugRoute,

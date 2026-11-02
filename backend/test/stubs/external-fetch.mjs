@@ -6,6 +6,7 @@
 //   its "not covered" checks. The reverse lookup returns SW1A 1AA for points
 //   within about 500 m of it.
 // - Daily.co REST: room and meeting-token creation return fixed stubs.
+// - Google Routes: a fixed route and fixed drive times.
 //
 // Anything else passes through to the real fetch.
 if (process.env.NODE_ENV === "production") {
@@ -35,6 +36,19 @@ globalThis.fetch = async (input, init) => {
       .toUpperCase();
     if (postcode !== "SW1A1AA") return json({ status: 404, error: "Postcode not found" }, 404);
     return json({ status: 200, result: { latitude: 51.501009, longitude: -0.141588 } });
+  }
+
+  // Google Routes (only when a GOOGLE_ROUTES_API_KEY is set): a fixed route
+  // and an 8-minute drive for every pair.
+  if (url.startsWith("https://routes.googleapis.com/directions/v2:computeRoutes")) {
+    return json({ routes: [{ polyline: { encodedPolyline: "_p~iF~ps|U_ulLnnqC" }, distanceMeters: 2100, duration: "480s" }] });
+  }
+  if (url.startsWith("https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix")) {
+    const body = JSON.parse(String(init?.body ?? "{}"));
+    const n = body.origins?.length ?? 0;
+    const out = [];
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) out.push({ originIndex: i, destinationIndex: j, duration: i === j ? "0s" : "480s", condition: "ROUTE_EXISTS" });
+    return json(out);
   }
 
   if (url.startsWith("https://api.daily.co/v1/")) {

@@ -23,6 +23,7 @@ import {
   MAX_QUEUE_DEPTH,
   REQUEST_TIMEOUT_MS,
   MAX_ETA_SECONDS,
+  roadRoute,
 } from "../lib/van-eta";
 import { clinicalRecordEncryptionService, decryptString, encryptField } from "../lib/encryption";
 import { haversineMetres, postcodeToCoordinates } from "../lib/geo";
@@ -93,6 +94,24 @@ export function sanitizeIncomingRequest(request: any) {
     };
   }
   return sanitized;
+}
+
+/**
+ * The road route from the van to the patient, for the patient's map: only
+ * while the van is driving to them and they may see where it is (call after
+ * hideVanUnlessNext). Null otherwise, or when no route provider gives one.
+ */
+async function routeToPatient(request: {
+  phase: string | null;
+  patientLat: number;
+  patientLng: number;
+  shift: { lastLat: number | null; lastLng: number | null } | null;
+}) {
+  if (request.phase !== "en_route" || request.shift?.lastLat == null || request.shift?.lastLng == null) return null;
+  return roadRoute(
+    { lat: request.shift.lastLat, lng: request.shift.lastLng },
+    { lat: request.patientLat, lng: request.patientLng }
+  );
 }
 
 /**
@@ -1118,7 +1137,7 @@ router.get("/requests/mine/active", requireAuth, async (req: AuthRequest, res: R
     request.depositAuthorizedAt
   );
 
-  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized });
+  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized, route: await routeToPatient(request) });
 });
 
 // GET /api/van/requests/:id
@@ -1187,7 +1206,8 @@ router.get("/requests/:id", requireAuth, validateParams(vanRequestIdParamsSchema
     request.depositAuthorizedAt
   );
 
-  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized });
+  const route = req.user!.role === "operator" ? null : await routeToPatient(request);
+  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized, route });
 });
 
 // POST /api/van/requests/:id/payment-retry

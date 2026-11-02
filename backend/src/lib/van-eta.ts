@@ -3,6 +3,7 @@
 //
 // Travel times come from a real road-routing provider when one is configured:
 //
+//   GOOGLE_ROUTES_API_KEY (or GOOGLE_MAP_API) → Google Routes API
 //   MAPBOX_TOKEN  → Mapbox Directions Matrix API
 //   OSRM_BASE_URL → self-hosted / public OSRM Table API
 //
@@ -26,12 +27,16 @@ const ROAD_FACTOR = 1.4; // straight-line is shorter than roads
 
 // ─── Provider configuration ────────────────────────────────────────────────
 
-export type RoutingProvider = "mapbox" | "osrm" | "haversine";
+export type RoutingProvider = "google" | "mapbox" | "osrm" | "haversine";
 
+// Server-side key, restricted to the Routes API. GOOGLE_MAP_API is accepted as
+// the name the owner first used.
+const GOOGLE_ROUTES_API_KEY = (process.env.GOOGLE_ROUTES_API_KEY ?? process.env.GOOGLE_MAP_API)?.trim() || "";
 const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN?.trim() || "";
 const OSRM_BASE_URL = process.env.OSRM_BASE_URL?.trim()?.replace(/\/$/, "") || "";
 
 export function getRoutingProvider(): RoutingProvider {
+  if (GOOGLE_ROUTES_API_KEY) return "google";
   if (MAPBOX_TOKEN) return "mapbox";
   if (OSRM_BASE_URL) return "osrm";
   return "haversine";
@@ -145,6 +150,59 @@ async function osrmDurations(points: Point[]): Promise<number[][] | null> {
   return data.durations as number[][];
 }
 
+const GOOGLE_ROUTES_URL = "https://routes.googleapis.com";
+
+async function googlePost(path: string, body: unknown, fieldMask: string): Promise<unknown> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${GOOGLE_ROUTES_URL}${path}`, {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": GOOGLE_ROUTES_API_KEY,
+        "X-Goog-FieldMask": fieldMask,
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`routing provider ${res.status} ${res.statusText}`);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const googleWaypoint = (p: Point) => ({
+  waypoint: { location: { latLng: { latitude: p.lat, longitude: p.lng } } },
+});
+
+/** "123s" → 123 */
+function parseGoogleSeconds(value: unknown): number | null {
+  if (typeof value !== "string" || !value.endsWith("s")) return null;
+  const n = Number(value.slice(0, -1));
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Google Routes computeRouteMatrix: durations in seconds, row-major. */
+async function googleDurations(points: Point[]): Promise<number[][] | null> {
+  const waypoints = points.map(googleWaypoint);
+  const data = (await googlePost(
+    "/distanceMatrix/v2:computeRouteMatrix",
+    { origins: waypoints, destinations: waypoints, travelMode: "DRIVE", routingPreference: "TRAFFIC_AWARE" },
+    "originIndex,destinationIndex,duration,condition"
+  )) as { originIndex?: number; destinationIndex?: number; duration?: string; condition?: string }[] | null;
+  if (!Array.isArray(data)) return null;
+  const matrix = points.map((_, i) => points.map((__, j) => (i === j ? 0 : Number.NaN)));
+  for (const el of data) {
+    const seconds = parseGoogleSeconds(el?.duration);
+    if (typeof el?.originIndex !== "number" || typeof el?.destinationIndex !== "number") continue;
+    if (el.condition && el.condition !== "ROUTE_EXISTS") continue;
+    if (seconds !== null) matrix[el.originIndex][el.destinationIndex] = seconds;
+  }
+  return matrix;
+}
+
 /**
  * Fetch an n×n driving-duration matrix (seconds) for the given points.
  * Returns null when no provider is configured or the breaker is open.
@@ -162,7 +220,11 @@ async function getDurationMatrix(points: Point[]): Promise<number[][] | null> {
 
   try {
     const matrix =
-      provider === "mapbox" ? await mapboxDurations(points) : await osrmDurations(points);
+      provider === "google"
+        ? await googleDurations(points)
+        : provider === "mapbox"
+          ? await mapboxDurations(points)
+          : await osrmDurations(points);
     if (!matrix) throw new Error("provider returned no duration matrix");
     recordProviderSuccess();
 
@@ -400,3 +462,73 @@ export const REQUEST_TIMEOUT_MS =
 
 /** Max ETA in seconds to show to new patients (beyond this: "Queue full / try later") */
 export const MAX_ETA_SECONDS = 4 * 60 * 60; // 4 hours
+
+// ─── Road route for the patient's map ──────────────────────────────────────
+
+export type RoadRoute = {
+  /** Google encoded polyline (precision 5) of the driving route. */
+  encodedPolyline: string;
+  distanceMeters: number;
+  durationSeconds: number;
+};
+
+const ROUTE_CACHE_TTL_MS = 60_000;
+const routeCache = new Map<string, { route: RoadRoute | null; expiresAt: number }>();
+
+/** ~100 m grid, so small GPS jitter reuses the same route. */
+const routeKey = (from: Point, to: Point) =>
+  `${from.lat.toFixed(3)},${from.lng.toFixed(3)}>${to.lat.toFixed(4)},${to.lng.toFixed(4)}`;
+
+/**
+ * The driving route from the van to the patient, for drawing on the map.
+ * Only Google gives a route here; with another provider, none configured, the
+ * breaker open or an error, it's null and the app draws a straight line.
+ * Cached briefly so every patient refresh doesn't buy a new route.
+ */
+export async function roadRoute(from: Point, to: Point): Promise<RoadRoute | null> {
+  if (getRoutingProvider() !== "google" || breakerIsOpen()) return null;
+  const key = routeKey(from, to);
+  const hit = routeCache.get(key);
+  if (hit && Date.now() < hit.expiresAt) return hit.route;
+
+  let route: RoadRoute | null = null;
+  try {
+    const data = (await googlePost(
+      "/directions/v2:computeRoutes",
+      {
+        origin: googleWaypoint(from).waypoint,
+        destination: googleWaypoint(to).waypoint,
+        travelMode: "DRIVE",
+        routingPreference: "TRAFFIC_AWARE",
+        polylineEncoding: "ENCODED_POLYLINE",
+      },
+      "routes.polyline.encodedPolyline,routes.distanceMeters,routes.duration"
+    )) as {
+      routes?: { polyline?: { encodedPolyline?: unknown }; distanceMeters?: number; duration?: string }[];
+    } | null;
+    const first = data?.routes?.[0];
+    const seconds = parseGoogleSeconds(first?.duration);
+    if (typeof first?.polyline?.encodedPolyline === "string" && seconds !== null) {
+      route = {
+        encodedPolyline: first.polyline.encodedPolyline as string,
+        distanceMeters: Number(first.distanceMeters ?? 0),
+        durationSeconds: seconds,
+      };
+    }
+    recordProviderSuccess();
+  } catch (err) {
+    recordProviderFailure(err);
+  }
+
+  if (routeCache.size >= CACHE_MAX_ENTRIES) {
+    const oldest = routeCache.keys().next().value;
+    if (oldest !== undefined) routeCache.delete(oldest);
+  }
+  routeCache.set(key, { route, expiresAt: Date.now() + ROUTE_CACHE_TTL_MS });
+  return route;
+}
+
+/** Test hook: forget cached routes. */
+export function clearRouteCache(): void {
+  routeCache.clear();
+}

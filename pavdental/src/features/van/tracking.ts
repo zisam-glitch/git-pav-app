@@ -34,6 +34,13 @@ export function decodePolyline(encoded: string): LatLng[] {
   return points;
 }
 
+/**
+ * Closest the live map zooms, on the phone and on the web: street level. Fitting
+ * the van and the address when the van is a street away would otherwise zoom
+ * in to a single building.
+ */
+export const MAP_MAX_ZOOM = 17;
+
 export type TrackingView = {
   /** The patient's address. */
   home: LatLng;

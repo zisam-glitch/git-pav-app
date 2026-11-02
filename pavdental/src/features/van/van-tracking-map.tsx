@@ -4,7 +4,7 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import Constants from "expo-constants";
 import { AppIcon } from "@/components";
 import { colors, radius } from "@/theme";
-import type { TrackingView } from "./tracking";
+import { MAP_MAX_ZOOM, type TrackingView } from "./tracking";
 
 type Props = {
   view: TrackingView;
@@ -55,6 +55,7 @@ export function VanTrackingMap({ view, fallback, bottomInset = 0 }: Props) {
       initialRegion={{ ...home, latitudeDelta: 0.03, longitudeDelta: 0.03 }}
       showsUserLocation={false}
       mapPadding={{ top: 0, right: 0, bottom: bottomInset, left: 0 }}
+      maxZoomLevel={MAP_MAX_ZOOM}
       toolbarEnabled={false}
       accessibilityLabel={van ? "Map showing the dental van on its way to your address" : "Map showing your address"}
     >

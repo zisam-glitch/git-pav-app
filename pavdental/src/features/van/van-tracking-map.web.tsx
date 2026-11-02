@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { colors } from "@/theme";
-import type { LatLng, TrackingView } from "./tracking";
+import { MAP_MAX_ZOOM, type LatLng, type TrackingView } from "./tracking";
 import { loadGoogleMaps, onMapsAuthFailure, type GoogleMapsApi, type MapsLatLng, type MapsMap, type MapsMarker, type MapsPolyline } from "./google-maps-web";
 
 type Props = {
@@ -61,7 +61,7 @@ export function VanTrackingMap({ view, fallback, bottomInset = 0 }: Props) {
           center: toLatLng(view.home),
           zoom: 14,
           // Don't zoom to street furniture when the van is parked at the door.
-          maxZoom: 17,
+          maxZoom: MAP_MAX_ZOOM,
           disableDefaultUI: true,
           zoomControl: true,
           gestureHandling: "greedy",

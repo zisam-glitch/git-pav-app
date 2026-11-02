@@ -5,7 +5,7 @@
 import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
-import { decodePolyline, trackingSheet, trackingView } from "../features/van/tracking";
+import { decodePolyline, MAP_MAX_ZOOM, trackingSheet, trackingView } from "../features/van/tracking";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -131,5 +131,13 @@ assert(webMap.includes('state === "failed"') && webMap.includes('<View key="fall
 const loader = readFileSync(join(__dirname, "../features/van/google-maps-web.ts"), "utf8");
 assert(loader.includes("gm_authFailure"), "a key Google refuses switches to the fallback");
 assert(screen.includes("bottomInset={sheetHeight}"), "the map is framed above the sheet");
+
+// ─── Zoom cap, both maps ─────────────────────────────────────────────────────
+// Fitting the van and the address when the van is a street away zoomed the
+// phone map to a single building. Both maps stop at street level.
+assert(MAP_MAX_ZOOM >= 16 && MAP_MAX_ZOOM <= 17, `maps stop at street level (zoom ${MAP_MAX_ZOOM})`);
+const nativeMap = readFileSync(join(__dirname, "../features/van/van-tracking-map.tsx"), "utf8");
+assert(nativeMap.includes("maxZoomLevel={MAP_MAX_ZOOM}"), "the phone map caps its zoom");
+assert(webMap.includes("maxZoom: MAP_MAX_ZOOM"), "the web map uses the same cap");
 
 console.log("\n🎉 ALL VAN MAP TESTS PASSED (0 FAILURES)!\n");

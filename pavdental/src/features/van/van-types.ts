@@ -106,6 +106,12 @@ export type VanServiceRequest = {
     lastLocationAt?: string | null;
     status: VanShiftStatus;
   };
+  /**
+   * The road route from the van to the patient (Google encoded polyline).
+   * Only sent to the patient who's next while the van is driving to them, and
+   * only when the server has a road-routing key; otherwise null.
+   */
+  route?: { encodedPolyline: string; distanceMeters: number; durationSeconds: number } | null;
 };
 
 export type VanAvailability = {

@@ -9,6 +9,8 @@ import { fetchVanRequest, fetchActiveVanRequest, cancelVanRequest, retryDepositA
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { useStripe } from "@stripe/stripe-react-native";
 import { toLabel } from "@/lib/text";
+import { trackingView } from "@/features/van/tracking";
+import { VanTrackingMap } from "@/features/van/van-tracking-map";
 
 export default function VanLiveTrackScreen() {
   const router = useRouter();
@@ -172,6 +174,34 @@ export default function VanLiveTrackScreen() {
   };
   const currentStep = getStepIndex();
 
+  // Shown where no map can be drawn (web, or an Android build without a Maps
+  // key). The van only appears once it's actually on its way.
+  const vanComing = request ? trackingView(request).van !== null : false;
+  const statusPanel = (
+    <View style={styles.mapBackground}>
+      {vanComing ? (
+        <>
+          <View style={styles.routeLine} />
+          <View style={styles.vanMarker}>
+            <View style={styles.markerBubble}>
+              <AppIcon name="truck" size={20} color={colors.onInk} />
+            </View>
+            <View style={styles.pulseRing} />
+          </View>
+        </>
+      ) : null}
+      {/* Destination marker */}
+      <View style={styles.homeMarker}>
+        <View style={[styles.markerBubble, styles.markerBubbleHome]}>
+          <AppIcon name="mapPin" size={20} color={colors.ink} />
+        </View>
+        <ThemedText variant="caption" style={styles.homeLabel} numberOfLines={1}>
+          {request?.accessDetails?.addressLine1 || "Your address"}
+        </ThemedText>
+      </View>
+    </View>
+  );
+
   const formatTimer = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
@@ -210,30 +240,14 @@ export default function VanLiveTrackScreen() {
           </View>
         </View>
 
-        {/* Tracking stage — deliberate branded panel (real map SDK intentionally not used) */}
+        {/* Live map: the van (once it's coming), the route and the patient's
+            address. Where no map can be drawn, the branded panel below. */}
         <View style={styles.mapArea}>
-          <View style={styles.mapBackground}>
-            {/* Route track */}
-            <View style={styles.routeLine} />
-
-            {/* Van marker with pulse ring */}
-            <View style={styles.vanMarker}>
-              <View style={styles.markerBubble}>
-                <AppIcon name="truck" size={20} color={colors.onInk} />
-              </View>
-              <View style={styles.pulseRing} />
-            </View>
-
-            {/* Destination marker */}
-            <View style={styles.homeMarker}>
-              <View style={[styles.markerBubble, styles.markerBubbleHome]}>
-                <AppIcon name="mapPin" size={20} color={colors.ink} />
-              </View>
-              <ThemedText variant="caption" style={styles.homeLabel} numberOfLines={1}>
-                {request?.accessDetails?.addressLine1 || "Your address"}
-              </ThemedText>
-            </View>
-          </View>
+          {request ? (
+            <VanTrackingMap view={trackingView(request)} fallback={statusPanel} />
+          ) : (
+            statusPanel
+          )}
         </View>
 
         {/* Bottom Dispatch Control Sheet */}

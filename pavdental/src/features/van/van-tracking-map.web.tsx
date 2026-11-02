@@ -60,6 +60,8 @@ export function VanTrackingMap({ view, fallback, bottomInset = 0 }: Props) {
         map.current = new maps.Map(el, {
           center: toLatLng(view.home),
           zoom: 14,
+          // Don't zoom to street furniture when the van is parked at the door.
+          maxZoom: 17,
           disableDefaultUI: true,
           zoomControl: true,
           gestureHandling: "greedy",
@@ -146,18 +148,15 @@ export function VanTrackingMap({ view, fallback, bottomInset = 0 }: Props) {
       vanAt.current = null;
     }
 
-    const points = [home, ...(van ? [van] : []), ...path];
-    const padding = { top: 90, right: 50, bottom: bottomInset + 40, left: 50 };
-    if (points.length >= 2) {
-      const bounds = new maps.LatLngBounds();
-      points.forEach((p) => bounds.extend(toLatLng(p)));
-      m.fitBounds(bounds, padding);
-    } else {
-      // Only the address: centre it in the part of the map above the sheet.
-      m.setCenter(toLatLng(home));
-      m.setZoom(15);
-      m.panBy(0, bottomInset / 2);
-    }
+    // Frame everything in the part of the map above the sheet. With only the
+    // address, frame a small area around it (about 300 m each way).
+    const points = van || path.length ? [home, ...(van ? [van] : []), ...path] : [
+      { latitude: home.latitude - 0.003, longitude: home.longitude - 0.004 },
+      { latitude: home.latitude + 0.003, longitude: home.longitude + 0.004 },
+    ];
+    const bounds = new maps.LatLngBounds();
+    points.forEach((p) => bounds.extend(toLatLng(p)));
+    m.fitBounds(bounds, { top: 90, right: 50, bottom: bottomInset + 40, left: 50 });
     return () => cancelAnimationFrame(frame);
     // pathKey and the rounded positions stand in for the arrays.
   }, [

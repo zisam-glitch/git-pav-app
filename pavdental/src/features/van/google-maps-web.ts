@@ -6,9 +6,6 @@ export type MapsLatLng = { lat: number; lng: number };
 
 export interface MapsMap {
   fitBounds(bounds: MapsLatLngBounds, padding?: { top: number; right: number; bottom: number; left: number }): void;
-  setCenter(at: MapsLatLng): void;
-  setZoom(zoom: number): void;
-  panBy(x: number, y: number): void;
 }
 export interface MapsMarker {
   setPosition(at: MapsLatLng): void;

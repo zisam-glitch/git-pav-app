@@ -147,7 +147,11 @@ function SignUpRoute() {
 
   const handleGoogleSignUp = async () => {
     setError(null);
-    await signInWithGoogle();
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-up didn't start.");
+    }
   };
 
   return (

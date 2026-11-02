@@ -138,7 +138,11 @@ function SignInRoute() {
   const handleGoogleSignIn = async () => {
     setError(null);
     // Triggers redirect — page will reload then useEffect above handles result
-    await signInWithGoogle();
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in didn't start.");
+    }
   };
 
   return (

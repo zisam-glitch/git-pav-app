@@ -100,7 +100,11 @@ export default function ServiceCatalogScreen() {
         {/* Top Header: "Choose a Service" + Search Icon button */}
         <View style={styles.headerRow}>
           <ThemedText variant="largeTitle" style={styles.headerTitle}>
-            {onlyChannel === "video" ? "Book a video consult" : "Choose a treatment"}
+            {onlyChannel === "video"
+              ? "Book a video consult"
+              : onlyChannel === "van"
+                ? "Book a dental van visit"
+                : "Choose a treatment"}
           </ThemedText>
 
           <Pressable

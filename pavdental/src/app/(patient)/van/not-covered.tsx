@@ -39,8 +39,8 @@ export default function VanNotCoveredScreen() {
             The van doesn't reach you — yet
           </ThemedText>
           <ThemedText variant="subhead" style={styles.subtitle}>
-            Mobile dental visits currently cover a 15-mile radius around our
-            Central Practice. Your postcode sits just outside it.
+            Our dental vans only visit the areas they currently serve, and this
+            address isn't in one of them.
           </ThemedText>
         </View>
 
@@ -75,7 +75,7 @@ export default function VanNotCoveredScreen() {
         <Card elevation="flat" style={styles.routeNote}>
           <AppIcon name="mapPin" size={15} color={colors.secondaryLabel} />
           <ThemedText variant="caption" style={styles.routeNoteText}>
-            Routes are planned fortnightly — entering your postcode again later may give a different answer.
+            We add van areas over time, so it's worth checking your postcode again later.
           </ThemedText>
         </Card>
       </ScrollView>

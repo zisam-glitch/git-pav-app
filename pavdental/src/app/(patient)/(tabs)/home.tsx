@@ -365,6 +365,25 @@ export default function PatientHomeScreen() {
             3D Dental arch & gauges
           </ThemedText>
         </Pressable>
+
+        {/* Van services also offer clinic visits, so the plain catalog books
+            them at a clinic: ask for the van explicitly. */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Book a dental van visit at your address"
+          onPress={() => router.push("/(patient)/booking/service-catalog?channel=van" as never)}
+          style={({ pressed }) => [styles.quickTile, pressed && { opacity: 0.85 }]}
+        >
+          <View style={styles.quickIconWrap}>
+            <AppIcon name="truck" size={20} color={colors.ink} />
+          </View>
+          <ThemedText variant="headline" style={styles.quickTitle}>
+            Dental van
+          </ThemedText>
+          <ThemedText variant="caption" style={styles.quickSub}>
+            Treatment at your address
+          </ThemedText>
+        </Pressable>
       </View>
 
       {/* Emergency triage card (Frame 6) */}

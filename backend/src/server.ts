@@ -46,6 +46,7 @@ import { startBackgroundJobs, stopBackgroundJobs } from "./lib/background-jobs";
 import { flushErrorTracking, initErrorTracking, reportError } from "./lib/error-tracking";
 import { safeError } from "./lib/log-safety";
 import { getCoverageBackend } from "./lib/van-coverage";
+import { describeRoutingProvider } from "./lib/van-eta";
 
 const app = express();
 const PORT = env.port;
@@ -326,6 +327,7 @@ if (require.main === module) {
   initErrorTracking();
   activeHttpServer = app.listen(PORT, async () => {
     console.log(`🏥 Pav Dental API running on port ${PORT}`);
+    console.log(`[VAN ETA] Routing: ${describeRoutingProvider()}`);
     try {
       await redis.connect();
     } catch {

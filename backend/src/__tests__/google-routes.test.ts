@@ -50,6 +50,18 @@ describe("Google Routes provider", () => {
     expect((await load({})).getRoutingProvider()).toBe("haversine");
   });
 
+  it("falls back to GOOGLE_MAP_API when GOOGLE_ROUTES_API_KEY is an empty line", async () => {
+    expect((await load({ GOOGLE_ROUTES_API_KEY: "", GOOGLE_MAP_API: "test-key" })).getRoutingProvider()).toBe("google");
+    expect((await load({ GOOGLE_ROUTES_API_KEY: "  ", GOOGLE_MAP_API: "test-key" })).getRoutingProvider()).toBe("google");
+  });
+
+  it("names the provider for the startup log, without the key", async () => {
+    const google = (await load({ GOOGLE_MAP_API: "test-key" })).describeRoutingProvider();
+    expect(google).toMatch(/^Google Routes/);
+    expect(google).not.toContain("test-key");
+    expect((await load({})).describeRoutingProvider()).toMatch(/no routing key set/);
+  });
+
   it("reads driving times from the route matrix, sending the key as a header", async () => {
     const eta = await load({ GOOGLE_ROUTES_API_KEY: "test-key" });
     const calls = stubFetch(() => [

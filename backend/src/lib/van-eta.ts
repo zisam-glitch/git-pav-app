@@ -30,8 +30,10 @@ const ROAD_FACTOR = 1.4; // straight-line is shorter than roads
 export type RoutingProvider = "google" | "mapbox" | "osrm" | "haversine";
 
 // Server-side key, restricted to the Routes API. GOOGLE_MAP_API is accepted as
-// the name the owner first used.
-const GOOGLE_ROUTES_API_KEY = (process.env.GOOGLE_ROUTES_API_KEY ?? process.env.GOOGLE_MAP_API)?.trim() || "";
+// the name the owner first used. An empty GOOGLE_ROUTES_API_KEY= line still
+// falls back to GOOGLE_MAP_API.
+const GOOGLE_ROUTES_API_KEY =
+  process.env.GOOGLE_ROUTES_API_KEY?.trim() || process.env.GOOGLE_MAP_API?.trim() || "";
 const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN?.trim() || "";
 const OSRM_BASE_URL = process.env.OSRM_BASE_URL?.trim()?.replace(/\/$/, "") || "";
 
@@ -40,6 +42,16 @@ export function getRoutingProvider(): RoutingProvider {
   if (MAPBOX_TOKEN) return "mapbox";
   if (OSRM_BASE_URL) return "osrm";
   return "haversine";
+}
+
+/** One line for the startup log, so it's clear which ETAs and map routes to expect. */
+export function describeRoutingProvider(): string {
+  return {
+    google: "Google Routes (road routes on the patient's map, traffic-aware ETAs)",
+    mapbox: "Mapbox (ETAs only, no road route on the patient's map)",
+    osrm: "OSRM (ETAs only, no road route on the patient's map)",
+    haversine: "straight-line estimate (no routing key set: rough ETAs, no road route on the patient's map)",
+  }[getRoutingProvider()];
 }
 
 // ─── Circuit breaker ───────────────────────────────────────────────────────

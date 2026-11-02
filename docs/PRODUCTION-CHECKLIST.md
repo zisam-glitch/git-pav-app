@@ -168,16 +168,24 @@ app's reset screen, not the browser.
 
 ---
 
-## 7. Pages the app's emails link to (launch blocker)
+## 7. Pages the app's emails link to
 
-Verification, password-reset and **staff invitation** emails link to
-`APP_URL/verify-email` and `APP_URL/reset-password`. With the app installed and step 6 done,
-they open the app. **Without the app, they land on the website, which has no such pages.**
-That means a new clinician or operator added from the dashboard, **and the first admin
-from `create:admin`**, can't set a password unless they've installed the app first. Workaround
-until the pages exist: open the link on a phone with the app installed. Two small website pages fix this. They need the backend
-calls `/api/auth/verify-email/confirm` and `/api/auth/password-reset/confirm`, and the website
-origin in `ALLOWED_ORIGINS`. Not built yet, because website work is on hold.
+Verification, password-reset and **staff invitation** emails (including the first admin's
+from `create:admin`) link to `APP_URL/verify-email` and `APP_URL/reset-password`. With the app
+installed and step 6 done, they open the app. Otherwise they open these website pages
+(`website/src/routes/verify-email.tsx` and `reset-password.tsx`), which call the backend
+directly. For them to work:
+
+1. `APP_URL` is the website's domain (e.g. `https://pavdental.com`).
+2. The website's build setting `VITE_APP_API_URL` is the backend's URL (e.g.
+   `https://api.pavdental.com`).
+3. The website's origin (e.g. `https://pavdental.com`) is in the backend's `ALLOWED_ORIGINS`.
+
+The pages take the one-time token out of the address bar as soon as they've read it, send no
+referrer, and aren't indexed by search engines.
+
+**Check it:** on a computer without the app, add a staff member from the dashboard, open the
+invitation email, set a password, then sign in to the dashboard.
 
 ---
 

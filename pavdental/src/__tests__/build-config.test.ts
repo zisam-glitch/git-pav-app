@@ -90,6 +90,18 @@ assert(
     /shift/i.test(locationOptions.locationAlwaysAndWhenInUsePermission ?? ""),
   "expo-location allows background updates during a shift and explains why (D-21)"
 );
+// Patients see the "while using" text when they check van coverage, so it must
+// give their reason too, not only the operator's (App Store guideline 5.1.1).
+const whenInUse: string = locationOptions.locationWhenInUsePermission ?? "";
+assert(/whether .*van/i.test(whenInUse) && /postcode/i.test(whenInUse), "location text tells patients why: van coverage and their postcode");
+assert(/shift/i.test(whenInUse), "location text still covers the operator's use during a shift");
+{
+  // The coverage screen asks only when the patient taps "Use my current location".
+  const coverage = fs.readFileSync(path.join(__dirname, "../app/(patient)/van/service-area.tsx"), "utf8");
+  const onOpen = coverage.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[\]\);/)?.[1] ?? "";
+  assert(!/request\w*Permission/.test(onOpen), "coverage screen doesn't ask for location as soon as it opens");
+  assert(/getForegroundPermissionsAsync/.test(onOpen), "coverage screen only reads an earlier answer when it opens");
+}
 const imagePickerPlugin = plugins.find((p: unknown) => Array.isArray(p) && p[0] === "expo-image-picker");
 assert(
   appConfig.ios?.infoPlist?.NSMicrophoneUsageDescription === undefined &&

@@ -98,7 +98,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Allow Pav Dental to use your location to share the mobile dental van's live position with patients and navigate to visit addresses.",
+          "locationWhenInUsePermission": "Pav Dental uses your location to check whether our dental van can visit you and to fill in your postcode. If you drive a Pav Dental van, it also shares the van's position with that day's patients during your shift.",
           "locationAlwaysAndWhenInUsePermission": "During a van shift, Pav Dental shares the van's position with that day's patients even when the app is in the background, so their arrival times stay accurate. It stops when you end your shift.",
           "locationAlwaysPermission": "During a van shift, Pav Dental shares the van's position with that day's patients even when the app is in the background, so their arrival times stay accurate. It stops when you end your shift.",
           "isIosBackgroundLocationEnabled": true,

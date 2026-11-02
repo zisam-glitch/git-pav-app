@@ -22,8 +22,16 @@ export default function VanServiceAreaScreen() {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [, setUsingGPS] = useState(false);
 
+  // Ask for location only when the patient taps "Use my current location"
+  // (App Store guideline 5.1.1). If they already allowed it, locate them now.
   useEffect(() => {
-    requestLocationPermission();
+    if (Platform.OS === "web") return;
+    Location.getForegroundPermissionsAsync()
+      .then(({ status }) => {
+        setLocationPermission(status);
+        if (status === "granted") getCurrentLocation();
+      })
+      .catch(() => {});
   }, []);
 
   const requestLocationPermission = async () => {

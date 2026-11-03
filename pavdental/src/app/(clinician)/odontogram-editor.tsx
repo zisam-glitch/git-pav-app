@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button } from "@/components";
+import { ThemedText, Card, Badge, Button, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchOdontogram, updateOdontogram, fetchOdontogramHistory } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
@@ -145,12 +145,7 @@ export default function OdontogramEditorScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Patient file"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to patient file" variant="soft" onPress={() => router.back()} />
           <Button
             title={showHistory ? "View chart" : "View history"}
             variant="ghost"
@@ -499,12 +494,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   textInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     minHeight: 64,
     padding: spacing.sm,
     textAlignVertical: "top",
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   title: {
     color: colors.label,

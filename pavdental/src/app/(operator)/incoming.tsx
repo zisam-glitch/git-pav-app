@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThemedText, Card, Badge, Button, ErrorState, Skeleton } from "@/components";
+import { requestAreaLabel } from "@/features/van/request-area";
 import { colors, spacing } from "@/theme";
 import { fetchCurrentShift, acceptRequest, declineRequest } from "@/features/van/van-api";
 
@@ -116,24 +117,24 @@ export default function OperatorIncomingScreen() {
                 <View style={styles.details}>
                   <ThemedText variant="headline">{patientName}</ThemedText>
                   <ThemedText variant="caption" style={styles.detail}>
-                    {req.accessDetails?.addressLine1}, {req.accessDetails?.postcode}
+                    {requestAreaLabel(req.accessDetails)}
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.detail}>
-                    🅿️ Parking: {req.accessDetails?.parkingType?.replace("_", " ")}
+                    Parking: {req.accessDetails?.parkingType?.replace("_", " ")}
                   </ThemedText>
                   {req.accessDetails?.gateCode && (
                     <ThemedText variant="caption" style={styles.detail}>
-                      🔑 Gate: {req.accessDetails.gateCode}
+                      Gate: {req.accessDetails.gateCode}
                     </ThemedText>
                   )}
                   {req.accessDetails?.accessNotes && (
                     <ThemedText variant="caption" style={styles.notes}>
-                      📝 Note: {req.accessDetails.accessNotes}
+                      Note: {req.accessDetails.accessNotes}
                     </ThemedText>
                   )}
                   {req.etaSecondsSnapshot && (
                     <ThemedText variant="caption" style={styles.eta}>
-                      🚗 Initial ETA: ~{Math.round(req.etaSecondsSnapshot / 60)} min
+                      Initial ETA: ~{Math.round(req.etaSecondsSnapshot / 60)} min
                     </ThemedText>
                   )}
                 </View>

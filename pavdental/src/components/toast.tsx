@@ -70,7 +70,7 @@ export function Toast({ message, tone = "info", duration = 3000, onDismiss }: To
         accessibilityLabel={message}
       >
         <AppIcon name={t.icon} size={22} color={t.color} />
-        <ThemedText variant="subhead" style={styles.text} numberOfLines={2}>
+        <ThemedText variant="subhead" style={styles.text} numberOfLines={3}>
           {message}
         </ThemedText>
         {onDismiss ? (

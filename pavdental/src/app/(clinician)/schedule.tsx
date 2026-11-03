@@ -169,7 +169,7 @@ export default function ClinicianScheduleScreen() {
                             title="Open patient record & notes"
               arrow
                             size="md"
-                            variant="primary"
+                            variant="secondary"
                             onPress={() =>
                               router.push({
                                 pathname: "/(clinician)/patient-record" as any,
@@ -197,7 +197,7 @@ export default function ClinicianScheduleScreen() {
         {__DEV__ && process.env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER === "true" ? (
           <Card style={styles.roleCard}>
             <ThemedText variant="caption" style={styles.roleHint}>
-              🔄 Switch Mobile Portal (Demo Verification)
+              Switch mobile portal (Demo Verification)
             </ThemedText>
             <View style={styles.roleBtnRow}>
               <Button
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   cardReady: {
-    borderColor: colors.ink,
+    borderColor: colors.accent,
     borderWidth: 2,
   },
   cardTop: {

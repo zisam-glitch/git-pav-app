@@ -109,11 +109,11 @@ export default function OperatorRouteScreen() {
   const getPhaseBadge = (phase: VanStopPhase) => {
     switch (phase) {
       case "en_route":
-        return <Badge label="🚗 EN ROUTE" variant="info" />;
+        return <Badge label="En route" variant="info" />;
       case "on_site":
-        return <Badge label="📍 ON SITE" variant="warning" />;
+        return <Badge label="On site" variant="warning" />;
       case "in_treatment":
-        return <Badge label="🦷 IN TREATMENT" variant="success" />;
+        return <Badge label="In treatment" variant="success" />;
       default:
         return <Badge label="Queued" variant="default" />;
     }
@@ -179,7 +179,7 @@ export default function OperatorRouteScreen() {
           {gpsError ? (
             <View style={styles.gpsWarning}>
               <ThemedText variant="caption" style={styles.gpsWarningText}>
-                ⚠️ {gpsError}
+                {gpsError}
               </ThemedText>
             </View>
           ) : null}
@@ -217,7 +217,7 @@ export default function OperatorRouteScreen() {
                     <View style={styles.stopBadgeRow}>
                       <View style={styles.stopBadge}>
                         <ThemedText variant="caption" style={styles.stopNum}>
-                          STOP #{index + 1}
+                          Stop {index + 1}
                         </ThemedText>
                       </View>
                       {!isPinned ? (
@@ -253,7 +253,7 @@ export default function OperatorRouteScreen() {
                         </View>
                       ) : (
                         <ThemedText variant="caption" style={styles.pinnedLabel}>
-                          🔒 pinned
+                          Pinned
                         </ThemedText>
                       )}
                     </View>
@@ -268,7 +268,7 @@ export default function OperatorRouteScreen() {
                       {address}
                     </ThemedText>
                     <ThemedText variant="caption" style={styles.parking}>
-                      🅿️ {s.accessDetails?.parkingType?.replace("_", " ")}
+                      Parking: {s.accessDetails?.parkingType?.replace("_", " ")}
                       {s.accessDetails?.gateCode ? ` · Gate: ${s.accessDetails.gateCode}` : ""}
                     </ThemedText>
                     <ThemedText variant="caption" style={styles.procedure}>
@@ -371,7 +371,7 @@ export default function OperatorRouteScreen() {
         {__DEV__ && process.env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER === "true" ? (
           <Card style={styles.roleCard}>
             <ThemedText variant="caption" style={styles.roleHint}>
-              🔄 Switch Mobile Portal (Demo Verification)
+              Switch mobile portal (Demo Verification)
             </ThemedText>
             <View style={styles.roleBtnRow}>
               <Button

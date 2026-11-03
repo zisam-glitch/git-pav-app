@@ -103,9 +103,9 @@ export default function OperatorShiftScreen() {
   };
 
   const getStatusBadge = () => {
-    if (isOnline) return <Badge label="ONLINE · ACCEPTING" variant="success" />;
-    if (isPaused) return <Badge label="❚❚ PAUSED · NOT ACCEPTING" variant="warning" />;
-    return <Badge label="○ OFFLINE" variant="default" />;
+    if (isOnline) return <Badge label="Online · accepting" variant="success" />;
+    if (isPaused) return <Badge label="Paused · not accepting" variant="warning" />;
+    return <Badge label="Offline" variant="default" />;
   };
 
   if (isLoading) {
@@ -161,7 +161,7 @@ export default function OperatorShiftScreen() {
           </View>
           {gpsError ? (
             <ThemedText variant="caption" style={styles.gpsWarning}>
-              ⚠️ {gpsError}
+              {gpsError}
             </ThemedText>
           ) : null}
         </Card>

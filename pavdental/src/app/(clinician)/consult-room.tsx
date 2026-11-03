@@ -170,7 +170,7 @@ export default function ClinicianConsultRoomScreen() {
               variant="caption"
               style={[styles.tabText, activeTab === "video" && styles.tabTextActive]}
             >
-              📹 Video Call
+              Video Call
             </ThemedText>
           </Pressable>
           <Pressable accessibilityRole="tab" accessibilityLabel="Triage and photos" accessibilityState={{ selected: activeTab === "triage" }}
@@ -181,7 +181,7 @@ export default function ClinicianConsultRoomScreen() {
               variant="caption"
               style={[styles.tabText, activeTab === "triage" && styles.tabTextActive]}
             >
-              📋 Triage & Photos
+              Triage & Photos
             </ThemedText>
           </Pressable>
           <Pressable accessibilityRole="tab" accessibilityLabel="Tooth chart" accessibilityState={{ selected: activeTab === "chart" }}
@@ -192,7 +192,7 @@ export default function ClinicianConsultRoomScreen() {
               variant="caption"
               style={[styles.tabText, activeTab === "chart" && styles.tabTextActive]}
             >
-              🦷 Tooth Chart
+              Tooth Chart
             </ThemedText>
           </Pressable>
         </View>

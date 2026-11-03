@@ -7,6 +7,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { isUpperArch } from "../features/records/arch";
 import { appointmentClinician, appointmentLocation } from "../features/booking/appointment-labels";
+import { requestAreaLabel } from "../features/van/request-area";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -63,5 +64,23 @@ const plan = src("app/(patient)/records/plans/[id].tsx");
 assert(/summaryTitle: \{[^}]*flex: 1/.test(plan), "sign-plan sheet: a long plan name wraps instead of clipping the total");
 const triage = src("components/emergency-triage-modal.tsx");
 assert(/isSelected && styles\.painDotTextSelected/.test(triage) && /painDotTextSelected: \{\s*color: colors\.onTint/.test(triage), "triage: the selected pain score's number stays readable");
+
+// ─── Operator: incoming request before acceptance ────────────────────────────
+assert(requestAreaLabel({ city: "London", postcode: "SW1A 1" }) === "Area: London, SW1A 1", "a pending request shows its area, not ', SW1A 1'");
+assert(requestAreaLabel({ addressLine1: "1 Example Street", city: "London", postcode: "SW1A 1AA" }) === "1 Example Street, London, SW1A 1AA", "an accepted stop shows its full address");
+assert(requestAreaLabel(null) === "Address shared once you accept", "no details: says when the address appears");
+
+// ─── Offline banner ──────────────────────────────────────────────────────────
+const banner = src("components/offline-banner.tsx");
+assert(/insets\.top/.test(banner) && /position: "absolute"/.test(banner), "offline banner floats below the status bar instead of under the clock");
+const root = src("app/_layout.tsx");
+assert(root.indexOf("<OfflineBanner />") > root.indexOf("</Stack>"), "offline banner is drawn over screens, not above them in the layout");
+
+// ─── Pickers, toast and labels ───────────────────────────────────────────────
+for (const f of ["app/(patient)/(tabs)/profile/dependants.tsx", "components/forms/PersonalInfoForm.tsx"]) {
+  assert(/PillActive: \{\s*backgroundColor: colors\.accent,/.test(src(f)), `${f}: the selected option is clearly marked`);
+}
+assert(/numberOfLines=\{3\}/.test(src("components/toast.tsx")), "toast: a voucher message isn't cut off mid-sentence");
+assert(!/PAIN SEVERITY/.test(triage), "triage: no all-caps section label");
 
 console.log("\n🎉 ALL REDESIGN FIX TESTS PASSED (0 FAILURES)!\n");

@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutation } from "@tanstack/react-query";
 import { useStripe } from "@stripe/stripe-react-native";
-import { ThemedText, Card, Button, Badge } from "@/components";
+import { ThemedText, Card, Button, Badge, DetailRow } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   createVanRequest,
@@ -152,10 +152,10 @@ export default function VanConfirmScreen() {
     .join(", ");
 
   const parkingLabelMap: Record<string, string> = {
-    private_driveway: "🏠 Private Driveway",
-    permit_bay: "🛣 Kerbside Permit Bay",
-    visitor: "🏢 Corporate / Visitor Parking",
-    other: "🅿️ Safe Loading / Kerb Area",
+    private_driveway: "Private driveway",
+    permit_bay: "Kerbside permit bay",
+    visitor: "Corporate / visitor parking",
+    other: "Safe loading / kerb area",
   };
 
   return (
@@ -177,38 +177,18 @@ export default function VanConfirmScreen() {
             <Badge label="Live dispatch" variant="info" />
           </View>
 
-          <View style={styles.item}>
-            <ThemedText variant="caption" style={styles.label}>
-              Destination:
-            </ThemedText>
-            <ThemedText variant="headline" style={styles.val}>
-              {fullAddress}
-            </ThemedText>
-            <ThemedText variant="caption" style={styles.subVal}>
-              Parking: {parkingLabelMap[accessPayload.parkingType] || "Private Driveway"}
-              {accessPayload.gateCode ? ` · Gate: ${accessPayload.gateCode}` : ""}
-            </ThemedText>
-          </View>
-
-          <View style={styles.item}>
-            <ThemedText variant="caption" style={styles.label}>
-              Estimated Arrival Window:
-            </ThemedText>
-            <ThemedText variant="headline" style={styles.brandVal}>
-              {etaLabel} from operator accept
-            </ThemedText>
-          </View>
-
-          <View style={styles.item}>
-            <ThemedText variant="caption" style={styles.label}>
-              Clinical Procedure:
-            </ThemedText>
-            <ThemedText variant="body" style={styles.val}>
-              {hasService
+          <DetailRow label="Address" value={fullAddress || "—"} emphasis />
+          <DetailRow label="Parking" value={parkingLabelMap[accessPayload.parkingType] || "Private driveway"} />
+          {accessPayload.gateCode ? <DetailRow label="Gate or buzzer" value={accessPayload.gateCode} /> : null}
+          <DetailRow label="Arrives" value={`${etaLabel} from operator accept`} emphasis />
+          <DetailRow
+            label="Treatment"
+            value={
+              hasService
                 ? `${store.serviceName} (${store.serviceDurationMinutes} min clinical block)`
-                : "No service selected"}
-            </ThemedText>
-          </View>
+                : "No service selected"
+            }
+          />
         </Card>
 
         {/* Financials & Transparent Policy */}
@@ -217,17 +197,13 @@ export default function VanConfirmScreen() {
             Pricing & payment terms
           </ThemedText>
 
-          <View style={styles.rowBetween}>
-            <ThemedText variant="body" style={styles.label}>
-              Clinical Treatment & Call-Out:
-            </ThemedText>
-            <ThemedText variant="mono">
-              {hasService ? `£${(store.servicePricePence / 100).toFixed(2)}` : "–"}
-            </ThemedText>
-          </View>
+          <DetailRow
+            label="Treatment and call-out"
+            value={hasService ? `£${(store.servicePricePence / 100).toFixed(2)}` : "–"}
+          />
 
           <View style={styles.rowBetween}>
-            <ThemedText variant="headline">Deposit due on accept:</ThemedText>
+            <ThemedText variant="headline">Deposit due on accept</ThemedText>
             <ThemedText variant="title" style={styles.depositPrice}>
               {depositPence > 0 ? `£${(depositPence / 100).toFixed(2)}` : "None"}
             </ThemedText>
@@ -261,11 +237,6 @@ export default function VanConfirmScreen() {
 }
 
 const styles = StyleSheet.create({
-  brandVal: {
-    color: colors.ink,
-    fontWeight: "700",
-    marginTop: 2,
-  },
   card: {
     backgroundColor: colors.systemBackground,
     gap: spacing.sm,
@@ -305,12 +276,6 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontWeight: "600",
   },
-  item: {
-    gap: 2,
-  },
-  label: {
-    color: colors.secondaryLabel,
-  },
   policyBox: {
     backgroundColor: colors.systemBackground,
     borderRadius: radius.sm,
@@ -327,13 +292,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  subVal: {
-    color: colors.secondaryLabel,
-  },
   title: {
-    color: colors.label,
-  },
-  val: {
     color: colors.label,
   },
 });

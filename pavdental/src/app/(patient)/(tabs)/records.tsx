@@ -100,8 +100,8 @@ export default function PatientRecordsScreen() {
       {/* Neo Financial Underline Segmented Tabs (Screen_337_Charts_Dashboard.png) */}
       <View style={styles.segmentContainer}>
         {[
-          { key: "vault", label: "Clinical Vault" },
-          { key: "activity", label: "Activity & Recall" },
+          { key: "vault", label: "Clinical vault" },
+          { key: "activity", label: "Activity & recall" },
           { key: "estimates", label: "Estimates" },
         ].map((tab) => {
           const isActive = activeTab === tab.key;
@@ -139,7 +139,7 @@ export default function PatientRecordsScreen() {
             {teethCount}
           </ThemedText>
           <ThemedText variant="caption" style={styles.metricLabel}>
-            {hasTeeth ? "Teeth Tracked" : "Teeth Charted"}
+            {hasTeeth ? "Teeth tracked" : "Teeth charted"}
           </ThemedText>
         </View>
 
@@ -153,7 +153,7 @@ export default function PatientRecordsScreen() {
             {activeIssues}
           </ThemedText>
           <ThemedText variant="caption" style={styles.metricLabel}>
-            Active Issues
+            Active issues
           </ThemedText>
         </View>
 
@@ -164,7 +164,7 @@ export default function PatientRecordsScreen() {
             {recallDisplay}
           </ThemedText>
           <ThemedText variant="caption" style={styles.metricLabel}>
-            Next Recall
+            Next recall
           </ThemedText>
         </View>
       </Card>
@@ -212,10 +212,10 @@ export default function PatientRecordsScreen() {
       <View style={styles.section}>
         <ThemedText variant="overline" style={styles.sectionOverline}>
           {activeTab === "vault"
-            ? "Vault & Clinical Charts"
+            ? "Vault & clinical charts"
             : activeTab === "estimates"
-            ? "Estimates & Finance"
-            : "Activity & Recall"}
+            ? "Estimates & finance"
+            : "Activity & recall"}
         </ThemedText>
         <Card padding="none" style={styles.groupedCard}>
           {displayedLinks.map((link, i) => (

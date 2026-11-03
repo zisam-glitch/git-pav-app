@@ -272,20 +272,19 @@ const styles = StyleSheet.create({
   },
   genderPill: {
     backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
   },
   genderPillActive: {
-    backgroundColor: colors.inkSubtle,
-    borderColor: colors.accent,
+    backgroundColor: colors.accent,
   },
   genderPillText: {
     color: colors.secondaryLabel,
     fontWeight: "500",
   },
   genderPillTextActive: {
-    color: colors.ink,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   genderPills: {

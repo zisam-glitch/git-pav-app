@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button, EmptyState } from "@/components";
+import { ThemedText, Card, Badge, Button, EmptyState, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   fetchPatientProfile,
@@ -97,12 +97,7 @@ export default function ClinicianPatientRecordScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation & Header */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Daily schedule"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to daily schedule" variant="soft" onPress={() => router.back()} />
           {params.channel ? (
             <Badge
               label={toLabel(params.channel)}

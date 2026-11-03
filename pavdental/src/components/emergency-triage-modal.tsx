@@ -206,7 +206,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
             <Card elevation="flat" style={styles.painScoreCard}>
               <View style={styles.painScoreHeader}>
                 <ThemedText variant="caption" style={styles.sectionLabel}>
-                  PAIN SEVERITY SCALE (1–10)
+                  Pain severity scale (1–10)
                 </ThemedText>
                 <ThemedText variant="mono" style={styles.painScoreValue}>
                   {painLevel} / 10 · {painLevel >= 8 ? "Severe" : painLevel >= 4 ? "Moderate" : "Mild"}

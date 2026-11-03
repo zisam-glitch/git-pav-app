@@ -218,8 +218,8 @@ export default function PatientAppointmentsScreen() {
         <ConfirmSheet
           title="Cancel this appointment?"
           message="Your slot will be released immediately. Any deposit hold will be refunded by your bank within 5 working days."
-          confirmLabel="Cancel Appointment"
-          cancelLabel="Keep Booking"
+          confirmLabel="Cancel appointment"
+          cancelLabel="Keep booking"
           variant="destructive"
           onConfirm={confirmCancel}
           onCancel={() => setPendingCancel(null)}

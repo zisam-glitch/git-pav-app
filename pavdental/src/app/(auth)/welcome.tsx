@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,7 +8,8 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { setStatusBarStyle } from "expo-status-bar";
 import { ThemedText, Input, Button, AppIcon, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
@@ -16,6 +17,15 @@ import { useAuthStore } from "@/features/auth/auth-store";
 import { getMobilePortalPath } from "@/features/auth/auth-routing";
 
 export default function WelcomeScreen() {
+  // Light status bar on the forest-green launch screen, only while it's in
+  // front: this screen stays mounted under sign-in and sign-up.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarStyle("light");
+      return () => setStatusBarStyle("dark");
+    }, [])
+  );
+
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [showEmailSheet, setShowEmailSheet] = useState(false);
@@ -89,7 +99,7 @@ export default function WelcomeScreen() {
         {/* Centred wordmark, as on the reference splash */}
         <View style={styles.brandGroup} accessibilityRole="header" accessibilityLabel="Pav Dental">
           <View style={styles.brandIconBox}>
-            <AppIcon name="tooth" size={28} color={colors.alwaysBlack} />
+            <AppIcon name="tooth" size={28} color={colors.ink} />
           </View>
           <ThemedText variant="largeTitle" style={styles.brandName}>
             Pav Dental

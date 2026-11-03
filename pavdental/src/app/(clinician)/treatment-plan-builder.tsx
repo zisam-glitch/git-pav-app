@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Button, EmptyState } from "@/components";
+import { ThemedText, Card, Button, EmptyState, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { createTreatmentPlan } from "@/features/records/records-api";
 import { useServices } from "@/features/hooks/use-dental-api";
@@ -100,12 +100,7 @@ export default function TreatmentPlanBuilderScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Patient file"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to patient file" variant="soft" onPress={() => router.back()} />
         </View>
 
         <View style={styles.headerBlock}>
@@ -369,21 +364,25 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   textInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     padding: spacing.sm,
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   title: {
     color: colors.label,
   },
   toothInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     paddingHorizontal: 8,
     paddingVertical: 4,
     width: 60,
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   toothInputRow: {
     alignItems: "center",

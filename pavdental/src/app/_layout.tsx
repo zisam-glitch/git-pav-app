@@ -162,7 +162,6 @@ export default function RootLayout() {
             <ThemeProvider value={navTheme}>
               <StatusBar style="dark" />
               <NotificationSetup />
-              <OfflineBanner />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(auth)" />
                 <Stack.Screen name="onboarding" />
@@ -171,6 +170,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(operator)" />
                 <Stack.Screen name="+not-found" />
               </Stack>
+              <OfflineBanner />
             </ThemeProvider>
           </QueryClientProvider>
         </StripeProvider>

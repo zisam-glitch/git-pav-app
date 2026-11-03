@@ -81,7 +81,7 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     ],
   },
   {
-    heading: "Security & Privacy",
+    heading: "Security & privacy",
     rows: [
       {
         title: "Security & privacy",
@@ -101,25 +101,25 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     ],
   },
   {
-    heading: "Legal & Policies",
+    heading: "Legal & policies",
     rows: [
       {
-        title: "Privacy Notice",
+        title: "Privacy notice",
         icon: "shieldCheck",
         url: LEGAL_URLS.privacy,
       },
       {
-        title: "Terms of Service",
+        title: "Terms of service",
         icon: "fileText",
         url: LEGAL_URLS.terms,
       },
       {
-        title: "Complaints Procedure",
+        title: "Complaints procedure",
         icon: "help",
         url: LEGAL_URLS.complaints,
       },
       {
-        title: "Cookie Policy",
+        title: "Cookie policy",
         icon: "globe",
         url: LEGAL_URLS.cookies,
       },
@@ -246,7 +246,7 @@ export default function ProfileScreen() {
               />
               <ListRow
                 title="Mobile van operator portal"
-                subtitle="Unit 01 Dispatch · Real-time Stops, En Route & On-Site Triage"
+                subtitle="Unit 01 Dispatch · real-time stops, en route and on-site triage"
                 left={
                   <View style={styles.rowIcon}>
                     <AppIcon name="navigation" size={18} color={colors.ink} />
@@ -301,8 +301,8 @@ export default function ProfileScreen() {
         <ConfirmSheet
           title="Sign out?"
           message="You will need to sign in again to access your appointments and records. This device will be remembered."
-          confirmLabel="Sign Out"
-          cancelLabel="Stay Signed In"
+          confirmLabel="Sign out"
+          cancelLabel="Stay signed in"
           variant="destructive"
           onConfirm={() => {
             setConfirmSignOut(false);

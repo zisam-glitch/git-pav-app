@@ -214,7 +214,7 @@ export function MedicalHistoryForm({
                   {cond}
                 </ThemedText>
                 <ThemedText variant="headline" style={active ? undefined : styles.checkInactive}>
-                  {active ? "☑️" : "⬜"}
+                  {active ? "✓" : "○"}
                 </ThemedText>
               </Pressable>
             );

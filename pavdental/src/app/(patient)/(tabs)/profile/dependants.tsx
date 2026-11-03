@@ -235,7 +235,7 @@ export default function DependantsScreen() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
-            <ThemedText variant="headline">{editing ? "Edit Child Profile" : "Add Child Profile"}</ThemedText>
+            <ThemedText variant="headline">{editing ? "Edit child profile" : "Add child profile"}</ThemedText>
             <Button
               title="Close"
               variant="ghost"
@@ -429,19 +429,18 @@ const styles = StyleSheet.create({
   },
   relPill: {
     backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
   },
   relPillActive: {
-    backgroundColor: colors.inkSubtle,
-    borderColor: colors.accent,
+    backgroundColor: colors.accent,
   },
   relPillText: {
     color: colors.secondaryLabel,
   },
   relPillTextActive: {
-    color: colors.ink,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   relPills: {

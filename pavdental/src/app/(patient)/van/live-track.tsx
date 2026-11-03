@@ -598,7 +598,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontWeight: "600",
     letterSpacing: 0.3,
-    textTransform: "uppercase",
   },
   topFloat: {
     left: spacing.md,

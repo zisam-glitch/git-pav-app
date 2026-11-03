@@ -1,53 +1,60 @@
-// ─── Semantic palette — matched to the iOS reference (neo-financial-ios/) ─────
+// ─── Semantic palette — Wise iOS baseline (docs/redesign/reference-map.md) ────
 // Static LIGHT values (app is light-only — see app.json userInterfaceStyle).
-// Hierarchy comes from fill colour, not borders or shadows: a cool grey canvas,
-// flat white cards, and a slightly darker grey fill for inputs, icon tiles and
-// secondary buttons. Colour is reserved for status. Never hardcode hexes in screens.
+// A white canvas, warm neutral surfaces for cards and fills, forest-green ink
+// for icons, links and dark surfaces, and Wise's bright green only for the
+// primary action and selected controls. Colour beyond that is for status.
+// Never hardcode hexes in screens.
 //
-// Values are sampled from the reference screenshots. Where a sampled value
-// failed WCAG AA for text (secondary grey, link blue, success green) it is
-// darkened just enough to pass on both the canvas and white.
+// Every text colour passes WCAG AA (4.5:1) on both the canvas and the card
+// surface; src/__tests__/accessibility.test.ts checks this.
 export const colors = {
-  // Core ink — pure black, as in the reference (21:1 on white)
-  ink: "#000000",
-  inkSoft: "#2B2F33", // pressed ink, dark secondary surfaces
+  // Core ink — Wise "forest green": icons, links, dark surfaces, selected chips
+  ink: "#163300", // 13.9:1 on white
+  inkSoft: "#0E2400", // pressed ink
   onInk: "#FFFFFF",
-  inkSubtle: "#E7E8E9", // grey fill — chips, secondary buttons, icon tiles
+  inkSubtle: "#E8EBE6", // neutral fill — secondary buttons, chips, icon buttons
+
+  // Brand accent — Wise "bright green": primary buttons and selected controls only
+  accent: "#9FE870",
+  accentPressed: "#80E142",
+  onAccent: "#163300", // 9.3:1 on accent
+  accentSubtle: "#E2F6D5", // light green pills ("Add money", "Request")
 
   // Text
-  label: "#000000",
-  secondaryLabel: "#5E6B73", // blue-grey; 4.9:1 on canvas, 5.5:1 on white
-  tertiaryLabel: "#8A949A", // placeholders, disabled, inactive tab icons
+  label: "#0E0F0C",
+  secondaryLabel: "#454745", // 9.4:1 on white
+  tertiaryLabel: "#5F615F", // placeholders, disabled, inactive tab icons (AA on fills too)
 
   // Surfaces
-  background: "#F1F3F3", // screen canvas
-  systemBackground: "#FFFFFF", // cards, grouped rows, sheets
-  secondaryBackground: "#F1F3F3", // subtle fill on white cards (== canvas)
-  tertiaryBackground: "#E7E8E9", // fill on the canvas: inputs, icon buttons
-  tabBar: "#F4F5F5",
+  background: "#FFFFFF", // screen canvas
+  systemBackground: "#F2F4EF", // cards and grouped surfaces on the canvas
+  secondaryBackground: "#FFFFFF", // subtle fill on a card
+  tertiaryBackground: "#FFFFFF", // text fields
+  sheet: "#FFFFFF", // bottom sheets and modals
+  tabBar: "#FFFFFF",
 
   // Lines
-  separator: "#E7E8E9", // row dividers, inset to the text column
-  inputUnderline: "#818C94", // 2pt underline on filled text fields
+  separator: "#E2E4DF", // row dividers, card borders
+  inputUnderline: "#868685", // text field border (3.6:1, enough for a control outline)
 
-  // Status semantics (the only saturated colours in the app)
-  success: "#0C7F5C", // text-safe green
-  successFill: "#1BA47C", // switches, strength bars, check circles
-  successSubtle: "#DDF3EA",
-  warning: "#8A6100",
-  warningFill: "#E8A317",
-  warningSubtle: "#FDF1D6",
-  danger: "#B42318",
-  dangerSubtle: "#FDE6E4",
-  info: "#0062E6", // links and info accents
-  infoSubtle: "#E2EDFD",
+  // Status semantics
+  success: "#2F5711", // text-safe green
+  successFill: "#2F5711", // switches, check circles
+  successSubtle: "#E2F6D5",
+  warning: "#5C4A00",
+  warningFill: "#EDC843",
+  warningSubtle: "#FBF2CF",
+  danger: "#A8200D",
+  dangerSubtle: "#FBE7E3",
+  info: "#163300", // links are forest green and underlined, as in Wise
+  infoSubtle: "#E2F6D5",
 
   // Toast / snackbar
-  toast: "#1C1D1F",
+  toast: "#0E0F0C",
 
   // Always-fixed values (do not adapt to theme)
   onTint: "#FFFFFF",
   alwaysBlack: "#000000",
   alwaysWhite: "#FFFFFF",
-  scrim: "rgba(0, 0, 0, 0.4)",
+  scrim: "rgba(14, 15, 12, 0.4)",
 } as const;

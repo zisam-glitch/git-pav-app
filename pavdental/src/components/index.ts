@@ -9,6 +9,7 @@ export { ChipPill } from "./chip-pill";
 export { SectionHeader } from "./section-header";
 export { Toast } from "./toast";
 export { ConfirmSheet } from "./confirm-sheet";
+export { Sheet } from "./sheet";
 export { ProgressPills } from "./progress-pills";
 export { Button } from "./button";
 export { Input } from "./input";

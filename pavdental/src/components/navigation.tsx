@@ -4,8 +4,8 @@ import { colors, type } from "@/theme";
 import { IconButton } from "./icon-button";
 
 // ─── Navigation chrome shared by every stack ──────────────────────────────────
-// Reference nav bar: grey canvas, no hairline, centred 17pt semibold title,
-// square grey back button on the left.
+// Wise nav bar: white canvas, no hairline, centred 16pt semibold title,
+// round grey back button on the left.
 
 /** React Navigation theme — makes every screen and header sit on the canvas. */
 export const navTheme: Theme = {
@@ -21,7 +21,7 @@ export const navTheme: Theme = {
   },
 };
 
-/** Square grey back button used in place of the platform chevron. */
+/** Round grey back button used in place of the platform chevron. */
 export function HeaderBackButton({ onPress }: { onPress?: () => void }) {
   return (
     <IconButton

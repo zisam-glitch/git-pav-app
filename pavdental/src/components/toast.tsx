@@ -16,7 +16,7 @@ import { AppIcon, type AppIconName } from "./app-icon";
 type ToastTone = "success" | "error" | "info";
 
 const toneMap: Record<ToastTone, { icon: AppIconName; color: string }> = {
-  success: { icon: "checkCircle", color: colors.successFill },
+  success: { icon: "checkCircle", color: colors.accent },
   error: { icon: "alert", color: colors.dangerSubtle },
   info: { icon: "info", color: colors.onInk },
 };

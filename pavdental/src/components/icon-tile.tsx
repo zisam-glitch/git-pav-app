@@ -4,7 +4,7 @@ import { AppIcon, type AppIconName } from "./app-icon";
 
 interface IconTileProps {
   icon: AppIconName;
-  /** Tile fill — grey on white cards (default), white on the canvas, or black */
+  /** Outlined white circle (Wise default), neutral fill, or forest green */
   tone?: "fill" | "surface" | "ink";
   size?: number;
   iconColor?: string;
@@ -12,14 +12,14 @@ interface IconTileProps {
 }
 
 const toneMap = {
-  fill: { bg: colors.inkSubtle, fg: colors.ink },
-  surface: { bg: colors.systemBackground, fg: colors.ink },
-  ink: { bg: colors.ink, fg: colors.onInk },
+  fill: { bg: colors.background, fg: colors.label, border: colors.separator },
+  surface: { bg: colors.inkSubtle, fg: colors.label, border: "transparent" },
+  ink: { bg: colors.ink, fg: colors.onInk, border: "transparent" },
 } as const;
 
 /**
- * IconTile — the 40pt rounded-square icon that leads reference rows
- * ("From · Chequing", "Amount · $2.00"). Decorative: hidden from screen readers.
+ * IconTile — the 48pt round outlined icon that leads Wise list rows
+ * ("Security and privacy", "Notifications"). Decorative: hidden from screen readers.
  */
 export function IconTile({ icon, tone = "fill", size = sizes.iconTile, iconColor, style }: IconTileProps) {
   const t = toneMap[tone];
@@ -27,7 +27,7 @@ export function IconTile({ icon, tone = "fill", size = sizes.iconTile, iconColor
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={[styles.tile, { width: size, height: size, backgroundColor: t.bg }, style]}
+      style={[styles.tile, { width: size, height: size, backgroundColor: t.bg, borderColor: t.border }, style]}
     >
       <AppIcon name={icon} size={Math.round(size / 2)} color={iconColor ?? t.fg} />
     </View>
@@ -37,8 +37,8 @@ export function IconTile({ icon, tone = "fill", size = sizes.iconTile, iconColor
 const styles = StyleSheet.create({
   tile: {
     alignItems: "center",
-    borderRadius: radius.md,
-    borderCurve: "continuous",
+    borderRadius: radius.full,
+    borderWidth: 1,
     justifyContent: "center",
   },
 });

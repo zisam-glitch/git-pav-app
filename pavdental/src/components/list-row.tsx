@@ -30,8 +30,9 @@ interface ListRowProps {
 }
 
 /**
- * ListRow — the standard list item primitive: 64pt row, 20pt side padding,
- * 17pt title, 14pt grey subtitle, divider inset to the text column.
+ * ListRow — the standard list item primitive (Wise settings rows): 72pt row,
+ * semibold 16pt title, 14pt grey subtitle, chevron, no fill of its own so it
+ * sits on the canvas or a card. Divider inset to the text column.
  * Pass left/right slots for icons, badges, or interactive controls.
  * Do not add more content props — compose with slots instead.
  */
@@ -52,7 +53,7 @@ export function ListRow({
       {left ? <View style={styles.leftSlot}>{left}</View> : null}
 
       <View style={styles.content}>
-        <ThemedText variant="body" style={styles.titleText}>{title}</ThemedText>
+        <ThemedText variant="headline" style={styles.titleText}>{title}</ThemedText>
         {subtitle ? (
           <ThemedText variant="footnote" style={styles.subtitleText}>{subtitle}</ThemedText>
         ) : null}
@@ -60,7 +61,7 @@ export function ListRow({
 
       {right ? <View style={styles.rightSlot}>{right}</View> : null}
       {chevron ? (
-        <AppIcon name="chevronRight" size={20} color={colors.secondaryLabel} style={styles.chevron} />
+        <AppIcon name="chevronRight" size={20} color={colors.label} style={styles.chevron} />
       ) : null}
 
       {separator ? <View style={styles.separator} /> : null}
@@ -105,7 +106,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.sm,
-    backgroundColor: colors.systemBackground,
   },
   titleText: {
     color: colors.label,

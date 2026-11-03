@@ -1,10 +1,17 @@
-# Reference map (Phase 1, draft)
+# Reference map
 
-**Status: draft, Mobbin links missing.** The Mobbin MCP isn't connected in this session, and the
-browser isn't signed in to Mobbin: the Wise screens page returned "403 Forbidden". Each row
-names the reference screen by its Wise (or fallback app) flow and screen type. The Mobbin link
-column gets filled in, and the choice checked against the real screens, once Mobbin is
-reachable.
+Mobbin is connected. The design system (Phase 2) is taken from these Wise iOS screens:
+
+| Pattern | Wise screen on Mobbin |
+|---|---|
+| Home: greeting, balance cards, pill actions, activity list, tab bar | [home](https://mobbin.com/screens/f1c8f9a2-3a9c-48ff-8e2c-51c0d8b03850), [home, new account](https://mobbin.com/screens/5a3cbf3c-62a8-4624-9a67-38df83c62350), [welcome](https://mobbin.com/screens/c9392ea7-3dc3-408a-84d2-df4804883fb8) |
+| Detail with big number and round action buttons | [balance detail](https://mobbin.com/screens/44daafcf-9304-46ce-8110-9323e4f5252b), [total cash](https://mobbin.com/screens/a107df4b-a161-4b7e-96f4-95d1e26164d0) |
+| Forms: large title, bold label, bordered input, green pill button | [log in](https://mobbin.com/screens/c4d7f38e-4e0d-4367-a3de-6d8a5d80b326), [enter email](https://mobbin.com/screens/19c4d96d-61c1-4a7e-8c2b-7137c994c611), [change email (disabled button)](https://mobbin.com/screens/34aaa76e-c81c-4464-9436-ef2fe3b8df46) |
+| Settings lists: round outlined icon, title, subtitle, chevron | [settings](https://mobbin.com/screens/98a8775d-f61c-4a12-85d4-94c12fd21ad5), [security and privacy](https://mobbin.com/screens/7ff1c601-1814-4eb0-85c2-8029227abfad), [actions](https://mobbin.com/screens/bb143978-42f4-4201-b3bd-7350e6ccca67), [2-step verification](https://mobbin.com/screens/3d71fcf6-8f14-4f88-a112-ac3aa42b44de) |
+| Review before paying: label/value rows, "Change" links, sticky button | [confirm and send](https://mobbin.com/screens/676d6d79-fb58-4dff-a517-af056631e589), [confirm (compact)](https://mobbin.com/screens/5c0b1302-b27a-4d93-8e15-45538f98eae2) |
+| Bottom sheets: close button, title, option rows | [payment options](https://mobbin.com/screens/7cd04b9c-b800-48f9-a361-f7fd163c4eea), [choose a balance](https://mobbin.com/screens/6db6c3b8-e7b7-4a81-b6fd-0375db3a5676), [select an option](https://mobbin.com/screens/b78dcbf3-4a1b-4ea0-b1f9-1558f5ed1ac5) |
+
+Per-screen links for non-Wise references (Uber, Uber Reserve, Revolut) get added as each flow is rebuilt in Phase 3.
 
 Rule for every row: borrowed layouts (Uber, Airbnb, Revolut…) are rebuilt with the Wise tokens and
 components from Phase 2. Uber gives the structure of the van flow; it should still look like Wise.

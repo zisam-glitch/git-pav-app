@@ -18,11 +18,16 @@ import { getMobilePortalPath } from "@/features/auth/auth-routing";
 
 export default function WelcomeScreen() {
   // Light status bar on the forest-green launch screen, only while it's in
-  // front: this screen stays mounted under sign-in and sign-up.
+  // front: this screen stays mounted under sign-in and sign-up. Deferred a
+  // tick: on a cold start the root layout's dark StatusBar mounts after this
+  // screen and would otherwise win.
   useFocusEffect(
     useCallback(() => {
-      setStatusBarStyle("light");
-      return () => setStatusBarStyle("dark");
+      const t = setTimeout(() => setStatusBarStyle("light"), 0);
+      return () => {
+        clearTimeout(t);
+        setStatusBarStyle("dark");
+      };
     }, [])
   );
 

@@ -20,7 +20,7 @@ export default function AccessDeniedScreen() {
       <ThemedText variant="body" style={styles.body}>
         Please use the Pav Dental web dashboard. Patient, clinician, and van operator accounts have dedicated mobile access.
       </ThemedText>
-      <Button title="Sign out" variant="secondary" onPress={handleSignOut} />
+      <Button title="Sign out" onPress={handleSignOut} />
     </View>
   );
 }

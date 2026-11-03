@@ -80,7 +80,7 @@ export default function OtpScreen() {
 
           <View style={styles.header}>
             <ThemedText variant="largeTitle" style={styles.title}>
-              {step === "phone" ? "Phone Sign In" : "Verification"}
+              {step === "phone" ? "Phone sign in" : "Verification"}
             </ThemedText>
             <ThemedText variant="subhead" style={styles.subtitle}>
               {step === "phone"

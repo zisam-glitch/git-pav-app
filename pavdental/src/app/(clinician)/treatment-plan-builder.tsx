@@ -146,7 +146,7 @@ export default function TreatmentPlanBuilderScreen() {
             {/* Plan Title */}
             <Card style={styles.card}>
               <ThemedText variant="caption" style={styles.label}>
-                PLAN TITLE:
+                Plan title
               </ThemedText>
               <TextInput
                 style={styles.textInput}

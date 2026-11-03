@@ -8,7 +8,18 @@ import { ToothRecord, ToothCondition } from "@/features/records/records-types";
 import { useOdontogram } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { toLabel } from "@/lib/text";
+import { isUpperArch } from "@/features/records/arch";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+// Only decay is a warning; a missing tooth is a neutral fact, not a success.
+const CONDITION_BADGE = {
+  healthy: "success",
+  decay: "danger",
+  filling: "info",
+  crown: "info",
+  missing: "default",
+  unrecorded: "default",
+} as const;
 
 const STANDARD_TEETH: ToothRecord[] = Array.from({ length: 32 }, (_, idx) => {
   const num = idx + 1;
@@ -148,8 +159,8 @@ export default function OdontogramScreen() {
   }, [params.toothModal, params.tooth]);
 
   // Filter 32 teeth into Maxillary (Upper) and Mandibular (Lower)
-  const upperTeeth = teeth.filter((t) => t.quadrant.includes("U"));
-  const lowerTeeth = teeth.filter((t) => t.quadrant.includes("L"));
+  const upperTeeth = teeth.filter((t) => isUpperArch(t.quadrant, t.toothNumber));
+  const lowerTeeth = teeth.filter((t) => !isUpperArch(t.quadrant, t.toothNumber));
 
   const selectedTooth = teeth.find((t) => t.toothNumber === selectedToothNumber) || teeth[0];
   const anatomy = getToothAnatomy(selectedTooth.toothNumber);
@@ -279,7 +290,7 @@ export default function OdontogramScreen() {
               <View style={styles.selectedDetailRight}>
                 <Badge
                   label={toLabel(selectedLabel)}
-                  variant={!selectedTooth.recorded ? "info" : selectedCondition === "decay" ? "danger" : "success"}
+                  variant={CONDITION_BADGE[selectedTooth.recorded ? selectedCondition : "unrecorded"]}
                 />
                 <AppIcon name="chevronRight" size={16} color={colors.secondaryLabel} />
               </View>
@@ -331,7 +342,7 @@ export default function OdontogramScreen() {
                 <View style={styles.diagnosticRow}>
                   <View style={styles.statusGroup}>
                     <ThemedText variant="caption" style={styles.cardSectionLabel}>
-                      RECORDED CONDITION
+                      Recorded condition
                     </ThemedText>
                     <ThemedText variant="headline" style={styles.statusHeading}>
                       {selectedLabel}
@@ -343,7 +354,7 @@ export default function OdontogramScreen() {
               {recordedSurfaces.length > 0 ? (
                 <View style={styles.surfaceSection}>
                   <ThemedText variant="caption" style={styles.sectionHeader}>
-                    SURFACES
+                    Surfaces
                   </ThemedText>
                   <View style={styles.surfaceGrid}>
                     {recordedSurfaces.map(([surface, condition]) => {
@@ -420,7 +431,7 @@ const styles = StyleSheet.create({
   backBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
@@ -449,31 +460,31 @@ const styles = StyleSheet.create({
   },
   gumRidgeLower: {
     alignItems: "center",
-    backgroundColor: "#FCE7F3",
-    borderColor: "#F472B6",
+    backgroundColor: colors.dangerSubtle,
+    borderColor: colors.separator,
     borderRadius: radius.lg,
     borderWidth: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 4,
+    gap: 2,
     justifyContent: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 6,
-    width: "95%",
+    width: "100%",
   },
   gumRidgeUpper: {
     alignItems: "center",
-    backgroundColor: "#FCE7F3",
-    borderColor: "#F472B6",
+    backgroundColor: colors.dangerSubtle,
+    borderColor: colors.separator,
     borderRadius: radius.lg,
     borderWidth: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 4,
+    gap: 2,
     justifyContent: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 6,
-    width: "95%",
+    width: "100%",
   },
   header: {
     alignItems: "center",
@@ -523,7 +534,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     height: 24,
     justifyContent: "center",
-    width: 16,
+    width: 15,
   },
   toothDecay: {
     backgroundColor: colors.dangerSubtle,
@@ -543,7 +554,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheetContainer: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     gap: spacing.sm,
@@ -578,7 +589,7 @@ const styles = StyleSheet.create({
   closeBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,

@@ -146,7 +146,7 @@ export default function DependantsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.headerBox}>
         <ThemedText variant="subhead" style={styles.headerSub}>
-          FAMILY & DEPENDANT ACCOUNTS
+          Family & dependant accounts
         </ThemedText>
         <ThemedText variant="caption" style={styles.headerDesc}>
           Manage linked dental appointments and pediatric records for children under 16 where you hold legal parental responsibility.
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   relPillActive: {
     backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    borderColor: colors.accent,
   },
   relPillText: {
     color: colors.secondaryLabel,

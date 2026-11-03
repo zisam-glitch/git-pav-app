@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { ThemedText, Input, Button, ProgressPills, IconButton } from "@/components";
+import { ThemedText, Input, Button, FlowHeader } from "@/components";
 import { colors, spacing } from "@/theme";
 import { useOnboardingStore } from "@/features/onboarding/onboarding-store";
 
@@ -42,17 +42,7 @@ export default function OnboardingAddressScreen() {
         style={styles.flex}
       >
         <View style={styles.topNav}>
-          <IconButton
-            icon="arrowLeft"
-            label="Go back"
-            variant="soft"
-            size={22}
-            onPress={() => router.back()}
-          />
-          <View style={styles.progressWrap}>
-            <ProgressPills total={4} current={2} />
-          </View>
-          <View style={styles.navSpacer} />
+          <FlowHeader step={{ current: 2, total: 4 }} insetHandled />
         </View>
 
         <ScrollView
@@ -142,13 +132,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
     marginTop: spacing.xs,
   },
-  navSpacer: {
-    width: 44,
-  },
-  progressWrap: {
-    alignItems: "center",
-    flex: 1,
-  },
   safe: {
     backgroundColor: colors.background,
     flex: 1,
@@ -172,9 +155,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
   topNav: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
     paddingHorizontal: spacing.gutter,
     paddingTop: spacing.xs,
     paddingBottom: spacing.xs,

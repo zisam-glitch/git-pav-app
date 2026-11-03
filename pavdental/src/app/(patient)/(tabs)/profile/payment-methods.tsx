@@ -153,7 +153,7 @@ export default function PaymentMethodsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.headerBox}>
         <ThemedText variant="subhead" style={styles.headerSub}>
-          SAVED PAYMENT METHODS
+          Saved payment methods
         </ThemedText>
         <ThemedText variant="caption" style={styles.headerDesc}>
           Your saved cards appear when you pay a deposit, so you can pick one instead of typing it in. You can also tick "save card" while paying. Payments are handled by Stripe.

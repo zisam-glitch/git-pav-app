@@ -312,11 +312,13 @@ const styles = StyleSheet.create({
   },
   rowIcon: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   section: {
     gap: spacing.xs,
@@ -340,9 +342,10 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   summaryIcon: {
+    // Sits on the forest-green card, so it is a lighter green disc, not white.
     alignItems: "center",
-    backgroundColor: colors.inkSoft,
-    borderRadius: radius.lg,
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
+    borderRadius: radius.full,
     height: 44,
     justifyContent: "center",
     width: 44,
@@ -372,10 +375,12 @@ const styles = StyleSheet.create({
   initialCareIcon: {
     width: 32,
     height: 32,
-    borderRadius: radius.md,
+    borderRadius: radius.full,
     backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   initialCareText: {
     flex: 1,

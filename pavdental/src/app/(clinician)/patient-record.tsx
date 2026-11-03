@@ -235,7 +235,7 @@ export default function ClinicianPatientRecordScreen() {
                   {notes.diagnosis ? (
                     <View style={styles.diagRow}>
                       <ThemedText variant="caption" style={styles.metaLabel}>
-                        DIAGNOSIS:
+                        Diagnosis
                       </ThemedText>
                       <ThemedText variant="body" style={styles.diagVal}>
                         {notes.diagnosis}

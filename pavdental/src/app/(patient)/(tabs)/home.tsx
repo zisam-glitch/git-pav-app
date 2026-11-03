@@ -261,7 +261,7 @@ export default function PatientHomeScreen() {
               <AppIcon
                 name={cat.icon}
                 size={14}
-                color={isActive ? colors.alwaysWhite : colors.ink}
+                color={isActive ? colors.onAccent : colors.ink}
               />
               <ThemedText
                 variant="subhead"
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   categoryPillActive: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   categoryPillInactive: {
     backgroundColor: colors.systemBackground,
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   categoryTextActive: {
-    color: colors.alwaysWhite,
+    color: colors.onAccent,
   },
   categoryTextInactive: {
     color: colors.label,
@@ -588,11 +588,13 @@ const styles = StyleSheet.create({
   },
   quickIconWrap: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 38,
     justifyContent: "center",
     width: 38,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   quickSub: {
     color: colors.secondaryLabel,

@@ -16,17 +16,17 @@ interface ProgressPillsProps {
 
 /**
  * ProgressPills — segmented step indicator for onboarding flows
- * (reference pattern: thin progress bars at top of onboarding screens).
+ * (Wise pattern: thin bars at the top of multi-step flows).
  */
 export function ProgressPills({ total, current }: ProgressPillsProps) {
-  const progress = useSharedValue(current / total);
-
+  // The current step's segment fills as you arrive on it; earlier ones are full.
+  const fill = useSharedValue(0);
   useEffect(() => {
-    progress.value = withTiming(current / total, { duration: motion.base });
-  }, [current, total, progress]);
-
+    fill.value = 0;
+    fill.value = withTiming(1, { duration: motion.base });
+  }, [current, fill]);
   const barStyle = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`,
+    width: `${fill.value * 100}%`,
   }));
 
   return (

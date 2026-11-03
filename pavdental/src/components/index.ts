@@ -11,6 +11,8 @@ export { Toast } from "./toast";
 export { ConfirmSheet } from "./confirm-sheet";
 export { Sheet } from "./sheet";
 export { ProgressPills } from "./progress-pills";
+export { FlowHeader } from "./flow-header";
+export { DetailRow } from "./detail-row";
 export { Button } from "./button";
 export { Input } from "./input";
 export { Card } from "./card";

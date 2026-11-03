@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
-import { ThemedText, Card, AppIcon, EmptyState, ErrorState, Skeleton, ProgressPills, IconButton } from "@/components";
+import { ThemedText, Card, AppIcon, EmptyState, ErrorState, Skeleton, FlowHeader } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useClinics } from "@/features/hooks/use-dental-api";
 import { useBookingStore } from "@/features/booking/booking-store";
@@ -23,16 +23,7 @@ export default function ClinicPickerScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.topNav}>
-        <IconButton
-          icon="arrowLeft"
-          label="Go back"
-          variant="soft"
-          size={22}
-          onPress={() => router.back()}
-        />
-        <View style={styles.progressWrap}>
-          <ProgressPills total={5} current={2} />
-        </View>
+        <FlowHeader step={{ current: 2, total: 5 }} />
       </View>
 
       <View style={styles.header}>
@@ -140,11 +131,13 @@ const styles = StyleSheet.create({
   },
   iconBox: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 44,
     justifyContent: "center",
     width: 44,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   info: {
     flex: 1,
@@ -154,10 +147,6 @@ const styles = StyleSheet.create({
     color: colors.label,
     fontWeight: "600",
   },
-  progressWrap: {
-    flex: 1,
-    marginLeft: spacing.md,
-  },
   sub: {
     color: colors.secondaryLabel,
   },
@@ -166,8 +155,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   topNav: {
-    alignItems: "center",
-    flexDirection: "row",
     marginBottom: spacing.xs,
   },
 });

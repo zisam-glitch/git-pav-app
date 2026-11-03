@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,
     gap: spacing.sm,
@@ -404,15 +404,15 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   recipientOptionActive: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   recipientText: {
     color: colors.secondaryLabel,
     fontWeight: "500",
   },
   recipientTextActive: {
-    color: colors.onInk,
+    color: colors.onAccent,
     fontWeight: "600",
   },
   modalActions: {

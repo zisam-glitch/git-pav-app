@@ -99,11 +99,11 @@ export default function WelcomeScreen() {
         {/* Bottom Container: Either the Hero Swipe to Start, or the Email Sheet */}
         {!showEmailSheet ? (
           <View style={[styles.bottomContent, { paddingBottom: Math.max(spacing.lg, insets.bottom) }]}>
-            <Button title="Log in" variant="inverse" onPress={handleStart} />
+            <Button title="Log in" variant="primary" onPress={handleStart} />
             <Button
               title="Create an account"
+              variant="inverse"
               onPress={() => router.push("/(auth)/sign-up" as never)}
-              style={styles.createBtn}
             />
           </View>
         ) : (
@@ -208,12 +208,10 @@ const styles = StyleSheet.create({
     fontSize: 40,
     lineHeight: 46,
   },
+  // Wise launch screen: forest green
   container: {
-    backgroundColor: colors.alwaysBlack,
+    backgroundColor: colors.ink,
     flex: 1,
-  },
-  createBtn: {
-    backgroundColor: colors.inkSoft,
   },
   continueBtn: {
     marginTop: spacing.md,

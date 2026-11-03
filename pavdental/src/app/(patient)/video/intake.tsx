@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   durationItemActive: {
     backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    borderColor: colors.accent,
   },
   durationList: {
     flexDirection: "row",
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   painPillSelected: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   painRow: {
     flexDirection: "row",
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   painTextSelected: {
-    color: colors.onInk,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   section: {

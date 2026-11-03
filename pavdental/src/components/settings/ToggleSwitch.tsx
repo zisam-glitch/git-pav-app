@@ -85,8 +85,10 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    borderColor: colors.separator,
+    borderRadius: radius.full,
+    borderWidth: 1,
     height: sizes.iconTile,
     justifyContent: "center",
     width: sizes.iconTile,

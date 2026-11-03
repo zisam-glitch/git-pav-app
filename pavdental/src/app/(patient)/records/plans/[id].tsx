@@ -412,7 +412,7 @@ export default function TreatmentPlanDetailScreen() {
 
             {/* Header */}
             <View style={styles.sheetHeader}>
-              <View>
+              <View style={styles.sheetHeaderText}>
                 <ThemedText variant="headline" style={styles.sheetTitle}>
                   Confirm you have read this plan
                 </ThemedText>
@@ -483,7 +483,7 @@ export default function TreatmentPlanDetailScreen() {
                 <View style={styles.consentHeader}>
                   <AppIcon name="shieldCheck" size={16} color={colors.ink} />
                   <ThemedText variant="caption" style={styles.consentHeaderText}>
-                    WHAT THIS MEANS
+                    What this means
                   </ThemedText>
                 </View>
                 <ThemedText variant="caption" style={styles.consentBody}>
@@ -752,9 +752,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheetContainer: {
-    backgroundColor: colors.systemBackground,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    backgroundColor: colors.sheet,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
     gap: spacing.sm,
     maxHeight: "88%",
     paddingBottom: 28,
@@ -772,7 +772,11 @@ const styles = StyleSheet.create({
   sheetHeader: {
     alignItems: "center",
     flexDirection: "row",
+    gap: spacing.md,
     justifyContent: "space-between",
+  },
+  sheetHeaderText: {
+    flex: 1,
   },
   sheetTitle: {
     color: colors.label,
@@ -786,7 +790,7 @@ const styles = StyleSheet.create({
   closeBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
@@ -801,11 +805,15 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
   },
   summaryTopRow: {
-    alignItems: "center",
+    alignItems: "flex-start",
     flexDirection: "row",
+    gap: spacing.md,
     justifyContent: "space-between",
   },
   summaryTitle: {
+    // Takes the space left by the price, so a long plan name wraps instead
+    // of pushing the total off the sheet.
+    flex: 1,
     color: colors.label,
     fontSize: 14,
     fontWeight: "600",

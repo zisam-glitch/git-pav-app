@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   markTile: {
     alignItems: "center",
     backgroundColor: colors.ink,
-    borderRadius: radius.xl,
+    borderRadius: radius.full,
     height: 64,
     justifyContent: "center",
     marginBottom: spacing.xs,

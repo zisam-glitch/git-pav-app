@@ -238,7 +238,7 @@ export default function OdontogramEditorScreen() {
             {/* Tooth Grid */}
             <Card style={styles.chartCard}>
               <ThemedText variant="caption" style={styles.archLabel}>
-                MAXILLARY ARCH (UPPER JAW: 1 - 16)
+                Maxillary arch (upper jaw: 1 - 16)
               </ThemedText>
               <View style={styles.teethRow}>
                 {Array.from({ length: 16 }, (_, i) => i + 1).map((num) => {
@@ -265,7 +265,7 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={[styles.archLabel, { marginTop: spacing.md }]}>
-                MANDIBULAR ARCH (LOWER JAW: 17 - 32)
+                Mandibular arch (lower jaw: 17 - 32)
               </ThemedText>
               <View style={styles.teethRow}>
                 {Array.from({ length: 16 }, (_, i) => i + 17).map((num) => {
@@ -311,7 +311,7 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={styles.label}>
-                CONDITION:
+                Condition
               </ThemedText>
               <View style={styles.conditionRow}>
                 {TOOTH_CONDITIONS.map((cond) => {
@@ -334,7 +334,7 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={[styles.label, { marginTop: spacing.sm }]}>
-                CLINICAL NOTES:
+                Clinical notes
               </ThemedText>
               <TextInput
                 style={styles.textInput}
@@ -386,8 +386,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   condChipActive: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   condChipText: {
     color: colors.label,

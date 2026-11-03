@@ -165,7 +165,7 @@ export default function AppointmentNotesScreen() {
             />
 
             <ThemedText variant="caption" style={[styles.label, { marginTop: spacing.sm }]}>
-              DIAGNOSIS (OPTIONAL)
+              Diagnosis (optional)
             </ThemedText>
             <TextInput
               style={styles.textInput}
@@ -176,7 +176,7 @@ export default function AppointmentNotesScreen() {
             />
 
             <ThemedText variant="caption" style={[styles.label, { marginTop: spacing.sm }]}>
-              TREATMENT PLAN & RECALL (OPTIONAL)
+              Treatment plan & recall (optional)
             </ThemedText>
             <TextInput
               style={[styles.textInput, { minHeight: 80 }]}

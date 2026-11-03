@@ -353,11 +353,13 @@ const styles = StyleSheet.create({
   },
   rowIcon: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   rowIconDanger: {
     backgroundColor: colors.dangerSubtle,

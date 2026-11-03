@@ -75,7 +75,7 @@ export function PersonalInfoForm({
       {email ? (
         <View style={styles.section}>
           <ThemedText variant="subhead" style={styles.sectionTitle}>
-            ACCOUNT LOGIN EMAIL
+            Account login email
           </ThemedText>
           <View style={styles.readOnlyCard}>
             <View style={styles.emailRow}>
@@ -95,7 +95,7 @@ export function PersonalInfoForm({
       {/* Personal Details */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          PATIENT IDENTITY
+          Patient identity
         </ThemedText>
 
         <Input
@@ -162,7 +162,7 @@ export function PersonalInfoForm({
       {/* Residential Address */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          RESIDENTIAL ADDRESS (UK)
+          Residential address (UK)
         </ThemedText>
 
         <Input
@@ -206,7 +206,7 @@ export function PersonalInfoForm({
       {/* Contact Info */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          DIRECT CONTACT
+          Direct contact
         </ThemedText>
 
         <Input
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   genderPillActive: {
     backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    borderColor: colors.accent,
   },
   genderPillText: {
     color: colors.secondaryLabel,

@@ -14,6 +14,7 @@ import {
   EmptyState,
   IconButton,
 } from "@/components";
+import { appointmentClinician, appointmentLocation } from "@/features/booking/appointment-labels";
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
@@ -93,8 +94,8 @@ export default function AppointmentDetailScreen() {
     month: "long",
   });
   const timeLine = start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  const locationName = booking.clinic?.name || booking.van?.name || "Video Consultation";
-  const clinicianName = booking.clinician?.fullName || "Assigned Practitioner";
+  const locationName = appointmentLocation(booking);
+  const clinicianName = appointmentClinician(booking);
 
   const isPast = start.getTime() < Date.now();
   const isCancelled = booking.status === "cancelled";
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
   },
   checkInCard: {
     alignItems: "center",
-    backgroundColor: colors.alwaysBlack,
+    backgroundColor: colors.ink,
     borderRadius: radius.lg,
     flexDirection: "row",
     gap: spacing.sm,
@@ -347,11 +348,13 @@ const styles = StyleSheet.create({
   },
   detailIconBox: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 32,
     justifyContent: "center",
     width: 32,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   detailLabel: {
     color: colors.secondaryLabel,

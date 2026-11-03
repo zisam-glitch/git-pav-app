@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { ThemedText, Button, ProgressPills, IconButton, AppIcon } from "@/components";
+import { ThemedText, Button, FlowHeader, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { useAuthStore } from "@/features/auth/auth-store";
@@ -107,17 +107,7 @@ export default function OnboardingConsentsScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.topNav}>
-        <IconButton
-          icon="arrowLeft"
-          label="Go back"
-          variant="soft"
-          size={22}
-          onPress={() => router.back()}
-        />
-        <View style={styles.progressWrap}>
-          <ProgressPills total={4} current={4} />
-        </View>
-        <View style={styles.navSpacer} />
+        <FlowHeader step={{ current: 4, total: 4 }} insetHandled />
       </View>
 
       <ScrollView
@@ -301,9 +291,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.5,
   },
-  navSpacer: {
-    width: 44,
-  },
   optionalBadge: {
     backgroundColor: colors.separator,
     borderRadius: radius.full,
@@ -315,10 +302,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
-  },
-  progressWrap: {
-    alignItems: "center",
-    flex: 1,
   },
   safe: {
     backgroundColor: colors.background,
@@ -342,9 +325,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
   topNav: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
     paddingHorizontal: spacing.gutter,
     paddingTop: spacing.xs,
     paddingBottom: spacing.xs,

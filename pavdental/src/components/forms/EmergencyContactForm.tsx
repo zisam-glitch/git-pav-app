@@ -73,7 +73,7 @@ export function EmergencyContactForm({
 
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          CONTACT DETAILS
+          Contact details
         </ThemedText>
 
         <Input
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   },
   pillActive: {
     backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    borderColor: colors.accent,
   },
   pillText: {
     color: colors.secondaryLabel,

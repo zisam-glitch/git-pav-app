@@ -24,7 +24,7 @@ const variants = {
   },
   inverse: {
     backgroundColor: colors.alwaysWhite,
-    color: colors.alwaysBlack,
+    color: colors.ink,
   },
   ghost: {
     backgroundColor: "transparent",

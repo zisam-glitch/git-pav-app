@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     marginVertical: spacing.xs,
   },
   heroCard: {
-    backgroundColor: colors.alwaysBlack,
+    backgroundColor: colors.ink,
     borderCurve: "continuous",
     borderRadius: radius.lg,
     gap: spacing.md,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   },
   modalSheet: {
     alignItems: "center",
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: spacing.xl,
@@ -417,11 +417,13 @@ const styles = StyleSheet.create({
   },
   voucherIconBox: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 32,
     justifyContent: "center",
     width: 32,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   voucherLeft: {
     alignItems: "center",

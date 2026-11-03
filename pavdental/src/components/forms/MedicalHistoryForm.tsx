@@ -111,7 +111,7 @@ export function MedicalHistoryForm({
       {/* Allergies Section */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          ALLERGIES & ADVERSE REACTIONS
+          Allergies & adverse reactions
         </ThemedText>
 
         <ToggleSwitch
@@ -165,7 +165,7 @@ export function MedicalHistoryForm({
       {/* Medications Section */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          CURRENT MEDICATIONS
+          Current medications
         </ThemedText>
 
         <ToggleSwitch
@@ -176,7 +176,7 @@ export function MedicalHistoryForm({
             setIsTakingMeds(val);
             setValue("isTakingMedications", val, { shouldDirty: true });
           }}
-          icon={<ThemedText>💊</ThemedText>}
+          icon={<AppIcon name="pill" size={18} color={colors.label} />}
         />
 
         {isTakingMeds ? (
@@ -196,7 +196,7 @@ export function MedicalHistoryForm({
       {/* Medical Conditions */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          MEDICAL CONDITIONS & CLINICAL RISK
+          Medical conditions & clinical risk
         </ThemedText>
 
         <View style={styles.conditionsList}>
@@ -225,7 +225,7 @@ export function MedicalHistoryForm({
       {/* GP Details */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          REGISTERED GP SURGERY (UK)
+          Registered GP surgery (UK)
         </ThemedText>
 
         <Input
@@ -258,7 +258,7 @@ export function MedicalHistoryForm({
       {/* Clinical Notes */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          ADDITIONAL CLINICAL NOTES
+          Additional clinical notes
         </ThemedText>
 
         <Input

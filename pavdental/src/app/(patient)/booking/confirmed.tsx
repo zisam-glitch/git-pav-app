@@ -246,8 +246,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 36,
     height: 36,
-    borderRadius: radius.md,
-    backgroundColor: colors.inkSubtle,
+    borderRadius: radius.full,
+    backgroundColor: colors.background,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   detailCol: {
     flex: 1,

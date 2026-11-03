@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, EmptyState, ErrorState, Skeleton, ChipPill, ConfirmSheet, Toast, AppIcon } from "@/components";
+import { appointmentClinician, appointmentLocation } from "@/features/booking/appointment-labels";
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
@@ -35,8 +36,8 @@ function BookingCard({
   const day = start.getDate();
   const month = start.toLocaleDateString("en-GB", { month: "short" });
   const time = start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  const locationName = booking.clinic?.name || booking.van?.name || "Video Consultation";
-  const clinicianName = booking.clinician?.fullName || "Assigned Practitioner";
+  const locationName = appointmentLocation(booking);
+  const clinicianName = appointmentClinician(booking);
   const cancelled = booking.status === "cancelled";
 
   return (

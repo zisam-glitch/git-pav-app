@@ -105,7 +105,7 @@ export default function NotificationsScreen() {
       {/* Channels */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          DELIVERY CHANNELS
+          Delivery channels
         </ThemedText>
 
         <ToggleSwitch
@@ -114,7 +114,7 @@ export default function NotificationsScreen() {
           value={pushEnabled}
           onValueChange={isPushAvailable ? handleTogglePush : handleTogglePushStub}
           disabled={!isPushAvailable}
-          icon={<ThemedText>📲</ThemedText>}
+          icon={<AppIcon name="smartphone" size={18} color={colors.label} />}
         />
 
         <ToggleSwitch
@@ -125,7 +125,7 @@ export default function NotificationsScreen() {
             setEmailEnabled(val);
             savePreference({ emailEnabled: val });
           }}
-          icon={<ThemedText>✉️</ThemedText>}
+          icon={<AppIcon name="mail" size={18} color={colors.label} />}
         />
 
         <ToggleSwitch
@@ -136,14 +136,14 @@ export default function NotificationsScreen() {
             setSmsEnabled(val);
             savePreference({ smsEnabled: val });
           }}
-          icon={<ThemedText>💬</ThemedText>}
+          icon={<AppIcon name="message" size={18} color={colors.label} />}
         />
       </View>
 
       {/* Appointment & Clinical Alerts */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          APPOINTMENTS & CLINICAL
+          Appointments & clinical
         </ThemedText>
 
         <ToggleSwitch
@@ -154,7 +154,7 @@ export default function NotificationsScreen() {
             setAppointmentReminders(val);
             savePreference({ appointmentReminders: val });
           }}
-          icon={<ThemedText>⏰</ThemedText>}
+          icon={<AppIcon name="clock" size={18} color={colors.label} />}
         />
 
         <ToggleSwitch
@@ -165,14 +165,14 @@ export default function NotificationsScreen() {
             setAppointmentConfirmations(val);
             savePreference({ appointmentConfirmations: val });
           }}
-          icon={<AppIcon name="activity" size={18} color={colors.ink} />}
+          icon={<AppIcon name="activity" size={18} color={colors.label} />}
         />
       </View>
 
       {/* Preferences & Marketing */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          MARKETING & UPDATES
+          Marketing & updates
         </ThemedText>
 
         <ToggleSwitch
@@ -183,7 +183,7 @@ export default function NotificationsScreen() {
             setMarketingUpdates(val);
             savePreference({ marketingUpdates: val });
           }}
-          icon={<ThemedText>✨</ThemedText>}
+          icon={<AppIcon name="sparkle" size={18} color={colors.label} />}
         />
       </View>
     </ScrollView>

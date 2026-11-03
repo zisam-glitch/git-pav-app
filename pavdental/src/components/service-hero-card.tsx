@@ -113,7 +113,7 @@ export function ServiceHeroCard({
             pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
           ]}
         >
-          <AppIcon name="calendar" size={14} color={colors.alwaysWhite} />
+          <AppIcon name="calendar" size={14} color={colors.onAccent} />
           <ThemedText variant="headline" style={styles.actionText}>
             {actionLabel}
           </ThemedText>
@@ -124,12 +124,11 @@ export function ServiceHeroCard({
 }
 
 const styles = StyleSheet.create({
+  // Wise primary pill on the photo
   actionBtn: {
     alignItems: "center",
-    backgroundColor: "rgba(20, 20, 24, 0.92)",
-    borderColor: "rgba(255, 255, 255, 0.15)",
+    backgroundColor: colors.accent,
     borderRadius: radius.full,
-    borderWidth: 1,
     flex: 1,
     flexDirection: "row",
     gap: spacing.xs,
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.gutter,
   },
   actionText: {
-    color: colors.alwaysWhite,
+    color: colors.onAccent,
     fontSize: 14,
     fontWeight: "600",
   },

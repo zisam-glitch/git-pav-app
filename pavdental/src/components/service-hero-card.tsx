@@ -53,10 +53,11 @@ export function ServiceHeroCard({
         transition={200}
       />
 
-      {/* Subtle top gradient + Strong bottom gradient */}
+      {/* Top shade stays dark through the title (white text over a bright photo
+          needs 3:1); bottom shade under the buttons */}
       <LinearGradient
-        colors={["rgba(0,0,0,0.55)", "transparent", "rgba(0,0,0,0.88)"]}
-        locations={[0, 0.45, 1]}
+        colors={["rgba(0,0,0,0.72)", "rgba(0,0,0,0.5)", "rgba(0,0,0,0.3)", "rgba(0,0,0,0.88)"]}
+        locations={[0, 0.4, 0.6, 1]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -153,7 +154,6 @@ const styles = StyleSheet.create({
     color: colors.alwaysWhite,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   bottomRow: {
     alignItems: "center",

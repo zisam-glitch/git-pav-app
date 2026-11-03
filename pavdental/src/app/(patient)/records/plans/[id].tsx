@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as LocalAuthentication from "expo-local-authentication";
 import { safeHaptics } from "@/lib/haptics";
-import { ThemedText, Card, Badge, Button, AppIcon, ConfirmSheet, Toast, ErrorState } from "@/components";
+import { ThemedText, Card, Badge, Button, AppIcon, ConfirmSheet, Toast, ErrorState, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   useTreatmentPlans,
@@ -501,9 +501,7 @@ export default function TreatmentPlanDetailScreen() {
                   }}
                   style={styles.checkboxRow}
                 >
-                  <View style={[styles.checkboxBox, consentChecked && styles.checkboxBoxChecked]}>
-                    {consentChecked && <AppIcon name="check" size={12} color={colors.alwaysWhite} />}
-                  </View>
+                  <CheckboxMark checked={consentChecked} />
                   <ThemedText variant="caption" style={styles.checkboxLabel}>
                     I have read this treatment plan
                   </ThemedText>
@@ -872,7 +870,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   consentBody: {
     color: colors.label,
@@ -884,19 +881,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     marginTop: 4,
-  },
-  checkboxBox: {
-    alignItems: "center",
-    borderColor: colors.separator,
-    borderRadius: radius.sm,
-    borderWidth: 1.5,
-    height: 20,
-    justifyContent: "center",
-    width: 20,
-  },
-  checkboxBoxChecked: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
   },
   checkboxLabel: {
     color: colors.label,

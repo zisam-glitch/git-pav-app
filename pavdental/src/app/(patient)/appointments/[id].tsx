@@ -8,7 +8,7 @@ import {
   Badge,
   Button,
   AppIcon,
-  ChipPill,
+  DetailRow,
   ConfirmSheet,
   Toast,
   EmptyState,
@@ -32,22 +32,6 @@ interface Booking {
   clinician?: { fullName?: string };
   clinic?: { name?: string; addressLine1?: string };
   van?: { name?: string };
-}
-
-function Row({ icon, label, value }: { icon: "calendar" | "clock" | "mapPin" | "profile" | "creditCard"; label: string; value: string }) {
-  return (
-    <View style={styles.detailRow}>
-      <View style={styles.detailIconBox}>
-        <AppIcon name={icon} size={16} color={colors.ink} />
-      </View>
-      <ThemedText variant="caption" style={styles.detailLabel}>
-        {label}
-      </ThemedText>
-      <ThemedText variant="subhead" style={styles.detailValue} numberOfLines={2}>
-        {value}
-      </ThemedText>
-    </View>
-  );
 }
 
 export default function AppointmentDetailScreen() {
@@ -155,24 +139,17 @@ export default function AppointmentDetailScreen() {
               variant={isCancelled ? "danger" : isPast ? "default" : "success"}
             />
           </View>
-          <View style={styles.chipRow}>
-            <ChipPill label={`${toLabel(booking.channel)} · ${timeLine}`} tone={isPast || isCancelled ? "neutral" : "info"} />
-          </View>
         </Card>
 
         {/* Details receipt card */}
         <Card elevation="flat" style={styles.card}>
           <ThemedText variant="overline" style={styles.cardOverline}>Visit summary</ThemedText>
-          <Row icon="calendar" label="Date" value={dateLine} />
-          <View style={styles.divider} />
-          <Row icon="clock" label="Time" value={timeLine} />
-          <View style={styles.divider} />
-          <Row icon="profile" label="Clinician" value={clinicianName} />
-          <View style={styles.divider} />
-          <Row icon="mapPin" label="Location" value={booking.clinic?.addressLine1 ? `${locationName}, ${booking.clinic.addressLine1}` : locationName} />
-          <View style={styles.divider} />
-          <Row
-            icon="creditCard"
+          <DetailRow label="Visit type" value={toLabel(booking.channel)} />
+          <DetailRow label="Date" value={dateLine} />
+          <DetailRow label="Time" value={timeLine} />
+          <DetailRow label="Clinician" value={clinicianName} />
+          <DetailRow label="Location" value={booking.clinic?.addressLine1 ? `${locationName}, ${booking.clinic.addressLine1}` : locationName} />
+          <DetailRow
             label="Deposit paid"
             value={booking.service?.depositPence ? `£${(booking.service.depositPence / 100).toFixed(2)}` : "—"}
           />
@@ -240,6 +217,7 @@ export default function AppointmentDetailScreen() {
             title="Book this again"
             size="lg"
             arrow={true}
+            style={styles.footerBtn}
             onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
           />
         ) : isPast ? (
@@ -247,6 +225,7 @@ export default function AppointmentDetailScreen() {
             title="Rebook treatment"
             size="lg"
             arrow={true}
+            style={styles.footerBtn}
             onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
           />
         ) : (
@@ -305,7 +284,6 @@ const styles = StyleSheet.create({
   cardOverline: {
     color: colors.secondaryLabel,
     fontSize: 11,
-    letterSpacing: 0.8,
     marginBottom: spacing.xxs,
   },
   checkInCard: {
@@ -332,10 +310,6 @@ const styles = StyleSheet.create({
     color: colors.alwaysWhite,
     fontWeight: "700",
   },
-  chipRow: {
-    alignSelf: "flex-start",
-    marginTop: spacing.xxs,
-  },
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -345,37 +319,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
-  },
-  detailIconBox: {
-    alignItems: "center",
-    backgroundColor: colors.background,
-    borderRadius: radius.full,
-    height: 32,
-    justifyContent: "center",
-    width: 32,
-    borderColor: colors.separator,
-    borderWidth: 1,
-  },
-  detailLabel: {
-    color: colors.secondaryLabel,
-    width: 84,
-  },
-  detailRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.xs,
-    paddingVertical: 4,
-  },
-  detailValue: {
-    color: colors.label,
-    flex: 1,
-    fontWeight: "600",
-    textAlign: "right",
-  },
-  divider: {
-    backgroundColor: colors.separator,
-    height: StyleSheet.hairlineWidth,
-    marginVertical: 2,
   },
   footerBar: {
     backgroundColor: colors.background,

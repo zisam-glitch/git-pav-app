@@ -212,7 +212,8 @@ export default function PaymentMethodsScreen() {
 
       {paymentMethods.length > 0 ? (
         <Button
-          title="+ Add payment method"
+          title="Add payment method"
+          icon={<AppIcon name="plus" size={18} color={colors.ink} />}
           variant="secondary"
           onPress={() => setModalVisible(true)}
         />

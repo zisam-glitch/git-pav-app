@@ -28,13 +28,13 @@ type CategoryFilter =
   | "restorative"
   | "cosmetic";
 
-const CATEGORIES: { label: string; value: CategoryFilter; icon: any }[] = [
-  { label: "All", value: "all", icon: "grid" },
-  { label: "Checkup", value: "checkup", icon: "profile" },
-  { label: "Hygiene", value: "hygiene", icon: "sparkle" },
-  { label: "Surgery", value: "restorative", icon: "activity" },
-  { label: "Cosmetic", value: "cosmetic", icon: "smile" },
-  { label: "Emergency", value: "emergency", icon: "alert" },
+const CATEGORIES: { label: string; value: CategoryFilter }[] = [
+  { label: "All", value: "all" },
+  { label: "Checkup", value: "checkup" },
+  { label: "Hygiene", value: "hygiene" },
+  { label: "Surgery", value: "restorative" },
+  { label: "Cosmetic", value: "cosmetic" },
+  { label: "Emergency", value: "emergency" },
 ];
 
 
@@ -130,7 +130,6 @@ export default function ServiceCatalogScreen() {
                 }}
                 style={[styles.categoryPill, isActive ? styles.categoryPillActive : styles.categoryPillInactive]}
               >
-                <AppIcon name={cat.icon} size={14} color={isActive ? colors.onAccent : colors.label} />
                 <ThemedText variant="footnote" style={[styles.categoryText, isActive && styles.categoryTextActive]}>
                   {cat.label}
                 </ThemedText>
@@ -187,7 +186,7 @@ export default function ServiceCatalogScreen() {
 }
 
 const CATEGORY_ICON: Record<string, AppIconName> = {
-  checkup: "profile",
+  checkup: "clipboard",
   hygiene: "sparkle",
   restorative: "activity",
   cosmetic: "smile",

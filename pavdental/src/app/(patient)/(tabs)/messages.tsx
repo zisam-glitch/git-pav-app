@@ -128,10 +128,11 @@ export default function MessagesScreen() {
         <View style={styles.headerRow}>
           <View style={styles.headerTitleGroup}>
             <ThemedText variant="overline">Secure inbox</ThemedText>
-            {unreadCount > 0 ? <Badge label={`${unreadCount} NEW`} variant="info" /> : null}
+            {unreadCount > 0 ? <Badge label={`${unreadCount} new`} variant="info" /> : null}
           </View>
           <Button
-            title="+ New message"
+            title="New message"
+            icon={<AppIcon name="plus" size={16} color={colors.ink} />}
             variant="secondary"
             size="sm"
             onPress={() => setIsComposing(true)}

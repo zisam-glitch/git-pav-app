@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
-import { ThemedText, Card, Badge, Button, Input, EmptyState } from "@/components";
+import { ThemedText, Card, Badge, Button, Input, EmptyState, CheckboxMark, AppIcon } from "@/components";
 import {
   useDependants,
   useAddDependantMutation,
@@ -220,7 +220,8 @@ export default function DependantsScreen() {
 
       {dependants.length > 0 ? (
         <Button
-          title="+ Add child / dependant profile"
+          title="Add child / dependant profile"
+          icon={<AppIcon name="plus" size={18} color={colors.ink} />}
           variant="secondary"
           onPress={openAdd}
         />
@@ -295,9 +296,7 @@ export default function DependantsScreen() {
               onPress={() => setIsGuardian((v) => !v)}
               style={styles.guardianRow}
             >
-              <View style={[styles.checkbox, isGuardian && styles.checkboxChecked]}>
-                {isGuardian && <ThemedText style={styles.checkmark}>✓</ThemedText>}
-              </View>
+              <CheckboxMark checked={isGuardian} />
               <ThemedText variant="caption" style={styles.guardianText}>
                 I am this child's parent or legal guardian. Children must be under 16; young people aged 16 or over
                 can create their own account.
@@ -446,23 +445,6 @@ const styles = StyleSheet.create({
   relPills: {
     flexDirection: "row",
     gap: spacing.xs,
-  },
-  checkbox: {
-    alignItems: "center",
-    borderColor: colors.separator,
-    borderRadius: radius.xs,
-    borderWidth: 1,
-    height: 22,
-    justifyContent: "center",
-    width: 22,
-  },
-  checkboxChecked: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
-  },
-  checkmark: {
-    color: colors.onInk,
-    fontSize: 14,
   },
   guardianRow: {
     alignItems: "flex-start",

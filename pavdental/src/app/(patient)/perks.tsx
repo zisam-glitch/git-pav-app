@@ -81,9 +81,6 @@ export default function OralHealthPerksScreen() {
                 {isError ? "Couldn't load your points. Try again later." : "Active points available"}
               </ThemedText>
             </View>
-            <View style={styles.sparkleBox}>
-              <AppIcon name="sparkle" size={24} color={colors.alwaysWhite} />
-            </View>
           </View>
           <View style={styles.heroNoticeRow}>
             <AppIcon name="info" size={14} color="rgba(255, 255, 255, 0.7)" />
@@ -240,7 +237,6 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.6)",
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 1.2,
   },
   heroNoticeRow: {
     alignItems: "center",
@@ -395,14 +391,6 @@ const styles = StyleSheet.create({
     color: colors.label,
     fontWeight: "700",
     fontSize: 17,
-  },
-  sparkleBox: {
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    borderRadius: radius.full,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
   },
   topNav: {
     alignItems: "center",

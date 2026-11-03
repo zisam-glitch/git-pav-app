@@ -16,7 +16,6 @@ import {
   IconTile,
   ListRow,
   SectionHeader,
-  type AppIconName,
 } from "@/components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors, spacing, radius } from "@/theme";
@@ -34,16 +33,15 @@ type CategoryKey = "all" | "checkup" | "hygiene" | "emergency" | "restorative" |
 interface CategoryFilter {
   key: CategoryKey;
   label: string;
-  icon: AppIconName;
 }
 
 const CATEGORIES: CategoryFilter[] = [
-  { key: "all", label: "All", icon: "grid" },
-  { key: "checkup", label: "Checkup", icon: "profile" },
-  { key: "hygiene", label: "Hygiene", icon: "sparkle" },
-  { key: "emergency", label: "Emergency", icon: "alert" },
-  { key: "restorative", label: "Surgery", icon: "activity" },
-  { key: "cosmetic", label: "Aesthetics", icon: "smile" },
+  { key: "all", label: "All" },
+  { key: "checkup", label: "Checkup" },
+  { key: "hygiene", label: "Hygiene" },
+  { key: "emergency", label: "Emergency" },
+  { key: "restorative", label: "Surgery" },
+  { key: "cosmetic", label: "Aesthetics" },
 ];
 
 function getHeroImage(category?: string, name?: string) {
@@ -132,15 +130,18 @@ export default function PatientHomeScreen() {
           }}
           style={({ pressed }) => [styles.pointsPill, pressed && styles.pressed]}
         >
-          <View style={styles.pointsIcon}>
-            <AppIcon name="sparkles" size={14} color={colors.onInk} />
-          </View>
           <ThemedText variant="headline" style={styles.pointsText}>
             {typeof pointsBalance === "number" ? `${pointsBalance.toLocaleString("en-GB")} pts` : "Perks"}
           </ThemedText>
         </Pressable>
 
         <View style={styles.topRightActions}>
+          <IconButton
+            icon={showBalance ? "eyeOff" : "eye"}
+            label={showBalance ? "Hide your name" : "Show your name"}
+            variant="soft"
+            onPress={() => setShowBalance((prev) => !prev)}
+          />
           <View>
             <IconButton
               icon="bell"
@@ -161,19 +162,9 @@ export default function PatientHomeScreen() {
 
       {/* Greeting with the hide-details toggle */}
       <View style={styles.titleSection}>
-        <ThemedText variant="largeTitle" numberOfLines={1} style={styles.mainTitle}>
+        <ThemedText variant="largeTitle" numberOfLines={2} style={styles.mainTitle}>
           {showBalance ? `${greeting}, ${userName}` : `${greeting}, ••••`}
         </ThemedText>
-        <IconButton
-          icon={showBalance ? "eyeOff" : "eye"}
-          label={showBalance ? "Hide oral health summary" : "Show oral health summary"}
-          variant="soft"
-          shape="circle"
-          size={18}
-          color={colors.secondaryLabel}
-          onPress={() => setShowBalance((prev) => !prev)}
-          style={styles.eyeToggleBtn}
-        />
       </View>
 
       {/* Next visit — grouped white card with one row */}
@@ -258,11 +249,6 @@ export default function PatientHomeScreen() {
                 pressed && { opacity: 0.8 },
               ]}
             >
-              <AppIcon
-                name={cat.icon}
-                size={14}
-                color={isActive ? colors.onAccent : colors.ink}
-              />
               <ThemedText
                 variant="subhead"
                 style={[
@@ -322,7 +308,7 @@ export default function PatientHomeScreen() {
             title={srv.name}
             badge={`${toLabel(srv.category || "clinical")} · ${formatGbp(srv.pricePence || 0)}`}
             image={getHeroImage(srv.category, srv.name)}
-            actionLabel="Book Appointment"
+            actionLabel="Book appointment"
             onPressAction={() => handleBookService(srv)}
             onPressChat={() => router.push("/(patient)/(tabs)/messages" as never)}
             onPressInfo={() => router.push("/(patient)/booking/service-catalog" as never)}
@@ -430,14 +416,6 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.8,
   },
-  pointsIcon: {
-    alignItems: "center",
-    backgroundColor: colors.inkSoft,
-    borderRadius: radius.full,
-    height: 28,
-    justifyContent: "center",
-    width: 28,
-  },
   section: {
     paddingHorizontal: spacing.gutter,
   },
@@ -449,16 +427,15 @@ const styles = StyleSheet.create({
   pointsPill: {
     alignItems: "center",
     alignSelf: "flex-start",
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
     borderRadius: radius.full,
     flexDirection: "row",
     gap: spacing.xs,
     height: 40,
-    paddingLeft: 6,
-    paddingRight: spacing.md,
+    paddingHorizontal: spacing.md,
   },
   pointsText: {
-    color: colors.onInk,
+    color: colors.onAccent,
   },
   bellDot: {
     backgroundColor: colors.info,
@@ -620,10 +597,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.sm,
     paddingHorizontal: spacing.gutter,
-  },
-  eyeToggleBtn: {
-    height: 32,
-    width: 32,
   },
   quickBookBtn: {
     marginHorizontal: spacing.gutter,

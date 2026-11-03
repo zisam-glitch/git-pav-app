@@ -289,7 +289,6 @@ const styles = StyleSheet.create({
     color: colors.alwaysWhite,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   optionalBadge: {
     backgroundColor: colors.separator,
@@ -301,7 +300,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   safe: {
     backgroundColor: colors.background,

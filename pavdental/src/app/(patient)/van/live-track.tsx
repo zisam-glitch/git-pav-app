@@ -597,7 +597,6 @@ const styles = StyleSheet.create({
   statusKicker: {
     color: colors.secondaryLabel,
     fontWeight: "600",
-    letterSpacing: 0.3,
   },
   topFloat: {
     left: spacing.md,

@@ -198,9 +198,8 @@ export default function OdontogramScreen() {
             Clean progress
           </ThemedText>
 
-          <View style={styles.hygieneIconCircle}>
-            <AppIcon name="sparkle" size={16} color={colors.info} />
-          </View>
+          {/* Keeps the title centred opposite the back button. */}
+          <View style={styles.headerSpacer} />
         </View>
 
         {/* 3D Visual Dental Arch Model with Interactive Risk Annotation */}
@@ -432,9 +431,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
     borderRadius: radius.full,
-    height: 40,
+    height: 44,
     justifyContent: "center",
-    width: 40,
+    width: 44,
   },
   container: {
     backgroundColor: colors.background,
@@ -491,18 +490,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  headerSpacer: {
+    height: 44,
+    width: 44,
+  },
   headerTitle: {
     color: colors.label,
     fontSize: 17,
     fontWeight: "700",
-  },
-  hygieneIconCircle: {
-    alignItems: "center",
-    backgroundColor: colors.infoSubtle,
-    borderRadius: radius.full,
-    height: 38,
-    justifyContent: "center",
-    width: 38,
   },
   selectedDetail: {
     alignItems: "center",
@@ -615,7 +610,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   statusHeading: {
     color: colors.label,
@@ -632,7 +626,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   surfaceGrid: {
     gap: 6,

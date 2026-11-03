@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Linking } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  IconTile,
   ThemedText,
   Card,
   ListRow,
@@ -145,20 +146,17 @@ export default function ProfileScreen() {
 
   const renderGroup = (heading: string, rows: MenuRow[]) => (
     <View key={heading} style={styles.group}>
-      <ThemedText variant="overline" style={styles.groupHeading}>
+      <ThemedText variant="title" style={styles.groupHeading}>
         {heading}
       </ThemedText>
-      <Card padding="none">
-        {rows.map((row, i) => (
+      <View>
+        {rows.map((row) => (
           <ListRow
+            inset="flush"
             key={row.route || row.url || row.title}
             title={row.title}
             subtitle={row.subtitle}
-            left={
-              <View style={styles.rowIcon}>
-                <AppIcon name={row.icon} size={18} color={colors.ink} />
-              </View>
-            }
+            left={<IconTile icon={row.icon} />}
             right={
               row.url ? (
                 <AppIcon name="externalLink" size={16} color={colors.tertiaryLabel} />
@@ -173,10 +171,9 @@ export default function ProfileScreen() {
                 router.push(row.route as never);
               }
             }}
-            separator={i < rows.length - 1}
           />
         ))}
-      </Card>
+      </View>
     </View>
   );
 
@@ -220,17 +217,16 @@ export default function ProfileScreen() {
         {/* Portal Role Switcher (development opt-in only) */}
         {__DEV__ && process.env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER === "true" ? (
           <View style={styles.group}>
-            <ThemedText variant="overline" style={styles.groupHeading}>
+            <ThemedText variant="title" style={styles.groupHeading}>
               Switch App Role (Demo & Verification)
             </ThemedText>
-            <Card padding="none">
+            <View>
               <ListRow
+            inset="flush"
                 title="Clinician portal (dentist)"
                 subtitle="Schedule, tooth chart and prescriptions"
                 left={
-                  <View style={styles.rowIcon}>
-                    <AppIcon name="userCheck" size={18} color={colors.ink} />
-                  </View>
+                  <IconTile icon="userCheck" />
                 }
                 right={<Badge label="Clinician" variant="info" />}
                 onPress={() => {
@@ -242,15 +238,13 @@ export default function ProfileScreen() {
                   });
                   router.replace("/(clinician)/schedule" as any);
                 }}
-                separator
               />
               <ListRow
+            inset="flush"
                 title="Mobile van operator portal"
                 subtitle="Unit 01 Dispatch · real-time stops, en route and on-site triage"
                 left={
-                  <View style={styles.rowIcon}>
-                    <AppIcon name="navigation" size={18} color={colors.ink} />
-                  </View>
+                  <IconTile icon="navigation" />
                 }
                 right={<Badge label="Operator" variant="warning" />}
                 onPress={() => {
@@ -263,37 +257,34 @@ export default function ProfileScreen() {
                   router.replace("/(operator)/route" as any);
                 }}
               />
-            </Card>
+            </View>
           </View>
         ) : null}
 
         {/* Danger zone */}
         <View style={styles.group}>
-          <ThemedText variant="overline" style={styles.groupHeading}>
+          <ThemedText variant="title" style={styles.groupHeading}>
             Danger zone
           </ThemedText>
-          <Card padding="none">
+          <View>
             <ListRow
+            inset="flush"
               title="Sign out"
               left={
-                <View style={styles.rowIcon}>
-                  <AppIcon name="logOut" size={18} color={colors.label} />
-                </View>
+                <IconTile icon="logOut" />
               }
               onPress={() => setConfirmSignOut(true)}
-              separator
             />
             <ListRow
+            inset="flush"
               title="Delete account"
               subtitle="Permanently remove your account and data"
               left={
-                <View style={[styles.rowIcon, styles.rowIconDanger]}>
-                  <AppIcon name="trash" size={18} color={colors.danger} />
-                </View>
+                <IconTile icon="trash" iconColor={colors.danger} />
               }
               onPress={() => router.push("/(patient)/(tabs)/profile/delete-account" as never)}
             />
-          </Card>
+          </View>
         </View>
       </ScrollView>
 
@@ -349,19 +340,6 @@ const styles = StyleSheet.create({
     gap: spacing.xxs,
   },
   groupHeading: {
-    marginLeft: spacing.xxs,
-  },
-  rowIcon: {
-    alignItems: "center",
-    backgroundColor: colors.background,
-    borderRadius: radius.full,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
-    borderColor: colors.separator,
-    borderWidth: 1,
-  },
-  rowIconDanger: {
-    backgroundColor: colors.dangerSubtle,
+    marginBottom: spacing.xxs,
   },
 });

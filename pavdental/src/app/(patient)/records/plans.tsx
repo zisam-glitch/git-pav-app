@@ -120,7 +120,7 @@ export default function TreatmentPlansScreen() {
                           {item.description}
                         </ThemedText>
                         <ThemedText variant="caption" style={styles.itemCode}>
-                          Clinical Code: #{item.code}
+                          Clinical code: #{item.code}
                           {item.toothNumber ? ` · Tooth #${item.toothNumber}` : ""}
                         </ThemedText>
                       </View>
@@ -135,7 +135,7 @@ export default function TreatmentPlansScreen() {
               {/* Total & Finance */}
               <Card style={styles.totalCard}>
                 <View style={styles.rowBetween}>
-                  <ThemedText variant="headline">Total treatment cost:</ThemedText>
+                  <ThemedText variant="headline">Total treatment cost</ThemedText>
                   <ThemedText variant="title" style={styles.totalPrice}>
                     {formatGbp(totalCostPence)}
                   </ThemedText>
@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: spacing.xs,
+    marginTop: spacing.md,
   },
   sigText: {
     color: colors.success,

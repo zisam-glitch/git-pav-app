@@ -155,7 +155,7 @@ export default function ClinicianConsultRoomScreen() {
             style={styles.exitBtn}
           >
             <ThemedText variant="caption" style={styles.exitText}>
-              ✕ Exit Room
+              Exit room
             </ThemedText>
           </Pressable>
         </View>

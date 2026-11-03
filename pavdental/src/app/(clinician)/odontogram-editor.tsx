@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button, IconButton } from "@/components";
+import { ThemedText, Card, Badge, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchOdontogram, updateOdontogram, fetchOdontogramHistory } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
@@ -165,8 +165,9 @@ export default function OdontogramEditorScreen() {
 
         {successMessage ? (
           <Card elevation="flat" style={styles.successBanner}>
+            <AppIcon name="checkCircle" size={18} color={colors.success} />
             <ThemedText variant="body" style={styles.successText}>
-              ✓ {successMessage}
+              {successMessage}
             </ThemedText>
           </Card>
         ) : null}
@@ -362,7 +363,6 @@ const styles = StyleSheet.create({
   archLabel: {
     color: colors.secondaryLabel,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   card: {
     backgroundColor: colors.systemBackground,
@@ -479,6 +479,9 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
   },
   successBanner: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.inkSubtle,
     padding: spacing.sm,
   },

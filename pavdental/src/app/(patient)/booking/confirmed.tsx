@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ThemedText, Card, Button, AppIcon } from "@/components";
+import { ThemedText, Card, Button, AppIcon, DetailRow } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { fetchMyAppointments } from "@/features/booking/booking-api";
@@ -113,29 +113,8 @@ export default function BookingConfirmedScreen() {
 
             <View style={styles.divider} />
 
-            <View style={styles.detailRow}>
-              <View style={styles.iconBox}>
-                <AppIcon name="calendar" size={16} color={colors.ink} />
-              </View>
-              <View style={styles.detailCol}>
-                <ThemedText variant="caption" style={styles.detailLabel}>Date & Time</ThemedText>
-                <ThemedText variant="body" style={styles.timing}>
-                  {slot ? `${slot.dateFormatted} at ${slot.displayTime}` : "See your appointments"}
-                </ThemedText>
-              </View>
-            </View>
-
-            <View style={styles.detailRow}>
-              <View style={styles.iconBox}>
-                <AppIcon name="mapPin" size={16} color={colors.ink} />
-              </View>
-              <View style={styles.detailCol}>
-                <ThemedText variant="caption" style={styles.detailLabel}>Location</ThemedText>
-                <ThemedText variant="body" style={styles.location}>
-                  {isVideo ? "Video consultation" : clinic?.name ?? "—"}
-                </ThemedText>
-              </View>
-            </View>
+            <DetailRow label="Date and time" value={slot ? `${slot.dateFormatted} at ${slot.displayTime}` : "See your appointments"} />
+            <DetailRow label="Location" value={isVideo ? "Video consultation" : clinic?.name ?? "—"} />
           </Card>
         </View>
 
@@ -235,38 +214,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.separator,
     height: StyleSheet.hairlineWidth,
     marginVertical: 4,
-  },
-  detailRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.sm,
-  },
-  iconBox: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 36,
-    height: 36,
-    borderRadius: radius.full,
-    backgroundColor: colors.background,
-    borderColor: colors.separator,
-    borderWidth: 1,
-  },
-  detailCol: {
-    flex: 1,
-    gap: 1,
-  },
-  detailLabel: {
-    color: colors.secondaryLabel,
-    fontSize: 11,
-    letterSpacing: 0.5,
-  },
-  location: {
-    color: colors.label,
-    fontWeight: "500",
-  },
-  timing: {
-    color: colors.ink,
-    fontWeight: "600",
   },
   title: {
     color: colors.label,

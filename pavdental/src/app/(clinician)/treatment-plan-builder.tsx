@@ -115,7 +115,7 @@ export default function TreatmentPlanBuilderScreen() {
         {success ? (
           <Card style={styles.successCard}>
             <ThemedText variant="headline" style={styles.successTitle}>
-              ✓ Treatment plan created
+              Treatment plan created
             </ThemedText>
             <ThemedText variant="body" style={styles.successBody}>
               Plan "{title}" has been saved with {items.length} items totaling £

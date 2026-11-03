@@ -101,7 +101,7 @@ export default function OperatorCheckInScreen() {
               </ThemedText>
             </View>
             <Button
-              title={vanParked ? "✓ Secured" : "Confirm"}
+              title={vanParked ? "Secured" : "Confirm"}
               size="sm"
               variant={vanParked ? "secondary" : "primary"}
               onPress={() => setVanParked(true)}
@@ -118,7 +118,7 @@ export default function OperatorCheckInScreen() {
               </ThemedText>
             </View>
             <Button
-              title={patientBoarded ? "✓ Seated" : "Confirm"}
+              title={patientBoarded ? "Seated" : "Confirm"}
               size="sm"
               variant={patientBoarded ? "secondary" : "primary"}
               onPress={() => setPatientBoarded(true)}

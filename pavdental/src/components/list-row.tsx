@@ -23,6 +23,8 @@ interface ListRowProps {
   chevron?: boolean;
   /** Show separator line below the row */
   separator?: boolean;
+  /** "card" pads the row for a card; "flush" lines it up with the page gutter (Wise settings lists) */
+  inset?: "card" | "flush";
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
@@ -43,13 +45,14 @@ export function ListRow({
   right,
   chevron = false,
   separator = false,
+  inset = "card",
   onPress,
   style,
   accessibilityLabel,
   accessibilityHint,
 }: ListRowProps) {
   const inner = (
-    <View style={[styles.row, style]}>
+    <View style={[styles.row, inset === "flush" && styles.rowFlush, style]}>
       {left ? <View style={styles.leftSlot}>{left}</View> : null}
 
       <View style={styles.content}>
@@ -106,6 +109,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.sm,
+  },
+  rowFlush: {
+    paddingHorizontal: 0,
   },
   titleText: {
     color: colors.label,

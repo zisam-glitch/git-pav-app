@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStripe } from "@stripe/stripe-react-native";
-import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow } from "@/components";
+import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import {
@@ -298,9 +298,12 @@ export default function BookingSummaryScreen() {
               onPress={() => setUseVoucher((v) => !v)}
               style={styles.priceRow}
             >
-              <ThemedText variant="body" style={styles.label}>
-                {useVoucher ? "☑" : "☐"} Use rewards voucher ({formatGbp(voucher!.discountPence)} off)
-              </ThemedText>
+              <View style={styles.voucherLabel}>
+                <CheckboxMark checked={useVoucher} size={22} />
+                <ThemedText variant="body" style={styles.label}>
+                  Use rewards voucher ({formatGbp(voucher!.discountPence)} off)
+                </ThemedText>
+              </View>
               {useVoucher && <ThemedText variant="mono">–{formatGbp(voucher!.discountPence)}</ThemedText>}
             </Pressable>
           )}
@@ -414,6 +417,12 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.secondaryLabel,
+  },
+  voucherLabel: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexShrink: 1,
+    gap: spacing.xs,
   },
   priceRow: {
     alignItems: "center",

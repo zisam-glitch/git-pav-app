@@ -81,8 +81,10 @@ export default function DocumentVaultScreen() {
                     year: "numeric",
                   })
                 : "—";
-              const fileSizeDisplay = doc.fileSizeBytes
-                ? `${Math.round(doc.fileSizeBytes / 1024)} KB`
+              // The server can send the size as a string or leave it out.
+              const sizeBytes = Number(doc.fileSizeBytes);
+              const fileSizeDisplay = Number.isFinite(sizeBytes) && sizeBytes > 0
+                ? `${Math.round(sizeBytes / 1024)} KB`
                 : "";
 
               return (

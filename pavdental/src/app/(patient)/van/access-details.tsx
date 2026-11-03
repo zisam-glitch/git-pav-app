@@ -386,6 +386,9 @@ const styles = StyleSheet.create({
   optionCard: {
     backgroundColor: colors.systemBackground,
     borderRadius: radius.lg,
+    // Transparent until selected, so the selected card gets a visible ink outline.
+    borderColor: "transparent",
+    borderWidth: 2,
     gap: 2,
   },
   optionCardActive: {
@@ -429,6 +432,8 @@ const styles = StyleSheet.create({
   serviceCard: {
     backgroundColor: colors.systemBackground,
     borderRadius: radius.lg,
+    borderColor: "transparent",
+    borderWidth: 2,
     gap: 4,
   },
   serviceCardActive: {

@@ -165,7 +165,7 @@ export default function NotificationsScreen() {
             setAppointmentConfirmations(val);
             savePreference({ appointmentConfirmations: val });
           }}
-          icon={<AppIcon name="activity" size={18} color={colors.label} />}
+          icon={<AppIcon name="calendarCheck" size={18} color={colors.label} />}
         />
       </View>
 

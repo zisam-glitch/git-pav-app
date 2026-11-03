@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ThemedText, Input, Button, Badge } from "@/components";
+import { ThemedText, Input, Button, Badge, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { flushOfflineNotes, queueOfflineNote, sendVisitNote } from "@/features/van/offline-notes";
@@ -130,8 +130,9 @@ export default function OfflineCaptureScreen() {
 
         {isSavedOffline ? (
           <View style={styles.successBanner}>
+            <AppIcon name="checkCircle" size={16} color={colors.success} />
             <ThemedText variant="caption" style={styles.successText}>
-              ✓ Note saved. Returning to your route…
+              Note saved. Returning to your route…
             </ThemedText>
           </View>
         ) : null}
@@ -183,6 +184,8 @@ const styles = StyleSheet.create({
   },
   successBanner: {
     alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.successSubtle,
     borderRadius: radius.sm,
     padding: spacing.sm,

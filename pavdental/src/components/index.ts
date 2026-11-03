@@ -35,3 +35,5 @@ export { ServiceHeroCard } from "./service-hero-card";
 export { SwipeToStart } from "./swipe-to-start";
 export { MetricRing } from "./metric-ring";
 export { EmergencyTriageModal } from "./emergency-triage-modal";
+export { CheckboxMark } from "./checkbox-mark";
+export { SegmentedControl } from "./segmented-control";

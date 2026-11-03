@@ -65,12 +65,9 @@ export default function WaitingRoomScreen() {
 
             <View style={styles.checklist}>
               <View style={styles.checkItem}>
-                <View style={styles.checkIconPending}>
-                  <ActivityIndicator size="small" color={colors.ink} />
-                </View>
                 <View style={styles.checkTextGroup}>
                   <ThemedText variant="subhead" style={styles.checkTitle}>
-                    Clinician Connection
+                    Clinician connection
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.muted}>
                     Waiting for your clinician to join
@@ -110,14 +107,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing.sm,
     justifyContent: "center",
-  },
-  checkIconPending: {
-    alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.full,
-    height: 24,
-    justifyContent: "center",
-    width: 24,
   },
   checkItem: {
     alignItems: "center",

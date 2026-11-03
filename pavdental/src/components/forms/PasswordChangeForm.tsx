@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from "react-nat
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThemedText } from "../themed-text";
+import { AppIcon } from "../app-icon";
 import { Input } from "../input";
 import { Button } from "../button";
 import { colors, spacing, type, radius } from "@/theme";
@@ -109,33 +110,25 @@ export function PasswordChangeForm({
             Password requirements:
           </ThemedText>
           <View style={styles.reqItem}>
-            <ThemedText style={hasMinLength ? styles.checkPass : styles.checkFail}>
-              {hasMinLength ? "✓" : "○"}
-            </ThemedText>
+            <AppIcon name="checkCircle" size={16} color={hasMinLength ? colors.success : colors.tertiaryLabel} variant={hasMinLength ? "Bold" : "Linear"} />
             <ThemedText variant="caption" style={hasMinLength ? styles.reqPassText : styles.reqText}>
               At least 8 characters
             </ThemedText>
           </View>
           <View style={styles.reqItem}>
-            <ThemedText style={hasUppercase ? styles.checkPass : styles.checkFail}>
-              {hasUppercase ? "✓" : "○"}
-            </ThemedText>
+            <AppIcon name="checkCircle" size={16} color={hasUppercase ? colors.success : colors.tertiaryLabel} variant={hasUppercase ? "Bold" : "Linear"} />
             <ThemedText variant="caption" style={hasUppercase ? styles.reqPassText : styles.reqText}>
               At least one uppercase letter (A-Z)
             </ThemedText>
           </View>
           <View style={styles.reqItem}>
-            <ThemedText style={hasLowercase ? styles.checkPass : styles.checkFail}>
-              {hasLowercase ? "✓" : "○"}
-            </ThemedText>
+            <AppIcon name="checkCircle" size={16} color={hasLowercase ? colors.success : colors.tertiaryLabel} variant={hasLowercase ? "Bold" : "Linear"} />
             <ThemedText variant="caption" style={hasLowercase ? styles.reqPassText : styles.reqText}>
               At least one lowercase letter (a-z)
             </ThemedText>
           </View>
           <View style={styles.reqItem}>
-            <ThemedText style={hasNumber ? styles.checkPass : styles.checkFail}>
-              {hasNumber ? "✓" : "○"}
-            </ThemedText>
+            <AppIcon name="checkCircle" size={16} color={hasNumber ? colors.success : colors.tertiaryLabel} variant={hasNumber ? "Bold" : "Linear"} />
             <ThemedText variant="caption" style={hasNumber ? styles.reqPassText : styles.reqText}>
               At least one numeric digit (0-9)
             </ThemedText>
@@ -177,14 +170,6 @@ const styles = StyleSheet.create({
   actions: {
     gap: spacing.sm,
     marginTop: spacing.md,
-  },
-  checkFail: {
-    color: colors.secondaryLabel,
-    opacity: 0.6,
-  },
-  checkPass: {
-    color: colors.success,
-    fontWeight: "700",
   },
   container: {
     backgroundColor: colors.background,

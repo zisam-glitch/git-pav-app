@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button, EmptyState, IconButton } from "@/components";
+import { ThemedText, Card, Badge, Button, EmptyState, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   fetchPatientProfile,
@@ -119,8 +119,9 @@ export default function ClinicianPatientRecordScreen() {
 
         {statusMessage ? (
           <Card elevation="flat" style={styles.statusBanner}>
+            <AppIcon name="checkCircle" size={18} color={colors.success} />
             <ThemedText variant="body" style={styles.statusText}>
-              ✓ {statusMessage}
+              {statusMessage}
             </ThemedText>
           </Card>
         ) : null}
@@ -472,6 +473,9 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xs,
   },
   statusBanner: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.inkSubtle,
     padding: spacing.sm,
   },

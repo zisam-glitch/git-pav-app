@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Button, IconButton } from "@/components";
+import { ThemedText, Card, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   fetchAppointmentNotes,
@@ -124,8 +124,9 @@ export default function AppointmentNotesScreen() {
 
         {successMessage ? (
           <Card elevation="flat" style={styles.successBanner}>
+            <AppIcon name="checkCircle" size={18} color={colors.success} />
             <ThemedText variant="body" style={styles.successText}>
-              ✓ {successMessage}
+              {successMessage}
             </ThemedText>
           </Card>
         ) : null}
@@ -273,6 +274,9 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
   },
   successBanner: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.inkSubtle,
     padding: spacing.sm,
   },

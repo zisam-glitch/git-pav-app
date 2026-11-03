@@ -381,7 +381,6 @@ const styles = StyleSheet.create({
     color: colors.danger,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   sheetTitle: {
     color: colors.label,
@@ -441,7 +440,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   painScoreValue: {
     color: colors.danger,

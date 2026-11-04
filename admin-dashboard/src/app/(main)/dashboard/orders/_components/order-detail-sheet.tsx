@@ -41,9 +41,6 @@ interface Order {
   discount_amount: string | null;
   customer_email: string | null;
   customer_phone: string | null;
-  user_email: string | null;
-  user_name: string | null;
-  user_phone: string | null;
   shipping_address: any;
   billing_address: any;
   notes: string | null;
@@ -418,15 +415,15 @@ export function OrderDetailSheet({ orderId, onClose }: OrderDetailSheetProps) {
           <CardContent className="space-y-4">
             <div>
               <p className="text-sm text-muted-foreground">Name</p>
-              <p className="font-medium">{order.user_name || "Guest"}</p>
+              <p className="font-medium">{order.shipping_address?.name || "Guest"}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium">{order.user_email || order.customer_email || "N/A"}</p>
+              <p className="font-medium">{order.customer_email || "N/A"}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Phone</p>
-              <p className="font-medium">{order.user_phone || order.customer_phone || "N/A"}</p>
+              <p className="font-medium">{order.customer_phone || "N/A"}</p>
             </div>
           </CardContent>
         </Card>

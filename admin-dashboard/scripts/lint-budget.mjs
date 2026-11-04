@@ -3,7 +3,7 @@
 // the counts go up. Lower the numbers when you fix some; never raise them.
 import { spawnSync } from "node:child_process";
 
-const BUDGET = { errors: 145, warnings: 148 };
+const BUDGET = { errors: 135, warnings: 144 };
 
 const run = spawnSync("npx", ["biome", "lint", "--reporter=summary"], { encoding: "utf8" });
 const output = `${run.stdout}${run.stderr}`;

@@ -42,13 +42,10 @@ export async function GET(request: Request) {
         il.*,
         pv.sku,
         pv.attributes,
-        p.name as product_name,
-        u.name as performed_by_name,
-        u.email as performed_by_email
+        p.name as product_name
       FROM inventory_logs il
       JOIN product_variants pv ON il.variant_id = pv.id
       JOIN products p ON pv.product_id = p.id
-      LEFT JOIN users u ON il.performed_by = u.id
       ${whereClause}
       ORDER BY il.created_at DESC
       LIMIT $${paramIdx + 1} OFFSET $${paramIdx + 2}

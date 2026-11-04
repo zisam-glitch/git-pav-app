@@ -18,8 +18,6 @@ interface Order {
   status: string;
   total: string;
   customer_email: string | null;
-  user_email: string | null;
-  user_name: string | null;
   created_at: string;
   item_count: number;
   stripe_session_id: string | null;
@@ -166,8 +164,7 @@ export function OrdersTable() {
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">{order.id.slice(0, 8)}...</TableCell>
                   <TableCell>
-                    {order.user_email || order.customer_email || "Guest"}
-                    {order.user_name && <div className="text-sm text-muted-foreground">{order.user_name}</div>}
+                    {order.customer_email || "Guest"}
                   </TableCell>
                   <TableCell>
                     <Badge className={STATUS_COLORS[order.status] || ""}>{order.status.replace(/_/g, " ")}</Badge>

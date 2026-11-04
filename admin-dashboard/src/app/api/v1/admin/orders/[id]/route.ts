@@ -18,9 +18,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const orders = await query(
       `
       SELECT o.*,
-        u.email as user_email,
-        u.name as user_name,
-        u.phone as user_phone,
         (SELECT json_agg(json_build_object(
           'id', oi.id,
           'product_id', oi.product_id,
@@ -51,7 +48,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           'created_at', p.created_at
         )) FROM payments p WHERE p.order_id = o.id) as payments
       FROM orders o
-      LEFT JOIN users u ON o.user_id = u.id
       WHERE o.id = $1
     `,
       [id],

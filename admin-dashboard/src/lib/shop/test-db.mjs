@@ -11,11 +11,14 @@ export async function createTestDb() {
   const pg = new PGlite();
   await pg.waitReady;
 
-  for (const file of fs.readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort()) {
-    // The app logs and carries on past a failing migration, so match it here,
-    // then fail below if a table the shop needs didn't get created.
-    await pg.exec(fs.readFileSync(path.join(MIGRATIONS, file), "utf8")).catch(() => undefined);
-  }
+  const runMigrations = async () => {
+    for (const file of fs.readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort()) {
+      // The app logs and carries on past a failing migration, so match it here,
+      // then fail below if a table the shop needs didn't get created.
+      await pg.exec(fs.readFileSync(path.join(MIGRATIONS, file), "utf8")).catch(() => undefined);
+    }
+  };
+  await runMigrations();
 
   const wrap = (runner) => async (text, params = []) => (await runner.query(text, params)).rows;
   const query = wrap(pg);
@@ -30,6 +33,7 @@ export async function createTestDb() {
   return {
     query,
     transaction,
+    runMigrations,
     close: () => pg.close(),
 
     async product({ price = "50.00", inStock = true } = {}) {

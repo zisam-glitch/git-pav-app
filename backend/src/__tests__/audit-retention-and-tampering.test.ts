@@ -167,6 +167,22 @@ describe("CS-20: Audit chain across replicas, retention, and security outcomes",
       expect(check.valid).toBe(true);
     });
 
+    it("verifies an untouched row whose metadata had undefined or Date values", async () => {
+      const log = await createAuditLogWithIntegrity({
+        action: "roundtrip.test.entry",
+        actorId: patientUser.id,
+        metadata: {
+          missing: undefined,
+          nested: { missing: undefined },
+          list: [1, undefined],
+          at: new Date("2026-11-04T00:00:00Z"),
+        },
+      });
+
+      const check = await verifyAuditIntegrity({ fromId: log.id });
+      expect(check.issues.filter((issue) => issue.includes(`log ${log.id} `))).toEqual([]);
+    });
+
     it("fails verification if a row is deleted or modified in the chain", async () => {
       const logA = await createAuditLogWithIntegrity({ action: "chain.a" });
       const logB = await createAuditLogWithIntegrity({ action: "chain.b" });

@@ -52,7 +52,8 @@ function getOrGenerateSessionId(): string {
   if (typeof window === "undefined") return "guest-ssr";
   let sid = localStorage.getItem("pav_cart_session_id");
   if (!sid) {
-    sid = `guest_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    // The cart API finds a guest cart by this id alone, so it must be unguessable.
+    sid = `guest_${crypto.randomUUID()}`;
     localStorage.setItem("pav_cart_session_id", sid);
   }
   return sid;

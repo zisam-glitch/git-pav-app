@@ -491,7 +491,7 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
 
     console.log(`[BACKGROUND JOBS] Scheduled reminder ladder for appointment ${appointmentId}`);
   } catch (error) {
-    console.error(`[BACKGROUND JOBS] Failed to schedule reminder ladder for ${appointmentId}:`, safeError(error));
+    console.error("[BACKGROUND JOBS] Failed to schedule reminder ladder for appointment:", appointmentId, safeError(error));
   }
 }
 
@@ -512,7 +512,7 @@ export async function cancelAppointmentReminders(appointmentId: string): Promise
     });
     return deleted.count;
   } catch (error) {
-    console.error(`[BACKGROUND JOBS] Failed to cancel reminders for appointment ${appointmentId}:`, safeError(error));
+    console.error("[BACKGROUND JOBS] Failed to cancel reminders for appointment:", appointmentId, safeError(error));
     return 0;
   }
 }

@@ -145,7 +145,10 @@ export async function createAuditLogWithIntegrity(data: {
     }
     const nowIso = now.toISOString();
 
-    const sanitizedMetadata = scrubAuditMetadata(data.metadata) ?? {};
+    // Hash what the database will hand back. Postgres JSON drops undefined values
+    // and turns a Date into a string, so hashing the raw object would make an
+    // untouched row fail verification and read as tampering.
+    const sanitizedMetadata = JSON.parse(JSON.stringify(scrubAuditMetadata(data.metadata) ?? {}));
 
     // Create HMAC hash chain covering all audit fields (AU-3)
     const dataString = buildAuditDataString({

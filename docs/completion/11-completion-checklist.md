@@ -27,9 +27,8 @@ How each open item is known:
 - [x] **"Deposit paid" showed "—" even when a deposit was paid.** It now shows the amount paid. Fixed on 4 Nov.
 - [x] **The Reschedule button was a dead end.** Removed until decision 1 in section 2 is made and the backend can
   move a booking. Fixed on 4 Nov.
-- [ ] **Run the new backend test for `?scope=upcoming`** (`npx jest patient-upcoming-appointments`). It couldn't run
-  in the test environment, so the route change is typechecked but hasn't been run. The Home fixes above don't depend
-  on it: they were checked in the app against a backend without this change.
+- [x] **Ran the new backend test for `?scope=upcoming`** (`patient-upcoming-appointments`). It passed in CI on PR #8,
+  5 Nov.
 - [x] **A treatment plan could book the wrong treatment.** It now books only on an exact name match, otherwise the patient
   chooses from the catalogue. Fixed on 4 Nov.
 - [x] **Appointment times followed the phone's time zone.** Home, Bookings, the appointment page and check-in now show UK
@@ -61,8 +60,8 @@ How each open item is known:
   recorded full pass: 511/511 on 31 Oct.**
 - [ ] **Backend e2e suite** (`npm test`). Last recorded pass: 34/34 on 31 Oct.
 - [ ] **Migration drift check, seed and `prisma migrate deploy`** on a clean database.
-- [ ] **Dashboard `next build`.** It hung here for 7+ minutes with both Turbopack and webpack, which may be this
-  test environment. Confirm it passes in CI or on a normal machine.
+- [x] **Dashboard `next build`.** It hung in the sandbox, but the dashboard job, which includes the build, passed in CI
+  on PR #8, 5 Nov.
 - [ ] **CI on the release commit, CodeQL, Docker image build, `expo-doctor`.** None could be run or read here
   (`gh` couldn't connect).
 - [ ] **Clinician screens and journey** (schedule, notes, chart, plans, prescribing). Staff sign-in needs a security
@@ -93,7 +92,11 @@ How each open item is known:
 - [ ] Restore drill, timed, with the audit chain verified afterwards
 - [ ] 7-day soak on the production stack with synthetic data
 - [ ] Rehearse an API rollback once
-- [ ] Investigate the flaky `audit-chain-concurrency` test (about 1 full run in 4, recorded 31 Oct) **[Docs]**
+- [ ] **Confirm the `audit-chain-concurrency` failure is gone** (about 1 full run in 4, recorded 31 Oct; failed on PR #8,
+  5 Nov). Likely cause fixed on 5 Nov: audit metadata with `undefined` or `Date` values was hashed before Postgres changed
+  it, so untouched rows failed verification and read as tampering. Not proven to be this failure's cause, so watch
+  several CI runs. **Rows already written this way stay flagged:** check any `Integrity check failed` report on a real
+  database with this in mind.
 
 ## 4. Environments and owner setup
 

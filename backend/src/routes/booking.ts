@@ -63,7 +63,10 @@ function slotLockKey(slotId: string): string {
 // Times come from the clinic's opening hours and the clinicians' rota
 // (CS-30). Without a clinician, a time is free when any clinician is.
 router.get("/slots", requireAuth, validateQuery(slotsQuerySchema), async (req: AuthRequest, res: Response) => {
-  const { clinicianId, clinicId, serviceId, date } = req.query as Record<string, string | undefined>;
+  const { clinicianId, clinicId, serviceId } = req.query as Record<string, string | undefined>;
+  // The schema has already made this a string; the typeof check says so to the
+  // reader (and to CodeQL) where the value is used.
+  const date = typeof req.query.date === "string" ? req.query.date : undefined;
   const channel = (req.query.channel as SlotChannel | undefined) ?? "clinic";
 
   const service = serviceId ? await prisma.service.findUnique({ where: { id: serviceId } }) : null;

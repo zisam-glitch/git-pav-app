@@ -466,10 +466,22 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
   });
   if (!profile) return res.status(404).json({ error: "Patient profile not found" });
 
+  // ?scope=upcoming: visits still to come, soonest first. A consult already
+  // under way counts even though its start time has passed.
+  const upcomingOnly = req.query.scope === "upcoming";
+
   const appointments = await prisma.appointment.findMany({
     where: {
       patientId: profile.id,
       ...(req.query.status ? { status: String(req.query.status) as any } : {}),
+      ...(upcomingOnly
+        ? {
+            OR: [
+              { status: "in_progress" as const },
+              { status: "confirmed" as const, startTimeUtc: { gte: new Date() } },
+            ],
+          }
+        : {}),
     },
     include: {
       service: { select: { name: true, durationMinutes: true } },
@@ -477,7 +489,7 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
       clinic: { select: { name: true, address: true } },
       dependant: { select: { id: true, firstName: true, lastName: true } },
     },
-    orderBy: { startTimeUtc: "desc" },
+    orderBy: { startTimeUtc: upcomingOnly ? "asc" : "desc" },
     take,
     skip,
   });

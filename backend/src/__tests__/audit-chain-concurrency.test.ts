@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
 import path from "path";
 import { verifyAuditIntegrity } from "../lib/audit-integrity";
+import { acquireAuditExclusive, releaseAuditExclusive } from "../../test/audit-exclusive";
 
 // AU-1 regression: several API processes appending at once must still produce
 // one unbroken hash chain. Each child is a separate Node process (its own
@@ -38,6 +39,10 @@ function runWriter(index: number): Promise<void> {
 
 describe("audit hash chain under concurrent writers", () => {
   jest.setTimeout(60_000);
+
+  // Wait for the tamper/retention suite to finish with the shared rows first.
+  beforeAll(acquireAuditExclusive, 5 * 60_000);
+  afterAll(releaseAuditExclusive);
 
   it("stays valid when several processes append at the same time", async () => {
     await Promise.all(Array.from({ length: WRITERS }, (_, i) => runWriter(i)));

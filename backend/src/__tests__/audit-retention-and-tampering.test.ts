@@ -12,6 +12,7 @@ import {
   legacyAuditHashAllowed,
 } from "../lib/audit-integrity";
 import { communicationService } from "../lib/communication-service";
+import { acquireAuditExclusive, releaseAuditExclusive } from "../../test/audit-exclusive";
 
 describe("CS-20: Audit chain across replicas, retention, and security outcomes", () => {
   let server: http.Server;
@@ -21,6 +22,11 @@ describe("CS-20: Audit chain across replicas, retention, and security outcomes",
   let patientToken: string;
   let otherPatientUser: any;
   let otherPatientToken: string;
+
+  // This file edits, archives and deletes audit rows on purpose; keep the
+  // concurrency suite (which verifies the whole chain) out until it's done.
+  beforeAll(acquireAuditExclusive, 5 * 60_000);
+  afterAll(releaseAuditExclusive);
 
   beforeAll(async () => {
     // 1. Create patient user and profile

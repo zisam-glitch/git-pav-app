@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 
-import { abandonOrder, CheckoutRejected, parseCheckoutBody, placeOrder } from "./checkout-order.ts";
+import { abandonOrder, CheckoutRejected, isPlausibleEmail, parseCheckoutBody, placeOrder } from "./checkout-order.ts";
 import { createTestDb } from "./test-db.mjs";
 
 let db;
@@ -40,6 +40,27 @@ describe("checkout request validation", () => {
   it("rejects an empty bag and a bad email", () => {
     assert.throws(() => parseCheckoutBody(body([])), CheckoutRejected);
     assert.throws(() => parseCheckoutBody({ items: [{ productId }], customerEmail: "nope" }), CheckoutRejected);
+  });
+});
+
+describe("email shape check", () => {
+  it("accepts ordinary addresses", () => {
+    for (const email of ["a@b.co", "first.last+tag@example.test", "x@mail.example.test"]) {
+      assert.equal(isPlausibleEmail(email), true, email);
+    }
+  });
+
+  it("rejects malformed addresses", () => {
+    for (const email of ["", "nope", "@b.co", "a@", "a@b", "a@.co", "a@b.", "a b@c.co", "a@b@c.co"]) {
+      assert.equal(isPlausibleEmail(email), false, email);
+    }
+  });
+
+  it("answers immediately on the input a backtracking regex is slow on", () => {
+    const hostile = `!@!.${"!.".repeat(500_000)}`;
+    const started = performance.now();
+    assert.equal(isPlausibleEmail(hostile), false);
+    assert.ok(performance.now() - started < 100);
   });
 });
 

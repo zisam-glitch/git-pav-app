@@ -11,7 +11,7 @@ import {
 } from "./pricing.ts";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_EMAIL_LENGTH = 254;
 const MAX_LINES = 50;
 const MAX_QUANTITY = 100;
 // The checkout page adds up floats, so a rounding tie can differ by a penny.
@@ -39,6 +39,16 @@ export interface CheckoutInput {
   expectedTotal: number | null;
 }
 
+/** A shape check, not proof of delivery. No regex: this runs on unauthenticated input. */
+export function isPlausibleEmail(value: string): boolean {
+  if (value.length > MAX_EMAIL_LENGTH || /\s/.test(value)) return false;
+  const at = value.indexOf("@");
+  if (at < 1 || at !== value.lastIndexOf("@")) return false;
+  const domain = value.slice(at + 1);
+  const dot = domain.lastIndexOf(".");
+  return dot > 0 && dot < domain.length - 1;
+}
+
 export function parseCheckoutBody(body: Record<string, any>): CheckoutInput {
   const { items, customerEmail, shippingMethodId, discountCode, expectedTotal, sessionId } = body ?? {};
 
@@ -60,7 +70,7 @@ export function parseCheckoutBody(body: Record<string, any>): CheckoutInput {
     return { productId: item.productId as string, variantId: variantId as string | null, quantity: quantity as number };
   });
 
-  if (typeof customerEmail !== "string" || !EMAIL.test(customerEmail.trim())) {
+  if (typeof customerEmail !== "string" || !isPlausibleEmail(customerEmail.trim())) {
     throw new CheckoutRejected(400, "A valid email address is required");
   }
   if (shippingMethodId && (typeof shippingMethodId !== "string" || !UUID.test(shippingMethodId))) {

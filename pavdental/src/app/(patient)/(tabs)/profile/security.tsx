@@ -9,6 +9,7 @@ import { useBiometrics } from "@/features/security/biometric-hooks";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { useChangePasswordMutation, useResendVerificationMutation } from "@/features/account/account-hooks";
 import { colors, spacing, type, radius } from "@/theme";
+import { TwoStepCard } from "@/features/security/two-step-card";
 
 export default function SecurityScreen() {
   const router = useRouter();
@@ -119,6 +120,11 @@ export default function SecurityScreen() {
             onPress={() => router.push("/(patient)/(tabs)/profile/sessions" as any)}
           />
         </Card>
+      </View>
+
+      {/* Two-step sign-in */}
+      <View style={styles.section}>
+        <TwoStepCard />
       </View>
 
       {/* Email Verification Status */}

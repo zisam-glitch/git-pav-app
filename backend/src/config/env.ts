@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { isPlaceholderCredential } from "./placeholder";
 
 // Load local development settings before any module reads process.env. Production
 // deployments provide these values through their secret manager instead.
@@ -250,7 +251,15 @@ function printConfigurationSummary(values: {
   console.log(`  JWT Access Secret: ${values.jwtAccessSecret ? "✓ Configured" : "✗ Missing (using dev default)"}`);
   console.log(`  JWT Refresh Secret: ${values.jwtRefreshSecret ? "✓ Configured" : "✗ Missing (using dev default)"}`);
   console.log(`  Audit IP HMAC Secret: ${values.auditIpHmacSecret ? "✓ Configured" : "✗ Missing (using dev default)"}`);
-  console.log(`  Stripe Secret Key: ${values.stripeSecretKey ? "✓ Configured" : "✗ Missing (using dev default)"}`);
+  console.log(
+    `  Stripe Secret Key: ${
+      !values.stripeSecretKey
+        ? "✗ Missing (mock Stripe)"
+        : isPlaceholderCredential(values.stripeSecretKey)
+          ? "✗ Template value (mock Stripe)"
+          : "✓ Configured"
+    }`
+  );
   console.log(`  Stripe Webhook Secret: ${values.stripeWebhookSecret ? "✓ Configured" : "✗ Missing"}`);
   console.log(`  Stripe Publishable Key: ${values.stripePublishableKey ? "✓ Configured" : "✗ Missing (using dev default)"}`);
   console.log(`  Allowed Origins: ${values.allowedOrigins.length} origin(s) configured`);
@@ -267,6 +276,17 @@ function printConfigurationSummary(values: {
   } else {
     console.log("⚠️  DEVELOPMENT MODE - Using development defaults for missing secrets");
     console.log("⚠️  DO NOT use development defaults in production or staging");
+    // Template or missing provider keys run in local mode: nothing is sent.
+    const local = [
+      ["email (Postmark)", values.postmarkServerToken],
+      ["SMS (Twilio)", values.twilioAccountSid],
+      ["video (Daily)", values.dailyApiKey],
+    ]
+      .filter(([, value]) => isPlaceholderCredential(value))
+      .map(([name]) => name);
+    if (local.length > 0) {
+      console.log(`ℹ️  Not configured, running locally without sending: ${local.join(", ")}`);
+    }
   }
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("");
@@ -304,7 +324,11 @@ printConfigurationSummary(values);
 // Validate deployed (staging/production) configuration; throws if invalid.
 validateDeployedConfig(nodeEnv, values);
 
-const stripeSecretKey = values.stripeSecretKey ?? "sk_test_mock_stripe_key_pav_dental";
+// A missing or template key (`sk_test_replace_with_…` from .env.example) means
+// mock Stripe locally rather than real calls with a junk key.
+const stripeSecretKey = isPlaceholderCredential(values.stripeSecretKey)
+  ? "sk_test_mock_stripe_key_pav_dental"
+  : values.stripeSecretKey!;
 
 export const env = Object.freeze({
   nodeEnv,
@@ -321,7 +345,11 @@ export const env = Object.freeze({
   auditIpHmacSecret: values.auditIpHmacSecret ?? "dev_audit_hmac_secret_change_me",
   auditHmacSecret: readOptional("AUDIT_HMAC_SECRET") ?? values.auditIpHmacSecret ?? "dev_audit_hmac_secret_change_me",
   opsAlertEmail: readOptional("OPS_ALERT_EMAIL") ?? "ops@pavdental.com",
-  encryptionKey: values.encryptionKey ?? "dev_clinical_envelope_kek_32_bytes_minimum_key",
+  // Deployed environments reject a missing or template key above, so this
+  // fallback only ever applies in development and test.
+  encryptionKey: isPlaceholderCredential(values.encryptionKey)
+    ? "dev_clinical_envelope_kek_32_bytes_minimum_key"
+    : values.encryptionKey!,
   kmsKeyId: values.kmsKeyId ?? "arn:aws:kms:eu-west-2:000000000000:key/pavdental-clinical-cmk",
   stripeSecretKey,
   // Mock Stripe is only reachable in development and test: validateDeployedConfig

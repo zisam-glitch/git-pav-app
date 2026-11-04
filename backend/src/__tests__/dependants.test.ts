@@ -125,7 +125,11 @@ describe("dependants", () => {
       data: [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({ clinicianId: clinician.id, weekday, startMinute: 540, endMinute: 1020 })),
     });
     const clinicianToken = signAccessToken({ sub: clinicianUser.id, role: "clinician", sessionId: crypto.randomUUID() });
-    const service = await prisma.service.findFirstOrThrow({ select: { id: true } });
+    // Booked as a video consult below, so it must be a service that offers video.
+    const service = await prisma.service.findFirstOrThrow({
+      where: { supportedChannels: { has: "video" } },
+      select: { id: true },
+    });
 
     const book = (token: string, dependantId: string, dayOffset: number) =>
       fetch(`${baseUrl}/api/booking/appointments`, {

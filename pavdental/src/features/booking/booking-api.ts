@@ -142,6 +142,24 @@ export async function createPaymentIntent(appointmentId: string, voucherCode?: s
   }>;
 }
 
+// ─── Confirm Appointment ──────────────────────────────────────────────────────
+// Asks the server to confirm the booking once the deposit is paid. The server
+// checks the payment itself (with Stripe, or the mock intent in local dev),
+// and the Stripe webhook confirms the same way, so calling this is always safe:
+// whichever arrives first wins and the other is a no-op.
+export async function confirmAppointment(appointmentId: string, stripePaymentId: string) {
+  const res = await authFetch(`/api/booking/appointments/${encodeURIComponent(appointmentId)}/confirm`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stripePaymentId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error ?? "Could not confirm your booking");
+  }
+  return res.json() as Promise<{ id: string; appointmentStatus: string; depositPaidPence: number }>;
+}
+
 // ─── Cancel Appointment ───────────────────────────────────────────────────────
 export interface CancellationResult {
   appointmentId: string;

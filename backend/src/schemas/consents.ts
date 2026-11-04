@@ -55,7 +55,3 @@ export const dataAccessRequestSchema = z.object({
   ipAddress: ipAddress.optional(),
 }).strict();
 
-export const dataDeletionRequestSchema = z.object({
-  reason: z.string().trim().min(1).max(500).optional(),
-  ipAddress: ipAddress.optional(),
-}).strict();

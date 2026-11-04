@@ -15,7 +15,6 @@ interface Patient {
   name: string;
   email: string;
   phone: string | null;
-  date_of_birth: string | null;
   address: string | null;
   created_at: string;
 }
@@ -69,21 +68,20 @@ export function PatientsTable() {
             <TableRow>
               <TableHead>Patient</TableHead>
               <TableHead>Contact Phone</TableHead>
-              <TableHead>Date of Birth</TableHead>
-              <TableHead>Address</TableHead>
+              <TableHead>Area</TableHead>
               <TableHead className="text-right">Registered</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                <TableCell colSpan={4} className="text-center py-12 text-muted-foreground">
                   Loading patients...
                 </TableCell>
               </TableRow>
             ) : patients.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                <TableCell colSpan={4} className="text-center py-12 text-muted-foreground">
                   <User className="size-8 mx-auto text-muted-foreground/50 mb-2" />
                   No registered patients found yet. Patients will appear here when they register or book.
                 </TableCell>
@@ -96,9 +94,6 @@ export function PatientsTable() {
                     <p className="text-xs text-muted-foreground">{p.email}</p>
                   </TableCell>
                   <TableCell className="text-sm">{p.phone || "—"}</TableCell>
-                  <TableCell className="text-sm">
-                    {p.date_of_birth ? format(new Date(p.date_of_birth), "PPP") : "—"}
-                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{p.address || "—"}</TableCell>
                   <TableCell className="text-right text-xs text-muted-foreground">
                     {format(new Date(p.created_at), "MMM d, yyyy")}

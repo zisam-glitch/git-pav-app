@@ -142,7 +142,7 @@ export default function RootLayout() {
   if (isLocked) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY} merchantIdentifier="merchant.com.pavdental">
+        <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY} merchantIdentifier="merchant.com.pavdental.app">
           <QueryClientProvider client={queryClient}>
             <ThemeProvider value={navTheme}>
               <StatusBar style="dark" />
@@ -158,7 +158,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-        <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY} merchantIdentifier="merchant.com.pavdental">
+        <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY} merchantIdentifier="merchant.com.pavdental.app">
           <QueryClientProvider client={queryClient}>
             <ThemeProvider value={navTheme}>
               <StatusBar style="dark" />

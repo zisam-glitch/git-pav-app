@@ -8,6 +8,10 @@ import { useVanStore } from "@/features/van/van-store";
 import { fetchServices } from "@/features/van/van-api";
 import { Service } from "@/features/van/van-types";
 
+// Full UK postcode, with or without the space (the server checks it matches
+// the patient's location).
+const UK_POSTCODE = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
+
 export default function VanAccessDetailsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -15,7 +19,8 @@ export default function VanAccessDetailsScreen() {
 
   const [addressLine1, setAddressLine1] = useState(store.addressLine1 || "");
   const [addressLine2, setAddressLine2] = useState(store.addressLine2 || "");
-  const [city, setCity] = useState(store.city || "London");
+  const [city, setCity] = useState(store.city || "");
+  const [postcode, setPostcode] = useState(store.postcode || "");
   const [parkingType, setParkingType] = useState<
     "private_driveway" | "permit_bay" | "visitor" | "other"
   >(store.parkingType || "private_driveway");
@@ -58,6 +63,15 @@ export default function VanAccessDetailsScreen() {
       return;
     }
 
+    if (!city.trim()) {
+      Alert.alert("Missing City", "Please enter the town or city for the van arrival.");
+      return;
+    }
+    if (!UK_POSTCODE.test(postcode.trim())) {
+      Alert.alert("Check Your Postcode", "Please enter a full UK postcode, for example SW1A 1AA.");
+      return;
+    }
+
     const chosenService = services.find((s) => s.id === selectedServiceId) || services[0];
     if (!chosenService) {
       Alert.alert("No Service Selected", "We couldn't load the van services. Please try again.");
@@ -75,7 +89,8 @@ export default function VanAccessDetailsScreen() {
     store.setAccessDetails({
       addressLine1: addressLine1.trim(),
       addressLine2: addressLine2.trim() || undefined,
-      city: city.trim() || "London",
+      city: city.trim(),
+      postcode: postcode.trim().toUpperCase(),
       parkingType,
       gateCode: hasGatedAccess ? gateCode.trim() : undefined,
       accessNotes: accessNotes.trim() || undefined,
@@ -127,8 +142,11 @@ export default function VanAccessDetailsScreen() {
             <View style={styles.flex1}>
               <Input
                 label="Postcode"
-                value={store.postcode || "SW1A 1AA"}
-                editable={false}
+                placeholder="e.g. SW1A 1AA"
+                value={postcode}
+                onChangeText={setPostcode}
+                autoCapitalize="characters"
+                autoCorrect={false}
               />
             </View>
           </View>

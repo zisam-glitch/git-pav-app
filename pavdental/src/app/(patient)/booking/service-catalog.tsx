@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { safeHaptics } from "@/lib/haptics";
 import {
   ThemedText,
@@ -15,6 +15,7 @@ import { useServices } from "@/features/hooks/use-dental-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { DentalService } from "@/features/booking/booking-types";
 import { formatGbp } from "@/features/booking/booking-api";
+import { bookingChannelFor, channelParam, firstBookingStep } from "@/features/booking/start-booking";
 import { toLabel } from "@/lib/text";
 
 type CategoryFilter =
@@ -48,6 +49,9 @@ function getServiceImage(category?: string, name?: string) {
 export default function ServiceCatalogScreen() {
   const router = useRouter();
   const { setService, setChannel } = useBookingStore();
+  // ?channel=video lists only the services that can be booked as a video consult.
+  const params = useLocalSearchParams<{ channel?: string }>();
+  const onlyChannel = channelParam(params.channel);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all");
   const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState("");
@@ -61,6 +65,7 @@ export default function ServiceCatalogScreen() {
   const filteredServices = useMemo(() => {
     const q = search.trim().toLowerCase();
     return services.filter((srv) => {
+      if (onlyChannel && !(srv.supportedChannels ?? []).includes(onlyChannel)) return false;
       const matchesCat =
         selectedCategory === "all" ||
         (srv.category || "").toLowerCase() === selectedCategory;
@@ -71,7 +76,7 @@ export default function ServiceCatalogScreen() {
         (srv.category || "").toLowerCase().includes(q);
       return matchesCat && matchesQuery;
     });
-  }, [services, selectedCategory, search]);
+  }, [services, selectedCategory, search, onlyChannel]);
 
   const handleSelectService = (service: DentalService) => {
     setService({
@@ -81,8 +86,9 @@ export default function ServiceCatalogScreen() {
       pricePence: service.pricePence,
       depositPence: service.depositPence ?? Math.round((service.pricePence || 0) * 0.25),
     });
-    setChannel("clinic");
-    router.push("/(patient)/booking/clinic-picker" as never);
+    const channel = bookingChannelFor(service, onlyChannel);
+    setChannel(channel);
+    router.push(firstBookingStep(channel) as never);
   };
 
   return (
@@ -94,7 +100,11 @@ export default function ServiceCatalogScreen() {
         {/* Top Header: "Choose a Service" + Search Icon button */}
         <View style={styles.headerRow}>
           <ThemedText variant="largeTitle" style={styles.headerTitle}>
-            Choose a treatment
+            {onlyChannel === "video"
+              ? "Book a video consult"
+              : onlyChannel === "van"
+                ? "Book a dental van visit"
+                : "Choose a treatment"}
           </ThemedText>
 
           <Pressable

@@ -14,7 +14,7 @@ This folder contains the public-facing marketing website and online shop for Pav
 
 - `src/routes/`: File-based routes (`/`, `/about`, `/contact`, `/pricing`, `/team`, `/shop`, `/privacy`, `/terms`, etc.).
 - `src/components/`: Reusable UI components grouped by feature (`home/`, `about/`, `shop/`, `team/`, etc.).
-- `src/lib/`: Utilities, analytics, auth helpers, query provider.
+- `src/lib/`: Utilities, analytics, the account-link helpers (`app-account.ts`), query provider.
 - `public/`: Static assets (favicons, images, logos).
 - `scripts/`: Build environment and validation scripts.
 

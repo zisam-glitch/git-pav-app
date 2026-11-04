@@ -43,6 +43,7 @@ interface VanDispatchDraftState {
     serviceDepositPence?: number | null;
   }) => void;
   setAccessDetails: (details: Partial<{
+    postcode: string;
     addressLine1: string;
     addressLine2: string;
     city: string;
@@ -71,7 +72,7 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
 
   addressLine1: "",
   addressLine2: "",
-  city: "London",
+  city: "",
   parkingType: "private_driveway",
   gateCode: "",
   accessNotes: "",
@@ -80,7 +81,17 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
 
   setLocationCoverage: (data) => set((state) => ({ ...state, ...data })),
   setService: (data) => set((state) => ({ ...state, ...data })),
-  setAccessDetails: (details) => set((state) => ({ ...state, ...details })),
+  // The address screen passes undefined for optional fields left blank. Keep
+  // the draft's text fields as strings, so the review screen can trim them
+  // (a blank flat number used to crash it).
+  setAccessDetails: (details) =>
+    set((state) => {
+      const next: Record<string, unknown> = { ...details };
+      for (const key of ["postcode", "addressLine1", "addressLine2", "city", "gateCode", "accessNotes"] as const) {
+        if (key in next && next[key] === undefined) next[key] = "";
+      }
+      return { ...state, ...next };
+    }),
   setActiveRequestId: (id) => set({ activeRequestId: id }),
   getAccessDetailsPayload: () => {
     const s = get();
@@ -99,10 +110,10 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
       // No demo fallbacks: blank required fields must reach the API as empty
       // strings so zod validation stops the dispatch instead of silently
       // sending the van to a placeholder address.
-      addressLine1: s.addressLine1.trim(),
-      addressLine2: s.addressLine2.trim() || undefined,
-      city: s.city.trim(),
-      postcode: normalizePostcode(s.postcode.trim()),
+      addressLine1: (s.addressLine1 ?? "").trim(),
+      addressLine2: (s.addressLine2 ?? "").trim() || undefined,
+      city: (s.city ?? "").trim(),
+      postcode: normalizePostcode((s.postcode ?? "").trim()),
       lat: s.lat,
       lng: s.lng,
       parkingType: s.parkingType,
@@ -124,7 +135,7 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
       serviceDepositPence: null,
       addressLine1: "",
       addressLine2: "",
-      city: "London",
+      city: "",
       parkingType: "private_driveway",
       gateCode: "",
       accessNotes: "",

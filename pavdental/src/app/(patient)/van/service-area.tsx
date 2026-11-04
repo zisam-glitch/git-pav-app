@@ -22,8 +22,16 @@ export default function VanServiceAreaScreen() {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [, setUsingGPS] = useState(false);
 
+  // Ask for location only when the patient taps "Use my current location"
+  // (App Store guideline 5.1.1). If they already allowed it, locate them now.
   useEffect(() => {
-    requestLocationPermission();
+    if (Platform.OS === "web") return;
+    Location.getForegroundPermissionsAsync()
+      .then(({ status }) => {
+        setLocationPermission(status);
+        if (status === "granted") getCurrentLocation();
+      })
+      .catch(() => {});
   }, []);
 
   const requestLocationPermission = async () => {
@@ -82,7 +90,9 @@ export default function VanServiceAreaScreen() {
       }
 
       setLocationCoverage({
-        postcode: result.activeSector || "GPS Location",
+        // The server's nearest postcode (null if it couldn't find one; the
+        // patient types it on the next screen). Never the sector name.
+        postcode: result.postcode ?? "",
         lat: coords.lat,
         lng: coords.lng,
         isCovered: result.isCovered,
@@ -131,7 +141,7 @@ export default function VanServiceAreaScreen() {
       }
 
       setLocationCoverage({
-        postcode: result.activeSector || postcode.toUpperCase().trim(),
+        postcode: result.postcode ?? postcode.toUpperCase().trim(),
         lat,
         lng,
         isCovered: result.isCovered,
@@ -233,9 +243,11 @@ export default function VanServiceAreaScreen() {
                   label={isVanOnline ? "Van on shift" : "Van off duty"}
                   variant={isVanOnline ? "success" : "default"}
                 />
-                <ThemedText variant="caption" style={styles.vanUnit}>
-                  {coverageResult?.assignedVan || "Pav Dental Van #1"}
-                </ThemedText>
+                {coverageResult?.assignedVan ? (
+                  <ThemedText variant="caption" style={styles.vanUnit}>
+                    {coverageResult.assignedVan}
+                  </ThemedText>
+                ) : null}
               </View>
 
               {/* Live Dispatch Status */}
@@ -263,13 +275,13 @@ export default function VanServiceAreaScreen() {
                       title="Book central practice clinic"
                       variant="primary"
                       size="sm"
-                      onPress={() => router.push("/(patient)/booking/clinic-picker" as any)}
+                      onPress={() => router.push("/(patient)/booking/service-catalog" as any)}
                     />
                     <Button
-                      title="Instant video consult (15 min)"
+                      title="Book a video consult"
                       variant="secondary"
                       size="sm"
-                      onPress={() => router.push("/(patient)/video/intake" as any)}
+                      onPress={() => router.push("/(patient)/booking/service-catalog?channel=video" as any)}
                     />
                   </View>
                 </View>
@@ -319,7 +331,7 @@ export default function VanServiceAreaScreen() {
                   title="View clinics instead"
                   variant="ghost"
                   size="sm"
-                  onPress={() => router.push("/(patient)/booking/clinic-picker" as any)}
+                  onPress={() => router.push("/(patient)/booking/service-catalog" as any)}
                 />
               </View>
             </Card>

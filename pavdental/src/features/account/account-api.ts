@@ -104,7 +104,7 @@ export const accountApi = {
     throw new Error(err.error ?? "Failed to set default");
   },
 
-  createSetupIntent: async (): Promise<{ clientSecret: string }> => {
+  createSetupIntent: async (): Promise<{ clientSecret: string; isMock?: boolean }> => {
     const res = await authFetch("/api/payments/setup-intent", { method: "POST" });
     if (!res.ok) {
       const err: { error?: string } = await res.json().catch(() => ({}));
@@ -121,6 +121,54 @@ export const accountApi = {
     if (!res.ok) {
       const err: { error?: string } = await res.json().catch(() => ({}));
       throw new Error(err.error ?? "Failed to save payment method");
+    }
+  },
+
+  // A new phone number is only saved once the code sent to it is entered.
+  requestPhoneChange: async (userId: string, newPhone: string): Promise<void> => {
+    const res = await authFetch(`/api/patients/${userId}/phone/request`, {
+      method: "POST",
+      body: JSON.stringify({ newPhone }),
+    });
+    if (!res.ok) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "We couldn't send a code to that number");
+    }
+  },
+
+  verifyPhoneChange: async (userId: string, newPhone: string, code: string): Promise<void> => {
+    const res = await authFetch(`/api/patients/${userId}/phone/verify`, {
+      method: "POST",
+      body: JSON.stringify({ newPhone, code }),
+    });
+    if (!res.ok) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "That code didn't work");
+    }
+  },
+
+  // Two-step sign-in: a code by text (or email without a phone) at each sign-in.
+  requestSecurityCode: async (): Promise<void> => {
+    const res = await authFetch("/api/auth/mfa/request", { method: "POST" });
+    if (!res.ok) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "We couldn't send a security code");
+    }
+  },
+
+  enableTwoStep: async (code: string): Promise<void> => {
+    const res = await authFetch("/api/auth/mfa/verify", { method: "POST", body: JSON.stringify({ code }) });
+    if (!res.ok) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "That code didn't work");
+    }
+  },
+
+  disableTwoStep: async (password: string, code: string): Promise<void> => {
+    const res = await authFetch("/api/auth/mfa/disable", { method: "POST", body: JSON.stringify({ password, code }) });
+    if (!res.ok) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "Two-step sign-in wasn't turned off");
     }
   },
 

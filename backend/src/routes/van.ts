@@ -23,6 +23,7 @@ import {
   MAX_QUEUE_DEPTH,
   REQUEST_TIMEOUT_MS,
   MAX_ETA_SECONDS,
+  roadRoute,
 } from "../lib/van-eta";
 import { clinicalRecordEncryptionService, decryptString, encryptField } from "../lib/encryption";
 import { haversineMetres, postcodeToCoordinates } from "../lib/geo";
@@ -93,6 +94,24 @@ export function sanitizeIncomingRequest(request: any) {
     };
   }
   return sanitized;
+}
+
+/**
+ * The road route from the van to the patient, for the patient's map: only
+ * while the van is driving to them and they may see where it is (call after
+ * hideVanUnlessNext). Null otherwise, or when no route provider gives one.
+ */
+async function routeToPatient(request: {
+  phase: string | null;
+  patientLat: number;
+  patientLng: number;
+  shift: { lastLat: number | null; lastLng: number | null } | null;
+}) {
+  if (request.phase !== "en_route" || request.shift?.lastLat == null || request.shift?.lastLng == null) return null;
+  return roadRoute(
+    { lat: request.shift.lastLat, lng: request.shift.lastLng },
+    { lat: request.patientLat, lng: request.patientLng }
+  );
 }
 
 /**
@@ -472,57 +491,6 @@ router.get("/shift/current", requireAuth, requireRole("operator"), async (req: A
   const sanitizedIncoming = incoming.map(sanitizeIncomingRequest);
 
   return res.json({ shift, van, queue: decryptedQueue, incoming: sanitizedIncoming });
-});
-
-// ─── OPERATOR — Queue Management ──────────────────────────────────────────────
-
-// GET /api/van/requests/incoming
-router.get("/requests/incoming", requireAuth, requireRole("operator"), async (req: AuthRequest, res: Response) => {
-  const opProfile = await getOperatorProfile(req.user!.sub);
-
-  const shift = await getActiveShift(opProfile.id);
-  if (!shift) return res.json([]);
-
-  const incoming = await prisma.vanServiceRequest.findMany({
-    where: { shiftId: shift.id, status: "pending" },
-    include: {
-      patient: { select: { firstName: true, lastName: true } },
-      service: { select: { name: true, durationMinutes: true } },
-    },
-    orderBy: { requestedAt: "asc" },
-  });
-
-  // Sanitize incoming requests to remove sensitive data before acceptance
-  const sanitizedIncoming = incoming.map(sanitizeIncomingRequest);
-
-  return res.json(sanitizedIncoming);
-});
-
-// GET /api/van/queue
-router.get("/queue", requireAuth, requireRole("operator"), async (req: AuthRequest, res: Response) => {
-  const opProfile = await getOperatorProfile(req.user!.sub);
-
-  const shift = await getActiveShift(opProfile.id);
-  if (!shift) return res.json([]);
-
-  const queue = await prisma.vanServiceRequest.findMany({
-    where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] } },
-    include: {
-      patient: { select: { firstName: true, lastName: true } },
-      service: { select: { name: true, durationMinutes: true } },
-    },
-    orderBy: { queuePosition: "asc" },
-  });
-
-  const decryptedQueue = await Promise.all(
-    queue.map(async (item) => ({
-      ...item,
-      accessDetails: item.accessDetails ? await decryptAccessDetails(item.accessDetails) : item.accessDetails,
-      notes: item.notes ? await decryptString(item.notes) : item.notes,
-    }))
-  );
-
-  return res.json(decryptedQueue);
 });
 
 // POST /api/van/requests/:id/accept
@@ -1169,7 +1137,7 @@ router.get("/requests/mine/active", requireAuth, async (req: AuthRequest, res: R
     request.depositAuthorizedAt
   );
 
-  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized });
+  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized, route: await routeToPatient(request) });
 });
 
 // GET /api/van/requests/:id
@@ -1238,7 +1206,8 @@ router.get("/requests/:id", requireAuth, validateParams(vanRequestIdParamsSchema
     request.depositAuthorizedAt
   );
 
-  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized });
+  const route = req.user!.role === "operator" ? null : await routeToPatient(request);
+  return res.json({ ...request, etaSeconds, etaLabel, depositAuthorized, route });
 });
 
 // POST /api/van/requests/:id/payment-retry

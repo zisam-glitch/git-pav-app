@@ -221,7 +221,7 @@ jobs:
 
       # No new warnings: lower the number when you fix some.
       - name: Lint
-        run: npm run lint -- --max-warnings=91
+        run: npm run lint -- --max-warnings=90
 
       - name: Tests
         run: npm test

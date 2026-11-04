@@ -116,7 +116,7 @@ export default function VideoSummaryScreen() {
               <Button
                 title="Book van to my home"
                 size="md"
-                onPress={() => router.replace("/(patient)/van/service-area" as any)}
+                onPress={() => router.replace("/(patient)/booking/service-catalog?channel=van" as any)}
               />
               <Button
                 title="Book clinic visit"

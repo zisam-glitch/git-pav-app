@@ -99,6 +99,13 @@ export default function AppointmentDetailScreen() {
   const isPast = start.getTime() < Date.now();
   const isCancelled = booking.status === "cancelled";
   const within24h = !isPast && start.getTime() - Date.now() < 24 * 60 * 60 * 1000;
+  // A booked video consult is joined from here until its slot ends: answer the
+  // triage questions, then wait for the clinician to let the patient in.
+  const end = new Date((booking as { endTimeUtc?: string }).endTimeUtc ?? booking.startTimeUtc);
+  const canJoinVideo =
+    booking.channel === "video" &&
+    (booking.status === "confirmed" || booking.status === "in_progress") &&
+    end.getTime() > Date.now();
 
   const doCancel = () => {
     setConfirmCancel(false);
@@ -170,8 +177,34 @@ export default function AppointmentDetailScreen() {
           />
         </Card>
 
+        {canJoinVideo ? (
+          <Card elevation="flat" style={styles.videoCard}>
+            <ThemedText variant="headline">Your video consult</ThemedText>
+            <ThemedText variant="caption" style={styles.muted}>
+              Answer the triage questions first so your clinician can read them, then wait in the waiting room until they let you in.
+            </ThemedText>
+            <View style={styles.videoActions}>
+              <Button
+                title="Answer the triage questions"
+                size="md"
+                onPress={() =>
+                  router.push({ pathname: "/(patient)/video/intake" as never, params: { appointmentId: booking.id } })
+                }
+              />
+              <Button
+                title="Go to the waiting room"
+                variant="secondary"
+                size="md"
+                onPress={() =>
+                  router.push({ pathname: "/(patient)/video/device-check" as never, params: { appointmentId: booking.id } })
+                }
+              />
+            </View>
+          </Card>
+        ) : null}
+
         {/* Pre-visit check-in (Mobbin checklist entry) */}
-        {within24h ? (
+        {within24h && booking.channel !== "video" ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Start digital check-in"
@@ -253,6 +286,15 @@ export default function AppointmentDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  videoActions: {
+    gap: spacing.xs,
+    marginTop: spacing.sm,
+  },
+  videoCard: {
+    gap: spacing.xxs,
+    marginTop: spacing.md,
+    padding: spacing.md,
+  },
   card: {
     backgroundColor: colors.systemBackground,
     borderRadius: radius.lg,

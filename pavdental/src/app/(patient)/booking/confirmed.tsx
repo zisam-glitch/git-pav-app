@@ -10,10 +10,9 @@ import { fetchMyAppointments } from "@/features/booking/booking-api";
 export default function BookingConfirmedScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ appointmentId?: string }>();
-  const { service, clinic, slot, resetDraft } = useBookingStore();
+  const { service, clinic, slot, resetDraft, channel } = useBookingStore();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
-  const [calendarAdded, setCalendarAdded] = useState(false);
   const appointmentId = params.appointmentId;
 
   // Poll for appointment confirmation status
@@ -61,6 +60,15 @@ export default function BookingConfirmedScreen() {
     router.replace("/(patient)/(tabs)/appointments");
   };
 
+  // A video consult starts with the triage questions, which the clinician
+  // reads before letting the patient in.
+  const isVideo = channel === "video";
+  const startConsult = () => {
+    if (!appointmentId) return;
+    resetDraft();
+    router.replace({ pathname: "/(patient)/video/intake" as never, params: { appointmentId } });
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
@@ -80,7 +88,9 @@ export default function BookingConfirmedScreen() {
             {isChecking 
               ? "Your booking is held while payment is verified. This usually takes a few seconds."
               : isConfirmed
-              ? "Your appointment has been successfully confirmed. You'll receive a confirmation email shortly."
+              ? isVideo
+                ? "Your video consult is booked. Answer the triage questions now so your clinician can read them first. We'll remind you before it starts."
+                : "Your appointment is confirmed. We'll remind you before your visit."
               : "Payment verification is taking longer than expected. Your appointment may still be confirmed. Please check your appointments list."
             }
           </ThemedText>
@@ -92,7 +102,7 @@ export default function BookingConfirmedScreen() {
           <Card elevation="flat" style={styles.summaryCard}>
             <View style={styles.cardHeader}>
               <ThemedText variant="headline" style={styles.treatmentName}>
-                {service?.name || "Dental Checkup"}
+                {service?.name ?? "Your appointment"}
               </ThemedText>
               <View style={styles.statusPill}>
                 <ThemedText variant="caption" style={styles.statusText}>
@@ -110,7 +120,7 @@ export default function BookingConfirmedScreen() {
               <View style={styles.detailCol}>
                 <ThemedText variant="caption" style={styles.detailLabel}>Date & Time</ThemedText>
                 <ThemedText variant="body" style={styles.timing}>
-                  {slot ? `${slot.dateFormatted} at ${slot.displayTime}` : "Selected Time"}
+                  {slot ? `${slot.dateFormatted} at ${slot.displayTime}` : "See your appointments"}
                 </ThemedText>
               </View>
             </View>
@@ -122,7 +132,7 @@ export default function BookingConfirmedScreen() {
               <View style={styles.detailCol}>
                 <ThemedText variant="caption" style={styles.detailLabel}>Location</ThemedText>
                 <ThemedText variant="body" style={styles.location}>
-                  {clinic?.name || "Pav Dental Central Practice"}
+                  {isVideo ? "Video consultation" : clinic?.name ?? "—"}
                 </ThemedText>
               </View>
             </View>
@@ -130,19 +140,14 @@ export default function BookingConfirmedScreen() {
         </View>
 
         <View style={styles.actions}>
-          {isConfirmed ? (
-            <Button
-              title={calendarAdded ? "Added to calendar ✓" : "Add to calendar"}
-              variant="secondary"
-              size="lg"
-              disabled={calendarAdded}
-              onPress={() => setCalendarAdded(true)}
-            />
+          {isConfirmed && isVideo && appointmentId ? (
+            <Button title="Answer the triage questions" size="lg" arrow={true} onPress={startConsult} />
           ) : null}
           <Button
             title="View my appointments"
             size="lg"
-            arrow={true}
+            variant={isConfirmed && isVideo && appointmentId ? "secondary" : undefined}
+            arrow={!(isConfirmed && isVideo)}
             onPress={handleFinish}
           />
         </View>

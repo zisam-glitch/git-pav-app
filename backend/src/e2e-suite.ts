@@ -249,21 +249,15 @@ async function runE2ESuite() {
     assert(stripeData.isMock === true, "Mock Stripe path not engaged — check STRIPE_SECRET_KEY bootstrap");
     console.log("✓ PASSED: Stripe PaymentIntent Generation & Client Secret (mock path)");
 
-    // Step 9: DSPT Audit Trail Log Verification
-    const auditRes = await fetch(`${baseUrl}/api/audit/log`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        action: "E2E_VERIFICATION_COMPLETE",
-        resourceId: apptData.id,
-        metadata: { status: "PASSED" },
-      }),
+    // Step 9: DSPT audit trail: the server recorded the booking in the
+    // hash-chained audit log, against this patient, without the request body.
+    const bookingAudit = await prisma.auditLog.findFirst({
+      where: { actorId: userId, action: "POST /api/booking/appointments" },
+      orderBy: { timestampUtc: "desc" },
     });
-    assert(auditRes.status === 201, "Audit log failed");
-    console.log("✓ PASSED: Anonymized Audit Logger Event Recorded");
+    assert(!!bookingAudit?.integrityHash, "Booking wasn't recorded in the audit log");
+    assert(!JSON.stringify(bookingAudit!.metadata).includes("startTimeUtc"), "Audit entry kept the request body");
+    console.log("✓ PASSED: Booking Recorded in the Audit Trail");
 
     // Step 10: Expo Push Notification Token Registration
     const pushRes = await fetch(`${baseUrl}/api/notifications/register-token`, {
@@ -528,9 +522,10 @@ async function runE2ESuite() {
     }
 
     // Step 20: Manual Reorder — swap the two extra stops' queue positions.
-    const queueNow = (await fetch(`${baseUrl}/api/van/queue`, {
+    // The operator app reads its queue from the current shift.
+    const queueNow = ((await fetch(`${baseUrl}/api/van/shift/current`, {
       headers: { Authorization: `Bearer ${operatorToken}` },
-    }).then((r) => r.json())) as any[];
+    }).then((r) => r.json())) as any).queue as any[];
     const queuedIds = queueNow.filter((s) => s.phase === "queued").map((s) => s.id);
     assert(queuedIds.length >= 2, "need at least two queued stops for reorder test");
 
@@ -543,9 +538,9 @@ async function runE2ESuite() {
     const reorder = (await reorderRes.json()) as any;
     assert(reorderRes.status === 200 && reorder.success === true, `reorder failed: ${JSON.stringify(reorder)}`);
 
-    const afterReorder = (await fetch(`${baseUrl}/api/van/queue`, {
+    const afterReorder = ((await fetch(`${baseUrl}/api/van/shift/current`, {
       headers: { Authorization: `Bearer ${operatorToken}` },
-    }).then((r) => r.json())) as any[];
+    }).then((r) => r.json())) as any).queue as any[];
     const orderAfter = afterReorder.filter((s) => s.phase === "queued").map((s) => s.id);
     assert(
       JSON.stringify(orderAfter.slice(0, 2)) === JSON.stringify(manualOrder.slice(0, 2)),
@@ -576,16 +571,27 @@ async function runE2ESuite() {
     );
     console.log(`✓ PASSED: Route Optimization (${opt.message})`);
 
-    // Cleanup: complete the extra stops so later steps start from a clean queue
+    // Cleanup: complete the extra stops so later steps start from a clean queue.
+    // A queued stop has to go through every phase; skipping one is refused.
     for (const id of extraIds) {
-      for (const phase of ["in_treatment", "completed"]) {
-        await fetch(`${baseUrl}/api/van/requests/${id}/phase`, {
+      for (const phase of ["en_route", "on_site", "in_treatment", "completed"]) {
+        const cleanupRes = await fetch(`${baseUrl}/api/van/requests/${id}/phase`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${operatorToken}` },
           body: JSON.stringify({ phase }),
         });
+        assert(cleanupRes.status === 200, `Cleanup phase ${phase} failed: ${await cleanupRes.text()}`);
       }
     }
+
+    // End the shift, as an operator does at the end of the day. A shift left
+    // open blocks every other operator from starting one on this van.
+    const endShiftRes = await fetch(`${baseUrl}/api/van/shift/end`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${operatorToken}` },
+    });
+    assert(endShiftRes.status === 200, `Van shift end failed (${endShiftRes.status})`);
+    console.log("✓ PASSED: Van Shift Ended");
 
     // ─── Account & Onboarding Flow (Steps 23–27) ─────────────────────────
 

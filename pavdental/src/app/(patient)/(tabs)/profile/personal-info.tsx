@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import { ThemedText } from "@/components";
+import { Button, Card, Input, ThemedText } from "@/components";
+import { accountApi } from "@/features/account/account-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { usePatientProfile, useUpdateProfileMutation } from "@/features/hooks/use-dental-api";
 import { PersonalInfoForm, PersonalInfoFormData } from "@/components/forms/PersonalInfoForm";
@@ -15,8 +16,44 @@ export default function PersonalInfoScreen() {
 
   const { data: profile, isLoading: isLoadingProfile, error: profileError } = usePatientProfile(userId);
   const updateProfile = useUpdateProfileMutation(userId);
+  // A changed phone number waits here until the code sent to it is entered.
+  const [pendingPhone, setPendingPhone] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+
+  const currentPhone = profile?.phone || user?.phone || "";
+  const samePhone = (a: string, b: string) => a.replace(/[\s-]/g, "") === b.replace(/[\s-]/g, "");
+
+  const verifyNewPhone = async () => {
+    if (!pendingPhone) return;
+    setVerifying(true);
+    setCodeError(null);
+    try {
+      await accountApi.verifyPhoneChange(userId, pendingPhone, code.trim());
+      setPendingPhone(null);
+      setCode("");
+      Alert.alert("Phone number updated", "Your new number is verified.", [{ text: "Done", onPress: () => router.back() }]);
+    } catch (error: unknown) {
+      setCodeError(error instanceof Error ? error.message : "That code didn't work. Check it and try again.");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const resendCode = async () => {
+    if (!pendingPhone) return;
+    try {
+      await accountApi.requestPhoneChange(userId, pendingPhone);
+      setCodeError(null);
+      Alert.alert("Code sent", `We've sent a new code to ${pendingPhone}.`);
+    } catch (error: unknown) {
+      setCodeError(error instanceof Error ? error.message : "We couldn't send a new code.");
+    }
+  };
 
   const handleSubmit = async (formData: PersonalInfoFormData) => {
+    const phoneChanged = !samePhone(formData.phone, currentPhone);
     try {
       await updateProfile.mutateAsync({
         firstName: formData.firstName,
@@ -27,8 +64,17 @@ export default function PersonalInfoScreen() {
         addressLine2: formData.addressLine2 || undefined,
         city: formData.city,
         postcode: formData.postcode,
-        phone: formData.phone,
+        // A new number is saved only after it's verified (below).
+        ...(phoneChanged ? {} : { phone: formData.phone }),
       });
+
+      if (phoneChanged) {
+        await accountApi.requestPhoneChange(userId, formData.phone.trim());
+        setPendingPhone(formData.phone.trim());
+        setCode("");
+        setCodeError(null);
+        return;
+      }
 
       try {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -86,6 +132,40 @@ export default function PersonalInfoScreen() {
     phone: profile?.phone || user?.phone || "",
   };
 
+  if (pendingPhone) {
+    return (
+      <View style={[styles.container, styles.codeContainer]}>
+        <Card style={styles.codeCard}>
+          <ThemedText variant="headline">Verify your new number</ThemedText>
+          <ThemedText variant="subhead" style={styles.codeHint}>
+            Your other details are saved. Enter the code we've sent by text to {pendingPhone} to change your number.
+          </ThemedText>
+          <Input
+            label="Code"
+            value={code}
+            onChangeText={setCode}
+            keyboardType="number-pad"
+            autoComplete="sms-otp"
+            textContentType="oneTimeCode"
+            maxLength={10}
+            error={codeError ?? undefined}
+          />
+          <Button title="Verify and save number" size="lg" loading={verifying} disabled={code.trim().length < 4} onPress={verifyNewPhone} />
+          <Button title="Send a new code" variant="secondary" size="md" onPress={resendCode} />
+          <Button
+            title="Keep my old number"
+            variant="ghost"
+            size="md"
+            onPress={() => {
+              setPendingPhone(null);
+              router.back();
+            }}
+          />
+        </Card>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <PersonalInfoForm
@@ -101,6 +181,16 @@ export default function PersonalInfoScreen() {
 }
 
 const styles = StyleSheet.create({
+  codeCard: {
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  codeContainer: {
+    padding: spacing.md,
+  },
+  codeHint: {
+    color: colors.secondaryLabel,
+  },
   centerContainer: {
     alignItems: "center",
     backgroundColor: colors.background,

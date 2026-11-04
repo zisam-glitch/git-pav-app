@@ -17,6 +17,7 @@ backend/uploads/
 # Database & Docker data
 pgdata/
 redisdata/
+dump.rdb
 
 # OS files
 .DS_Store

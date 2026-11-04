@@ -16,6 +16,7 @@ import {
   ShoppingBag,
   Stethoscope,
   Tag,
+  Truck,
   User,
   UserPlus,
   Users,
@@ -94,6 +95,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Team & Services",
         url: "/dashboard/team",
         icon: UserPlus,
+      },
+      {
+        id: "pav-vans",
+        title: "Vans & Service Areas",
+        url: "/dashboard/vans",
+        icon: Truck,
       },
       {
         id: "pav-dentist-profiles",

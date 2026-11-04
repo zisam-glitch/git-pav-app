@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, Linking } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
+import { dailyJoinUrl, openVideoCall } from "@/features/video/open-call";
 
-// The call itself runs in Daily's private room in the phone's browser: the app
-// asks the server for this appointment's room and a meeting token, and the
-// token is what lets the patient in (CS-07).
+// The call itself runs in Daily's private room, shown in an in-app browser
+// window over this screen: the app asks the server for this appointment's room
+// and a meeting token, and the token is what lets the patient in (CS-07).
 type Room = { url: string; token: string };
 
 export default function VideoCallScreen() {
@@ -55,8 +56,9 @@ export default function VideoCallScreen() {
     if (!room) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     try {
-      await Linking.openURL(`${room.url}?t=${encodeURIComponent(room.token)}`);
       setOpened(true);
+      // Resolves when the patient closes the call window and is back here.
+      await openVideoCall(dailyJoinUrl(room.url, room.token));
     } catch {
       setError("Your phone couldn't open the video call. Please try again.");
     }
@@ -88,7 +90,7 @@ export default function VideoCallScreen() {
           ) : (
             !loading && (
               <ThemedText variant="subhead" style={styles.subtitle}>
-                The call opens in your browser. Allow camera and microphone access when asked. Come back to this app when the call ends.
+                The call opens on top of this screen. Allow camera and microphone access when asked, and tap Done when the call ends.
               </ThemedText>
             )
           )}

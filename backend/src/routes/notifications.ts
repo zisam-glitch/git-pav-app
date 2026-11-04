@@ -71,20 +71,6 @@ router.post("/register-token", requireAuth, validateBody(registerPushTokenSchema
   });
 });
 
-// ─── DELETE /api/notifications/tokens/:token ────────────────────────────────
-// PP-2: Deactivate a device push token when user logs out or turns off notifications
-router.delete("/tokens/:token", requireAuth, async (req: AuthRequest, res: Response) => {
-  const token = String(req.params.token);
-  const userId = req.user!.sub;
-
-  const result = await prisma.pushToken.updateMany({
-    where: { token, userId },
-    data: { active: false },
-  });
-
-  return res.json({ message: "Push token deactivated", deactivated: result.count > 0 });
-});
-
 // ─── GET /api/notifications/preferences ─────────────────────────────────────
 router.get("/preferences", requireAuth, async (req: AuthRequest, res: Response) => {
   const userId = req.user!.sub;

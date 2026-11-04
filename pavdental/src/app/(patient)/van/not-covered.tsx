@@ -17,20 +17,14 @@ export default function VanNotCoveredScreen() {
     {
       icon: "plus" as const,
       title: "Visit a practice",
-      desc: "Nearest clinic is 4.2 miles away — same-day slots most days.",
-      route: "/(patient)/booking/clinic-picker" as const,
+      desc: "Book a visit at one of our clinics.",
+      route: "/(patient)/booking/service-catalog" as const,
     },
     {
       icon: "video" as const,
       title: "Video consult",
-      desc: "A dentist can assess, prescribe and refer — often within 15 minutes.",
-      route: "/(patient)/video/intake" as const,
-    },
-    {
-      icon: "bell" as const,
-      title: "Notify me when coverage expands",
-      desc: "The van route grows monthly — we'll email when your postcode is added.",
-      route: "/(patient)/(tabs)/home" as const,
+      desc: "Book a video appointment: a dentist can assess, prescribe and refer.",
+      route: "/(patient)/booking/service-catalog?channel=video" as const,
     },
   ];
 
@@ -45,8 +39,8 @@ export default function VanNotCoveredScreen() {
             The van doesn't reach you — yet
           </ThemedText>
           <ThemedText variant="subhead" style={styles.subtitle}>
-            Mobile dental visits currently cover a 15-mile radius around our
-            Central Practice. Your postcode sits just outside it.
+            Our dental vans only visit the areas they currently serve, and this
+            address isn't in one of them.
           </ThemedText>
         </View>
 
@@ -81,7 +75,7 @@ export default function VanNotCoveredScreen() {
         <Card elevation="flat" style={styles.routeNote}>
           <AppIcon name="mapPin" size={15} color={colors.secondaryLabel} />
           <ThemedText variant="caption" style={styles.routeNoteText}>
-            Routes are planned fortnightly — entering your postcode again later may give a different answer.
+            We add van areas over time, so it's worth checking your postcode again later.
           </ThemedText>
         </Card>
       </ScrollView>

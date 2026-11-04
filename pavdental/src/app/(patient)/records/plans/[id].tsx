@@ -15,6 +15,7 @@ import {
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { formatGbp } from "@/features/booking/booking-api";
 import { useBookingStore } from "@/features/booking/booking-store";
+import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
 
 // ─── Treatment plan detail — items, costs, progress, accept/decline ───────────
 // Reference pattern: Neo Financial Contract Confirmation & Aspen Clinical E-Sign.
@@ -26,7 +27,7 @@ export default function TreatmentPlanDetailScreen() {
   const insets = useSafeAreaInsets();
   const { id, signSheet } = useLocalSearchParams<{ id: string; signSheet?: string }>();
   const user = useCurrentUser();
-  const { setService } = useBookingStore();
+  const { setService, setChannel } = useBookingStore();
   const userId = user?.id || "";
   const { data: apiPlans, isLoading, isError, refetch } = useTreatmentPlans(userId);
   const { data: services = [] } = useServices();
@@ -220,7 +221,9 @@ export default function TreatmentPlanDetailScreen() {
 
     if (matchedService) {
       setService(matchedService);
-      router.push("/(patient)/booking/clinic-picker" as never);
+      const channel = bookingChannelFor(matchedService);
+      setChannel(channel);
+      router.push(firstBookingStep(channel) as never);
     } else {
       router.push("/(patient)/booking/service-catalog" as never);
     }

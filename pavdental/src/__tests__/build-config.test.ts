@@ -90,6 +90,18 @@ assert(
     /shift/i.test(locationOptions.locationAlwaysAndWhenInUsePermission ?? ""),
   "expo-location allows background updates during a shift and explains why (D-21)"
 );
+// Patients see the "while using" text when they check van coverage, so it must
+// give their reason too, not only the operator's (App Store guideline 5.1.1).
+const whenInUse: string = locationOptions.locationWhenInUsePermission ?? "";
+assert(/whether .*van/i.test(whenInUse) && /postcode/i.test(whenInUse), "location text tells patients why: van coverage and their postcode");
+assert(/shift/i.test(whenInUse), "location text still covers the operator's use during a shift");
+{
+  // The coverage screen asks only when the patient taps "Use my current location".
+  const coverage = fs.readFileSync(path.join(__dirname, "../app/(patient)/van/service-area.tsx"), "utf8");
+  const onOpen = coverage.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[\]\);/)?.[1] ?? "";
+  assert(!/request\w*Permission/.test(onOpen), "coverage screen doesn't ask for location as soon as it opens");
+  assert(/getForegroundPermissionsAsync/.test(onOpen), "coverage screen only reads an earlier answer when it opens");
+}
 const imagePickerPlugin = plugins.find((p: unknown) => Array.isArray(p) && p[0] === "expo-image-picker");
 assert(
   appConfig.ios?.infoPlist?.NSMicrophoneUsageDescription === undefined &&
@@ -200,4 +212,32 @@ assert(
   ".env.example documents local LAN IP configuration for physical devices"
 );
 
-console.log("\n🎉 ALL 17 CS-43 / RB-08 BUILD CONFIGURATION TESTS PASSED!\n");
+// Sentry's source-map upload runs in every native build and fails the build
+// without a Sentry org, project and token. A .env copied from the template has
+// none, so local builds must skip the upload; release builds must not.
+assert(
+  /^SENTRY_DISABLE_AUTO_UPLOAD=true$/m.test(envExampleContent),
+  ".env.example skips the Sentry upload, so `npx expo run:ios` builds without Sentry secrets"
+);
+for (const profile of ["preview", "production"] as const) {
+  const env = (easConfig.build?.[profile]?.env ?? {}) as Record<string, string>;
+  assert(env.SENTRY_DISABLE_AUTO_UPLOAD !== "true", `${profile} profile still uploads source maps to Sentry`);
+}
+
+// Apple Pay only works when the app asks Stripe for the same merchant ID the
+// iOS entitlement grants.
+{
+  const layout = fs.readFileSync(path.join(__dirname, "../app/_layout.tsx"), "utf8");
+  const ids = [...layout.matchAll(/merchantIdentifier="([^"]+)"/g)].map((m) => m[1]);
+  assert(ids.length > 0 && ids.every((id) => id === "merchant.com.pavdental.app"), `StripeProvider uses the entitled merchant ID: ${ids.join(", ")}`);
+}
+
+// Release builds never sign in a fake patient or show the role switcher:
+// both are for screenshot and simulator builds only.
+for (const profile of ["preview", "production"] as const) {
+  const env = (easConfig.build?.[profile]?.env ?? {}) as Record<string, string>;
+  assert(env.EXPO_PUBLIC_DEMO_LOGIN !== "true", `${profile} profile doesn't turn on the demo login`);
+  assert(env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER !== "true", `${profile} profile doesn't turn on the role switcher`);
+}
+
+console.log("\n🎉 ALL CS-43 / RB-08 BUILD CONFIGURATION TESTS PASSED!\n");

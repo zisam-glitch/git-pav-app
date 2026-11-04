@@ -9,9 +9,9 @@ import { useClinicians } from "@/features/hooks/use-dental-api";
 
 export default function ClinicianPickerScreen() {
   const router = useRouter();
-  const { setClinician } = useBookingStore();
+  const { setClinician, channel } = useBookingStore();
 
-  const { data: apiClinicians, isLoading, isError, refetch } = useClinicians();
+  const { data: apiClinicians, isLoading, isError, refetch } = useClinicians(channel ?? undefined);
   const clinicians: Clinician[] = apiClinicians ?? [];
 
   const handleSelectClinician = (clinician: Clinician | null) => {

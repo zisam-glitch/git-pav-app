@@ -3,11 +3,14 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge, ErrorState, Skeleton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { useOralHealthInsights } from "@/features/hooks/use-dental-api";
+import { useLogBrushingMutation, useOralHealthInsights } from "@/features/hooks/use-dental-api";
+import { currentBrushingSlot } from "@/features/records/brushing";
 
 export default function OralHealthInsightsScreen() {
   const router = useRouter();
   const { data: insightsData, isLoading, isError, refetch } = useOralHealthInsights();
+  const logBrushing = useLogBrushingMutation();
+  const slot = currentBrushingSlot();
 
   // Every figure here comes from the API. Clinical measurements (plaque,
   // bleeding on probing, recall) are only shown when a clinician recorded them;
@@ -108,6 +111,19 @@ export default function OralHealthInsightsScreen() {
           {weeklyData.length === 0 ? (
             <ThemedText variant="body" style={styles.muted}>
               No brushing sessions logged yet.
+            </ThemedText>
+          ) : null}
+
+          <Button
+            title={slot.session === "am" ? "Log this morning's brush (2 min)" : "Log this evening's brush (2 min)"}
+            variant="secondary"
+            size="sm"
+            loading={logBrushing.isPending}
+            onPress={() => logBrushing.mutate({ ...slot, durationSec: 120 })}
+          />
+          {logBrushing.isError ? (
+            <ThemedText variant="caption" style={styles.muted} accessibilityRole="alert">
+              That didn't save. Please try again.
             </ThemedText>
           ) : null}
 

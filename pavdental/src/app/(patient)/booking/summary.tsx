@@ -6,7 +6,13 @@ import { useStripe } from "@stripe/stripe-react-native";
 import { ThemedText, Card, Button, AppIcon, ProgressPills, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
-import { formatGbp, createAppointment, createPaymentIntent, newBookingAttemptKey } from "@/features/booking/booking-api";
+import {
+  formatGbp,
+  createAppointment,
+  createPaymentIntent,
+  confirmAppointment,
+  newBookingAttemptKey,
+} from "@/features/booking/booking-api";
 import { useRewards } from "@/features/hooks/use-dental-api";
 import { useDependants } from "@/features/account/account-hooks";
 
@@ -114,10 +120,11 @@ export default function BookingSummaryScreen() {
       // 1. Create draft appointment
       const appt = await createAppointment({
         serviceId: service.id,
-        // This flow books clinic visits; video and van have their own flows.
+        // Clinic visits and video consults are booked here; van visits use the
+        // van dispatch flow.
         channel: channel ?? "clinic",
         clinicianId: clinician?.id ?? slot.clinicianId,
-        clinicId: clinic?.id ?? slot.clinicId,
+        clinicId: channel === "video" ? undefined : clinic?.id ?? slot.clinicId,
         startTimeUtc: startTime,
         endTimeUtc: endTime,
         slotId: slot.id,
@@ -126,6 +133,16 @@ export default function BookingSummaryScreen() {
 
       // 2. Create PaymentIntent on the server — amount is server-authoritative
       const intent = await createPaymentIntent(appt.id, useVoucher && voucherFits ? voucher!.voucherCode : undefined);
+
+      // Local development runs Stripe in mock mode: there is no card to take,
+      // so the server confirms the mock intent directly (never reachable when
+      // deployed: the server rejects mock keys in staging and production).
+      if (intent.isMock) {
+        await confirmAppointment(appt.id, intent.paymentIntentId);
+        setIsProcessing(false);
+        router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as never);
+        return;
+      }
 
       // 3. Validate that we have a real payment intent
       if (!intent.clientSecret) {
@@ -180,7 +197,10 @@ export default function BookingSummaryScreen() {
         return;
       }
 
-      // 6. Payment collected — Stripe webhook will confirm the appointment server-side
+      // 6. Payment collected. Ask the server to confirm now; the Stripe webhook
+      // confirms the same way, so if this call fails the webhook still will
+      // and the confirmed screen waits for it.
+      await confirmAppointment(appt.id, intent.paymentIntentId).catch(() => {});
       setIsProcessing(false);
       router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);
     } catch (err: any) {
@@ -262,10 +282,10 @@ export default function BookingSummaryScreen() {
 
           <View style={styles.row}>
             <ThemedText variant="subhead" style={styles.label}>
-              Practice:
+              {channel === "video" ? "Where:" : "Practice:"}
             </ThemedText>
             <ThemedText variant="body" style={styles.value}>
-              {clinic?.name || "Pav Dental Clinic"}
+              {channel === "video" ? "Video consultation" : clinic?.name ?? "—"}
             </ThemedText>
           </View>
 

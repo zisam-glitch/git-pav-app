@@ -1,6 +1,7 @@
 import { env } from "../config/env";
 import { maskEmail, maskPhone, safeError } from "./log-safety";
 import { prisma } from "./prisma";
+import { isPlaceholderCredential } from "../config/placeholder";
 
 export interface SendEmailOptions {
   to: string;
@@ -38,7 +39,7 @@ export class CommunicationService {
   }
 
   async sendEmail(options: SendEmailOptions): Promise<{ success: boolean; messageId?: string }> {
-    if (this.postmarkToken && !this.postmarkToken.startsWith("mock")) {
+    if (this.postmarkToken && !isPlaceholderCredential(this.postmarkToken) && !this.postmarkToken.startsWith("mock")) {
       try {
         const response = await fetch("https://api.postmarkapp.com/email", {
           method: "POST",
@@ -92,7 +93,14 @@ export class CommunicationService {
   }
 
   async sendSms(options: SendSmsOptions): Promise<{ success: boolean; sid?: string }> {
-    if (this.twilioSid && this.twilioToken && this.twilioFrom && !this.twilioSid.startsWith("mock")) {
+    if (
+      this.twilioSid &&
+      this.twilioToken &&
+      this.twilioFrom &&
+      !isPlaceholderCredential(this.twilioSid) &&
+      !isPlaceholderCredential(this.twilioToken) &&
+      !this.twilioSid.startsWith("mock")
+    ) {
       try {
         const auth = Buffer.from(`${this.twilioSid}:${this.twilioToken}`).toString("base64");
         const body = new URLSearchParams({

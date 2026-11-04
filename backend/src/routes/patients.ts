@@ -16,7 +16,7 @@ import {
   requestPhoneChangeSchema,
   verifyPhoneChangeSchema,
 } from "../schemas/patients";
-import { otpService, rateLimiter } from "../lib/otp-service";
+import { otpService, phoneChangePurpose, rateLimiter } from "../lib/otp-service";
 import { objectStorage } from "../lib/object-storage";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
@@ -152,7 +152,7 @@ router.put("/:id/profile", requireAuth, validateParams(patientIdParamsSchema), v
   let newPhoneVerified = existingUser?.phoneVerified ?? false;
   if (phone !== undefined && phone !== existingUser?.phone) {
     if (phoneOtp) {
-      const valid = await otpService.verifyOTP(profile.userId, phoneOtp, "phone_change");
+      const valid = await otpService.verifyOTP(profile.userId, phoneOtp, phoneChangePurpose(phone));
       if (!valid) {
         return res.status(400).json({ error: "Invalid or expired phone verification code" });
       }
@@ -224,7 +224,7 @@ router.post("/:id/phone/request", requireAuth, validateParams(patientIdParamsSch
   const { delivered } = await otpService.createAndSendOTP({
     userId: profile.userId,
     phone: newPhone,
-    purpose: "phone_change",
+    purpose: phoneChangePurpose(newPhone),
     deliveryMethod: "sms",
   });
 
@@ -248,7 +248,8 @@ router.post("/:id/phone/verify", requireAuth, validateParams(patientIdParamsSche
     return res.status(429).json({ error: "Too many attempts. Please try again later." });
   }
 
-  const valid = await otpService.verifyOTP(profile.userId, code, "phone_change");
+  // The code only verifies the number it was sent to.
+  const valid = await otpService.verifyOTP(profile.userId, code, phoneChangePurpose(newPhone));
   if (!valid) {
     return res.status(400).json({ error: "Invalid or expired verification code" });
   }

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { validateBody } from "../middleware/validate";
 import { vanCoverageCheckSchema } from "../schemas/van";
-import { Point, postcodeToCoordinates } from "../lib/geo";
+import { Point, coordinatesToPostcode, formatUkPostcode, postcodeToCoordinates } from "../lib/geo";
 import { findCoveringVans } from "../lib/van-coverage";
 
 const router = Router();
@@ -21,6 +21,9 @@ router.post("/coverage-check", validateBody(vanCoverageCheckSchema), async (req:
     // GPS coordinates provided (preferred)
     checkPoint = { lat, lng };
     inputType = "gps";
+    // The van request needs a real postcode for the address, so find the one
+    // nearest the patient (null if the lookup fails; they can type it in).
+    processedPostcode = await coordinatesToPostcode(checkPoint);
   } else if (postcode) {
     // Postcode provided (fallback)
     const clean = String(postcode).toUpperCase().replace(/\s/g, "");
@@ -53,7 +56,8 @@ router.post("/coverage-check", validateBody(vanCoverageCheckSchema), async (req:
   const bestMatch = coverageResults[0] || null;
 
   return res.json({
-    postcode: processedPostcode,
+    // Always a real postcode ("SW1A 1AA") or null, never the sector name.
+    postcode: processedPostcode ? formatUkPostcode(processedPostcode) : null,
     coordinates: checkPoint,
     isCovered: !!bestMatch,
     assignedVan: bestMatch?.vanName ?? null,

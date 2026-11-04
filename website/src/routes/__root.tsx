@@ -1,6 +1,4 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { AuthProvider } from "@/lib/auth/provider";
-import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { QueryProvider } from "@/lib/query-provider";
 import { CookieConsent } from "@/components/home/cookie-consent";
 import appCss from "../styles.css?url";
@@ -19,12 +17,24 @@ export const Route = createRootRoute({
           "PavDental Bradford — complete dental check-up from £35. Same-day emergency care, 24/7. GDC registered.",
       },
       { name: "theme-color", content: "#f6f1ea" },
+      { name: "apple-mobile-web-app-title", content: "Pav Dental" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Pav Dental" },
+      { property: "og:title", content: APP_NAME },
+      {
+        property: "og:description",
+        content: "Complete dental check-up from £35. Same-day emergency care, 24/7. GDC registered.",
+      },
+      { property: "og:image", content: "/og.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -39,13 +49,10 @@ export const Route = createRootRoute({
         <HeadContent />
       </head>
       <body className="bg-bg text-fg">
-        <PreviewHostBridge />
-        <AuthProvider>
-          <QueryProvider>
-            <Outlet />
-            <CookieConsent />
-          </QueryProvider>
-        </AuthProvider>
+        <QueryProvider>
+          <Outlet />
+          <CookieConsent />
+        </QueryProvider>
         <Scripts />
       </body>
     </html>

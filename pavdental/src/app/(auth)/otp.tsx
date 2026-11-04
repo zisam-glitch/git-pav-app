@@ -80,7 +80,7 @@ export default function OtpScreen() {
 
           <View style={styles.header}>
             <ThemedText variant="largeTitle" style={styles.title}>
-              {step === "phone" ? "Phone Sign In" : "Verification"}
+              {step === "phone" ? "Phone sign in" : "Verification"}
             </ThemedText>
             <ThemedText variant="subhead" style={styles.subtitle}>
               {step === "phone"
@@ -228,19 +228,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: spacing.xs,
   },
+  // Wise code entry: white boxes with a grey border, forest when active
   otpBox: {
     width: 48,
     height: 56,
-    borderRadius: radius.lg,
-    backgroundColor: colors.inkSubtle,
-    borderWidth: 1.5,
-    borderColor: "transparent",
+    borderRadius: radius.sm,
+    backgroundColor: colors.tertiaryBackground,
+    borderWidth: 1,
+    borderColor: colors.inputUnderline,
     alignItems: "center",
     justifyContent: "center",
   },
   otpBoxActive: {
     borderColor: colors.ink,
-    backgroundColor: colors.systemBackground,
+    borderWidth: 2,
+    backgroundColor: colors.tertiaryBackground,
   },
   otpBoxFilled: {
     backgroundColor: colors.inkSubtle,

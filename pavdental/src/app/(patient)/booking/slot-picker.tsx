@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ThemedText, Button, ProgressPills, ChipPill, Toast, QueryState, IconButton } from "@/components";
+import { ThemedText, Button, FlowHeader, ChipPill, Toast, QueryState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { TimeSlot } from "@/features/booking/booking-types";
@@ -107,16 +107,7 @@ export default function SlotPickerScreen() {
 
       {/* Top Navigation */}
       <View style={styles.topNav}>
-        <IconButton
-          icon="arrowLeft"
-          label="Go back"
-          variant="soft"
-          size={22}
-          onPress={() => router.back()}
-        />
-        <View style={styles.progressWrap}>
-          <ProgressPills total={5} current={4} />
-        </View>
+        <FlowHeader step={{ current: 4, total: 5 }} />
       </View>
 
       {/* Date Selector Row */}
@@ -277,7 +268,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   datePillActive: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   dateScroll: {
     alignItems: "center",
@@ -290,16 +281,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   dateTextActive: {
-    color: colors.onInk,
+    color: colors.onAccent,
   },
   footerBar: {
     backgroundColor: colors.background,
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.sm,
-  },
-  progressWrap: {
-    flex: 1,
-    marginLeft: spacing.md,
   },
   quickRow: {
     flexDirection: "row",
@@ -324,20 +311,18 @@ const styles = StyleSheet.create({
     width: "31%",
   },
   slotItemSelected: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   slotTime: {
     color: colors.label,
     fontWeight: "600",
   },
   slotTimeSelected: {
-    color: colors.alwaysWhite,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   topNav: {
-    alignItems: "center",
-    flexDirection: "row",
     paddingHorizontal: spacing.gutter,
     paddingTop: spacing.xs,
     paddingBottom: spacing.xs,

@@ -81,7 +81,7 @@ export default function VideoIntakeScreen() {
         {/* Pain Severity Scale */}
         <View style={styles.section}>
           <ThemedText variant="headline">
-            Pain Severity: {painLevel} / 10
+            Pain severity: {painLevel} / 10
           </ThemedText>
           <ThemedText variant="caption" style={styles.sub}>
             1 = Mild discomfort, 10 = Severe, unmanageable pain
@@ -222,8 +222,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   durationItemActive: {
-    backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   durationList: {
     flexDirection: "row",
@@ -234,7 +233,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   durationTextActive: {
-    color: colors.ink,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   errorBox: {
@@ -262,7 +261,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   painPillSelected: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   painRow: {
     flexDirection: "row",
@@ -274,7 +273,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   painTextSelected: {
-    color: colors.onInk,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   section: {

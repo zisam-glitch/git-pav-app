@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,7 +8,8 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { setStatusBarStyle } from "expo-status-bar";
 import { ThemedText, Input, Button, AppIcon, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
@@ -16,6 +17,20 @@ import { useAuthStore } from "@/features/auth/auth-store";
 import { getMobilePortalPath } from "@/features/auth/auth-routing";
 
 export default function WelcomeScreen() {
+  // Light status bar on the forest-green launch screen, only while it's in
+  // front: this screen stays mounted under sign-in and sign-up. Deferred a
+  // tick: on a cold start the root layout's dark StatusBar mounts after this
+  // screen and would otherwise win.
+  useFocusEffect(
+    useCallback(() => {
+      const t = setTimeout(() => setStatusBarStyle("light"), 0);
+      return () => {
+        clearTimeout(t);
+        setStatusBarStyle("dark");
+      };
+    }, [])
+  );
+
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [showEmailSheet, setShowEmailSheet] = useState(false);
@@ -89,7 +104,7 @@ export default function WelcomeScreen() {
         {/* Centred wordmark, as on the reference splash */}
         <View style={styles.brandGroup} accessibilityRole="header" accessibilityLabel="Pav Dental">
           <View style={styles.brandIconBox}>
-            <AppIcon name="tooth" size={28} color={colors.alwaysBlack} />
+            <AppIcon name="tooth" size={28} color={colors.ink} />
           </View>
           <ThemedText variant="largeTitle" style={styles.brandName}>
             Pav Dental
@@ -99,11 +114,11 @@ export default function WelcomeScreen() {
         {/* Bottom Container: Either the Hero Swipe to Start, or the Email Sheet */}
         {!showEmailSheet ? (
           <View style={[styles.bottomContent, { paddingBottom: Math.max(spacing.lg, insets.bottom) }]}>
-            <Button title="Log in" variant="inverse" onPress={handleStart} />
+            <Button title="Log in" variant="primary" onPress={handleStart} />
             <Button
               title="Create an account"
+              variant="inverse"
               onPress={() => router.push("/(auth)/sign-up" as never)}
-              style={styles.createBtn}
             />
           </View>
         ) : (
@@ -208,12 +223,10 @@ const styles = StyleSheet.create({
     fontSize: 40,
     lineHeight: 46,
   },
+  // Wise launch screen: forest green
   container: {
-    backgroundColor: colors.alwaysBlack,
+    backgroundColor: colors.ink,
     flex: 1,
-  },
-  createBtn: {
-    backgroundColor: colors.inkSoft,
   },
   continueBtn: {
     marginTop: spacing.md,

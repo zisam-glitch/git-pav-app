@@ -16,7 +16,7 @@ import { AppIcon, type AppIconName } from "./app-icon";
 type ToastTone = "success" | "error" | "info";
 
 const toneMap: Record<ToastTone, { icon: AppIconName; color: string }> = {
-  success: { icon: "checkCircle", color: colors.successFill },
+  success: { icon: "checkCircle", color: colors.accent },
   error: { icon: "alert", color: colors.dangerSubtle },
   info: { icon: "info", color: colors.onInk },
 };
@@ -70,7 +70,7 @@ export function Toast({ message, tone = "info", duration = 3000, onDismiss }: To
         accessibilityLabel={message}
       >
         <AppIcon name={t.icon} size={22} color={t.color} />
-        <ThemedText variant="subhead" style={styles.text} numberOfLines={2}>
+        <ThemedText variant="subhead" style={styles.text} numberOfLines={3}>
           {message}
         </ThemedText>
         {onDismiss ? (

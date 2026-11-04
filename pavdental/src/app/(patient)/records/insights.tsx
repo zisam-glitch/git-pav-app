@@ -332,7 +332,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 1,
   },
   gaugesGrid: {
     flexDirection: "row",
@@ -377,7 +376,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 1,
   },
   recallTarget: {
     color: colors.secondaryLabel,

@@ -5,7 +5,7 @@
 import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
-import { decodePolyline, MAP_MAX_ZOOM, trackingSheet, trackingView } from "../features/van/tracking";
+import { decodePolyline, MAP_MAX_ZOOM, trackingSheet, trackingView, vanIsAssigned } from "../features/van/tracking";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -101,6 +101,9 @@ assert(screen.includes("{vanComing ? ("), "the fallback panel only draws a van t
 const sheetBase = { queuePosition: 1, route: null, etaSeconds: null, etaSecondsSnapshot: 480, etaLabel: "5–15 min" };
 const sPending = trackingSheet({ ...sheetBase, status: "pending", phase: "queued" });
 assert(sPending.step === 0 && sPending.etaMinutes === 8, "pending: first step, ETA from the dispatch estimate");
+assert(sPending.etaIsEstimate === true, "pending: the time is marked as an estimate");
+assert(vanIsAssigned("accepted") && vanIsAssigned("in_progress") && vanIsAssigned("completed"), "a van is named once an operator has accepted");
+assert(!vanIsAssigned("pending") && !vanIsAssigned("declined") && !vanIsAssigned("expired") && !vanIsAssigned("cancelled"), "no van is named before acceptance or when none took the visit");
 const sQueued = trackingSheet({ ...sheetBase, status: "accepted", phase: "queued", queuePosition: 3 });
 assert(sQueued.step === 1 && sQueued.title.includes("#3"), "queued: says where the patient is in line");
 const sDriving = trackingSheet({

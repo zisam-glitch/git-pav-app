@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ThemedText, Card, Button } from "@/components";
+import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 
@@ -42,7 +42,8 @@ export default function VideoSummaryScreen() {
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.header}>
             <View style={styles.checkBadge}>
-              <ThemedText variant="headline">✓ Completed</ThemedText>
+              <AppIcon name="checkCircle" size={20} color={colors.success} />
+              <ThemedText variant="headline">Completed</ThemedText>
             </View>
             <ThemedText variant="largeTitle" style={styles.title}>
               Consultation summary
@@ -166,6 +167,9 @@ const styles = StyleSheet.create({
     color: colors.label,
   },
   checkBadge: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xxs,
     alignSelf: "flex-start",
     backgroundColor: colors.successSubtle,
     borderRadius: radius.sm,

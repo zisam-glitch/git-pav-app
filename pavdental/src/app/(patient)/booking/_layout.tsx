@@ -6,7 +6,7 @@ export default function BookingLayout() {
     <Stack
       screenOptions={stackScreenOptions}
     >
-      <Stack.Screen name="service-catalog" options={{ title: "Select treatment", headerTitle: "" }} />
+      <Stack.Screen name="service-catalog" options={{ title: "Select treatment", headerShown: false }} />
       <Stack.Screen name="clinic-picker" options={{ title: "Choose practice", headerShown: false }} />
       <Stack.Screen name="clinician-picker" options={{ title: "Choose practitioner", headerShown: false }} />
       <Stack.Screen name="provider-profile" options={{ title: "Practitioner profile" }} />

@@ -380,8 +380,6 @@ const styles = StyleSheet.create({
   },
   coveredCard: {
     backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
-    borderWidth: 1.5,
     gap: spacing.xs,
     padding: spacing.md,
   },

@@ -11,8 +11,8 @@ interface SectionHeaderProps {
 }
 
 /**
- * SectionHeader — grey sentence-case label above a grouped card, with an
- * optional blue trailing action (reference pattern: "Promotions · See all").
+ * SectionHeader — grey sentence-case label above a group, with an optional
+ * trailing action as an underlined forest-green link (Wise: "Transfer details · Change").
  */
 export function SectionHeader({ title, actionLabel, onAction }: SectionHeaderProps) {
   return (
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   actionText: {
-    color: colors.info,
-    fontWeight: "500",
+    color: colors.ink,
+    fontWeight: "700",
+    textDecorationLine: "underline",
   },
 });

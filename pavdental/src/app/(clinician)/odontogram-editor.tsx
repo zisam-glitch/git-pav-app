@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button } from "@/components";
+import { ThemedText, Card, Badge, Button, IconButton, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchOdontogram, updateOdontogram, fetchOdontogramHistory } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
@@ -42,7 +42,10 @@ export default function OdontogramEditorScreen() {
   // Initialize 32 teeth
   useEffect(() => {
     async function loadData() {
-      if (!patientId) return;
+      if (!patientId) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -145,12 +148,7 @@ export default function OdontogramEditorScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Patient file"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to patient file" variant="soft" onPress={() => router.back()} />
           <Button
             title={showHistory ? "View chart" : "View history"}
             variant="ghost"
@@ -163,15 +161,18 @@ export default function OdontogramEditorScreen() {
           <ThemedText variant="title" style={styles.title}>
             Odontogram editor
           </ThemedText>
-          <ThemedText variant="caption" style={styles.subtitle}>
-            Patient: {params.patientName || "Verified Patient"}
-          </ThemedText>
+          {params.patientName ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Patient: {params.patientName}
+            </ThemedText>
+          ) : null}
         </View>
 
         {successMessage ? (
           <Card elevation="flat" style={styles.successBanner}>
+            <AppIcon name="checkCircle" size={18} color={colors.success} />
             <ThemedText variant="body" style={styles.successText}>
-              ✓ {successMessage}
+              {successMessage}
             </ThemedText>
           </Card>
         ) : null}
@@ -184,7 +185,9 @@ export default function OdontogramEditorScreen() {
           </Card>
         ) : null}
 
-        {loading ? (
+        {!patientId ? (
+          <ErrorState message="Open the dental chart from a patient's appointment. There is no patient selected." />
+        ) : loading ? (
           <Card elevation="flat" style={styles.loadingCard}>
             <ActivityIndicator color={colors.ink} size="small" />
             <ThemedText variant="body" style={styles.loadingText}>
@@ -238,7 +241,7 @@ export default function OdontogramEditorScreen() {
             {/* Tooth Grid */}
             <Card style={styles.chartCard}>
               <ThemedText variant="caption" style={styles.archLabel}>
-                MAXILLARY ARCH (UPPER JAW: 1 - 16)
+                Maxillary arch (upper jaw: 1 - 16)
               </ThemedText>
               <View style={styles.teethRow}>
                 {Array.from({ length: 16 }, (_, i) => i + 1).map((num) => {
@@ -265,7 +268,7 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={[styles.archLabel, { marginTop: spacing.md }]}>
-                MANDIBULAR ARCH (LOWER JAW: 17 - 32)
+                Mandibular arch (lower jaw: 17 - 32)
               </ThemedText>
               <View style={styles.teethRow}>
                 {Array.from({ length: 16 }, (_, i) => i + 17).map((num) => {
@@ -296,7 +299,7 @@ export default function OdontogramEditorScreen() {
             <Card style={styles.card}>
               <View style={styles.inspectorHeader}>
                 <ThemedText variant="headline" style={styles.sectionHeading}>
-                  Tooth #{selectedTooth} Details
+                  Tooth #{selectedTooth} details
                 </ThemedText>
                 <Badge
                   label={toLabel(teethState[selectedTooth]?.condition || "healthy")}
@@ -311,14 +314,15 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={styles.label}>
-                CONDITION:
+                Condition
               </ThemedText>
               <View style={styles.conditionRow}>
                 {TOOTH_CONDITIONS.map((cond) => {
                   const isActive = teethState[selectedTooth]?.condition === cond;
                   return (
-                    <TouchableOpacity accessibilityRole="radio" accessibilityLabel={cond} accessibilityState={{ selected: isActive }}
+                    <TouchableOpacity accessibilityRole="radio" accessibilityLabel={toLabel(cond)} accessibilityState={{ selected: isActive }}
                       key={cond}
+                      hitSlop={{ top: 4, bottom: 4 }}
                       style={[styles.condChip, isActive && styles.condChipActive]}
                       onPress={() => handleConditionChange(cond)}
                     >
@@ -326,7 +330,7 @@ export default function OdontogramEditorScreen() {
                         variant="caption"
                         style={[styles.condChipText, isActive && styles.condChipTextActive]}
                       >
-                        {cond}
+                        {toLabel(cond)}
                       </ThemedText>
                     </TouchableOpacity>
                   );
@@ -334,7 +338,7 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={[styles.label, { marginTop: spacing.sm }]}>
-                CLINICAL NOTES:
+                Clinical notes
               </ThemedText>
               <TextInput
                 style={styles.textInput}
@@ -367,7 +371,6 @@ const styles = StyleSheet.create({
   archLabel: {
     color: colors.secondaryLabel,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   card: {
     backgroundColor: colors.systemBackground,
@@ -379,21 +382,26 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     padding: spacing.md,
   },
+  // Outlined white pill so it shows on the grey card; accent when chosen.
   condChip: {
-    backgroundColor: colors.systemBackground,
-    borderRadius: radius.sm,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    alignItems: "center",
+    backgroundColor: colors.background,
+    borderColor: colors.inputUnderline,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    justifyContent: "center",
+    minHeight: 36,
+    paddingHorizontal: spacing.sm,
   },
   condChipActive: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   condChipText: {
     color: colors.label,
   },
   condChipTextActive: {
-    color: colors.systemBackground,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   conditionRow: {
@@ -484,6 +492,9 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
   },
   successBanner: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.inkSubtle,
     padding: spacing.sm,
   },
@@ -499,12 +510,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   textInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     minHeight: 64,
     padding: spacing.sm,
     textAlignVertical: "top",
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   title: {
     color: colors.label,

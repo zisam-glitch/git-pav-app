@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
@@ -9,6 +10,7 @@ import { useMyAppointments } from "@/features/hooks/use-dental-api";
 // Confirms what happened, when the refund lands, and offers one-tap rebook.
 
 export default function CancelledAppointmentScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { appointmentId, refundAmountPence, policyNotice } = useLocalSearchParams<{
     appointmentId?: string;
@@ -23,7 +25,7 @@ export default function CancelledAppointmentScreen() {
   const refundPence = Number(refundAmountPence) || 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
           <View style={styles.markTile}>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
   markTile: {
     alignItems: "center",
     backgroundColor: colors.dangerSubtle,
-    borderRadius: radius.xl,
+    borderRadius: radius.full,
     height: 64,
     justifyContent: "center",
     marginBottom: spacing.xxs,

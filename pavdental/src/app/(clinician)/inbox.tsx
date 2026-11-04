@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-n
 import * as Haptics from "expo-haptics";
 import {
   ThemedText,
+  SegmentedControl,
   Card,
   EmptyState,
   ErrorState,
@@ -143,28 +144,15 @@ export default function ClinicianInboxScreen() {
         </ThemedText>
       </View>
 
-      {/* Filter Tabs */}
-      <View style={styles.tabsRow}>
-        <Pressable
-          accessibilityRole="tab"
-          accessibilityLabel="All messages"
-          onPress={() => setFilter("all")}
-          style={[styles.tab, filter === "all" && styles.tabActive]}
-        >
-          <ThemedText variant="subhead" style={[styles.tabText, filter === "all" && styles.tabTextActive]}>
-            All ({threads.length})
-          </ThemedText>
-        </Pressable>
-        <Pressable
-          accessibilityRole="tab"
-          accessibilityLabel="Unread messages"
-          onPress={() => setFilter("unread")}
-          style={[styles.tab, filter === "unread" && styles.tabActive]}
-        >
-          <ThemedText variant="subhead" style={[styles.tabText, filter === "unread" && styles.tabTextActive]}>
-            Unread {unreadCount > 0 ? `(${unreadCount})` : ""}
-          </ThemedText>
-        </Pressable>
+      <View style={styles.segmentWrap}>
+        <SegmentedControl
+          segments={[
+            { key: "all", label: `All (${threads.length})` },
+            { key: "unread", label: unreadCount > 0 ? `Unread (${unreadCount})` : "Unread" },
+          ]}
+          value={filter}
+          onChange={setFilter}
+        />
       </View>
 
       {/* Search Input */}
@@ -329,6 +317,10 @@ export default function ClinicianInboxScreen() {
 }
 
 const styles = StyleSheet.create({
+  segmentWrap: {
+    paddingHorizontal: spacing.gutter,
+    paddingVertical: spacing.xs,
+  },
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -356,28 +348,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 11,
     lineHeight: 15,
-  },
-  tabsRow: {
-    borderBottomColor: colors.separator,
-    borderBottomWidth: 1,
-    flexDirection: "row",
-    marginHorizontal: spacing.gutter,
-  },
-  tab: {
-    borderBottomColor: "transparent",
-    borderBottomWidth: 2,
-    paddingHorizontal: spacing.gutter,
-    paddingVertical: spacing.sm,
-  },
-  tabActive: {
-    borderBottomColor: colors.ink,
-  },
-  tabText: {
-    color: colors.tertiaryLabel,
-  },
-  tabTextActive: {
-    color: colors.ink,
-    fontWeight: "600",
   },
   searchContainer: {
     marginHorizontal: spacing.gutter,

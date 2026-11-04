@@ -1,8 +1,8 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, Alert, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThemedText, Card, Badge, Button, ErrorState, Skeleton } from "@/components";
+import { ThemedText, Card, Badge, Button, ErrorState, Skeleton, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchCurrentShift, updatePhase, optimizeRoute, reorderQueue } from "@/features/van/van-api";
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
@@ -109,11 +109,11 @@ export default function OperatorRouteScreen() {
   const getPhaseBadge = (phase: VanStopPhase) => {
     switch (phase) {
       case "en_route":
-        return <Badge label="🚗 EN ROUTE" variant="info" />;
+        return <Badge label="En route" variant="info" />;
       case "on_site":
-        return <Badge label="📍 ON SITE" variant="warning" />;
+        return <Badge label="On site" variant="warning" />;
       case "in_treatment":
-        return <Badge label="🦷 IN TREATMENT" variant="success" />;
+        return <Badge label="In treatment" variant="success" />;
       default:
         return <Badge label="Queued" variant="default" />;
     }
@@ -146,7 +146,7 @@ export default function OperatorRouteScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <View style={styles.vanBadgeRow}>
-            <Badge label={van?.name ?? "Live Dispatch"} variant="info" />
+            <Badge label={van?.name ?? "Live dispatch"} variant="info" />
             <ThemedText variant="caption" style={styles.shiftText}>
               Status: {shift?.status ? toLabel(shift.status) : "Offline"}
             </ThemedText>
@@ -159,7 +159,7 @@ export default function OperatorRouteScreen() {
           </View>
           <View style={styles.titleRow}>
             <ThemedText variant="largeTitle" style={styles.title}>
-              Live Queue ({queue.length} Stop{queue.length !== 1 ? "s" : ""})
+              Live queue ({queue.length} stop{queue.length !== 1 ? "s" : ""})
             </ThemedText>
             {queue.filter((s) => s.phase === "queued").length > 1 ? (
               <Button
@@ -179,7 +179,7 @@ export default function OperatorRouteScreen() {
           {gpsError ? (
             <View style={styles.gpsWarning}>
               <ThemedText variant="caption" style={styles.gpsWarningText}>
-                ⚠️ {gpsError}
+                {gpsError}
               </ThemedText>
             </View>
           ) : null}
@@ -217,43 +217,31 @@ export default function OperatorRouteScreen() {
                     <View style={styles.stopBadgeRow}>
                       <View style={styles.stopBadge}>
                         <ThemedText variant="caption" style={styles.stopNum}>
-                          STOP #{index + 1}
+                          Stop {index + 1}
                         </ThemedText>
                       </View>
                       {!isPinned ? (
                         <View style={styles.reorderRow}>
-                          <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={`Move stop ${index + 1} up`}
-                            hitSlop={8}
+                          <IconButton
+                            icon="arrowUp"
+                            label={`Move stop ${index + 1} up`}
+                            variant="soft"
+                            size={18}
                             disabled={index === 0 || reorderMutation.isPending}
                             onPress={() => moveStop(index, -1)}
-                          >
-                            <ThemedText
-                              variant="caption"
-                              style={[styles.reorderArrow, (index === 0 || reorderMutation.isPending) && styles.reorderDisabled]}
-                            >
-                              ▲
-                            </ThemedText>
-                          </Pressable>
-                          <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={`Move stop ${index + 1} down`}
-                            hitSlop={8}
+                          />
+                          <IconButton
+                            icon="arrowDown"
+                            label={`Move stop ${index + 1} down`}
+                            variant="soft"
+                            size={18}
                             disabled={index === queue.length - 1 || reorderMutation.isPending}
                             onPress={() => moveStop(index, 1)}
-                          >
-                            <ThemedText
-                              variant="caption"
-                              style={[styles.reorderArrow, (index === queue.length - 1 || reorderMutation.isPending) && styles.reorderDisabled]}
-                            >
-                              ▼
-                            </ThemedText>
-                          </Pressable>
+                          />
                         </View>
                       ) : (
                         <ThemedText variant="caption" style={styles.pinnedLabel}>
-                          🔒 pinned
+                          Pinned
                         </ThemedText>
                       )}
                     </View>
@@ -268,7 +256,7 @@ export default function OperatorRouteScreen() {
                       {address}
                     </ThemedText>
                     <ThemedText variant="caption" style={styles.parking}>
-                      🅿️ {s.accessDetails?.parkingType?.replace("_", " ")}
+                      Parking: {s.accessDetails?.parkingType?.replace("_", " ")}
                       {s.accessDetails?.gateCode ? ` · Gate: ${s.accessDetails.gateCode}` : ""}
                     </ThemedText>
                     <ThemedText variant="caption" style={styles.procedure}>
@@ -371,11 +359,12 @@ export default function OperatorRouteScreen() {
         {__DEV__ && process.env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER === "true" ? (
           <Card style={styles.roleCard}>
             <ThemedText variant="caption" style={styles.roleHint}>
-              🔄 Switch Mobile Portal (Demo Verification)
+              Switch mobile portal (Demo Verification)
             </ThemedText>
             <View style={styles.roleBtnRow}>
               <Button
-                title="‹ Patient portal"
+                title="Patient portal"
+                icon={<AppIcon name="arrowLeft" size={16} color={colors.ink} />}
                 variant="secondary"
                 size="sm"
                 onPress={() => {
@@ -427,9 +416,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     padding: spacing.md,
   },
+  // Marks the stop to drive to next; a hairline, not a heavy frame.
   cardNext: {
     borderColor: colors.ink,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   container: {
     backgroundColor: colors.background,
@@ -440,12 +430,6 @@ const styles = StyleSheet.create({
   },
   pinnedLabel: {
     color: colors.secondaryLabel,
-  },
-  reorderArrow: {
-    color: colors.ink,
-  },
-  reorderDisabled: {
-    color: colors.separator,
   },
   reorderRow: {
     flexDirection: "row",

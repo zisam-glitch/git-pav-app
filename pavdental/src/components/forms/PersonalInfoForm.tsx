@@ -75,7 +75,7 @@ export function PersonalInfoForm({
       {email ? (
         <View style={styles.section}>
           <ThemedText variant="subhead" style={styles.sectionTitle}>
-            ACCOUNT LOGIN EMAIL
+            Account login email
           </ThemedText>
           <View style={styles.readOnlyCard}>
             <View style={styles.emailRow}>
@@ -95,7 +95,7 @@ export function PersonalInfoForm({
       {/* Personal Details */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          PATIENT IDENTITY
+          Patient identity
         </ThemedText>
 
         <Input
@@ -138,6 +138,7 @@ export function PersonalInfoForm({
                   disabled={isLoading}
                   onPress={() => setValue("gender", opt.value, { shouldDirty: true, shouldValidate: true })}
                   style={[styles.genderPill, active && styles.genderPillActive]}
+                  hitSlop={{ top: 4, bottom: 4 }}
                   accessibilityRole="button"
                   accessibilityState={{ selected: active }}
                 >
@@ -162,7 +163,7 @@ export function PersonalInfoForm({
       {/* Residential Address */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          RESIDENTIAL ADDRESS (UK)
+          Residential address (UK)
         </ThemedText>
 
         <Input
@@ -206,7 +207,7 @@ export function PersonalInfoForm({
       {/* Contact Info */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          DIRECT CONTACT
+          Direct contact
         </ThemedText>
 
         <Input
@@ -272,20 +273,20 @@ const styles = StyleSheet.create({
   },
   genderPill: {
     backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    justifyContent: "center",
+    minHeight: 36,
   },
   genderPillActive: {
-    backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   genderPillText: {
     color: colors.secondaryLabel,
     fontWeight: "500",
   },
   genderPillTextActive: {
-    color: colors.ink,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   genderPills: {

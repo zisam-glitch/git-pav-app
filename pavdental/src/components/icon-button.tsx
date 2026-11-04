@@ -12,7 +12,7 @@ interface IconButtonProps {
   color?: string;
   /** Filled ink, soft grey fill (reference back/close buttons), or transparent */
   variant?: "solid" | "plain" | "soft";
-  /** Rounded square (reference default) or circle (avatars, media controls) */
+  /** Circle (Wise default) or rounded square */
   shape?: "square" | "circle";
   disabled?: boolean;
   haptic?: boolean;
@@ -20,8 +20,8 @@ interface IconButtonProps {
 }
 
 /**
- * IconButton — 40pt rounded-square icon action (44pt touch target via hitSlop),
- * as used for back, close and profile buttons in the reference.
+ * IconButton — 44pt round icon action, as used for back, close and profile
+ * buttons in Wise (soft grey circle, forest icon).
  * Always pass a label; icon-only buttons are invisible to screen readers otherwise.
  */
 export function IconButton({
@@ -29,9 +29,9 @@ export function IconButton({
   label,
   onPress,
   size = 20,
-  color = colors.label,
+  color = colors.ink,
   variant = "plain",
-  shape = "square",
+  shape = "circle",
   disabled = false,
   haptic = true,
   style,

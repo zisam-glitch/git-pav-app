@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThemedText } from "../themed-text";
 import { AppIcon } from "../app-icon";
+import { CheckboxMark } from "../checkbox-mark";
 import { Input } from "../input";
 import { Button } from "../button";
 import { ToggleSwitch } from "../settings/ToggleSwitch";
@@ -111,7 +112,7 @@ export function MedicalHistoryForm({
       {/* Allergies Section */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          ALLERGIES & ADVERSE REACTIONS
+          Allergies & adverse reactions
         </ThemedText>
 
         <ToggleSwitch
@@ -128,7 +129,7 @@ export function MedicalHistoryForm({
         {hasAllergies ? (
           <View style={styles.subContainer}>
             <ThemedText variant="caption" style={styles.subLabel}>
-              Common Allergens (tap to select):
+              Common allergens (tap to select)
             </ThemedText>
             <View style={styles.tagsRow}>
               {COMMON_ALLERGIES.map((tag) => {
@@ -138,6 +139,7 @@ export function MedicalHistoryForm({
                     key={tag}
                     onPress={() => toggleAllergyTag(tag)}
                     style={[styles.tag, active && styles.tagActive]}
+                    hitSlop={{ top: 4, bottom: 4 }}
                     accessibilityRole="button"
                     accessibilityLabel={`${tag}, ${active ? "Selected" : "Not selected"}`}
                     accessibilityState={{ selected: active }}
@@ -165,7 +167,7 @@ export function MedicalHistoryForm({
       {/* Medications Section */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          CURRENT MEDICATIONS
+          Current medications
         </ThemedText>
 
         <ToggleSwitch
@@ -176,7 +178,7 @@ export function MedicalHistoryForm({
             setIsTakingMeds(val);
             setValue("isTakingMedications", val, { shouldDirty: true });
           }}
-          icon={<ThemedText>💊</ThemedText>}
+          icon={<AppIcon name="pill" size={18} color={colors.label} />}
         />
 
         {isTakingMeds ? (
@@ -196,7 +198,7 @@ export function MedicalHistoryForm({
       {/* Medical Conditions */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          MEDICAL CONDITIONS & CLINICAL RISK
+          Medical conditions & clinical risk
         </ThemedText>
 
         <View style={styles.conditionsList}>
@@ -206,16 +208,14 @@ export function MedicalHistoryForm({
               <Pressable accessibilityLabel={cond}
                 key={cond}
                 onPress={() => toggleCondition(cond)}
-                style={[styles.conditionRow, active && styles.conditionRowActive]}
+                style={styles.conditionRow}
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: active }}
               >
                 <ThemedText variant="headline" style={[styles.conditionText, active && styles.conditionTextActive]}>
                   {cond}
                 </ThemedText>
-                <ThemedText variant="headline" style={active ? undefined : styles.checkInactive}>
-                  {active ? "☑️" : "⬜"}
-                </ThemedText>
+                <CheckboxMark checked={active} />
               </Pressable>
             );
           })}
@@ -225,7 +225,7 @@ export function MedicalHistoryForm({
       {/* GP Details */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          REGISTERED GP SURGERY (UK)
+          Registered GP surgery (UK)
         </ThemedText>
 
         <Input
@@ -258,7 +258,7 @@ export function MedicalHistoryForm({
       {/* Clinical Notes */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          ADDITIONAL CLINICAL NOTES
+          Additional clinical notes
         </ThemedText>
 
         <Input
@@ -297,20 +297,12 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.md,
   },
-  checkInactive: {
-    opacity: 0.4,
-  },
   conditionRow: {
     alignItems: "center",
-    borderBottomColor: colors.separator,
-    borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
+    minHeight: 52,
     paddingHorizontal: spacing.gutter,
-    paddingVertical: spacing.sm,
-  },
-  conditionRowActive: {
-    backgroundColor: colors.inkSubtle,
   },
   conditionText: {
     color: colors.label,
@@ -351,11 +343,16 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontWeight: "600",
   },
+  // Outlined pill like Wise's filter chips; white so it shows on the grey card.
   tag: {
-    backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
+    alignItems: "center",
+    backgroundColor: colors.background,
+    borderColor: colors.inputUnderline,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    justifyContent: "center",
+    minHeight: 36,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
   },
   tagActive: {
     backgroundColor: colors.dangerSubtle,

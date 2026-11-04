@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Button, EmptyState } from "@/components";
+import { ThemedText, Card, Button, EmptyState, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import { createTreatmentPlan } from "@/features/records/records-api";
 import { useServices } from "@/features/hooks/use-dental-api";
 
@@ -42,7 +43,7 @@ export default function TreatmentPlanBuilderScreen() {
       ...prev,
       {
         code: proc.code,
-        description: proc.description + (tooth ? ` (Tooth #${tooth})` : ""),
+        description: proc.description + (tooth ? ` (${toothLabel(tooth)})` : ""),
         costPence: proc.costPence,
         toothNumber: tooth && !isNaN(tooth) ? tooth : undefined,
       },
@@ -60,7 +61,7 @@ export default function TreatmentPlanBuilderScreen() {
       ...prev,
       {
         code: customCode.trim() || "CUST01",
-        description: customDesc.trim() + (tooth ? ` (Tooth #${tooth})` : ""),
+        description: customDesc.trim() + (tooth ? ` (${toothLabel(tooth)})` : ""),
         costPence,
         toothNumber: tooth && !isNaN(tooth) ? tooth : undefined,
       },
@@ -100,27 +101,24 @@ export default function TreatmentPlanBuilderScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Patient file"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to patient file" variant="soft" onPress={() => router.back()} />
         </View>
 
         <View style={styles.headerBlock}>
           <ThemedText variant="title" style={styles.title}>
             Treatment plan builder
           </ThemedText>
-          <ThemedText variant="caption" style={styles.subtitle}>
-            Patient: {params.patientName || "Verified Patient"}
-          </ThemedText>
+          {params.patientName ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Patient: {params.patientName}
+            </ThemedText>
+          ) : null}
         </View>
 
         {success ? (
           <Card style={styles.successCard}>
             <ThemedText variant="headline" style={styles.successTitle}>
-              ✓ Treatment plan created
+              Treatment plan created
             </ThemedText>
             <ThemedText variant="body" style={styles.successBody}>
               Plan "{title}" has been saved with {items.length} items totaling £
@@ -146,7 +144,7 @@ export default function TreatmentPlanBuilderScreen() {
             {/* Plan Title */}
             <Card style={styles.card}>
               <ThemedText variant="caption" style={styles.label}>
-                PLAN TITLE:
+                Plan title
               </ThemedText>
               <TextInput
                 style={styles.textInput}
@@ -187,7 +185,8 @@ export default function TreatmentPlanBuilderScreen() {
                   services.map((svc) => (
                     <Button
                       key={svc.id}
-                      title={`+ ${svc.name} (£${(svc.pricePence / 100).toFixed(2).replace(/\.00$/, "")})`}
+                      icon={<AppIcon name="plus" size={16} color={colors.ink} />}
+                      title={`${svc.name} (£${(svc.pricePence / 100).toFixed(2).replace(/\.00$/, "")})`}
                       size="sm"
                       variant="secondary"
                       onPress={() => addItem({ code: svc.id, description: svc.name, costPence: svc.pricePence })}
@@ -369,21 +368,25 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   textInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     padding: spacing.sm,
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   title: {
     color: colors.label,
   },
   toothInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     paddingHorizontal: 8,
     paddingVertical: 4,
     width: 60,
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   toothInputRow: {
     alignItems: "center",

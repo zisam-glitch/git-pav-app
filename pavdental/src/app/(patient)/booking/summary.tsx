@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStripe } from "@stripe/stripe-react-native";
-import { ThemedText, Card, Button, AppIcon, ProgressPills, IconButton } from "@/components";
+import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import {
@@ -216,16 +216,7 @@ export default function BookingSummaryScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.topNav}>
-        <IconButton
-          icon="arrowLeft"
-          label="Go back"
-          variant="soft"
-          size={22}
-          onPress={() => router.back()}
-        />
-        <View style={styles.progressWrap}>
-          <ProgressPills total={5} current={5} />
-        </View>
+        <FlowHeader step={{ current: 5, total: 5 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -271,41 +262,18 @@ export default function BookingSummaryScreen() {
             Appointment details
           </ThemedText>
 
-          <View style={styles.row}>
-            <ThemedText variant="subhead" style={styles.label}>
-              Treatment:
-            </ThemedText>
-            <ThemedText variant="headline" style={styles.value}>
-              {service.name}
-            </ThemedText>
-          </View>
-
-          <View style={styles.row}>
-            <ThemedText variant="subhead" style={styles.label}>
-              {channel === "video" ? "Where:" : "Practice:"}
-            </ThemedText>
-            <ThemedText variant="body" style={styles.value}>
-              {channel === "video" ? "Video consultation" : clinic?.name ?? "—"}
-            </ThemedText>
-          </View>
-
-          <View style={styles.row}>
-            <ThemedText variant="subhead" style={styles.label}>
-              Dentist:
-            </ThemedText>
-            <ThemedText variant="body" style={styles.value}>
-              {clinician?.fullName || "Assigned Practitioner"}
-            </ThemedText>
-          </View>
-
-          <View style={styles.row}>
-            <ThemedText variant="subhead" style={styles.label}>
-              Date & Time:
-            </ThemedText>
-            <ThemedText variant="headline" style={styles.dateHighlight}>
-              {slot.dateFormatted ? `${slot.dateFormatted} at ${slot.displayTime}` : slot.displayTime}
-            </ThemedText>
-          </View>
+          <DetailRow label="Treatment" value={service.name} emphasis />
+          <DetailRow
+            label={channel === "video" ? "Where" : "Practice"}
+            value={channel === "video" ? "Video consultation" : clinic?.name ?? "—"}
+          />
+          {/* No clinician chosen means "Any practitioner (first available)" on the previous step. */}
+          <DetailRow label="Dentist" value={clinician?.fullName || "First available"} />
+          <DetailRow
+            label="Date and time"
+            value={slot.dateFormatted ? `${slot.dateFormatted} at ${slot.displayTime}` : slot.displayTime}
+            emphasis
+          />
         </Card>
 
         {/* Payment & Deposit Summary */}
@@ -316,7 +284,7 @@ export default function BookingSummaryScreen() {
 
           <View style={styles.priceRow}>
             <ThemedText variant="body" style={styles.label}>
-              Total Treatment Fee:
+              Treatment fee
             </ThemedText>
             <ThemedText variant="mono">
               {formatGbp(service.pricePence)}
@@ -330,16 +298,19 @@ export default function BookingSummaryScreen() {
               onPress={() => setUseVoucher((v) => !v)}
               style={styles.priceRow}
             >
-              <ThemedText variant="body" style={styles.label}>
-                {useVoucher ? "☑" : "☐"} Use rewards voucher ({formatGbp(voucher!.discountPence)} off)
-              </ThemedText>
+              <View style={styles.voucherLabel}>
+                <CheckboxMark checked={useVoucher} size={22} />
+                <ThemedText variant="body" style={styles.label}>
+                  Use rewards voucher ({formatGbp(voucher!.discountPence)} off)
+                </ThemedText>
+              </View>
               {useVoucher && <ThemedText variant="mono">–{formatGbp(voucher!.discountPence)}</ThemedText>}
             </Pressable>
           )}
 
           <View style={styles.priceRow}>
             <ThemedText variant="headline" style={styles.depositLabel}>
-              Deposit due today (Stripe):
+              Deposit due today
             </ThemedText>
             <ThemedText variant="mono" style={styles.depositAmount}>
               {formatGbp(depositDuePence)}
@@ -354,7 +325,7 @@ export default function BookingSummaryScreen() {
         {/* Cancellation Policy */}
         <View style={styles.policyBox}>
           <ThemedText variant="caption" style={styles.policyTitle}>
-            Cancellation & Reschedule Policy:
+            Cancellation policy
           </ThemedText>
           <ThemedText variant="caption" style={styles.policyText}>
             Cancel 48 hours or more before your visit for a full deposit refund, or 24 to 48 hours before for half. Deposits aren't refunded for cancellations less than 24 hours before. Refunds go back to your card automatically.
@@ -407,17 +378,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topNav: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: spacing.gutter,
     paddingTop: spacing.xs,
     paddingBottom: spacing.xs,
-  },
-  progressWrap: {
-    flex: 1,
-    alignItems: "center",
-    marginRight: 44,
   },
   content: {
     gap: spacing.md,
@@ -452,22 +415,14 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginBottom: spacing.xxs,
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 3,
-  },
   label: {
     color: colors.secondaryLabel,
   },
-  value: {
-    color: colors.label,
-    fontWeight: "600",
-  },
-  dateHighlight: {
-    color: colors.ink,
-    fontWeight: "700",
+  voucherLabel: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexShrink: 1,
+    gap: spacing.xs,
   },
   priceRow: {
     alignItems: "center",
@@ -517,11 +472,11 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   whoPillSelected: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   whoTextSelected: {
-    color: colors.alwaysWhite,
+    color: colors.onAccent,
     fontWeight: "600",
   },
   footerBar: {

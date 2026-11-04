@@ -13,7 +13,7 @@ import { ThemedText } from "./themed-text";
 export type InputState = "default" | "focused" | "error" | "disabled";
 
 interface InputProps extends Omit<TextInputProps, "style"> {
-  /** Field label — floats inside the field, as in the reference */
+  /** Field label — sits above the field in bold, as in Wise */
   label?: string;
   /** Inline error message — renders the input in error state */
   error?: string;
@@ -27,10 +27,9 @@ interface InputProps extends Omit<TextInputProps, "style"> {
 }
 
 /**
- * Input — reference text field: grey fill, square-ish top corners, 2pt
- * underline that turns black on focus and red on error. The label sits
- * inside the field at body size and shrinks to a 13pt caption once the
- * field is focused or filled.
+ * Input — Wise text field: bold 14pt label above a white field with a 1pt
+ * grey border and 10pt corners. The border turns 2pt forest green on focus
+ * and red on error; the error message sits under the field.
  */
 export function Input({
   label,
@@ -42,75 +41,56 @@ export function Input({
   onFocus,
   onBlur,
   placeholder,
-  value,
-  defaultValue,
   multiline,
   ...props
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const hasError = !!error;
-  const hasValue = !!(value ?? defaultValue);
-  const floated = !label || isFocused || hasValue;
 
-  const underline = hasError
-    ? colors.danger
-    : isFocused
-    ? colors.ink
-    : colors.inputUnderline;
+  const border = hasError ? colors.danger : isFocused ? colors.ink : colors.inputUnderline;
+  const borderWidth = hasError || isFocused ? 2 : 1;
 
   return (
     <View style={[styles.container, containerStyle]}>
+      {label ? (
+        <ThemedText
+          variant="footnote"
+          style={styles.label}
+          numberOfLines={2}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          {label}
+        </ThemedText>
+      ) : null}
       <View
         style={[
           styles.field,
           multiline && styles.fieldMultiline,
-          { borderBottomColor: underline, opacity: disabled ? 0.5 : 1 },
+          // A thicker border would shift the text; padding absorbs the difference.
+          { borderColor: border, borderWidth, paddingHorizontal: spacing.md - (borderWidth - 1) },
+          disabled && styles.fieldDisabled,
         ]}
       >
-        <View style={styles.inner}>
-          {label ? (
-            <View
-              pointerEvents="none"
-              style={!floated && styles.labelResting}
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-            >
-              <ThemedText
-                variant={floated ? "caption" : "body"}
-                style={styles.label}
-                numberOfLines={1}
-              >
-                {label}
-              </ThemedText>
-            </View>
-          ) : null}
-          <TextInput
-            {...props}
-            value={value}
-            defaultValue={defaultValue}
-            multiline={multiline}
-            editable={!disabled}
-            placeholder={floated ? placeholder : undefined}
-            placeholderTextColor={colors.tertiaryLabel}
-            accessibilityLabel={label}
-            accessibilityHint={hint}
-            accessibilityState={{ disabled }}
-            onFocus={(e) => {
-              setIsFocused(true);
-              onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setIsFocused(false);
-              onBlur?.(e);
-            }}
-            style={[
-              styles.input,
-              label ? styles.inputWithLabel : null,
-              !floated && styles.inputHidden,
-              multiline && styles.inputMultiline,
-            ]}
-          />
-        </View>
+        <TextInput
+          {...props}
+          multiline={multiline}
+          editable={!disabled}
+          placeholder={placeholder}
+          placeholderTextColor={colors.tertiaryLabel}
+          accessibilityLabel={label ?? placeholder}
+          accessibilityHint={hint}
+          accessibilityState={{ disabled }}
+          onFocus={(e) => {
+            setIsFocused(true);
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setIsFocused(false);
+            onBlur?.(e);
+          }}
+          style={[styles.input, multiline && styles.inputMultiline]}
+        />
         {rightSlot ? <View style={styles.rightSlot}>{rightSlot}</View> : null}
       </View>
 
@@ -142,48 +122,39 @@ const styles = StyleSheet.create({
   hint: {
     color: colors.secondaryLabel,
   },
+  label: {
+    color: colors.label,
+    fontWeight: "600",
+  },
   field: {
     minHeight: sizes.input,
     backgroundColor: colors.tertiaryBackground,
-    borderTopLeftRadius: radius.sm,
-    borderTopRightRadius: radius.sm,
-    borderBottomWidth: 2,
+    borderRadius: radius.sm,
+    // @ts-ignore — iOS-only style, ignored on Android
+    borderCurve: "continuous",
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: spacing.gutter,
   },
   fieldMultiline: {
     alignItems: "flex-start",
     minHeight: 112,
+    paddingVertical: spacing.sm,
   },
-  inner: {
-    flex: 1,
-    justifyContent: "center",
-    paddingVertical: spacing.xs,
-  },
-  label: {
-    color: colors.secondaryLabel,
-  },
-  labelResting: {
-    position: "absolute",
-    left: 0,
-    right: 0,
+  fieldDisabled: {
+    backgroundColor: colors.inkSubtle,
+    opacity: 0.7,
   },
   input: {
     ...type.body,
+    flex: 1,
     color: colors.label,
     minHeight: 24,
-    padding: 0,
-  },
-  inputWithLabel: {
-    marginTop: 2,
-  },
-  inputHidden: {
-    // Keeps the native input focusable while the resting label is shown
-    color: "transparent",
+    paddingVertical: spacing.sm,
+    paddingHorizontal: 0,
   },
   inputMultiline: {
-    minHeight: 72,
+    minHeight: 88,
+    paddingVertical: 0,
     textAlignVertical: "top",
   },
   rightSlot: {

@@ -81,9 +81,6 @@ export default function OralHealthPerksScreen() {
                 {isError ? "Couldn't load your points. Try again later." : "Active points available"}
               </ThemedText>
             </View>
-            <View style={styles.sparkleBox}>
-              <AppIcon name="sparkle" size={24} color={colors.alwaysWhite} />
-            </View>
           </View>
           <View style={styles.heroNoticeRow}>
             <AppIcon name="info" size={14} color="rgba(255, 255, 255, 0.7)" />
@@ -230,7 +227,7 @@ const styles = StyleSheet.create({
     marginVertical: spacing.xs,
   },
   heroCard: {
-    backgroundColor: colors.alwaysBlack,
+    backgroundColor: colors.ink,
     borderCurve: "continuous",
     borderRadius: radius.lg,
     gap: spacing.md,
@@ -240,7 +237,6 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.6)",
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 1.2,
   },
   heroNoticeRow: {
     alignItems: "center",
@@ -326,7 +322,7 @@ const styles = StyleSheet.create({
   },
   modalSheet: {
     alignItems: "center",
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: spacing.xl,
@@ -396,14 +392,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 17,
   },
-  sparkleBox: {
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    borderRadius: radius.full,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
-  },
   topNav: {
     alignItems: "center",
     flexDirection: "row",
@@ -417,11 +405,13 @@ const styles = StyleSheet.create({
   },
   voucherIconBox: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 32,
     justifyContent: "center",
     width: 32,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   voucherLeft: {
     alignItems: "center",

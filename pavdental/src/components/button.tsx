@@ -11,19 +11,20 @@ import { ThemedText } from "./themed-text";
 import { AppIcon } from "./app-icon";
 
 // ─── Variant map ──────────────────────────────────────────────────────────────
-// Reference: solid black primary, grey-fill secondary, white on dark canvases.
+// Wise: bright green primary with forest text, light green secondary, white on
+// dark surfaces.
 const variants = {
   primary: {
-    backgroundColor: colors.ink,
-    color: colors.onInk,
+    backgroundColor: colors.accent,
+    color: colors.onAccent,
   },
   secondary: {
-    backgroundColor: colors.inkSubtle,
-    color: colors.ink,
+    backgroundColor: colors.accentSubtle,
+    color: colors.onAccent,
   },
   inverse: {
     backgroundColor: colors.alwaysWhite,
-    color: colors.alwaysBlack,
+    color: colors.ink,
   },
   ghost: {
     backgroundColor: "transparent",
@@ -35,34 +36,37 @@ const variants = {
   },
 } as const;
 
-// Disabled buttons in the reference turn grey rather than fading out.
+// Disabled buttons in Wise turn neutral grey rather than fading out.
 const disabledColors = {
   backgroundColor: colors.inkSubtle,
   color: colors.tertiaryLabel,
 } as const;
 
 // ─── Size map ─────────────────────────────────────────────────────────────────
-// sm = inline button; md/lg = full 52pt button.
+// sm = inline pill ("Change", "Send"); md/lg = full 52pt pill. All capsules.
 const sizes_ = {
   sm: {
     paddingVertical: spacing.xxs,
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: spacing.md,
     minHeight: sizes.buttonSmall,
-    borderRadius: radius.sm,
+    borderRadius: radius.full,
   },
   md: {
     paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.gutter,
+    paddingHorizontal: spacing.lg,
     minHeight: sizes.button,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
   },
   lg: {
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.lg,
     minHeight: sizes.button,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
   },
 } as const;
+
+// Small pills are 36pt tall; this keeps their touch target at 44pt.
+const smallHitSlop = { top: 4, bottom: 4, left: 0, right: 0 };
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface ButtonProps {
@@ -87,7 +91,7 @@ interface ButtonProps {
 
 /**
  * Button — the primary interactive primitive for this app.
- * 52pt, 12pt continuous corners, semibold 17 label, optional trailing arrow.
+ * Wise pill: 52pt capsule, semibold 16 label, optional trailing arrow.
  */
 export function Button({
   title,
@@ -128,9 +132,11 @@ export function Button({
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={handlePress}
+      hitSlop={size === "sm" ? smallHitSlop : undefined}
       style={({ pressed }) => [
         {
-          backgroundColor: v.backgroundColor,
+          backgroundColor:
+            pressed && !isDisabled && variant === "primary" ? colors.accentPressed : v.backgroundColor,
           // @ts-ignore — borderCurve is an iOS-specific style; silently ignored on Android
           borderCurve: "continuous",
           alignItems: "center",

@@ -79,7 +79,7 @@ export default function ClinicianScheduleScreen() {
         {/* Schedule Section */}
         <View style={styles.section}>
           <ThemedText variant="headline" style={styles.sectionTitle}>
-            Today's Consultations & Visits ({sessions.length} Patient{sessions.length !== 1 ? "s" : ""})
+            Today's consultations & visits ({sessions.length} patient{sessions.length !== 1 ? "s" : ""})
           </ThemedText>
 
           {isLoading ? (
@@ -115,8 +115,7 @@ export default function ClinicianScheduleScreen() {
                 return (
                   <Card
                     key={s.id}
-                   
-                    style={[styles.card, isReady && styles.cardReady]}
+                    style={styles.card}
                   >
                     <View style={styles.cardTop}>
                       <Badge
@@ -169,7 +168,7 @@ export default function ClinicianScheduleScreen() {
                             title="Open patient record & notes"
               arrow
                             size="md"
-                            variant="primary"
+                            variant="secondary"
                             onPress={() =>
                               router.push({
                                 pathname: "/(clinician)/patient-record" as any,
@@ -197,11 +196,12 @@ export default function ClinicianScheduleScreen() {
         {__DEV__ && process.env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER === "true" ? (
           <Card style={styles.roleCard}>
             <ThemedText variant="caption" style={styles.roleHint}>
-              🔄 Switch Mobile Portal (Demo Verification)
+              Switch mobile portal (Demo Verification)
             </ThemedText>
             <View style={styles.roleBtnRow}>
               <Button
-                title="‹ Patient portal"
+                title="Patient portal"
+                icon={<AppIcon name="arrowLeft" size={16} color={colors.ink} />}
                 variant="secondary"
                 size="sm"
                 onPress={() => {
@@ -267,10 +267,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.systemBackground,
     gap: spacing.xs,
     padding: spacing.md,
-  },
-  cardReady: {
-    borderColor: colors.ink,
-    borderWidth: 2,
   },
   cardTop: {
     alignItems: "center",

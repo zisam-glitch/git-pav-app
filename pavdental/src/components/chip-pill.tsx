@@ -15,11 +15,12 @@ interface ChipPillProps {
 }
 
 const toneMap: Record<ChipTone, { bg: string; text: string }> = {
-  // White chip on the grey canvas (reference filter chips)
-  neutral: { bg: colors.systemBackground, text: colors.label },
-  // Grey chip for use inside white cards
-  fill: { bg: colors.inkSubtle, text: colors.label },
-  ink: { bg: colors.ink, text: colors.onInk },
+  // Neutral chip on the white canvas (Wise filter pills)
+  neutral: { bg: colors.inkSubtle, text: colors.label },
+  // White chip for use on neutral cards
+  fill: { bg: colors.background, text: colors.label },
+  // Selected: Wise bright green with forest text
+  ink: { bg: colors.accent, text: colors.onAccent },
   success: { bg: colors.successSubtle, text: colors.success },
   info: { bg: colors.infoSubtle, text: colors.info },
   warning: { bg: colors.warningSubtle, text: colors.warning },
@@ -27,7 +28,7 @@ const toneMap: Record<ChipTone, { bg: string; text: string }> = {
 
 /**
  * ChipPill — capsule chip for filters, meta labels, and choice rows
- * (reference pattern: "5 min · Morning" meta pills, filter chips).
+ * (Wise pattern: "Send · Add money · Request" pills, filter chips).
  * Pass onPress for interactive chips; without it the chip is static meta.
  */
 export function ChipPill({ label, tone = "neutral", selected, onPress, style }: ChipPillProps) {
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     borderRadius: radius.full,
     justifyContent: "center",
-    minHeight: 34,
-    paddingHorizontal: spacing.sm,
+    minHeight: 36,
+    paddingHorizontal: spacing.md,
     paddingVertical: 6,
   },
   label: {

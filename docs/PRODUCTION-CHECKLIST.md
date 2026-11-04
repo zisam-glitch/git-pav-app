@@ -12,7 +12,7 @@ Tick each section in order. Each one says how to check it worked.
 
 | Decision | Why it blocks | Where it's used |
 |---|---|---|
-| **Production domain:** `pavdental.com` or `pavdental.co.uk` | Deep links, email links, API URL and CORS all name it. The code mostly says `pavdental.com` (`app.json`, `eas.json`, `website/public/.well-known`), but `pavdental/.env.example` says `api.pavdental.co.uk` | Steps 2, 5, 6, 7 |
+| ~~Production domain~~ **Decided 4 Nov: `pavdental.com`.** Was `pavdental.com` or `pavdental.co.uk` | Deep links, email links, API URL and CORS all name it. The code mostly says `pavdental.com` (`app.json`, `eas.json`, `website/public/.well-known`), but `pavdental/.env.example` says `api.pavdental.co.uk` | Steps 2, 5, 6, 7 |
 | **Clinician sign-off** on: tooth numbering (1–32 US system vs FDI/Palmer), prescribing only from the video room, the "Book a video triage" wording, emergency triage on the phone only | Clinical wording and behaviour are drafts until a clinician reviews them (`AGENTS.md`) | App screens |
 | **Legal/DPO sign-off:** DPIA, privacy notice (`docs/compliance/`), whether recall reminders count as *marketing* consent | Patients' consent text and records depend on it | Consent screen |
 | Reschedule rules, on-demand video, stuck van shifts | Features waiting on you (see `COMPLETION-PLAN.md`, decisions 9–11) | Not launch-blocking if left out |

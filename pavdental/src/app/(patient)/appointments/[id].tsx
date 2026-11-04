@@ -19,6 +19,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
+import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Appointment detail — full context + lifecycle actions ────────────────────
 // Reference pattern: Mobbin Zocdoc appointment detail (map, cancel)
@@ -75,12 +76,8 @@ export default function AppointmentDetailScreen() {
   }
 
   const start = new Date(booking.startTimeUtc);
-  const dateLine = start.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const timeLine = start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const dateLine = ukDateLabel(start, { weekday: "long", day: "numeric", month: "long" });
+  const timeLine = `${ukTime(start)} UK time`;
   const locationName = appointmentLocation(booking);
   const clinicianName = appointmentClinician(booking);
 

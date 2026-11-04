@@ -25,6 +25,7 @@ import { useBookingStore } from "@/features/booking/booking-store";
 import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
 import { useServices, useRewards, useMyAppointments } from "@/features/hooks/use-dental-api";
 import { nextVisit } from "@/features/booking/appointment-status";
+import { ukDateLabel } from "@/features/booking/uk-time";
 import { DentalService } from "@/features/booking/booking-types";
 import { formatGbp } from "@/features/booking/booking-api";
 import { toLabel } from "@/lib/text";
@@ -177,7 +178,7 @@ export default function PatientHomeScreen() {
             }
             subtitle={
               nextAppointment
-                ? `${new Date(nextAppointment.startTimeUtc).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} · ${nextAppointment.clinic?.name || nextAppointment.van?.name || "Central Practice"}`
+                ? `${ukDateLabel(new Date(nextAppointment.startTimeUtc), { weekday: "short", day: "numeric", month: "short" })} · ${nextAppointment.clinic?.name || nextAppointment.van?.name || "Central Practice"}`
                 : "Book a clinic visit, video consult, or mobile van in a few taps."
             }
             left={<IconTile icon="calendar" />}

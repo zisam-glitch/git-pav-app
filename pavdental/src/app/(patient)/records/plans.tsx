@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Button, Badge, EmptyState, ErrorState, Skeleton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import { useTreatmentPlans } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { formatGbp } from "@/features/booking/booking-api";
@@ -121,7 +122,7 @@ export default function TreatmentPlansScreen() {
                         </ThemedText>
                         <ThemedText variant="caption" style={styles.itemCode}>
                           Clinical code: #{item.code}
-                          {item.toothNumber ? ` · Tooth #${item.toothNumber}` : ""}
+                          {item.toothNumber ? ` · ${toothLabel(item.toothNumber)}` : ""}
                         </ThemedText>
                       </View>
                       <ThemedText variant="mono" style={styles.itemCost}>

@@ -13,6 +13,8 @@ import { colors } from "@/theme";
 // doesn't tree-shake, so importing from it would bundle every one.
 /* eslint-disable @typescript-eslint/no-var-requires */
 const ICONS = {
+  ChemicalGlass: require("iconsax-react-native/dist/cjs/ChemicalGlass.js"),
+  Hospital: require("iconsax-react-native/dist/cjs/Hospital.js"),
   Add: require("iconsax-react-native/dist/cjs/Add.js"),
   ArrowDown: require("iconsax-react-native/dist/cjs/ArrowDown.js"),
   ArrowLeft: require("iconsax-react-native/dist/cjs/ArrowLeft.js"),
@@ -77,7 +79,6 @@ const ICONS = {
   Personalcard: require("iconsax-react-native/dist/cjs/Personalcard.js"),
   Profile2User: require("iconsax-react-native/dist/cjs/Profile2User.js"),
   Receipt2: require("iconsax-react-native/dist/cjs/Receipt2.js"),
-  ReceiptText: require("iconsax-react-native/dist/cjs/ReceiptText.js"),
   Refresh: require("iconsax-react-native/dist/cjs/Refresh.js"),
   RowVertical: require("iconsax-react-native/dist/cjs/RowVertical.js"),
   SearchNormal1: require("iconsax-react-native/dist/cjs/SearchNormal1.js"),
@@ -196,14 +197,14 @@ const GLYPHS = {
   image: { icon: "Gallery" },
   sun: { icon: "Sun1" },
   moon: { icon: "Moon" },
-  // Care. Iconsax has no tooth, pill or syringe: clinical charts use the
-  // pulse card, and a prescription is the written slip it is.
-  tooth: { icon: "Health" },
+  // Care. Iconsax has no tooth or pill. PLACEHOLDERS until the custom tooth
+  // and pill icons arrive: replace these two entries (and their requires).
+  tooth: { icon: "Hospital" },
   stethoscope: { icon: "Health" },
   syringe: { icon: "Health" },
   activity: { icon: "Health" },
-  pill: { icon: "ReceiptText" },
-  droplet: { icon: "ReceiptText" },
+  pill: { icon: "ChemicalGlass" },
+  droplet: { icon: "ChemicalGlass" },
   heart: { icon: "Heart" },
   zap: { icon: "Flash" },
   smile: { icon: "EmojiHappy" },

@@ -4,6 +4,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { ThemedText, Card, Badge, AppIcon, Button } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import { ToothRecord, ToothCondition } from "@/features/records/records-types";
 import { useOdontogram } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
@@ -280,10 +281,10 @@ export default function OdontogramScreen() {
             >
               <View style={styles.selectedDetailLeft}>
                 <ThemedText variant="headline" style={styles.selectedToothTitle}>
-                  Tooth #{selectedTooth.toothNumber} · {anatomy.fullName}
+                  {toothLabel(selectedTooth.toothNumber)} · {anatomy.fullName}
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.selectedToothSub}>
-                  {anatomy.fdi} ({toLabel(selectedTooth.quadrant)}) · {anatomy.archName} · Tap to inspect
+                  {toLabel(selectedTooth.quadrant)} · {anatomy.archName} · Tap to inspect
                 </ThemedText>
               </View>
               <View style={styles.selectedDetailRight}>
@@ -317,7 +318,7 @@ export default function OdontogramScreen() {
             <View style={styles.sheetHeader}>
               <View>
                 <ThemedText variant="headline" style={styles.sheetTitle}>
-                  Tooth #{selectedTooth.toothNumber} ({anatomy.fdi})
+                  {toothLabel(selectedTooth.toothNumber)}
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.sheetSub}>
                   {anatomy.fullName} · {anatomy.archName}

@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Button, EmptyState, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import { createTreatmentPlan } from "@/features/records/records-api";
 import { useServices } from "@/features/hooks/use-dental-api";
 
@@ -42,7 +43,7 @@ export default function TreatmentPlanBuilderScreen() {
       ...prev,
       {
         code: proc.code,
-        description: proc.description + (tooth ? ` (Tooth #${tooth})` : ""),
+        description: proc.description + (tooth ? ` (${toothLabel(tooth)})` : ""),
         costPence: proc.costPence,
         toothNumber: tooth && !isNaN(tooth) ? tooth : undefined,
       },
@@ -60,7 +61,7 @@ export default function TreatmentPlanBuilderScreen() {
       ...prev,
       {
         code: customCode.trim() || "CUST01",
-        description: customDesc.trim() + (tooth ? ` (Tooth #${tooth})` : ""),
+        description: customDesc.trim() + (tooth ? ` (${toothLabel(tooth)})` : ""),
         costPence,
         toothNumber: tooth && !isNaN(tooth) ? tooth : undefined,
       },

@@ -6,6 +6,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { safeHaptics } from "@/lib/haptics";
 import { ThemedText, Card, Badge, Button, AppIcon, ConfirmSheet, Toast, ErrorState, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import {
   useTreatmentPlans,
   useSignTreatmentPlanMutation,
@@ -336,7 +337,7 @@ export default function TreatmentPlanDetailScreen() {
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.itemMeta}>
                     #{item.code}
-                    {item.toothNumber ? ` · Tooth #${item.toothNumber}` : ""}
+                    {item.toothNumber ? ` · ${toothLabel(item.toothNumber)}` : ""}
                   </ThemedText>
                 </View>
                 <ThemedText variant="mono" style={styles.itemCost}>

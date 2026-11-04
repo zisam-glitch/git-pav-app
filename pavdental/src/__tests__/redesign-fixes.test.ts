@@ -8,6 +8,7 @@ import { join } from "path";
 import { isUpperArch } from "../features/records/arch";
 import { appointmentClinician, appointmentLocation } from "../features/booking/appointment-labels";
 import { requestAreaLabel } from "../features/van/request-area";
+import { toothLabel, universalToFdi } from "../features/records/tooth-number";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -87,6 +88,14 @@ assert(!/PAIN SEVERITY/.test(triage), "triage: no all-caps section label");
 assert(/slotTimeSelected: \{\s*color: colors\.onAccent/.test(src("app/(patient)/booking/slot-picker.tsx")), "slot picker: the chosen time is readable");
 assert(/condChipTextActive: \{\s*color: colors\.onAccent/.test(src("app/(clinician)/odontogram-editor.tsx")), "chart editor: the chosen condition is readable");
 assert(!/"Verified Patient"/.test(src("app/(clinician)/appointment-notes.tsx") + src("app/(clinician)/odontogram-editor.tsx") + src("app/(clinician)/treatment-plan-builder.tsx")), "clinician editors don't invent a patient name");
+
+// ─── Patients see one tooth-numbering system (FDI) ───────────────────────────
+assert(universalToFdi(1) === 18 && universalToFdi(8) === 11 && universalToFdi(9) === 21 && universalToFdi(16) === 28, "upper teeth map to FDI 18–11 and 21–28");
+assert(universalToFdi(17) === 38 && universalToFdi(24) === 31 && universalToFdi(25) === 41 && universalToFdi(32) === 48, "lower teeth map to FDI 38–31 and 41–48");
+assert(universalToFdi(0) === null && universalToFdi(33) === null && toothLabel(31) === "Tooth 47", "out-of-range numbers aren't mislabelled; 31 is Tooth 47");
+for (const f of ["app/(patient)/records/odontogram.tsx", "app/(patient)/records/plans.tsx", "app/(patient)/records/plans/[id].tsx"]) {
+  assert(!/Tooth #\$?\{/.test(src(f)) && !/anatomy\.fdi/.test(src(f)), `${f}: no "Tooth #1 (#18)" mix of numbering systems`);
+}
 
 // ─── Clinician editors opened without a patient ──────────────────────────────
 for (const [f, id] of [["app/(clinician)/appointment-notes.tsx", "appointmentId"], ["app/(clinician)/odontogram-editor.tsx", "patientId"]]) {

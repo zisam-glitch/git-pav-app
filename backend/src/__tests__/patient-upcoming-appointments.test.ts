@@ -87,7 +87,9 @@ describe("GET /api/booking/appointments?scope=upcoming (patient)", () => {
     await prisma.appointment.deleteMany({ where: { patientId: patientProfileId } });
     await prisma.patientProfile.deleteMany({ where: { id: patientProfileId } });
     await prisma.clinicianProfile.deleteMany({ where: { id: clinicianProfileId } });
-    await prisma.user.deleteMany({ where: { id: { in: [patientUserId, clinicianUserId] } } });
+    // Do not delete the users: audit_logs has a foreign key to users with ON DELETE
+    // SET NULL, which clears actor_id on the audit rows this file's requests wrote and
+    // breaks their integrity hash (see messaging-routing.test.ts).
     await new Promise<void>((resolve) => server.close(() => resolve()));
   });
 

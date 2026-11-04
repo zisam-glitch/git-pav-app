@@ -95,7 +95,7 @@ export default function OperatorCheckInScreen() {
 
           <View style={styles.checkItem}>
             <View style={styles.checkInfo}>
-              <ThemedText variant="body">1. Vehicle Safely Positioned</ThemedText>
+              <ThemedText variant="body">1. Vehicle safely positioned</ThemedText>
               <ThemedText variant="caption" style={styles.sub}>
                 Handbrake engaged, levelling stabilisers deployed.
               </ThemedText>
@@ -112,7 +112,7 @@ export default function OperatorCheckInScreen() {
 
           <View style={styles.checkItem}>
             <View style={styles.checkInfo}>
-              <ThemedText variant="body">2. Patient Boarded In Surgery</ThemedText>
+              <ThemedText variant="body">2. Patient boarded in surgery</ThemedText>
               <ThemedText variant="caption" style={styles.sub}>
                 Patient welcomed inside surgery bay, seated in dental chair.
               </ThemedText>

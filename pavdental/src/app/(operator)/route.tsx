@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThemedText, Card, Badge, Button, ErrorState, Skeleton } from "@/components";
+import { ThemedText, Card, Badge, Button, ErrorState, Skeleton, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchCurrentShift, updatePhase, optimizeRoute, reorderQueue } from "@/features/van/van-api";
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
@@ -146,7 +146,7 @@ export default function OperatorRouteScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <View style={styles.vanBadgeRow}>
-            <Badge label={van?.name ?? "Live Dispatch"} variant="info" />
+            <Badge label={van?.name ?? "Live dispatch"} variant="info" />
             <ThemedText variant="caption" style={styles.shiftText}>
               Status: {shift?.status ? toLabel(shift.status) : "Offline"}
             </ThemedText>
@@ -159,7 +159,7 @@ export default function OperatorRouteScreen() {
           </View>
           <View style={styles.titleRow}>
             <ThemedText variant="largeTitle" style={styles.title}>
-              Live Queue ({queue.length} Stop{queue.length !== 1 ? "s" : ""})
+              Live queue ({queue.length} stop{queue.length !== 1 ? "s" : ""})
             </ThemedText>
             {queue.filter((s) => s.phase === "queued").length > 1 ? (
               <Button
@@ -222,34 +222,22 @@ export default function OperatorRouteScreen() {
                       </View>
                       {!isPinned ? (
                         <View style={styles.reorderRow}>
-                          <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={`Move stop ${index + 1} up`}
-                            hitSlop={8}
+                          <IconButton
+                            icon="arrowUp"
+                            label={`Move stop ${index + 1} up`}
+                            variant="soft"
+                            size={18}
                             disabled={index === 0 || reorderMutation.isPending}
                             onPress={() => moveStop(index, -1)}
-                          >
-                            <ThemedText
-                              variant="caption"
-                              style={[styles.reorderArrow, (index === 0 || reorderMutation.isPending) && styles.reorderDisabled]}
-                            >
-                              ▲
-                            </ThemedText>
-                          </Pressable>
-                          <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={`Move stop ${index + 1} down`}
-                            hitSlop={8}
+                          />
+                          <IconButton
+                            icon="arrowDown"
+                            label={`Move stop ${index + 1} down`}
+                            variant="soft"
+                            size={18}
                             disabled={index === queue.length - 1 || reorderMutation.isPending}
                             onPress={() => moveStop(index, 1)}
-                          >
-                            <ThemedText
-                              variant="caption"
-                              style={[styles.reorderArrow, (index === queue.length - 1 || reorderMutation.isPending) && styles.reorderDisabled]}
-                            >
-                              ▼
-                            </ThemedText>
-                          </Pressable>
+                          />
                         </View>
                       ) : (
                         <ThemedText variant="caption" style={styles.pinnedLabel}>
@@ -427,9 +415,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     padding: spacing.md,
   },
+  // Marks the stop to drive to next; a hairline, not a heavy frame.
   cardNext: {
     borderColor: colors.ink,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   container: {
     backgroundColor: colors.background,
@@ -440,12 +429,6 @@ const styles = StyleSheet.create({
   },
   pinnedLabel: {
     color: colors.secondaryLabel,
-  },
-  reorderArrow: {
-    color: colors.ink,
-  },
-  reorderDisabled: {
-    color: colors.separator,
   },
   reorderRow: {
     flexDirection: "row",

@@ -15,7 +15,7 @@ export default function OfflineCaptureScreen() {
     procedure?: string;
   }>();
 
-  const patientName = params.patientName || "Unknown Patient";
+  const patientName = params.patientName || "this patient";
   const clinicianName = currentUser?.firstName
     ? `Dr. ${currentUser.firstName} ${currentUser.lastName}`
     : "Clinician";

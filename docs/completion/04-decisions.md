@@ -68,7 +68,7 @@ The owner's answers to the questions in section 3 of `06-completion-plan.md`, se
 | D-08 | Treatment prices | Owner sets them in the dashboard's services list | Default (accepted) |
 | D-09 | Domain | pavdental.com, API at api.pavdental.com | Default (accepted) |
 | D-10 | Production hosting budget (about £60–120 a month) | Yes | Owner |
-| D-11 | Website shop accounts | Guest checkout only; shopper sign-in and Google sign-in removed. Customers return to an order through its private link (owner, Nov 2026, replacing "guest checkout plus optional email login") | Done in the dashboard and website. The `users` table and its rows are kept for now: dropping them is a destructive migration for the owner to approve |
+| D-11 | Website shop accounts | Guest checkout only; shopper sign-in and Google sign-in removed. Customers return to an order through its private link (owner, Nov 2026, replacing "guest checkout plus optional email login") | Done in the dashboard and website. Owner approved dropping the `users` table after a backup (5 Nov 2026): migration 013 |
 | D-12 | Website hosting | Vercel | Default (accepted) |
 | D-13 | NHS work | None: private only; remove NHS and DSPT claims | Default (accepted) |
 | D-14 | Block screenshots of medical records | Yes. Screenshots and screen recording are blocked on the patient's records and medical history and on every clinician screen; iOS blurs them in the app switcher, Android hides them in recent apps. Native builds only. | Built (app) |

@@ -39,15 +39,12 @@ export async function GET(request: Request) {
     const orders = await query(
       `
       SELECT o.*,
-        u.email as user_email,
-        u.name as user_name,
         (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) as item_count,
         (SELECT json_agg(json_build_object('name', p.name, 'quantity', oi.quantity, 'unit_price', oi.unit_price))
          FROM order_items oi
          JOIN products p ON oi.product_id = p.id
          WHERE oi.order_id = o.id) as items
       FROM orders o
-      LEFT JOIN users u ON o.user_id = u.id
       ${whereClause}
       ORDER BY o.created_at DESC
       LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}

@@ -2,9 +2,8 @@
 // the page, the order row and the Stripe charge can't drift through rounding.
 
 /**
- * Shop prices already include VAT, so VAT is reported as the part of the total
- * that is tax and never added on top. Pending confirmation from the practice's
- * accountant, including whether any products are exempt.
+ * Shop prices already include VAT at 20%, with no exempt products (owner, 5 Nov
+ * 2026, D-23). VAT is reported as the part of the total that is tax, never added on top.
  */
 export const VAT_RATE_PERCENT = 20;
 

@@ -80,6 +80,8 @@ The owner's answers to the questions in section 3 of `06-completion-plan.md`, se
 | D-20 | Drop `waitlist_entries` | Yes, after a backup | Default (accepted) |
 | D-21 | Van operator location | In the background during a shift. Built: after "While using the app", operators are asked for "Allow all the time"; if they allow it, the van keeps sending its position every 20 seconds while the app is in the background, with Android's ongoing "Shift in progress" notification and iOS's blue location indicator. It stops at the end of the shift or on sign-out. If they decline, tracking works only while the app is open. At submission: Google Play's background location declaration (with a short video) and an App Review note explaining it. | Built (app) |
 | D-22 | Login code for van operators | Yes | Default (accepted) |
+| D-23 | Shop VAT | Prices include VAT at 20%; no products are exempt (owner, 5 Nov 2026) | Done in `admin-dashboard/src/lib/shop/pricing.ts` |
+| D-24 | Privacy notice for guest orders | Owner confirmed on 5 Nov 2026 that the notice has been reviewed. Reviewer and date of review to be added here for AUD-02 | `website/src/routes/privacy.tsx` unchanged in this work; it still mentions account closure, which applies to app accounts |
 
 ### Accounts and data the owner will supply
 

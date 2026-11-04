@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { withTransaction } from "@/lib/db/client";
 import { rateLimit } from "@/lib/rate-limit";
 import { abandonOrder, CheckoutRejected, parseCheckoutBody, placeOrder } from "@/lib/shop/checkout-order";
+import { checkoutSessionParams } from "@/lib/shop/checkout-session";
 import { createOrderAccessToken } from "@/lib/shop/order-access";
-import { stripeLineItems } from "@/lib/shop/pricing";
 import { getStripe } from "@/lib/shop/stripe";
 
 const CORS_HEADERS = {
@@ -12,9 +12,6 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
-
-// Stripe's minimum is 30 minutes. An unpaid order holds its discount use until then.
-const CHECKOUT_EXPIRES_SECONDS = 60 * 60;
 
 export async function POST(request: Request) {
   const limited = await rateLimit(request, "checkout");
@@ -33,22 +30,18 @@ export async function POST(request: Request) {
     const placed = await withTransaction((tx) => placeOrder(tx, input));
 
     const storefrontUrl = process.env.WEBSITE_ORIGIN ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:8080";
-    const metadata = { orderId: placed.orderId, cartSessionId: input.cartSessionId };
 
     try {
       const orderLink = await createOrderAccessToken(placed.orderId);
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        line_items: stripeLineItems(placed.lines, placed.totals, placed.shippingName),
-        mode: "payment",
-        customer_email: input.customerEmail,
-        success_url: `${storefrontUrl}/order/${placed.orderId}?access=${orderLink}`,
-        cancel_url: `${storefrontUrl}/checkout`,
-        expires_at: Math.floor(Date.now() / 1000) + CHECKOUT_EXPIRES_SECONDS,
-        metadata,
-        // A failed card is reported on the payment intent, not the session.
-        ...(placed.totals.totalPence > 0 ? { payment_intent_data: { metadata } } : {}),
-      });
+      const session = await stripe.checkout.sessions.create(
+        checkoutSessionParams({
+          placed,
+          customerEmail: input.customerEmail,
+          cartSessionId: input.cartSessionId,
+          storefrontUrl,
+          orderLink,
+        }),
+      );
       if (!session.url) throw new Error("Stripe returned no checkout URL");
 
       await withTransaction((tx) =>

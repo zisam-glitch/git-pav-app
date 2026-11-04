@@ -18,9 +18,11 @@ import { appointmentClinician, appointmentLocation } from "@/features/booking/ap
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
+import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
+import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Appointment detail — full context + lifecycle actions ────────────────────
-// Reference pattern: Mobbin Zocdoc appointment detail (map, reschedule, cancel)
+// Reference pattern: Mobbin Zocdoc appointment detail (map, cancel)
 // plus MyChart pre-visit check-in entry and post-visit rating.
 
 interface Booking {
@@ -28,7 +30,9 @@ interface Booking {
   status: string;
   channel: string;
   startTimeUtc: string;
-  service?: { name?: string; pricePence?: number; depositPence?: number };
+  endTimeUtc?: string;
+  depositPaidPence?: number;
+  service?: { name?: string };
   clinician?: { fullName?: string };
   clinic?: { name?: string; addressLine1?: string };
   van?: { name?: string };
@@ -72,12 +76,8 @@ export default function AppointmentDetailScreen() {
   }
 
   const start = new Date(booking.startTimeUtc);
-  const dateLine = start.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const timeLine = start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const dateLine = ukDateLabel(start, { weekday: "long", day: "numeric", month: "long" });
+  const timeLine = `${ukTime(start)} UK time`;
   const locationName = appointmentLocation(booking);
   const clinicianName = appointmentClinician(booking);
 
@@ -86,7 +86,8 @@ export default function AppointmentDetailScreen() {
   const within24h = !isPast && start.getTime() - Date.now() < 24 * 60 * 60 * 1000;
   // A booked video consult is joined from here until its slot ends: answer the
   // triage questions, then wait for the clinician to let the patient in.
-  const end = new Date((booking as { endTimeUtc?: string }).endTimeUtc ?? booking.startTimeUtc);
+  const end = new Date(booking.endTimeUtc ?? booking.startTimeUtc);
+  const badge = appointmentBadge(booking);
   const canJoinVideo =
     booking.channel === "video" &&
     (booking.status === "confirmed" || booking.status === "in_progress") &&
@@ -134,10 +135,7 @@ export default function AppointmentDetailScreen() {
             <ThemedText variant="headline" style={styles.serviceTitle}>
               {booking.service?.name || "Dental Treatment"}
             </ThemedText>
-            <Badge
-              label={isCancelled ? "Cancelled" : isPast ? "Completed" : toLabel(booking.status)}
-              variant={isCancelled ? "danger" : isPast ? "default" : "success"}
-            />
+            <Badge label={badge.label} variant={badge.variant} />
           </View>
         </Card>
 
@@ -149,10 +147,7 @@ export default function AppointmentDetailScreen() {
           <DetailRow label="Time" value={timeLine} />
           <DetailRow label="Clinician" value={clinicianName} />
           <DetailRow label="Location" value={booking.clinic?.addressLine1 ? `${locationName}, ${booking.clinic.addressLine1}` : locationName} />
-          <DetailRow
-            label="Deposit paid"
-            value={booking.service?.depositPence ? `£${(booking.service.depositPence / 100).toFixed(2)}` : "—"}
-          />
+          <DetailRow label="Deposit paid" value={depositPaidLabel(booking.depositPaidPence)} />
         </Card>
 
         {canJoinVideo ? (
@@ -229,24 +224,15 @@ export default function AppointmentDetailScreen() {
             onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
           />
         ) : (
-          <>
-            <Button
-              title="Reschedule"
-              variant="secondary"
-              size="lg"
-              style={styles.footerBtn}
-              onPress={() =>
-                router.push({ pathname: "/(patient)/booking/slot-picker" as never, params: { rescheduleOf: booking.id } })
-              }
-            />
-            <Button
-              title="Cancel"
-              variant="destructive"
-              size="lg"
-              style={styles.footerBtn}
-              onPress={() => setConfirmCancel(true)}
-            />
-          </>
+          // No Reschedule button: the backend can't move a booking yet, and what
+          // happens to the deposit is waiting on the owner (COMPLETION-PLAN decision 9).
+          <Button
+            title="Cancel"
+            variant="destructive"
+            size="lg"
+            style={styles.footerBtn}
+            onPress={() => setConfirmCancel(true)}
+          />
         )}
       </View>
 

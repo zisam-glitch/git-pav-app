@@ -63,7 +63,10 @@ function slotLockKey(slotId: string): string {
 // Times come from the clinic's opening hours and the clinicians' rota
 // (CS-30). Without a clinician, a time is free when any clinician is.
 router.get("/slots", requireAuth, validateQuery(slotsQuerySchema), async (req: AuthRequest, res: Response) => {
-  const { clinicianId, clinicId, serviceId, date } = req.query as Record<string, string | undefined>;
+  const { clinicianId, clinicId, serviceId } = req.query as Record<string, string | undefined>;
+  // The schema has already made this a string; the typeof check says so to the
+  // reader (and to CodeQL) where the value is used.
+  const date = typeof req.query.date === "string" ? req.query.date : undefined;
   const channel = (req.query.channel as SlotChannel | undefined) ?? "clinic";
 
   const service = serviceId ? await prisma.service.findUnique({ where: { id: serviceId } }) : null;
@@ -466,10 +469,22 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
   });
   if (!profile) return res.status(404).json({ error: "Patient profile not found" });
 
+  // ?scope=upcoming: visits still to come, soonest first. A consult already
+  // under way counts even though its start time has passed.
+  const upcomingOnly = req.query.scope === "upcoming";
+
   const appointments = await prisma.appointment.findMany({
     where: {
       patientId: profile.id,
       ...(req.query.status ? { status: String(req.query.status) as any } : {}),
+      ...(upcomingOnly
+        ? {
+            OR: [
+              { status: "in_progress" as const },
+              { status: "confirmed" as const, startTimeUtc: { gte: new Date() } },
+            ],
+          }
+        : {}),
     },
     include: {
       service: { select: { name: true, durationMinutes: true } },
@@ -477,7 +492,7 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
       clinic: { select: { name: true, address: true } },
       dependant: { select: { id: true, firstName: true, lastName: true } },
     },
-    orderBy: { startTimeUtc: "desc" },
+    orderBy: { startTimeUtc: upcomingOnly ? "asc" : "desc" },
     take,
     skip,
   });

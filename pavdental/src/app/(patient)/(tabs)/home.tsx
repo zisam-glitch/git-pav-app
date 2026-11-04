@@ -24,6 +24,8 @@ import { fetchActiveVanRequest } from "@/features/van/van-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
 import { useServices, useRewards, useMyAppointments } from "@/features/hooks/use-dental-api";
+import { nextVisit } from "@/features/booking/appointment-status";
+import { ukDateLabel } from "@/features/booking/uk-time";
 import { DentalService } from "@/features/booking/booking-types";
 import { formatGbp } from "@/features/booking/booking-api";
 import { toLabel } from "@/lib/text";
@@ -66,10 +68,7 @@ export default function PatientHomeScreen() {
   const { data: apiServices, isError: servicesError, refetch: refetchServices } = useServices();
   const { data: rewards } = useRewards();
   const { data: upcomingAppointments } = useMyAppointments({ scope: "upcoming" });
-  const nextAppointment =
-    Array.isArray(upcomingAppointments) && upcomingAppointments.length > 0
-      ? (upcomingAppointments[0] as any)
-      : null;
+  const nextAppointment = nextVisit(upcomingAppointments as any[] | undefined);
   const pointsBalance: number | undefined = (rewards as any)?.pointsBalance;
 
   useEffect(() => {
@@ -179,13 +178,13 @@ export default function PatientHomeScreen() {
             }
             subtitle={
               nextAppointment
-                ? `${new Date(nextAppointment.startTimeUtc).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} · ${nextAppointment.clinic?.name || nextAppointment.van?.name || "Central Practice"}`
+                ? `${ukDateLabel(new Date(nextAppointment.startTimeUtc), { weekday: "short", day: "numeric", month: "short" })} · ${nextAppointment.clinic?.name || nextAppointment.van?.name || "Central Practice"}`
                 : "Book a clinic visit, video consult, or mobile van in a few taps."
             }
             left={<IconTile icon="calendar" />}
             right={
               <Badge
-                label={nextAppointment ? "Confirmed" : "Book"}
+                label={nextAppointment ? toLabel(nextAppointment.status) : "Book"}
                 variant={nextAppointment ? "success" : "default"}
               />
             }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth/middleware";
-import { query } from "@/lib/db/client";
+import { listShopperAccounts } from "@/lib/users.server";
 
 /**
  * GET /api/v1/admin/users
@@ -12,9 +12,7 @@ export async function GET(request: Request) {
   if (authErr) return authErr;
 
   try {
-    const users = await query<any>(
-      "SELECT id, email, name, phone, email_verified, created_at, updated_at FROM users ORDER BY created_at DESC",
-    );
+    const users = await listShopperAccounts();
 
     return NextResponse.json({ users }, { status: 200 });
   } catch (err) {

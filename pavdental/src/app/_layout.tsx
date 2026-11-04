@@ -3,7 +3,7 @@ import { AppState, AppStateStatus, StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, focusManager } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
 import { StatusBar } from "expo-status-bar";
 import { ThemeProvider } from "expo-router/react-navigation";
@@ -122,6 +122,7 @@ export default function RootLayout() {
   // ── App state monitoring for app lock ───────────────────────────────────
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      focusManager.setFocused(nextAppState === 'active');
       if (nextAppState === 'background' || nextAppState === 'inactive') {
         setBackgrounded();
       } else if (nextAppState === 'active') {

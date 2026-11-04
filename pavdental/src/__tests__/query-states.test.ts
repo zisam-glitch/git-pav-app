@@ -111,6 +111,23 @@ async function runTests() {
   });
   assert(rxOfflineWithCache === "success", "Prescriptions serves cached data when offline if previously loaded");
 
+  // ─── Test 5: Clinic picker (offline must not read as "No clinics available") ──
+  const clinicsOffline = resolveQueryState({ isOnline: false, isLoading: false, isError: false, data: undefined });
+  assert(clinicsOffline === "offline", "Clinic picker resolves to 'offline' (not 'empty') when the fetch is paused offline");
+
+  const clinicsFailed = resolveQueryState({ isOnline: true, isLoading: false, isError: true, data: undefined });
+  assert(clinicsFailed === "error", "Clinic picker resolves to 'error' when the clinics fetch fails");
+
+  const clinicsEmpty = resolveQueryState({ isOnline: true, isLoading: false, isError: false, data: [] });
+  assert(clinicsEmpty === "empty", "Clinic picker keeps 'empty' for a successful empty response");
+
+  const fs = await import("fs");
+  const picker = fs.readFileSync("src/app/(patient)/booking/clinic-picker.tsx", "utf8");
+  assert(
+    picker.includes("resolveQueryState") && picker.includes('view === "offline"') && picker.includes("onRetry"),
+    "Clinic picker screen renders an error state with retry for offline/failed loads"
+  );
+
   console.log("\n🎉 ALL QUERY STATE & OFFLINE RESILIENCE TESTS PASSED SUCCESSFULLY!\n");
 }
 

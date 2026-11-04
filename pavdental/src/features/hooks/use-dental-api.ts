@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { rewardsQueryOptions } from "../records/rewards-query";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { resolvePracticeHours } from "../booking/uk-time";
 import {
@@ -267,10 +268,7 @@ export function useFinancing() {
 }
 
 export function useRewards() {
-  return useQuery({
-    queryKey: ["rewards"],
-    queryFn: fetchRewards,
-  });
+  return useQuery(rewardsQueryOptions(fetchRewards));
 }
 
 export function useRedeemRewardMutation() {

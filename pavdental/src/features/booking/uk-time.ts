@@ -15,6 +15,11 @@ export function ukTime(instant: Date): string {
   return instant.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: PRACTICE_TIME_ZONE });
 }
 
+/** A date in UK time, in the given format ("Mon 9 Nov" and so on). */
+export function ukDateLabel(instant: Date, format: Intl.DateTimeFormatOptions): string {
+  return instant.toLocaleDateString("en-GB", { ...format, timeZone: PRACTICE_TIME_ZONE });
+}
+
 /** The UK hour (0 to 23) an instant falls in. */
 export function ukHour(instant: Date): number {
   return Number(ukTime(instant).slice(0, 2));

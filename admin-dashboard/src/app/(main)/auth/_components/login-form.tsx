@@ -55,7 +55,7 @@ export function LoginForm() {
         return;
       }
       toast.success("Logged in successfully");
-      router.push("/dashboard/bookings");
+      router.push("/dashboard");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Invalid credentials";
       toast.error(msg);

@@ -322,7 +322,9 @@ finance application) or delete the endpoint and its tests. **M6** (server triage
 - **Consent wording (legal):** "Recall & preventive reminders", which are checkup reminders, is recorded as *marketing*
   consent. Check whether recall reminders are really marketing under PECR/GDPR.
 
-### Other new findings (not yet fixed)
+### Other new findings
+
+Fixed 4 Nov: treatment plan booking and "Deposit paid" (below). The open list is now `docs/completion/11-completion-checklist.md`.
 
 - **Treatment plan → booking** (`records/plans/[id].tsx`) matches the plan to a service by fuzzy
   name, then falls back to "any restorative service", then to the first service. A plan can book the

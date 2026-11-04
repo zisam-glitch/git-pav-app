@@ -40,7 +40,7 @@ async function main() {
     },
   });
 
-  const clinicCanary = await prisma.clinic.upsert({
+  await prisma.clinic.upsert({
     where: { id: "00000000-0000-0000-0000-000000000002" },
     update: {},
     create: {

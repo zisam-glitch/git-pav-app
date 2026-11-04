@@ -6,6 +6,7 @@ import { appointmentClinician, appointmentLocation } from "@/features/booking/ap
 import { colors, spacing } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
+import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Bookings — upcoming/past grouping with clear status per card ─────────────
 
@@ -38,10 +39,8 @@ function BookingRow({
 }) {
   const router = useRouter();
   const start = new Date(booking.startTimeUtc);
-  const day = start.getDate();
-  const month = start.toLocaleDateString("en-GB", { month: "short" });
-  const date = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-  const time = start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const date = ukDateLabel(start, { weekday: "short", day: "numeric", month: "short" });
+  const time = ukTime(start);
   const cancelled = booking.status === "cancelled";
   const who = booking.dependant
     ? `For ${booking.dependant.firstName} ${booking.dependant.lastName}`
@@ -68,7 +67,7 @@ function BookingRow({
           title="Cancel booking"
           variant="ghost"
           size="sm"
-          accessibilityLabel={`Cancel ${booking.service?.name || "appointment"} on ${day} ${month}`}
+          accessibilityLabel={`Cancel ${booking.service?.name || "appointment"} on ${date}`}
           onPress={() => onCancel(booking.id)}
           style={styles.cancelBtn}
         />

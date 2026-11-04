@@ -21,6 +21,7 @@ import { objectStorage } from "../lib/object-storage";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { encryptField, decryptField, decryptString, isEncryptedEnvelope } from "../lib/encryption";
+import { logFailure } from "../lib/best-effort";
 
 const router = Router();
 
@@ -372,7 +373,7 @@ router.put("/:id/odontogram", requireAuth, validateParams(patientIdParamsSchema)
       appointmentId: appointmentId || null,
       teethUpdated: teeth.map((t: any) => ({ toothNumber: t.toothNumber, condition: t.condition })),
     },
-  }).catch(() => {});
+  }).catch(logFailure("audit write patient.odontogram.updated"));
 
   return res.json({ message: "Odontogram updated", count: teeth.length, appointmentId });
 });
@@ -433,7 +434,7 @@ router.post("/:id/plans", requireAuth, validateParams(patientIdParamsSchema), va
       totalCostPence,
       itemCount: items.length,
     },
-  }).catch(() => {});
+  }).catch(logFailure("audit write treatment_plan.created"));
 
   return res.status(201).json({ ...plan, appointmentId });
 });

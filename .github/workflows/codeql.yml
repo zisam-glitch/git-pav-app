@@ -27,7 +27,6 @@ jobs:
           config: |
             paths-ignore:
               - "**/node_modules"
-              - neo-financial-ios
               - "**/*.test.ts"
               - "**/__tests__"
 

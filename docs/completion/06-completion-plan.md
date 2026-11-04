@@ -229,7 +229,7 @@ All in `pavdental/src/app/`. The default action (pending the decision) is to hid
 | BE-20 | P1 | Retention job ships with `RETENTION_ENFORCE=false`. Turn on in production after legal sign-off of retention periods. | `.env.example` | C+Legal | S | LG-07 |
 | BE-21 | P1 | Added `operator` to `MFA_REQUIRED_ROLES` in auth route. | `routes/auth.ts:31` | C | S | **Done** |
 | BE-22 | P0 | **New (AUD-05), done 26 Oct PR.** Reminders claimed as `sending` by a dispatcher that died were never retried. Added `claimed_at` (additive migration `20261026200000_scheduled_notification_lease`) and a 15-minute lease; tests prove a stale or legacy claim is sent and a fresh one is left alone, and fail on the old code. | `lib/background-jobs.ts`, `reminders-and-push.test.ts` | C | S | **Done (26 Oct PR)** |
-| BE-23 | P2 | **New (AUD-13, ADR-0002).** Distributed background job leadership via Postgres advisory locks (`pg_try_advisory_xact_lock`); retention sweep, push receipts, rewards and referral catch-up verified with concurrent runners. | `lib/background-jobs.ts`, `job-concurrency.test.ts` | C | S | **Done in PR #123 (pending merge)** |
+| BE-23 | P2 | **New (AUD-13, ADR-0002).** Distributed background job leadership via leases in `job_leases` (replaced transaction-held advisory locks on 5 Nov 2026); retention sweep, push receipts, rewards and referral catch-up verified with concurrent runners. | `lib/background-jobs.ts`, `job-concurrency.test.ts` | C | S | **Done in PR #123 (pending merge)** |
 | BE-24 | P3 | **New (AUD-17), done 26 Oct PR.** Client `x-request-id` only kept if it matches `[A-Za-z0-9._-]{1,128}`; otherwise a fresh id. Test in `server-operations.test.ts`. | `server.ts` | C | S | **Done (26 Oct PR)** |
 
 ### 4.5 Staff dashboard (DB)

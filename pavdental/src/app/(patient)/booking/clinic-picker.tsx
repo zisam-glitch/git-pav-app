@@ -7,13 +7,18 @@ import { useClinics } from "@/features/hooks/use-dental-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { ClinicLocation } from "@/features/booking/booking-types";
 import { formatOpeningHours } from "@/features/booking/uk-time";
+import { useIsOnline } from "@/lib/network";
+import { resolveQueryState } from "@/lib/query-state-resolver";
 
 export default function ClinicPickerScreen() {
   const router = useRouter();
   const { setClinic, service } = useBookingStore();
   const { data: apiClinics, isLoading, isError, refetch } = useClinics();
 
+  const isOnline = useIsOnline();
   const clinics: ClinicLocation[] = (apiClinics ?? []) as ClinicLocation[];
+  // Offline, the query is paused (no error, no data): that is a failure, not "no clinics".
+  const view = resolveQueryState({ isOnline, isLoading, isError, data: apiClinics });
 
   const handleSelectClinic = (clinic: ClinicLocation) => {
     setClinic(clinic);
@@ -35,17 +40,21 @@ export default function ClinicPickerScreen() {
         </ThemedText>
       </View>
 
-      {isLoading ? (
+      {view === "loading" ? (
         <View style={styles.clinicList}>
           <Skeleton height={96} borderRadius={20} />
           <Skeleton height={96} borderRadius={20} />
         </View>
-      ) : isError ? (
+      ) : view === "error" || view === "offline" ? (
         <ErrorState
-          message="Could not load clinics. Please try again."
+          message={
+            view === "offline"
+              ? "You appear to be offline. Check your connection and try again."
+              : "Could not load clinics. Please try again."
+          }
           onRetry={() => refetch()}
         />
-      ) : clinics.length === 0 ? (
+      ) : view === "empty" ? (
         <EmptyState
           heading="No clinics available"
           body="Practice locations will appear here once configured."

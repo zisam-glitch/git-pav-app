@@ -7,7 +7,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { TimeSlot } from "@/features/booking/booking-types";
 import { useSlots, useHoldSlotMutation } from "@/features/hooks/use-dental-api";
-import { ukDayLabel, ukHour, upcomingUkDates } from "@/features/booking/uk-time";
+import { ukDate, ukDayLabel, ukHour, upcomingUkDates } from "@/features/booking/uk-time";
 
 export default function SlotPickerScreen() {
   const router = useRouter();
@@ -22,9 +22,12 @@ export default function SlotPickerScreen() {
   }, [service, rescheduleOf]);
 
   // Days and times are the clinic's, in UK time.
+  // Keyed on today's UK date so a screen left open past midnight rolls forward
+  // instead of keeping yesterday as the first day.
+  const today = ukDate(new Date());
   const upcomingDays = useMemo(
-    () => upcomingUkDates(7).map((iso) => ({ iso, label: ukDayLabel(iso) })),
-    []
+    () => upcomingUkDates(7, new Date()).map((iso) => ({ iso, label: ukDayLabel(iso) })),
+    [today]
   );
 
   const [selectedDate, setSelectedDate] = useState<string>(upcomingDays[0].label);

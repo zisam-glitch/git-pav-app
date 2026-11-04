@@ -37,6 +37,7 @@ import {
   updateServiceSchema,
   updateVanSchema,
 } from "../schemas/admin";
+import { logFailure } from "../lib/best-effort";
 
 const router = Router();
 
@@ -293,7 +294,7 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
 
   // If status changed to cancelled, cancel pending reminders
   if (updated.status === "cancelled") {
-    await cancelAppointmentReminders(appointmentId).catch(() => {});
+    await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));
   }
 
   await createAuditLogWithIntegrity({
@@ -306,7 +307,7 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
       fromStatus: existing.status,
       toStatus: status,
     },
-  }).catch(() => {});
+  }).catch(logFailure("audit write admin.appointment.status_updated"));
 
   return res.json({ id: updated.id, status: updated.status, updatedAt: updated.updatedAt });
 });

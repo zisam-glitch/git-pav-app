@@ -15,6 +15,7 @@ import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
+import { logFailure } from "../lib/best-effort";
 
 export { appointmentRefundPolicy } from "../lib/cancellation-policy";
 
@@ -129,7 +130,7 @@ async function handleAppointmentCancel(req: AuthRequest, res: Response) {
         refundAmountPence,
         stripeRefundId,
       },
-    }).catch(() => {});
+    }).catch(logFailure("audit write appointment.cancelled.van"));
 
     return res.json(summary(refundAmountPence, policy.refundPercentage, stripeRefundId, policy.policyNotice));
   }
@@ -193,7 +194,7 @@ async function handleAppointmentCancel(req: AuthRequest, res: Response) {
       stripeRefundId,
       channel: appointment.channel,
     },
-  }).catch(() => {});
+  }).catch(logFailure("audit write appointment.cancelled"));
 
   return res.json(summary(refundAmountPence, refundPercentage, stripeRefundId, policyNotice));
 }

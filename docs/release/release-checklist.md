@@ -83,7 +83,7 @@ Release to real patients needs **every gate open**. A gate can only be waived by
 | Requirement | Status | Evidence | Next action |
 |---|---|---|---|
 | Backend unit/integration | Verified 26 Oct | 63 suites, 485 tests pass | — |
-| Backend end-to-end | Verified 26 Oct | 34/34; also passes with `connection_limit=1` | — |
+| Backend end-to-end | Verified 26 Oct | 34/34. Background jobs use leases since 5 Nov, with a test on a one-connection pool (`job-concurrency.test.ts`) | — |
 | App typecheck, lint, content and routing tests | Verified 26 Oct | `npm run test:all` | — |
 | Dashboard typecheck, lint budget, tests | Verified 26 Oct | 29 tests pass | — |
 | Device end-to-end (Maestro) | Not tested | — | QA-02 |

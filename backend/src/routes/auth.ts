@@ -30,7 +30,7 @@ const REFRESH_GRACE_SECONDS = 30;
 export const MFA_REQUIRED_ROLES: string[] = ["clinician", "admin", "operator"];
 
 // ─── POST /api/auth/check-email ────────────────────────────────────────────────
-router.post("/check-email", validateBody(checkEmailSchema), async (req: Request, res: Response) => {
+router.post("/check-email", authLimiterMiddleware, validateBody(checkEmailSchema), async (req: Request, res: Response) => {
   const normalizedEmail = String(req.body.email).trim().toLowerCase();
   const user = await prisma.user.findUnique({
     where: { email: normalizedEmail },

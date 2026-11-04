@@ -10,6 +10,7 @@
 
 import Stripe from "stripe";
 import { env } from "../config/env";
+import { logFailure } from "./best-effort";
 import { prisma } from "./prisma";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
 import { safeError } from "./log-safety";
@@ -135,7 +136,7 @@ export async function releaseVanDeposit(
       message
     );
     const result: VanDepositReleaseResult = { status: "failed", error: message };
-    await auditRelease(paymentIntentId, reason, result).catch(() => {});
+    await auditRelease(paymentIntentId, reason, result).catch(logFailure("audit write van deposit release"));
     return result;
   }
 }

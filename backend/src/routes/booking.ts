@@ -26,6 +26,7 @@ import { ageInYears, DEPENDANT_MAX_AGE, parseIsoDate } from "../lib/age";
 import { AvailabilityError, bookableClinician, londonDate, slotsForDay, SlotChannel, startOfLondonDay } from "../lib/availability";
 import { encryptField, decryptField, decryptString, encryptAccessDetails, encryptClientAccessDetails, decryptAccessDetails } from "../lib/encryption";
 import { safeError } from "../lib/log-safety";
+import { logFailure } from "../lib/best-effort";
 
 const router = Router();
 
@@ -349,7 +350,7 @@ router.post("/appointments", requireAuth, validateBody(createAppointmentSchema),
         sessionId: null,
         ipHash: pseudonymiseIp("127.0.0.1"),
         metadata: { reason: "10-minute hold window elapsed without payment" },
-      }).catch(() => {});
+      }).catch(logFailure("audit write appointment.hold_expired"));
     }
 
     // Release Redis hold now that it's in DB
@@ -905,7 +906,7 @@ router.post(
         hasDiagnosis: !!diagnosis,
         hasTreatmentPlan: !!treatmentPlan,
       },
-    }).catch(() => {});
+    }).catch(logFailure("audit write appointment.notes.updated"));
 
     return res.json({
       id: record.id,
@@ -1014,14 +1015,14 @@ router.post(
     }
     const updated = await prisma.appointment.findUniqueOrThrow({ where: { id: appointmentId } });
 
-    await cancelAppointmentReminders(appointmentId).catch(() => {});
+    await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));
 
     await createAuditLogWithIntegrity({
       action: "appointment.completed",
       actorId: req.user!.sub,
       resourceId: appointmentId,
       metadata: { previousStatus: appointment.status, channel: appointment.channel },
-    }).catch(() => {});
+    }).catch(logFailure("audit write appointment.completed"));
 
     return res.json({ id: updated.id, status: updated.status });
   }
@@ -1068,14 +1069,14 @@ router.post(
     }
     const updated = await prisma.appointment.findUniqueOrThrow({ where: { id: appointmentId } });
 
-    await cancelAppointmentReminders(appointmentId).catch(() => {});
+    await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));
 
     await createAuditLogWithIntegrity({
       action: "appointment.no_show",
       actorId: req.user!.sub,
       resourceId: appointmentId,
       metadata: { previousStatus: appointment.status, channel: appointment.channel },
-    }).catch(() => {});
+    }).catch(logFailure("audit write appointment.no_show"));
 
     return res.json({ id: updated.id, status: updated.status });
   }

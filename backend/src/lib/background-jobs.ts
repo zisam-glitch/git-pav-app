@@ -1,4 +1,6 @@
+import crypto from "crypto";
 import { prisma } from "./prisma";
+import { logFailure } from "./best-effort";
 import { communicationService } from "./communication-service";
 import { pseudonymiseIp } from "./audit-security";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
@@ -40,58 +42,78 @@ export interface JobLockResult<T> {
   result?: T;
 }
 
+// Long enough to survive a missed renewal; short enough that a crashed instance's
+// jobs resume within minutes.
+const JOB_LEASE_MS = 5 * 60 * 1000;
+const JOB_LEASE_RENEW_MS = 60 * 1000;
+
 /**
- * Executes `fn` within a Postgres transaction holding a transaction-scoped advisory lock.
- * If another instance currently holds the lock for `lockId`, returns `{ acquired: false }`
- * immediately without running `fn`.
- * The lock is released automatically when the transaction completes or rolls back.
+ * Runs `fn` only if no other instance holds this job's lease; otherwise returns
+ * `{ acquired: false }` without running it. No connection is held while `fn` runs,
+ * so jobs work on a pool of one connection and aren't cut off by a transaction
+ * timeout. The lease is renewed while `fn` runs and released when it finishes; if
+ * the process dies, it expires.
  */
-export async function withJobAdvisoryLock<T>(
-  lockId: number,
+export async function withJobLease<T>(
+  jobId: number,
   fn: () => Promise<T>,
-  options?: { timeoutMs?: number }
+  options?: { db?: Pick<typeof prisma, "$queryRaw" | "$executeRaw">; leaseMs?: number; renewMs?: number }
 ): Promise<JobLockResult<T>> {
-  const timeout = options?.timeoutMs ?? 30000;
-  return await prisma.$transaction(
-    async (tx) => {
-      const rows = await tx.$queryRawUnsafe<{ locked: boolean }[]>(
-        "SELECT pg_try_advisory_xact_lock($1) AS locked",
-        lockId
-      );
-      const acquired = Boolean(rows[0]?.locked);
-      if (!acquired) {
-        return { acquired: false };
-      }
-      const result = await fn();
-      return { acquired: true, result };
-    },
-    { timeout, maxWait: 5000 }
-  );
+  const db = options?.db ?? prisma;
+  const leaseMs = options?.leaseMs ?? JOB_LEASE_MS;
+  const holder = crypto.randomUUID();
+
+  const claimed = await db.$queryRaw<{ holder: string }[]>`
+    INSERT INTO job_leases (id, holder, expires_at)
+    VALUES (${jobId}::int, ${holder}, now() + (${leaseMs}::int * interval '1 millisecond'))
+    ON CONFLICT (id) DO UPDATE SET holder = EXCLUDED.holder, expires_at = EXCLUDED.expires_at
+    WHERE job_leases.expires_at <= now()
+    RETURNING holder
+  `;
+  if (claimed.length === 0) return { acquired: false };
+
+  const renewal = setInterval(() => {
+    db.$executeRaw`
+      UPDATE job_leases SET expires_at = now() + (${leaseMs}::int * interval '1 millisecond')
+      WHERE id = ${jobId}::int AND holder = ${holder}
+    `.catch(logFailure("job lease renewal"));
+  }, options?.renewMs ?? JOB_LEASE_RENEW_MS);
+  renewal.unref();
+
+  try {
+    return { acquired: true, result: await fn() };
+  } finally {
+    clearInterval(renewal);
+    // If this fails the lease expires by itself.
+    await db.$executeRaw`DELETE FROM job_leases WHERE id = ${jobId}::int AND holder = ${holder}`.catch(
+      logFailure("job lease release")
+    );
+  }
 }
 
 export const runRetentionSweepWithLock = () =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.RETENTION_SWEEP, () => runRetentionSweep());
+  withJobLease(JOB_LOCK_IDS.RETENTION_SWEEP, () => runRetentionSweep());
 
 export const checkPushReceiptsWithLock = (now?: Date) =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.PUSH_RECEIPTS, () => checkPushReceipts(now));
+  withJobLease(JOB_LOCK_IDS.PUSH_RECEIPTS, () => checkPushReceipts(now));
 
 export const awardMissedVisitPointsWithLock = (limit?: number) =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.VISIT_POINTS, () => awardMissedVisitPoints(limit));
+  withJobLease(JOB_LOCK_IDS.VISIT_POINTS, () => awardMissedVisitPoints(limit));
 
 export const issueMissedReferralVouchersWithLock = (limit?: number) =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.REFERRAL_VOUCHERS, () => issueMissedReferralVouchers(limit));
+  withJobLease(JOB_LOCK_IDS.REFERRAL_VOUCHERS, () => issueMissedReferralVouchers(limit));
 
 export const processExpiredSlotHoldsWithLock = () =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.SLOT_EXPIRY, () => processExpiredSlotHolds());
+  withJobLease(JOB_LOCK_IDS.SLOT_EXPIRY, () => processExpiredSlotHolds());
 
 export const processDueScheduledNotificationsWithLock = () =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.NOTIFICATION_DISPATCH, () => processDueScheduledNotifications());
+  withJobLease(JOB_LOCK_IDS.NOTIFICATION_DISPATCH, () => processDueScheduledNotifications());
 
 export const processExpiredVanRequestsWithLock = () =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.VAN_REQUEST_EXPIRY, () => processExpiredVanRequests());
+  withJobLease(JOB_LOCK_IDS.VAN_REQUEST_EXPIRY, () => processExpiredVanRequests());
 
 export const retryFailedVanDepositReleasesWithLock = () =>
-  withJobAdvisoryLock(JOB_LOCK_IDS.VAN_DEPOSIT_RETRY, () => retryFailedVanDepositReleases());
+  withJobLease(JOB_LOCK_IDS.VAN_DEPOSIT_RETRY, () => retryFailedVanDepositReleases());
 
 let slotExpiryTimer: NodeJS.Timeout | null = null;
 let notificationDispatchTimer: NodeJS.Timeout | null = null;
@@ -218,9 +240,9 @@ export async function processExpiredSlotHolds(): Promise<{ expiredCount: number 
         sessionId: null,
         ipHash: pseudonymiseIp("127.0.0.1"),
         metadata: { reason: "10-minute hold window elapsed without payment" },
-      }).catch(() => {});
+      }).catch(logFailure("audit write appointment.hold_expired"));
 
-      await cancelAppointmentReminders(appt.id).catch(() => {});
+      await cancelAppointmentReminders(appt.id).catch(logFailure("reminder cancellation"));
     }
 
     console.log(`[BACKGROUND JOBS] Expired ${expiredRows.length} draft holds`);
@@ -669,17 +691,17 @@ const PUSH_RECEIPT_INTERVAL_MS = 15 * 60 * 1000;
 let pushReceiptTimer: NodeJS.Timeout | null = null;
 
 export function startBackgroundJobs(): void {
-  console.log("[BACKGROUND JOBS] Starting background workers with distributed advisory lock coordination");
+  console.log("[BACKGROUND JOBS] Starting background workers with lease coordination");
 
   // Run immediately on boot
-  processExpiredSlotHoldsWithLock().catch(() => {});
-  processDueScheduledNotificationsWithLock().catch(() => {});
-  processExpiredVanRequestsWithLock().catch(() => {});
-  retryFailedVanDepositReleasesWithLock().catch(() => {});
+  processExpiredSlotHoldsWithLock().catch(logFailure("slot hold expiry job"));
+  processDueScheduledNotificationsWithLock().catch(logFailure("reminder dispatch job"));
+  processExpiredVanRequestsWithLock().catch(logFailure("van request expiry job"));
+  retryFailedVanDepositReleasesWithLock().catch(logFailure("van deposit retry job"));
 
   // Recurring timers
   slotExpiryTimer = setInterval(() => {
-    processExpiredSlotHoldsWithLock().catch(() => {});
+    processExpiredSlotHoldsWithLock().catch(logFailure("slot hold expiry job"));
     awardMissedVisitPointsWithLock().catch((err) => {
       console.error("[BACKGROUND JOBS] Visit points catch-up failed:", err instanceof Error ? err.name : "unknown error");
     });
@@ -689,12 +711,12 @@ export function startBackgroundJobs(): void {
   }, SLOT_EXPIRY_INTERVAL_MS);
 
   notificationDispatchTimer = setInterval(() => {
-    processDueScheduledNotificationsWithLock().catch(() => {});
+    processDueScheduledNotificationsWithLock().catch(logFailure("reminder dispatch job"));
   }, NOTIFICATION_DISPATCH_INTERVAL_MS);
 
   vanRequestExpiryTimer = setInterval(() => {
-    processExpiredVanRequestsWithLock().catch(() => {});
-    retryFailedVanDepositReleasesWithLock().catch(() => {});
+    processExpiredVanRequestsWithLock().catch(logFailure("van request expiry job"));
+    retryFailedVanDepositReleasesWithLock().catch(logFailure("van deposit retry job"));
   }, VAN_REQUEST_EXPIRY_INTERVAL_MS);
 
   retentionSweepTimer = setInterval(() => {

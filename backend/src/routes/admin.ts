@@ -22,6 +22,7 @@ import {
   appointmentIdParamsSchema,
   updateAppointmentStatusSchema,
   adminAuditLogsQuerySchema,
+  adminPrescriptionsQuerySchema,
   createClinicianSchema,
   createOperatorSchema,
   createClinicSchema,
@@ -871,6 +872,77 @@ router.get("/audit-logs", requireAuth, requireRole("admin"), validateQuery(admin
   }));
 
   return res.json({ logs: formattedLogs, total, page, limit });
+});
+
+// ─── GET /api/admin/prescriptions ─────────────────────────────────────────────
+// Register of prescriptions issued, newest first: reference, who issued it,
+// when, whether it was signed and whether it was sent. Staff need to know a
+// prescription exists and who stands behind it. They don't need what was
+// prescribed or for whom, so medication, dosage, the patient and the signed
+// content stay out, the same as the audit log keeps hashes out.
+router.get("/prescriptions", requireAuth, requireRole("admin"), validateQuery(adminPrescriptionsQuerySchema), async (req: AuthRequest, res: Response) => {
+  const { from, to, clinicianId, page, limit } = req.query as unknown as {
+    from?: string;
+    to?: string;
+    clinicianId?: string;
+    page: number;
+    limit: number;
+  };
+  // The schema has already made these strings; the typeof checks say so to
+  // the reader (and to CodeQL) where the values are used.
+  const fromDay = typeof from === "string" ? from : undefined;
+  const toDay = typeof to === "string" ? to : undefined;
+  const byClinician = typeof clinicianId === "string" ? clinicianId : undefined;
+  const where: Prisma.PrescriptionWhereInput = {
+    ...(fromDay || toDay
+      ? {
+          createdAt: {
+            ...(fromDay ? { gte: londonTimeToUtc(fromDay, 0) } : {}),
+            ...(toDay ? { lt: londonTimeToUtc(toDay, 1440) } : {}),
+          },
+        }
+      : {}),
+    ...(byClinician ? { clinicianId: byClinician } : {}),
+  };
+
+  const [rows, total] = await Promise.all([
+    prisma.prescription.findMany({
+      where,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        id: true,
+        reference: true,
+        appointmentId: true,
+        clinicianId: true,
+        createdAt: true,
+        dispatchedAt: true,
+        signature: true,
+        signingKeyId: true,
+        clinician: { select: { fullName: true, roleTitle: true } },
+      },
+    }),
+    prisma.prescription.count({ where }),
+  ]);
+
+  return res.json({
+    prescriptions: rows.map((p) => ({
+      id: p.id,
+      reference: p.reference,
+      appointmentId: p.appointmentId,
+      clinicianId: p.clinicianId,
+      clinicianName: p.clinician?.fullName ?? null,
+      clinicianRole: p.clinician?.roleTitle ?? null,
+      issuedAt: p.createdAt,
+      signed: Boolean(p.signature),
+      signingKeyId: p.signingKeyId,
+      dispatchedAt: p.dispatchedAt,
+    })),
+    total,
+    page,
+    limit,
+  });
 });
 
 export default router;

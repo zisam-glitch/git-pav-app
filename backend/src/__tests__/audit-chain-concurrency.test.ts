@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import path from "path";
+import { prisma } from "../lib/prisma";
 import { verifyAuditIntegrity } from "../lib/audit-integrity";
 import { acquireAuditExclusive, releaseAuditExclusive } from "../../test/audit-exclusive";
 
@@ -47,6 +48,16 @@ describe("audit hash chain under concurrent writers", () => {
   it("stays valid when several processes append at the same time", async () => {
     await Promise.all(Array.from({ length: WRITERS }, (_, i) => runWriter(i)));
     const result = await verifyAuditIntegrity(100_000);
+    if ((result.issues ?? []).length > 0) {
+      // Say what the broken rows are and what sits around them, so a CI failure explains itself.
+      const ids = (result.issues ?? []).map((issue) => BigInt(/log (\d+)/.exec(issue)?.[1] ?? "0"));
+      const around = await prisma.auditLog.findMany({
+        where: { id: { gte: ids[0] - BigInt(3), lte: ids[ids.length - 1] + BigInt(2) } },
+        orderBy: [{ timestampUtc: "asc" }, { id: "asc" }],
+        select: { id: true, action: true, timestampUtc: true, archived: true, metadata: true },
+      });
+      console.error("Broken audit rows and neighbours:", JSON.stringify(around, (_k, v) => (typeof v === "bigint" ? v.toString() : v), 1));
+    }
     expect(result.issues ?? []).toEqual([]);
     expect(result.valid).toBe(true);
   });

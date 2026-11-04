@@ -8,6 +8,7 @@ import argon2 from "argon2";
 // reveal more than a wrong password does. Synthetic data only.
 describe("session security", () => {
   let server: http.Server;
+  let app: import("express").Express;
   let baseUrl: string;
   let prisma: typeof import("../lib/prisma").prisma;
   const tag = crypto.randomUUID().slice(0, 8);
@@ -45,7 +46,7 @@ describe("session security", () => {
 
   beforeAll(async () => {
     const serverModule = require("../server");
-    const app = serverModule.default ?? serverModule;
+    app = serverModule.default ?? serverModule;
     prisma = require("../lib/prisma").prisma;
     server = http.createServer(app);
     await new Promise<void>((resolve) => server.listen(3023, resolve));
@@ -114,6 +115,19 @@ describe("session security", () => {
     expect(res.body).toMatchObject({ exists: true, email: user.email });
     expect(res.body).not.toHaveProperty("role");
     expect((await call("POST", "/api/auth/check-email", { body: { email: "not-an-email" } })).status).toBe(400);
+  });
+
+  it("puts check-email behind the auth rate limiter", async () => {
+    const realLimiter = app.get("authLimiter");
+    app.set("authLimiter", (_req: unknown, res: { status: (code: number) => { json: (body: unknown) => void } }) =>
+      res.status(429).json({ error: "limited" })
+    );
+    try {
+      const res = await call("POST", "/api/auth/check-email", { body: { email: `nobody-${tag}@example.test` } });
+      expect(res.status).toBe(429);
+    } finally {
+      app.set("authLimiter", realLimiter);
+    }
   });
 
   it("answers a locked account exactly like a wrong password", async () => {

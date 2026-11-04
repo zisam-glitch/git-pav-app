@@ -12,7 +12,6 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
   let adminToken = "";
   let patientToken = "";
   let clinicianToken = "";
-  let adminUserId = "";
 
   const createdClinicIds: string[] = [];
   const createdVanIds: string[] = [];
@@ -32,7 +31,6 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
     const admin = await prisma.user.create({
       data: { email: `matrix-admin-${tag}@example.test`, passwordHash: "x", role: "admin" },
     });
-    adminUserId = admin.id;
     adminToken = signAccessToken({ sub: admin.id, role: "admin", sessionId: crypto.randomUUID() });
 
     const patient = await prisma.user.create({

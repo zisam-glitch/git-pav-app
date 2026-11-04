@@ -11,7 +11,7 @@ Current status and endpoints of the live test deployment running on free-tier cl
 
 | Component | Provider & Tier | Region | Resource ID | Status | Live URL / Endpoint |
 |---|---|---|---|---|---|
-| **Backend API** | Render (Free Web Service, Docker) | `frankfurt` | `srv-dbdvgarncjis73dl7jig` (deploy: `dep-dbdvhnvavr4c739imb1g`) | **Live (Healthy)** | [https://pavdental-api.onrender.com](https://pavdental-api.onrender.com/health) |
+| **Backend API** | Render (Free Web Service, Docker) | `frankfurt` | `srv-dbdvgarncjis73dl7jig` (deploy: `dep-dbdvhnvavr4c739imb1g`) | **Down on 4 Nov: `/healthz` returns 503, `database: error`** | [https://pavdental-api.onrender.com](https://pavdental-api.onrender.com/health) |
 | **Admin Dashboard** | Vercel (Hobby, Next.js 16) | Global Edge | `prj_tMvj5TnRlgfT2omPZmmKSeu8gS41` | **Live (Production)** | [https://pavdental-admin.vercel.app](https://pavdental-admin.vercel.app) |
 | **App Database** | Supabase (Postgres 17 + PostGIS) | `eu-west-2` (London) | `wcyrylagoulmtcqpzfem` (`pavdental-app-test`) | **Live (Active)** | Pooler: `aws-0-eu-west-2.pooler.supabase.com:6543` |
 | **Dashboard Database** | Supabase (Postgres 17) | `eu-west-2` (London) | `gtbvlqdurhwnrzjlikav` (`pavdental-dashboard-test`) | **Live (Active)** | Pooler: `aws-0-eu-west-2.pooler.supabase.com:6543` |

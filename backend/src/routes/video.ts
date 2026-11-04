@@ -15,6 +15,7 @@ import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
 import { isPlaceholderCredential } from "../config/placeholder";
+import { logFailure } from "../lib/best-effort";
 
 const router = Router();
 
@@ -533,7 +534,7 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
   });
 
   // Cancel any lingering appointment reminders since consult is completed
-  await cancelAppointmentReminders(appointmentId).catch(() => {});
+  await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));
 
   // Audit completion
   await createAuditLogWithIntegrity({
@@ -545,7 +546,7 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
       followUpRecommended,
       hasDiagnosis: !!diagnosis,
     },
-  }).catch(() => {});
+  }).catch(logFailure("audit write video.consult.completed"));
 
   return res.json({
     appointmentId: updated.id,

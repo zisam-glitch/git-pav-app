@@ -1,8 +1,8 @@
-// Base API URL pointing to the Admin Dashboard (default http://localhost:3000 in dev)
+// Base API URL pointing to the Admin Dashboard (default http://localhost:3001 in dev)
 export const API_BASE =
   (typeof window !== "undefined" && (window as any).__ENV__?.VITE_API_BASE_URL) ||
   import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:3000";
+  "http://localhost:3001";
 
 // The shop no longer has accounts: clear a session left by an earlier visit.
 if (typeof window !== "undefined") {

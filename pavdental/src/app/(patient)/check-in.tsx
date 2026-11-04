@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Button, AppIcon, Toast, EmptyState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
+import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 import { completeAppointmentCheckIn } from "@/features/records/records-api";
 import type { AppIconName } from "@/components";
 
@@ -50,7 +51,7 @@ export default function CheckInScreen() {
   const start = booking ? new Date(booking.startTimeUtc) : null;
   const whenLine =
     start &&
-    `${start.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })} at ${start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`;
+    `${ukDateLabel(start, { weekday: "long", day: "numeric", month: "short" })} at ${ukTime(start)} UK time`;
 
   if (!booking) {
     return (

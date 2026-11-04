@@ -6,6 +6,8 @@ Rewritten on 26 Oct 2026 from the audit in [`../completion/07-architecture-audit
 
 **Status values.** **Verified** (evidence linked, re-checked on the date given) · **Failed** (checked and not met) · **Not tested** · **Blocked** (waiting on something named) · **N/A**.
 
+> **Note, 4 Nov 2026:** the statuses below are from 26 Oct and not all are current. For what is open today, use [`../completion/11-completion-checklist.md`](../completion/11-completion-checklist.md).
+
 A passing build is not readiness. Every row needs its evidence before the gate it belongs to can open.
 
 ---
@@ -83,7 +85,7 @@ Release to real patients needs **every gate open**. A gate can only be waived by
 | Requirement | Status | Evidence | Next action |
 |---|---|---|---|
 | Backend unit/integration | Verified 26 Oct | 63 suites, 485 tests pass | — |
-| Backend end-to-end | Verified 26 Oct | 34/34; also passes with `connection_limit=1` | — |
+| Backend end-to-end | Verified 26 Oct | 34/34. Background jobs use leases since 5 Nov, with a test on a one-connection pool (`job-concurrency.test.ts`) | — |
 | App typecheck, lint, content and routing tests | Verified 26 Oct | `npm run test:all` | — |
 | Dashboard typecheck, lint budget, tests | Verified 26 Oct | 29 tests pass | — |
 | Device end-to-end (Maestro) | Not tested | — | QA-02 |

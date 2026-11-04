@@ -363,6 +363,7 @@ export const NON_PATIENT_DATA_MODELS: Record<string, string> = {
   MfaCode: "Ephemeral MFA security verification codes",
   MfaVerification: "Internal MFA challenge flow state",
   ProcessedStripeEvent: "Webhook idempotency replay deduplication logs",
+  JobLease: "Which API instance is running a background job; holds no personal data",
   ScheduledNotification: "Internal worker queue for future scheduled notification jobs",
   PushToken: "Device hardware tokens for push notification routing",
   PushTicket: "Expo delivery tickets for a device token, kept at most a day until the receipt is checked",

@@ -9,7 +9,7 @@ The app depends on time-driven work: appointment reminders, slot-hold expiry, va
 ## Decision
 1. Keep Postgres tables (`scheduled_notifications`, `push_tickets`, van requests) as the job queues and keep the workers in the API process. No separate broker.
 2. Every claim gets a lease: claimed rows record `claimed_at`, and a claim older than 15 minutes (`NOTIFICATION_CLAIM_LEASE_MS`) goes back to `pending` before the next claim. Delivery is at-least-once; a rare duplicate reminder is preferable to a missed one.
-3. Run exactly one always-on API instance in v1 (ADR-0003). Before a second instance is added, wrap each job run in `pg_try_advisory_xact_lock(<job id>)` so only one instance runs it at a time (BE-23).
+3. Run exactly one always-on API instance in v1 (ADR-0003). Each job run takes a row in `job_leases` so only one instance runs it at a time (BE-23). Updated 5 Nov 2026: this replaces `pg_try_advisory_xact_lock`, which kept a connection in a transaction for the whole job and could starve a small pool.
 
 ## Alternatives considered
 - **Redis queue (BullMQ)**: good tooling and retries, but Redis becomes a source of truth for clinical reminders and needs persistence guarantees from Upstash; another moving part to monitor.

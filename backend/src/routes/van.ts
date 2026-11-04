@@ -40,6 +40,7 @@ import {
 import { sendPatientNotification } from "../lib/patient-push";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { safeError } from "../lib/log-safety";
+import { logFailure } from "../lib/best-effort";
 
 const router = Router();
 const isMockStripe = env.isMockStripe;
@@ -1380,7 +1381,7 @@ router.post("/requests/:id/cancel", requireAuth, validateParams(vanRequestIdPara
   }
 
   if (request.appointmentId) {
-    await cancelAppointmentReminders(request.appointmentId).catch(() => {});
+    await cancelAppointmentReminders(request.appointmentId).catch(logFailure("reminder cancellation"));
   }
 
   // Cancellation shortens everyone else's chain — recompute their ETAs.

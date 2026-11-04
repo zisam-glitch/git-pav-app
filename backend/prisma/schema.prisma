@@ -1040,3 +1040,13 @@ enum VanStopPhase {
   cancelled
   no_show
 }
+
+// Which API instance is running a background job (lib/background-jobs.ts). No
+// personal data. A lease whose holder crashed simply expires.
+model JobLease {
+  id        Int      @id
+  holder    String   @db.VarChar(64)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+
+  @@map("job_leases")
+}

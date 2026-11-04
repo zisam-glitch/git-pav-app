@@ -72,6 +72,11 @@ export function trackingView(request: Pick<VanServiceRequest, "status" | "phase"
     : { home, van, path: [van, home], isRoadRoute: false };
 }
 
+/** Only these requests have a van to name: pending, declined, expired and cancelled-before-accept show none of its details. */
+export function vanIsAssigned(status: VanServiceRequest["status"]): boolean {
+  return status === "accepted" || status === "in_progress" || status === "completed";
+}
+
 export type SheetTone = "waiting" | "moving" | "arrived" | "treating" | "done" | "stopped";
 
 export type TrackingSheet = {
@@ -83,6 +88,8 @@ export type TrackingSheet = {
   etaMinutes: number | null;
   /** Fallback ETA text from the server ("5–15 min") when there are no minutes. */
   etaText: string | null;
+  /** True before an operator accepts: the time is a dispatch estimate, no van is on its way yet. */
+  etaIsEstimate?: boolean;
   /** 0 request, 1 queued, 2 driving, 3 arrived, 4 treating, 5 done. */
   step: number;
   tone: SheetTone;
@@ -122,6 +129,7 @@ export function trackingSheet(request: SheetInput): TrackingSheet {
       subtitle: "The van team is reviewing your request.",
       etaMinutes: minutes(request.etaSecondsSnapshot),
       etaText: request.etaLabel ?? null,
+      etaIsEstimate: true,
       step: 0,
       tone: "waiting",
     };

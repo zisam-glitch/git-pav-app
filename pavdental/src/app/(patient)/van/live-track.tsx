@@ -8,7 +8,7 @@ import { colors, spacing, radius } from "@/theme";
 import { fetchVanRequest, fetchActiveVanRequest, cancelVanRequest, retryDepositAuthorization, presentVanDepositSheet, DepositCanceledError } from "@/features/van/van-api";
 import type { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { useStripe } from "@stripe/stripe-react-native";
-import { trackingSheet, trackingView } from "@/features/van/tracking";
+import { trackingSheet, trackingView, vanIsAssigned } from "@/features/van/tracking";
 import { VanTrackingMap } from "@/features/van/van-tracking-map";
 
 export default function VanLiveTrackScreen() {
@@ -156,6 +156,8 @@ export default function VanLiveTrackScreen() {
   const sheet = trackingSheet(request);
 
   const isTerminal = ["declined", "expired", "completed", "cancelled"].includes(status);
+  // No van is assigned until an operator accepts, whatever the server sent.
+  const vanAssigned = vanIsAssigned(status);
   const canCancel = !isTerminal && phase !== "in_treatment";
   const dotColor = {
     waiting: colors.warning,
@@ -241,16 +243,16 @@ export default function VanLiveTrackScreen() {
               </ThemedText>
             </View>
             {sheet.etaMinutes !== null ? (
-              <View style={styles.etaPill} accessibilityLabel={`About ${sheet.etaMinutes} minutes away`}>
+              <View style={styles.etaPill} accessibilityLabel={sheet.etaIsEstimate ? `Estimated arrival about ${sheet.etaMinutes} minutes` : `About ${sheet.etaMinutes} minutes away`}>
                 <ThemedText style={styles.etaNumber}>{sheet.etaMinutes}</ThemedText>
                 <ThemedText variant="caption" style={styles.etaUnit}>
-                  min
+                  {sheet.etaIsEstimate ? "min est." : "min"}
                 </ThemedText>
               </View>
             ) : sheet.etaText && !isTerminal ? (
               <View style={styles.etaPill}>
                 <ThemedText variant="caption" style={styles.etaRange}>
-                  {sheet.etaText}
+                  {sheet.etaIsEstimate ? `Est. ${sheet.etaText}` : sheet.etaText}
                 </ThemedText>
               </View>
             ) : null}
@@ -311,13 +313,13 @@ export default function VanLiveTrackScreen() {
             </View>
             <View style={styles.vehicleInfo}>
               <ThemedText variant="subhead" style={styles.vehicleName} numberOfLines={1}>
-                {request.van?.name || "Pav Dental van"}
+                {vanAssigned ? request.van?.name || "Pav Dental van" : "Waiting for a van to accept"}
               </ThemedText>
               <ThemedText variant="caption" style={styles.vehicleSub} numberOfLines={1}>
                 {request.service?.name || "Dental visit"}
               </ThemedText>
             </View>
-            {request.van?.registrationPlate ? (
+            {vanAssigned && request.van?.registrationPlate ? (
               <View style={styles.plate} accessibilityLabel={`Registration ${request.van.registrationPlate}`}>
                 <ThemedText style={styles.plateText}>{request.van.registrationPlate}</ThemedText>
               </View>

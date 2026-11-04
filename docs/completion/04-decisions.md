@@ -89,3 +89,12 @@ C-01 to C-11 (Apple, Google Play, Expo, Stripe live, Daily, Postmark, Twilio, Se
 
 - #4, #11, #25: the "signed off" / "confirmed" notes dated 2026-10-25 were not a real clinical sign-off (V-01). Treat the wording as a draft until Dr Bhojani reviews it.
 - #27: the website team profiles were not confirmed (V-03); the real profiles are on the current website.
+
+## Owner decisions, 4 Nov 2026
+
+| Topic | Answer | Affects |
+|---|---|---|
+| Production domain | `pavdental.com` | App, API, email links, example settings |
+| Dashboard template demo pages | Delete | `admin-dashboard/` |
+| `neo-financial-ios/` screenshots | Remove from the current files | Repo |
+| Website and shop work | Stays on hold until the app is done | `website/`, shop screens in `admin-dashboard/` |

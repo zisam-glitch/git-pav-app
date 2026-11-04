@@ -11,6 +11,7 @@ const SEG = "[A-Za-z0-9_-]{1,64}";
 const DATE = "\\d{4}-\\d{2}-\\d{2}";
 const ALLOWED: Record<string, RegExp[]> = {
   GET: [
+    /^overview$/,
     /^clinics$/,
     /^clinicians$/,
     new RegExp(`^clinicians/${SEG}/overrides$`),

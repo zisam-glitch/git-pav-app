@@ -6,6 +6,8 @@ Rewritten on 26 Oct 2026 from the audit in [`../completion/07-architecture-audit
 
 **Status values.** **Verified** (evidence linked, re-checked on the date given) · **Failed** (checked and not met) · **Not tested** · **Blocked** (waiting on something named) · **N/A**.
 
+> **Note, 4 Nov 2026:** the statuses below are from 26 Oct and not all are current. For what is open today, use [`../completion/11-completion-checklist.md`](../completion/11-completion-checklist.md).
+
 A passing build is not readiness. Every row needs its evidence before the gate it belongs to can open.
 
 ---

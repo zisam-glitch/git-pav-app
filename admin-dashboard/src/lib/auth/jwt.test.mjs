@@ -56,6 +56,20 @@ describe("token purposes", () => {
     assert.equal(await jwt.verifyStaffToken(token), null);
   });
 
+  it("refuses an unsigned token that claims alg none", async () => {
+    const part = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+    const claims = { email: "staff@example.test", role: "admin", purpose: jwt.STAFF_PURPOSE, exp: 9999999999 };
+    const forged = `${part({ alg: "none", typ: "JWT" })}.${part(claims)}.`;
+    assert.equal(await jwt.verifyStaffToken(forged), null);
+  });
+
+  it("refuses a token whose claims were changed after signing", async () => {
+    const token = await jwt.signToken({ userId: "u1", purpose: jwt.SHOPPER_PURPOSE }, 60);
+    const [head, , signature] = token.split(".");
+    const claims = Buffer.from(JSON.stringify({ role: "admin", purpose: jwt.STAFF_PURPOSE, exp: 9999999999 })).toString("base64url");
+    assert.equal(await jwt.verifyStaffToken(`${head}.${claims}.${signature}`), null);
+  });
+
   it("refuses a malformed token instead of throwing", async () => {
     assert.equal(await jwt.verifyStaffToken("a.%%%.c"), null);
     assert.equal(await jwt.verifyShopperToken("not-a-token"), null);

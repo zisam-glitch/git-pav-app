@@ -17,6 +17,7 @@ import { useCurrentUser } from "@/features/auth/auth-store";
 import { formatGbp } from "@/features/booking/booking-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
+import { serviceForPlanItem } from "@/features/booking/plan-booking";
 
 // ─── Treatment plan detail — items, costs, progress, accept/decline ───────────
 // Reference pattern: Neo Financial Contract Confirmation & Aspen Clinical E-Sign.
@@ -201,24 +202,7 @@ export default function TreatmentPlanDetailScreen() {
   };
 
   const handleBookFirstAppointment = () => {
-    const firstItem = items[0] || { description: plan.title, costPence: totalCostPence };
-    const itemDescLower = (firstItem.description || "").toLowerCase();
-    const planTitleLower = (plan.title || "").toLowerCase();
-
-    // Match a real active service from the catalogue instead of a made-up plan service id (MB-3)
-    const matchedService =
-      services.find((s) => {
-        const sNameLower = (s.name || "").toLowerCase();
-        return (
-          (firstItem as any).serviceId === s.id ||
-          itemDescLower.includes(sNameLower) ||
-          sNameLower.includes(itemDescLower) ||
-          planTitleLower.includes(sNameLower) ||
-          sNameLower.includes(planTitleLower)
-        );
-      }) ||
-      services.find((s) => s.category === "restorative") ||
-      services[0];
+    const matchedService = serviceForPlanItem(items[0]?.description ?? plan.title, services);
 
     if (matchedService) {
       setService(matchedService);

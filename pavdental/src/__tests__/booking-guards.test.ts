@@ -12,6 +12,7 @@
 
 import { useBookingStore } from "../features/booking/booking-store";
 import { DentalService, TimeSlot } from "../features/booking/booking-types";
+import { serviceForPlanItem } from "../features/booking/plan-booking";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -176,45 +177,19 @@ const catalogue: DentalService[] = [
   },
 ];
 
-function matchPlanItemToRealService(
-  item: { description: string; costPence?: number; serviceId?: string },
-  planTitle: string,
-  services: DentalService[]
-): DentalService | null {
-  const itemDescLower = (item.description || "").toLowerCase();
-  const planTitleLower = (planTitle || "").toLowerCase();
-
-  return (
-    services.find((s) => {
-      const sNameLower = (s.name || "").toLowerCase();
-      return (
-        item.serviceId === s.id ||
-        itemDescLower.includes(sNameLower) ||
-        sNameLower.includes(itemDescLower) ||
-        planTitleLower.includes(sNameLower) ||
-        sNameLower.includes(planTitleLower)
-      );
-    }) ||
-    services.find((s) => s.category === "restorative") ||
-    services[0] ||
-    null
-  );
-}
-
-const matched1 = matchPlanItemToRealService(
-  { description: "Composite Filling for Upper Right Molar" },
-  "Restorative Treatment Phase 1",
-  catalogue
+assert(
+  serviceForPlanItem(" white composite filling ", catalogue)?.id === "srv_filling",
+  "A plan item with a service's exact name books that service"
 );
-assert(matched1?.id === "srv_filling", "Matches 'srv_filling' by description keyword");
-
-const matched2 = matchPlanItemToRealService(
-  { description: "Unknown bespoke item", costPence: 15000 },
-  "Tooth Restoration",
-  catalogue
+assert(
+  serviceForPlanItem("Composite Filling for Upper Right Molar", catalogue) === null,
+  "A near match isn't guessed: the patient chooses from the catalogue"
 );
-assert(matched2?.category === "restorative", "Matches restorative category fallback from real catalogue");
-assert(matched2?.id !== "srv_plan_item", "Never produces fabricated srv_plan_item");
+assert(
+  serviceForPlanItem("Unknown bespoke item", catalogue) === null,
+  "An unknown item never falls back to some other service"
+);
+assert(serviceForPlanItem("", catalogue) === null, "An empty description matches nothing");
 
 // 6. PaymentSheet Configuration Integrity
 function getPaymentSheetConfig(env: string) {

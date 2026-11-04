@@ -1,7 +1,7 @@
 # Running the app locally (backend + mobile)
 
 Verified on 31 Oct 2026 on Linux with Node 22, Postgres 16 + PostGIS 3.4 and
-Redis 7. The website and admin dashboard are not covered here yet.
+Redis 7. Sections 4 and 5 cover the staff dashboard and website.
 
 ## 1. Postgres (with PostGIS) and Redis
 
@@ -141,7 +141,29 @@ database, which is an embedded one locally when `DATABASE_URL` is blank.
 
 `next dev` rewrites `admin-dashboard/AGENTS.md`; don't commit that change.
 
-## 5. Checks
+## 5. Website
+
+The website's shop, blog and forms call the dashboard (section 4), so start that first. It needs no backend
+for those screens; the team page and the email-link pages do.
+
+```bash
+cd website
+npm ci
+cp .env.example .env
+npm run dev
+```
+
+It runs at http://localhost:8080. The dashboard only accepts requests from its `WEBSITE_ORIGIN`, which is
+`http://localhost:8080` by default. If you use another port, set `WEBSITE_ORIGIN` to match or the shop shows no products.
+
+| App | Port |
+|---|---|
+| Backend | 3000 |
+| Staff dashboard | 3001 |
+| Website | 8080 |
+| Expo | 8081 |
+
+## 6. Checks
 
 Backend. The suites need the database and Redis, and **no dev server running**:
 its background jobs write to the same database and make some tests flaky.

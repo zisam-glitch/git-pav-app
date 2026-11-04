@@ -1,4 +1,5 @@
 import {
+  Boxes,
   Calendar,
   CalendarClock,
   Clock,
@@ -8,6 +9,7 @@ import {
   Gift,
   History,
   Inbox,
+  LayoutDashboard,
   type LucideIcon,
   Mail,
   MessagesSquare,
@@ -66,6 +68,12 @@ export const sidebarItems: NavGroup[] = [
     id: 0,
     label: "Operations",
     items: [
+      {
+        id: "pav-overview",
+        title: "Overview",
+        url: "/dashboard",
+        icon: LayoutDashboard,
+      },
       {
         id: "pav-bookings",
         title: "Website Bookings",
@@ -179,6 +187,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Orders",
         url: "/dashboard/orders",
         icon: ReceiptText,
+      },
+      {
+        id: "pav-inventory",
+        title: "Inventory",
+        url: "/dashboard/inventory",
+        icon: Boxes,
       },
       {
         id: "pav-discounts",

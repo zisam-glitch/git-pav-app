@@ -13,7 +13,7 @@ States column: what the screen can show besides its main content, read from the 
 
 **Current design system:** tokens in `pavdental/src/theme` (colors, typography, spacing, radius, shadows,
 motion) and shared components in `pavdental/src/components`. Black ink on a cool grey canvas, white cards, and
-grey filled inputs with an underline. It was modelled on Neo Financial (the `neo-financial-ios/` screenshots).
+grey filled inputs with an underline. It was modelled on Neo Financial (screenshots since removed from the repo).
 Screens mostly use the shared components, so the redesign is largely a token and component change.
 
 ## 1. Entry and auth (signed out)

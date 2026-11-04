@@ -76,7 +76,7 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     rows: [
       {
         title: "Refer a friend",
-        icon: "users",
+        icon: "gift",
         route: "/(patient)/(tabs)/profile/refer",
       },
     ],
@@ -116,7 +116,7 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
       },
       {
         title: "Complaints procedure",
-        icon: "help",
+        icon: "flag",
         url: LEGAL_URLS.complaints,
       },
       {

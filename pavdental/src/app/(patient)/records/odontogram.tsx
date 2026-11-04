@@ -83,16 +83,16 @@ function getToothAnatomy(toothNumber: number) {
   }
 
   const lastDigit = fdi % 10;
-  if (lastDigit === 1) type = "Central Incisor";
-  else if (lastDigit === 2) type = "Lateral Incisor";
-  else if (lastDigit === 3) type = "Canine";
-  else if (lastDigit === 4) type = "First Premolar";
-  else if (lastDigit === 5) type = "Second Premolar";
-  else if (lastDigit === 6) type = "First Molar";
-  else if (lastDigit === 7) type = "Second Molar";
-  else if (lastDigit === 8) type = "Third Molar";
+  if (lastDigit === 1) type = "central incisor";
+  else if (lastDigit === 2) type = "lateral incisor";
+  else if (lastDigit === 3) type = "canine";
+  else if (lastDigit === 4) type = "first premolar";
+  else if (lastDigit === 5) type = "second premolar";
+  else if (lastDigit === 6) type = "first molar";
+  else if (lastDigit === 7) type = "second molar";
+  else if (lastDigit === 8) type = "third molar";
 
-  const archName = isUpper ? "Maxillary Arch" : "Mandibular Arch";
+  const archName = isUpper ? "Maxillary arch" : "Mandibular arch";
   const side = quadrant.includes("R") ? "Right" : "Left";
 
   return {
@@ -283,7 +283,7 @@ export default function OdontogramScreen() {
                   Tooth #{selectedTooth.toothNumber} · {anatomy.fullName}
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.selectedToothSub}>
-                  {anatomy.fdi} ({selectedTooth.quadrant}) · {anatomy.archName} · Tap to inspect
+                  {anatomy.fdi} ({toLabel(selectedTooth.quadrant)}) · {anatomy.archName} · Tap to inspect
                 </ThemedText>
               </View>
               <View style={styles.selectedDetailRight}>

@@ -277,6 +277,7 @@ export default function DependantsScreen() {
                     key={r}
                     onPress={() => setRelationship(r)}
                     style={[styles.relPill, relationship === r && styles.relPillActive]}
+                    hitSlop={{ top: 4, bottom: 4 }}
                   >
                     <ThemedText
                       variant="caption"
@@ -430,7 +431,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.systemBackground,
     borderRadius: radius.full,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    justifyContent: "center",
+    minHeight: 36,
   },
   relPillActive: {
     backgroundColor: colors.accent,

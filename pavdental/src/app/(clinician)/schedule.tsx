@@ -200,7 +200,8 @@ export default function ClinicianScheduleScreen() {
             </ThemedText>
             <View style={styles.roleBtnRow}>
               <Button
-                title="‹ Patient portal"
+                title="Patient portal"
+                icon={<AppIcon name="arrowLeft" size={16} color={colors.ink} />}
                 variant="secondary"
                 size="sm"
                 onPress={() => {

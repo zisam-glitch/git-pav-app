@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThemedText, Card, Badge, Button, ErrorState, Skeleton, IconButton } from "@/components";
+import { ThemedText, Card, Badge, Button, ErrorState, Skeleton, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchCurrentShift, updatePhase, optimizeRoute, reorderQueue } from "@/features/van/van-api";
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
@@ -363,7 +363,8 @@ export default function OperatorRouteScreen() {
             </ThemedText>
             <View style={styles.roleBtnRow}>
               <Button
-                title="‹ Patient portal"
+                title="Patient portal"
+                icon={<AppIcon name="arrowLeft" size={16} color={colors.ink} />}
                 variant="secondary"
                 size="sm"
                 onPress={() => {

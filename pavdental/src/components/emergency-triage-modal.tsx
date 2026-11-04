@@ -33,7 +33,7 @@ interface SymptomOption {
 const SYMPTOMS: SymptomOption[] = [
   {
     id: "pain",
-    label: "Severe Pain",
+    label: "Severe pain",
     icon: "alert",
     tag: "Urgent",
     title: "Severe toothache",
@@ -45,7 +45,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "broken",
-    label: "Broken Tooth",
+    label: "Broken tooth",
     icon: "zap",
     tag: "Same-day care",
     title: "Broken or chipped tooth",
@@ -57,7 +57,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "filling",
-    label: "Lost Crown / Filling",
+    label: "Lost crown / filling",
     icon: "activity",
     tag: "Priority",
     title: "Lost crown or filling",
@@ -68,7 +68,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "swelling",
-    label: "Facial Swelling",
+    label: "Facial swelling",
     icon: "alert",
     tag: "Urgent",
     title: "Swelling in the face or gums",
@@ -79,7 +79,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "bleeding",
-    label: "Bleeding Gums",
+    label: "Bleeding gums",
     icon: "activity",
     tag: "Clinical review",
     title: "Bleeding from the gums or a socket",
@@ -299,7 +299,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
                   Need urgent advice by phone?
                 </ThemedText>
                 <ThemedText variant="subhead" style={styles.hotlineNumber}>
-                  {`Call the practice (${PRACTICE_CONFIG.phone}) ›`}
+                  {`Call the practice (${PRACTICE_CONFIG.phone})`}
                 </ThemedText>
               </View>
             </Pressable>
@@ -308,7 +308,8 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
           {/* Action CTAs */}
           <View style={styles.sheetFooter}>
             <Button
-              title="Book an appointment ›"
+              title="Book an appointment"
+              arrow
               variant="primary"
               size="lg"
               onPress={handleBookEmergency}

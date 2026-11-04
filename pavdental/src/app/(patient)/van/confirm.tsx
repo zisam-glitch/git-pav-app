@@ -225,7 +225,8 @@ export default function VanConfirmScreen() {
       {/* Action Footer */}
       <View style={[styles.footer, { paddingBottom: Math.max(spacing.md, insets.bottom) }]}>
         <Button
-          title={isSubmitting ? "Dispatching..." : "Confirm & request van visit ›"}
+          title={isSubmitting ? "Dispatching…" : "Confirm & request van visit"}
+          arrow={!isSubmitting}
           size="lg"
           loading={isSubmitting}
           disabled={!hasService}

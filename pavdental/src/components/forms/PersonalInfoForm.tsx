@@ -138,6 +138,7 @@ export function PersonalInfoForm({
                   disabled={isLoading}
                   onPress={() => setValue("gender", opt.value, { shouldDirty: true, shouldValidate: true })}
                   style={[styles.genderPill, active && styles.genderPillActive]}
+                  hitSlop={{ top: 4, bottom: 4 }}
                   accessibilityRole="button"
                   accessibilityState={{ selected: active }}
                 >
@@ -274,7 +275,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.systemBackground,
     borderRadius: radius.full,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    justifyContent: "center",
+    minHeight: 36,
   },
   genderPillActive: {
     backgroundColor: colors.accent,

@@ -55,7 +55,7 @@ export default function MessagesScreen() {
   const threads: ThreadListItem[] = Array.isArray(rawThreads)
     ? rawThreads.map((t: any) => ({
         id: t.id,
-        subject: t.subject || "Care Team Message",
+        subject: t.subject || "Care team message",
         from: t.from || (t.clinicianName ? `${t.clinicianName}${t.clinicianRole ? ` (${t.clinicianRole})` : ""}` : "Pav Dental care team"),
         preview: t.preview || (t.messages?.[t.messages.length - 1]?.body ?? ""),
         sentAtIso: t.sentAtIso || t.updatedAt || new Date().toISOString(),
@@ -155,7 +155,7 @@ export default function MessagesScreen() {
           <View style={styles.triageTextGroup}>
             <View style={styles.triageHeaderLine}>
               <ThemedText variant="subhead" style={styles.triageTitle}>
-                Dental Emergency?
+                Dental emergency?
               </ThemedText>
             </View>
             <ThemedText variant="caption" style={styles.triageSubtitle}>
@@ -304,7 +304,7 @@ export default function MessagesScreen() {
             <View style={styles.recipientSelector}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to Practice Team"
+                accessibilityLabel="Route to practice team"
                 onPress={() => setNewRecipientType("practice")}
                 style={[
                   styles.recipientOption,
@@ -318,12 +318,12 @@ export default function MessagesScreen() {
                     newRecipientType === "practice" && styles.recipientTextActive,
                   ]}
                 >
-                  Practice Team
+                  Practice team
                 </ThemedText>
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to Clinical Care Team"
+                accessibilityLabel="Route to care team clinician"
                 onPress={() => setNewRecipientType("care_team")}
                 style={[
                   styles.recipientOption,
@@ -337,7 +337,7 @@ export default function MessagesScreen() {
                     newRecipientType === "care_team" && styles.recipientTextActive,
                   ]}
                 >
-                  Care Team Clinician
+                  Care team clinician
                 </ThemedText>
               </Pressable>
             </View>

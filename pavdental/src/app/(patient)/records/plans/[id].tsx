@@ -242,7 +242,7 @@ export default function TreatmentPlanDetailScreen() {
             </ThemedText>
             <Badge
               label={
-                decision === "accepted" ? "Read" : decision === "declined" ? "Declined" : "Awaiting Review"
+                decision === "accepted" ? "Read" : decision === "declined" ? "Declined" : "Awaiting review"
               }
               variant={decision === "declined" ? "danger" : decision === "accepted" ? "success" : "warning"}
             />
@@ -351,7 +351,7 @@ export default function TreatmentPlanDetailScreen() {
         <Card style={styles.card}>
           <View style={styles.topRow}>
             <ThemedText variant="subhead" style={styles.muted}>
-              Total Treatment Estimate
+              Total treatment estimate
             </ThemedText>
             <ThemedText variant="title" style={styles.totalPrice}>
               {formatGbp(totalCostPence)}
@@ -371,7 +371,7 @@ export default function TreatmentPlanDetailScreen() {
                 </ThemedText>
               </View>
               <ThemedText variant="caption" style={styles.financeLink}>
-                Learn more ›
+                Learn more
               </ThemedText>
             </Pressable>
           ) : null}
@@ -474,7 +474,7 @@ export default function TreatmentPlanDetailScreen() {
               >
                 <AppIcon name="creditCard" size={14} color={colors.ink} />
                 <ThemedText variant="caption" style={styles.modalFinanceText}>
-                  Ask about payment plans ›
+                  Ask about payment plans
                 </ThemedText>
               </Pressable>
 

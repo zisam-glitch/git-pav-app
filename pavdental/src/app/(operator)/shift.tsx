@@ -270,7 +270,8 @@ export default function OperatorShiftScreen() {
           />
           {incoming.length > 0 && (
             <Button
-              title={`View ${incoming.length} Incoming Request(s) ›`}
+              title={`View ${incoming.length} incoming request${incoming.length === 1 ? "" : "s"}`}
+              arrow
               onPress={() => router.push("/(operator)/incoming" as any)}
             />
           )}

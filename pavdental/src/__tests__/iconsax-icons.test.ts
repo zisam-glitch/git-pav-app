@@ -43,7 +43,7 @@ assert(otherLibs.length === 0, `no other icon library is imported${otherLibs.len
 const bold = files.filter((f) => /variant=\{?"Bold"/.test(readFileSync(f, "utf8"))).map((f) => f.slice(SRC.length + 1)).sort();
 assert(bold.every((f) => ["app/(patient)/(tabs)/_layout.tsx", "components/checkbox-mark.tsx"].includes(f)), `Bold appears only on the active tab and a ticked checkbox (${bold.join(", ")})`);
 
-const glyphs = files.filter((f) => !f.endsWith("app-icon.tsx") && /[✓✕☑☐✔✗✘○▲▼►◄▶◀]/.test(readFileSync(f, "utf8")));
+const glyphs = files.filter((f) => !f.endsWith("app-icon.tsx") && /[✓✕☑☐✔✗✘○▲▼►◄▶◀›‹]/.test(readFileSync(f, "utf8")));
 assert(glyphs.length === 0, `no text glyphs used as icons${glyphs.length ? `: ${glyphs.join(", ")}` : ""}`);
 const typedPlus = files.filter((f) => /title="\+ /.test(readFileSync(f, "utf8")));
 assert(typedPlus.length === 0, "buttons use the Iconsax plus, not a typed '+'");

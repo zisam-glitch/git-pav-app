@@ -9,6 +9,7 @@ import { fetchVanRequest, fetchActiveVanRequest, cancelVanRequest, retryDepositA
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { useStripe } from "@stripe/stripe-react-native";
 import { toLabel } from "@/lib/text";
+import { getLiveTrackDispatchView } from "@/features/van/live-track-view";
 
 export default function VanLiveTrackScreen() {
   const router = useRouter();
@@ -151,11 +152,7 @@ export default function VanLiveTrackScreen() {
 
   const phase: VanStopPhase = request?.phase ?? "queued";
   const status = request?.status ?? "pending";
-  const etaLabel =
-    request?.etaLabel ||
-    (request?.etaSecondsSnapshot
-      ? `~${Math.round(request.etaSecondsSnapshot / 60)} min`
-      : "Calculating...");
+  const dispatch = getLiveTrackDispatchView(request);
 
   const isTerminal = ["declined", "expired", "completed", "cancelled"].includes(status);
   const canCancel = !isTerminal && phase !== "in_treatment";
@@ -277,9 +274,9 @@ export default function VanLiveTrackScreen() {
               </ThemedText>
             </View>
 
-            {!isTerminal && (
+            {!isTerminal && dispatch.etaLabel && (
               <ThemedText variant="headline" style={styles.etaText}>
-                {etaLabel}
+                {dispatch.etaLabel}
               </ThemedText>
             )}
           </View>
@@ -380,11 +377,10 @@ export default function VanLiveTrackScreen() {
             </View>
             <View style={styles.driverInfo}>
               <ThemedText variant="subhead" style={styles.driverName}>
-                {request?.van?.name || "Pav Dental Mobile Surgery Unit #1"}
+                {dispatch.vanName ?? "Waiting for an operator to accept"}
               </ThemedText>
               <ThemedText variant="caption" style={styles.driverSub}>
-                {request?.service?.name || "Dental Checkup"} · Reg:{" "}
-                {request?.van?.registrationPlate || "PV24 DEN"}
+                {dispatch.vanSubtitle}
               </ThemedText>
             </View>
           </View>

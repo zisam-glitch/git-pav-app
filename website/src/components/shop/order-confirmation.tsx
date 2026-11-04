@@ -10,12 +10,13 @@ const AWAITING_CONFIRMATION = ["pending", "payment_processing"];
 const STATUS_CHECK_MS = 3000;
 const MAX_STATUS_CHECKS = 20;
 
-export function OrderConfirmation({ orderId }: { orderId: string }) {
+export function OrderConfirmation({ orderId, access }: { orderId: string; access?: string }) {
   const { clearCart } = useCartStore();
 
   const { data: order, isLoading, error } = useQuery({
     queryKey: ["order", orderId],
-    queryFn: () => api.checkout.getOrder(orderId),
+    queryFn: () => api.checkout.getOrder(orderId, access),
+    retry: false,
     enabled: !!orderId,
     // Stripe's redirect can arrive before its webhook, so keep checking for a little while.
     refetchInterval: (query) =>
@@ -46,7 +47,7 @@ export function OrderConfirmation({ orderId }: { orderId: string }) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
         <h1 className="font-display text-2xl font-bold text-fg">Order Not Found</h1>
-        <p className="mt-2 text-sm text-muted">We could not find the specified order record.</p>
+        <p className="mt-2 text-sm text-muted">Please use the link from your checkout, or sign in to the account you ordered with.</p>
         <Button asChild className="mt-6 accent-gradient text-white">
           <a href="/shop">Return to Shop</a>
         </Button>

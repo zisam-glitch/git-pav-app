@@ -26,7 +26,7 @@ async function paidOrder({ stock = 10, quantity = 2 } = {}) {
     items: [{ productId, variantId, quantity }],
     customerEmail: "shopper@example.test",
   });
-  const { orderId, totals } = await db.transaction((tx) => placeOrder(tx, input, null));
+  const { orderId, totals } = await db.transaction((tx) => placeOrder(tx, input));
   await db.transaction((tx) =>
     handleStripeEvent(tx, {
       id: `evt_refund_${++eventCounter}`,

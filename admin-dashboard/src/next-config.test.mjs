@@ -16,3 +16,18 @@ describe("next.config compiler.removeConsole", () => {
     }
   });
 });
+
+describe("next.config security headers", () => {
+  it("sends them on every route, and still lets the dashboard frame its own pages", async () => {
+    const { default: config } = await import(`../next.config.mjs?headers=${Date.now()}`);
+    const [rule] = await config.headers();
+    const headers = Object.fromEntries(rule.headers.map(({ key, value }) => [key, value]));
+
+    assert.equal(rule.source, "/:path*");
+    assert.equal(headers["X-Content-Type-Options"], "nosniff");
+    assert.equal(headers["X-Frame-Options"], "SAMEORIGIN");
+    assert.match(headers["Strict-Transport-Security"], /max-age=\d{7,}/);
+    assert.ok(headers["Referrer-Policy"]);
+    assert.ok(headers["Permissions-Policy"]);
+  });
+});

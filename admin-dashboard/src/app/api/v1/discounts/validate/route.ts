@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { rateLimit } from "@/lib/rate-limit";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": process.env.WEBSITE_ORIGIN ?? "http://localhost:8080",
@@ -9,6 +10,9 @@ const CORS_HEADERS = {
 };
 
 export async function GET(request: Request) {
+  const limited = await rateLimit(request, "discountCheck");
+  if (limited) return limited;
+
   try {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code")?.trim().toUpperCase();

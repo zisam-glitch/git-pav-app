@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { verifyShopperToken } from "@/lib/auth/jwt";
 import { query } from "@/lib/db/client";
 
 const CORS_HEADERS = {
@@ -9,43 +8,17 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-async function getUserIdFromRequest(req: Request): Promise<string | null> {
-  const authHeader = req.headers.get("authorization") ?? "";
-  let rawToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
-
-  if (!rawToken) {
-    const cookieHeader = req.headers.get("cookie") ?? "";
-    const match = cookieHeader.match(/(?:^|;\s*)user_token=([^;]+)/);
-    if (match) rawToken = decodeURIComponent(match[1]);
-  }
-
-  if (!rawToken) return null;
-
-  try {
-    const payload = await verifyShopperToken(rawToken);
-    return payload?.userId ? String(payload.userId) : null;
-  } catch {
-    return null;
-  }
-}
-
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
-    const userId = await getUserIdFromRequest(request);
 
-    if (!userId && !sessionId) {
+    if (!sessionId) {
       return NextResponse.json({ cart: null, items: [], total: 0 }, { headers: CORS_HEADERS });
     }
 
     // Find cart
-    let cartRows: any[] = [];
-    if (userId) {
-      cartRows = await query("SELECT * FROM carts WHERE user_id = $1", [userId]);
-    } else if (sessionId) {
-      cartRows = await query("SELECT * FROM carts WHERE session_id = $1", [sessionId]);
-    }
+    const cartRows = await query<any>("SELECT * FROM carts WHERE session_id = $1", [sessionId]);
 
     if (!cartRows.length) {
       return NextResponse.json({ cart: null, items: [], total: 0 }, { headers: CORS_HEADERS });
@@ -109,7 +82,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       {
-        cart: { id: cart.id, userId: cart.user_id, sessionId: cart.session_id },
+        cart: { id: cart.id, sessionId: cart.session_id },
         items: formattedItems,
         total: Math.round(total * 100) / 100,
       },
@@ -124,18 +97,13 @@ export async function GET(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const userId = await getUserIdFromRequest(request);
     const sessionId = body.sessionId;
 
-    if (!userId && !sessionId) {
-      return NextResponse.json({ error: "User or session required" }, { status: 400, headers: CORS_HEADERS });
+    if (!sessionId) {
+      return NextResponse.json({ error: "Session required" }, { status: 400, headers: CORS_HEADERS });
     }
 
-    if (userId) {
-      await query(`DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE user_id = $1)`, [userId]);
-    } else if (sessionId) {
-      await query(`DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE session_id = $1)`, [sessionId]);
-    }
+    await query(`DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE session_id = $1)`, [sessionId]);
 
     return NextResponse.json({ success: true, message: "Cart cleared" }, { headers: CORS_HEADERS });
   } catch (error) {

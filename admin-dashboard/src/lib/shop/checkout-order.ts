@@ -185,7 +185,7 @@ export interface PlacedOrder {
 }
 
 /** Validates against current prices and stock, then saves the order. Run in a transaction. */
-export async function placeOrder(tx: QueryFn, input: CheckoutInput, userId: string | null): Promise<PlacedOrder> {
+export async function placeOrder(tx: QueryFn, input: CheckoutInput): Promise<PlacedOrder> {
   const lines = await resolveLines(tx, input.items);
   const subtotalPence = lines.reduce((sum, line) => sum + line.unitPence * line.quantity, 0);
   const shipping = await resolveShipping(tx, input.shippingMethodId);
@@ -204,12 +204,11 @@ export async function placeOrder(tx: QueryFn, input: CheckoutInput, userId: stri
 
   const [order] = await tx<{ id: string }>(
     `INSERT INTO orders (
-      user_id, customer_email, customer_phone, shipping_address, billing_address,
+      customer_email, customer_phone, shipping_address, billing_address,
       subtotal, shipping_cost, discount_amount, tax_amount, total, notes, status
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'pending')
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending')
     RETURNING id`,
     [
-      userId,
       input.customerEmail,
       input.customerPhone,
       JSON.stringify(input.shippingAddress),

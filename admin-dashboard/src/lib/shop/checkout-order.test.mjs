@@ -12,7 +12,7 @@ before(async () => {
 after(() => db.close());
 
 const body = (items, extra = {}) => ({ items, customerEmail: "shopper@example.test", ...extra });
-const place = (requestBody) => db.transaction((tx) => placeOrder(tx, parseCheckoutBody(requestBody), null));
+const place = (requestBody) => db.transaction((tx) => placeOrder(tx, parseCheckoutBody(requestBody)));
 
 async function assertRejected(promise, status, pattern) {
   await assert.rejects(promise, (error) => {

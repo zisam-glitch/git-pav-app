@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { STAFF_PURPOSE, signToken } from "@/lib/auth/jwt";
 import { pavApiUrl, storeAppSession } from "@/lib/pav-api.server";
+import { rateLimit } from "@/lib/rate-limit";
 
 import crypto from "node:crypto";
 
@@ -35,6 +36,9 @@ const refuse = (status: number, error: string) => NextResponse.json({ error }, {
  * there is no built-in default password.
  */
 export async function POST(request: Request) {
+  const limited = await rateLimit(request, "login");
+  if (limited) return limited;
+
   try {
     const { email, password, mfaCode } = (await request.json()) as {
       email?: string;

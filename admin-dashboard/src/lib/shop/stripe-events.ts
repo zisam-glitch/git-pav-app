@@ -99,10 +99,8 @@ async function handleCheckoutCompleted(tx: QueryFn, session: Stripe.Checkout.Ses
     });
   }
 
-  const { userId, cartSessionId } = session.metadata ?? {};
-  if (userId) {
-    await tx("DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE user_id = $1)", [userId]);
-  } else if (cartSessionId) {
+  const cartSessionId = session.metadata?.cartSessionId;
+  if (cartSessionId) {
     await tx("DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE session_id = $1)", [cartSessionId]);
   }
 

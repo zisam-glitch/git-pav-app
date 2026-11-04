@@ -11,20 +11,19 @@ before(async () => {
 });
 
 describe("token purposes", () => {
-  it("accepts a staff session as staff and not as a shopper", async () => {
+  it("accepts a staff session", async () => {
     const token = await jwt.signToken({ email: "staff@example.test", role: "admin", purpose: jwt.STAFF_PURPOSE }, 60);
     assert.ok(await jwt.verifyStaffToken(token));
-    assert.equal(await jwt.verifyShopperToken(token), null);
   });
 
   it("refuses a shopper session as staff", async () => {
-    const token = await jwt.signToken({ userId: "u1", purpose: jwt.SHOPPER_PURPOSE }, 60);
+    // Sessions issued before shopper accounts were removed stay valid-looking until they expire.
+    const token = await jwt.signToken({ userId: "u1", purpose: "auth" }, 60);
     assert.equal(await jwt.verifyStaffToken(token), null);
-    assert.ok(await jwt.verifyShopperToken(token));
   });
 
   it("refuses a shopper token that claims the admin role", async () => {
-    const token = await jwt.signToken({ userId: "u1", role: "admin", purpose: jwt.SHOPPER_PURPOSE }, 60);
+    const token = await jwt.signToken({ userId: "u1", role: "admin", purpose: "auth" }, 60);
     assert.equal(await jwt.verifyStaffToken(token), null);
   });
 
@@ -32,7 +31,6 @@ describe("token purposes", () => {
     for (const purpose of ["password_reset", "email_verification"]) {
       const token = await jwt.signToken({ userId: "u1", purpose }, 60);
       assert.equal(await jwt.verifyStaffToken(token), null);
-      assert.equal(await jwt.verifyShopperToken(token), null);
     }
   });
 
@@ -58,6 +56,6 @@ describe("token purposes", () => {
 
   it("refuses a malformed token instead of throwing", async () => {
     assert.equal(await jwt.verifyStaffToken("a.%%%.c"), null);
-    assert.equal(await jwt.verifyShopperToken("not-a-token"), null);
+    assert.equal(await jwt.verifyStaffToken("not-a-token"), null);
   });
 });

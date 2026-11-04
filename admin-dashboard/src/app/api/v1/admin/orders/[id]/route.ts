@@ -109,6 +109,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return NextResponse.json({ error: "Order not found" }, { status: 404, headers: CORS_HEADERS });
     }
 
+    // Setting the status alone would say "refunded" with no money returned.
+    if (body.status === "refunded" && oldRecord[0].status !== "refunded") {
+      return NextResponse.json(
+        { error: "Use the Refund action, so the customer is refunded through Stripe" },
+        { status: 400, headers: CORS_HEADERS },
+      );
+    }
+
     values.push(new Date().toISOString());
     updates.push(`updated_at = $${values.length}`);
 

@@ -120,15 +120,16 @@ export function CheckoutPage() {
         shippingMethodId: selectedShippingMethodId || undefined,
         discountCode: appliedDiscount?.code || undefined,
         sessionId,
+        // The server refuses the order if its total differs from what's shown here.
+        expectedTotal: finalTotal,
       };
 
       const res = await api.checkout.createSession(payload);
 
-      if (res.url) {
-        window.location.href = res.url;
-      } else {
-        window.location.href = `/order/${res.orderId}`;
+      if (!res.url) {
+        throw new Error("We couldn't open the payment page. You haven't been charged. Please try again.");
       }
+      window.location.href = res.url;
     } catch (err: any) {
       setErrorMessage(err.message || "Failed to initiate payment. Please try again.");
       setSubmitting(false);

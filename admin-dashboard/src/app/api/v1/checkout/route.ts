@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 
-import Stripe from "stripe";
-
 import { verifyShopperToken } from "@/lib/auth/jwt";
-import { query } from "@/lib/db/client";
-import { calculateCartTax } from "@/lib/tax-calculator";
+import { withTransaction } from "@/lib/db/client";
+import { abandonOrder, CheckoutRejected, parseCheckoutBody, placeOrder } from "@/lib/shop/checkout-order";
+import { stripeLineItems } from "@/lib/shop/pricing";
+import { getStripe } from "@/lib/shop/stripe";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": process.env.WEBSITE_ORIGIN ?? "http://localhost:8080",
@@ -12,9 +12,8 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder_key", {
-  apiVersion: "2026-08-26.dahlia" as any,
-});
+// Stripe's minimum is 30 minutes. An unpaid order holds its discount use until then.
+const CHECKOUT_EXPIRES_SECONDS = 60 * 60;
 
 async function getUserIdFromRequest(req: Request): Promise<string | null> {
   const authHeader = req.headers.get("authorization") ?? "";
@@ -38,275 +37,59 @@ async function getUserIdFromRequest(req: Request): Promise<string | null> {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const {
-      items,
-      customerEmail,
-      customerPhone,
-      shippingAddress,
-      billingAddress,
-      shippingMethodId,
-      discountCode,
-      notes,
-      sessionId: cartSessionId,
-    } = body;
+    const stripe = getStripe();
+    if (!stripe) {
+      return NextResponse.json(
+        { error: "Payments aren't available right now. You haven't been charged." },
+        { status: 503, headers: CORS_HEADERS },
+      );
+    }
 
+    const input = parseCheckoutBody(await request.json());
     const userId = await getUserIdFromRequest(request);
+    const placed = await withTransaction((tx) => placeOrder(tx, input, userId));
 
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json({ error: "Cart items cannot be empty" }, { status: 400, headers: CORS_HEADERS });
-    }
-
-    if (!customerEmail) {
-      return NextResponse.json({ error: "Customer email is required" }, { status: 400, headers: CORS_HEADERS });
-    }
-
-    // 1. Resolve and validate product & variant prices and stock
-    let subtotal = 0;
-    const resolvedItems: any[] = [];
-
-    for (const item of items) {
-      const { productId, variantId, quantity = 1 } = item;
-      if (quantity <= 0) continue;
-
-      const [product] = await query<any>(
-        "SELECT id, name, price, in_stock FROM products WHERE id = $1 AND published = true",
-        [productId],
-      );
-
-      if (!product) {
-        return NextResponse.json({ error: `Product not found: ${productId}` }, { status: 400, headers: CORS_HEADERS });
-      }
-
-      let unitPrice = parseFloat(product.price);
-      let variantName = "";
-
-      if (variantId) {
-        const [variant] = await query<any>(
-          "SELECT id, sku, attributes, price_override, stock_qty FROM product_variants WHERE id = $1 AND is_active = true",
-          [variantId],
-        );
-        if (!variant) {
-          return NextResponse.json(
-            { error: `Variant not found: ${variantId}` },
-            { status: 400, headers: CORS_HEADERS },
-          );
-        }
-        if (variant.stock_qty < quantity) {
-          return NextResponse.json(
-            { error: `Insufficient stock for SKU ${variant.sku}. Available: ${variant.stock_qty}` },
-            { status: 400, headers: CORS_HEADERS },
-          );
-        }
-        if (variant.price_override) {
-          unitPrice = parseFloat(variant.price_override);
-        }
-        variantName = ` (${variant.sku})`;
-      }
-
-      const itemTotal = unitPrice * quantity;
-      subtotal += itemTotal;
-
-      resolvedItems.push({
-        productId: product.id,
-        variantId: variantId || null,
-        name: `${product.name}${variantName}`,
-        unitPrice,
-        quantity,
-        total: itemTotal,
-      });
-    }
-
-    // 2. Shipping calculation
-    let shippingCost = 0;
-    let shippingMethodRecord: any = null;
-    if (shippingMethodId) {
-      const methods = await query<any>("SELECT * FROM shipping_methods WHERE id = $1 AND is_active = true", [
-        shippingMethodId,
-      ]);
-      if (methods.length > 0) {
-        shippingMethodRecord = methods[0];
-        const basePrice = parseFloat(shippingMethodRecord.base_price);
-        const freeThreshold = shippingMethodRecord.free_shipping_threshold
-          ? parseFloat(shippingMethodRecord.free_shipping_threshold)
-          : null;
-
-        if (freeThreshold !== null && subtotal >= freeThreshold) {
-          shippingCost = 0;
-        } else {
-          shippingCost = basePrice;
-        }
-      }
-    } else {
-      // Default standard UK shipping
-      shippingCost = subtotal >= 40 ? 0 : 3.99;
-    }
-
-    // 3. Discount calculation
-    let discountAmount = 0;
-    let discountRecord: any = null;
-    if (discountCode) {
-      const discounts = await query<any>("SELECT * FROM discounts WHERE UPPER(code) = $1 AND is_active = true", [
-        discountCode.trim().toUpperCase(),
-      ]);
-      if (discounts.length > 0) {
-        const disc = discounts[0];
-        const now = new Date();
-        const isValidDate =
-          (!disc.valid_from || new Date(disc.valid_from) <= now) &&
-          (!disc.valid_until || new Date(disc.valid_until) >= now);
-        const isValidUsage = disc.max_uses === null || (disc.used_count || 0) < disc.max_uses;
-        const minVal = disc.min_order_value ? parseFloat(disc.min_order_value) : 0;
-
-        if (isValidDate && isValidUsage && subtotal >= minVal) {
-          discountRecord = disc;
-          if (disc.type === "percentage") {
-            discountAmount = Math.round(((subtotal * parseFloat(disc.value)) / 100) * 100) / 100;
-          } else {
-            discountAmount = Math.min(subtotal, parseFloat(disc.value));
-          }
-        }
-      }
-    }
-
-    // 4. Tax (VAT) Calculation
-    const taxableAmount = Math.max(0, subtotal - discountAmount);
-    const taxResult = calculateCartTax(
-      [{ amount: taxableAmount }],
-      'GB' // UK default
-    );
-    const taxAmount = taxResult.taxAmount;
-
-    // Total
-    const total = Math.max(0, Math.round((subtotal - discountAmount + shippingCost + taxAmount) * 100) / 100);
-
-    // 5. Create Order in Database
-    const [order] = await query<any>(
-      `INSERT INTO orders (
-        user_id,
-        customer_email,
-        customer_phone,
-        shipping_address,
-        billing_address,
-        subtotal,
-        shipping_cost,
-        discount_amount,
-        tax_amount,
-        total,
-        notes,
-        status,
-        reserved_stock_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'pending', now())
-      RETURNING id`,
-      [
-        userId || null,
-        customerEmail,
-        customerPhone || null,
-        JSON.stringify(shippingAddress || {}),
-        JSON.stringify(billingAddress || shippingAddress || {}),
-        subtotal,
-        shippingCost,
-        discountAmount,
-        taxAmount,
-        total,
-        notes || null,
-      ],
-    );
-
-    const orderId = order.id;
-
-    // Insert order items
-    for (const item of resolvedItems) {
-      await query(
-        `INSERT INTO order_items (order_id, product_id, variant_id, quantity, unit_price)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [orderId, item.productId, item.variantId, item.quantity, item.unitPrice],
-      );
-    }
-
-    // Insert discount if used
-    if (discountRecord && discountAmount > 0) {
-      await query(
-        `INSERT INTO order_discounts (order_id, discount_id, amount_off)
-         VALUES ($1, $2, $3)`,
-        [orderId, discountRecord.id, discountAmount],
-      );
-      // Increment used count
-      await query("UPDATE discounts SET used_count = COALESCE(used_count, 0) + 1 WHERE id = $1", [discountRecord.id]);
-    }
-
-    // Insert shipping record
-    if (shippingMethodRecord) {
-      await query(
-        `INSERT INTO order_shipping (order_id, shipping_method_id)
-         VALUES ($1, $2)`,
-        [orderId, shippingMethodRecord.id],
-      );
-    }
-
-    // 6. Create Stripe Checkout Session
-    const storefrontUrl = process.env.WEBSITE_ORIGIN || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:8080";
-    let stripeSession: Stripe.Checkout.Session | null = null;
+    const storefrontUrl = process.env.WEBSITE_ORIGIN ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:8080";
+    const metadata = { orderId: placed.orderId, userId: userId || "", cartSessionId: input.cartSessionId };
 
     try {
-      const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = resolvedItems.map((item) => ({
-        price_data: {
-          currency: "gbp",
-          product_data: {
-            name: item.name,
-          },
-          unit_amount: Math.round(item.unitPrice * 100),
-        },
-        quantity: item.quantity,
-      }));
-
-      // Add shipping line if > 0
-      if (shippingCost > 0) {
-        lineItems.push({
-          price_data: {
-            currency: "gbp",
-            product_data: {
-              name: `Delivery (${shippingMethodRecord?.name || "Standard UK"})`,
-            },
-            unit_amount: Math.round(shippingCost * 100),
-          },
-          quantity: 1,
-        });
-      }
-
-      stripeSession = await stripe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
-        line_items: lineItems,
+        line_items: stripeLineItems(placed.lines, placed.totals, placed.shippingName),
         mode: "payment",
-        customer_email: customerEmail,
-        success_url: `${storefrontUrl}/order/${orderId}?session_id={CHECKOUT_SESSION_ID}`,
+        customer_email: input.customerEmail,
+        success_url: `${storefrontUrl}/order/${placed.orderId}?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${storefrontUrl}/checkout`,
-        metadata: {
-          orderId,
-          userId: userId || "",
-          cartSessionId: cartSessionId || "",
-        },
+        expires_at: Math.floor(Date.now() / 1000) + CHECKOUT_EXPIRES_SECONDS,
+        metadata,
+        // A failed card is reported on the payment intent, not the session.
+        ...(placed.totals.totalPence > 0 ? { payment_intent_data: { metadata } } : {}),
       });
+      if (!session.url) throw new Error("Stripe returned no checkout URL");
 
-      // Update order with stripe session id
-      await query("UPDATE orders SET stripe_session_id = $1 WHERE id = $2", [stripeSession.id, orderId]);
-    } catch (stripeErr: any) {
-      console.warn("[Stripe Checkout Session Warning]:", stripeErr.message);
-      // In dev or without Stripe keys, gracefully provide direct order url
+      await withTransaction((tx) =>
+        tx("UPDATE orders SET stripe_session_id = $1 WHERE id = $2", [session.id, placed.orderId]),
+      );
+
+      return NextResponse.json(
+        { orderId: placed.orderId, sessionId: session.id, url: session.url, total: placed.totals.totalPence / 100 },
+        { status: 201, headers: CORS_HEADERS },
+      );
+    } catch (error) {
+      // Never send the customer to a confirmation page for an order nobody can pay.
+      console.error("[POST /api/v1/checkout] Payment page failed", error instanceof Error ? error.name : "unknown");
+      await withTransaction((tx) => abandonOrder(tx, placed.orderId));
+      return NextResponse.json(
+        { error: "We couldn't open the payment page. You haven't been charged. Please try again." },
+        { status: 502, headers: CORS_HEADERS },
+      );
     }
-
-    return NextResponse.json(
-      {
-        orderId,
-        sessionId: stripeSession?.id || null,
-        url: stripeSession?.url || `${storefrontUrl}/order/${orderId}`,
-        total,
-      },
-      { status: 201, headers: CORS_HEADERS },
-    );
-  } catch (error: any) {
-    console.error("[POST /api/v1/checkout]", error);
-    return NextResponse.json({ error: error.message || "Checkout failed" }, { status: 500, headers: CORS_HEADERS });
+  } catch (error) {
+    if (error instanceof CheckoutRejected) {
+      return NextResponse.json({ error: error.message }, { status: error.status, headers: CORS_HEADERS });
+    }
+    console.error("[POST /api/v1/checkout]", error instanceof Error ? error.name : "unknown error");
+    return NextResponse.json({ error: "Checkout failed" }, { status: 500, headers: CORS_HEADERS });
   }
 }
 

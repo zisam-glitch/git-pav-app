@@ -33,7 +33,7 @@ interface SymptomOption {
 const SYMPTOMS: SymptomOption[] = [
   {
     id: "pain",
-    label: "Severe Pain",
+    label: "Severe pain",
     icon: "alert",
     tag: "Urgent",
     title: "Severe toothache",
@@ -45,7 +45,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "broken",
-    label: "Broken Tooth",
+    label: "Broken tooth",
     icon: "zap",
     tag: "Same-day care",
     title: "Broken or chipped tooth",
@@ -57,7 +57,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "filling",
-    label: "Lost Crown / Filling",
+    label: "Lost crown / filling",
     icon: "activity",
     tag: "Priority",
     title: "Lost crown or filling",
@@ -68,7 +68,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "swelling",
-    label: "Facial Swelling",
+    label: "Facial swelling",
     icon: "alert",
     tag: "Urgent",
     title: "Swelling in the face or gums",
@@ -79,7 +79,7 @@ const SYMPTOMS: SymptomOption[] = [
   },
   {
     id: "bleeding",
-    label: "Bleeding Gums",
+    label: "Bleeding gums",
     icon: "activity",
     tag: "Clinical review",
     title: "Bleeding from the gums or a socket",
@@ -141,7 +141,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
               <View style={styles.emergencyBadge}>
                 <AppIcon name="alert" size={13} color={colors.danger} />
                 <ThemedText variant="caption" style={styles.emergencyBadgeText}>
-                  URGENT SYMPTOM CHECK
+                  Urgent symptom check
                 </ThemedText>
               </View>
               <ThemedText variant="headline" style={styles.sheetTitle}>
@@ -186,7 +186,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
                     <AppIcon
                       name={item.icon}
                       size={14}
-                      color={isActive ? colors.alwaysWhite : colors.ink}
+                      color={isActive ? colors.onAccent : colors.ink}
                     />
                     <ThemedText
                       variant="caption"
@@ -206,7 +206,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
             <Card elevation="flat" style={styles.painScoreCard}>
               <View style={styles.painScoreHeader}>
                 <ThemedText variant="caption" style={styles.sectionLabel}>
-                  PAIN SEVERITY SCALE (1–10)
+                  Pain severity scale (1–10)
                 </ThemedText>
                 <ThemedText variant="mono" style={styles.painScoreValue}>
                   {painLevel} / 10 · {painLevel >= 8 ? "Severe" : painLevel >= 4 ? "Moderate" : "Mild"}
@@ -223,6 +223,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
                       accessibilityRole="button"
                       accessibilityLabel={`Pain level ${score}`}
                       accessibilityState={{ selected: isSelected }}
+                      hitSlop={{ top: 8, bottom: 8 }}
                       onPress={() => {
                         safeHaptics.impactAsync("light").catch(() => {});
                         setPainLevel(score);
@@ -238,6 +239,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
                         style={[
                           styles.painDotText,
                           isFilled && styles.painDotTextFilled,
+                          isSelected && styles.painDotTextSelected,
                         ]}
                       >
                         {score}
@@ -262,7 +264,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
 
               <View style={styles.adviceList}>
                 <ThemedText variant="caption" style={styles.sectionLabel}>
-                  WHILE YOU WAIT
+                  While you wait
                 </ThemedText>
                 {selected.advice.map((line, idx) => (
                   <View key={idx} style={styles.adviceItemRow}>
@@ -297,7 +299,7 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
                   Need urgent advice by phone?
                 </ThemedText>
                 <ThemedText variant="subhead" style={styles.hotlineNumber}>
-                  {`Call the practice (${PRACTICE_CONFIG.phone}) ›`}
+                  {`Call the practice (${PRACTICE_CONFIG.phone})`}
                 </ThemedText>
               </View>
             </Pressable>
@@ -306,7 +308,8 @@ export function EmergencyTriageModal({ visible, onClose }: EmergencyTriageModalP
           {/* Action CTAs */}
           <View style={styles.sheetFooter}>
             <Button
-              title="Book an appointment ›"
+              title="Book an appointment"
+              arrow
               variant="primary"
               size="lg"
               onPress={handleBookEmergency}
@@ -338,7 +341,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheetContainer: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     gap: spacing.sm,
@@ -379,7 +382,6 @@ const styles = StyleSheet.create({
     color: colors.danger,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   sheetTitle: {
     color: colors.label,
@@ -389,7 +391,7 @@ const styles = StyleSheet.create({
   closeBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
@@ -412,7 +414,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   symptomPillActive: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   symptomPillInactive: {
     backgroundColor: colors.systemBackground,
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   symptomPillTextActive: {
-    color: colors.alwaysWhite,
+    color: colors.onAccent,
   },
   painScoreCard: {
     backgroundColor: colors.systemBackground,
@@ -439,7 +441,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   painScoreValue: {
     color: colors.danger,
@@ -454,7 +455,7 @@ const styles = StyleSheet.create({
   painDot: {
     alignItems: "center",
     backgroundColor: colors.systemBackground,
-    borderRadius: radius.sm,
+    borderRadius: radius.full,
     height: 28,
     justifyContent: "center",
     width: 28,
@@ -466,6 +467,10 @@ const styles = StyleSheet.create({
   painDotSelected: {
     backgroundColor: colors.danger,
     borderColor: colors.danger,
+  },
+  // The selected score sits on solid red: its number must stay readable.
+  painDotTextSelected: {
+    color: colors.onTint,
   },
   painDotText: {
     color: colors.secondaryLabel,

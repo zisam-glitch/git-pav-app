@@ -2,7 +2,7 @@ import { View, ViewProps, StyleSheet, StyleProp, ViewStyle } from "react-native"
 import { colors, radius, spacing, shadows } from "@/theme";
 
 interface CardProps extends ViewProps {
-  /** Visual variant matching Neo Financial aesthetic */
+  /** default = neutral surface; dark = forest green; accent = light green; outline = bordered */
   variant?: "default" | "dark" | "outline" | "elevated" | "accent";
   /** Use "raised" for action-oriented cards, "flat" for content list items (legacy support) */
   elevation?: "flat" | "raised";
@@ -20,9 +20,8 @@ const paddingMap = {
 } as const;
 
 /**
- * Card — base container with rounded corners and optional elevation.
- * Reference cards are flat white with 12pt continuous corners: no border,
- * no shadow. Hierarchy comes from the grey canvas behind them.
+ * Card — base container. Wise cards are flat warm-neutral surfaces with 16pt
+ * continuous corners on the white canvas: no border, no shadow.
  */
 export function Card({
   variant = "default",
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     borderColor: colors.separator,
   },
   accent: {
-    backgroundColor: colors.infoSubtle,
+    backgroundColor: colors.accentSubtle,
   },
   raised: {
     // @ts-ignore — boxShadow is supported in RN 0.76+

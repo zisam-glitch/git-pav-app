@@ -252,7 +252,7 @@ export default function SignUpScreen() {
                   accessibilityRole="link"
                   onPress={() => Linking.openURL(LEGAL_URLS.terms).catch(() => {})}
                 >
-                  Terms of Service
+                  Terms of service
                 </ThemedText>{" "}
                 and acknowledge our{" "}
                 <ThemedText
@@ -261,7 +261,7 @@ export default function SignUpScreen() {
                   accessibilityRole="link"
                   onPress={() => Linking.openURL(LEGAL_URLS.privacy).catch(() => {})}
                 >
-                  Privacy Notice
+                  Privacy notice
                 </ThemedText>.
               </ThemedText>
             </View>
@@ -380,6 +380,7 @@ const styles = StyleSheet.create({
   },
   legalNotice: {
     marginBottom: spacing.md,
+    marginTop: spacing.sm,
     paddingHorizontal: spacing.xs,
   },
   legalText: {

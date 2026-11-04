@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Button, Badge, EmptyState, ErrorState, Skeleton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import { useTreatmentPlans } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { formatGbp } from "@/features/booking/booking-api";
@@ -120,8 +121,8 @@ export default function TreatmentPlansScreen() {
                           {item.description}
                         </ThemedText>
                         <ThemedText variant="caption" style={styles.itemCode}>
-                          Clinical Code: #{item.code}
-                          {item.toothNumber ? ` · Tooth #${item.toothNumber}` : ""}
+                          Clinical code: #{item.code}
+                          {item.toothNumber ? ` · ${toothLabel(item.toothNumber)}` : ""}
                         </ThemedText>
                       </View>
                       <ThemedText variant="mono" style={styles.itemCost}>
@@ -135,7 +136,7 @@ export default function TreatmentPlansScreen() {
               {/* Total & Finance */}
               <Card style={styles.totalCard}>
                 <View style={styles.rowBetween}>
-                  <ThemedText variant="headline">Total treatment cost:</ThemedText>
+                  <ThemedText variant="headline">Total treatment cost</ThemedText>
                   <ThemedText variant="title" style={styles.totalPrice}>
                     {formatGbp(totalCostPence)}
                   </ThemedText>
@@ -245,6 +246,7 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: spacing.xs,
+    marginTop: spacing.md,
   },
   sigText: {
     color: colors.success,

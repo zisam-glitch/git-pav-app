@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
-import { ThemedText, Card, Badge, AppIcon, ProgressPills, QueryState, IconButton } from "@/components";
+import { ThemedText, Card, Badge, AppIcon, FlowHeader, QueryState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { Clinician } from "@/features/booking/booking-types";
@@ -23,16 +23,7 @@ export default function ClinicianPickerScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.topNav}>
-        <IconButton
-          icon="arrowLeft"
-          label="Go back"
-          variant="soft"
-          size={22}
-          onPress={() => router.back()}
-        />
-        <View style={styles.progressWrap}>
-          <ProgressPills total={5} current={3} />
-        </View>
+        <FlowHeader step={{ current: 3, total: 5 }} />
       </View>
 
       <View style={styles.header}>
@@ -162,11 +153,13 @@ const styles = StyleSheet.create({
   },
   anyIcon: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    backgroundColor: colors.background,
+    borderRadius: radius.full,
     height: 44,
     justifyContent: "center",
     width: 44,
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   anyInfo: {
     flex: 1,
@@ -245,10 +238,6 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontWeight: "600",
   },
-  progressWrap: {
-    flex: 1,
-    marginLeft: spacing.md,
-  },
   role: {
     color: colors.secondaryLabel,
   },
@@ -265,8 +254,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   topNav: {
-    alignItems: "center",
-    flexDirection: "row",
     marginBottom: spacing.xs,
   },
 });

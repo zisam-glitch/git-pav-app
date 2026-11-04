@@ -18,7 +18,7 @@ const variantMap: Record<BadgeVariant, { bg: any; text: any }> = {
 };
 
 /**
- * Badge — compact status tag (reference "Off" / "On" tags: 4pt corners, 11pt).
+ * Badge — compact status pill (Wise "Very secure", "Refunded" status tags).
  * Use for appointment states, booking statuses, and notification counts.
  */
 export function Badge({ label, variant = "default" }: BadgeProps) {
@@ -39,8 +39,8 @@ export function Badge({ label, variant = "default" }: BadgeProps) {
 const styles = StyleSheet.create({
   base: {
     alignSelf: "flex-start",
-    borderRadius: radius.xs,
-    paddingHorizontal: 6,
+    borderRadius: radius.full,
+    paddingHorizontal: 8,
     paddingVertical: 3,
   },
   label: {

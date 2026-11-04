@@ -17,27 +17,24 @@ const PRE_ARRIVAL_TASKS: Array<{
   title: string;
   description: string;
   kind: "form" | "consent" | "insurance" | "balance";
+  /** Display only; `kind` is what the server records. */
+  icon: AppIconName;
 }> = [
   {
     id: "task_medical_history",
     title: "Confirm medical history",
     description: "Verify any changes to your medications or allergies.",
     kind: "form",
+    icon: "clipboard",
   },
   {
     id: "task_covid",
     title: "Pre-arrival health declaration",
     description: "Confirm you are free of acute respiratory symptoms.",
     kind: "balance",
+    icon: "activity",
   },
 ];
-
-const taskIcon: Record<string, AppIconName> = {
-  form: "fileText",
-  consent: "shield",
-  balance: "creditCard",
-  insurance: "image",
-};
 
 export default function CheckInScreen() {
   const router = useRouter();
@@ -137,7 +134,7 @@ export default function CheckInScreen() {
                 ]}
               >
                 <View style={styles.taskIconTile}>
-                  <AppIcon name={taskIcon[task.kind]} size={18} color={done ? colors.success : colors.ink} />
+                  <AppIcon name={task.icon} size={18} color={done ? colors.success : colors.ink} />
                 </View>
                 <View style={styles.taskInfo}>
                   <ThemedText variant="subhead" style={done ? styles.taskTitleDone : styles.taskTitle}>

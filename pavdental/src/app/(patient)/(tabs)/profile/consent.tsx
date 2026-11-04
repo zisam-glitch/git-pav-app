@@ -129,7 +129,7 @@ export default function ConsentScreen() {
       {/* Consents List */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          ACTIVE CONSENT RECORDS
+          Active consent records
         </ThemedText>
 
         <Card style={styles.card}>
@@ -204,7 +204,7 @@ export default function ConsentScreen() {
       {/* Consent history */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          CONSENT HISTORY
+          Consent history
         </ThemedText>
         <Card style={styles.card}>
           {history === null ? (
@@ -234,7 +234,7 @@ export default function ConsentScreen() {
       {/* Retention Policy */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          HOW LONG WE KEEP RECORDS
+          How long we keep records
         </ThemedText>
         <Card style={styles.card}>
           <ThemedText variant="headline">How long records are stored</ThemedText>
@@ -247,7 +247,7 @@ export default function ConsentScreen() {
       {/* Export Archive */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          RIGHT OF ACCESS (SAR)
+          Right of access (SAR)
         </ThemedText>
         <Card style={styles.card}>
           <ThemedText variant="headline">Export your dental records</ThemedText>

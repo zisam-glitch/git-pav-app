@@ -14,6 +14,7 @@ function TabIcon({ name, focused }: { name: AppIconName; focused: boolean }) {
         name={name}
         size={24}
         color={focused ? colors.ink : colors.tertiaryLabel}
+        variant={focused ? "Bold" : "Linear"}
       />
     </View>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -41,7 +42,7 @@ export function ConfirmSheet({
   onConfirm,
   onCancel,
 }: ConfirmSheetProps) {
-  const snapPoints = ["34%"];
+  const insets = useSafeAreaInsets();
   const sheetRef = useRef<BottomSheetModal>(null);
   const pending = useRef<PendingAction>(null);
   const destructive = variant === "destructive";
@@ -67,7 +68,9 @@ export function ConfirmSheet({
   return (
     <BottomSheetModal
       ref={sheetRef}
-      snapPoints={snapPoints}
+      // Sized to its content: a fixed height cut the second button off on
+      // smaller screens and with longer messages.
+      enableDynamicSizing
       backdropComponent={(p) => (
         <BottomSheetBackdrop {...p} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.4} />
       )}
@@ -77,7 +80,7 @@ export function ConfirmSheet({
       onDismiss={handleClose}
       accessibilityLabel={title}
     >
-      <BottomSheetView style={styles.content}>
+      <BottomSheetView style={[styles.content, { paddingBottom: Math.max(spacing.lg, insets.bottom + spacing.xs) }]}>
         <View style={[styles.iconWrap, destructive && styles.iconWrapDanger]}>
           <AppIcon
             name={destructive ? "alert" : "help"}
@@ -112,15 +115,14 @@ export function ConfirmSheet({
 
 const styles = StyleSheet.create({
   sheet: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderRadius: radius.xl,
   },
   indicator: {
     backgroundColor: colors.separator,
   },
   content: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
+    paddingHorizontal: spacing.gutter,
     paddingTop: spacing.xs,
     gap: spacing.sm,
   },

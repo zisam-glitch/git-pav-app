@@ -153,7 +153,7 @@ export default function PaymentMethodsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.headerBox}>
         <ThemedText variant="subhead" style={styles.headerSub}>
-          SAVED PAYMENT METHODS
+          Saved payment methods
         </ThemedText>
         <ThemedText variant="caption" style={styles.headerDesc}>
           Your saved cards appear when you pay a deposit, so you can pick one instead of typing it in. You can also tick "save card" while paying. Payments are handled by Stripe.
@@ -212,7 +212,8 @@ export default function PaymentMethodsScreen() {
 
       {paymentMethods.length > 0 ? (
         <Button
-          title="+ Add payment method"
+          title="Add payment method"
+          icon={<AppIcon name="plus" size={18} color={colors.ink} />}
           variant="secondary"
           onPress={() => setModalVisible(true)}
         />

@@ -6,7 +6,7 @@ export const spacing = {
   xs: 8,
   sm: 12,
   md: 16,
-  gutter: 20, // screen side margin and card inner padding
+  gutter: 16, // screen side margin and card inner padding (Wise: 16)
   lg: 24,
   xl: 32,
   xxl: 48,
@@ -17,10 +17,10 @@ export const spacing = {
 
 // ─── Fixed component sizes from the reference ─────────────────────────────────
 export const sizes = {
-  button: 52, // primary / secondary buttons
-  buttonSmall: 32, // inline "Refer friends" style buttons
-  iconButton: 40, // square back / close / profile buttons
-  iconTile: 40, // leading icon tile inside rows
-  input: 58, // filled text field
-  row: 64, // single-line grouped row
+  button: 52, // primary / secondary pill buttons
+  buttonSmall: 36, // inline pills ("Change", "Send"); still ≥44pt hit area via hitSlop
+  iconButton: 44, // round back / close / profile buttons
+  iconTile: 48, // round outlined icon at the start of list rows
+  input: 52, // bordered text field
+  row: 72, // list row with icon, title and subtitle
 } as const;

@@ -4,8 +4,9 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as LocalAuthentication from "expo-local-authentication";
 import { safeHaptics } from "@/lib/haptics";
-import { ThemedText, Card, Badge, Button, AppIcon, ConfirmSheet, Toast, ErrorState } from "@/components";
+import { ThemedText, Card, Badge, Button, AppIcon, ConfirmSheet, Toast, ErrorState, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import {
   useTreatmentPlans,
   useSignTreatmentPlanMutation,
@@ -242,7 +243,7 @@ export default function TreatmentPlanDetailScreen() {
             </ThemedText>
             <Badge
               label={
-                decision === "accepted" ? "Read" : decision === "declined" ? "Declined" : "Awaiting Review"
+                decision === "accepted" ? "Read" : decision === "declined" ? "Declined" : "Awaiting review"
               }
               variant={decision === "declined" ? "danger" : decision === "accepted" ? "success" : "warning"}
             />
@@ -336,7 +337,7 @@ export default function TreatmentPlanDetailScreen() {
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.itemMeta}>
                     #{item.code}
-                    {item.toothNumber ? ` · Tooth #${item.toothNumber}` : ""}
+                    {item.toothNumber ? ` · ${toothLabel(item.toothNumber)}` : ""}
                   </ThemedText>
                 </View>
                 <ThemedText variant="mono" style={styles.itemCost}>
@@ -351,7 +352,7 @@ export default function TreatmentPlanDetailScreen() {
         <Card style={styles.card}>
           <View style={styles.topRow}>
             <ThemedText variant="subhead" style={styles.muted}>
-              Total Treatment Estimate
+              Total treatment estimate
             </ThemedText>
             <ThemedText variant="title" style={styles.totalPrice}>
               {formatGbp(totalCostPence)}
@@ -371,7 +372,7 @@ export default function TreatmentPlanDetailScreen() {
                 </ThemedText>
               </View>
               <ThemedText variant="caption" style={styles.financeLink}>
-                Learn more ›
+                Learn more
               </ThemedText>
             </Pressable>
           ) : null}
@@ -412,7 +413,7 @@ export default function TreatmentPlanDetailScreen() {
 
             {/* Header */}
             <View style={styles.sheetHeader}>
-              <View>
+              <View style={styles.sheetHeaderText}>
                 <ThemedText variant="headline" style={styles.sheetTitle}>
                   Confirm you have read this plan
                 </ThemedText>
@@ -474,7 +475,7 @@ export default function TreatmentPlanDetailScreen() {
               >
                 <AppIcon name="creditCard" size={14} color={colors.ink} />
                 <ThemedText variant="caption" style={styles.modalFinanceText}>
-                  Ask about payment plans ›
+                  Ask about payment plans
                 </ThemedText>
               </Pressable>
 
@@ -483,7 +484,7 @@ export default function TreatmentPlanDetailScreen() {
                 <View style={styles.consentHeader}>
                   <AppIcon name="shieldCheck" size={16} color={colors.ink} />
                   <ThemedText variant="caption" style={styles.consentHeaderText}>
-                    WHAT THIS MEANS
+                    What this means
                   </ThemedText>
                 </View>
                 <ThemedText variant="caption" style={styles.consentBody}>
@@ -501,9 +502,7 @@ export default function TreatmentPlanDetailScreen() {
                   }}
                   style={styles.checkboxRow}
                 >
-                  <View style={[styles.checkboxBox, consentChecked && styles.checkboxBoxChecked]}>
-                    {consentChecked && <AppIcon name="check" size={12} color={colors.alwaysWhite} />}
-                  </View>
+                  <CheckboxMark checked={consentChecked} />
                   <ThemedText variant="caption" style={styles.checkboxLabel}>
                     I have read this treatment plan
                   </ThemedText>
@@ -752,9 +751,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheetContainer: {
-    backgroundColor: colors.systemBackground,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    backgroundColor: colors.sheet,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
     gap: spacing.sm,
     maxHeight: "88%",
     paddingBottom: 28,
@@ -772,7 +771,11 @@ const styles = StyleSheet.create({
   sheetHeader: {
     alignItems: "center",
     flexDirection: "row",
+    gap: spacing.md,
     justifyContent: "space-between",
+  },
+  sheetHeaderText: {
+    flex: 1,
   },
   sheetTitle: {
     color: colors.label,
@@ -786,7 +789,7 @@ const styles = StyleSheet.create({
   closeBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
@@ -801,11 +804,15 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
   },
   summaryTopRow: {
-    alignItems: "center",
+    alignItems: "flex-start",
     flexDirection: "row",
+    gap: spacing.md,
     justifyContent: "space-between",
   },
   summaryTitle: {
+    // Takes the space left by the price, so a long plan name wraps instead
+    // of pushing the total off the sheet.
+    flex: 1,
     color: colors.label,
     fontSize: 14,
     fontWeight: "600",
@@ -864,7 +871,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   consentBody: {
     color: colors.label,
@@ -876,19 +882,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     marginTop: 4,
-  },
-  checkboxBox: {
-    alignItems: "center",
-    borderColor: colors.separator,
-    borderRadius: radius.sm,
-    borderWidth: 1.5,
-    height: 20,
-    justifyContent: "center",
-    width: 20,
-  },
-  checkboxBoxChecked: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
   },
   checkboxLabel: {
     color: colors.label,

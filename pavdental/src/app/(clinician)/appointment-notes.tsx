@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Button } from "@/components";
+import { ThemedText, Card, Button, IconButton, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   fetchAppointmentNotes,
@@ -30,7 +30,10 @@ export default function AppointmentNotesScreen() {
 
   useEffect(() => {
     async function load() {
-      if (!appointmentId) return;
+      if (!appointmentId) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -110,27 +113,25 @@ export default function AppointmentNotesScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Patient file"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to patient file" variant="soft" onPress={() => router.back()} />
         </View>
 
         <View style={styles.headerBlock}>
           <ThemedText variant="title" style={styles.title}>
             Clinical examination notes
           </ThemedText>
-          <ThemedText variant="caption" style={styles.subtitle}>
-            Patient: {params.patientName || "Verified Patient"}
-          </ThemedText>
+          {params.patientName ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Patient: {params.patientName}
+            </ThemedText>
+          ) : null}
         </View>
 
         {successMessage ? (
           <Card elevation="flat" style={styles.successBanner}>
+            <AppIcon name="checkCircle" size={18} color={colors.success} />
             <ThemedText variant="body" style={styles.successText}>
-              ✓ {successMessage}
+              {successMessage}
             </ThemedText>
           </Card>
         ) : null}
@@ -143,7 +144,9 @@ export default function AppointmentNotesScreen() {
           </Card>
         ) : null}
 
-        {loading ? (
+        {!appointmentId ? (
+          <ErrorState message="Open examination notes from a patient's appointment. There is no patient selected." />
+        ) : loading ? (
           <Card elevation="flat" style={styles.loadingCard}>
             <ActivityIndicator color={colors.ink} size="small" />
             <ThemedText variant="body" style={styles.loadingText}>
@@ -153,7 +156,7 @@ export default function AppointmentNotesScreen() {
         ) : (
           <Card style={styles.card}>
             <ThemedText variant="caption" style={styles.label}>
-              CLINICAL EXAMINATION FINDINGS & NOTES *
+              Clinical examination findings & notes *
             </ThemedText>
             <TextInput
               style={[styles.textInput, { minHeight: 120 }]}
@@ -165,7 +168,7 @@ export default function AppointmentNotesScreen() {
             />
 
             <ThemedText variant="caption" style={[styles.label, { marginTop: spacing.sm }]}>
-              DIAGNOSIS (OPTIONAL)
+              Diagnosis (optional)
             </ThemedText>
             <TextInput
               style={styles.textInput}
@@ -176,7 +179,7 @@ export default function AppointmentNotesScreen() {
             />
 
             <ThemedText variant="caption" style={[styles.label, { marginTop: spacing.sm }]}>
-              TREATMENT PLAN & RECALL (OPTIONAL)
+              Treatment plan & recall (optional)
             </ThemedText>
             <TextInput
               style={[styles.textInput, { minHeight: 80 }]}
@@ -278,6 +281,9 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
   },
   successBanner: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.inkSubtle,
     padding: spacing.sm,
   },
@@ -286,11 +292,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   textInput: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.tertiaryBackground,
     borderRadius: radius.sm,
     color: colors.label,
     padding: spacing.sm,
     textAlignVertical: "top",
+    borderColor: colors.inputUnderline,
+    borderWidth: 1,
   },
   title: {
     color: colors.label,

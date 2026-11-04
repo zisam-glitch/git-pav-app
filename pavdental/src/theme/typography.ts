@@ -1,37 +1,39 @@
 import { TextStyle } from "react-native";
 import { colors } from "./colors";
 
-// ─── Named text styles — matched to the iOS reference ────────────────────────
-// System font (SF Pro on iOS). Bold left-aligned screen titles, 17pt body,
-// grey sentence-case section labels, 13pt captions.
+// ─── Named text styles — Wise iOS baseline ────────────────────────────────────
+// System font (SF Pro on iOS) standing in for Wise Sans: heavy, tightly set
+// left-aligned screen titles, 16pt body, semibold row titles, grey 14pt
+// secondary copy and section labels.
 // Dynamic Type is on by default (allowFontScaling unset = true).
 // Use ThemedText component to apply these; screens never touch fontSize directly.
 export const type = {
-  // Screen titles ("When did you move in?", "Payments")
+  // Screen titles ("Confirm and send", "Security and privacy")
   largeTitle: {
-    fontSize: 28,
-    fontWeight: "700",
-    lineHeight: 34,
-    letterSpacing: -0.2,
+    fontSize: 30,
+    fontWeight: "800",
+    lineHeight: 36,
+    letterSpacing: -0.6,
     color: colors.label,
   },
-  // Hero numbers and sheet titles ("$22.66", "Current statement")
+  // Hero numbers, section titles and sheet titles ("27.40 SGD", "Transactions")
   title: {
     fontSize: 22,
-    fontWeight: "600",
+    fontWeight: "700",
     lineHeight: 28,
+    letterSpacing: -0.3,
     color: colors.label,
   },
-  // Card titles, nav-bar titles, button labels
+  // Row titles, card titles, nav-bar titles, button labels
   headline: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "600",
     lineHeight: 22,
     color: colors.label,
   },
-  // Body copy and row titles
+  // Body copy
   body: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "400",
     lineHeight: 22,
     color: colors.label,
@@ -40,17 +42,17 @@ export const type = {
   subhead: {
     fontSize: 15,
     fontWeight: "400",
-    lineHeight: 20,
+    lineHeight: 21,
     color: colors.secondaryLabel,
   },
-  // Row subtitles under a 17pt title ("Neo World Elite Mastercard")
+  // Row subtitles under a row title
   footnote: {
     fontSize: 14,
     fontWeight: "400",
-    lineHeight: 18,
+    lineHeight: 19,
     color: colors.secondaryLabel,
   },
-  // Timestamps, field labels, fine print
+  // Timestamps, field hints, fine print
   caption: {
     fontSize: 13,
     fontWeight: "400",
@@ -59,24 +61,24 @@ export const type = {
   },
   // Prices, stats, metrics — tabular nums for alignment
   mono: {
-    fontSize: 17,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "600",
     fontVariant: ["tabular-nums"],
     lineHeight: 22,
     color: colors.label,
   },
-  // Section labels above grouped cards ("Credit cards", "Account").
-  // The reference uses grey sentence case, not uppercase eyebrows.
+  // Section labels above lists ("Transfer details", "Held as cash"):
+  // grey sentence case, as in Wise.
   overline: {
-    fontSize: 16,
-    fontWeight: "400",
-    lineHeight: 21,
+    fontSize: 14,
+    fontWeight: "500",
+    lineHeight: 19,
     color: colors.secondaryLabel,
   },
   // Tab bar labels and tiny badges
   micro: {
     fontSize: 11,
-    fontWeight: "500",
+    fontWeight: "600",
     lineHeight: 13,
     color: colors.secondaryLabel,
   },

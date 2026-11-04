@@ -55,7 +55,7 @@ export default function MessagesScreen() {
   const threads: ThreadListItem[] = Array.isArray(rawThreads)
     ? rawThreads.map((t: any) => ({
         id: t.id,
-        subject: t.subject || "Care Team Message",
+        subject: t.subject || "Care team message",
         from: t.from || (t.clinicianName ? `${t.clinicianName}${t.clinicianRole ? ` (${t.clinicianRole})` : ""}` : "Pav Dental care team"),
         preview: t.preview || (t.messages?.[t.messages.length - 1]?.body ?? ""),
         sentAtIso: t.sentAtIso || t.updatedAt || new Date().toISOString(),
@@ -128,10 +128,11 @@ export default function MessagesScreen() {
         <View style={styles.headerRow}>
           <View style={styles.headerTitleGroup}>
             <ThemedText variant="overline">Secure inbox</ThemedText>
-            {unreadCount > 0 ? <Badge label={`${unreadCount} NEW`} variant="info" /> : null}
+            {unreadCount > 0 ? <Badge label={`${unreadCount} new`} variant="info" /> : null}
           </View>
           <Button
-            title="+ New message"
+            title="New message"
+            icon={<AppIcon name="plus" size={16} color={colors.ink} />}
             variant="secondary"
             size="sm"
             onPress={() => setIsComposing(true)}
@@ -154,7 +155,7 @@ export default function MessagesScreen() {
           <View style={styles.triageTextGroup}>
             <View style={styles.triageHeaderLine}>
               <ThemedText variant="subhead" style={styles.triageTitle}>
-                Dental Emergency?
+                Dental emergency?
               </ThemedText>
             </View>
             <ThemedText variant="caption" style={styles.triageSubtitle}>
@@ -303,7 +304,7 @@ export default function MessagesScreen() {
             <View style={styles.recipientSelector}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to Practice Team"
+                accessibilityLabel="Route to practice team"
                 onPress={() => setNewRecipientType("practice")}
                 style={[
                   styles.recipientOption,
@@ -317,12 +318,12 @@ export default function MessagesScreen() {
                     newRecipientType === "practice" && styles.recipientTextActive,
                   ]}
                 >
-                  Practice Team
+                  Practice team
                 </ThemedText>
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to Clinical Care Team"
+                accessibilityLabel="Route to care team clinician"
                 onPress={() => setNewRecipientType("care_team")}
                 style={[
                   styles.recipientOption,
@@ -336,7 +337,7 @@ export default function MessagesScreen() {
                     newRecipientType === "care_team" && styles.recipientTextActive,
                   ]}
                 >
-                  Care Team Clinician
+                  Care team clinician
                 </ThemedText>
               </Pressable>
             </View>
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,
     gap: spacing.sm,
@@ -404,15 +405,15 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   recipientOptionActive: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   recipientText: {
     color: colors.secondaryLabel,
     fontWeight: "500",
   },
   recipientTextActive: {
-    color: colors.onInk,
+    color: colors.onAccent,
     fontWeight: "600",
   },
   modalActions: {

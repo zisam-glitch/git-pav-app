@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, Modal } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import { ThemedText, Card, ListRow, Button, Badge, AppIcon } from "@/components";
+import { ThemedText, ListRow, Button, Badge, AppIcon, IconTile } from "@/components";
 import { ToggleSwitch } from "@/components/settings/ToggleSwitch";
 import { PasswordChangeForm, PasswordChangeFormData } from "@/components/forms/PasswordChangeForm";
 import { useBiometrics } from "@/features/security/biometric-hooks";
@@ -80,10 +80,10 @@ export default function SecurityScreen() {
       {/* Biometric App Lock */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          BIOMETRIC PROTECTION
+          Biometric protection
         </ThemedText>
         <ToggleSwitch
-          label={`${biometricType} App Lock`}
+          label={`${biometricType} app lock`}
           description={
             isSupported
               ? isEnrolled
@@ -94,32 +94,33 @@ export default function SecurityScreen() {
           value={isBiometricLockEnabled}
           onValueChange={handleToggleBiometric}
           disabled={!isSupported || !isEnrolled}
-          icon={<ThemedText>🔐</ThemedText>}
+          icon={<AppIcon name="lock" size={18} color={colors.label} />}
         />
       </View>
 
       {/* Account Security */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          LOGIN & PASSWORDS
+          Login & passwords
         </ThemedText>
-        <Card padding="none">
+        <View>
           <ListRow
+            inset="flush"
             title="Change account password"
             subtitle="Update your master security password"
-            left={<ThemedText>🔑</ThemedText>}
+            left={<IconTile icon="key" />}
             right={<AppIcon name="chevronRight" size={16} color={colors.tertiaryLabel} />}
             onPress={() => setPasswordModalVisible(true)}
-            separator
           />
           <ListRow
+            inset="flush"
             title="Active logged-in sessions"
             subtitle="View devices and sign out other sessions"
-            left={<AppIcon name="smartphone" size={18} color={colors.ink} />}
+            left={<IconTile icon="smartphone" />}
             right={<AppIcon name="chevronRight" size={16} color={colors.tertiaryLabel} />}
             onPress={() => router.push("/(patient)/(tabs)/profile/sessions" as any)}
           />
-        </Card>
+        </View>
       </View>
 
       {/* Two-step sign-in */}
@@ -130,7 +131,7 @@ export default function SecurityScreen() {
       {/* Email Verification Status */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          VERIFIED IDENTITY
+          Verified identity
         </ThemedText>
         <View style={styles.verifyCard}>
           <View style={styles.verifyRow}>
@@ -160,17 +161,18 @@ export default function SecurityScreen() {
       {/* Privacy */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          DATA PRIVACY & LEGAL
+          Data privacy & legal
         </ThemedText>
-        <Card padding="none">
+        <View>
           <ListRow
+            inset="flush"
             title="Consent & data usage"
             subtitle="Signed GDPR records & retention disclosures"
-            left={<ThemedText>📄</ThemedText>}
+            left={<IconTile icon="fileText" />}
             right={<AppIcon name="chevronRight" size={16} color={colors.tertiaryLabel} />}
             onPress={() => router.push("/(patient)/(tabs)/profile/consent" as any)}
           />
-        </Card>
+        </View>
       </View>
 
       {/* Password Change Modal */}

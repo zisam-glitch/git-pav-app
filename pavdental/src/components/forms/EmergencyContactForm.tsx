@@ -73,7 +73,7 @@ export function EmergencyContactForm({
 
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          CONTACT DETAILS
+          Contact details
         </ThemedText>
 
         <Input
@@ -98,6 +98,7 @@ export function EmergencyContactForm({
                   disabled={isLoading}
                   onPress={() => setValue("relationship", rel, { shouldDirty: true, shouldValidate: true })}
                   style={[styles.pill, active && styles.pillActive]}
+                  hitSlop={{ top: 4, bottom: 4 }}
                   accessibilityRole="button"
                   accessibilityState={{ selected: active }}
                 >
@@ -183,20 +184,20 @@ const styles = StyleSheet.create({
   },
   pill: {
     backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    justifyContent: "center",
+    minHeight: 36,
   },
   pillActive: {
-    backgroundColor: colors.inkSubtle,
-    borderColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   pillText: {
     color: colors.secondaryLabel,
     fontWeight: "500",
   },
   pillTextActive: {
-    color: colors.ink,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   pillsWrap: {

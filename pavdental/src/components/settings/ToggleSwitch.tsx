@@ -40,7 +40,7 @@ export function ToggleSwitch({
       <View style={styles.leftContainer}>
         {icon ? <View style={styles.iconContainer}>{icon}</View> : null}
         <View style={styles.textContainer}>
-          <ThemedText variant="body" style={styles.label}>
+          <ThemedText variant="headline" style={styles.label}>
             {label}
           </ThemedText>
           {description ? (
@@ -66,15 +66,12 @@ export function ToggleSwitch({
 }
 
 const styles = StyleSheet.create({
+  // Flat on the page like Wise's notification settings: no card, no side padding.
   container: {
     alignItems: "center",
-    backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
-    borderCurve: "continuous",
     flexDirection: "row",
     justifyContent: "space-between",
     minHeight: sizes.row,
-    paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.sm,
   },
   description: {
@@ -85,8 +82,10 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.md,
+    backgroundColor: colors.background,
+    borderColor: colors.separator,
+    borderRadius: radius.full,
+    borderWidth: 1,
     height: sizes.iconTile,
     justifyContent: "center",
     width: sizes.iconTile,
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     flex: 1,
-    gap: spacing.sm,
+    gap: spacing.md,
     paddingRight: spacing.md,
   },
   pressed: {

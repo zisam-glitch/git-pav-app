@@ -86,7 +86,7 @@ export default function DeleteAccountScreen() {
       {/* Statutory Retention Notice */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          HOW LONG WE KEEP DENTAL RECORDS
+          How long we keep dental records
         </ThemedText>
         <Card style={styles.retentionCard}>
           <ThemedText variant="caption" style={styles.retentionText}>
@@ -101,7 +101,7 @@ export default function DeleteAccountScreen() {
       {/* Feedback / Reason */}
       <View style={styles.section}>
         <ThemedText variant="subhead" style={styles.sectionTitle}>
-          REASON FOR LEAVING (OPTIONAL)
+          Reason for leaving (optional)
         </ThemedText>
         <Input
           placeholder="Help us improve our service..."

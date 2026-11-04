@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { safeHaptics } from "@/lib/haptics";
-import { ThemedText, Card, ListRow, AppIcon, Button, type AppIconName } from "@/components";
+import { ThemedText, Card, ListRow, AppIcon, Button, type AppIconName, SegmentedControl, IconTile } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { useOdontogram, useOralHealthInsights } from "@/features/hooks/use-dental-api";
@@ -97,40 +96,15 @@ export default function PatientRecordsScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Neo Financial Underline Segmented Tabs (Screen_337_Charts_Dashboard.png) */}
-      <View style={styles.segmentContainer}>
-        {[
-          { key: "vault", label: "Clinical Vault" },
-          { key: "activity", label: "Activity & Recall" },
+      <SegmentedControl
+        segments={[
+          { key: "vault", label: "Clinical vault" },
+          { key: "activity", label: "Activity & recall" },
           { key: "estimates", label: "Estimates" },
-        ].map((tab) => {
-          const isActive = activeTab === tab.key;
-          return (
-            <Pressable
-              key={tab.key}
-              accessibilityRole="button"
-              accessibilityLabel={tab.label}
-              accessibilityState={{ selected: isActive }}
-              onPress={() => {
-                safeHaptics.impactAsync("light").catch(() => {});
-                setActiveTab(tab.key as RecordsTab);
-              }}
-              style={styles.segmentTab}
-            >
-              <ThemedText
-                variant="subhead"
-                style={[
-                  styles.segmentTabText,
-                  isActive && styles.segmentTabTextActive,
-                ]}
-              >
-                {tab.label}
-              </ThemedText>
-              {isActive ? <View style={styles.segmentActiveLine} /> : null}
-            </Pressable>
-          );
-        })}
-      </View>
+        ]}
+        value={activeTab}
+        onChange={setActiveTab}
+      />
 
       {/* 3-Column Metric Summary Card (Screen_337_Charts_Dashboard.png) */}
       <Card style={styles.metricsCard}>
@@ -139,7 +113,7 @@ export default function PatientRecordsScreen() {
             {teethCount}
           </ThemedText>
           <ThemedText variant="caption" style={styles.metricLabel}>
-            {hasTeeth ? "Teeth Tracked" : "Teeth Charted"}
+            {hasTeeth ? "Teeth tracked" : "Teeth charted"}
           </ThemedText>
         </View>
 
@@ -153,7 +127,7 @@ export default function PatientRecordsScreen() {
             {activeIssues}
           </ThemedText>
           <ThemedText variant="caption" style={styles.metricLabel}>
-            Active Issues
+            Active issues
           </ThemedText>
         </View>
 
@@ -164,7 +138,7 @@ export default function PatientRecordsScreen() {
             {recallDisplay}
           </ThemedText>
           <ThemedText variant="caption" style={styles.metricLabel}>
-            Next Recall
+            Next recall
           </ThemedText>
         </View>
       </Card>
@@ -195,10 +169,7 @@ export default function PatientRecordsScreen() {
       ) : null}
 
       {/* Summary banner */}
-      <Card style={styles.summaryCard}>
-        <View style={styles.summaryIcon}>
-          <AppIcon name="shield" size={20} color={colors.onInk} />
-        </View>
+      <Card elevation="flat" style={styles.summaryCard}>
         <View style={styles.summaryText}>
           <ThemedText variant="headline" style={styles.summaryTitle}>
             Clinical timeline
@@ -210,30 +181,26 @@ export default function PatientRecordsScreen() {
       </Card>
 
       <View style={styles.section}>
-        <ThemedText variant="overline" style={styles.sectionOverline}>
+        <ThemedText variant="title" style={styles.sectionOverline}>
           {activeTab === "vault"
-            ? "Vault & Clinical Charts"
+            ? "Vault & clinical charts"
             : activeTab === "estimates"
-            ? "Estimates & Finance"
-            : "Activity & Recall"}
+            ? "Estimates & finance"
+            : "Activity & recall"}
         </ThemedText>
-        <Card padding="none" style={styles.groupedCard}>
-          {displayedLinks.map((link, i) => (
+        <View>
+          {displayedLinks.map((link) => (
             <ListRow
+              inset="flush"
               key={link.title}
               title={link.title}
               subtitle={link.subtitle}
-              left={
-                <View style={styles.rowIcon}>
-                  <AppIcon name={link.icon} size={18} color={colors.ink} />
-                </View>
-              }
+              left={<IconTile icon={link.icon} />}
               right={<AppIcon name="chevronRight" size={16} color={colors.tertiaryLabel} />}
               onPress={() => router.push(link.route as never)}
-              separator={i < displayedLinks.length - 1}
             />
           ))}
-        </Card>
+        </View>
       </View>
     </ScrollView>
   );
@@ -249,36 +216,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
-  },
-  segmentContainer: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: colors.separator,
-    marginBottom: spacing.xs,
-  },
-  segmentTab: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: spacing.sm,
-    position: "relative",
-  },
-  segmentTabText: {
-    color: colors.secondaryLabel,
-    fontWeight: "500",
-    fontSize: 13,
-  },
-  segmentTabTextActive: {
-    color: colors.ink,
-    fontWeight: "700",
-  },
-  segmentActiveLine: {
-    position: "absolute",
-    bottom: -1,
-    left: 10,
-    right: 10,
-    height: 2.5,
-    backgroundColor: colors.ink,
-    borderRadius: radius.xs,
   },
   metricsCard: {
     flexDirection: "row",
@@ -310,53 +247,28 @@ const styles = StyleSheet.create({
     height: 36,
     backgroundColor: colors.separator,
   },
-  rowIcon: {
-    alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
-  },
   section: {
     gap: spacing.xs,
   },
   sectionOverline: {
-    color: colors.secondaryLabel,
-    letterSpacing: 0.5,
-    marginLeft: spacing.xxs,
-  },
-  groupedCard: {
-    borderRadius: radius.lg,
-    overflow: "hidden",
-    borderColor: colors.separator,
+    marginBottom: spacing.xxs,
   },
   summaryCard: {
     alignItems: "center",
-    backgroundColor: colors.ink,
     borderRadius: radius.lg,
     flexDirection: "row",
     gap: spacing.sm,
     padding: spacing.md,
   },
-  summaryIcon: {
-    alignItems: "center",
-    backgroundColor: colors.inkSoft,
-    borderRadius: radius.lg,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
-  },
   summarySub: {
-    color: colors.alwaysWhite,
-    opacity: 0.75,
+    color: colors.secondaryLabel,
   },
   summaryText: {
     flex: 1,
     gap: 2,
   },
   summaryTitle: {
-    color: colors.alwaysWhite,
+    color: colors.label,
   },
   initialCareCard: {
     backgroundColor: colors.inkSubtle,
@@ -372,10 +284,12 @@ const styles = StyleSheet.create({
   initialCareIcon: {
     width: 32,
     height: 32,
-    borderRadius: radius.md,
+    borderRadius: radius.full,
     backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: colors.separator,
+    borderWidth: 1,
   },
   initialCareText: {
     flex: 1,

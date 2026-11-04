@@ -95,13 +95,13 @@ export default function OperatorCheckInScreen() {
 
           <View style={styles.checkItem}>
             <View style={styles.checkInfo}>
-              <ThemedText variant="body">1. Vehicle Safely Positioned</ThemedText>
+              <ThemedText variant="body">1. Vehicle safely positioned</ThemedText>
               <ThemedText variant="caption" style={styles.sub}>
                 Handbrake engaged, levelling stabilisers deployed.
               </ThemedText>
             </View>
             <Button
-              title={vanParked ? "✓ Secured" : "Confirm"}
+              title={vanParked ? "Secured" : "Confirm"}
               size="sm"
               variant={vanParked ? "secondary" : "primary"}
               onPress={() => setVanParked(true)}
@@ -112,13 +112,13 @@ export default function OperatorCheckInScreen() {
 
           <View style={styles.checkItem}>
             <View style={styles.checkInfo}>
-              <ThemedText variant="body">2. Patient Boarded In Surgery</ThemedText>
+              <ThemedText variant="body">2. Patient boarded in surgery</ThemedText>
               <ThemedText variant="caption" style={styles.sub}>
                 Patient welcomed inside surgery bay, seated in dental chair.
               </ThemedText>
             </View>
             <Button
-              title={patientBoarded ? "✓ Seated" : "Confirm"}
+              title={patientBoarded ? "Seated" : "Confirm"}
               size="sm"
               variant={patientBoarded ? "secondary" : "primary"}
               onPress={() => setPatientBoarded(true)}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button, EmptyState } from "@/components";
+import { ThemedText, Card, Badge, Button, EmptyState, IconButton, AppIcon, ListRow, IconTile } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   fetchPatientProfile,
@@ -97,12 +97,7 @@ export default function ClinicianPatientRecordScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Navigation & Header */}
         <View style={styles.navRow}>
-          <Button
-            title="‹ Daily schedule"
-            variant="secondary"
-            size="sm"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrowLeft" label="Back to daily schedule" variant="soft" onPress={() => router.back()} />
           {params.channel ? (
             <Badge
               label={toLabel(params.channel)}
@@ -124,8 +119,9 @@ export default function ClinicianPatientRecordScreen() {
 
         {statusMessage ? (
           <Card elevation="flat" style={styles.statusBanner}>
+            <AppIcon name="checkCircle" size={18} color={colors.success} />
             <ThemedText variant="body" style={styles.statusText}>
-              ✓ {statusMessage}
+              {statusMessage}
             </ThemedText>
           </Card>
         ) : null}
@@ -154,12 +150,12 @@ export default function ClinicianPatientRecordScreen() {
               <ThemedText variant="headline" style={styles.sectionHeading}>
                 Consultation actions
               </ThemedText>
-              <View style={styles.actionGrid}>
-                <Button
+              <View>
+                <ListRow
+                  inset="flush"
                   title="Edit odontogram"
-              arrow
-                  size="sm"
-                  variant="secondary"
+                  left={<IconTile icon="tooth" />}
+                  chevron
                   onPress={() =>
                     router.push({
                       pathname: "/(clinician)/odontogram-editor" as any,
@@ -167,11 +163,11 @@ export default function ClinicianPatientRecordScreen() {
                     })
                   }
                 />
-                <Button
+                <ListRow
+                  inset="flush"
                   title="Build treatment plan"
-              arrow
-                  size="sm"
-                  variant="secondary"
+                  left={<IconTile icon="clipboard" />}
+                  chevron
                   onPress={() =>
                     router.push({
                       pathname: "/(clinician)/treatment-plan-builder" as any,
@@ -179,11 +175,11 @@ export default function ClinicianPatientRecordScreen() {
                     })
                   }
                 />
-                <Button
+                <ListRow
+                  inset="flush"
                   title="Examination notes"
-              arrow
-                  size="sm"
-                  variant="secondary"
+                  left={<IconTile icon="notes" />}
+                  chevron
                   onPress={() =>
                     router.push({
                       pathname: "/(clinician)/appointment-notes" as any,
@@ -235,7 +231,7 @@ export default function ClinicianPatientRecordScreen() {
                   {notes.diagnosis ? (
                     <View style={styles.diagRow}>
                       <ThemedText variant="caption" style={styles.metaLabel}>
-                        DIAGNOSIS:
+                        Diagnosis
                       </ThemedText>
                       <ThemedText variant="body" style={styles.diagVal}>
                         {notes.diagnosis}
@@ -368,11 +364,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     padding: spacing.md,
   },
-  actionGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.xs,
-  },
   card: {
     backgroundColor: colors.systemBackground,
     gap: spacing.sm,
@@ -477,6 +468,9 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xs,
   },
   statusBanner: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs,
     backgroundColor: colors.inkSubtle,
     padding: spacing.sm,
   },

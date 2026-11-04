@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button, EmptyState, ErrorState, Skeleton, ChipPill, ConfirmSheet, Toast, AppIcon } from "@/components";
-import { colors, spacing, radius } from "@/theme";
+import { ThemedText, Card, Badge, Button, EmptyState, ErrorState, Skeleton, ConfirmSheet, Toast, ListRow, IconTile, type AppIconName } from "@/components";
+import { appointmentClinician, appointmentLocation } from "@/features/booking/appointment-labels";
+import { colors, spacing } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 
@@ -20,7 +21,13 @@ interface Booking {
   dependant?: { firstName: string; lastName: string } | null;
 }
 
-function BookingCard({
+const CHANNEL_ICON: Record<string, AppIconName> = { video: "video", van: "truck", clinic: "mapPin" };
+
+/**
+ * One visit as a Wise activity row: channel icon, treatment, "when · how",
+ * where and who, status on the right. Upcoming visits keep "Cancel booking".
+ */
+function BookingRow({
   booking,
   past,
   onCancel,
@@ -31,75 +38,32 @@ function BookingCard({
 }) {
   const router = useRouter();
   const start = new Date(booking.startTimeUtc);
-  const weekday = start.toLocaleDateString("en-GB", { weekday: "short" });
   const day = start.getDate();
   const month = start.toLocaleDateString("en-GB", { month: "short" });
+  const date = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
   const time = start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  const locationName = booking.clinic?.name || booking.van?.name || "Video Consultation";
-  const clinicianName = booking.clinician?.fullName || "Assigned Practitioner";
   const cancelled = booking.status === "cancelled";
+  const who = booking.dependant
+    ? `For ${booking.dependant.firstName} ${booking.dependant.lastName}`
+    : appointmentClinician(booking);
+  const status = cancelled ? (
+    <Badge label="Cancelled" variant="danger" />
+  ) : !past ? (
+    <Badge label={toLabel(booking.status)} variant={booking.status === "confirmed" ? "success" : "default"} />
+  ) : null;
 
   return (
-    <Card
-      elevation={past ? "flat" : "raised"}
-      style={styles.card}
-    >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`Open details for ${booking.service?.name || "appointment"} on ${day} ${month}`}
+    <View>
+      <ListRow
+        inset="flush"
+        title={booking.service?.name || "Dental treatment"}
+        subtitle={`${date} · ${time} · ${toLabel(booking.channel)}\n${appointmentLocation(booking)} · ${who}`}
+        left={<IconTile icon={CHANNEL_ICON[booking.channel] ?? "calendar"} />}
+        right={status}
+        accessibilityLabel={`${booking.service?.name || "Appointment"}, ${date} at ${time}${cancelled ? ", cancelled" : ""}. Open details`}
         onPress={() => router.push({ pathname: "/(patient)/appointments/[id]" as never, params: { id: booking.id } })}
-        style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
-      >
-      <View style={styles.cardBody}>
-        {/* Date block */}
-        <View style={styles.dateBlock}>
-          <ThemedText variant="caption" style={styles.dateWeekday}>
-            {weekday}
-          </ThemedText>
-          <ThemedText variant="title" style={styles.dateDay}>
-            {day}
-          </ThemedText>
-          <ThemedText variant="caption" style={styles.dateMonth}>
-            {month}
-          </ThemedText>
-        </View>
-
-        <View style={styles.cardMain}>
-          <View style={styles.cardTop}>
-            <ThemedText variant="headline" numberOfLines={1} style={styles.serviceTitle}>
-              {booking.service?.name || "Dental Treatment"}
-            </ThemedText>
-            {!past && !cancelled ? (
-              <Badge label={toLabel(booking.status)} variant={booking.status === "confirmed" ? "success" : "default"} />
-            ) : null}
-          </View>
-
-          <ChipPill label={`${time} · ${toLabel(booking.channel)}`} tone={past || cancelled ? "neutral" : "info"} />
-
-          {booking.dependant ? (
-            <ThemedText variant="caption" style={styles.metaText} numberOfLines={1}>
-              For {booking.dependant.firstName} {booking.dependant.lastName}
-            </ThemedText>
-          ) : null}
-
-          <View style={styles.metaRow}>
-            <AppIcon name="profile" size={13} color={colors.secondaryLabel} />
-            <ThemedText variant="caption" style={styles.metaText} numberOfLines={1}>
-              {clinicianName}
-            </ThemedText>
-          </View>
-          <View style={styles.metaRow}>
-            <AppIcon name="mapPin" size={13} color={colors.secondaryLabel} />
-            <ThemedText variant="caption" style={styles.metaText} numberOfLines={1}>
-              {locationName}
-            </ThemedText>
-          </View>
-
-          {cancelled ? <Badge label="Cancelled" variant="danger" /> : null}
-        </View>
-      </View>
-      </Pressable>
-      {cancelled ? null : !past ? (
+      />
+      {cancelled || past ? null : (
         <Button
           title="Cancel booking"
           variant="ghost"
@@ -108,8 +72,8 @@ function BookingCard({
           onPress={() => onCancel(booking.id)}
           style={styles.cancelBtn}
         />
-      ) : null}
-    </Card>
+      )}
+    </View>
   );
 }
 
@@ -173,16 +137,16 @@ export default function PatientAppointmentsScreen() {
           <>
             {upcoming.length > 0 ? (
               <View style={styles.group}>
-                <ThemedText variant="overline">Upcoming</ThemedText>
+                <ThemedText variant="title">Upcoming</ThemedText>
                 <View style={styles.stack}>
                   {upcoming.map((b) => (
-                    <BookingCard key={b.id} booking={b} past={false} onCancel={setPendingCancel} />
+                    <BookingRow key={b.id} booking={b} past={false} onCancel={setPendingCancel} />
                   ))}
                 </View>
               </View>
             ) : (
               <View style={styles.group}>
-                <ThemedText variant="overline">Upcoming</ThemedText>
+                <ThemedText variant="title">Upcoming</ThemedText>
                 <Card style={styles.emptyUpcomingCard}>
                   <ThemedText variant="headline">No upcoming visits</ThemedText>
                   <ThemedText variant="subhead" style={styles.emptyUpcomingBody}>
@@ -194,10 +158,10 @@ export default function PatientAppointmentsScreen() {
 
             {past.length > 0 ? (
               <View style={styles.group}>
-                <ThemedText variant="overline">Past</ThemedText>
+                <ThemedText variant="title">Past</ThemedText>
                 <View style={styles.stack}>
                   {past.map((b) => (
-                    <BookingCard key={b.id} booking={b} past={true} onCancel={setPendingCancel} />
+                    <BookingRow key={b.id} booking={b} past={true} onCancel={setPendingCancel} />
                   ))}
                 </View>
               </View>
@@ -217,8 +181,8 @@ export default function PatientAppointmentsScreen() {
         <ConfirmSheet
           title="Cancel this appointment?"
           message="Your slot will be released immediately. Any deposit hold will be refunded by your bank within 5 working days."
-          confirmLabel="Cancel Appointment"
-          cancelLabel="Keep Booking"
+          confirmLabel="Cancel appointment"
+          cancelLabel="Keep booking"
           variant="destructive"
           onConfirm={confirmCancel}
           onCancel={() => setPendingCancel(null)}
@@ -231,26 +195,8 @@ export default function PatientAppointmentsScreen() {
 const styles = StyleSheet.create({
   cancelBtn: {
     alignSelf: "flex-start",
-    marginTop: spacing.xxs,
-  },
-  card: {
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    borderColor: colors.separator,
-  },
-  cardBody: {
-    flexDirection: "row",
-    gap: spacing.md,
-  },
-  cardMain: {
-    flex: 1,
-    gap: spacing.xs,
-  },
-  cardTop: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: spacing.xs,
+    marginLeft: 64,
+    marginTop: -spacing.xs,
   },
   container: {
     backgroundColor: colors.background,
@@ -263,26 +209,6 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     padding: spacing.md,
   },
-  dateBlock: {
-    alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
-    gap: 1,
-    minWidth: 56,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.xs,
-    alignSelf: "flex-start",
-  },
-  dateDay: {
-    color: colors.ink,
-    lineHeight: 26,
-  },
-  dateMonth: {
-    color: colors.secondaryLabel,
-  },
-  dateWeekday: {
-    color: colors.secondaryLabel,
-  },
   group: {
     gap: spacing.xs,
   },
@@ -292,20 +218,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
   },
-  metaRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.xxs,
-  },
-  metaText: {
-    color: colors.secondaryLabel,
-    flex: 1,
-  },
-  serviceTitle: {
-    flex: 1,
-  },
   stack: {
-    gap: spacing.sm,
+    gap: spacing.xxs,
   },
   bookAgain: {
     marginTop: spacing.xs,

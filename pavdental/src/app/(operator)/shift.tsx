@@ -103,9 +103,9 @@ export default function OperatorShiftScreen() {
   };
 
   const getStatusBadge = () => {
-    if (isOnline) return <Badge label="ONLINE · ACCEPTING" variant="success" />;
-    if (isPaused) return <Badge label="❚❚ PAUSED · NOT ACCEPTING" variant="warning" />;
-    return <Badge label="○ OFFLINE" variant="default" />;
+    if (isOnline) return <Badge label="Online · accepting" variant="success" />;
+    if (isPaused) return <Badge label="Paused · not accepting" variant="warning" />;
+    return <Badge label="Offline" variant="default" />;
   };
 
   if (isLoading) {
@@ -138,7 +138,7 @@ export default function OperatorShiftScreen() {
           <View style={styles.statusRow}>
             <View style={styles.statusTextCol}>
               <ThemedText variant="largeTitle" style={styles.vanTitle}>
-                {van?.name ?? "Van Dispatch"}
+                {van?.name ?? "Van dispatch"}
               </ThemedText>
               {van?.registrationPlate && (
                 <ThemedText variant="caption" style={styles.plate}>
@@ -146,14 +146,19 @@ export default function OperatorShiftScreen() {
                 </ThemedText>
               )}
             </View>
-            <Switch
+            <View style={styles.switchCol}>
+              <ThemedText variant="caption" style={styles.switchLabel}>
+                On shift
+              </ThemedText>
+              <Switch
               value={isOnShift}
               onValueChange={handleToggleShift}
               disabled={startMutation.isPending || endMutation.isPending}
               trackColor={{ false: colors.inkSubtle, true: colors.successFill }}
               accessibilityRole="switch"
-              accessibilityLabel="Operator Shift Status"
+              accessibilityLabel="On shift"
             />
+            </View>
           </View>
           <View style={styles.badgeRow}>
             {getStatusBadge()}
@@ -161,7 +166,7 @@ export default function OperatorShiftScreen() {
           </View>
           {gpsError ? (
             <ThemedText variant="caption" style={styles.gpsWarning}>
-              ⚠️ {gpsError}
+              {gpsError}
             </ThemedText>
           ) : null}
         </Card>
@@ -209,7 +214,7 @@ export default function OperatorShiftScreen() {
         {/* Live Queue Summary */}
         <View style={styles.sectionHeader}>
           <ThemedText variant="headline">
-            Live Queue ({queue.length} stop{queue.length !== 1 ? "s" : ""})
+            Live queue ({queue.length} stop{queue.length !== 1 ? "s" : ""})
           </ThemedText>
           {queue.length > 0 && (
             <Button
@@ -225,7 +230,7 @@ export default function OperatorShiftScreen() {
         {queue.length === 0 ? (
           <Card style={styles.emptyCard}>
             <ThemedText variant="headline" style={styles.emptyTitle}>
-              {isOnShift ? "Queue is Empty" : "Shift is Offline"}
+              {isOnShift ? "Queue is empty" : "Shift is offline"}
             </ThemedText>
             <ThemedText variant="caption" style={styles.emptyBody}>
               {isOnShift
@@ -265,7 +270,8 @@ export default function OperatorShiftScreen() {
           />
           {incoming.length > 0 && (
             <Button
-              title={`View ${incoming.length} Incoming Request(s) ›`}
+              title={`View ${incoming.length} incoming request${incoming.length === 1 ? "" : "s"}`}
+              arrow
               onPress={() => router.push("/(operator)/incoming" as any)}
             />
           )}
@@ -276,6 +282,13 @@ export default function OperatorShiftScreen() {
 }
 
 const styles = StyleSheet.create({
+  switchCol: {
+    alignItems: "center",
+    gap: spacing.xxs,
+  },
+  switchLabel: {
+    color: colors.secondaryLabel,
+  },
   address: {
     color: colors.secondaryLabel,
   },

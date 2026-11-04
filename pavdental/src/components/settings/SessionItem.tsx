@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
 import { Badge } from "../badge";
 import { AppIcon } from "../app-icon";
-import { colors, spacing, radius } from "@/theme";
+import { colors, spacing, radius, sizes } from "@/theme";
 
 export interface SessionData {
   id: string;
@@ -46,7 +46,7 @@ export function SessionItem({ session, onRevoke, isRevoking = false }: SessionIt
                 session.deviceInfo?.toLowerCase().includes("iphone") ||
                 session.deviceInfo?.toLowerCase().includes("android")
                   ? "smartphone"
-                  : "grid"
+                  : "globe"
               }
               size={20}
               color={colors.ink}
@@ -97,19 +97,20 @@ export function SessionItem({ session, onRevoke, isRevoking = false }: SessionIt
 }
 
 const styles = StyleSheet.create({
+  // A flat row on the page (Wise device and settings lists), not a card.
   card: {
-    backgroundColor: colors.systemBackground,
-    borderRadius: radius.lg,
     gap: spacing.xs,
-    padding: spacing.md,
+    paddingVertical: spacing.sm,
   },
   deviceIconWrap: {
     alignItems: "center",
-    backgroundColor: colors.inkSubtle,
+    backgroundColor: colors.background,
+    borderColor: colors.separator,
     borderRadius: radius.full,
-    height: 40,
+    borderWidth: 1,
+    height: sizes.iconTile,
     justifyContent: "center",
-    width: 40,
+    width: sizes.iconTile,
   },
   deviceInfo: {
     alignItems: "center",

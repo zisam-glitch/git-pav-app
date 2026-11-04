@@ -6,8 +6,10 @@ import {
   ThemedText,
   Input,
   AppIcon,
-  ServiceHeroCard,
-  ProgressPills,
+  type AppIconName,
+  FlowHeader,
+  IconTile,
+  ListRow,
   QueryState,
 } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -26,25 +28,15 @@ type CategoryFilter =
   | "restorative"
   | "cosmetic";
 
-const CATEGORIES: { label: string; value: CategoryFilter; icon: any }[] = [
-  { label: "All", value: "all", icon: "grid" },
-  { label: "Checkup", value: "checkup", icon: "profile" },
-  { label: "Hygiene", value: "hygiene", icon: "sparkle" },
-  { label: "Surgery", value: "restorative", icon: "activity" },
-  { label: "Cosmetic", value: "cosmetic", icon: "smile" },
-  { label: "Emergency", value: "emergency", icon: "alert" },
+const CATEGORIES: { label: string; value: CategoryFilter }[] = [
+  { label: "All", value: "all" },
+  { label: "Checkup", value: "checkup" },
+  { label: "Hygiene", value: "hygiene" },
+  { label: "Surgery", value: "restorative" },
+  { label: "Cosmetic", value: "cosmetic" },
+  { label: "Emergency", value: "emergency" },
 ];
 
-function getServiceImage(category?: string, name?: string) {
-  const lower = `${category || ""} ${name || ""}`.toLowerCase();
-  if (lower.includes("implant") || lower.includes("restor") || lower.includes("emerg")) {
-    return require("../../../../assets/images/implant.jpg");
-  }
-  if (lower.includes("veneer") || lower.includes("whitening") || lower.includes("cosmetic")) {
-    return require("../../../../assets/images/welcome-hero.jpg");
-  }
-  return require("../../../../assets/images/smile-restoration.jpg");
-}
 
 export default function ServiceCatalogScreen() {
   const router = useRouter();
@@ -53,7 +45,6 @@ export default function ServiceCatalogScreen() {
   const params = useLocalSearchParams<{ channel?: string }>();
   const onlyChannel = channelParam(params.channel);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all");
-  const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState("");
 
   const { data: apiServices, isLoading, isError, refetch } = useServices();
@@ -93,46 +84,32 @@ export default function ServiceCatalogScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Progress Pills for Multi-Step Booking */}
-        <ProgressPills total={5} current={1} />
+      <View style={styles.topNav}>
+        <FlowHeader step={{ current: 1, total: 5 }} />
+      </View>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <ThemedText variant="largeTitle" accessibilityRole="header">
+          {onlyChannel === "video"
+            ? "Book a video consult"
+            : onlyChannel === "van"
+              ? "Book a dental van visit"
+              : "Choose a treatment"}
+        </ThemedText>
 
-        {/* Top Header: "Choose a Service" + Search Icon button */}
-        <View style={styles.headerRow}>
-          <ThemedText variant="largeTitle" style={styles.headerTitle}>
-            {onlyChannel === "video"
-              ? "Book a video consult"
-              : onlyChannel === "van"
-                ? "Book a dental van visit"
-                : "Choose a treatment"}
-          </ThemedText>
+        <Input
+          placeholder="Search treatments"
+          accessibilityLabel="Search treatments"
+          value={search}
+          onChangeText={setSearch}
+          returnKeyType="search"
+          rightSlot={<AppIcon name="search" size={18} color={colors.secondaryLabel} />}
+        />
 
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Search treatments"
-            onPress={() => {
-              safeHaptics.impactAsync("light").catch(() => {});
-              setShowSearch((prev) => !prev);
-            }}
-            style={styles.searchIconBtn}
-          >
-            <AppIcon name="search" size={18} color={colors.ink} />
-          </Pressable>
-        </View>
-
-        {/* Optional Search bar dropdown */}
-        {showSearch ? (
-          <View style={styles.searchBarWrap}>
-            <Input
-              placeholder="Search treatments by name..."
-              value={search}
-              onChangeText={setSearch}
-              autoFocus
-            />
-          </View>
-        ) : null}
-
-        {/* Filter Category Pills */}
+        {/* Filter pills (Wise: neutral pills, bright green when selected) */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -146,27 +123,14 @@ export default function ServiceCatalogScreen() {
                 key={cat.value}
                 accessibilityRole="button"
                 accessibilityState={{ selected: isActive }}
+                hitSlop={{ top: 4, bottom: 4 }}
                 onPress={() => {
                   safeHaptics.impactAsync("light").catch(() => {});
                   setSelectedCategory(cat.value);
                 }}
-                style={[
-                  styles.categoryPill,
-                  isActive ? styles.categoryPillActive : styles.categoryPillInactive,
-                ]}
+                style={[styles.categoryPill, isActive ? styles.categoryPillActive : styles.categoryPillInactive]}
               >
-                <AppIcon
-                  name={cat.icon}
-                  size={14}
-                  color={isActive ? colors.alwaysWhite : colors.ink}
-                />
-                <ThemedText
-                  variant="subhead"
-                  style={[
-                    styles.categoryText,
-                    isActive ? styles.categoryTextActive : styles.categoryTextInactive,
-                  ]}
-                >
+                <ThemedText variant="footnote" style={[styles.categoryText, isActive && styles.categoryTextActive]}>
                   {cat.label}
                 </ThemedText>
               </Pressable>
@@ -174,7 +138,6 @@ export default function ServiceCatalogScreen() {
           })}
         </ScrollView>
 
-        {/* Live Service Catalog Cards */}
         <QueryState
           isLoading={isLoading}
           isError={isError}
@@ -186,63 +149,79 @@ export default function ServiceCatalogScreen() {
           emptyIcon="search"
         >
           {(list) => (
-            <View style={styles.cardList}>
+            <View>
               {list.map((srv) => (
-                <ServiceHeroCard
+                <ListRow
                   key={srv.id}
                   title={srv.name}
-                  badge={`${toLabel(srv.category || "clinical")} · ${formatGbp(srv.pricePence || 0)}`}
-                  image={getServiceImage(srv.category, srv.name)}
-                  actionLabel="Book Appointment"
-                  onPressAction={() => handleSelectService(srv)}
-                  onPressChat={() => router.push("/(patient)/(tabs)/messages" as never)}
-                  onPressInfo={() => handleSelectService(srv)}
+                  subtitle={[
+                    toLabel(srv.category || "clinical"),
+                    formatGbp(srv.pricePence || 0),
+                    srv.durationMinutes ? `${srv.durationMinutes} min` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                  left={<IconTile icon={CATEGORY_ICON[srv.category ?? ""] ?? "tooth"} />}
+                  chevron
+                  style={styles.row}
+                  accessibilityHint="Choose this treatment"
+                  onPress={() => handleSelectService(srv)}
                 />
               ))}
             </View>
           )}
         </QueryState>
+
+        <ListRow
+          title="Questions about a treatment?"
+          subtitle="Message the practice team"
+          left={<IconTile icon="message" />}
+          chevron
+          style={styles.row}
+          onPress={() => router.push("/(patient)/(tabs)/messages" as never)}
+        />
       </ScrollView>
     </View>
   );
 }
+
+const CATEGORY_ICON: Record<string, AppIconName> = {
+  checkup: "clipboard",
+  hygiene: "sparkle",
+  restorative: "activity",
+  cosmetic: "smile",
+  emergency: "alert",
+};
 
 const styles = StyleSheet.create({
   // Horizontal chip rows must not stretch to fill the column (web)
   hScroll: {
     flexGrow: 0,
   },
-  cardList: {
-    gap: spacing.md,
-  },
   categoryPill: {
     alignItems: "center",
     borderRadius: radius.full,
     flexDirection: "row",
     gap: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    minHeight: 36,
+    paddingHorizontal: spacing.md,
   },
   categoryPillActive: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accent,
   },
   categoryPillInactive: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.inkSubtle,
   },
   categoryScroll: {
     alignItems: "center",
     gap: spacing.xs,
-    paddingVertical: spacing.xxs,
   },
   categoryText: {
-    fontSize: 14,
+    color: colors.label,
     fontWeight: "600",
   },
   categoryTextActive: {
-    color: colors.alwaysWhite,
-  },
-  categoryTextInactive: {
-    color: colors.label,
+    color: colors.onAccent,
   },
   container: {
     backgroundColor: colors.background,
@@ -251,30 +230,12 @@ const styles = StyleSheet.create({
   content: {
     gap: spacing.md,
     paddingHorizontal: spacing.gutter,
-    paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
   },
-  headerRow: {
-    alignItems: "flex-start",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: spacing.xs,
+  row: {
+    paddingHorizontal: 0,
   },
-  headerTitle: {
-    color: colors.label,
-    fontSize: 30,
-    fontWeight: "700",
-    lineHeight: 38,
-  },
-  searchBarWrap: {
-    marginTop: -spacing.xs,
-  },
-  searchIconBtn: {
-    alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
+  topNav: {
+    paddingHorizontal: spacing.gutter,
   },
 });

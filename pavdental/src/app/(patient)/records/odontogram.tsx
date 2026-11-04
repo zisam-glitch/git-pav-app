@@ -4,11 +4,23 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { ThemedText, Card, Badge, AppIcon, Button } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { toothLabel } from "@/features/records/tooth-number";
 import { ToothRecord, ToothCondition } from "@/features/records/records-types";
 import { useOdontogram } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { toLabel } from "@/lib/text";
+import { isUpperArch } from "@/features/records/arch";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+// Only decay is a warning; a missing tooth is a neutral fact, not a success.
+const CONDITION_BADGE = {
+  healthy: "success",
+  decay: "danger",
+  filling: "info",
+  crown: "info",
+  missing: "default",
+  unrecorded: "default",
+} as const;
 
 const STANDARD_TEETH: ToothRecord[] = Array.from({ length: 32 }, (_, idx) => {
   const num = idx + 1;
@@ -72,16 +84,16 @@ function getToothAnatomy(toothNumber: number) {
   }
 
   const lastDigit = fdi % 10;
-  if (lastDigit === 1) type = "Central Incisor";
-  else if (lastDigit === 2) type = "Lateral Incisor";
-  else if (lastDigit === 3) type = "Canine";
-  else if (lastDigit === 4) type = "First Premolar";
-  else if (lastDigit === 5) type = "Second Premolar";
-  else if (lastDigit === 6) type = "First Molar";
-  else if (lastDigit === 7) type = "Second Molar";
-  else if (lastDigit === 8) type = "Third Molar";
+  if (lastDigit === 1) type = "central incisor";
+  else if (lastDigit === 2) type = "lateral incisor";
+  else if (lastDigit === 3) type = "canine";
+  else if (lastDigit === 4) type = "first premolar";
+  else if (lastDigit === 5) type = "second premolar";
+  else if (lastDigit === 6) type = "first molar";
+  else if (lastDigit === 7) type = "second molar";
+  else if (lastDigit === 8) type = "third molar";
 
-  const archName = isUpper ? "Maxillary Arch" : "Mandibular Arch";
+  const archName = isUpper ? "Maxillary arch" : "Mandibular arch";
   const side = quadrant.includes("R") ? "Right" : "Left";
 
   return {
@@ -148,8 +160,8 @@ export default function OdontogramScreen() {
   }, [params.toothModal, params.tooth]);
 
   // Filter 32 teeth into Maxillary (Upper) and Mandibular (Lower)
-  const upperTeeth = teeth.filter((t) => t.quadrant.includes("U"));
-  const lowerTeeth = teeth.filter((t) => t.quadrant.includes("L"));
+  const upperTeeth = teeth.filter((t) => isUpperArch(t.quadrant, t.toothNumber));
+  const lowerTeeth = teeth.filter((t) => !isUpperArch(t.quadrant, t.toothNumber));
 
   const selectedTooth = teeth.find((t) => t.toothNumber === selectedToothNumber) || teeth[0];
   const anatomy = getToothAnatomy(selectedTooth.toothNumber);
@@ -187,9 +199,8 @@ export default function OdontogramScreen() {
             Clean progress
           </ThemedText>
 
-          <View style={styles.hygieneIconCircle}>
-            <AppIcon name="sparkle" size={16} color={colors.info} />
-          </View>
+          {/* Keeps the title centred opposite the back button. */}
+          <View style={styles.headerSpacer} />
         </View>
 
         {/* 3D Visual Dental Arch Model with Interactive Risk Annotation */}
@@ -270,16 +281,16 @@ export default function OdontogramScreen() {
             >
               <View style={styles.selectedDetailLeft}>
                 <ThemedText variant="headline" style={styles.selectedToothTitle}>
-                  Tooth #{selectedTooth.toothNumber} · {anatomy.fullName}
+                  {toothLabel(selectedTooth.toothNumber)} · {anatomy.fullName}
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.selectedToothSub}>
-                  {anatomy.fdi} ({selectedTooth.quadrant}) · {anatomy.archName} · Tap to inspect
+                  {toLabel(selectedTooth.quadrant)} · {anatomy.archName} · Tap to inspect
                 </ThemedText>
               </View>
               <View style={styles.selectedDetailRight}>
                 <Badge
                   label={toLabel(selectedLabel)}
-                  variant={!selectedTooth.recorded ? "info" : selectedCondition === "decay" ? "danger" : "success"}
+                  variant={CONDITION_BADGE[selectedTooth.recorded ? selectedCondition : "unrecorded"]}
                 />
                 <AppIcon name="chevronRight" size={16} color={colors.secondaryLabel} />
               </View>
@@ -307,7 +318,7 @@ export default function OdontogramScreen() {
             <View style={styles.sheetHeader}>
               <View>
                 <ThemedText variant="headline" style={styles.sheetTitle}>
-                  Tooth #{selectedTooth.toothNumber} ({anatomy.fdi})
+                  {toothLabel(selectedTooth.toothNumber)}
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.sheetSub}>
                   {anatomy.fullName} · {anatomy.archName}
@@ -331,7 +342,7 @@ export default function OdontogramScreen() {
                 <View style={styles.diagnosticRow}>
                   <View style={styles.statusGroup}>
                     <ThemedText variant="caption" style={styles.cardSectionLabel}>
-                      RECORDED CONDITION
+                      Recorded condition
                     </ThemedText>
                     <ThemedText variant="headline" style={styles.statusHeading}>
                       {selectedLabel}
@@ -343,7 +354,7 @@ export default function OdontogramScreen() {
               {recordedSurfaces.length > 0 ? (
                 <View style={styles.surfaceSection}>
                   <ThemedText variant="caption" style={styles.sectionHeader}>
-                    SURFACES
+                    Surfaces
                   </ThemedText>
                   <View style={styles.surfaceGrid}>
                     {recordedSurfaces.map(([surface, condition]) => {
@@ -420,10 +431,10 @@ const styles = StyleSheet.create({
   backBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
-    height: 40,
+    borderRadius: radius.full,
+    height: 44,
     justifyContent: "center",
-    width: 40,
+    width: 44,
   },
   container: {
     backgroundColor: colors.background,
@@ -449,49 +460,45 @@ const styles = StyleSheet.create({
   },
   gumRidgeLower: {
     alignItems: "center",
-    backgroundColor: "#FCE7F3",
-    borderColor: "#F472B6",
+    backgroundColor: colors.dangerSubtle,
+    borderColor: colors.separator,
     borderRadius: radius.lg,
     borderWidth: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 4,
+    gap: 2,
     justifyContent: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 6,
-    width: "95%",
+    width: "100%",
   },
   gumRidgeUpper: {
     alignItems: "center",
-    backgroundColor: "#FCE7F3",
-    borderColor: "#F472B6",
+    backgroundColor: colors.dangerSubtle,
+    borderColor: colors.separator,
     borderRadius: radius.lg,
     borderWidth: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 4,
+    gap: 2,
     justifyContent: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 6,
-    width: "95%",
+    width: "100%",
   },
   header: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  headerSpacer: {
+    height: 44,
+    width: 44,
+  },
   headerTitle: {
     color: colors.label,
     fontSize: 17,
     fontWeight: "700",
-  },
-  hygieneIconCircle: {
-    alignItems: "center",
-    backgroundColor: colors.infoSubtle,
-    borderRadius: radius.full,
-    height: 38,
-    justifyContent: "center",
-    width: 38,
   },
   selectedDetail: {
     alignItems: "center",
@@ -523,7 +530,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     height: 24,
     justifyContent: "center",
-    width: 16,
+    width: 15,
   },
   toothDecay: {
     backgroundColor: colors.dangerSubtle,
@@ -543,7 +550,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheetContainer: {
-    backgroundColor: colors.systemBackground,
+    backgroundColor: colors.sheet,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     gap: spacing.sm,
@@ -578,7 +585,7 @@ const styles = StyleSheet.create({
   closeBtn: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
-    borderRadius: radius.lg,
+    borderRadius: radius.full,
     height: 40,
     justifyContent: "center",
     width: 40,
@@ -604,7 +611,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   statusHeading: {
     color: colors.label,
@@ -621,7 +627,6 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.5,
   },
   surfaceGrid: {
     gap: 6,

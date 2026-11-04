@@ -31,13 +31,13 @@ async function run() {
   );
   const seen: number[] = [];
   const unsubscribe = observer.subscribe((r) => {
-    if (r.data) seen.push((r.data as any).pointsBalance);
+    if (r.data) seen.push((r.data as { pointsBalance: number }).pointsBalance);
   });
   assert(seen[0] === 120, "Old balance is shown immediately as a placeholder");
 
   await new Promise((r) => setTimeout(r, 20));
   assert(calls === 1, "Mounting refetches even though the cached value is inside the default staleTime");
-  assert((client.getQueryData(REWARDS_QUERY_KEY) as any).pointsBalance === 450, "Fresh balance replaces the old one");
+  assert(client.getQueryData<{ pointsBalance: number }>(REWARDS_QUERY_KEY)?.pointsBalance === 450, "Fresh balance replaces the old one");
   assert(seen[seen.length - 1] === 450, "Observer ends on the fresh balance");
 
   // Returning to the foreground revalidates too.

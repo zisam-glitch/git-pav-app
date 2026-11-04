@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ThemedText, Card, Badge, Button, AppIcon, Input } from "@/components";
+import { ThemedText, Card, Badge, Button, AppIcon, Input, SegmentedControl } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { dailyJoinUrl, openVideoCall } from "@/features/video/open-call";
@@ -160,41 +160,16 @@ export default function ClinicianConsultRoomScreen() {
           </Pressable>
         </View>
 
-        {/* Tab Switcher for Clinician Multi-Tasking */}
-        <View style={styles.tabRow}>
-          <Pressable accessibilityRole="tab" accessibilityLabel="Video call" accessibilityState={{ selected: activeTab === "video" }}
-            onPress={() => setActiveTab("video")}
-            style={[styles.tabItem, activeTab === "video" && styles.tabItemActive]}
-          >
-            <ThemedText
-              variant="caption"
-              style={[styles.tabText, activeTab === "video" && styles.tabTextActive]}
-            >
-              Video Call
-            </ThemedText>
-          </Pressable>
-          <Pressable accessibilityRole="tab" accessibilityLabel="Triage and photos" accessibilityState={{ selected: activeTab === "triage" }}
-            onPress={() => setActiveTab("triage")}
-            style={[styles.tabItem, activeTab === "triage" && styles.tabItemActive]}
-          >
-            <ThemedText
-              variant="caption"
-              style={[styles.tabText, activeTab === "triage" && styles.tabTextActive]}
-            >
-              Triage & Photos
-            </ThemedText>
-          </Pressable>
-          <Pressable accessibilityRole="tab" accessibilityLabel="Tooth chart" accessibilityState={{ selected: activeTab === "chart" }}
-            onPress={() => setActiveTab("chart")}
-            style={[styles.tabItem, activeTab === "chart" && styles.tabItemActive]}
-          >
-            <ThemedText
-              variant="caption"
-              style={[styles.tabText, activeTab === "chart" && styles.tabTextActive]}
-            >
-              Tooth Chart
-            </ThemedText>
-          </Pressable>
+        <View style={styles.segmentWrap}>
+          <SegmentedControl
+            segments={[
+              { key: "video", label: "Video call" },
+              { key: "triage", label: "Triage & photos" },
+              { key: "chart", label: "Tooth chart" },
+            ]}
+            value={activeTab}
+            onChange={setActiveTab}
+          />
         </View>
 
         {/* Dynamic Center Area */}
@@ -372,7 +347,7 @@ export default function ClinicianConsultRoomScreen() {
             onPress={handleEndAndPrescribe}
           />
           <Button
-            title={showSummaryModal ? "Hide summary form" : "End call & record summary"}
+            title={showSummaryModal ? "Hide summary form" : "End call and record summary"}
             variant="secondary"
             size="md"
             onPress={() => setShowSummaryModal(!showSummaryModal)}
@@ -384,6 +359,10 @@ export default function ClinicianConsultRoomScreen() {
 }
 
 const styles = StyleSheet.create({
+  segmentWrap: {
+    paddingHorizontal: spacing.gutter,
+    paddingVertical: spacing.xs,
+  },
   callActions: {
     gap: spacing.xs,
     marginTop: spacing.md,
@@ -448,29 +427,6 @@ const styles = StyleSheet.create({
   },
   streamText: {
     color: colors.label,
-  },
-  tabItem: {
-    alignItems: "center",
-    flex: 1,
-    paddingVertical: spacing.sm,
-  },
-  tabItemActive: {
-    backgroundColor: colors.systemBackground,
-    borderBottomColor: colors.ink,
-    borderBottomWidth: 2,
-  },
-  tabRow: {
-    backgroundColor: colors.inkSubtle,
-    borderBottomColor: colors.separator,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: "row",
-  },
-  tabText: {
-    color: colors.secondaryLabel,
-    fontWeight: "600",
-  },
-  tabTextActive: {
-    color: colors.ink,
   },
   topBar: {
     alignItems: "center",

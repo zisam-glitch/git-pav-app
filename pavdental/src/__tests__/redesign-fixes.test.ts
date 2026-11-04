@@ -83,4 +83,15 @@ for (const f of ["app/(patient)/(tabs)/profile/dependants.tsx", "components/form
 assert(/numberOfLines=\{3\}/.test(src("components/toast.tsx")), "toast: a voucher message isn't cut off mid-sentence");
 assert(!/PAIN SEVERITY/.test(triage), "triage: no all-caps section label");
 
+// ─── Text on the accent green stays dark (white on #9FE870 is ~1.3:1) ────────
+assert(/slotTimeSelected: \{\s*color: colors\.onAccent/.test(src("app/(patient)/booking/slot-picker.tsx")), "slot picker: the chosen time is readable");
+assert(/condChipTextActive: \{\s*color: colors\.onAccent/.test(src("app/(clinician)/odontogram-editor.tsx")), "chart editor: the chosen condition is readable");
+assert(!/"Verified Patient"/.test(src("app/(clinician)/appointment-notes.tsx") + src("app/(clinician)/odontogram-editor.tsx") + src("app/(clinician)/treatment-plan-builder.tsx")), "clinician editors don't invent a patient name");
+
+// ─── Clinician editors opened without a patient ──────────────────────────────
+for (const [f, id] of [["app/(clinician)/appointment-notes.tsx", "appointmentId"], ["app/(clinician)/odontogram-editor.tsx", "patientId"]]) {
+  const code = src(f);
+  assert(new RegExp(`if \\(!${id}\\) \\{\\s*setLoading\\(false\\);`).test(code) && code.includes(`{!${id} ? (`), `${f}: no endless spinner when no patient is selected`);
+}
+
 console.log("\n🎉 ALL REDESIGN FIX TESTS PASSED (0 FAILURES)!\n");

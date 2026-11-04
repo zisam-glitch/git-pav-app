@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   slotTimeSelected: {
-    color: colors.alwaysWhite,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   topNav: {

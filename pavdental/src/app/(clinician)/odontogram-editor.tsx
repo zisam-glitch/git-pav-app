@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Badge, Button, IconButton, AppIcon } from "@/components";
+import { ThemedText, Card, Badge, Button, IconButton, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchOdontogram, updateOdontogram, fetchOdontogramHistory } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
@@ -42,7 +42,10 @@ export default function OdontogramEditorScreen() {
   // Initialize 32 teeth
   useEffect(() => {
     async function loadData() {
-      if (!patientId) return;
+      if (!patientId) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -158,9 +161,11 @@ export default function OdontogramEditorScreen() {
           <ThemedText variant="title" style={styles.title}>
             Odontogram editor
           </ThemedText>
-          <ThemedText variant="caption" style={styles.subtitle}>
-            Patient: {params.patientName || "Verified Patient"}
-          </ThemedText>
+          {params.patientName ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Patient: {params.patientName}
+            </ThemedText>
+          ) : null}
         </View>
 
         {successMessage ? (
@@ -180,7 +185,9 @@ export default function OdontogramEditorScreen() {
           </Card>
         ) : null}
 
-        {loading ? (
+        {!patientId ? (
+          <ErrorState message="Open the dental chart from a patient's appointment. There is no patient selected." />
+        ) : loading ? (
           <Card elevation="flat" style={styles.loadingCard}>
             <ActivityIndicator color={colors.ink} size="small" />
             <ThemedText variant="body" style={styles.loadingText}>
@@ -292,7 +299,7 @@ export default function OdontogramEditorScreen() {
             <Card style={styles.card}>
               <View style={styles.inspectorHeader}>
                 <ThemedText variant="headline" style={styles.sectionHeading}>
-                  Tooth #{selectedTooth} Details
+                  Tooth #{selectedTooth} details
                 </ThemedText>
                 <Badge
                   label={toLabel(teethState[selectedTooth]?.condition || "healthy")}
@@ -313,8 +320,9 @@ export default function OdontogramEditorScreen() {
                 {TOOTH_CONDITIONS.map((cond) => {
                   const isActive = teethState[selectedTooth]?.condition === cond;
                   return (
-                    <TouchableOpacity accessibilityRole="radio" accessibilityLabel={cond} accessibilityState={{ selected: isActive }}
+                    <TouchableOpacity accessibilityRole="radio" accessibilityLabel={toLabel(cond)} accessibilityState={{ selected: isActive }}
                       key={cond}
+                      hitSlop={{ top: 4, bottom: 4 }}
                       style={[styles.condChip, isActive && styles.condChipActive]}
                       onPress={() => handleConditionChange(cond)}
                     >
@@ -322,7 +330,7 @@ export default function OdontogramEditorScreen() {
                         variant="caption"
                         style={[styles.condChipText, isActive && styles.condChipTextActive]}
                       >
-                        {cond}
+                        {toLabel(cond)}
                       </ThemedText>
                     </TouchableOpacity>
                   );
@@ -374,11 +382,16 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     padding: spacing.md,
   },
+  // Outlined white pill so it shows on the grey card; accent when chosen.
   condChip: {
-    backgroundColor: colors.systemBackground,
-    borderRadius: radius.sm,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    alignItems: "center",
+    backgroundColor: colors.background,
+    borderColor: colors.inputUnderline,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    justifyContent: "center",
+    minHeight: 36,
+    paddingHorizontal: spacing.sm,
   },
   condChipActive: {
     backgroundColor: colors.accent,
@@ -388,7 +401,7 @@ const styles = StyleSheet.create({
     color: colors.label,
   },
   condChipTextActive: {
-    color: colors.systemBackground,
+    color: colors.onAccent,
     fontWeight: "700",
   },
   conditionRow: {

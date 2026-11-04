@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Button, EmptyState, IconButton } from "@/components";
+import { ThemedText, Card, Button, EmptyState, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { createTreatmentPlan } from "@/features/records/records-api";
 import { useServices } from "@/features/hooks/use-dental-api";
@@ -107,9 +107,11 @@ export default function TreatmentPlanBuilderScreen() {
           <ThemedText variant="title" style={styles.title}>
             Treatment plan builder
           </ThemedText>
-          <ThemedText variant="caption" style={styles.subtitle}>
-            Patient: {params.patientName || "Verified Patient"}
-          </ThemedText>
+          {params.patientName ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Patient: {params.patientName}
+            </ThemedText>
+          ) : null}
         </View>
 
         {success ? (
@@ -182,7 +184,8 @@ export default function TreatmentPlanBuilderScreen() {
                   services.map((svc) => (
                     <Button
                       key={svc.id}
-                      title={`+ ${svc.name} (£${(svc.pricePence / 100).toFixed(2).replace(/\.00$/, "")})`}
+                      icon={<AppIcon name="plus" size={16} color={colors.ink} />}
+                      title={`${svc.name} (£${(svc.pricePence / 100).toFixed(2).replace(/\.00$/, "")})`}
                       size="sm"
                       variant="secondary"
                       onPress={() => addItem({ code: svc.id, description: svc.name, costPence: svc.pricePence })}

@@ -79,7 +79,7 @@ export default function ClinicianScheduleScreen() {
         {/* Schedule Section */}
         <View style={styles.section}>
           <ThemedText variant="headline" style={styles.sectionTitle}>
-            Today's Consultations & Visits ({sessions.length} Patient{sessions.length !== 1 ? "s" : ""})
+            Today's consultations & visits ({sessions.length} patient{sessions.length !== 1 ? "s" : ""})
           </ThemedText>
 
           {isLoading ? (
@@ -115,8 +115,7 @@ export default function ClinicianScheduleScreen() {
                 return (
                   <Card
                     key={s.id}
-                   
-                    style={[styles.card, isReady && styles.cardReady]}
+                    style={styles.card}
                   >
                     <View style={styles.cardTop}>
                       <Badge
@@ -267,10 +266,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.systemBackground,
     gap: spacing.xs,
     padding: spacing.md,
-  },
-  cardReady: {
-    borderColor: colors.accent,
-    borderWidth: 2,
   },
   cardTop: {
     alignItems: "center",

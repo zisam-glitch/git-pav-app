@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedText, Card, Button, IconButton, AppIcon } from "@/components";
+import { ThemedText, Card, Button, IconButton, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
   fetchAppointmentNotes,
@@ -30,7 +30,10 @@ export default function AppointmentNotesScreen() {
 
   useEffect(() => {
     async function load() {
-      if (!appointmentId) return;
+      if (!appointmentId) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -117,9 +120,11 @@ export default function AppointmentNotesScreen() {
           <ThemedText variant="title" style={styles.title}>
             Clinical examination notes
           </ThemedText>
-          <ThemedText variant="caption" style={styles.subtitle}>
-            Patient: {params.patientName || "Verified Patient"}
-          </ThemedText>
+          {params.patientName ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Patient: {params.patientName}
+            </ThemedText>
+          ) : null}
         </View>
 
         {successMessage ? (
@@ -139,7 +144,9 @@ export default function AppointmentNotesScreen() {
           </Card>
         ) : null}
 
-        {loading ? (
+        {!appointmentId ? (
+          <ErrorState message="Open examination notes from a patient's appointment. There is no patient selected." />
+        ) : loading ? (
           <Card elevation="flat" style={styles.loadingCard}>
             <ActivityIndicator color={colors.ink} size="small" />
             <ThemedText variant="body" style={styles.loadingText}>
@@ -149,7 +156,7 @@ export default function AppointmentNotesScreen() {
         ) : (
           <Card style={styles.card}>
             <ThemedText variant="caption" style={styles.label}>
-              CLINICAL EXAMINATION FINDINGS & NOTES *
+              Clinical examination findings & notes *
             </ThemedText>
             <TextInput
               style={[styles.textInput, { minHeight: 120 }]}

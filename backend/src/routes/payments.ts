@@ -14,6 +14,7 @@ import { applyDepositVoucher, depositDuePence } from "../lib/rewards";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { releaseVanDeposit } from "../lib/van-payments";
 import { safeError } from "../lib/log-safety";
+import { logFailure } from "../lib/best-effort";
 
 const router = Router();
 const isMockStripe = env.isMockStripe;
@@ -436,7 +437,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
             paymentIntentId: intent.id,
             amountReceived: intent.amount_received,
           },
-        }).catch(() => {});
+        }).catch(logFailure("audit write stripe.payment_intent.succeeded.van"));
       }
     }
   }
@@ -493,7 +494,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           paymentIntentId: intent.id,
           applied: result.count === 1,
         },
-      }).catch(() => {});
+      }).catch(logFailure("audit write stripe.payment_intent.amount_capturable_updated.van"));
     }
   }
 
@@ -533,7 +534,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           paymentIntentId: intent.id,
           wasDraftHold: appt?.status === "draft_hold",
         },
-      }).catch(() => {});
+      }).catch(logFailure("audit write stripe.payment_intent.canceled.appointment"));
     }
 
     if (vanRequestId && vanRequestId !== "pending") {
@@ -570,7 +571,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           paymentIntentId: intent.id,
           requestWasPending: vanRequest?.status === "pending",
         },
-      }).catch(() => {});
+      }).catch(logFailure("audit write stripe.payment_intent.canceled.van"));
     }
   }
 
@@ -605,7 +606,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           paymentIntentId: intent.id,
           failureMessage: intent.last_payment_error?.message ?? null,
         },
-      }).catch(() => {});
+      }).catch(logFailure("audit write stripe.payment_intent.payment_failed.appointment"));
     }
 
     if (vanRequestId && vanRequestId !== "pending") {
@@ -636,7 +637,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           paymentIntentId: intent.id,
           failureMessage: intent.last_payment_error?.message ?? null,
         },
-      }).catch(() => {});
+      }).catch(logFailure("audit write stripe.payment_intent.payment_failed.van"));
     }
   }
 
@@ -672,7 +673,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
             amountRefunded: charge.amount_refunded,
             depositPaidPence: newDeposit,
           },
-        }).catch(() => {});
+        }).catch(logFailure("audit write stripe.charge.refunded"));
       }
 
       const vanRequest = await prisma.vanServiceRequest.findFirst({
@@ -701,7 +702,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
             paymentIntentId,
             amountRefunded: charge.amount_refunded,
           },
-        }).catch(() => {});
+        }).catch(logFailure("audit write stripe.charge.refunded.van"));
       }
     }
   }
@@ -758,7 +759,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         appointmentId: appt?.id ?? null,
         vanRequestId: vanRequest?.id ?? null,
       },
-    }).catch(() => {});
+    }).catch(logFailure("audit write stripe.charge.dispute.created"));
   }
 
   return res.status(200).json({ received: true });

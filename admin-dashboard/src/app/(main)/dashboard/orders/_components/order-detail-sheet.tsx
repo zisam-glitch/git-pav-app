@@ -238,7 +238,9 @@ export function OrderDetailSheet({ orderId, onClose }: OrderDetailSheetProps) {
                     <SelectItem value="delivered">Delivered</SelectItem>
                     <SelectItem value="cancelled">Cancelled</SelectItem>
                     <SelectItem value="payment_failed">Payment Failed</SelectItem>
-                    <SelectItem value="refunded">Refunded</SelectItem>
+                    <SelectItem value="refunded" disabled>
+                      Refunded
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -16,7 +16,8 @@ describe("dentist profiles for the website", () => {
   let patientToken = "";
   const clinicianIds: string[] = [];
   // 99xxxx is above any GDC number issued so far, so these can't match a real registrant.
-  const gdcPrefix = `99${crypto.randomInt(100, 1000)}`;
+  // The top of the range is left out because 999991 and 999992 belong to the seed's clinicians.
+  const gdcPrefix = `99${crypto.randomInt(100, 999)}`;
   const gdc = (n: number) => `${gdcPrefix}${n}`;
 
   async function makeUser(role: "patient" | "admin" | "clinician", label: string) {

@@ -22,6 +22,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Target status is required" }, { status: 400, headers: CORS_HEADERS });
     }
 
+    // Setting the status alone would say "refunded" with no money returned.
+    if (status === "refunded") {
+      return NextResponse.json(
+        { error: "Use the Refund action, so the customer is refunded through Stripe" },
+        { status: 400, headers: CORS_HEADERS },
+      );
+    }
+
     const result = await transitionOrderStatus({
       orderId: id,
       toStatus: status as OrderStatus,

@@ -4,9 +4,17 @@ import path from "node:path";
 // Types for generic query
 export type QueryFn = <T = Record<string, unknown>>(text: string, params?: unknown[]) => Promise<T[]>;
 
+/** Runs `fn` in one transaction: commits if it returns, rolls back if it throws. */
+export type TransactionFn = <T>(fn: (tx: QueryFn) => Promise<T>) => Promise<T>;
+
+interface DbClient {
+  query: QueryFn;
+  transaction: TransactionFn;
+}
+
 const globalForDb = globalThis as unknown as {
-  queryFn?: QueryFn;
-  initPromise?: Promise<QueryFn>;
+  dbClient?: DbClient;
+  initPromise?: Promise<DbClient>;
 };
 
 /** Run all numbered SQL migration files in order. Safe to re-run (uses IF NOT EXISTS). */
@@ -47,7 +55,7 @@ async function runMigrations(exec: (sql: string) => Promise<unknown>) {
   console.log("[db] All migrations applied.");
 }
 
-async function createQueryClient(): Promise<QueryFn> {
+async function createDbClient(): Promise<DbClient> {
   const databaseUrl = process.env.DATABASE_URL?.trim();
 
   // 1. If real DATABASE_URL is set, use node-postgres (pg.Pool)
@@ -63,7 +71,28 @@ async function createQueryClient(): Promise<QueryFn> {
     // Run migrations against real DB on startup
     await runMigrations((sql) => pool.query(sql));
 
-    return queryFn;
+    const transaction: TransactionFn = async (fn) => {
+      const connection = await pool.connect();
+      const tx: QueryFn = async <T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<T[]> => {
+        const res = await connection.query(text, params);
+        return res.rows as T[];
+      };
+      try {
+        await connection.query("BEGIN");
+        const result = await fn(tx);
+        await connection.query("COMMIT");
+        return result;
+      } catch (error) {
+        await connection.query("ROLLBACK").catch((rollbackError: unknown) => {
+          console.error("[db] Rollback failed:", (rollbackError as Error).message);
+        });
+        throw error;
+      } finally {
+        connection.release();
+      }
+    };
+
+    return { query: queryFn, transaction };
   }
 
   // 2. Otherwise in local dev/preview, use embedded PGlite
@@ -75,19 +104,36 @@ async function createQueryClient(): Promise<QueryFn> {
   // Run ALL migrations (idempotent – all use CREATE TABLE IF NOT EXISTS)
   await runMigrations((sql) => pg.exec(sql as string));
 
-  return async <T = Record<string, unknown>>(text: string, params: unknown[] = []): Promise<T[]> => {
-    const res = await pg.query<T>(text, params);
-    return res.rows;
+  return {
+    query: async <T = Record<string, unknown>>(text: string, params: unknown[] = []): Promise<T[]> => {
+      const res = await pg.query<T>(text, params);
+      return res.rows;
+    },
+    transaction: async (fn) =>
+      (await pg.transaction((pgTx) =>
+        fn(async <T = Record<string, unknown>>(text: string, params: unknown[] = []): Promise<T[]> => {
+          const res = await pgTx.query<T>(text, params);
+          return res.rows;
+        }),
+      )) as Awaited<ReturnType<typeof fn>>,
   };
 }
 
+async function getDbClient(): Promise<DbClient> {
+  if (globalForDb.dbClient) return globalForDb.dbClient;
+  globalForDb.initPromise ??= createDbClient().then((client) => {
+    globalForDb.dbClient = client;
+    return client;
+  });
+  return globalForDb.initPromise;
+}
+
 export async function query<T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<T[]> {
-  if (!globalForDb.queryFn) {
-    globalForDb.initPromise ??= createQueryClient().then((fn) => {
-      globalForDb.queryFn = fn;
-      return fn;
-    });
-    await globalForDb.initPromise;
-  }
-  return globalForDb.queryFn!<T>(text, params);
+  const client = await getDbClient();
+  return client.query<T>(text, params);
+}
+
+export async function withTransaction<T>(fn: (tx: QueryFn) => Promise<T>): Promise<T> {
+  const client = await getDbClient();
+  return client.transaction(fn);
 }

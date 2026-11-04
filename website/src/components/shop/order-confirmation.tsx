@@ -5,6 +5,11 @@ import { useCartStore } from "@/lib/cart-store";
 import { CheckCircle2, Package, ArrowRight, Truck, MapPin, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const PAID_STATUSES = ["paid", "fulfilling", "shipped", "delivered"];
+const AWAITING_CONFIRMATION = ["pending", "payment_processing"];
+const STATUS_CHECK_MS = 3000;
+const MAX_STATUS_CHECKS = 20;
+
 export function OrderConfirmation({ orderId }: { orderId: string }) {
   const { clearCart } = useCartStore();
 
@@ -12,14 +17,21 @@ export function OrderConfirmation({ orderId }: { orderId: string }) {
     queryKey: ["order", orderId],
     queryFn: () => api.checkout.getOrder(orderId),
     enabled: !!orderId,
+    // Stripe's redirect can arrive before its webhook, so keep checking for a little while.
+    refetchInterval: (query) =>
+      AWAITING_CONFIRMATION.includes(query.state.data?.status) && query.state.dataUpdateCount < MAX_STATUS_CHECKS
+        ? STATUS_CHECK_MS
+        : false,
   });
 
-  // Clear cart when order confirmed
+  const isPaid = PAID_STATUSES.includes(order?.status);
+
+  // Clear cart only once payment is confirmed: an unpaid customer may want to try again.
   useEffect(() => {
-    if (order?.id) {
+    if (isPaid) {
       clearCart();
     }
-  }, [order?.id]);
+  }, [isPaid]);
 
   if (isLoading) {
     return (
@@ -37,6 +49,28 @@ export function OrderConfirmation({ orderId }: { orderId: string }) {
         <p className="mt-2 text-sm text-muted">We could not find the specified order record.</p>
         <Button asChild className="mt-6 accent-gradient text-white">
           <a href="/shop">Return to Shop</a>
+        </Button>
+      </div>
+    );
+  }
+
+  if (!isPaid && order.status !== "refunded") {
+    const waiting = AWAITING_CONFIRMATION.includes(order.status);
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+        {waiting && (
+          <div className="inline-block size-8 border-2 border-[#844d1e] border-t-transparent rounded-full animate-spin" />
+        )}
+        <h1 className="mt-4 font-display text-2xl font-bold text-fg">
+          {waiting ? "Confirming your payment" : "This order hasn't been paid"}
+        </h1>
+        <p className="mt-2 text-sm text-muted max-w-md">
+          {waiting
+            ? "This usually takes a few seconds. If you closed the payment page without paying, you haven't been charged."
+            : "You haven't been charged for this order. Your bag is still saved if you'd like to try again."}
+        </p>
+        <Button asChild className="mt-6 accent-gradient text-white">
+          <a href={waiting ? "/shop" : "/checkout"}>{waiting ? "Return to Shop" : "Return to Checkout"}</a>
         </Button>
       </div>
     );
@@ -65,7 +99,7 @@ export function OrderConfirmation({ orderId }: { orderId: string }) {
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg">Thank You for Your Order!</h1>
           <p className="mt-2 text-sm text-muted">
-            We've received your order and sent a confirmation receipt to{" "}
+            We've received your payment for this order, placed with{" "}
             <span className="font-semibold text-fg">{order.customer_email}</span>.
           </p>
           <div className="mt-4 inline-flex items-center gap-2 bg-[#faf6f0] px-4 py-2 rounded-full border border-[#e2d4c0] text-xs">

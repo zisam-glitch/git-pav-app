@@ -349,9 +349,6 @@ export function Header() {
         {/* Actions */}
         <div className="flex items-center gap-2">
           
-          <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
-            <a href="/sign-in">Sign In</a>
-          </Button>
           <Button asChild size="sm">
             <a href="/booking">Book Now</a>
           </Button>
@@ -422,11 +419,6 @@ export function Header() {
           ))}
 
           <div className="mt-3 flex flex-col gap-2 border-t border-border/60 pt-3">
-            <Button asChild variant="outline" className="w-full">
-              <a href="/sign-in" onClick={() => setMobileOpen(false)}>
-                Sign In
-              </a>
-            </Button>
             <Button asChild className="w-full">
               <a href="/booking" onClick={() => setMobileOpen(false)}>
                 Book Now

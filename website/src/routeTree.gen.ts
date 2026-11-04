@@ -33,8 +33,6 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RootCanalRouteImport } from './routes/root-canal'
 import { Route as ShopRouteImport } from './routes/shop'
-import { Route as SignInRouteImport } from './routes/sign-in'
-import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ToothExtractionRouteImport } from './routes/tooth-extraction'
@@ -167,16 +165,6 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignInRoute = SignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignUpRoute = SignUpRouteImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -258,8 +246,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
-  '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
   '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
   '/tooth-extraction': typeof ToothExtractionRoute
@@ -297,8 +283,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
-  '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
   '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
   '/tooth-extraction': typeof ToothExtractionRoute
@@ -337,8 +321,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
-  '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
   '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
   '/tooth-extraction': typeof ToothExtractionRoute
@@ -378,8 +360,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/root-canal'
     | '/shop'
-    | '/sign-in'
-    | '/sign-up'
     | '/team'
     | '/terms'
     | '/tooth-extraction'
@@ -417,8 +397,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/root-canal'
     | '/shop'
-    | '/sign-in'
-    | '/sign-up'
     | '/team'
     | '/terms'
     | '/tooth-extraction'
@@ -456,8 +434,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/root-canal'
     | '/shop'
-    | '/sign-in'
-    | '/sign-up'
     | '/team'
     | '/terms'
     | '/tooth-extraction'
@@ -496,8 +472,6 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RootCanalRoute: typeof RootCanalRoute
   ShopRoute: typeof ShopRoute
-  SignInRoute: typeof SignInRoute
-  SignUpRoute: typeof SignUpRoute
   TeamRoute: typeof TeamRoute
   TermsRoute: typeof TermsRoute
   ToothExtractionRoute: typeof ToothExtractionRoute
@@ -681,20 +655,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sign-in': {
-      id: '/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof SignInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-up': {
-      id: '/sign-up'
-      path: '/sign-up'
-      fullPath: '/sign-up'
-      preLoaderRoute: typeof SignUpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -800,8 +760,6 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RootCanalRoute: RootCanalRoute,
   ShopRoute: ShopRoute,
-  SignInRoute: SignInRoute,
-  SignUpRoute: SignUpRoute,
   TeamRoute: TeamRoute,
   TermsRoute: TermsRoute,
   ToothExtractionRoute: ToothExtractionRoute,

@@ -32,7 +32,7 @@ async function pendingOrder({ price = "50.00", stock = 10, quantity = 2, discoun
     customerEmail: "shopper@example.test",
     discountCode,
   });
-  const placed = await db.transaction((tx) => placeOrder(tx, input, null));
+  const placed = await db.transaction((tx) => placeOrder(tx, input));
   return { ...placed, variantId, productId };
 }
 

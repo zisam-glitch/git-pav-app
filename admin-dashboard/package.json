@@ -39,7 +39,6 @@
     "d3-geo": "^3.1.1",
     "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
-    "firebase-admin": "^14.4.0",
     "geist": "^1.7.2",
     "input-otp": "^1.5.0",
     "jose": "^6.2.15",

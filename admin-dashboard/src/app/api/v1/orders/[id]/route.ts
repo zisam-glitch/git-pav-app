@@ -1,20 +1,33 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { rateLimit } from "@/lib/rate-limit";
+import { canViewOrder } from "@/lib/shop/order-access";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": process.env.WEBSITE_ORIGIN ?? "http://localhost:8080",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  // Personal details: never kept by a browser or CDN.
+  "Cache-Control": "no-store",
 };
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> | { id: string } }) {
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// The same reply for "doesn't exist" and "not yours", so ids can't be probed.
+const notFound = () => NextResponse.json({ error: "Order not found" }, { status: 404, headers: CORS_HEADERS });
+
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> | { id: string } }) {
+  const limited = await rateLimit(request, "orderView");
+  if (limited) return limited;
+
   try {
     const { id } = await Promise.resolve(params);
+    if (!UUID.test(id)) return notFound();
 
     const [order] = await query<any>(
       `
-      SELECT 
+      SELECT
         o.id,
         o.created_at,
         o.status,
@@ -55,14 +68,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     `,
       [id],
     );
+    if (!order) return notFound();
 
-    if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404, headers: CORS_HEADERS });
-    }
+    if (!(await canViewOrder(id, new URL(request.url).searchParams.get("access")))) return notFound();
 
     return NextResponse.json(order, { headers: CORS_HEADERS });
   } catch (error) {
-    console.error("[GET /api/v1/orders/[id]]", error);
+    console.error("[GET /api/v1/orders/[id]]", error instanceof Error ? error.name : "unknown error");
     return NextResponse.json({ error: "Failed to fetch order" }, { status: 500, headers: CORS_HEADERS });
   }
 }

@@ -40,7 +40,6 @@ interface CartState {
   removeDiscount: () => void;
   setShippingMethodId: (id: string) => void;
   syncCart: () => Promise<void>;
-  handleAuthChange: (isAuthenticated: boolean) => void;
 
   // Computed values
   getSubtotal: () => number;
@@ -52,14 +51,12 @@ function getOrGenerateSessionId(): string {
   if (typeof window === "undefined") return "guest-ssr";
   let sid = localStorage.getItem("pav_cart_session_id");
   if (!sid) {
-    // The cart API finds a guest cart by this id alone, so it must be unguessable.
+    // The only key to this bag, so it must be unguessable.
     sid = `guest_${crypto.randomUUID()}`;
     localStorage.setItem("pav_cart_session_id", sid);
   }
   return sid;
 }
-
-const hasUserToken = () => typeof window !== "undefined" && !!localStorage.getItem("user_token");
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -264,13 +261,6 @@ export const useCartStore = create<CartState>()(
         return Math.max(0, Math.round((subtotal - discount + shippingCost) * 100) / 100);
       },
 
-      handleAuthChange: (isAuthenticated: boolean) => {
-        const state = get();
-        if (isAuthenticated && state.sessionId?.startsWith("guest_")) {
-          // User just logged in, sync cart
-          state.syncCart();
-        }
-      },
     }),
     {
       name: "pavdental_cart_storage",

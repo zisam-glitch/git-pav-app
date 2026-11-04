@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { verifyShopperToken } from "@/lib/auth/jwt";
 import { withTransaction } from "@/lib/db/client";
+import { rateLimit } from "@/lib/rate-limit";
 import { abandonOrder, CheckoutRejected, parseCheckoutBody, placeOrder } from "@/lib/shop/checkout-order";
-import { stripeLineItems } from "@/lib/shop/pricing";
+import { checkoutSessionParams } from "@/lib/shop/checkout-session";
+import { createOrderAccessToken } from "@/lib/shop/order-access";
 import { getStripe } from "@/lib/shop/stripe";
 
 const CORS_HEADERS = {
@@ -12,30 +13,10 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-// Stripe's minimum is 30 minutes. An unpaid order holds its discount use until then.
-const CHECKOUT_EXPIRES_SECONDS = 60 * 60;
-
-async function getUserIdFromRequest(req: Request): Promise<string | null> {
-  const authHeader = req.headers.get("authorization") ?? "";
-  let rawToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
-
-  if (!rawToken) {
-    const cookieHeader = req.headers.get("cookie") ?? "";
-    const match = cookieHeader.match(/(?:^|;\s*)user_token=([^;]+)/);
-    if (match) rawToken = decodeURIComponent(match[1]);
-  }
-
-  if (!rawToken) return null;
-
-  try {
-    const payload = await verifyShopperToken(rawToken);
-    return payload?.userId ? String(payload.userId) : null;
-  } catch {
-    return null;
-  }
-}
-
 export async function POST(request: Request) {
+  const limited = await rateLimit(request, "checkout");
+  if (limited) return limited;
+
   try {
     const stripe = getStripe();
     if (!stripe) {
@@ -46,25 +27,21 @@ export async function POST(request: Request) {
     }
 
     const input = parseCheckoutBody(await request.json());
-    const userId = await getUserIdFromRequest(request);
-    const placed = await withTransaction((tx) => placeOrder(tx, input, userId));
+    const placed = await withTransaction((tx) => placeOrder(tx, input));
 
     const storefrontUrl = process.env.WEBSITE_ORIGIN ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:8080";
-    const metadata = { orderId: placed.orderId, userId: userId || "", cartSessionId: input.cartSessionId };
 
     try {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        line_items: stripeLineItems(placed.lines, placed.totals, placed.shippingName),
-        mode: "payment",
-        customer_email: input.customerEmail,
-        success_url: `${storefrontUrl}/order/${placed.orderId}?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${storefrontUrl}/checkout`,
-        expires_at: Math.floor(Date.now() / 1000) + CHECKOUT_EXPIRES_SECONDS,
-        metadata,
-        // A failed card is reported on the payment intent, not the session.
-        ...(placed.totals.totalPence > 0 ? { payment_intent_data: { metadata } } : {}),
-      });
+      const orderLink = await createOrderAccessToken(placed.orderId);
+      const session = await stripe.checkout.sessions.create(
+        checkoutSessionParams({
+          placed,
+          customerEmail: input.customerEmail,
+          cartSessionId: input.cartSessionId,
+          storefrontUrl,
+          orderLink,
+        }),
+      );
       if (!session.url) throw new Error("Stripe returned no checkout URL");
 
       await withTransaction((tx) =>

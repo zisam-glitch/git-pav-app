@@ -68,7 +68,7 @@ The owner's answers to the questions in section 3 of `06-completion-plan.md`, se
 | D-08 | Treatment prices | Owner sets them in the dashboard's services list | Default (accepted) |
 | D-09 | Domain | pavdental.com, API at api.pavdental.com | Default (accepted) |
 | D-10 | Production hosting budget (about £60–120 a month) | Yes | Owner |
-| D-11 | Website shop accounts | Guest checkout plus optional email login; remove Google sign-in | Default (accepted) |
+| D-11 | Website shop accounts | Guest checkout only; shopper sign-in and Google sign-in removed. Customers return to an order through its private link (owner, Nov 2026, replacing "guest checkout plus optional email login") | Done in the dashboard and website. The `users` table and its rows are kept for now: dropping them is a destructive migration for the owner to approve |
 | D-12 | Website hosting | Vercel | Default (accepted) |
 | D-13 | NHS work | None: private only; remove NHS and DSPT claims | Default (accepted) |
 | D-14 | Block screenshots of medical records | Yes. Screenshots and screen recording are blocked on the patient's records and medical history and on every clinician screen; iOS blurs them in the app switcher, Android hides them in recent apps. Native builds only. | Built (app) |
@@ -80,6 +80,8 @@ The owner's answers to the questions in section 3 of `06-completion-plan.md`, se
 | D-20 | Drop `waitlist_entries` | Yes, after a backup | Default (accepted) |
 | D-21 | Van operator location | In the background during a shift. Built: after "While using the app", operators are asked for "Allow all the time"; if they allow it, the van keeps sending its position every 20 seconds while the app is in the background, with Android's ongoing "Shift in progress" notification and iOS's blue location indicator. It stops at the end of the shift or on sign-out. If they decline, tracking works only while the app is open. At submission: Google Play's background location declaration (with a short video) and an App Review note explaining it. | Built (app) |
 | D-22 | Login code for van operators | Yes | Default (accepted) |
+| D-23 | Shop VAT | Prices include VAT at 20%; no products are exempt (owner, 5 Nov 2026) | Done in `admin-dashboard/src/lib/shop/pricing.ts` |
+| D-24 | Privacy notice for guest orders | Owner confirmed on 5 Nov 2026 that the notice has been reviewed. Reviewer and date of review to be added here for AUD-02 | `website/src/routes/privacy.tsx` unchanged in this work; it still mentions account closure, which applies to app accounts |
 
 ### Accounts and data the owner will supply
 

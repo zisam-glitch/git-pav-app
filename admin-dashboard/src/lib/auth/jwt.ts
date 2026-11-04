@@ -34,18 +34,10 @@ export async function verifyToken(token: string): Promise<Record<string, any> | 
  * nothing about who holds it. Each signer sets a purpose; check it.
  */
 export const STAFF_PURPOSE = "staff";
-export const SHOPPER_PURPOSE = "auth";
 
 /** Claims of a dashboard staff session, or null for any other token. */
 export async function verifyStaffToken(token: string): Promise<Record<string, any> | null> {
   const payload = await verifyToken(token).catch(() => null);
   if (!payload || payload.purpose !== STAFF_PURPOSE || payload.role !== "admin") return null;
-  return payload;
-}
-
-/** Claims of a website shopper session, or null for any other token. */
-export async function verifyShopperToken(token: string): Promise<Record<string, any> | null> {
-  const payload = await verifyToken(token).catch(() => null);
-  if (!payload || payload.purpose !== SHOPPER_PURPOSE || !payload.userId) return null;
   return payload;
 }

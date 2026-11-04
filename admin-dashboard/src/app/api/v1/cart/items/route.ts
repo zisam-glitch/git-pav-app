@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { verifyShopperToken } from "@/lib/auth/jwt";
 import { query } from "@/lib/db/client";
+import { cartItemBelongsToSession } from "@/lib/shop/cart-access";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": process.env.WEBSITE_ORIGIN ?? "http://localhost:8080",
@@ -9,67 +9,28 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-async function getUserIdFromRequest(req: Request): Promise<string | null> {
-  const authHeader = req.headers.get("authorization") ?? "";
-  let rawToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+async function getOrCreateCart(sessionId: string): Promise<string> {
+  const existing = await query<any>("SELECT id FROM carts WHERE session_id = $1", [sessionId]);
+  if (existing.length > 0) return existing[0].id;
 
-  if (!rawToken) {
-    const cookieHeader = req.headers.get("cookie") ?? "";
-    const match = cookieHeader.match(/(?:^|;\s*)user_token=([^;]+)/);
-    if (match) rawToken = decodeURIComponent(match[1]);
-  }
-
-  if (!rawToken) return null;
-
-  try {
-    const payload = await verifyShopperToken(rawToken);
-    return payload?.userId ? String(payload.userId) : null;
-  } catch {
-    return null;
-  }
-}
-
-async function getOrCreateCart(userId: string | null, sessionId: string | null): Promise<string> {
-  if (userId) {
-    const existing = await query<any>("SELECT id FROM carts WHERE user_id = $1", [userId]);
-    if (existing.length > 0) return existing[0].id;
-
-    const inserted = await query<any>(
-      "INSERT INTO carts (user_id) VALUES ($1) ON CONFLICT (user_id) DO UPDATE SET updated_at = now() RETURNING id",
-      [userId],
-    );
-    return inserted[0].id;
-  }
-
-  if (sessionId) {
-    const existing = await query<any>("SELECT id FROM carts WHERE session_id = $1", [sessionId]);
-    if (existing.length > 0) return existing[0].id;
-
-    const inserted = await query<any>(
-      "INSERT INTO carts (session_id) VALUES ($1) ON CONFLICT (session_id) DO UPDATE SET updated_at = now() RETURNING id",
-      [sessionId],
-    );
-    return inserted[0].id;
-  }
-
-  throw new Error("Either userId or sessionId must be provided");
+  const inserted = await query<any>(
+    "INSERT INTO carts (session_id) VALUES ($1) ON CONFLICT (session_id) DO UPDATE SET updated_at = now() RETURNING id",
+    [sessionId],
+  );
+  return inserted[0].id;
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { productId, variantId, quantity = 1, sessionId } = body;
-    const userId = await getUserIdFromRequest(request);
 
     if (!productId) {
       return NextResponse.json({ error: "productId is required" }, { status: 400, headers: CORS_HEADERS });
     }
 
-    if (!userId && !sessionId) {
-      return NextResponse.json(
-        { error: "sessionId or user authentication required" },
-        { status: 400, headers: CORS_HEADERS },
-      );
+    if (!sessionId) {
+      return NextResponse.json({ error: "sessionId is required" }, { status: 400, headers: CORS_HEADERS });
     }
 
     // Check product existence
@@ -97,7 +58,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const cartId = await getOrCreateCart(userId, sessionId);
+    const cartId = await getOrCreateCart(sessionId);
 
     // Check if item already in cart
     let existingItem: any[] = [];
@@ -137,10 +98,14 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
-    const { itemId, quantity } = body;
+    const { itemId, quantity, sessionId } = body;
 
     if (!itemId || quantity === undefined) {
       return NextResponse.json({ error: "itemId and quantity are required" }, { status: 400, headers: CORS_HEADERS });
+    }
+
+    if (!(await cartItemBelongsToSession(query, itemId, sessionId))) {
+      return NextResponse.json({ error: "Item not found" }, { status: 404, headers: CORS_HEADERS });
     }
 
     if (quantity <= 0) {
@@ -182,10 +147,14 @@ export async function PATCH(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const body = await request.json();
-    const { itemId } = body;
+    const { itemId, sessionId } = body;
 
     if (!itemId) {
       return NextResponse.json({ error: "itemId is required" }, { status: 400, headers: CORS_HEADERS });
+    }
+
+    if (!(await cartItemBelongsToSession(query, itemId, sessionId))) {
+      return NextResponse.json({ error: "Item not found" }, { status: 404, headers: CORS_HEADERS });
     }
 
     await query("DELETE FROM cart_items WHERE id = $1", [itemId]);

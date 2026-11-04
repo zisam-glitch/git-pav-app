@@ -10,7 +10,7 @@ deploy. There is no root package and no shared install.
 |---|---|---|---|
 | `backend/` | The app's API and the only owner of patient and clinical data | Express, Prisma, Postgres (PostGIS), Redis, Stripe, Daily | `npx tsc --noEmit`, `npx jest`, `npm test` (e2e). See `.github/workflows/ci.yml` for the env it needs |
 | `pavdental/` | The patient, clinician and van mobile app | Expo (React Native), Expo Router | `npx tsc --noEmit`, `npm run test:all` |
-| `website/` | The public marketing site and shop (www) | TanStack Start, Vite, better-auth | `npm run typecheck`, `npm test` |
+| `website/` | The public marketing site and shop (www) | TanStack Start, Vite | `npm run typecheck`, `npm test` |
 | `admin-dashboard/` | The staff back office for the website **and** the app | Next.js 16, shadcn/ui | `npm test`, `npm run build` |
 
 Other top-level files: `docs/completion/` (plan, decisions log, migration

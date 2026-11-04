@@ -9,7 +9,7 @@ import { getCorsHeaders } from "@/lib/cors";
  *
  * - Handles CORS preflight (OPTIONS) for all /api/* routes.
  * - Allows all API routes (`/api/*`) – they already enforce auth via
- *   `requireAdmin` / `requireUser`.
+ *   `requireAdmin`, or are public.
  * - Allows the authentication UI (`/auth/*`).
  * - For any other UI route (e.g. `/dashboard/*`, `/`), checks the
  *   `admin_token` cookie holds a staff session. If not, redirects to the

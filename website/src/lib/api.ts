@@ -4,23 +4,26 @@ export const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
   "http://localhost:3001";
 
+// The shop no longer has accounts: clear a session left by an earlier visit.
+if (typeof window !== "undefined") {
+  try {
+    localStorage.removeItem("user_token");
+  } catch {
+    // Storage can be blocked; nothing reads this value any more.
+  }
+}
+
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
-  const token = typeof window !== "undefined" ? localStorage.getItem("user_token") : null;
-  
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options?.headers as Record<string, string> || {}),
   };
   
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  
   const res = await fetch(url, {
     ...options,
     headers,
-    credentials: "include", // Include cookies for cookie-based auth
   });
 
   if (!res.ok) {
@@ -242,11 +245,6 @@ export const api = {
         method: "DELETE",
         body: JSON.stringify({ sessionId }),
       }),
-    merge: (sessionId: string) =>
-      apiFetch<any>("/api/v1/cart/merge", {
-        method: "POST",
-        body: JSON.stringify({ sessionId }),
-      }),
   },
   shipping: {
     list: () => apiFetch<any[]>("/api/v1/shipping?is_active=true"),
@@ -263,7 +261,8 @@ export const api = {
         method: "POST",
         body: JSON.stringify(data),
       }),
-    getOrder: (id: string) => apiFetch<any>(`/api/v1/orders/${id}`),
+    getOrder: (id: string, access?: string) =>
+      apiFetch<any>(`/api/v1/orders/${id}${access ? `?access=${encodeURIComponent(access)}` : ""}`),
   },
   dentists: {
     list: () => apiFetch<PublicDentist[]>("/api/v1/dentists"),

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { rateLimit } from "@/lib/rate-limit";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": process.env.WEBSITE_ORIGIN ?? "http://localhost:8080",
@@ -19,6 +20,9 @@ interface VacancyBody {
 }
 
 export async function POST(request: Request) {
+  const limited = await rateLimit(request, "publicForm");
+  if (limited) return limited;
+
   try {
     const body = (await request.json()) as Partial<VacancyBody>;
 

@@ -1,8 +1,1 @@
-[
-  {
-    "advisory": "GHSA-m9gg-hp2v-232j",
-    "package": "@grpc/grpc-js (via firebase/firestore)",
-    "reason": "The website imports only firebase/app and firebase/auth in the browser. Firestore and its gRPC transport are never loaded. Clears when firebase moves to grpc-js 1.13.6 or later.",
-    "reviewBy": "2027-01-31"
-  }
-]
+[]

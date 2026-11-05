@@ -1133,4 +1133,56 @@ router.get("/van-shifts", requireAuth, requireRole("admin"), validateQuery(admin
   });
 });
 
+// ─── GET /api/admin/attention ─────────────────────────────────────────────────
+// What needs a person today, as counts only: today's visits (UK day), threads
+// waiting for staff, erasure requests (and which are past their month), failed
+// card payments in the last week, van deposits that couldn't be released, and
+// vans out now. No names, amounts or message text: each count links to the
+// screen that has the detail.
+const OPEN_VISIT_STATUSES: AppointmentStatus[] = ["confirmed", "in_progress"];
+const TODAY_VISIT_STATUSES: AppointmentStatus[] = ["confirmed", "in_progress", "completed", "no_show"];
+
+router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthRequest, res: Response) => {
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const ukToday = now.toLocaleDateString("en-CA", { timeZone: "Europe/London" });
+  const dayStart = londonTimeToUtc(ukToday, 0);
+  const dayEnd = londonTimeToUtc(ukToday, 1440);
+  const today = { startTimeUtc: { gte: dayStart, lt: dayEnd } };
+
+  const [
+    visitsToday,
+    visitsLeftToday,
+    unreadThreads,
+    erasureOpen,
+    erasureOverdue,
+    cardFailures,
+    depositReleaseFailures,
+    vansOut,
+  ] = await Promise.all([
+    prisma.appointment.count({ where: { ...today, status: { in: TODAY_VISIT_STATUSES } } }),
+    prisma.appointment.count({ where: { ...today, status: { in: OPEN_VISIT_STATUSES } } }),
+    prisma.messageThread.count({ where: { staffUnread: true } }),
+    prisma.erasureRequest.count({ where: { status: "pending" } }),
+    prisma.erasureRequest.count({ where: { status: "pending", dueAt: { lt: now } } }),
+    prisma.auditLog.count({
+      where: { action: { startsWith: "stripe.payment_intent.payment_failed" }, timestampUtc: { gte: weekAgo } },
+    }),
+    prisma.vanServiceRequest.count({ where: { depositReleaseStatus: "failed" } }),
+    prisma.vanShift.count({ where: { endedAt: null, status: { in: ["online", "paused"] } } }),
+  ]);
+
+  return res.json({
+    visitsToday,
+    visitsLeftToday,
+    unreadThreads,
+    erasureOpen,
+    erasureOverdue,
+    cardFailuresLastWeek: cardFailures,
+    depositReleaseFailures,
+    vansOut,
+    asOf: now.toISOString(),
+  });
+});
+
 export default router;

@@ -4,6 +4,7 @@ import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
 import { decryptField, encryptClientAccessDetails, encryptField, isEncryptedEnvelope } from "../lib/encryption";
 import { clientTriage } from "../lib/triage-escalation";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-48: who may read a video consultation, replayed idempotency keys, and
 // client data that pretends to be already encrypted or server-written.
@@ -48,7 +49,7 @@ describe("CS-48: video consultation access", () => {
       data: {
         userId: user.id,
         fullName: `Dr Synthetic ${label}`,
-        gdcNumber: String(830000 + crypto.randomInt(1, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

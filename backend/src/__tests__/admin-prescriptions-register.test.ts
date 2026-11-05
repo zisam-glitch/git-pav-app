@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { signAccessToken } from "../lib/jwt";
 import { prisma } from "../lib/prisma";
 import app from "../server";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // DB-05: the staff prescriptions register says a prescription exists, who
 // issued it and when, whether it was signed and whether it was sent. It must
@@ -44,10 +45,10 @@ describe("admin prescriptions register", () => {
     clinicianToken = signAccessToken({ sub: clinicianUser.id, role: "clinician", sessionId: crypto.randomUUID() });
 
     const clinician = await prisma.clinicianProfile.create({
-      data: { userId: clinicianUser.id, fullName: `Synthetic Prescriber ${tag}`, gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId: clinicianUser.id, fullName: `Synthetic Prescriber ${tag}`, gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     const other = await prisma.clinicianProfile.create({
-      data: { userId: otherUser.id, fullName: `Synthetic Other ${tag}`, gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId: otherUser.id, fullName: `Synthetic Other ${tag}`, gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     clinicianId = clinician.id;
     otherClinicianId = other.id;

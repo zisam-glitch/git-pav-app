@@ -1,5 +1,6 @@
 import http from "http";
 import crypto from "crypto";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-09 (REQ-SEC-003): every patient-scoped endpoint, called by each kind of
 // stranger to the record, is refused. A clinician in the patient's care can
@@ -39,7 +40,7 @@ describe("care-team access matrix", () => {
       data: {
         userId: user.userId,
         fullName: "Synthetic Clinician",
-        gdcNumber: String(900000 + crypto.randomInt(0, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
 import { communicationService } from "../lib/communication-service";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-1)", () => {
   let server: http.Server;
@@ -111,7 +112,7 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
   describe("Onboarding Clinicians (needs no direct SQL)", () => {
     it("creates a new clinician and profile via POST /api/admin/clinicians", async () => {
       const email = `dr.smith-${tag}@example.test`;
-      const gdcNumber = String(920000 + crypto.randomInt(0, 79999));
+      const gdcNumber = uniqueGdc();
 
       const res = await fetch(`${baseUrl}/api/admin/clinicians`, {
         method: "POST",
@@ -149,7 +150,7 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
 
     it("rejects duplicate email and duplicate GDC number with 409 Conflict", async () => {
       const email = `dr.dup-${tag}@example.test`;
-      const gdcNumber = String(920000 + crypto.randomInt(0, 79999));
+      const gdcNumber = uniqueGdc();
 
       const res1 = await fetch(`${baseUrl}/api/admin/clinicians`, {
         method: "POST",
@@ -170,7 +171,7 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
         body: JSON.stringify({
           email,
           fullName: "Dr. Another Dentist",
-          gdcNumber: String(920000 + crypto.randomInt(0, 79999)),
+          gdcNumber: uniqueGdc(),
           roleTitle: "Dentist",
         }),
       });

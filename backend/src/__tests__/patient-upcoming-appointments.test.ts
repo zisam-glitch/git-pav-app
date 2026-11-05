@@ -5,6 +5,7 @@ import type { AppointmentStatus } from "@prisma/client";
 import app from "../server";
 import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // The app's Home screen asks for ?scope=upcoming. The route used to ignore it,
 // so a cancelled visit could show as the patient's next one.
@@ -48,7 +49,7 @@ describe("GET /api/booking/appointments?scope=upcoming (patient)", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Dr. Upcoming Test",
-        gdcNumber: String(830000 + crypto.randomInt(1, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

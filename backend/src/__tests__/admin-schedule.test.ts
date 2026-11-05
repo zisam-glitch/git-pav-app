@@ -1,6 +1,7 @@
 import http from "http";
 import crypto from "crypto";
 import { londonDate, londonTimeToUtc, weekdayOf } from "../lib/availability";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-31: the back office sets clinic hours, closures, the weekly rota and
 // per-date changes. Admin only, validated, and a change reports the
@@ -51,7 +52,7 @@ describe("admin: opening hours and rota", () => {
     clinicianToken = signAccessToken({ sub: clinicianUser.id, role: "clinician", sessionId: crypto.randomUUID() });
     clinicianId = (
       await prisma.clinicianProfile.create({
-        data: { userId: clinicianUser.id, fullName: "Synthetic Dentist", gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+        data: { userId: clinicianUser.id, fullName: "Synthetic Dentist", gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
       })
     ).id;
     clinicId = (

@@ -2,6 +2,7 @@ import http from "http";
 import crypto from "crypto";
 import { ageInYears, parseIsoDate } from "../lib/age";
 import { londonTimeToUtc } from "../lib/availability";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-34 (decisions log #17): only an adult parent or guardian adds a child,
 // only children under 16 are added, and under-16s cannot hold their own
@@ -116,7 +117,7 @@ describe("dependants", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Synthetic Clinician",
-        gdcNumber: String(900000 + crypto.randomInt(0, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

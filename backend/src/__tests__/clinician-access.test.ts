@@ -1,5 +1,6 @@
 import http from "http";
 import crypto from "crypto";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-08 (decisions log #10): a clinician reads a patient's record, messages
 // and prescriptions only with a booked or recent visit, up to 12 months after
@@ -39,7 +40,7 @@ describe("clinician access window", () => {
       data: {
         userId: user.id,
         fullName: "Synthetic Clinician",
-        gdcNumber: String(900000 + crypto.randomInt(0, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

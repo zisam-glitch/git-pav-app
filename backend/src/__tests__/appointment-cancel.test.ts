@@ -6,6 +6,7 @@ import {
   vanCancellationKeepsDeposit,
 } from "../lib/cancellation-policy";
 import { scheduleAppointmentReminderLadder } from "../lib/background-jobs";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-18: one cancel path. The old PATCH /cancel (no refund) is retired, and
 // cancel-with-refund only cancels appointments that can still be cancelled.
@@ -46,7 +47,7 @@ describe("appointment cancellation", () => {
         data: {
           userId: clinicianUser.id,
           fullName: "Synthetic Clinician",
-          gdcNumber: String(900000 + crypto.randomInt(0, 99999)),
+          gdcNumber: uniqueGdc(),
           roleTitle: "Dentist",
         },
       })

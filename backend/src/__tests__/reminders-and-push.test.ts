@@ -13,6 +13,7 @@ import { sendPatientNotification } from "../lib/patient-push";
 import { communicationService } from "../lib/communication-service";
 import { broadcastEtaUpdates } from "../lib/van-eta-broadcast";
 import { signAccessToken } from "../lib/jwt";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 describe("CS-19: Reminders and Push That Behave", () => {
   let server: http.Server;
@@ -66,7 +67,7 @@ describe("CS-19: Reminders and Push That Behave", () => {
         clinicianProfile: {
           create: {
             fullName: "Dr. Push Clinician",
-            gdcNumber: `${Math.floor(100000 + Math.random() * 900000)}`,
+            gdcNumber: uniqueGdc(),
             roleTitle: "Dentist",
           },
         },

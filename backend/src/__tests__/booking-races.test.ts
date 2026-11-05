@@ -1,6 +1,7 @@
 import http from "http";
 import crypto from "crypto";
 import { londonDate, londonTimeToUtc, weekdayOf } from "../lib/availability";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-16 (BK-2, BK-3, BK-9, ID-1, DB-2): a clinician can't be double-booked,
 // even by simultaneous requests; retries replay by the client's key, not by
@@ -37,7 +38,7 @@ describe("booking races", () => {
     const user = await prisma.user.create({ data: { email: `book-doc-${crypto.randomUUID().slice(0, 8)}-${tag}@example.test`, passwordHash: "x", role: "clinician" } });
     userIds.push(user.id);
     const clinician = await prisma.clinicianProfile.create({
-      data: { userId: user.id, fullName: "Synthetic Dentist", gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId: user.id, fullName: "Synthetic Dentist", gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     await prisma.clinicianRotaBlock.createMany({ data: blocks.map((b) => ({ clinicianId: clinician.id, weekday: b.weekday, startMinute: b.start, endMinute: b.end })) });
     return clinician.id;
@@ -90,7 +91,13 @@ describe("booking races", () => {
     const results = await Promise.all(patients.map((p) => book(p.token, { channel: "clinic", clinicId, clinicianId, startTimeUtc: nine })));
     expect(results.filter((r) => r.status === 201)).toHaveLength(1);
     expect(results.filter((r) => r.status === 409)).toHaveLength(4);
-    expect(await prisma.appointment.count({ where: { clinicianId, status: { in: ["draft_hold", "confirmed", "in_progress"] } } })).toBe(1);
+    const live = ["draft_hold", "confirmed", "in_progress"] as const;
+    // Count the racers' own bookings and that one slot, not everything this
+    // dentist has. Other suites share the database, and an "any dentist"
+    // booking of theirs can be given this dentist at a neighbouring time (the
+    // overlap constraint allows it), which made this fail now and then.
+    expect(await prisma.appointment.count({ where: { patientId: { in: patients.map((p) => p.profileId) }, status: { in: [...live] } } })).toBe(1);
+    expect(await prisma.appointment.count({ where: { clinicianId, startTimeUtc: new Date(nine), status: { in: [...live] } } })).toBe(1);
   }, 15000);
 
   it("refuses an overlapping live appointment in the database itself", async () => {

@@ -1,5 +1,6 @@
 import http from "http";
 import crypto from "crypto";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-07: each video appointment has one private Daily room, and only its
 // patient and clinician get a meeting token for it; the patient only once the
@@ -54,7 +55,7 @@ describe("video consultation rooms", () => {
     profileIds.push(profile.id);
     const clinicianUser = await makeUser("clinician", `${label}-dentist`);
     const clinician = await prisma.clinicianProfile.create({
-      data: { userId: clinicianUser.userId, fullName: "Synthetic Dentist", gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId: clinicianUser.userId, fullName: "Synthetic Dentist", gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     const start = new Date(Date.now() + 5 * 60000);
     const appt = await prisma.appointment.create({

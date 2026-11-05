@@ -1,6 +1,7 @@
 import http from "http";
 import crypto from "crypto";
 import { prescriptionDownloadToken } from "../lib/prescription-document";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-35 (decisions log #4): prescriptions are private, signed PDFs. Nothing
 // claims to be NHS EPS, the PDF is only reachable by the patient or a
@@ -36,7 +37,7 @@ describe("signed prescription PDFs", () => {
   async function makeClinician(label: string) {
     const { userId, token } = await makeUser("clinician", label);
     const profile = await prisma.clinicianProfile.create({
-      data: { userId, fullName: "Synthetic Dentist", gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId, fullName: "Synthetic Dentist", gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     return { profileId: profile.id, token };
   }

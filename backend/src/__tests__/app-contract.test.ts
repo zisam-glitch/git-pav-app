@@ -8,6 +8,7 @@ import { londonDate, weekdayOf } from "../lib/availability";
 import { signAccessToken } from "../lib/jwt";
 import { prisma } from "../lib/prisma";
 import app from "../server";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // QA-07: the API sends what the app's types say it sends. Each response is
 // parsed with the contract schema the app's types are generated from.
@@ -80,7 +81,7 @@ describe("app API contract", () => {
     const clinician = await prisma.user.create({ data: { email: `contract-dentist-${tag}@example.test`, passwordHash: "x", role: "clinician" } });
     userIds.push(clinician.id);
     const profile = await prisma.clinicianProfile.create({
-      data: { userId: clinician.id, fullName: "Dr Synthetic Contract", gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId: clinician.id, fullName: "Dr Synthetic Contract", gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     let date = "";
     for (let d = 3; d < 10 && !date; d++) {

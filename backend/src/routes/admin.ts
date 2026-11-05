@@ -23,6 +23,8 @@ import {
   updateAppointmentStatusSchema,
   adminAuditLogsQuerySchema,
   adminPrescriptionsQuerySchema,
+  adminConsentsQuerySchema,
+  adminSarExportsQuerySchema,
   createClinicianSchema,
   createOperatorSchema,
   createClinicSchema,
@@ -938,6 +940,128 @@ router.get("/prescriptions", requireAuth, requireRole("admin"), validateQuery(ad
       signed: Boolean(p.signature),
       signingKeyId: p.signingKeyId,
       dispatchedAt: p.dispatchedAt,
+    })),
+    total,
+    page,
+    limit,
+  });
+});
+
+// ─── GET /api/admin/consents ──────────────────────────────────────────────────
+// Consent records, newest first: who agreed to what, on what lawful basis, and
+// whether it has been withdrawn. IP addresses and the free-form metadata stay
+// out; staff need the decision, not the device it was made on.
+router.get("/consents", requireAuth, requireRole("admin"), validateQuery(adminConsentsQuerySchema), async (req: AuthRequest, res: Response) => {
+  const { consentType, status, patientId, page, limit } = req.query as unknown as {
+    consentType?: string;
+    status?: "granted" | "withdrawn";
+    patientId?: string;
+    page: number;
+    limit: number;
+  };
+  // The schema has already made these strings; the typeof checks say so to
+  // the reader (and to CodeQL) where the values are used.
+  const type = typeof consentType === "string" ? consentType : undefined;
+  const patient = typeof patientId === "string" ? patientId : undefined;
+  const where: Prisma.ConsentRecordWhereInput = {
+    ...(type ? { consentType: type } : {}),
+    ...(patient ? { patientProfileId: patient } : {}),
+    ...(status === "granted" ? { isGranted: true } : {}),
+    ...(status === "withdrawn" ? { isGranted: false } : {}),
+  };
+
+  const [rows, total] = await Promise.all([
+    prisma.consentRecord.findMany({
+      where,
+      orderBy: [{ grantedAt: "desc" }, { id: "desc" }],
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        id: true,
+        patientProfileId: true,
+        consentType: true,
+        version: true,
+        lawfulBasis: true,
+        isGranted: true,
+        grantedAt: true,
+        withdrawnAt: true,
+        patientProfile: { select: { firstName: true, lastName: true } },
+      },
+    }),
+    prisma.consentRecord.count({ where }),
+  ]);
+
+  return res.json({
+    consents: rows.map((c) => ({
+      id: c.id,
+      patientId: c.patientProfileId,
+      patientName: `${c.patientProfile.firstName} ${c.patientProfile.lastName}`.trim(),
+      consentType: c.consentType,
+      version: c.version,
+      lawfulBasis: c.lawfulBasis,
+      isGranted: c.isGranted,
+      grantedAt: c.grantedAt,
+      withdrawnAt: c.withdrawnAt,
+    })),
+    total,
+    page,
+    limit,
+  });
+});
+
+// ─── GET /api/admin/sar-exports ───────────────────────────────────────────────
+// Subject access bundles patients have generated for themselves, newest first.
+// A bundle is the patient's own copy: staff can see that one was made and when
+// (the one-month clock for a request), never its contents or a way to download
+// it, and the file key stays out.
+router.get("/sar-exports", requireAuth, requireRole("admin"), validateQuery(adminSarExportsQuerySchema), async (req: AuthRequest, res: Response) => {
+  const { from, to, patientId, page, limit } = req.query as unknown as {
+    from?: string;
+    to?: string;
+    patientId?: string;
+    page: number;
+    limit: number;
+  };
+  const fromDay = typeof from === "string" ? from : undefined;
+  const toDay = typeof to === "string" ? to : undefined;
+  const patient = typeof patientId === "string" ? patientId : undefined;
+  const where: Prisma.DocumentVaultWhereInput = {
+    docType: "gdpr_sar_export",
+    ...(fromDay || toDay
+      ? {
+          createdAt: {
+            ...(fromDay ? { gte: londonTimeToUtc(fromDay, 0) } : {}),
+            ...(toDay ? { lt: londonTimeToUtc(toDay, 1440) } : {}),
+          },
+        }
+      : {}),
+    ...(patient ? { patientId: patient } : {}),
+  };
+
+  const [rows, total] = await Promise.all([
+    prisma.documentVault.findMany({
+      where,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        id: true,
+        patientId: true,
+        createdAt: true,
+        fileSizeBytes: true,
+        patient: { select: { firstName: true, lastName: true } },
+      },
+    }),
+    prisma.documentVault.count({ where }),
+  ]);
+
+  return res.json({
+    exports: rows.map((d) => ({
+      id: d.id,
+      patientId: d.patientId,
+      patientName: `${d.patient.firstName} ${d.patient.lastName}`.trim(),
+      createdAt: d.createdAt,
+      fileSizeBytes: Number(d.fileSizeBytes) || 0,
     })),
     total,
     page,

@@ -15,6 +15,7 @@ import {
   confirmAppointmentSchema,
   createAppointmentSchema,
   holdSlotSchema,
+  rescheduleAppointmentSchema,
   saveAppointmentNotesSchema,
   slotsQuerySchema,
 } from "../schemas/booking";
@@ -27,6 +28,7 @@ import { AvailabilityError, bookableClinician, londonDate, slotsForDay, SlotChan
 import { encryptField, decryptField, decryptString, encryptAccessDetails, encryptClientAccessDetails, decryptAccessDetails } from "../lib/encryption";
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
+import { checkReschedulable } from "../lib/reschedule-policy";
 
 const router = Router();
 
@@ -786,6 +788,110 @@ router.patch("/appointments/:id/confirm", requireAuth, validateParams(appointmen
     const { httpStatus, status, ...responseData } = result;
     return res.status(statusCode).json(responseData);
   });
+});
+
+// ─── POST /api/booking/appointments/:id/reschedule ───────────────────────────
+// Moves a paid clinic or video booking to another time (owner decision, 5 Nov):
+// free with 48 hours' notice or more, and the deposit stays with the booking, so
+// no payment is touched. Inside 48 hours the patient cancels and rebooks, and
+// the cancellation terms apply. The service, place and dentist stay the same,
+// the server works out the new end time, and the new time has to be free.
+router.post("/appointments/:id/reschedule", requireAuth, validateParams(appointmentIdParamsSchema), validateBody(rescheduleAppointmentSchema), async (req: AuthRequest, res: Response) => {
+  const appointmentId = String(req.params.id);
+  const { startTimeUtc } = req.body as { startTimeUtc: string };
+
+  const profile = await prisma.patientProfile.findUnique({ where: { userId: req.user!.sub }, select: { id: true } });
+  if (!profile) return res.status(404).json({ error: "Patient profile not found" });
+
+  const appointment = await prisma.appointment.findFirst({
+    where: { id: appointmentId, patientId: profile.id },
+    include: { service: { select: { durationMinutes: true } } },
+  });
+  if (!appointment) return res.status(404).json({ error: "Appointment not found" });
+
+  const newStart = new Date(startTimeUtc);
+  const summary = (a: { id: string; startTimeUtc: Date; endTimeUtc: Date; status: string; clinicianId: string | null }, changed: boolean) => ({
+    id: a.id,
+    status: a.status,
+    startTimeUtc: a.startTimeUtc,
+    endTimeUtc: a.endTimeUtc,
+    clinicianId: a.clinicianId,
+    changed,
+  });
+
+  // Asking for the time it already has is a no-op, so a retry after a lost
+  // response doesn't come back as an error.
+  if (newStart.getTime() === appointment.startTimeUtc.getTime() && appointment.status === "confirmed") {
+    return res.json(summary(appointment, false));
+  }
+
+  const check = checkReschedulable(appointment);
+  if (!check.ok) {
+    return res.status(check.status).json({ error: check.error, hoursUntilVisit: Math.round(check.hoursUntilVisit * 10) / 10 });
+  }
+  if (newStart.getTime() <= Date.now()) {
+    return res.status(400).json({ error: "startTimeUtc must be in the future" });
+  }
+
+  const endTime = new Date(newStart.getTime() + appointment.service.durationMinutes * 60 * 1000);
+
+  let bookable: string | null;
+  try {
+    bookable = await bookableClinician({
+      channel: appointment.channel as SlotChannel,
+      durationMinutes: appointment.service.durationMinutes,
+      startTimeUtc: newStart,
+      clinicianId: appointment.clinicianId ?? undefined,
+      clinicId: appointment.clinicId ?? undefined,
+    });
+  } catch (err) {
+    if (err instanceof AvailabilityError) return res.status(err.status).json({ error: err.message });
+    throw err;
+  }
+  if (!bookable) {
+    return res.status(409).json({ error: "That time isn't available. Please choose another slot." });
+  }
+
+  // The database stops two live visits overlapping for one dentist, and the
+  // update only applies if the booking is still confirmed at its old time.
+  let moved;
+  try {
+    moved = await prisma.appointment.updateMany({
+      where: { id: appointment.id, status: "confirmed", startTimeUtc: appointment.startTimeUtc },
+      data: { startTimeUtc: newStart, endTimeUtc: endTime, clinicianId: bookable },
+    });
+  } catch (error) {
+    if (isClinicianOverlap(error)) {
+      return res.status(409).json({ error: "That time isn't available. Please choose another slot." });
+    }
+    throw error;
+  }
+  if (moved.count === 0) {
+    return res.status(409).json({ error: "The booking changed while moving it. Please refresh and try again." });
+  }
+
+  // Reminders were set for the old time.
+  await cancelAppointmentReminders(appointment.id).catch(logFailure("reminder cancellation"));
+  await scheduleAppointmentReminderLadder(appointment.id).catch((err) => {
+    console.error("[Booking] Failed to schedule reminders after reschedule:", safeError(err));
+  });
+
+  await createAuditLogWithIntegrity({
+    action: "appointment.rescheduled",
+    actorId: req.user!.sub,
+    resourceId: appointment.id,
+    sessionId: req.user?.sessionId ?? null,
+    ipHash: pseudonymiseIp(req.ip || ""),
+    metadata: {
+      fromStartUtc: appointment.startTimeUtc.toISOString(),
+      toStartUtc: newStart.toISOString(),
+      hoursNoticeGiven: Math.round(check.hoursUntilVisit * 10) / 10,
+      channel: appointment.channel,
+    },
+  }).catch(logFailure("audit write appointment.rescheduled"));
+
+  const updated = await prisma.appointment.findUniqueOrThrow({ where: { id: appointment.id } });
+  return res.json(summary(updated, true));
 });
 
 // ─── PATCH /api/booking/appointments/:id/cancel ──────────────────────────────

@@ -39,6 +39,9 @@ describe("CS-24: Complete GDPR Subject Access Request (SAR-1, SAR-2, OS-3)", () 
     documentIds: [] as string[],
     messageThreadIds: [] as string[],
     vanRequestIds: [] as string[],
+    shiftIds: [] as string[],
+    vanIds: [] as string[],
+    operatorIds: [] as string[],
     paymentMethodIds: [] as string[],
     financingIds: [] as string[],
     rewardAwardIds: [] as string[],
@@ -219,18 +222,30 @@ describe("CS-24: Complete GDPR Subject Access Request (SAR-1, SAR-2, OS-3)", () 
     created.messageThreadIds.push(thread.id);
 
     // VanServiceRequest
-    const van = await prisma.van.findFirstOrThrow();
-    const operator = await prisma.operatorProfile.findFirstOrThrow();
-    const shift =
-      (await prisma.vanShift.findFirst()) ||
-      (await prisma.vanShift.create({
-        data: {
-          vanId: van.id,
-          operatorId: operator.id,
-          status: "online",
-          startedAt: new Date(),
-        },
-      }));
+    // Its own operator, van and shift. This used to borrow whatever van and
+    // shift were first in the shared test database, so the request below could
+    // end up pointing at another suite's shift, and that suite's cleanup then
+    // failed on the foreign key. The shift is already ended, so nothing treats
+    // it as a van that is out.
+    const operatorUser = await prisma.user.create({
+      data: { email: `cs24-operator-${tag}@example.test`, passwordHash: "x", role: "operator" },
+    });
+    const operator = await prisma.operatorProfile.create({ data: { userId: operatorUser.id, fullName: "Synthetic SAR Operator" } });
+    created.operatorIds.push(operator.id);
+    const van = await prisma.van.create({
+      data: { name: `Synthetic SAR Van ${tag}`, registrationPlate: `SAR${tag}`, vehicleModel: "Synthetic" },
+    });
+    created.vanIds.push(van.id);
+    const shift = await prisma.vanShift.create({
+      data: {
+        vanId: van.id,
+        operatorId: operator.id,
+        status: "offline",
+        startedAt: new Date(Date.now() - 3_600_000),
+        endedAt: new Date(),
+      },
+    });
+    created.shiftIds.push(shift.id);
 
     const vanReq = await prisma.vanServiceRequest.create({
       data: {
@@ -341,6 +356,9 @@ describe("CS-24: Complete GDPR Subject Access Request (SAR-1, SAR-2, OS-3)", () 
     if (created.financingIds.length) await prisma.financingApplication.deleteMany({ where: { id: { in: created.financingIds } } }).catch(() => {});
     if (created.paymentMethodIds.length) await prisma.savedPaymentMethod.deleteMany({ where: { id: { in: created.paymentMethodIds } } }).catch(() => {});
     if (created.vanRequestIds.length) await prisma.vanServiceRequest.deleteMany({ where: { id: { in: created.vanRequestIds } } }).catch(() => {});
+    if (created.shiftIds.length) await prisma.vanShift.deleteMany({ where: { id: { in: created.shiftIds } } }).catch(() => {});
+    if (created.vanIds.length) await prisma.van.deleteMany({ where: { id: { in: created.vanIds } } }).catch(() => {});
+    if (created.operatorIds.length) await prisma.operatorProfile.deleteMany({ where: { id: { in: created.operatorIds } } }).catch(() => {});
     if (created.messageThreadIds.length) {
       await prisma.message.deleteMany({ where: { threadId: { in: created.messageThreadIds } } }).catch(() => {});
       await prisma.messageThread.deleteMany({ where: { id: { in: created.messageThreadIds } } }).catch(() => {});

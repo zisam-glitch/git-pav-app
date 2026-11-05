@@ -7,6 +7,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useVanStore } from "@/features/van/van-store";
 import { fetchServices } from "@/features/van/van-api";
 import { Service } from "@/features/van/van-types";
+import { PRACTICE_CONFIG } from "@/config/practice";
 
 // Full UK postcode, with or without the space (the server checks it matches
 // the patient's location).
@@ -68,7 +69,7 @@ export default function VanAccessDetailsScreen() {
       return;
     }
     if (!UK_POSTCODE.test(postcode.trim())) {
-      Alert.alert("Check Your Postcode", "Please enter a full UK postcode, for example SW1A 1AA.");
+      Alert.alert("Check Your Postcode", `Please enter a full UK postcode, for example ${PRACTICE_CONFIG.examplePostcode}.`);
       return;
     }
 
@@ -121,7 +122,7 @@ export default function VanAccessDetailsScreen() {
           </View>
           <Input
             label="Street address"
-            placeholder="e.g. 14 Harley Street"
+            placeholder={`e.g. ${PRACTICE_CONFIG.exampleStreet}`}
             value={addressLine1}
             onChangeText={setAddressLine1}
           />
@@ -142,7 +143,7 @@ export default function VanAccessDetailsScreen() {
             <View style={styles.flex1}>
               <Input
                 label="Postcode"
-                placeholder="e.g. SW1A 1AA"
+                placeholder={`e.g. ${PRACTICE_CONFIG.examplePostcode}`}
                 value={postcode}
                 onChangeText={setPostcode}
                 autoCapitalize="characters"

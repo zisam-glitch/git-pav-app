@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { ThemedText, Input, Button, FlowHeader } from "@/components";
 import { colors, spacing } from "@/theme";
 import { useOnboardingStore } from "@/features/onboarding/onboarding-store";
+import { PRACTICE_CONFIG } from "@/config/practice";
 
 export default function OnboardingAddressScreen() {
   const router = useRouter();
@@ -62,7 +63,7 @@ export default function OnboardingAddressScreen() {
           <View style={styles.form}>
             <Input
               label="UK postcode"
-              placeholder="e.g. SW1A 1AA"
+              placeholder={`e.g. ${PRACTICE_CONFIG.examplePostcode}`}
               autoCapitalize="characters"
               value={postcode}
               error={errors.postcode}
@@ -92,7 +93,7 @@ export default function OnboardingAddressScreen() {
 
             <Input
               label="Town / city"
-              placeholder="e.g. London"
+              placeholder={`e.g. ${PRACTICE_CONFIG.exampleCity}`}
               value={city}
               error={errors.city}
               onChangeText={(val) => {

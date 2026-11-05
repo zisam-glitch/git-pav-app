@@ -48,7 +48,9 @@ export default function OperatorShiftScreen() {
   }, [gpsHookActive]);
 
   const startMutation = useMutation({
-    mutationFn: () => startShift(fix ?? { lat: 51.5074, lng: -0.1278 }),
+    // With no GPS fix yet, start without a position instead of inventing one: the server
+    // simply has none for the van until the first real ping arrives.
+    mutationFn: () => startShift(fix ?? undefined),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
       Alert.alert("Shift Started", "Your van is now online and accepting requests.");

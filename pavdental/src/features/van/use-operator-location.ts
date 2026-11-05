@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import { sendLocationPing } from "./van-api";
 import { startShiftBackgroundLocation, stopShiftBackgroundLocation } from "./background-location";
+import { PRACTICE_CONFIG } from "@/config/practice";
 
 export type OperatorFix = { lat: number; lng: number };
 
@@ -53,9 +54,10 @@ export function useOperatorLocation(options: { enabled: boolean }) {
     async function start() {
       // In simulator / development environments, avoid native OS modal blocks
       if (__DEV__) {
-        const defaultLondonFix = { lat: 51.5074, lng: -0.1278 };
-        latestFixRef.current = defaultLondonFix;
-        setFix(defaultLondonFix);
+        // Development builds have no GPS: stand in for one at the practice.
+        const devFix = { ...PRACTICE_CONFIG.location };
+        latestFixRef.current = devFix;
+        setFix(devFix);
         setGpsActive(true);
         setError(null);
         return;

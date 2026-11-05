@@ -24,6 +24,15 @@ export const adminAppointmentsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 }).strict();
 
+export const adminPrescriptionsQuerySchema = z.object({
+  /** UK calendar days, both included, by the day the prescription was issued. */
+  from: isoDay.optional(),
+  to: isoDay.optional(),
+  clinicianId: uuid.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+}).strict();
+
 export const appointmentIdParamsSchema = z.object({ id: uuid }).strict();
 
 export const updateAppointmentStatusSchema = z.object({

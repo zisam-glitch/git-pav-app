@@ -78,7 +78,7 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "pav-bookings",
-        title: "Website Bookings",
+        title: "Website Requests",
         url: "/dashboard/bookings",
         icon: Calendar,
       },

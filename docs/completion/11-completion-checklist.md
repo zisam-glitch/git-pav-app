@@ -48,7 +48,9 @@ How each open item is known:
   until staff cancel or complete those visits; waiting requests are expired and their deposit holds released. Recorded in
   the audit log. **Auto-ending a shift after silence was not built**; add it later if forgotten shifts keep happening.
 - [x] **5. Dashboard template pages:** delete (owner, 4 Nov). Done, see section 6.
-- [ ] **6. Website booking form:** a callback request, or a real app appointment? Staff currently see two lists.
+- [x] **6. Website booking form:** owner chose to keep it as a request form (5 Nov). The dashboard now calls the screen
+  "Website Requests" and says a request doesn't hold a slot or take a deposit and is separate from App Appointments. The
+  website form itself is unchanged, and the website is on hold.
 - [ ] **7. Website Google sign-in:** keep it (needs Firebase settings) or remove it?
 - [x] **8. `neo-financial-ios/`:** remove (owner, 4 Nov). Done, see section 9.
 - [ ] **9. Where the service is:** the seed data is London, the website says Bradford. A van coverage check on the

@@ -1,4 +1,5 @@
 import {
+  Activity,
   Boxes,
   Calendar,
   CalendarClock,
@@ -110,6 +111,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Vans & Service Areas",
         url: "/dashboard/vans",
         icon: Truck,
+      },
+      {
+        id: "pav-van-shifts",
+        title: "Van Shifts",
+        url: "/dashboard/van-shifts",
+        icon: Activity,
       },
       {
         id: "pav-dentist-profiles",

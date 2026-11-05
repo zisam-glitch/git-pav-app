@@ -38,6 +38,7 @@ import {
   VanDepositReleaseStatus,
 } from "../lib/van-payments";
 import { sendPatientNotification } from "../lib/patient-push";
+import { endVanShift } from "../lib/van-shift-end";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
@@ -350,70 +351,16 @@ router.post("/shift/end", requireAuth, requireRole("operator"), async (req: Auth
   const shift = await getActiveShift(opProfile.id);
   if (!shift) return res.status(404).json({ error: "No active shift" });
 
-  // Block end if any accepted/in_progress stops remain
-  const openStops = await prisma.vanServiceRequest.count({
-    where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] } },
-  });
-  if (openStops > 0) {
+  const result = await endVanShift(shift);
+  if (!result.ended) {
     return res.status(409).json({
       error: "Cannot end shift with open stops",
-      message: `Complete or cancel all ${openStops} active stop(s) before ending your shift.`,
-      openStops,
+      message: `Complete or cancel all ${result.openStops} active stop(s) before ending your shift.`,
+      openStops: result.openStops,
     });
   }
 
-  // Expire pending requests one by one under the accept lock so each deposit hold is released
-  // and no accept can race with shift ending (CS-49).
-  // Failures are reported but never block ending the shift — the expiry
-  // sweeper retries failed releases on its next pass.
-  const failedReleases: string[] = [];
-  await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shift.id}`}))`;
-    const pendingRequests = await tx.vanServiceRequest.findMany({
-      where: { shiftId: shift.id, status: "pending" },
-      select: { id: true, patientId: true, paymentIntentId: true },
-    });
-    for (const pending of pendingRequests) {
-      let releaseStatus: string | null = null;
-      let releasedAt: Date | null = null;
-      if (pending.paymentIntentId) {
-        const release = await releaseVanDeposit(pending.paymentIntentId, "shift_ended");
-        releaseStatus = release.status;
-        if (release.status === "failed") {
-          failedReleases.push(pending.id);
-        } else if (["released", "already_released", "refunded"].includes(release.status)) {
-          releasedAt = new Date();
-        }
-      }
-      await tx.vanServiceRequest.update({
-        where: { id: pending.id },
-        data: {
-          status: "expired",
-          depositReleaseStatus: releaseStatus as any,
-          depositReleasedAt: releasedAt,
-        },
-      });
-      const message = releaseStatus === "failed"
-        ? "The van has ended its shift before accepting your request. We are releasing your deposit hold."
-        : "The van has ended its shift before accepting your request. No deposit was taken — please try again later.";
-      await sendPatientNotification(
-        pending.patientId,
-        "Van Went Offline",
-        message,
-        { requestId: pending.id, status: "expired" }
-      ).catch(() => {});
-    }
-  }, { maxWait: 10_000, timeout: 30_000 });
-  if (failedReleases.length > 0) {
-    console.error(`[VAN SHIFT END] Failed to release deposits for requests: ${failedReleases.join(", ")}`);
-  }
-
-  const updated = await prisma.vanShift.update({
-    where: { id: shift.id },
-    data: { status: "offline", endedAt: new Date() },
-  });
-
-  return res.json(updated);
+  return res.json(result.shift);
 });
 
 // POST /api/van/shift/location — GPS ping

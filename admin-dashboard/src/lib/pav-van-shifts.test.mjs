@@ -5,6 +5,7 @@ import {
   SHIFT_STATUS_LABEL,
   STALE_AFTER_MINUTES,
   agoLabel,
+  endShiftQuestion,
   freshness,
   freshnessLabel,
   shiftLength,
@@ -93,5 +94,35 @@ describe("shiftLength", () => {
 
   it("measures a live shift up to now", () => {
     assert.equal(shiftLength({ startedAt: "2031-03-11T09:45:00Z", endedAt: null }, NOW), "15 min");
+  });
+});
+
+describe("endShiftQuestion", () => {
+  const shift = { vanName: "Van One", operatorName: "Sam Driver", openRequests: 0 };
+
+  it("names the operator and the van, and says it can't be undone", () => {
+    const q = endShiftQuestion(shift);
+    assert.match(q, /End Sam Driver's shift on Van One\?/);
+    assert.match(q, /start a new shift/);
+    assert.match(q, /can't be undone/);
+  });
+
+  it("says nothing about waiting requests when there are none", () => {
+    assert.doesNotMatch(endShiftQuestion(shift), /open request/);
+  });
+
+  it("warns that waiting requests are expired and patients told, in the right number", () => {
+    assert.match(
+      endShiftQuestion({ ...shift, openRequests: 1 }),
+      /1 open request will be expired.*the patient is told/,
+    );
+    assert.match(
+      endShiftQuestion({ ...shift, openRequests: 3 }),
+      /3 open requests will be expired.*the patients are told/,
+    );
+  });
+
+  it("says accepted visits are not affected and block the end", () => {
+    assert.match(endShiftQuestion(shift), /already accepted are not affected/);
   });
 });

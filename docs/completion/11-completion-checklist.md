@@ -26,8 +26,8 @@ How each open item is known:
 - [x] **Past visits showed "Completed" even if nobody completed them.** They now say "Past" unless the server
   records "Completed" or "Missed". Fixed on 4 Nov.
 - [x] **"Deposit paid" showed "—" even when a deposit was paid.** It now shows the amount paid. Fixed on 4 Nov.
-- [x] **The Reschedule button was a dead end.** Removed until decision 1 in section 2 is made and the backend can
-  move a booking. Fixed on 4 Nov.
+- [x] **The Reschedule button was a dead end.** Removed on 4 Nov until the backend could move a booking. Restored on 5 Nov,
+  working, behind the 48-hour rule (decision 1 in section 2).
 - [x] **Ran the new backend test for `?scope=upcoming`** (`patient-upcoming-appointments`). It passed in CI on PR #8,
   5 Nov.
 - [x] **A treatment plan could book the wrong treatment.** It now books only on an exact name match, otherwise the patient
@@ -40,10 +40,11 @@ How each open item is known:
 
 ## 2. Decisions needed from the owner
 
-- [ ] **1. Reschedule:** owner decided (5 Nov): free with 48 hours' notice or more, and the deposit stays with the booking;
-  inside 48 hours the patient cancels and rebooks, with the usual cancellation terms. **Backend done**
-  (`POST /api/booking/appointments/:id/reschedule`, clinic and video visits only; van visits are timed by dispatch and
-  can't be moved). **The app screen is still to do**: the Reschedule button stays removed until it exists.
+- [x] **1. Reschedule:** owner decided (5 Nov): free with 48 hours' notice or more, and the deposit stays with the booking;
+  inside 48 hours the patient cancels and rebooks, with the usual cancellation terms. Backend:
+  `POST /api/booking/appointments/:id/reschedule` (clinic and video visits only; van visits are timed by dispatch and can't
+  be moved). App: a **Reschedule** button on the appointment page, only when a move is allowed, opens a "Choose a new
+  time" screen; inside 48 hours the page explains instead. **Not yet tried on a phone or the web build.**
 - [x] **2. Production domain:** `pavdental.com` (owner, 4 Nov). The example settings now match.
 - [ ] **3. On-demand video:** a queue, or are booked slots enough for v1?
 - [x] **4. Stuck van shifts:** owner chose a staff button (5 Nov). The Van Shifts screen now has an **End shift** button for

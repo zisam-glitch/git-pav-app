@@ -7,6 +7,7 @@ export default function AppointmentsLayout() {
       screenOptions={stackScreenOptions}
     >
       <Stack.Screen name="[id]" options={{ title: "Appointment details", headerShown: false }} />
+      <Stack.Screen name="reschedule" options={{ title: "Choose a new time", headerShown: false }} />
       <Stack.Screen name="cancelled" options={{ title: "Appointment cancelled", headerShown: false }} />
     </Stack>
   );

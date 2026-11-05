@@ -11,6 +11,7 @@ import {
   holdSlot,
   createAppointment,
   cancelAppointment,
+  rescheduleAppointment,
 } from "../booking/booking-api";
 import {
   fetchPatientProfile,
@@ -102,6 +103,18 @@ export function useCreateAppointmentMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: Parameters<typeof createAppointment>[0]) => createAppointment(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["slots"] });
+    },
+  });
+}
+
+export function useRescheduleAppointmentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ appointmentId, startTimeUtc }: { appointmentId: string; startTimeUtc: string }) =>
+      rescheduleAppointment(appointmentId, startTimeUtc),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
       queryClient.invalidateQueries({ queryKey: ["slots"] });

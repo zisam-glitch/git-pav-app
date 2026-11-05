@@ -180,6 +180,31 @@ export async function cancelAppointment(appointmentId: string): Promise<Cancella
   return res.json();
 }
 
+// ─── Reschedule ───────────────────────────────────────────────────────────────
+export interface RescheduleResult {
+  id: string;
+  status: string;
+  startTimeUtc: string;
+  endTimeUtc: string;
+  /** false when the booking was already at the requested time. */
+  changed: boolean;
+}
+
+// Moves a paid clinic or video booking. The server keeps the service, place
+// and dentist, checks the notice and the new time, and leaves the deposit alone.
+export async function rescheduleAppointment(appointmentId: string, startTimeUtc: string): Promise<RescheduleResult> {
+  const res = await authFetch(`/api/booking/appointments/${appointmentId}/reschedule`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ startTimeUtc }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Could not move the booking");
+  }
+  return res.json();
+}
+
 // ─── Van coverage check ────────────────────────────────────────────────────────
 export async function checkVanCoverage(params: { lat?: number; lng?: number; postcode?: string }) {
   const res = await publicFetch(`/api/public/van/coverage-check`, {

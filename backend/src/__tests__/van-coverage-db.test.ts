@@ -1,11 +1,11 @@
 // Real-database integration test: asserts the JS fallback and (when
 // available) the PostGIS path produce the same coverage answers against the
-// seeded London polygons. Skipped cleanly when no database is reachable.
+// seeded Bradford polygons. Skipped cleanly when no database is reachable.
 
 import { prisma } from "../lib/prisma";
 import { getCoverageBackend, findCoveringVans } from "../lib/van-coverage";
 
-const INSIDE = { lat: 51.501, lng: -0.1416 }; // SW1A 1AA (Buckingham Palace area)
+const INSIDE = { lat: 53.7998, lng: -1.7289 }; // BD3 9TY, the practice on Leeds Road
 const OUTSIDE = { lat: 53.95, lng: -1.08 }; // York — far outside all sectors
 
 async function dbReachable(): Promise<boolean> {
@@ -34,7 +34,7 @@ describe("van coverage against the real database", () => {
     console.log(`[van-coverage-db] backend mode: ${backend.mode} (${backend.reason ?? "postgis"})`);
   });
 
-  test("central London is covered and York is not", async () => {
+  test("the practice's own postcode is covered and York is not", async () => {
     if (!canRun.value) return;
 
     const inside = await findCoveringVans(INSIDE);

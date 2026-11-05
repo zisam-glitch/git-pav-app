@@ -26,30 +26,18 @@ async function main() {
   );
 
   // ─── 1. Clinics ────────────────────────────────────────────────────────────
-  const clinicHarley = await prisma.clinic.upsert({
+  // The practice is at 786 Leeds Road, Bradford (the address on its website).
+  // Phone numbers are Ofcom's reserved drama range, so they never ring anyone.
+  const clinicBradford = await prisma.clinic.upsert({
     where: { id: "00000000-0000-0000-0000-000000000001" },
     update: {},
     create: {
       id: "00000000-0000-0000-0000-000000000001",
-      name: "Pav Dental Central Practice",
-      address: "14 Harley Street, Marylebone",
-      postcode: "W1G 9PQ",
-      city: "London",
-      phone: "020 7946 0123",
-      operatingHours: "Mon–Fri: 09:00 – 17:30, Sat: 09:00 – 13:00",
-    },
-  });
-
-  await prisma.clinic.upsert({
-    where: { id: "00000000-0000-0000-0000-000000000002" },
-    update: {},
-    create: {
-      id: "00000000-0000-0000-0000-000000000002",
-      name: "Pav Dental Canary Wharf",
-      address: "25 Bank Street, Level 2",
-      postcode: "E14 5JP",
-      city: "London",
-      phone: "020 7946 0456",
+      name: "Pav Dental Bradford",
+      address: "786 Leeds Road",
+      postcode: "BD3 9TY",
+      city: "Bradford",
+      phone: "01632 960123",
       operatingHours: "Mon–Fri: 09:00 – 17:30, Sat: 09:00 – 13:00",
     },
   });
@@ -135,109 +123,112 @@ async function main() {
 
   await prisma.vanServicePolygon.deleteMany({ where: { vanId: van1.id } });
   
-  // Create multiple service polygons covering different London areas
+  // Synthetic service areas around the practice, so a local database has
+  // somewhere a van can be requested. They are rough rectangles, not real
+  // boundaries: draw the real ones in the dashboard (Vans & Service Areas).
+  // The practice's own postcode, BD3 9TY, is inside the BD3 area.
   const serviceAreas = [
     {
-      sectorName: "SW - South West London",
+      sectorName: "BD1 - Bradford City Centre",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.25, 51.45],
-            [-0.10, 51.45],
-            [-0.10, 51.52],
-            [-0.25, 51.52],
-            [-0.25, 51.45],
+            [-1.775, 53.785],
+            [-1.74, 53.785],
+            [-1.74, 53.805],
+            [-1.775, 53.805],
+            [-1.775, 53.785],
           ],
         ],
       },
     },
     {
-      sectorName: "W - West London",
+      sectorName: "BD2 - Bradford North East",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.25, 51.48],
-            [-0.15, 51.48],
-            [-0.15, 51.55],
-            [-0.25, 51.55],
-            [-0.25, 51.48],
+            [-1.745, 53.805],
+            [-1.695, 53.805],
+            [-1.695, 53.835],
+            [-1.745, 53.835],
+            [-1.745, 53.805],
           ],
         ],
       },
     },
     {
-      sectorName: "EC - East Central London",
+      sectorName: "BD3 - Bradford East (Leeds Road)",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.10, 51.50],
-            [-0.05, 51.50],
-            [-0.05, 51.52],
-            [-0.10, 51.52],
-            [-0.10, 51.50],
+            [-1.745, 53.79],
+            [-1.7, 53.79],
+            [-1.7, 53.815],
+            [-1.745, 53.815],
+            [-1.745, 53.79],
           ],
         ],
       },
     },
     {
-      sectorName: "WC - West Central London",
+      sectorName: "BD4 - Bradford South East",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.15, 51.50],
-            [-0.10, 51.50],
-            [-0.10, 51.52],
-            [-0.15, 51.52],
-            [-0.15, 51.50],
+            [-1.745, 53.75],
+            [-1.69, 53.75],
+            [-1.69, 53.79],
+            [-1.745, 53.79],
+            [-1.745, 53.75],
           ],
         ],
       },
     },
     {
-      sectorName: "SE - South East London",
+      sectorName: "BD5 - Bradford South",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.10, 51.45],
-            [0.05, 51.45],
-            [0.05, 51.52],
-            [-0.10, 51.52],
-            [-0.10, 51.45],
+            [-1.79, 53.745],
+            [-1.745, 53.745],
+            [-1.745, 53.785],
+            [-1.79, 53.785],
+            [-1.79, 53.745],
           ],
         ],
       },
     },
     {
-      sectorName: "NW - North West London",
+      sectorName: "BD7 - Bradford West",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.25, 51.52],
-            [-0.15, 51.52],
-            [-0.15, 51.58],
-            [-0.25, 51.58],
-            [-0.25, 51.52],
+            [-1.83, 53.765],
+            [-1.775, 53.765],
+            [-1.775, 53.8],
+            [-1.83, 53.8],
+            [-1.83, 53.765],
           ],
         ],
       },
     },
     {
-      sectorName: "E - East London",
+      sectorName: "BD9 - Bradford North West",
       polygonGeoJson: {
         type: "Polygon",
         coordinates: [
           [
-            [-0.05, 51.48],
-            [0.10, 51.48],
-            [0.10, 51.55],
-            [-0.05, 51.55],
-            [-0.05, 51.48],
+            [-1.83, 53.8],
+            [-1.745, 53.8],
+            [-1.745, 53.835],
+            [-1.83, 53.835],
+            [-1.83, 53.8],
           ],
         ],
       },
@@ -287,9 +278,9 @@ async function main() {
       lastName: "Wright",
       dob: new Date("1990-05-14"),
       gender: "male",
-      addressLine1: "14 Harley Street",
-      city: "London",
-      postcode: "W1G 9PQ",
+      addressLine1: "1 Example Street",
+      city: "Bradford",
+      postcode: "BD3 8AA",
       emergencyContactName: "Eleanor Wright",
       emergencyContactPhone: "+447700900099",
       medicalHistory: {
@@ -330,7 +321,7 @@ async function main() {
       gdcNumber: "999991",
       roleTitle: "Clinical Director & Implant Surgeon",
       specialisms: ["Implantology", "Invisalign", "Sedation"],
-      bio: "Over 14 years clinical experience across London teaching hospitals and private surgeries.",
+      bio: "Over 14 years clinical experience across teaching hospitals and private surgeries.",
       isTelehealthActive: true,
     },
   });
@@ -533,7 +524,7 @@ async function main() {
       clinicianId: docProfile.id,
       serviceId: "srv_checkup",
       channel: "clinic",
-      clinicId: clinicHarley.id,
+      clinicId: clinicBradford.id,
       startTimeUtc: today,
       endTimeUtc: new Date(today.getTime() + 30 * 60000),
       status: "confirmed",
@@ -559,7 +550,7 @@ async function main() {
       totalPricePence: 8500,
       depositPaidPence: 2500,
       accessDetails: {
-        address: "14 Harley Street, London, W1G 9PQ",
+        address: "1 Example Street, Bradford, BD3 8AA",
         parking: "Private Driveway · Gate Code #4812",
       },
       stripePaymentId: "pi_seed_van_01",

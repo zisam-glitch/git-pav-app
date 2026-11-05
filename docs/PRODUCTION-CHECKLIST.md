@@ -79,8 +79,8 @@ unusable prescription key and http origins. It never prints a value. Delete the 
 2. Release command: `npx prisma migrate deploy`. **The test environment is behind:** its
    status page says 37 migrations are applied, and the branch has 41.
 3. **Don't run the seed against production.** Even its "reference" scope creates *sample*
-   London clinics ("Pav Dental Canary Wharf"…), a van and London service areas, which would
-   show patients clinics that don't exist. Set up the real clinics, services, opening hours,
+   clinic ("Pav Dental Bradford", at the practice's real address), a van and rough synthetic
+   Bradford service areas, which would show patients areas that aren't the real ones. Set up the real clinics, services, opening hours,
    clinicians, vans and service areas from the dashboard instead (step 8).
 4. Create the first admin, from a machine with the production settings, in `backend/`:
    ```bash

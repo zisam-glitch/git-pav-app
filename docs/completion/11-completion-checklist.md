@@ -57,8 +57,11 @@ How each open item is known:
   website form itself is unchanged, and the website is on hold.
 - [ ] **7. Website Google sign-in:** keep it (needs Firebase settings) or remove it?
 - [x] **8. `neo-financial-ios/`:** remove (owner, 4 Nov). Done, see section 9.
-- [ ] **9. Where the service is:** the seed data is London, the website says Bradford. A van coverage check on the
-  Bradford practice's own postcode (BD3 9TY) returned "not covered" with the seed data. **[Ran]**
+- [x] **9. Where the service is:** owner chose Bradford (5 Nov). The seed now makes one clinic, "Pav Dental Bradford" at
+  786 Leeds Road, BD3 9TY, and seven rough synthetic service areas (BD1 to BD9) around it, so a van coverage check on the
+  practice's own postcode is "covered". The areas are rectangles for local testing, not real boundaries: draw the real
+  ones in the dashboard. The e2e suite and its postcode stub use Bradford now, and the demo patient has a synthetic
+  Bradford address. A database that was already seeded keeps its London rows: reset it to pick up the change.
 
 ## 3. Testing still to do
 
@@ -137,7 +140,7 @@ Full steps are in [`../PRODUCTION-CHECKLIST.md`](../PRODUCTION-CHECKLIST.md).
 - [ ] `ENCRYPTION_KEY` and the prescription signing key stored safely
 - [ ] First admin created with `npm run create:admin`
 - [ ] Real clinics, services, hours, clinicians, vans and service areas entered in the dashboard. **Don't seed
-  production:** the seed creates sample London clinics.
+  production:** the seed creates a sample Bradford clinic and rough synthetic service areas.
 - [ ] Dentist profiles added and published (the website team page says "being updated" with none; the local API
   returned an empty list). **[Ran]**
 

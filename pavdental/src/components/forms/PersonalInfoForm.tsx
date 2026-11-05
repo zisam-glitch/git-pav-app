@@ -12,6 +12,7 @@ import {
   personalInfoSchema,
   PersonalInfoFormData,
 } from "@/features/account/account-schemas";
+import { PRACTICE_CONFIG } from "@/config/practice";
 
 export { personalInfoSchema, PersonalInfoFormData };
 
@@ -186,7 +187,7 @@ export function PersonalInfoForm({
 
         <Input
           label="City / town *"
-          placeholder="e.g. London"
+          placeholder={`e.g. ${PRACTICE_CONFIG.exampleCity}`}
           error={errors.city?.message}
           value={watch("city")}
           onChangeText={(text) => setValue("city", text, { shouldDirty: true, shouldValidate: true })}
@@ -195,7 +196,7 @@ export function PersonalInfoForm({
 
         <Input
           label="Postcode *"
-          placeholder="e.g. SW1A 1AA"
+          placeholder={`e.g. ${PRACTICE_CONFIG.examplePostcode}`}
           autoCapitalize="characters"
           error={errors.postcode?.message}
           value={watch("postcode")}

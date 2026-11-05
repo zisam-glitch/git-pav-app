@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { PRACTICE_CONFIG } from "@/config/practice";
 import { VanAvailability, VanAccessDetails } from "./van-types";
 
 interface VanDispatchDraftState {
@@ -58,8 +59,8 @@ interface VanDispatchDraftState {
 
 export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
   postcode: "",
-  lat: 51.5074,
-  lng: -0.1278,
+  lat: PRACTICE_CONFIG.location.lat,
+  lng: PRACTICE_CONFIG.location.lng,
   isCovered: false,
   availability: null,
 
@@ -124,8 +125,8 @@ export const useVanStore = create<VanDispatchDraftState>((set, get) => ({
   resetDraft: () =>
     set({
       postcode: "",
-      lat: 51.5074,
-      lng: -0.1278,
+      lat: PRACTICE_CONFIG.location.lat,
+      lng: PRACTICE_CONFIG.location.lng,
       isCovered: false,
       availability: null,
       serviceId: "",

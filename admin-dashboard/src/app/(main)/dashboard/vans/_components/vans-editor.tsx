@@ -89,7 +89,7 @@ function AddArea({ van, onAdded }: { van: AdminVan; onAdded: () => Promise<void>
         <Label htmlFor={`area-name-${van.id}`}>Name</Label>
         <Input
           id={`area-name-${van.id}`}
-          placeholder="e.g. SW - South West London"
+          placeholder="e.g. BD3 - Bradford East"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />

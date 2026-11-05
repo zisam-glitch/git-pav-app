@@ -9,7 +9,7 @@ appId: com.pavdental.app
 # 2. Coverage Check
 - assertVisible: "Mobile dental service area"
 - tapOn: "Enter your full UK postcode"
-- inputText: "SW1A 1AA"
+- inputText: "BD3 9TY"
 - tapOn: "Check coverage"
 
 # 3. Access & Parking Details

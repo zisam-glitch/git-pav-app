@@ -61,7 +61,10 @@ How each open item is known:
   786 Leeds Road, BD3 9TY, and seven rough synthetic service areas (BD1 to BD9) around it, so a van coverage check on the
   practice's own postcode is "covered". The areas are rectangles for local testing, not real boundaries: draw the real
   ones in the dashboard. The e2e suite and its postcode stub use Bradford now, and the demo patient has a synthetic
-  Bradford address. A database that was already seeded keeps its London rows: reset it to pick up the change.
+  Bradford address. A database that was already seeded keeps its London rows: reset it to pick up the change. The app no
+  longer defaults to London either: a van shift started with no GPS fix now starts without a position instead of at a
+  made-up London one, the van request draft and the development GPS stand-in start at the practice, the address examples
+  say Bradford and BD3 9TY, and the van Maestro flow uses the practice postcode.
 
 ## 3. Testing still to do
 

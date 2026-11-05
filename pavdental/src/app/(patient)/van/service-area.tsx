@@ -8,6 +8,7 @@ import { checkVanCoverage } from "@/features/booking/booking-api";
 import { fetchVanAvailability } from "@/features/van/van-api";
 import { VanAvailability } from "@/features/van/van-types";
 import { useVanStore } from "@/features/van/van-store";
+import { PRACTICE_CONFIG } from "@/config/practice";
 
 export default function VanServiceAreaScreen() {
   const router = useRouter();
@@ -215,7 +216,7 @@ export default function VanServiceAreaScreen() {
           </ThemedText>
           <Input
             label="Postcode"
-            placeholder="e.g. SW1A 1AA or W1G 9PQ"
+            placeholder={`e.g. ${PRACTICE_CONFIG.examplePostcode}`}
             autoCapitalize="characters"
             value={postcode}
             onChangeText={(val) => {

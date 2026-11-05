@@ -25,6 +25,7 @@ import {
   adminPrescriptionsQuerySchema,
   adminConsentsQuerySchema,
   adminSarExportsQuerySchema,
+  adminVanShiftsQuerySchema,
   createClinicianSchema,
   createOperatorSchema,
   createClinicSchema,
@@ -1062,6 +1063,69 @@ router.get("/sar-exports", requireAuth, requireRole("admin"), validateQuery(admi
       patientName: `${d.patient.firstName} ${d.patient.lastName}`.trim(),
       createdAt: d.createdAt,
       fileSizeBytes: Number(d.fileSizeBytes) || 0,
+    })),
+    total,
+    page,
+    limit,
+  });
+});
+
+// ─── GET /api/admin/van-shifts ────────────────────────────────────────────────
+// Who is out on a van now, and recent shifts. Live shifts come first, then the
+// newest. Staff need to know a van is working, when it last reported in and
+// how many requests it has open. Where it is, and who the requests are from,
+// stay out: that is the operator's and the patients' business, and patients
+// only ever see a van that is next in line.
+router.get("/van-shifts", requireAuth, requireRole("admin"), validateQuery(adminVanShiftsQuerySchema), async (req: AuthRequest, res: Response) => {
+  const { state, vanId, page, limit } = req.query as unknown as {
+    state?: "live" | "ended";
+    vanId?: string;
+    page: number;
+    limit: number;
+  };
+  const van = typeof vanId === "string" ? vanId : undefined;
+  const where: Prisma.VanShiftWhereInput = {
+    ...(state === "live" ? { endedAt: null } : {}),
+    ...(state === "ended" ? { endedAt: { not: null } } : {}),
+    ...(van ? { vanId: van } : {}),
+  };
+
+  const [rows, total] = await Promise.all([
+    prisma.vanShift.findMany({
+      where,
+      // Postgres sorts NULLs first when descending, which puts live shifts
+      // (no end time) at the top.
+      orderBy: [{ endedAt: { sort: "desc", nulls: "first" } }, { startedAt: "desc" }, { id: "desc" }],
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        id: true,
+        vanId: true,
+        status: true,
+        startedAt: true,
+        endedAt: true,
+        lastLocationAt: true,
+        van: { select: { name: true, registrationPlate: true } },
+        operator: { select: { fullName: true } },
+        _count: { select: { requests: { where: { status: { in: ["pending", "accepted", "in_progress"] } } } } },
+      },
+    }),
+    prisma.vanShift.count({ where }),
+  ]);
+
+  return res.json({
+    shifts: rows.map((shift) => ({
+      id: shift.id,
+      vanId: shift.vanId,
+      vanName: shift.van.name,
+      registrationPlate: shift.van.registrationPlate,
+      operatorName: shift.operator.fullName,
+      status: shift.status,
+      live: shift.endedAt === null,
+      startedAt: shift.startedAt,
+      endedAt: shift.endedAt,
+      lastSeenAt: shift.lastLocationAt,
+      openRequests: shift._count.requests,
     })),
     total,
     page,

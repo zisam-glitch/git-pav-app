@@ -52,6 +52,14 @@ export const adminSarExportsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 }).strict();
 
+export const adminVanShiftsQuerySchema = z.object({
+  /** live: not ended yet. ended: finished. Leave out for both, live first. */
+  state: z.enum(["live", "ended"]).optional(),
+  vanId: uuid.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+}).strict();
+
 export const appointmentIdParamsSchema = z.object({ id: uuid }).strict();
 
 export const updateAppointmentStatusSchema = z.object({

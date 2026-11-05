@@ -86,10 +86,10 @@ async function runE2ESuite() {
     const vanRes = await fetch(`${baseUrl}/api/public/van/coverage-check`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ postcode: "SW1A 1AA" }),
+      body: JSON.stringify({ postcode: "BD3 9TY" }),
     });
     const vanData = (await vanRes.json()) as any;
-    assert(vanData.isCovered === true, "Van coverage check failed for SW1A");
+    assert(vanData.isCovered === true, "Van coverage check failed for the practice postcode BD3 9TY");
     console.log(`✓ PASSED: Van Sector Polygon Coverage Verified (${vanData.assignedVan})`);
 
     // Real slots come from the clinic's hours and the clinicians' rota
@@ -377,7 +377,7 @@ async function runE2ESuite() {
     const shiftRes = await fetch(`${baseUrl}/api/van/shift/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${operatorToken}` },
-      body: JSON.stringify({ lat: 51.5032, lng: -0.1276 }),
+      body: JSON.stringify({ lat: 53.7998, lng: -1.7289 }),
     });
     assert(shiftRes.status === 201, `Van shift start failed (${shiftRes.status}): ${JSON.stringify(await shiftRes.json())}`);
     console.log(`✓ PASSED: Operator Van Shift Online (${van!.name})`);
@@ -389,11 +389,11 @@ async function runE2ESuite() {
       body: JSON.stringify({
         serviceId: vanService.id,
         accessDetails: {
-          addressLine1: "10 Downing Street",
-          city: "London",
-          postcode: "SW1A 2AA",
-          lat: 51.5032,
-          lng: -0.1276,
+          addressLine1: "1 Example Street",
+          city: "Bradford",
+          postcode: "BD3 8AA",
+          lat: 53.7998,
+          lng: -1.7289,
           parkingType: "permit_bay",
         },
       }),
@@ -452,11 +452,11 @@ async function runE2ESuite() {
       body: JSON.stringify({
         serviceId: vanService.id,
         accessDetails: {
-          addressLine1: "10 Downing Street",
-          city: "London",
-          postcode: "SW1A 2AA",
-          lat: 51.5032,
-          lng: -0.1276,
+          addressLine1: "1 Example Street",
+          city: "Bradford",
+          postcode: "BD3 8AA",
+          lat: 53.7998,
+          lng: -1.7289,
           parkingType: "permit_bay",
         },
       }),
@@ -477,8 +477,8 @@ async function runE2ESuite() {
     // ─── Queue Optimization & Manual Reorder (Steps 20–22) ───────────────
     // Two more patients request stops at distinct locations; both accepted.
     const extraPatients: Array<{ lat: number; lng: number; address: string }> = [
-      { lat: 51.5095, lng: -0.1315, address: "22 Baker Street" },
-      { lat: 51.4965, lng: -0.1215, address: "1 Millbank Row" },
+      { lat: 53.8061, lng: -1.7328, address: "2 Example Street" },
+      { lat: 53.7931, lng: -1.7228, address: "3 Example Street" },
     ];
     const extraIds: string[] = [];
     for (const spot of extraPatients) {
@@ -502,8 +502,8 @@ async function runE2ESuite() {
           serviceId: vanService.id,
           accessDetails: {
             addressLine1: spot.address,
-            city: "London",
-            postcode: "SW1A 2AA",
+            city: "Bradford",
+            postcode: "BD3 8AA",
             lat: spot.lat,
             lng: spot.lng,
             parkingType: "permit_bay",

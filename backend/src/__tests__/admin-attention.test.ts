@@ -66,6 +66,25 @@ describe("admin attention counts", () => {
     appointmentIds.push(appointment.id);
   };
 
+  /**
+   * Checks that some fixtures do NOT change a count. Other suites share this
+   * database and add visits, threads and requests of their own at any moment,
+   * so one before-and-after comparison can see their rows and not ours. A real
+   * bug counts the fixtures every time; noise has to hit every attempt to
+   * fail the test, so it tries a few times with fresh fixtures.
+   */
+  const notCounted = async (count: (a: Attention) => number, makeExcluded: () => Promise<void>) => {
+    const attempts: number[] = [];
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const before = count((await read()).body);
+      await makeExcluded();
+      const rise = count((await read()).body) - before;
+      attempts.push(rise);
+      if (rise === 0) return;
+    }
+    expect(attempts).toContain(0);
+  };
+
   beforeAll(async () => {
     server = http.createServer(app);
     await new Promise<void>((resolve) => server.listen(3035, resolve));
@@ -126,12 +145,15 @@ describe("admin attention counts", () => {
     expect(after.visitsToday).toBeGreaterThanOrEqual(before.visitsToday + 2);
     expect(after.visitsLeftToday).toBeGreaterThanOrEqual(before.visitsLeftToday + 1);
 
-    // A cancelled visit today and a confirmed one yesterday are not today's work.
-    await visit(ukToday, 12 * 60, "cancelled");
-    await visit(ukYesterday, 12 * 60, "confirmed");
-    const later = (await read()).body;
-    expect(later.visitsToday - after.visitsToday).toBeLessThan(2);
-    expect(later.visitsLeftToday - after.visitsLeftToday).toBeLessThan(2);
+  });
+
+  it("doesn't count a cancelled visit today or a confirmed one yesterday", async () => {
+    const makeExcluded = async () => {
+      await visit(ukToday, 12 * 60, "cancelled");
+      await visit(ukYesterday, 12 * 60, "confirmed");
+    };
+    await notCounted((a) => a.visitsToday, makeExcluded);
+    await notCounted((a) => a.visitsLeftToday, makeExcluded);
   });
 
   it("counts threads waiting for staff, and erasure requests, with those past their month apart", async () => {
@@ -153,8 +175,32 @@ describe("admin attention counts", () => {
     expect(after.unreadThreads).toBeGreaterThanOrEqual(before.unreadThreads + 1);
     expect(after.erasureOpen).toBeGreaterThanOrEqual(before.erasureOpen + 2);
     expect(after.erasureOverdue).toBeGreaterThanOrEqual(before.erasureOverdue + 1);
-    // The completed overdue one and the not-yet-due one aren't overdue.
-    expect(after.erasureOverdue - before.erasureOverdue).toBeLessThan(3);
+  });
+
+  it("doesn't call a finished or not-yet-due erasure request overdue, or a read thread waiting", async () => {
+    const day = 24 * 3600_000;
+    await notCounted(
+      (a) => a.erasureOverdue,
+      async () => {
+        for (const request of [
+          { status: "completed" as const, dueAt: new Date(Date.now() - 5 * day) },
+          { status: "rejected" as const, dueAt: new Date(Date.now() - 5 * day) },
+          { status: "pending" as const, dueAt: new Date(Date.now() + 20 * day) },
+        ]) {
+          const row = await prisma.erasureRequest.create({ data: { userId: patientUserId, source: "app", ...request } });
+          erasureIds.push(row.id);
+        }
+      },
+    );
+    await notCounted(
+      (a) => a.unreadThreads,
+      async () => {
+        const thread = await prisma.messageThread.create({
+          data: { patientUserId, senderName: "Synthetic", subject: `Synthetic read ${tag}`, preview: "Synthetic", staffUnread: false },
+        });
+        threadIds.push(thread.id);
+      },
+    );
   });
 
   it("counts failed card payments, failed van deposit releases and vans out", async () => {

@@ -40,7 +40,10 @@ How each open item is known:
 
 ## 2. Decisions needed from the owner
 
-- [ ] **1. Reschedule:** what happens to the deposit, and is there a late-reschedule rule?
+- [ ] **1. Reschedule:** owner decided (5 Nov): free with 48 hours' notice or more, and the deposit stays with the booking;
+  inside 48 hours the patient cancels and rebooks, with the usual cancellation terms. **Backend done**
+  (`POST /api/booking/appointments/:id/reschedule`, clinic and video visits only; van visits are timed by dispatch and
+  can't be moved). **The app screen is still to do**: the Reschedule button stays removed until it exists.
 - [x] **2. Production domain:** `pavdental.com` (owner, 4 Nov). The example settings now match.
 - [ ] **3. On-demand video:** a queue, or are booked slots enough for v1?
 - [x] **4. Stuck van shifts:** owner chose a staff button (5 Nov). The Van Shifts screen now has an **End shift** button for

@@ -52,6 +52,12 @@ export const confirmAppointmentSchema = z.object({
   stripePaymentId: z.string().trim().min(1).max(255).optional(),
 }).strict();
 
+// Moving a booking to another time. The server keeps the service, place and
+// dentist and works out the new end time itself.
+export const rescheduleAppointmentSchema = z.object({
+  startTimeUtc: isoDateTime,
+}).strict();
+
 export const appointmentIdParamsSchema = z.object({ id: uuid }).strict();
 
 // The patient's pre-visit tasks. Only what the patient actually ticked is

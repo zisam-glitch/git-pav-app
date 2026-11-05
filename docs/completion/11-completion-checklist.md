@@ -201,8 +201,7 @@ Nobody can complete these in code. Clinical wording stays a draft until a clinic
   - **Van shifts:** who is out, when each van last reported in, open requests. Leaves out where vans are and who the
     requests are from.
   - Whether staff should see more (medication, bundle contents, van positions) is the owner's decision.
-- [ ] **`/dashboard/patient-monitoring` still exists** (made-up patient vitals from the template, not in the sidebar). Delete
-  it? Decision 5 said to delete the template pages, but this one is reachable by URL, so it was left for you to confirm.
+- [x] **Deleted `/dashboard/patient-monitoring`** (made-up patient vitals from the template, reachable by URL), on the owner's OK, 5 Nov.
 - [x] Replaced the hand-written JWT code with `jose`. Algorithm pinned, signatures compared safely, forged tokens refused.
   **Everyone signed in to the dashboard or shop has to sign in again** after this deploys. Done on 4 Nov.
 - [x] `users/page.tsx` now queries the database directly and checks the staff session. Done on 4 Nov.

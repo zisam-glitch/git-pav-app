@@ -27,7 +27,7 @@ describe("staff ending a van shift", () => {
   const end = (id: string, token = adminToken) =>
     fetch(`${baseUrl}/api/admin/van-shifts/${id}/end`, { method: "POST", headers: { Authorization: `Bearer ${token}` } }).then(async (r) => ({
       status: r.status,
-      body: (await r.json()) as Record<string, any>,
+      body: (await r.json()) as { [key: string]: unknown },
     }));
 
   async function makeVanWithShift(label: string) {

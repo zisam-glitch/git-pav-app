@@ -43,8 +43,10 @@ How each open item is known:
 - [ ] **1. Reschedule:** what happens to the deposit, and is there a late-reschedule rule?
 - [x] **2. Production domain:** `pavdental.com` (owner, 4 Nov). The example settings now match.
 - [ ] **3. On-demand video:** a queue, or are booked slots enough for v1?
-- [ ] **4. Stuck van shifts:** only the operator can end a shift, and shifts never time out, so a forgotten shift
-  blocks the van. Auto-end, a staff button, or both? **[Code]**
+- [x] **4. Stuck van shifts:** owner chose a staff button (5 Nov). The Van Shifts screen now has an **End shift** button for
+  any live shift, with the same rules as the operator ending their own. Stops already accepted or in progress block it
+  until staff cancel or complete those visits; waiting requests are expired and their deposit holds released. Recorded in
+  the audit log. **Auto-ending a shift after silence was not built**; add it later if forgotten shifts keep happening.
 - [x] **5. Dashboard template pages:** delete (owner, 4 Nov). Done, see section 6.
 - [ ] **6. Website booking form:** a callback request, or a real app appointment? Staff currently see two lists.
 - [ ] **7. Website Google sign-in:** keep it (needs Firebase settings) or remove it?
@@ -198,8 +200,8 @@ Nobody can complete these in code. Clinical wording stays a draft until a clinic
     the signed content.
   - **Consent & Access:** consent records, and when patients generated subject access bundles. Leaves out IP addresses,
     metadata, file keys and bundle contents.
-  - **Van shifts:** who is out, when each van last reported in, open requests. Leaves out where vans are and who the
-    requests are from.
+  - **Van shifts:** who is out, when each van last reported in, open requests, and an End shift button for one left running.
+    Leaves out where vans are and who the requests are from.
   - Whether staff should see more (medication, bundle contents, van positions) is the owner's decision.
 - [x] **Deleted `/dashboard/patient-monitoring`** (made-up patient vitals from the template, reachable by URL), on the owner's OK, 5 Nov.
 - [x] Replaced the hand-written JWT code with `jose`. Algorithm pinned, signatures compared safely, forged tokens refused.

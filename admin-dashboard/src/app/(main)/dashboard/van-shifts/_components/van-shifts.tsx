@@ -13,6 +13,7 @@ import { pageCount } from "@/lib/pav-appointments";
 import { appRequest, ukDateTime } from "@/lib/pav-schedule";
 import type { AdminVan } from "@/lib/pav-vans";
 import {
+  endShiftQuestion,
   freshness,
   freshnessLabel,
   SHIFT_STATUS_LABEL,
@@ -36,6 +37,7 @@ export function VanShifts() {
   const [vans, setVans] = useState<Pick<AdminVan, "id" | "name">[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(() => new Date());
+  const [endingId, setEndingId] = useState<string | null>(null);
 
   useEffect(() => {
     appRequest<Pick<AdminVan, "id" | "name">[]>("vans")
@@ -66,6 +68,27 @@ export function VanShifts() {
     return () => clearInterval(timer);
   }, [load]);
 
+  const endShift = async (shift: VanShiftRow) => {
+    if (!confirm(endShiftQuestion(shift))) return;
+    setEndingId(shift.id);
+    try {
+      const result = await appRequest<{ expiredRequests: number; depositReleasesFailed: number }>(
+        `van-shifts/${shift.id}/end`,
+        { method: "POST" },
+      );
+      toast.success(
+        result.depositReleasesFailed > 0
+          ? `Shift ended. ${result.depositReleasesFailed} deposit hold(s) couldn't be released yet and will be retried.`
+          : "Shift ended.",
+      );
+      await load(true);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Couldn't end the shift");
+    } finally {
+      setEndingId(null);
+    }
+  };
+
   const pages = pageCount(data.total, SHIFTS_PAGE_SIZE);
 
   let content: React.ReactNode;
@@ -86,6 +109,7 @@ export function VanShifts() {
               <TableHead>Length</TableHead>
               <TableHead>Last reported in</TableHead>
               <TableHead className="text-right">Open requests</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -117,6 +141,18 @@ export function VanShifts() {
                     )}
                   </TableCell>
                   <TableCell className="text-right">{shift.live ? shift.openRequests : "None"}</TableCell>
+                  <TableCell className="text-right">
+                    {shift.live ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={endingId === shift.id}
+                        onClick={() => void endShift(shift)}
+                      >
+                        {endingId === shift.id ? "Ending..." : "End shift"}
+                      </Button>
+                    ) : null}
+                  </TableCell>
                 </TableRow>
               );
             })}

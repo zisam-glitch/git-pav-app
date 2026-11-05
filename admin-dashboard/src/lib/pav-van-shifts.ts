@@ -92,3 +92,12 @@ export function shiftLength(shift: Pick<VanShiftRow, "startedAt" | "endedAt">, n
   if (hours === 0) return `${rest} min`;
   return rest ? `${hours} hr ${rest} min` : `${hours} hr`;
 }
+
+/** What staff confirm before ending someone else's shift. Says what happens and what doesn't. */
+export function endShiftQuestion(shift: Pick<VanShiftRow, "vanName" | "operatorName" | "openRequests">): string {
+  const waiting =
+    shift.openRequests > 0
+      ? ` ${shift.openRequests} open request${shift.openRequests === 1 ? "" : "s"} will be expired and any deposit hold released, and the patient${shift.openRequests === 1 ? " is" : "s are"} told the van went offline.`
+      : "";
+  return `End ${shift.operatorName}'s shift on ${shift.vanName}?${waiting} Visits already accepted are not affected, and the shift can't end while any are open. The operator will have to start a new shift. This can't be undone.`;
+}

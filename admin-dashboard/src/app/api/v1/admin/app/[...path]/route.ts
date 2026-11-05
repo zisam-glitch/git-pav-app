@@ -54,6 +54,7 @@ const ALLOWED: Record<string, RegExp[]> = {
     new RegExp(`^vans/${SEG}/assignments$`),
     new RegExp(`^vans/${SEG}/assignments/${SEG}/end$`),
     /^services$/,
+    new RegExp(`^van-shifts/${SEG}/end$`),
     new RegExp(`^erasure-requests/${SEG}/complete$`),
     new RegExp(`^erasure-requests/${SEG}/reject$`),
     new RegExp(`^messages/${SEG}/reply$`),

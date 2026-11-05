@@ -10,6 +10,7 @@ import { londonTimeToUtc } from "../lib/availability";
 import { getCoverageBackend } from "../lib/van-coverage";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
+import { endVanShift } from "../lib/van-shift-end";
 import { passwordResetService } from "../lib/otp-service";
 import { communicationService } from "../lib/communication-service";
 import { safeError } from "../lib/log-safety";
@@ -1182,6 +1183,54 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
     depositReleaseFailures,
     vansOut,
     asOf: now.toISOString(),
+  });
+});
+
+// ─── POST /api/admin/van-shifts/:id/end ───────────────────────────────────────
+// Ends a shift that was left running (the operator's phone died, they forgot),
+// which would otherwise block that van and that operator from starting
+// another. Same rules as the operator ending their own shift: stops already
+// accepted or under way must be completed or cancelled first, because those
+// patients are waiting with a deposit taken; pending requests are expired and
+// their deposit holds released. Recorded in the audit log.
+router.post("/van-shifts/:id/end", requireAuth, requireRole("admin"), validateParams(idParamsSchema), async (req: AuthRequest, res: Response) => {
+  const shiftId = String(req.params.id);
+  const shift = await prisma.vanShift.findUnique({
+    where: { id: shiftId },
+    select: { id: true, vanId: true, operatorId: true, endedAt: true },
+  });
+  if (!shift) return res.status(404).json({ error: "Shift not found" });
+  if (shift.endedAt) return res.status(409).json({ error: "That shift has already ended" });
+
+  const result = await endVanShift(shift);
+  if (!result.ended) {
+    // The dashboard shows `error` as it is, so the instructions go in it.
+    return res.status(409).json({
+      error: `Can't end this shift yet: ${result.openStops} accepted or in-progress stop(s) are still open. Cancel or complete those visits first, then end the shift.`,
+      openStops: result.openStops,
+    });
+  }
+
+  await createAuditLogWithIntegrity({
+    action: "admin.van_shift.ended",
+    actorId: req.user!.sub,
+    resourceId: shift.id,
+    sessionId: req.user?.sessionId ?? null,
+    ipHash: pseudonymiseIp(req.ip || ""),
+    metadata: {
+      vanId: shift.vanId,
+      operatorId: shift.operatorId,
+      expiredRequests: result.expiredRequests,
+      depositReleasesFailed: result.failedReleases.length,
+    },
+  }).catch(logFailure("audit write admin.van_shift.ended"));
+
+  return res.json({
+    id: result.shift.id,
+    status: result.shift.status,
+    endedAt: result.shift.endedAt,
+    expiredRequests: result.expiredRequests,
+    depositReleasesFailed: result.failedReleases.length,
   });
 });
 

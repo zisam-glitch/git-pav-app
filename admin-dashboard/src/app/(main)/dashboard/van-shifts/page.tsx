@@ -7,7 +7,8 @@ export default function VanShiftsPage() {
         <h1 className="font-bold text-3xl tracking-tight">Van shifts</h1>
         <p className="text-muted-foreground text-sm">
           Which vans are out now and recent shifts, newest first. A van that is on shift but hasn't reported in for ten
-          minutes is flagged. Where a van is, and who its requests are from, aren't shown here.
+          minutes is flagged. If a shift was left running, End shift frees the van and operator to start again. Where a
+          van is, and who its requests are from, aren't shown here.
         </p>
       </div>
 

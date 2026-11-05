@@ -28,6 +28,7 @@ const ALLOWED: Record<string, RegExp[]> = {
     /^consents$/,
     /^sar-exports$/,
     /^van-shifts$/,
+    /^attention$/,
   ],
   PATCH: [
     new RegExp(`^messages/${SEG}/read$`),

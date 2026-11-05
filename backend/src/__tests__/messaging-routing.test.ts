@@ -4,6 +4,7 @@ import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
 import { communicationService } from "../lib/communication-service";
 import { redis } from "../lib/redis";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 describe("CS-29: Messaging that reaches people (MS-3)", () => {
   let server: http.Server;
@@ -61,7 +62,7 @@ describe("CS-29: Messaging that reaches people (MS-3)", () => {
       data: {
         userId: user.id,
         fullName,
-        gdcNumber: String(910000 + crypto.randomInt(0, 89999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

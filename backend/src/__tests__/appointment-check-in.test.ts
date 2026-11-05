@@ -1,5 +1,6 @@
 import http from "http";
 import crypto from "crypto";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // POST /api/booking/appointments/:id/check-in records only the pre-visit tasks
 // the patient actually ticked (BK-7): nothing defaults to done. Synthetic data only.
@@ -37,7 +38,7 @@ describe("POST /api/booking/appointments/:id/check-in", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Synthetic Clinician",
-        gdcNumber: String(900000 + crypto.randomInt(0, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

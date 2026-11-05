@@ -1,5 +1,6 @@
 import http from "http";
 import crypto from "crypto";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // GET /api/booking/appointments/:id/clinical-context feeds the prescribing
 // screen (MC-1): only the appointment's own clinician may read the patient's
@@ -45,7 +46,7 @@ describe("GET /api/booking/appointments/:id/clinical-context", () => {
 
     const own = await makeUser("clinician", "ctx-own");
     const other = await makeUser("clinician", "ctx-other");
-    const gdc = () => String(900000 + crypto.randomInt(0, 99999)).padStart(6, "0");
+    const gdc = () => uniqueGdc();
     const ownProfile = await prisma.clinicianProfile.create({
       data: { userId: own.id, fullName: "Own Clinician", gdcNumber: gdc(), roleTitle: "Dentist" },
     });

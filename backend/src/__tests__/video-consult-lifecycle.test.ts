@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
 import { decryptField } from "../lib/encryption";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 describe("CS-27: Video Consultation Lifecycle (VD-2, VD-3, VD-4, MC-3)", () => {
   let server: http.Server;
@@ -62,7 +63,7 @@ describe("CS-27: Video Consultation Lifecycle (VD-2, VD-3, VD-4, MC-3)", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Dr. Sarah Dental",
-        gdcNumber: String(800000 + crypto.randomInt(1, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

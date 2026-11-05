@@ -1,6 +1,7 @@
 import http from "http";
 import crypto from "crypto";
 import { londonDate, londonTimeToUtc, slotsForDay, weekdayOf } from "../lib/availability";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-30 (decisions log #12): slots come from clinic opening hours and the
 // clinician's rota, in UK time, and only a real free slot can be booked.
@@ -44,7 +45,7 @@ describe("opening hours and rota", () => {
     const user = await prisma.user.create({ data: { email: `rota-${crypto.randomUUID().slice(0, 8)}-${tag}@example.test`, passwordHash: "x", role: "clinician" } });
     userIds.push(user.id);
     const clinician = await prisma.clinicianProfile.create({
-      data: { userId: user.id, fullName: "Synthetic Dentist", gdcNumber: String(900000 + crypto.randomInt(0, 99999)), roleTitle: "Dentist" },
+      data: { userId: user.id, fullName: "Synthetic Dentist", gdcNumber: uniqueGdc(), roleTitle: "Dentist" },
     });
     await prisma.clinicianRotaBlock.createMany({
       data: blocks.map((b) => ({ clinicianId: clinician.id, weekday: b.weekday, startMinute: b.start, endMinute: b.end, clinicId: b.clinicId ?? null })),

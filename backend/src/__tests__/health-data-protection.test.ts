@@ -6,6 +6,7 @@ import { isEncryptedEnvelope, decryptString } from "../lib/encryption";
 import { communicationService } from "../lib/communication-service";
 import { objectStorage, createStorageClient } from "../lib/object-storage";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 // CS-50: Health data at rest and in transit (audit §2 item 6, CS-26, CS-28)
 // - Message threads: neutral previews in DB, encrypted subjects, escaped email notifications
@@ -143,7 +144,7 @@ describe("CS-50: Health data protection at rest and in transit", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Dr. Protection",
-        gdcNumber: String(920000 + crypto.randomInt(1000, 9999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });
@@ -247,7 +248,7 @@ describe("CS-50: Health data protection at rest and in transit", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Dr. Odontogram",
-        gdcNumber: String(930000 + crypto.randomInt(1000, 9999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

@@ -4,6 +4,7 @@ import { prisma } from "../lib/prisma";
 import { signAccessToken } from "../lib/jwt";
 import { verifyAuditIntegrity } from "../lib/audit-integrity";
 import { londonDate, londonTimeToUtc } from "../lib/availability";
+import { uniqueGdc } from "../../test/unique-gdc";
 
 describe("CS-28: Clinician Portal (PT-3, MB-4)", () => {
   let server: http.Server;
@@ -69,7 +70,7 @@ describe("CS-28: Clinician Portal (PT-3, MB-4)", () => {
       data: {
         userId: clinicianUser.id,
         fullName: "Dr. Jonathan Smith",
-        gdcNumber: String(810000 + crypto.randomInt(1, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });
@@ -89,7 +90,7 @@ describe("CS-28: Clinician Portal (PT-3, MB-4)", () => {
       data: {
         userId: otherClinicianUser.id,
         fullName: "Dr. Other Clinician",
-        gdcNumber: String(820000 + crypto.randomInt(1, 99999)),
+        gdcNumber: uniqueGdc(),
         roleTitle: "Dentist",
       },
     });

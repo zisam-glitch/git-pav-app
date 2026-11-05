@@ -13,6 +13,7 @@ import {
   type LucideIcon,
   Mail,
   MessagesSquare,
+  ShieldCheck,
   Pill,
   Smartphone,
   ReceiptText,
@@ -151,6 +152,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Erasure Requests",
         url: "/dashboard/erasure-requests",
         icon: UserX,
+      },
+      {
+        id: "pav-privacy-records",
+        title: "Consent & Access",
+        url: "/dashboard/privacy-records",
+        icon: ShieldCheck,
       },
       {
         id: "pav-prescriptions",

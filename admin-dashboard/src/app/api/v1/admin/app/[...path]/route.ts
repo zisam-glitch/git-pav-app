@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth/middleware";
 import { pavApi } from "@/lib/pav-api.server";
 
 // Passes the dashboard's opening hours, rota, erasure, team, dentist profile, inbox, referral voucher, app
-// appointment, audit log, prescriptions register and van service area screens through to
+// appointment, audit log, prescriptions register, consent and data access screens and van service area screens through to
 // the app backend's /api/admin endpoints, as the signed-in staff member. Only the
 // routes below are forwarded; anything else is a 404.
 const SEG = "[A-Za-z0-9_-]{1,64}";
@@ -25,6 +25,8 @@ const ALLOWED: Record<string, RegExp[]> = {
     /^appointments$/,
     /^audit-logs$/,
     /^prescriptions$/,
+    /^consents$/,
+    /^sar-exports$/,
   ],
   PATCH: [
     new RegExp(`^messages/${SEG}/read$`),

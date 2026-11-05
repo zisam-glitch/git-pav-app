@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { consentTypes } from "./consents";
 
 const uuid = z.string().guid();
 const role = z.enum(["patient", "clinician", "operator", "admin"]);
@@ -29,6 +30,24 @@ export const adminPrescriptionsQuerySchema = z.object({
   from: isoDay.optional(),
   to: isoDay.optional(),
   clinicianId: uuid.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+}).strict();
+
+export const adminConsentsQuerySchema = z.object({
+  consentType: consentTypes.optional(),
+  /** granted: currently in force. withdrawn: the patient has taken it back. */
+  status: z.enum(["granted", "withdrawn"]).optional(),
+  patientId: uuid.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+}).strict();
+
+export const adminSarExportsQuerySchema = z.object({
+  /** UK calendar days, both included, by the day the bundle was made. */
+  from: isoDay.optional(),
+  to: isoDay.optional(),
+  patientId: uuid.optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
 }).strict();

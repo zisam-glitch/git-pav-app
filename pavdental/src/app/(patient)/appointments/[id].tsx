@@ -19,6 +19,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
+import { TOO_LATE_MESSAGE, rescheduleState } from "@/features/booking/reschedule";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Appointment detail — full context + lifecycle actions ────────────────────
@@ -88,6 +89,9 @@ export default function AppointmentDetailScreen() {
   // triage questions, then wait for the clinician to let the patient in.
   const end = new Date(booking.endTimeUtc ?? booking.startTimeUtc);
   const badge = appointmentBadge(booking);
+  // Moving a booking is offered only when it can work: a paid clinic or video
+  // visit with 48 hours' notice or more. The server checks again.
+  const rescheduleOffer = rescheduleState(booking);
   const canJoinVideo =
     booking.channel === "video" &&
     (booking.status === "confirmed" || booking.status === "in_progress") &&
@@ -203,6 +207,11 @@ export default function AppointmentDetailScreen() {
           </Pressable>
         ) : null}
 
+        {rescheduleOffer === "too_late" ? (
+          <ThemedText variant="caption" style={styles.rescheduleNote}>
+            {TOO_LATE_MESSAGE}
+          </ThemedText>
+        ) : null}
       </ScrollView>
 
       {/* Lifecycle actions */}
@@ -224,15 +233,26 @@ export default function AppointmentDetailScreen() {
             onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
           />
         ) : (
-          // No Reschedule button: the backend can't move a booking yet, and what
-          // happens to the deposit is waiting on the owner (COMPLETION-PLAN decision 9).
-          <Button
-            title="Cancel"
-            variant="destructive"
-            size="lg"
-            style={styles.footerBtn}
-            onPress={() => setConfirmCancel(true)}
-          />
+          <>
+            {rescheduleOffer === "allowed" ? (
+              <Button
+                title="Reschedule"
+                variant="secondary"
+                size="lg"
+                style={styles.footerBtn}
+                onPress={() =>
+                  router.push({ pathname: "/(patient)/appointments/reschedule" as never, params: { appointmentId: booking.id } })
+                }
+              />
+            ) : null}
+            <Button
+              title="Cancel"
+              variant="destructive"
+              size="lg"
+              style={styles.footerBtn}
+              onPress={() => setConfirmCancel(true)}
+            />
+          </>
         )}
       </View>
 
@@ -340,6 +360,9 @@ const styles = StyleSheet.create({
   navTitle: {
     color: colors.label,
     fontWeight: "700",
+  },
+  rescheduleNote: {
+    color: colors.secondaryLabel,
   },
   serviceTitle: {
     color: colors.label,

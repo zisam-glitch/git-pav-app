@@ -100,7 +100,12 @@ for (const [name, screen] of [["page", detail], ["Home", home], ["Bookings", lis
 }
 assert(detail.includes("depositPaidLabel(booking.depositPaidPence)"), "the page shows what was paid");
 assert(detail.includes("appointmentBadge(booking)"), "the page uses the shared badge");
-assert(!detail.includes('title="Reschedule"'), "no Reschedule button until the backend can do it");
+// The backend can move a booking now (48 hours' notice, deposit stays). The button
+// may only appear behind the shared rule, so nobody is offered a move that is refused.
+assert(
+  !detail.includes('title="Reschedule"') || /rescheduleOffer === "allowed" \? \(\s*<Button\s+title="Reschedule"/.test(detail),
+  "the Reschedule button only shows when the shared rule allows a move"
+);
 assert(home.includes("nextVisit("), "Home picks the next visit with the shared rule");
 assert(!home.includes('nextAppointment ? "Confirmed"'), "Home doesn't hard-code Confirmed");
 

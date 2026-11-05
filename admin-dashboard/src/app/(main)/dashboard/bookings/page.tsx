@@ -18,9 +18,11 @@ export default function BookingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold tracking-tight">Bookings Manager</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Website requests</h1>
         <p className="text-muted-foreground text-sm">
-          Review, confirm, and manage appointment requests from the website. Today is {format(new Date(), "PPP")}.
+          Requests sent from the website form, with the day and time the person would like. A website request doesn't
+          hold a slot or take a deposit, and it is separate from App Appointments, where visits booked in the app are
+          managed. Today is {format(new Date(), "PPP")}.
         </p>
       </div>
 

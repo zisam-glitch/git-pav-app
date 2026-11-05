@@ -14,7 +14,7 @@ interface StatsProps {
 export function BookingsStats({ stats }: { stats: StatsProps }) {
   const cards = [
     {
-      title: "Total Bookings",
+      title: "Total requests",
       value: stats.total,
       icon: Calendar,
       color: "text-blue-500",

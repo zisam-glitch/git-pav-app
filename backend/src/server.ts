@@ -43,6 +43,7 @@ import { redis } from "./lib/redis";
 import { env } from "./config/env";
 import { startAuditMonitoring, stopAuditMonitoring } from "./lib/audit-monitoring";
 import { startBackgroundJobs, stopBackgroundJobs } from "./lib/background-jobs";
+import { bootstrapAdminFromEnv } from "./lib/bootstrap-admin";
 import { flushErrorTracking, initErrorTracking, reportError } from "./lib/error-tracking";
 import { safeError } from "./lib/log-safety";
 import { getCoverageBackend } from "./lib/van-coverage";
@@ -336,6 +337,10 @@ if (require.main === module) {
 
     // Start audit monitoring services
     startAuditMonitoring();
+
+    // A new deployment with no shell: BOOTSTRAP_ADMIN_EMAIL creates the first
+    // admin once (see lib/bootstrap-admin.ts). Does nothing when one exists.
+    void bootstrapAdminFromEnv();
 
     // Start background jobs (slot hold sweeper and notification dispatcher)
     startBackgroundJobs();

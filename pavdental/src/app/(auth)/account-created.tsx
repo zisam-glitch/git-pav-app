@@ -33,7 +33,7 @@ export default function AccountCreatedScreen() {
               <AppIcon name="checkCircle" size={16} color={colors.success} />
             </View>
             <ThemedText variant="subhead" style={styles.summaryText}>
-              Verified patient credentials active
+              Your email address is verified
             </ThemedText>
           </View>
           <View style={styles.summaryRow}>
@@ -41,7 +41,7 @@ export default function AccountCreatedScreen() {
               <AppIcon name="checkCircle" size={16} color={colors.success} />
             </View>
             <ThemedText variant="subhead" style={styles.summaryText}>
-              256-bit encrypted medical safeguards
+              Your health details are encrypted
             </ThemedText>
           </View>
         </Card>

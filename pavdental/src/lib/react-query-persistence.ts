@@ -94,7 +94,6 @@ export function getCacheTTL(queryKey: unknown[]): number {
 export async function clearPersistedCache(): Promise<void> {
   try {
     await SecureStore.deleteItemAsync(PERSIST_KEY);
-    console.log('[PERSIST] Cleared persisted cache');
   } catch (error) {
     console.error('[PERSIST] Failed to clear cache:', error);
   }

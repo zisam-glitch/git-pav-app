@@ -119,7 +119,9 @@ router.post("/verify", async (req: Request, res: Response) => {
   return res.json({
     accessToken,
     refreshToken,
-    user: toAuthUser(user),
+    // `user` was loaded before the update above, so say what is true now: a
+    // correct code proves the phone.
+    user: toAuthUser({ ...user, phoneVerified: true }),
   });
 });
 

@@ -243,6 +243,20 @@ export const authApi = {
     return res.json();
   },
 
+  /** The six-digit code from the verification email. Needs the address too. */
+  confirmEmailCode: async (email: string, code: string) => {
+    const res = await fetch(`${API_URL}/api/auth/verify-email/confirm`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error((err as any).error ?? "Invalid or expired verification code");
+    }
+    return res.json();
+  },
+
   resendEmailVerification: async (email: string) => {
     const res = await fetch(`${API_URL}/api/auth/verify-email/request`, {
       method: "POST",

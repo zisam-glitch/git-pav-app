@@ -2,6 +2,7 @@ import { env } from "../config/env";
 import { maskEmail, maskPhone, safeError } from "./log-safety";
 import { prisma } from "./prisma";
 import { isPlaceholderCredential } from "../config/placeholder";
+import { formatEmailCode } from "./email-code";
 
 export interface SendEmailOptions {
   to: string;
@@ -149,7 +150,9 @@ export class CommunicationService {
     return { success: true, sid: `mock_sms_${Date.now()}` };
   }
 
-  async sendVerificationEmail(email: string, token: string): Promise<boolean> {
+  async sendVerificationEmail(email: string, token: string, code?: string): Promise<boolean> {
+    // With a short code, people type that; the long token only rides in the link.
+    const shownCode = code ? formatEmailCode(code) : token;
     const appUrl = process.env.APP_URL || "http://localhost:8081";
     const verificationUrl = `${appUrl}/verify-email?token=${encodeURIComponent(token)}`;
 
@@ -162,12 +165,14 @@ export class CommunicationService {
             Verify Email Address
           </a>
         </p>
-        <p style="color: #64748B; font-size: 13px;">Or copy and paste this verification code into the app: <strong>${token}</strong></p>
+        <p style="color: #64748B; font-size: 13px;">Or enter this verification code in the app:</p>
+        <p style="font-size: 28px; letter-spacing: 4px; font-weight: bold; color: #0F172A; margin: 8px 0 0;">${shownCode}</p>
+        ${code ? '<p style="color: #64748B; font-size: 12px;">The code expires in 30 minutes.</p>' : ""}
         <p style="color: #94A3B8; font-size: 12px; margin-top: 40px;">If you did not create a Pav Dental account, please disregard this message.</p>
       </div>
     `;
 
-    const text = `Pav Dental Account Verification\n\nPlease verify your email by opening:\n${verificationUrl}\n\nOr enter code: ${token}\n\nThis link expires in 24 hours.`;
+    const text = `Pav Dental Account Verification\n\nPlease verify your email by opening:\n${verificationUrl}\n\nOr enter code: ${shownCode}\n\n${code ? "The code expires in 30 minutes. " : ""}The link expires in 24 hours.`;
 
     const result = await this.sendEmail({
       to: email,

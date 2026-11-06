@@ -10,6 +10,7 @@
 // Reads backend/.env, as the server does, so `npm run` works in a fresh checkout.
 import "dotenv/config";
 import { createHash, randomBytes } from "crypto";
+import { generateEmailCode, hashEmailCode } from "../src/lib/email-code";
 import { PrismaClient } from "@prisma/client";
 
 const VALID_HOURS = 24;
@@ -39,8 +40,17 @@ async function main() {
         expiresAt: new Date(Date.now() + VALID_HOURS * 60 * 60 * 1000),
       },
     });
-    console.log(`Email verification code for ${email}: ${code} (valid for ${VALID_HOURS} hours)`);
-    console.log(`Or open: pavdental://verify-email?token=${code}`);
+    // The six-digit code people type (same rules as the real email: 30 minutes).
+    const shortCode = generateEmailCode();
+    await prisma.emailVerificationToken.create({
+      data: {
+        userId: user.id,
+        token: hashEmailCode(user.id, shortCode),
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+      },
+    });
+    console.log(`Email verification code for ${email}: ${shortCode} (valid for 30 minutes)`);
+    console.log(`Link token (valid for ${VALID_HOURS} hours): pavdental://verify-email?token=${code}`);
   } finally {
     await prisma.$disconnect();
   }

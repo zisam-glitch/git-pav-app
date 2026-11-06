@@ -1,14 +1,14 @@
 import { z } from "zod";
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, PASSWORD_TOO_LONG, PASSWORD_TOO_SHORT } from "../lib/password-policy";
 
 const email = z.string().trim().toLowerCase().email().max(254);
 
-// Password policy: minimum 8 chars, at least one uppercase, one lowercase, one number
+// Password policy: length is the rule (see lib/password-policy.ts). Common,
+// personal and breached passwords are refused by the routes, which can look
+// things up; this schema only checks the length.
 const password = z.string()
-  .min(8)
-  .max(128)
-  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-  .regex(/[0-9]/, "Password must contain at least one number");
+  .min(MIN_PASSWORD_LENGTH, PASSWORD_TOO_SHORT)
+  .max(MAX_PASSWORD_LENGTH, PASSWORD_TOO_LONG);
 
 const name = z.string().trim().min(1).max(100);
 

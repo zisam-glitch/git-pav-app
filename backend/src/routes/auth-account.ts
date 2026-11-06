@@ -28,6 +28,7 @@ import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { revokeSessions } from "../lib/session-revocation";
 import { toAuthUser } from "./auth";
+import { checkPasswordLength, validateNewPassword } from "../lib/password-policy";
 
 const router = Router();
 
@@ -152,17 +153,11 @@ router.post("/change-password", requireAuth, async (req: AuthRequest, res: Respo
   if (!currentPassword || !newPassword) {
     return res.status(400).json({ error: "currentPassword and newPassword are required" });
   }
-  const isStrongPassword =
-    typeof newPassword === "string" &&
-    newPassword.length >= 8 &&
-    newPassword.length <= 128 &&
-    /[A-Z]/.test(newPassword) &&
-    /[a-z]/.test(newPassword) &&
-    /[0-9]/.test(newPassword);
-  if (!isStrongPassword) {
-    return res.status(400).json({
-      error: "New password must be 8-128 characters with at least one uppercase letter, one lowercase letter, and one number",
-    });
+  // Length first, so a wrong request costs nothing; the full check follows
+  // once we know whose account it is.
+  const lengthProblem = checkPasswordLength(newPassword);
+  if (lengthProblem) {
+    return res.status(400).json({ error: lengthProblem, code: "WEAK_PASSWORD" });
   }
 
   const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
@@ -173,6 +168,10 @@ router.post("/change-password", requireAuth, async (req: AuthRequest, res: Respo
   }
   if (await argon2.verify(user.passwordHash, newPassword)) {
     return res.status(400).json({ error: "New password must be different from the current password" });
+  }
+  const passwordCheck = await validateNewPassword(newPassword, { email: user.email });
+  if (!passwordCheck.ok) {
+    return res.status(400).json({ error: passwordCheck.error, code: "WEAK_PASSWORD" });
   }
 
   const passwordHash = await argon2.hash(newPassword);

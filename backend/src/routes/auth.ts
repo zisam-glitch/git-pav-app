@@ -13,6 +13,7 @@ import { revokeSessions } from "../lib/session-revocation";
 import { redis } from "../lib/redis";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
+import { validateNewPassword } from "../lib/password-policy";
 import {
   EMAIL_CODE_MAX_ATTEMPTS,
   EMAIL_CODE_VALID_SECONDS,
@@ -23,6 +24,17 @@ import {
 } from "../lib/email-code";
 
 const router = Router();
+
+const ARGON2_OPTIONS = { type: argon2.argon2id, memoryCost: 65536, timeCost: 3, parallelism: 4 } as const;
+
+// A password check against a throwaway hash. Sign-in runs it when the account
+// doesn't exist, is locked or is off, so those answers take as long as a wrong
+// password does and timing can't tell them apart (OWASP: uniform responses).
+let dummyHash: Promise<string> | null = null;
+async function burnPasswordCheck(password: string): Promise<void> {
+  dummyHash ??= argon2.hash("pav-dental-timing-pad", ARGON2_OPTIONS);
+  await argon2.verify(await dummyHash, password).catch(() => false);
+}
 
 const CODE_INVALID_MESSAGE = "That code isn't right, or it has expired. Check the email, or ask for a new code.";
 
@@ -77,12 +89,24 @@ router.post("/check-email", authLimiterMiddleware, validateBody(checkEmailSchema
 router.post("/register", authLimiterMiddleware, validateBody(registerSchema), async (req: Request, res: Response) => {
   const { email, password, firstName, lastName, phone, referralCode } = req.body;
 
+  const registerIp = pseudonymiseIp((req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown");
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
+    // Telling someone an address is taken is friendly, and also lets a script
+    // test addresses. Cap how many an address-by-address probe can learn.
+    if (await rateLimiter.isRateLimited(`register-taken:${registerIp}`, 5, 3600)) {
+      return res.status(429).json({ error: "Too many attempts. Please try again later.", code: "RATE_LIMITED" });
+    }
     return res.status(409).json({
       error: "This email is already registered. Sign in instead, or reset your password if you've forgotten it.",
       code: "EMAIL_REGISTERED",
     });
+  }
+
+  const passwordCheck = await validateNewPassword(password, { email, firstName, lastName });
+  if (!passwordCheck.ok) {
+    return res.status(400).json({ error: passwordCheck.error, code: "WEAK_PASSWORD" });
   }
 
   // A mistyped code is refused rather than dropped, so the patient can fix it.
@@ -91,12 +115,7 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
     return res.status(400).json({ error: "That referral code isn't valid. Check it, or leave it blank." });
   }
 
-  const passwordHash = await argon2.hash(password, {
-    type: argon2.argon2id,
-    memoryCost: 65536,
-    timeCost: 3,
-    parallelism: 4,
-  });
+  const passwordHash = await argon2.hash(password, ARGON2_OPTIONS);
 
   const user = await prisma.user.create({
     data: {
@@ -152,6 +171,7 @@ router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (r
   });
 
   if (!user || !user.isActive) {
+    await burnPasswordCheck(password);
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
@@ -159,6 +179,7 @@ router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (r
   // A locked account answers exactly like a wrong password, so the response
   // doesn't confirm that the email has an account (AT-7).
   if (user.lockedUntil && new Date() < user.lockedUntil) {
+    await burnPasswordCheck(password);
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
@@ -169,6 +190,7 @@ router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (r
 
   const isUserIpLocked = await redis.get(userIpLockKey).catch(() => null);
   if (isUserIpLocked) {
+    await burnPasswordCheck(password);
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
@@ -416,11 +438,10 @@ router.post("/verify-email/request", authLimiterMiddleware, async (req: Request,
     return res.json({ message: "If an account exists, a verification code has been sent." });
   }
 
+  // Same answer as for an unknown address: this route must not say who has an
+  // account or who has already verified (OWASP: no discrepancy factor).
   if (user.emailVerified) {
-    return res.status(400).json({
-      error: "This email is already verified. Sign in to continue.",
-      code: "EMAIL_VERIFIED",
-    });
+    return res.json({ message: "If an account exists, a verification code has been sent." });
   }
 
   // Generate the link token and the six-digit code
@@ -559,18 +580,10 @@ router.post("/password-reset/confirm", authLimiterMiddleware, async (req: Reques
     return res.status(400).json({ error: "Token and new password are required" });
   }
 
-  // Validate password strength (matching registerSchema rules)
-  const isStrongPassword =
-    typeof newPassword === "string" &&
-    newPassword.length >= 8 &&
-    newPassword.length <= 128 &&
-    /[A-Z]/.test(newPassword) &&
-    /[a-z]/.test(newPassword) &&
-    /[0-9]/.test(newPassword);
-  if (!isStrongPassword) {
-    return res.status(400).json({ 
-      error: "Password must be 8-128 characters with at least one uppercase, one lowercase, and one number" 
-    });
+  // Same rules as sign-up: length, not common, not known from a breach.
+  const passwordCheck = await validateNewPassword(newPassword);
+  if (!passwordCheck.ok) {
+    return res.status(400).json({ error: passwordCheck.error, code: "WEAK_PASSWORD" });
   }
 
   const hashedToken = hashToken(token);
@@ -599,12 +612,7 @@ router.post("/password-reset/confirm", authLimiterMiddleware, async (req: Reques
   }
 
   // Hash new password
-  const passwordHash = await argon2.hash(newPassword, {
-    type: argon2.argon2id,
-    memoryCost: 65536,
-    timeCost: 3,
-    parallelism: 4,
-  });
+  const passwordHash = await argon2.hash(newPassword, ARGON2_OPTIONS);
 
   // Update user password
   await prisma.user.update({

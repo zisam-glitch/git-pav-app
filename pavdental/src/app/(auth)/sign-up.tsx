@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Input, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
+import { passwordLengthProblem, passwordMeter, PASSWORD_HINT } from "@/features/auth/password-rules";
 import { authErrorCode, friendlyAuthMessage, parseVerificationEmailStatus } from "@/features/auth/auth-errors";
 import { LEGAL_URLS } from "@/config/legal";
 
@@ -23,18 +24,9 @@ export default function SignUpScreen() {
   const [loading, setLoading] = useState(false);
 
   const passwordStrength = useMemo(() => {
-    if (!password) return { level: 0, label: "", color: colors.separator };
-    const hasLength = password.length >= 8;
-    const hasMix = /[A-Z]/.test(password) && /[a-z]/.test(password);
-    const hasNumOrSym = /[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password);
-
-    if (hasLength && hasMix && hasNumOrSym) {
-      return { level: 3, label: "Strong", color: colors.success };
-    }
-    if ((hasLength && hasMix) || (hasLength && hasNumOrSym) || (hasMix && hasNumOrSym)) {
-      return { level: 2, label: "Medium", color: colors.warning };
-    }
-    return { level: 1, label: "Weak", color: colors.danger };
+    const { level, label } = passwordMeter(password);
+    const color = level === 3 ? colors.success : level === 2 ? colors.warning : level === 1 ? colors.danger : colors.separator;
+    return { level, label, color };
   }, [password]);
 
   const handleRegister = async () => {
@@ -49,13 +41,9 @@ export default function SignUpScreen() {
       return;
     }
 
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      return;
-    }
-
-    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
-      setError("Password must contain at least one uppercase letter, one lowercase letter, and one number.");
+    const lengthProblem = passwordLengthProblem(password);
+    if (lengthProblem) {
+      setError(lengthProblem);
       return;
     }
 
@@ -245,6 +233,9 @@ export default function SignUpScreen() {
               }
             />
 
+            <ThemedText variant="caption" style={styles.passwordHint}>
+              {PASSWORD_HINT}
+            </ThemedText>
             {/* Neo Financial 3-segment password strength indicator */}
             {password.length > 0 ? (
               <View style={styles.strengthContainer}>
@@ -372,6 +363,10 @@ const styles = StyleSheet.create({
   },
   topNav: {
     marginBottom: spacing.md,
+  },
+  passwordHint: {
+    color: colors.secondaryLabel,
+    marginBottom: spacing.xs,
   },
   strengthContainer: {
     flexDirection: "row",

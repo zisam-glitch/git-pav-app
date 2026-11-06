@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Input, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
+import { passwordLengthProblem, PASSWORD_HINT } from "@/features/auth/password-rules";
 
 export default function ResetPasswordScreen() {
   const router = useRouter();
@@ -31,15 +32,9 @@ export default function ResetPasswordScreen() {
       return;
     }
 
-    if (
-      password.length < 8 ||
-      !/[A-Z]/.test(password) ||
-      !/[a-z]/.test(password) ||
-      !/[0-9]/.test(password)
-    ) {
-      setError(
-        "Password must be at least 8 characters and contain uppercase, lowercase, and a number."
-      );
+    const lengthProblem = passwordLengthProblem(password);
+    if (lengthProblem) {
+      setError(lengthProblem);
       return;
     }
 
@@ -83,7 +78,7 @@ export default function ResetPasswordScreen() {
             <ThemedText variant="subhead" style={styles.subtitle}>
               {completed
                 ? "Your password has been changed securely. You can now sign in with your new credentials."
-                : "Create a strong password containing numbers, letters, and symbols."}
+                : PASSWORD_HINT}
             </ThemedText>
           </View>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ThemedText, Input, Button, IconButton, AppIcon } from "@/components";
+import { ThemedText, OtpInput, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
 import {
@@ -34,7 +34,6 @@ export default function VerifyEmailScreen() {
       ? "We couldn't send the email just now. Tap Resend code to try again."
       : null
   );
-  const [alreadyVerified, setAlreadyVerified] = useState(false);
   // Resend is off for a minute after a code goes out (and right away when the
   // account was just created and the email did go).
   const [resendReadyAt, setResendReadyAt] = useState(initialStatus === "sent" ? Date.now() + RESEND_COOLDOWN_MS : 0);
@@ -76,8 +75,8 @@ export default function VerifyEmailScreen() {
     };
   }, [token]);
 
-  const handleVerify = async () => {
-    const digits = code.replace(/[\s-]/g, "");
+  const handleVerify = async (typed?: string) => {
+    const digits = (typed ?? code).replace(/[\s-]/g, "");
     if (!digits) {
       setError("Please enter the 6-digit code sent to your email.");
       return;
@@ -109,6 +108,8 @@ export default function VerifyEmailScreen() {
       router.replace("/(auth)/account-created");
     } catch (err: any) {
       setError(friendlyAuthMessage(err, "Verification failed. Please check the code."));
+      // Start the boxes over, so a mistyped digit isn't hunted for.
+      setCode("");
       return;
     } finally {
       setLoading(false);
@@ -127,15 +128,13 @@ export default function VerifyEmailScreen() {
       setInfoMessage(null);
       setWarning(null);
       await authApi.resendEmailVerification(email);
-      setInfoMessage(`A new code is on its way to ${email}. It expires in 30 minutes.`);
+      // The server answers the same for every address, so say "if".
+      setInfoMessage(`If ${email} needs verifying, a new code is on its way. It expires in 30 minutes.`);
       setNow(Date.now());
       setResendReadyAt(Date.now() + RESEND_COOLDOWN_MS);
     } catch (err: unknown) {
       const code = authErrorCode(err);
-      if (code === "EMAIL_VERIFIED") {
-        setAlreadyVerified(true);
-        setInfoMessage("This email is already verified. Sign in to continue.");
-      } else if (code === "RATE_LIMITED") {
+      if (code === "RATE_LIMITED") {
         setError(friendlyAuthMessage(err, "Too many requests. Please wait a few minutes."));
         setNow(Date.now());
         setResendReadyAt(Date.now() + RESEND_COOLDOWN_MS);
@@ -209,20 +208,18 @@ export default function VerifyEmailScreen() {
           ) : null}
 
           <View style={styles.form}>
-            <Input
-              label="Verification code"
-              placeholder="6-digit code"
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="number-pad"
-              textContentType="oneTimeCode"
-              autoComplete="one-time-code"
-              maxLength={7}
+            <ThemedText variant="subhead" style={styles.codeLabel}>
+              Verification code
+            </ThemedText>
+            <OtpInput
               value={code}
-              onChangeText={(val) => {
+              invalid={Boolean(error)}
+              disabled={loading}
+              onChange={(val) => {
                 setCode(val);
                 if (error) setError(null);
               }}
+              onComplete={(val) => handleVerify(val)}
             />
           </View>
 
@@ -232,28 +229,19 @@ export default function VerifyEmailScreen() {
               size="lg"
               arrow={true}
               loading={loading}
-              onPress={handleVerify}
+              onPress={() => handleVerify()}
             />
 
-            {alreadyVerified ? (
-              <Button
-                title="Sign in"
-                size="lg"
-                arrow={true}
-                onPress={() => router.replace({ pathname: "/(auth)/sign-in", params: { email: String(email ?? "") } })}
-              />
-            ) : (
-              <Button
-                title={
-                  resending ? "Sending..." : cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"
-                }
-                variant="ghost"
-                size="md"
-                loading={resending}
-                disabled={cooldown > 0}
-                onPress={handleResend}
-              />
-            )}
+            <Button
+              title={
+                resending ? "Sending..." : cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"
+              }
+              variant="ghost"
+              size="md"
+              loading={resending}
+              disabled={cooldown > 0}
+              onPress={handleResend}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -266,6 +254,11 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     gap: spacing.sm,
     paddingTop: spacing.sm,
+  },
+  codeLabel: {
+    color: colors.label,
+    fontWeight: "600",
+    marginBottom: spacing.xs,
   },
   emailHighlight: {
     color: colors.label,

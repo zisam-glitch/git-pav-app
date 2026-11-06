@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/features/auth/password-rules";
 
 // ─── Personal Info Schema ──────────────────────────────────────────────────
 export const personalInfoSchema = z.object({
@@ -74,10 +75,8 @@ export const passwordChangeSchema = z
     currentPassword: z.string().min(1, "Current password is required"),
     newPassword: z
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Must contain at least one uppercase letter")
-      .regex(/[a-z]/, "Must contain at least one lowercase letter")
-      .regex(/[0-9]/, "Must contain at least one number"),
+      .min(MIN_PASSWORD_LENGTH, `Password must be at least ${MIN_PASSWORD_LENGTH} characters`)
+      .max(MAX_PASSWORD_LENGTH, `Password must be ${MAX_PASSWORD_LENGTH} characters or fewer`),
     confirmPassword: z.string().min(1, "Please confirm your new password"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

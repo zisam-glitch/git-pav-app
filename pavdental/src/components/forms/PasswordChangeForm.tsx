@@ -1,3 +1,4 @@
+import { MIN_PASSWORD_LENGTH } from "@/features/auth/password-rules";
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from "react-native";
 import { useForm } from "react-hook-form";
@@ -46,10 +47,7 @@ export function PasswordChangeForm({
   const newPassword = watch("newPassword") || "";
 
   // Requirements checks
-  const hasMinLength = newPassword.length >= 8;
-  const hasUppercase = /[A-Z]/.test(newPassword);
-  const hasLowercase = /[a-z]/.test(newPassword);
-  const hasNumber = /[0-9]/.test(newPassword);
+  const hasMinLength = newPassword.length >= MIN_PASSWORD_LENGTH;
 
   const handleFormSubmit = async (data: PasswordChangeFormData) => {
     try {
@@ -112,25 +110,7 @@ export function PasswordChangeForm({
           <View style={styles.reqItem}>
             <AppIcon name="checkCircle" size={16} color={hasMinLength ? colors.success : colors.tertiaryLabel} variant={hasMinLength ? "Bold" : "Linear"} />
             <ThemedText variant="caption" style={hasMinLength ? styles.reqPassText : styles.reqText}>
-              At least 8 characters
-            </ThemedText>
-          </View>
-          <View style={styles.reqItem}>
-            <AppIcon name="checkCircle" size={16} color={hasUppercase ? colors.success : colors.tertiaryLabel} variant={hasUppercase ? "Bold" : "Linear"} />
-            <ThemedText variant="caption" style={hasUppercase ? styles.reqPassText : styles.reqText}>
-              At least one uppercase letter (A-Z)
-            </ThemedText>
-          </View>
-          <View style={styles.reqItem}>
-            <AppIcon name="checkCircle" size={16} color={hasLowercase ? colors.success : colors.tertiaryLabel} variant={hasLowercase ? "Bold" : "Linear"} />
-            <ThemedText variant="caption" style={hasLowercase ? styles.reqPassText : styles.reqText}>
-              At least one lowercase letter (a-z)
-            </ThemedText>
-          </View>
-          <View style={styles.reqItem}>
-            <AppIcon name="checkCircle" size={16} color={hasNumber ? colors.success : colors.tertiaryLabel} variant={hasNumber ? "Bold" : "Linear"} />
-            <ThemedText variant="caption" style={hasNumber ? styles.reqPassText : styles.reqText}>
-              At least one numeric digit (0-9)
+              At least {MIN_PASSWORD_LENGTH} characters. Three or four random words work well.
             </ThemedText>
           </View>
         </View>

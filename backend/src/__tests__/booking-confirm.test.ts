@@ -37,7 +37,7 @@ describe("PATCH /api/booking/appointments/:id/confirm (non-mock Stripe)", () => 
     const reg = await fetch(`${baseUrl}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password: "UnitTest12345", firstName: "Test", lastName: "Patient" }),
+      body: JSON.stringify({ email, password: "UnitTest12345-synth", firstName: "Test", lastName: "Patient" }),
     });
     expect(reg.status).toBe(201);
     token = ((await reg.json()) as any).accessToken;

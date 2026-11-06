@@ -424,7 +424,7 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
         const confirm = await fetch(`${baseUrl}/api/auth/password-reset/confirm`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: decodeURIComponent(token!), newPassword: "Synthetic1Pass" }),
+          body: JSON.stringify({ token: decodeURIComponent(token!), newPassword: "Synthetic1Pass-reset" }),
         });
         expect(confirm.status).toBe(200);
       } finally {
@@ -441,7 +441,7 @@ describe("CS-31: Back office onboarding and admin-only authorization matrix (AD-
           body: JSON.stringify({
             email: `invite-none-${tag}@example.test`,
             fullName: "Synthetic Operator Two",
-            password: "Synthetic1Pass",
+            password: "Synthetic1Pass-reset",
           }),
         });
         expect(res.status).toBe(201);

@@ -233,9 +233,15 @@ for (const profile of ["preview", "production"] as const) {
 }
 
 // Release builds never sign in a fake patient or show the role switcher:
-// both are for screenshot and simulator builds only.
-for (const profile of ["preview", "production"] as const) {
+// both are for screenshot and simulator builds only. Every profile except the
+// local development one is covered, so a new profile (for example a TestFlight
+// "beta") can't skip the check.
+const releaseProfiles = Object.keys(easConfig.build ?? {}).filter((name) => name !== "development");
+assert(releaseProfiles.includes("preview") && releaseProfiles.includes("production"), "preview and production profiles exist");
+for (const profile of releaseProfiles) {
   const env = (easConfig.build?.[profile]?.env ?? {}) as Record<string, string>;
+  const apiUrl = env.EXPO_PUBLIC_API_URL ?? "";
+  assert(/^https:\/\//.test(apiUrl) && !/localhost|127\.0\.0\.1|10\.0\.2\.2/.test(apiUrl), `${profile} profile sets an https API URL`);
   assert(env.EXPO_PUBLIC_DEMO_LOGIN !== "true", `${profile} profile doesn't turn on the demo login`);
   assert(env.EXPO_PUBLIC_ENABLE_ROLE_SWITCHER !== "true", `${profile} profile doesn't turn on the role switcher`);
 }

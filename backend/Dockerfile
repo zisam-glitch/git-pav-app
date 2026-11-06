@@ -30,4 +30,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD node -e "fetch('http://localhost:' + (process.env.PORT || 3000) + '/livez').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
 
-CMD ["node", "dist/src/server.js"]
+# Hosts that cannot run a separate release command (for example Render's free
+# plan) set RUN_MIGRATIONS=1 so pending migrations apply before the server
+# starts; a failed migration stops the start. Left unset, it just starts.
+CMD ["sh", "-c", "if [ \"$RUN_MIGRATIONS\" = \"1\" ]; then npx prisma migrate deploy; fi && exec node dist/src/server.js"]

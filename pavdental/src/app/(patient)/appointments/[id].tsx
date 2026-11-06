@@ -250,6 +250,7 @@ export default function AppointmentDetailScreen() {
               variant="destructive"
               size="lg"
               style={styles.footerBtn}
+              loading={cancelMutation.isPending}
               onPress={() => setConfirmCancel(true)}
             />
           </>

@@ -24,6 +24,7 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { otpService, rateLimiter } from "../lib/otp-service";
 import { createSession, toAuthUser } from "./auth";
+import { minResponseTime } from "../lib/response-timing";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ const PHONE_RE = /^\+?[1-9]\d{6,14}$/; // E.164-ish
 const OTP_SENT_MESSAGE = "If this number is registered, a verification code has been sent.";
 
 // ─── POST /api/auth/otp/request ──────────────────────────────────────────
-router.post("/request", async (req: Request, res: Response) => {
+router.post("/request", minResponseTime(), async (req: Request, res: Response) => {
   const { phone } = (req.body ?? {}) as { phone?: string };
 
   if (!phone || typeof phone !== "string" || !PHONE_RE.test(phone.trim())) {

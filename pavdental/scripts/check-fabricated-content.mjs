@@ -22,6 +22,8 @@ const RULES = [
   // Claims the restyle in #70 brought back (06-completion-plan.md TC-01..TC-07).
   { name: "referral offer with no scheme behind it", re: /refer (friends|and earn)|invite link/i },
   { name: "security claim the app can't back", re: /Secure Enclave|FaceID Verified|bank-grade/i },
+  // Vague trust badges: say what is true (email verified, health details encrypted), not "verified credentials".
+  { name: "unsupported credential or encryption badge", re: /Verified patient credentials|256-bit encrypted medical safeguards/i },
   { name: "NHS or DSPT compliance claim", re: /\bDSPT\b|NHS (&|and) Private|NHS scale/i },
   { name: "finance promotion", re: /\b(Tabeo|Chrysalis)\b|0% (interest|APR)/i },
   { name: "insurance coverage claim", re: /— covered|member discount|Accepts (Denplan|Bupa|AXA)/i },

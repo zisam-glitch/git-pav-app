@@ -23,6 +23,7 @@ Under Article 28 of the UK GDPR, Pav Dental (Data Controller) must have executed
 | **Sentry** | Error reporting & diagnostics | Scrubbed stack traces (PII scrubbers enabled) | Frankfurt, Germany (EU) | Sentry DPA with Data Scrubbing Addendum | **To Do** | Accept DPA in organisation settings |
 | **Expo (EAS)** | Mobile app builds & push notification delivery (APNs / FCM) | Push tokens, app binary distribution | US / Global | Expo Terms & Privacy Policy | **To Do** | Review terms when configuring EAS org |
 | **postcodes.io** | UK postcode lookup and outcode coordinate resolution | Postcode / outcode query string (no patient identifiers or health data) | UK | Open API Terms / OS OpenData | **To Do** | Verify data minimisation (no patient PII submitted) |
+| **Pwned Passwords** (Have I Been Pwned) | Checks a new password against known breaches at sign-up, reset and password change | The first 5 characters of the password's SHA-1 hash only (k-anonymity). No password, email or patient identifier is sent | Global (Cloudflare) | Public range API terms; no account or agreement | **To Do** | Owner to approve the transfer, or set `PASSWORD_BREACH_CHECK=off` (the check then skips the network; length and common-password rules still apply). The API fails open if unreachable |
 | **Mapbox** | Road network matrix & van routing ETAs | Approximate postcodes/coordinates for route calculation | Global | Mapbox Terms of Service / DPA | **To Do** | Review upon token creation |
 
 ---

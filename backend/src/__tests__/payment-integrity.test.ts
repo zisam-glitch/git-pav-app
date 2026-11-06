@@ -54,7 +54,7 @@ describe("CS-49: Payment and refund integrity", () => {
     const reg = await fetch(`${baseUrl}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password: "UnitTest12345", firstName: "Integrity", lastName: "Tester" }),
+      body: JSON.stringify({ email, password: "UnitTest12345-synth", firstName: "Integrity", lastName: "Tester" }),
     });
     expect(reg.status).toBe(201);
     patientToken = ((await reg.json()) as any).accessToken;

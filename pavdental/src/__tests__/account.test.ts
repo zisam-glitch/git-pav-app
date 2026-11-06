@@ -93,10 +93,9 @@ async function runAccountTests() {
 
   assert(passwordChangeSchema.safeParse(validPassword).success, "Accepts strong matching passwords");
   assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "NewSecurePassword2026", confirmPassword: "DifferentPassword!" }).success, "Rejects mismatched passwords");
-  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "short", confirmPassword: "short" }).success, "Rejects passwords shorter than 8 chars");
-  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "nonumbers", confirmPassword: "nonumbers" }).success, "Rejects passwords without numbers");
-  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "nouppercase1", confirmPassword: "nouppercase1" }).success, "Rejects passwords without uppercase");
-  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "NOLOWERCASE1", confirmPassword: "NOLOWERCASE1" }).success, "Rejects passwords without lowercase");
+  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "short", confirmPassword: "short" }).success, "Rejects passwords shorter than 15 chars");
+  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "fourteen-chars!", confirmPassword: "fourteen-chars!" }).success, "Rejects a 14 character password");
+  assert(passwordChangeSchema.safeParse({ ...validPassword, newPassword: "correct horse battery staple", confirmPassword: "correct horse battery staple" }).success, "Accepts a lowercase passphrase (no composition rules)");
 
   // ── 5. Payment Methods & Dependants API ──────────────────────────────────
   console.log("\n--- 5. Payment Methods CRUD via accountApi ---");

@@ -15,6 +15,7 @@ export { FlowHeader } from "./flow-header";
 export { DetailRow } from "./detail-row";
 export { Button } from "./button";
 export { Input } from "./input";
+export { OtpInput } from "./otp-input";
 export { Card } from "./card";
 export { ListRow } from "./list-row";
 export { Badge } from "./badge";

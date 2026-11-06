@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { createSchemaSql, dashboardSchemaFromEnv, searchPathOption } from "./schema";
+
 // Types for generic query
 export type QueryFn = <T = Record<string, unknown>>(text: string, params?: unknown[]) => Promise<T[]>;
 
@@ -61,7 +63,22 @@ async function createDbClient(): Promise<DbClient> {
   // 1. If real DATABASE_URL is set, use node-postgres (pg.Pool)
   if (databaseUrl) {
     const { Pool } = await import("pg");
-    const pool = new Pool({ connectionString: databaseUrl, max: 10 });
+    // Shared server: keep the dashboard's tables in their own schema and pin every
+    // connection to it, so `users` here never means the app backend's `users`.
+    const schema = dashboardSchemaFromEnv();
+    if (schema) {
+      const setup = new Pool({ connectionString: databaseUrl, max: 1 });
+      try {
+        await setup.query(createSchemaSql(schema));
+      } finally {
+        await setup.end();
+      }
+    }
+    const pool = new Pool({
+      connectionString: databaseUrl,
+      max: 10,
+      ...(schema ? { options: searchPathOption(schema) } : {}),
+    });
 
     const queryFn = async <T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<T[]> => {
       const res = await pool.query(text, params);

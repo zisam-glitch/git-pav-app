@@ -95,7 +95,7 @@ export default function ResetPasswordScreen() {
             <View style={styles.form}>
               <Input
                 label="New password"
-                placeholder="At least 8 characters"
+                placeholder="At least 15 characters"
                 secureTextEntry
                 value={password}
                 onChangeText={(val) => {

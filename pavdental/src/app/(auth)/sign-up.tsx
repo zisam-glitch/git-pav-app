@@ -206,7 +206,7 @@ export default function SignUpScreen() {
 
             <Input
               label="Password"
-              placeholder="At least 8 characters"
+              placeholder="At least 15 characters"
               secureTextEntry={!showPassword}
               autoCapitalize="none"
               value={password}

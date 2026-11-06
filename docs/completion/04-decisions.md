@@ -37,6 +37,7 @@ The owner's answers to the Phase 3 questions (23 Oct 2026), and the defaults cho
 | 25 | Prescribing roles (CS-35) | Only registered dentists and dental surgeons may issue prescriptions; non-prescribing titles (hygienists, nurses) are barred on the server. Owner confirmed on 2026-10-25. | Decided | CS-35 |
 | 26 | Dashboard patients table (CS-31) | Drop redundant dashboard patients table per AGENTS.md; directory queries the backend API via pavApi as the single source of truth. Owner approved on 2026-10-25. | Decided | CS-31 |
 | 27 | Website team profiles (CS-52) | Authentic UK BDS/MJDF GDC-registered dental profiles (Dr. Hassan Bhojani, Dr. Tariq Pav, Dr. Amara Okafor, Dr. Sophia Chen) replace template American MD placeholders. Owner confirmed on 2026-10-25. | Decided | CS-52 |
+| 28 | Dashboard database on staging | The staging dashboard shares the staging API's Postgres server instead of a second database (Render allows one free database; owner chose one database on 2026-11-06). Its tables live in their own schema (`DASHBOARD_DB_SCHEMA=dashboard`) and its connections see only that schema, so its `users` and `audit_logs` never mix with the backend's. **Staging only, with synthetic data.** This bends the rule that the dashboard has no connection to the backend's database, because the connection string can reach the whole server. For production, give the dashboard its own database. | Decided (staging only) | dashboard, staging |
 
 ## Launch questions (answered 25 Oct 2026, 22:28 UTC)
 

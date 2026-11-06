@@ -64,6 +64,7 @@ async function main() {
     twilioAccountSid: read("TWILIO_ACCOUNT_SID"),
     twilioAuthToken: read("TWILIO_AUTH_TOKEN"),
     twilioFromPhone: read("TWILIO_FROM_PHONE"),
+    twilioVerifyServiceSid: read("TWILIO_VERIFY_SERVICE_SID"),
     sentryDsn: read("SENTRY_DSN"),
     allowDevDefaults: ["1", "true"].includes(read("ALLOW_DEV_DEFAULTS") ?? ""),
   };

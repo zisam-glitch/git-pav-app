@@ -24,6 +24,8 @@ import {
 
 const router = Router();
 
+const CODE_INVALID_MESSAGE = "That code isn't right, or it has expired. Check the email, or ask for a new code.";
+
 /**
  * Issues what a verification email carries: the long link token and a short
  * six-digit code for typing. Both verify the same address.
@@ -77,7 +79,10 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    return res.status(409).json({ error: "Email already registered" });
+    return res.status(409).json({
+      error: "This email is already registered. Sign in instead, or reset your password if you've forgotten it.",
+      code: "EMAIL_REGISTERED",
+    });
   }
 
   // A mistyped code is refused rather than dropped, so the patient can fix it.
@@ -113,14 +118,16 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
   // Create first session
   const { accessToken, refreshToken, session } = await createSession(user.id, req);
 
-  // Generate verification token and dispatch welcome verification email
+  // Generate verification token and send the verification email. The app is
+  // told whether it went out, so it can say so (or offer a retry) instead of
+  // always claiming a code was sent.
+  let verificationEmail: "sent" | "failed" = "failed";
   try {
     const { token, code } = await issueEmailVerification(user.id);
-    communicationService.sendVerificationEmail(user.email, token, code).catch((err) => {
-      console.error("[Auth] Failed to dispatch registration verification email:", safeError(err));
-    });
+    const sent = await communicationService.sendVerificationEmail(user.email, token, code);
+    verificationEmail = sent ? "sent" : "failed";
   } catch (err) {
-    console.error("[Auth] Error creating registration verification token:", safeError(err));
+    console.error("[Auth] Failed to send the registration verification email:", safeError(err));
   }
 
   const authResponse = {
@@ -132,7 +139,7 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
   // Validate response conforms to runtime schema
   const validatedResponse = authResponseSchema.parse(authResponse);
 
-  return res.status(201).json(validatedResponse);
+  return res.status(201).json({ ...validatedResponse, verificationEmail });
 });
 
 // ─── POST /api/auth/login ──────────────────────────────────────────────────────
@@ -398,7 +405,10 @@ router.post("/verify-email/request", authLimiterMiddleware, async (req: Request,
   // Rate limit check
   const rateLimitKey = `verify-email:${email}`;
   if (await rateLimiter.isRateLimited(rateLimitKey, 5, 3600)) {
-    return res.status(429).json({ error: "Too many requests. Please try again later." });
+    return res.status(429).json({
+      error: "Too many requests. Please wait a few minutes before asking for another code.",
+      code: "RATE_LIMITED",
+    });
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
@@ -407,14 +417,23 @@ router.post("/verify-email/request", authLimiterMiddleware, async (req: Request,
   }
 
   if (user.emailVerified) {
-    return res.status(400).json({ error: "Email already verified" });
+    return res.status(400).json({
+      error: "This email is already verified. Sign in to continue.",
+      code: "EMAIL_VERIFIED",
+    });
   }
 
   // Generate the link token and the six-digit code
   const { token, code } = await issueEmailVerification(user.id);
 
   // Send verification email via configured provider
-  await communicationService.sendVerificationEmail(user.email, token, code);
+  const sent = await communicationService.sendVerificationEmail(user.email, token, code);
+  if (!sent) {
+    return res.status(503).json({
+      error: "We couldn't send the email right now. Please try again in a few minutes.",
+      code: "EMAIL_NOT_SENT",
+    });
+  }
 
   return res.json({ message: "Verification email sent" });
 });
@@ -429,17 +448,17 @@ router.post("/verify-email/confirm", authLimiterMiddleware, async (req: Request,
     const address = typeof email === "string" ? email.trim() : "";
     const digits = normaliseEmailCode(code);
     if (!address || !digits) {
-      return res.status(400).json({ error: "Enter the 6-digit code from your email" });
+      return res.status(400).json({ error: "Enter the 6-digit code from your email", code: "CODE_FORMAT" });
     }
     if (await rateLimiter.isRateLimited(`verify-email-code:${address.toLowerCase()}`, EMAIL_CODE_MAX_ATTEMPTS, EMAIL_CODE_WINDOW_SECONDS)) {
-      return res.status(429).json({ error: "Too many attempts. Please wait a few minutes and try again." });
+      return res.status(429).json({ error: "Too many attempts. Please wait a few minutes and try again.", code: "RATE_LIMITED" });
     }
     const user = await prisma.user.findFirst({
       where: { email: { equals: address, mode: "insensitive" } },
       select: { id: true },
     });
     if (!user) {
-      return res.status(400).json({ error: "Invalid or expired code" });
+      return res.status(400).json({ error: CODE_INVALID_MESSAGE, code: "CODE_INVALID" });
     }
     const consumed = await prisma.emailVerificationToken.updateMany({
       where: {
@@ -451,7 +470,7 @@ router.post("/verify-email/confirm", authLimiterMiddleware, async (req: Request,
       data: { usedAt: new Date() },
     });
     if (consumed.count !== 1) {
-      return res.status(400).json({ error: "Invalid or expired code" });
+      return res.status(400).json({ error: CODE_INVALID_MESSAGE, code: "CODE_INVALID" });
     }
     await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
     return res.json({ message: "Email verified successfully" });

@@ -5,15 +5,47 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Input, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
+import {
+  authErrorCode,
+  friendlyAuthMessage,
+  parseVerificationEmailStatus,
+  secondsLeft,
+} from "@/features/auth/auth-errors";
+
+/** How long the Resend button stays off after a code goes out. */
+const RESEND_COOLDOWN_MS = 60_000;
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
-  const { email, token } = useLocalSearchParams<{ email?: string; token?: string }>();
+  const { email, token, sent } = useLocalSearchParams<{ email?: string; token?: string; sent?: string }>();
+  // What the server reported when it created the account: "sent" or "failed".
+  const initialStatus = parseVerificationEmailStatus(sent);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(
+    initialStatus === "sent"
+      ? "We emailed you a 6-digit code. It expires in 30 minutes. If it doesn't arrive, check your spam folder."
+      : null
+  );
+  const [warning, setWarning] = useState<string | null>(
+    initialStatus === "failed"
+      ? "We couldn't send the email just now. Tap Resend code to try again."
+      : null
+  );
+  const [alreadyVerified, setAlreadyVerified] = useState(false);
+  // Resend is off for a minute after a code goes out (and right away when the
+  // account was just created and the email did go).
+  const [resendReadyAt, setResendReadyAt] = useState(initialStatus === "sent" ? Date.now() + RESEND_COOLDOWN_MS : 0);
+  const [now, setNow] = useState(Date.now());
+  const cooldown = secondsLeft(resendReadyAt, now);
+
+  useEffect(() => {
+    if (resendReadyAt <= Date.now()) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [resendReadyAt]);
 
   // Auto-verify if opened from email deep link containing token
   useEffect(() => {
@@ -76,7 +108,7 @@ export default function VerifyEmailScreen() {
       // Once verified, invite profile setup (skippable) — then patient home
       router.replace("/(auth)/account-created");
     } catch (err: any) {
-      setError(err?.message || "Verification failed. Please check the code.");
+      setError(friendlyAuthMessage(err, "Verification failed. Please check the code."));
       return;
     } finally {
       setLoading(false);
@@ -85,17 +117,31 @@ export default function VerifyEmailScreen() {
 
   const handleResend = async () => {
     if (!email) {
-      setError("Email address is missing. Please return to sign-in.");
+      setError("Email address is missing. Please go back and try again.");
       return;
     }
+    if (cooldown > 0) return;
     try {
       setResending(true);
       setError(null);
       setInfoMessage(null);
+      setWarning(null);
       await authApi.resendEmailVerification(email);
-      setInfoMessage("Verification code resent to your email.");
-    } catch (err: any) {
-      setError(err?.message || "Failed to resend verification email.");
+      setInfoMessage(`A new code is on its way to ${email}. It expires in 30 minutes.`);
+      setNow(Date.now());
+      setResendReadyAt(Date.now() + RESEND_COOLDOWN_MS);
+    } catch (err: unknown) {
+      const code = authErrorCode(err);
+      if (code === "EMAIL_VERIFIED") {
+        setAlreadyVerified(true);
+        setInfoMessage("This email is already verified. Sign in to continue.");
+      } else if (code === "RATE_LIMITED") {
+        setError(friendlyAuthMessage(err, "Too many requests. Please wait a few minutes."));
+        setNow(Date.now());
+        setResendReadyAt(Date.now() + RESEND_COOLDOWN_MS);
+      } else {
+        setError(friendlyAuthMessage(err, "We couldn't send the email. Please try again in a few minutes."));
+      }
     } finally {
       setResending(false);
     }
@@ -144,6 +190,15 @@ export default function VerifyEmailScreen() {
             </View>
           ) : null}
 
+          {warning ? (
+            <View style={styles.errorBox} accessibilityRole="alert">
+              <AppIcon name="alert" size={16} color={colors.danger} />
+              <ThemedText variant="caption" style={styles.errorText}>
+                {warning}
+              </ThemedText>
+            </View>
+          ) : null}
+
           {error ? (
             <View style={styles.errorBox} accessibilityRole="alert">
               <AppIcon name="alert" size={16} color={colors.danger} />
@@ -180,13 +235,25 @@ export default function VerifyEmailScreen() {
               onPress={handleVerify}
             />
 
-            <Button
-              title={resending ? "Resending..." : "Resend code"}
-              variant="ghost"
-              size="md"
-              loading={resending}
-              onPress={handleResend}
-            />
+            {alreadyVerified ? (
+              <Button
+                title="Sign in"
+                size="lg"
+                arrow={true}
+                onPress={() => router.replace({ pathname: "/(auth)/sign-in", params: { email: String(email ?? "") } })}
+              />
+            ) : (
+              <Button
+                title={
+                  resending ? "Sending..." : cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"
+                }
+                variant="ghost"
+                size="md"
+                loading={resending}
+                disabled={cooldown > 0}
+                onPress={handleResend}
+              />
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

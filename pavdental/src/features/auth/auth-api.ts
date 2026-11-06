@@ -5,6 +5,7 @@ import { useBookingStore } from "../booking/booking-store";
 import { useVanStore } from "../van/van-store";
 import { useOnboardingStore } from "../onboarding/onboarding-store";
 import { API_URL, apiUrl } from "@/config/api";
+import { readAuthError } from "./auth-errors";
 
 export { API_URL, apiUrl };
 
@@ -144,10 +145,7 @@ export const authApi = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, firstName, lastName, phone, ...(referralCode ? { referralCode } : {}) }),
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error ?? "Registration failed");
-    }
+    if (!res.ok) throw await readAuthError(res, "Registration failed");
     const data = await res.json();
     await tokenStore.setRefreshToken(data.refreshToken);
     useAuthStore.getState().setAuth(data.accessToken, data.user);
@@ -236,10 +234,7 @@ export const authApi = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error((err as any).error ?? "Invalid or expired verification code");
-    }
+    if (!res.ok) throw await readAuthError(res, "Invalid or expired verification code");
     return res.json();
   },
 
@@ -250,10 +245,7 @@ export const authApi = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, code }),
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error((err as any).error ?? "Invalid or expired verification code");
-    }
+    if (!res.ok) throw await readAuthError(res, "Invalid or expired verification code");
     return res.json();
   },
 
@@ -263,10 +255,7 @@ export const authApi = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error((err as any).error ?? "Could not resend verification email");
-    }
+    if (!res.ok) throw await readAuthError(res, "Could not resend verification email");
     return res.json();
   },
 

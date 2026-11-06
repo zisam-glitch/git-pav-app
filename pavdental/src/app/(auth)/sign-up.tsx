@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Input, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
+import { authErrorCode, friendlyAuthMessage, parseVerificationEmailStatus } from "@/features/auth/auth-errors";
 import { LEGAL_URLS } from "@/config/legal";
 
 export default function SignUpScreen() {
@@ -18,6 +19,7 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const passwordStrength = useMemo(() => {
@@ -62,7 +64,7 @@ export default function SignUpScreen() {
       setError(null);
 
       // Call backend API to create account
-      await authApi.register(
+      const created = await authApi.register(
         email.trim(),
         password,
         firstName.trim(),
@@ -74,10 +76,11 @@ export default function SignUpScreen() {
       // Navigate to email verification screen
       router.push({
         pathname: "/(auth)/verify-email",
-        params: { email: email.trim() },
+        params: { email: email.trim(), sent: parseVerificationEmailStatus(created?.verificationEmail) ?? "" },
       });
-    } catch (err: any) {
-      setError(err?.message || "Registration failed. Please try again.");
+    } catch (err: unknown) {
+      setAlreadyRegistered(authErrorCode(err) === "EMAIL_REGISTERED");
+      setError(friendlyAuthMessage(err, "Registration failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -122,6 +125,17 @@ export default function SignUpScreen() {
               <ThemedText variant="caption" style={styles.errorText}>
                 {error}
               </ThemedText>
+              {alreadyRegistered ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Sign in with this email"
+                  onPress={() => router.push({ pathname: "/(auth)/sign-in", params: { email: email.trim() } })}
+                >
+                  <ThemedText variant="caption" style={styles.errorLink}>
+                    Sign in with this email
+                  </ThemedText>
+                </Pressable>
+              ) : null}
             </View>
           ) : null}
 
@@ -134,7 +148,10 @@ export default function SignUpScreen() {
                   value={firstName}
                   onChangeText={(val) => {
                     setFirstName(val);
-                    if (error) setError(null);
+                    if (error) {
+                  setError(null);
+                  setAlreadyRegistered(false);
+                }
                   }}
                 />
               </View>
@@ -145,7 +162,10 @@ export default function SignUpScreen() {
                   value={lastName}
                   onChangeText={(val) => {
                     setLastName(val);
-                    if (error) setError(null);
+                    if (error) {
+                  setError(null);
+                  setAlreadyRegistered(false);
+                }
                   }}
                 />
               </View>
@@ -160,7 +180,10 @@ export default function SignUpScreen() {
               value={email}
               onChangeText={(val) => {
                 setEmail(val);
-                if (error) setError(null);
+                if (error) {
+                  setError(null);
+                  setAlreadyRegistered(false);
+                }
               }}
             />
 
@@ -171,7 +194,10 @@ export default function SignUpScreen() {
               value={phone}
               onChangeText={(val) => {
                 setPhone(val);
-                if (error) setError(null);
+                if (error) {
+                  setError(null);
+                  setAlreadyRegistered(false);
+                }
               }}
             />
 
@@ -183,7 +209,10 @@ export default function SignUpScreen() {
               value={referralCode}
               onChangeText={(val) => {
                 setReferralCode(val);
-                if (error) setError(null);
+                if (error) {
+                  setError(null);
+                  setAlreadyRegistered(false);
+                }
               }}
             />
 
@@ -195,7 +224,10 @@ export default function SignUpScreen() {
               value={password}
               onChangeText={(val) => {
                 setPassword(val);
-                if (error) setError(null);
+                if (error) {
+                  setError(null);
+                  setAlreadyRegistered(false);
+                }
               }}
               rightSlot={
                 <Pressable
@@ -308,6 +340,12 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: colors.danger,
+  },
+  errorLink: {
+    color: colors.danger,
+    fontWeight: "700",
+    marginTop: spacing.xs,
+    textDecorationLine: "underline",
   },
   flex: {
     flex: 1,

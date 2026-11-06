@@ -14,6 +14,7 @@ import { redis } from "../lib/redis";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
 import { validateNewPassword } from "../lib/password-policy";
+import { minResponseTime } from "../lib/response-timing";
 import {
   EMAIL_CODE_MAX_ATTEMPTS,
   EMAIL_CODE_VALID_SECONDS,
@@ -417,7 +418,7 @@ router.delete("/sessions/:id", requireAuth, async (req: AuthRequest, res: Respon
 });
 
 // ─── POST /api/auth/verify-email/request ─────────────────────────────────────
-router.post("/verify-email/request", authLimiterMiddleware, async (req: Request, res: Response) => {
+router.post("/verify-email/request", authLimiterMiddleware, minResponseTime(), async (req: Request, res: Response) => {
   const { email } = req.body;
 
   if (!email) {
@@ -535,7 +536,7 @@ router.post("/verify-email/confirm", authLimiterMiddleware, async (req: Request,
 });
 
 // ─── POST /api/auth/password-reset/request ───────────────────────────────────
-router.post("/password-reset/request", authLimiterMiddleware, async (req: Request, res: Response) => {
+router.post("/password-reset/request", authLimiterMiddleware, minResponseTime(), async (req: Request, res: Response) => {
   const { email } = req.body;
 
   if (!email) {

@@ -89,6 +89,7 @@ export function validateDeployedConfig(envName: NodeEnv, values: {
   twilioAccountSid?: string;
   twilioAuthToken?: string;
   twilioFromPhone?: string;
+  twilioVerifyServiceSid?: string;
   sentryDsn?: string;
   allowDevDefaults?: boolean;
 }) {
@@ -194,6 +195,7 @@ export function deployedServiceGaps(values: {
   twilioAccountSid?: string;
   twilioAuthToken?: string;
   twilioFromPhone?: string;
+  twilioVerifyServiceSid?: string;
   sentryDsn?: string;
 }): string[] {
   const placeholder = (value?: string) => !value || /^(mock|stub)|replace_?with|replace_me/i.test(value);
@@ -213,7 +215,10 @@ export function deployedServiceGaps(values: {
   if (placeholder(values.prescriptionSigningKey)) gaps.push("PRESCRIPTION_SIGNING_KEY");
   if (placeholder(values.twilioAccountSid)) gaps.push("TWILIO_ACCOUNT_SID");
   if (placeholder(values.twilioAuthToken)) gaps.push("TWILIO_AUTH_TOKEN");
-  if (placeholder(values.twilioFromPhone)) gaps.push("TWILIO_FROM_PHONE");
+  // Phone codes need either Twilio Verify (no sending number) or a sending number.
+  if (placeholder(values.twilioFromPhone) && placeholder(values.twilioVerifyServiceSid)) {
+    gaps.push("TWILIO_VERIFY_SERVICE_SID or TWILIO_FROM_PHONE");
+  }
   // OPS-04: Sentry error tracking DSN required in production
   if (placeholder(values.sentryDsn)) gaps.push("SENTRY_DSN");
   return gaps;
@@ -237,6 +242,7 @@ function printConfigurationSummary(values: {
   twilioAccountSid?: string;
   twilioAuthToken?: string;
   twilioFromPhone?: string;
+  twilioVerifyServiceSid?: string;
   sentryDsn?: string;
 }) {
   console.log("╔═══════════════════════════════════════════════════════════════╗");
@@ -314,6 +320,7 @@ const values = {
   twilioAccountSid: readOptional("TWILIO_ACCOUNT_SID"),
   twilioAuthToken: readOptional("TWILIO_AUTH_TOKEN"),
   twilioFromPhone: readOptional("TWILIO_FROM_PHONE"),
+  twilioVerifyServiceSid: readOptional("TWILIO_VERIFY_SERVICE_SID"),
   sentryDsn: readOptional("SENTRY_DSN"),
   allowDevDefaults,
 };

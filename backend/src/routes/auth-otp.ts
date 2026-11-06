@@ -25,6 +25,7 @@ import { prisma } from "../lib/prisma";
 import { otpService, rateLimiter } from "../lib/otp-service";
 import { createSession, toAuthUser } from "./auth";
 import { minResponseTime } from "../lib/response-timing";
+import { checkPhoneVerification, startPhoneVerification, verifyConfigFromEnv } from "../lib/twilio-verify";
 
 const router = Router();
 
@@ -57,12 +58,19 @@ router.post("/request", minResponseTime(), async (req: Request, res: Response) =
     return res.json({ success: true, message: OTP_SENT_MESSAGE });
   }
 
-  const { delivered } = await otpService.createAndSendOTP({
-    userId: user.id,
-    phone: user.phone ?? cleanPhone,
-    purpose: "phone_login",
-    deliveryMethod: "sms",
-  });
+  // Twilio Verify when it's set up (no sending number needed); otherwise the
+  // codes the API makes and stores itself.
+  const verify = verifyConfigFromEnv();
+  const delivered = verify
+    ? await startPhoneVerification(verify, user.phone ?? cleanPhone)
+    : (
+        await otpService.createAndSendOTP({
+          userId: user.id,
+          phone: user.phone ?? cleanPhone,
+          purpose: "phone_login",
+          deliveryMethod: "sms",
+        })
+      ).delivered;
   if (!delivered) {
     return res.status(502).json({ error: "Could not send the code. Please try again." });
   }
@@ -97,7 +105,11 @@ router.post("/verify", async (req: Request, res: Response) => {
     return res.status(401).json({ error: "Invalid or expired code" });
   }
 
-  if (!(await otpService.verifyOTP(user.id, code, "phone_login"))) {
+  const verify = verifyConfigFromEnv();
+  const codeOk = verify
+    ? await checkPhoneVerification(verify, user.phone ?? cleanPhone, code.trim())
+    : await otpService.verifyOTP(user.id, code, "phone_login");
+  if (!codeOk) {
     return res.status(401).json({ error: "Invalid or expired code" });
   }
   await prisma.user.update({ where: { id: user.id }, data: { phoneVerified: true } });

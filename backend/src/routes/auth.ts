@@ -13,8 +13,36 @@ import { revokeSessions } from "../lib/session-revocation";
 import { redis } from "../lib/redis";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
+import {
+  EMAIL_CODE_MAX_ATTEMPTS,
+  EMAIL_CODE_VALID_SECONDS,
+  EMAIL_CODE_WINDOW_SECONDS,
+  generateEmailCode,
+  hashEmailCode,
+  normaliseEmailCode,
+} from "../lib/email-code";
 
 const router = Router();
+
+/**
+ * Issues what a verification email carries: the long link token and a short
+ * six-digit code for typing. Both verify the same address.
+ */
+async function issueEmailVerification(userId: string): Promise<{ token: string; code: string }> {
+  const { token, hashedToken, expiresAt } = emailVerificationService.generateVerificationToken();
+  const code = generateEmailCode();
+  await prisma.emailVerificationToken.createMany({
+    data: [
+      { userId, token: hashedToken, expiresAt },
+      {
+        userId,
+        token: hashEmailCode(userId, code),
+        expiresAt: new Date(Date.now() + EMAIL_CODE_VALID_SECONDS * 1000),
+      },
+    ],
+  });
+  return { token, code };
+}
 
 const authLimiterMiddleware = (req: Request, res: Response, next: any) => {
   const limiter = req.app.get("authLimiter");
@@ -87,15 +115,8 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
 
   // Generate verification token and dispatch welcome verification email
   try {
-    const { token, hashedToken, expiresAt } = emailVerificationService.generateVerificationToken();
-    await prisma.emailVerificationToken.create({
-      data: {
-        userId: user.id,
-        token: hashedToken,
-        expiresAt,
-      },
-    });
-    communicationService.sendVerificationEmail(user.email, token).catch((err) => {
+    const { token, code } = await issueEmailVerification(user.id);
+    communicationService.sendVerificationEmail(user.email, token, code).catch((err) => {
       console.error("[Auth] Failed to dispatch registration verification email:", safeError(err));
     });
   } catch (err) {
@@ -389,26 +410,52 @@ router.post("/verify-email/request", authLimiterMiddleware, async (req: Request,
     return res.status(400).json({ error: "Email already verified" });
   }
 
-  // Generate verification token
-  const { token, hashedToken, expiresAt } = emailVerificationService.generateVerificationToken();
-
-  await prisma.emailVerificationToken.create({
-    data: {
-      userId: user.id,
-      token: hashedToken,
-      expiresAt,
-    },
-  });
+  // Generate the link token and the six-digit code
+  const { token, code } = await issueEmailVerification(user.id);
 
   // Send verification email via configured provider
-  await communicationService.sendVerificationEmail(user.email, token);
+  await communicationService.sendVerificationEmail(user.email, token, code);
 
   return res.json({ message: "Verification email sent" });
 });
 
 // ─── POST /api/auth/verify-email/confirm ─────────────────────────────────────
 router.post("/verify-email/confirm", authLimiterMiddleware, async (req: Request, res: Response) => {
-  const { token } = req.body;
+  const { token, email, code } = req.body ?? {};
+
+  // Typed six-digit code: needs the address, and guesses are capped per
+  // address, because six digits alone are easy to try.
+  if (token === undefined && (email !== undefined || code !== undefined)) {
+    const address = typeof email === "string" ? email.trim() : "";
+    const digits = normaliseEmailCode(code);
+    if (!address || !digits) {
+      return res.status(400).json({ error: "Enter the 6-digit code from your email" });
+    }
+    if (await rateLimiter.isRateLimited(`verify-email-code:${address.toLowerCase()}`, EMAIL_CODE_MAX_ATTEMPTS, EMAIL_CODE_WINDOW_SECONDS)) {
+      return res.status(429).json({ error: "Too many attempts. Please wait a few minutes and try again." });
+    }
+    const user = await prisma.user.findFirst({
+      where: { email: { equals: address, mode: "insensitive" } },
+      select: { id: true },
+    });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid or expired code" });
+    }
+    const consumed = await prisma.emailVerificationToken.updateMany({
+      where: {
+        userId: user.id,
+        token: hashEmailCode(user.id, digits),
+        expiresAt: { gt: new Date() },
+        usedAt: null,
+      },
+      data: { usedAt: new Date() },
+    });
+    if (consumed.count !== 1) {
+      return res.status(400).json({ error: "Invalid or expired code" });
+    }
+    await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
+    return res.json({ message: "Email verified successfully" });
+  }
 
   if (!token) {
     return res.status(400).json({ error: "Token is required" });

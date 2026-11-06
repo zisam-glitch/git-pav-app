@@ -9,7 +9,7 @@ import { authApi } from "@/features/auth/auth-api";
 export default function VerifyEmailScreen() {
   const router = useRouter();
   const { email, token } = useLocalSearchParams<{ email?: string; token?: string }>();
-  const [code, setCode] = useState(token ? String(token) : "");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,6 @@ export default function VerifyEmailScreen() {
     let mounted = true;
     if (token && typeof token === "string" && token.trim().length > 0) {
       const cleanToken = token.trim();
-      setCode(cleanToken);
       (async () => {
         try {
           setLoading(true);
@@ -46,8 +45,19 @@ export default function VerifyEmailScreen() {
   }, [token]);
 
   const handleVerify = async () => {
-    if (!code.trim()) {
-      setError("Please enter the verification code sent to your email.");
+    const digits = code.replace(/[\s-]/g, "");
+    if (!digits) {
+      setError("Please enter the 6-digit code sent to your email.");
+      return;
+    }
+    // The email carries a six-digit code. Anything longer is an old-style link token.
+    const isShortCode = /^\d{6}$/.test(digits);
+    if (!isShortCode && digits.length < 20) {
+      setError("The code is 6 digits. Check the email and try again.");
+      return;
+    }
+    if (isShortCode && !email) {
+      setError("Email address is missing. Please go back and sign in again.");
       return;
     }
 
@@ -57,7 +67,11 @@ export default function VerifyEmailScreen() {
       setInfoMessage(null);
 
       // Attempt verification against API
-      await authApi.confirmEmailVerification(code.trim());
+      if (isShortCode) {
+        await authApi.confirmEmailCode(String(email), digits);
+      } else {
+        await authApi.confirmEmailVerification(digits);
+      }
 
       // Once verified, invite profile setup (skippable) — then patient home
       router.replace("/(auth)/account-created");
@@ -141,9 +155,14 @@ export default function VerifyEmailScreen() {
 
           <View style={styles.form}>
             <Input
-              label="Verification code / link token"
-              placeholder="Enter code"
+              label="Verification code"
+              placeholder="6-digit code"
               autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              autoComplete="one-time-code"
+              maxLength={7}
               value={code}
               onChangeText={(val) => {
                 setCode(val);

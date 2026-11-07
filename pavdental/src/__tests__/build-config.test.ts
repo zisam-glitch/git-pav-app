@@ -232,6 +232,30 @@ for (const profile of ["preview", "production"] as const) {
   assert(ids.length > 0 && ids.every((id) => id === "merchant.com.pavdental.app"), `StripeProvider uses the entitled merchant ID: ${ids.join(", ")}`);
 }
 
+// Payment screen guards (found in the first real Stripe test on staging).
+{
+  const summary = fs.readFileSync(path.join(__dirname, "../app/(patient)/booking/summary.tsx"), "utf8");
+  // "Any practitioner" leaves clinicianId as "": sending it makes the API
+  // reject the booking as "Invalid request body".
+  assert(
+    /clinicianId:\s*clinician\?\.id \|\| slot\.clinicianId \|\| undefined/.test(summary) &&
+      /clinic\?\.id \|\| slot\.clinicId \|\| undefined/.test(summary),
+    "booking sends no clinicianId/clinicId rather than an empty string"
+  );
+  // Stripe must be started with the server's key, so a build without
+  // EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY can still take a payment.
+  assert(
+    /initStripe\(\{[^}]*publishableKey: intent\.publishableKey[^}]*merchantIdentifier: "merchant\.com\.pavdental\.app"/s.test(summary),
+    "payment starts Stripe with the server's publishable key and the entitled merchant ID"
+  );
+  // Once paid, the confirmed screen clears the draft; this screen must not read
+  // that as an expired hold.
+  assert(
+    /paidRef\.current = true/.test(summary) && (summary.match(/if \(paidRef\.current\) return;/g) ?? []).length >= 3,
+    "summary screen stands down after payment instead of showing 'Slot Reservation Expired'"
+  );
+}
+
 // Release builds never sign in a fake patient or show the role switcher:
 // both are for screenshot and simulator builds only. Every profile except the
 // local development one is covered, so a new profile (for example a TestFlight

@@ -22,6 +22,7 @@ function CardField(props) {
 const CardFieldInput = {};
 
 module.exports = {
+  initStripe: async () => {},
   StripeProvider,
   useStripe,
   CardField,

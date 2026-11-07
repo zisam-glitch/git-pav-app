@@ -36,7 +36,7 @@ export default function ClinicPickerScreen() {
           {service ? `Where for your\n${service.name}?` : "Select a clinic"}
         </ThemedText>
         <ThemedText variant="subhead" style={styles.sub}>
-          All clinics are fully CQC-registered with modern sterilization suites.
+          Choose where you would like to be seen.
         </ThemedText>
       </View>
 

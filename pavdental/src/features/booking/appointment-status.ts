@@ -52,3 +52,16 @@ export function appointmentBadge(
 export function depositPaidLabel(depositPaidPence: number | null | undefined): string {
   return depositPaidPence ? `£${(depositPaidPence / 100).toFixed(2)}` : "—";
 }
+
+/**
+ * A booking the patient can still act on: paid and confirmed (or under way)
+ * and not yet over. Completed, missed, cancelled and unpaid-hold bookings are
+ * never "upcoming", even when their date is in the future.
+ */
+export function isUpcomingBooking(
+  appointment: AppointmentLike,
+  now: number = Date.now()
+): boolean {
+  if (appointment.status === "in_progress") return true;
+  return appointment.status === "confirmed" && new Date(appointment.startTimeUtc).getTime() >= now;
+}

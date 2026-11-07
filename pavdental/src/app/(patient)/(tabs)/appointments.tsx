@@ -6,6 +6,7 @@ import { appointmentClinician, appointmentLocation } from "@/features/booking/ap
 import { colors, spacing } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
+import { appointmentBadge, isUpcomingBooking } from "@/features/booking/appointment-status";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Bookings — upcoming/past grouping with clear status per card ─────────────
@@ -47,9 +48,10 @@ function BookingRow({
     : appointmentClinician(booking);
   const status = cancelled ? (
     <Badge label="Cancelled" variant="danger" />
-  ) : !past ? (
-    <Badge label={toLabel(booking.status)} variant={booking.status === "confirmed" ? "success" : "default"} />
-  ) : null;
+  ) : (
+    // "Completed", "Missed" or "Past" for a visit that is over; "Confirmed" for one to come.
+    <Badge {...appointmentBadge(booking)} />
+  );
 
   return (
     <View>
@@ -86,11 +88,14 @@ export default function PatientAppointmentsScreen() {
   const { upcoming, past } = useMemo(() => {
     const now = Date.now();
     const bookings: Booking[] = (apiAppointments ?? []) as Booking[];
+    // Only a visit still to happen is "Upcoming" (and can be cancelled here).
+    // Completed, missed and cancelled ones are history whatever their date, and
+    // an unpaid hold is not a booking yet, so it is not listed at all.
     const upcoming = bookings
-      .filter((b) => b.status !== "cancelled" && new Date(b.startTimeUtc).getTime() >= now)
+      .filter((b) => isUpcomingBooking(b, now))
       .sort((a, b) => +new Date(a.startTimeUtc) - +new Date(b.startTimeUtc));
     const past = bookings
-      .filter((b) => !upcoming.includes(b))
+      .filter((b) => b.status !== "draft_hold" && !upcoming.includes(b))
       .sort((a, b) => +new Date(b.startTimeUtc) - +new Date(a.startTimeUtc));
     return { upcoming, past };
   }, [apiAppointments]);

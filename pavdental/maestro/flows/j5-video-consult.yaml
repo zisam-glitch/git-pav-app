@@ -10,7 +10,7 @@ appId: com.pavdental.app
 - assertVisible: "What seems to be the issue?"
 - tapOn: "Toothache or sensitivity"
 - tapOn: "Past 24-48 hours"
-- tapOn: "Moderate pain"
+- tapOn: "Pain level 5"
 - tapOn: "Continue"
 
 # 3. Optional Oral Photos

@@ -14,9 +14,10 @@ export default function VideoIntakeScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
   const [symptomText, setSymptomText] = useState("");
-  const [painLevel, setPainLevel] = useState<number>(5);
+  // Not pre-filled: a made-up 5/10 would reach the dentist as if the patient had said it.
+  const [painLevel, setPainLevel] = useState<number | null>(null);
   const [hasSwelling, setHasSwelling] = useState(false);
-  const [duration, setDuration] = useState("Past 24-48 hours");
+  const [duration, setDuration] = useState<string | null>(null);
   const [dualRecordingConsent, setDualRecordingConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,6 +27,14 @@ export default function VideoIntakeScreen() {
   const handleContinue = () => {
     if (!symptomText.trim()) {
       setError("Please describe the main issue or symptom you are experiencing.");
+      return;
+    }
+    if (painLevel === null) {
+      setError("Please choose how bad the pain is, from 1 to 10.");
+      return;
+    }
+    if (duration === null) {
+      setError("Please say how long you have had the problem.");
       return;
     }
     if (!dualRecordingConsent) {
@@ -81,7 +90,7 @@ export default function VideoIntakeScreen() {
         {/* Pain Severity Scale */}
         <View style={styles.section}>
           <ThemedText variant="headline">
-            Pain severity: {painLevel} / 10
+            {painLevel === null ? "Pain severity (1 to 10)" : `Pain severity: ${painLevel} / 10`}
           </ThemedText>
           <ThemedText variant="caption" style={styles.sub}>
             1 = Mild discomfort, 10 = Severe, unmanageable pain
@@ -92,7 +101,10 @@ export default function VideoIntakeScreen() {
               return (
                 <Pressable accessibilityRole="radio" accessibilityLabel={`Pain level ${lvl}`} accessibilityState={{ selected }}
                   key={lvl}
-                  onPress={() => setPainLevel(lvl)}
+                  onPress={() => {
+                    setPainLevel(lvl);
+                    if (error) setError(null);
+                  }}
                   style={[styles.painPill, selected && styles.painPillSelected]}
                 >
                   <ThemedText
@@ -136,7 +148,10 @@ export default function VideoIntakeScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={`Duration: ${d}`}
                   accessibilityState={{ selected: active }}
-                  onPress={() => setDuration(d)}
+                  onPress={() => {
+                    setDuration(d);
+                    if (error) setError(null);
+                  }}
                   style={[styles.durationItem, active && styles.durationItemActive]}
                 >
                   <ThemedText

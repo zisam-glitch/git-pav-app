@@ -120,7 +120,14 @@
           "faceIDPermission": "Use Face ID to unlock your Pav Dental account"
         }
       ],
-      "@sentry/react-native/expo"
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://de.sentry.io/",
+          "organization": "growriva",
+          "project": "pav-mobile-app"
+        }
+      ]
     ],
     "runtimeVersion": {
       "policy": "appVersion"

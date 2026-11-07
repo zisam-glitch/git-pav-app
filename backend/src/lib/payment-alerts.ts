@@ -33,9 +33,9 @@ export function disputeDashboardUrl(disputeId: string, livemode: boolean): strin
   return `https://dashboard.stripe.com/${livemode ? "" : "test/"}disputes/${encodeURIComponent(disputeId)}`;
 }
 
-function money(pence: number, currency: string): string {
-  const code = currency.toUpperCase();
-  const amount = (pence / 100).toFixed(2);
+function money(pence: number, currency: string | null | undefined): string {
+  const code = (currency || "gbp").toUpperCase();
+  const amount = ((pence || 0) / 100).toFixed(2);
   return code === "GBP" ? `£${amount}` : `${amount} ${code}`;
 }
 
@@ -48,7 +48,9 @@ function deadline(evidenceDueBy: number | null): string | null {
   });
 }
 
-export function buildDisputeAlert(alert: DisputeAlert): { subject: string; html: string; text: string } {
+export function buildDisputeAlert(input: DisputeAlert): { subject: string; html: string; text: string } {
+  // A staff alert must never fail because Stripe left a field out.
+  const alert = { ...input, reason: input.reason || "unknown", status: input.status || "unknown" };
   const amount = money(alert.amountPence, alert.currency);
   const due = deadline(alert.evidenceDueBy);
   const url = disputeDashboardUrl(alert.disputeId, alert.livemode);

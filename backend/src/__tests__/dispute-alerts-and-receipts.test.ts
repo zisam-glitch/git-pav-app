@@ -133,6 +133,13 @@ describe("dispute alert email", () => {
     expect(all).not.toMatch(/check-?up|hygiene|dentist|patient name/i);
   });
 
+  it("still builds when Stripe leaves out the currency, reason or status", () => {
+    const partial = { ...base, currency: undefined, reason: undefined, status: undefined } as unknown as typeof base;
+    const { subject, text } = buildDisputeAlert(partial);
+    expect(subject).toContain("£10.00");
+    expect(text).toContain("unknown");
+  });
+
   it("reports the outcome when closed", () => {
     expect(buildDisputeAlert({ ...base, kind: "closed", status: "lost", evidenceDueBy: null }).subject).toMatch(/lost/);
     expect(buildDisputeAlert({ ...base, kind: "closed", status: "won", evidenceDueBy: null }).subject).toMatch(/won/);

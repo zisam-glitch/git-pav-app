@@ -45,6 +45,10 @@ jobs:
       REDIS_URL: redis://localhost:6379
       NODE_ENV: development
       ALLOW_DEV_DEFAULTS: "1"
+      # The breached-password check calls a public service; tests must not
+      # depend on it (a password like "TestPassword123!" is in breach lists).
+      # password-policy.test.ts turns the check on itself, with a stub.
+      PASSWORD_BREACH_CHECK: "off"
       PORT: "3000"
     defaults:
       run:

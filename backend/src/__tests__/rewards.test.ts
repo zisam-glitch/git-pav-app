@@ -99,6 +99,22 @@ describe("rewards", () => {
     expect(await pointsOf(patient.userId)).toBe(POINTS_PER_COMPLETED_VISIT);
   });
 
+  it("will not complete a visit that is still in the future, so no points and no way back", async () => {
+    const patient = await makePatient("future");
+    const id = await appointment(patient.profileId, "confirmed", 3);
+
+    for (const status of ["completed", "in_progress"]) {
+      const res = await send("PATCH", `/api/admin/appointments/${id}/status`, adminToken, { status });
+      expect(res.status).toBe(400);
+    }
+    const unchanged = await prisma.appointment.findUniqueOrThrow({ where: { id } });
+    expect(unchanged.status).toBe("confirmed");
+    expect(await pointsOf(patient.userId)).toBe(0);
+
+    // Cancelling a future visit is still allowed.
+    expect((await send("PATCH", `/api/admin/appointments/${id}/status`, adminToken, { status: "cancelled" })).status).toBe(200);
+  });
+
   it("catches up a completed visit that was never awarded", async () => {
     const patient = await makePatient("sweep");
     await appointment(patient.profileId, "completed", -2);

@@ -249,6 +249,12 @@ for (const profile of ["preview", "production"] as const) {
     /initStripe\(\{[^}]*publishableKey: intent\.publishableKey[^}]*merchantIdentifier: "merchant\.com\.pavdental\.app"/s.test(summary),
     "payment starts Stripe with the server's publishable key and the entitled merchant ID"
   );
+  // A video consult has no practice or van, so its balance line must not send
+  // the patient to either.
+  assert(
+    /channel === "video" \? "at your appointment\." : "at your visit, at the practice or the van\."/.test(summary),
+    "the balance note does not tell a video patient to pay at a practice or van"
+  );
   // Once paid, the confirmed screen clears the draft; this screen must not read
   // that as an expired hold.
   assert(
@@ -284,6 +290,15 @@ for (const profile of ["preview", "production"] as const) {
     options.organization === "growriva" && options.project === "pav-mobile-app" && /sentry\.io\/?$/.test(options.url ?? ""),
     "Sentry plugin names the org, project and region so source maps upload to the right place"
   );
+}
+
+// The video triage form must not invent clinical answers: pain and duration
+// start empty and are required, so the dentist only reads what the patient chose.
+{
+  const intake = fs.readFileSync(path.join(__dirname, "../app/(patient)/video/intake.tsx"), "utf8");
+  assert(/useState<number \| null>\(null\)/.test(intake), "pain severity starts unselected");
+  assert(/useState<string \| null>\(null\)/.test(intake), "symptom duration starts unselected");
+  assert(/painLevel === null/.test(intake) && /duration === null/.test(intake), "continuing needs a pain level and a duration");
 }
 
 // Release builds never sign in a fake patient or show the role switcher:

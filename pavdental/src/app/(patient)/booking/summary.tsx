@@ -336,7 +336,9 @@ export default function BookingSummaryScreen() {
           </View>
 
           <ThemedText variant="caption" style={styles.balanceNote}>
-            The remaining balance of {formatGbp(service.pricePence - service.depositPence)} is paid at your visit, at the practice or the van.
+            {/* A video consult has no practice or van to pay at. */}
+            The remaining balance of {formatGbp(service.pricePence - service.depositPence)} is paid{" "}
+            {channel === "video" ? "at your appointment." : "at your visit, at the practice or the van."}
           </ThemedText>
         </Card>
 

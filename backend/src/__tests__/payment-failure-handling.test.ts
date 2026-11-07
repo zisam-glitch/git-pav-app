@@ -9,6 +9,9 @@
 //     record is written, and the request fails so they can retry.
 //  3. Cancelling an unpaid hold voids its PaymentIntent.
 
+import type { Request, Response } from "express";
+import type { AuthRequest } from "../middleware/auth";
+
 const mockConstructEvent = jest.fn();
 const mockRefundCreate = jest.fn();
 const mockPiCancel = jest.fn();
@@ -44,10 +47,10 @@ jest.mock("../lib/van-payments", () => ({ releaseVanDeposit: jest.fn() }));
 jest.mock("../lib/best-effort", () => ({ logFailure: () => () => undefined }));
 
 function fakeRes() {
-  const res: any = {};
-  res.status = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
-  return res;
+  const res = { status: jest.fn(), json: jest.fn() };
+  res.status.mockReturnValue(res);
+  res.json.mockReturnValue(res);
+  return res as typeof res & Response;
 }
 
 describe("payment failure handling", () => {
@@ -58,8 +61,8 @@ describe("payment failure handling", () => {
   beforeAll(() => {
     process.env.STRIPE_SECRET_KEY = "sk_test_unit_not_a_real_key";
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_unit_not_a_real_secret";
-    stripeWebhookHandler = require("../routes/payments").stripeWebhookHandler;
-    handleAppointmentCancel = require("../routes/cancellations").handleAppointmentCancel;
+    stripeWebhookHandler = (jest.requireActual<typeof import("../routes/payments")>("../routes/payments")).stripeWebhookHandler;
+    handleAppointmentCancel = (jest.requireActual<typeof import("../routes/cancellations")>("../routes/cancellations")).handleAppointmentCancel;
   });
   afterAll(() => {
     if (saved.key === undefined) delete process.env.STRIPE_SECRET_KEY;
@@ -78,7 +81,7 @@ describe("payment failure handling", () => {
       type: "payment_intent.succeeded",
       data: { object: { id: "pi_unit_1", amount_received: 1000, metadata: { appointmentId: "appt-1" } } },
     };
-    const req = { headers: { "stripe-signature": "sig" }, body: Buffer.from("{}"), ip: "127.0.0.1" } as any;
+    const req = { headers: { "stripe-signature": "sig" }, body: Buffer.from("{}"), ip: "127.0.0.1" } as unknown as Request;
 
     it("releases the claim and answers 500 when handling fails, so Stripe retries", async () => {
       mockConstructEvent.mockReturnValue(succeeded);
@@ -132,7 +135,7 @@ describe("payment failure handling", () => {
   });
 
   describe("cancelling", () => {
-    const cancelReq = { params: { id: "appt-1" }, user: { sub: "user-1", sessionId: "s1" }, ip: "127.0.0.1" } as any;
+    const cancelReq = { params: { id: "appt-1" }, user: { sub: "user-1", sessionId: "s1" }, ip: "127.0.0.1" } as unknown as AuthRequest;
     const inFiveDays = () => new Date(Date.now() + 5 * 24 * 3600 * 1000);
 
     function givenAppointment(overrides: Record<string, unknown>) {

@@ -94,7 +94,7 @@ async function runAccountTests() {
   assert(passwordChangeSchema.safeParse(validPassword).success, "Accepts strong matching passwords");
   assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "NewSecurePassword2026", confirmPassword: "DifferentPassword!" }).success, "Rejects mismatched passwords");
   assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "short", confirmPassword: "short" }).success, "Rejects passwords shorter than 15 chars");
-  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "fourteen-chars!", confirmPassword: "fourteen-chars!" }).success, "Rejects a 14 character password");
+  assert(!passwordChangeSchema.safeParse({ ...validPassword, newPassword: "fourteen-char!", confirmPassword: "fourteen-char!" }).success, "Rejects a 14 character password");
   assert(passwordChangeSchema.safeParse({ ...validPassword, newPassword: "correct horse battery staple", confirmPassword: "correct horse battery staple" }).success, "Accepts a lowercase passphrase (no composition rules)");
 
   // ── 5. Payment Methods & Dependants API ──────────────────────────────────

@@ -7,6 +7,8 @@ const savedEnv = { key: process.env.STRIPE_SECRET_KEY, whsec: process.env.STRIPE
 process.env.STRIPE_SECRET_KEY = "sk_test_unit_not_a_real_key";
 process.env.STRIPE_WEBHOOK_SECRET = "whsec_unit_not_a_real_secret";
 
+import type { Request, Response } from "express";
+
 const mockConstructEvent = jest.fn();
 const mockSendEmail = jest.fn();
 const mockNotify = jest.fn().mockResolvedValue(undefined);
@@ -38,15 +40,21 @@ jest.mock("../lib/van-payments", () => ({ releaseVanDeposit: jest.fn() }));
 jest.mock("../lib/best-effort", () => ({ logFailure: () => () => undefined }));
 
 function fakeRes() {
-  const res: any = {};
-  res.status = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
-  return res;
+  const res = { status: jest.fn(), json: jest.fn() };
+  res.status.mockReturnValue(res);
+  res.json.mockReturnValue(res);
+  return res as typeof res & Response;
 }
 
 describe("payment details on receipts and statements", () => {
-  const { depositPaymentDetails, isValidStatementSuffix, DEPOSIT_STATEMENT_SUFFIX, VAN_DEPOSIT_STATEMENT_SUFFIX } =
-    require("../lib/payment-details") as typeof import("../lib/payment-details");
+  let depositPaymentDetails: typeof import("../lib/payment-details").depositPaymentDetails;
+  let isValidStatementSuffix: typeof import("../lib/payment-details").isValidStatementSuffix;
+  let DEPOSIT_STATEMENT_SUFFIX: string;
+  let VAN_DEPOSIT_STATEMENT_SUFFIX: string;
+  beforeAll(() => {
+    ({ depositPaymentDetails, isValidStatementSuffix, DEPOSIT_STATEMENT_SUFFIX, VAN_DEPOSIT_STATEMENT_SUFFIX } =
+      jest.requireActual<typeof import("../lib/payment-details")>("../lib/payment-details"));
+  });
 
   it("sets a receipt email, a recognisable statement suffix and a generic description", () => {
     expect(depositPaymentDetails("clinic", "pat@example.test")).toEqual({
@@ -81,7 +89,12 @@ describe("payment details on receipts and statements", () => {
 });
 
 describe("dispute alert email", () => {
-  const { buildDisputeAlert, alertStaffOfDispute, disputeDashboardUrl } = require("../lib/payment-alerts") as typeof import("../lib/payment-alerts");
+  let buildDisputeAlert: typeof import("../lib/payment-alerts").buildDisputeAlert;
+  let alertStaffOfDispute: typeof import("../lib/payment-alerts").alertStaffOfDispute;
+  let disputeDashboardUrl: typeof import("../lib/payment-alerts").disputeDashboardUrl;
+  beforeAll(() => {
+    ({ buildDisputeAlert, alertStaffOfDispute, disputeDashboardUrl } = jest.requireActual<typeof import("../lib/payment-alerts")>("../lib/payment-alerts"));
+  });
   const base = {
     kind: "opened" as const,
     disputeId: "dp_unit_1",
@@ -120,6 +133,13 @@ describe("dispute alert email", () => {
     expect(all).not.toMatch(/check-?up|hygiene|dentist|patient name/i);
   });
 
+  it("still builds when Stripe leaves out the currency, reason or status", () => {
+    const partial = { ...base, currency: undefined, reason: undefined, status: undefined } as unknown as typeof base;
+    const { subject, text } = buildDisputeAlert(partial);
+    expect(subject).toContain("£10.00");
+    expect(text).toContain("unknown");
+  });
+
   it("reports the outcome when closed", () => {
     expect(buildDisputeAlert({ ...base, kind: "closed", status: "lost", evidenceDueBy: null }).subject).toMatch(/lost/);
     expect(buildDisputeAlert({ ...base, kind: "closed", status: "won", evidenceDueBy: null }).subject).toMatch(/won/);
@@ -144,7 +164,7 @@ describe("dispute alert email", () => {
 describe("dispute webhooks", () => {
   let stripeWebhookHandler: typeof import("../routes/payments").stripeWebhookHandler;
   const saved = savedEnv;
-  const req = { headers: { "stripe-signature": "sig" }, body: Buffer.from("{}"), ip: "127.0.0.1" } as any;
+  const req = { headers: { "stripe-signature": "sig" }, body: Buffer.from("{}"), ip: "127.0.0.1" } as unknown as Request;
   const dispute = (type: string, status = "needs_response") => ({
     id: "evt_dp_1",
     type,
@@ -163,7 +183,7 @@ describe("dispute webhooks", () => {
   });
 
   beforeAll(() => {
-    stripeWebhookHandler = require("../routes/payments").stripeWebhookHandler;
+    stripeWebhookHandler = (jest.requireActual<typeof import("../routes/payments")>("../routes/payments")).stripeWebhookHandler;
   });
   afterAll(() => {
     if (saved.key === undefined) delete process.env.STRIPE_SECRET_KEY;

@@ -331,11 +331,49 @@ printConfigurationSummary(values);
 // Validate deployed (staging/production) configuration; throws if invalid.
 validateDeployedConfig(nodeEnv, values);
 
+const LOCAL_DB_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]", "postgres"]);
+const HOSTING_PLATFORM_VARS = ["RENDER", "FLY_APP_NAME", "RAILWAY_ENVIRONMENT", "DYNO", "K_SERVICE", "AWS_EXECUTION_ENV", "KUBERNETES_SERVICE_HOST"];
+
+/**
+ * Mock payments confirm a booking without taking any money, so they exist for a
+ * developer's own machine and for tests only. This says why mock Stripe must
+ * not run here, or null when it may: running on a hosting platform, or against
+ * a database that is not on this machine, both mean real patients could book
+ * without paying. There is deliberately no override.
+ */
+export function hostedMockPaymentsProblem(
+  environment: NodeJS.ProcessEnv,
+  databaseUrl: string | undefined
+): string | null {
+  const platform = HOSTING_PLATFORM_VARS.find((name) => !!environment[name]?.trim());
+  if (platform) return `it is running on a hosting platform (${platform} is set)`;
+  if (databaseUrl) {
+    try {
+      const host = new URL(databaseUrl).hostname.toLowerCase();
+      if (!LOCAL_DB_HOSTS.has(host)) return "DATABASE_URL points at a database that is not on this machine";
+    } catch {
+      return "DATABASE_URL could not be read";
+    }
+  }
+  return null;
+}
+
 // A missing or template key (`sk_test_replace_with_…` from .env.example) means
 // mock Stripe locally rather than real calls with a junk key.
 const stripeSecretKey = isPlaceholderCredential(values.stripeSecretKey)
   ? "sk_test_mock_stripe_key_pav_dental"
   : values.stripeSecretKey!;
+
+// Fail closed: a deployment missing its Stripe key must not quietly start
+// confirming bookings without payment.
+if (stripeSecretKey.startsWith("sk_test_mock") && nodeEnv !== "test") {
+  const problem = hostedMockPaymentsProblem(process.env, values.databaseUrl);
+  if (problem) {
+    throw new Error(
+      `STRIPE_SECRET_KEY is missing or a placeholder, which turns on mock payments (bookings confirmed without payment), and ${problem}. Set a real Stripe test-mode key (sk_test_...), or run against a local database.`
+    );
+  }
+}
 
 export const env = Object.freeze({
   nodeEnv,

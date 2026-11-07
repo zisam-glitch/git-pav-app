@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { deployedServiceGaps, env, parseNodeEnv, validateDeployedConfig } from "../config/env";
+import { deployedServiceGaps, env, hostedMockPaymentsProblem, parseNodeEnv, validateDeployedConfig } from "../config/env";
 import { LEGACY_TOKEN_CUTOFF, signAccessToken, signRefreshToken, verifyAccessToken, verifyRefreshToken } from "../lib/jwt";
 
 // Synthetic values only: none of these are real keys.
@@ -233,5 +233,47 @@ describe("JWT issuer and audience (JW-1)", () => {
       expiresIn: "5m",
     });
     expect(() => verifyAccessToken(foreign)).toThrow(/issuer or audience/);
+  });
+});
+
+describe("mock payments never run on a hosted deployment", () => {
+  const local = "postgresql://u:p@localhost:5432/pav";
+
+  it("allows a developer's own machine", () => {
+    expect(hostedMockPaymentsProblem({}, local)).toBeNull();
+    expect(hostedMockPaymentsProblem({}, "postgresql://u:p@127.0.0.1:5432/pav")).toBeNull();
+    expect(hostedMockPaymentsProblem({}, "postgresql://u:p@postgres:5432/pav")).toBeNull(); // docker compose
+    expect(hostedMockPaymentsProblem({}, undefined)).toBeNull();
+  });
+
+  it.each(["RENDER", "FLY_APP_NAME", "RAILWAY_ENVIRONMENT", "DYNO", "K_SERVICE", "AWS_EXECUTION_ENV", "KUBERNETES_SERVICE_HOST"])(
+    "refuses when %s says this is a hosting platform",
+    (name) => {
+      expect(hostedMockPaymentsProblem({ [name]: "true" }, local)).toMatch(/hosting platform/);
+    }
+  );
+
+  it("refuses a database that is not on this machine, even with no platform variable", () => {
+    expect(hostedMockPaymentsProblem({}, "postgresql://u:p@dpg-abc123-a/pav")).toMatch(/not on this machine/);
+    expect(hostedMockPaymentsProblem({}, "postgresql://u:p@db.example.com:5432/pav")).toMatch(/not on this machine/);
+  });
+
+  it("refuses when the database address cannot be read", () => {
+    expect(hostedMockPaymentsProblem({}, "not a url")).toMatch(/could not be read/);
+  });
+
+  it("the module refuses to load with no Stripe key on a hosting platform", () => {
+    const saved = { ...process.env };
+    process.env.NODE_ENV = "development";
+    process.env.ALLOW_DEV_DEFAULTS = "1";
+    process.env.RENDER = "true";
+    delete process.env.STRIPE_SECRET_KEY;
+    try {
+      jest.isolateModules(() => {
+        expect(() => require("../config/env")).toThrow(/mock payments/);
+      });
+    } finally {
+      process.env = saved;
+    }
   });
 });

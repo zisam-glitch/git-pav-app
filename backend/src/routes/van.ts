@@ -40,6 +40,7 @@ import {
 import { sendPatientNotification } from "../lib/patient-push";
 import { endVanShift } from "../lib/van-shift-end";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
+import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
 
@@ -954,10 +955,12 @@ router.post("/requests", requireAuth, validateBody(createVanRequestSchema), asyn
       // As the patient's Customer, so the sheet offers saved cards (decisions log #15).
       customerId = await ensureStripeCustomer(stripe, req.user!.sub);
       if (customerId) customerEphemeralKeySecret = await customerEphemeralKey(stripe, customerId);
+      const payer = await prisma.user.findUnique({ where: { id: req.user!.sub }, select: { email: true } });
       const paymentIntent = await stripe.paymentIntents.create({
         amount: service.depositPence,
         currency: "gbp",
         ...(customerId ? { customer: customerId } : {}),
+        ...depositPaymentDetails("van", payer?.email),
         capture_method: "manual", // Capture when operator accepts
         metadata: {
           vanServiceRequestId: requestId,

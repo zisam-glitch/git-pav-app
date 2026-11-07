@@ -29,7 +29,7 @@ const stripe = new Stripe(env.stripeSecretKey, {
  * Unified appointment cancellation handler (CS-18).
  * Closes BK-6 and VR-7.
  */
-async function handleAppointmentCancel(req: AuthRequest, res: Response) {
+export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
   const appointmentId = String(req.params.id);
 
   const profile = await prisma.patientProfile.findUnique({
@@ -173,10 +173,42 @@ async function handleAppointmentCancel(req: AuthRequest, res: Response) {
         stripeRefundId = refund.id;
       } catch (refundErr) {
         console.error("[Cancellations] Stripe refund failed:", safeError(refundErr));
+        // Never tell a patient they are cancelled and refunded when no refund
+        // was made. Put the booking back as it was so they can try again (the
+        // same idempotency key makes a retry safe), and leave a record.
+        await prisma.appointment
+          .updateMany({ where: { id: appointment.id, status: "cancelled" }, data: { status: appointment.status } })
+          .catch(logFailure("restore appointment after failed refund"));
+        await createAuditLogWithIntegrity({
+          action: "appointment.cancel_refund_failed",
+          actorId: req.user!.sub,
+          resourceId: appointment.id,
+          sessionId: req.user?.sessionId ?? null,
+          ipHash: pseudonymiseIp(req.ip || ""),
+          metadata: { refundAmountPence, paymentIntentId: appointment.stripePaymentId },
+        }).catch(logFailure("audit write appointment.cancel_refund_failed"));
+        return res.status(502).json({
+          error: "Could not refund your deposit",
+          message: "We couldn't process your refund just now, so your booking has not been cancelled. Please try again in a moment.",
+        });
       }
     } else if (isMockStripe) {
       stripeRefundId = `re_mock_${Date.now()}`;
     }
+  }
+
+  // An unpaid hold's PaymentIntent is voided so it can't be paid after the
+  // booking is gone. If it was paid a moment ago this fails harmlessly: the
+  // webhook sees a cancelled hold and refunds the deposit (late deposit).
+  if (
+    appointment.status === "draft_hold" &&
+    !isMockStripe &&
+    appointment.stripePaymentId &&
+    !appointment.stripePaymentId.startsWith("pi_mock_")
+  ) {
+    await stripe.paymentIntents
+      .cancel(appointment.stripePaymentId, { cancellation_reason: "abandoned" })
+      .catch(logFailure("cancel unpaid PaymentIntent"));
   }
 
   // Clear pending scheduled reminders for this cancelled appointment (BK-6)

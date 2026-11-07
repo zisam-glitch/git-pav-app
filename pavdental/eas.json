@@ -23,8 +23,9 @@
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://pavdental-api.onrender.com",
-        "EXPO_PUBLIC_APP_ENV": "preview"
+        "EXPO_PUBLIC_API_URL": "https://pavdental-staging-api.onrender.com",
+        "EXPO_PUBLIC_APP_ENV": "preview",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://244e918d7ab3b9c13e6cc202aaabd2c8@o4512306402885632.ingest.de.sentry.io/4512392422293584"
       }
     },
     "production": {
@@ -32,7 +33,8 @@
       "channel": "production",
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.pavdental.com",
-        "EXPO_PUBLIC_APP_ENV": "production"
+        "EXPO_PUBLIC_APP_ENV": "production",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://244e918d7ab3b9c13e6cc202aaabd2c8@o4512306402885632.ingest.de.sentry.io/4512392422293584"
       }
     }
   },

@@ -155,9 +155,10 @@ assert(devEnv?.EXPO_PUBLIC_API_URL !== undefined, "Development profile has API U
 assert(previewEnv?.EXPO_PUBLIC_API_URL !== undefined, "Preview profile has API URL");
 assert(prodEnv?.EXPO_PUBLIC_API_URL !== undefined, "Production profile has API URL");
 // D-09: the brand domain is pavdental.com; the .co.uk hosts never existed.
-// Preview builds use the free test API until a staging domain exists.
+// Preview builds use the free staging API on Render until a staging domain
+// exists. (The earlier "pavdental-api" host is retired: it answers 5xx.)
 assert(
-  previewEnv?.EXPO_PUBLIC_API_URL === "https://pavdental-api.onrender.com",
+  previewEnv?.EXPO_PUBLIC_API_URL === "https://pavdental-staging-api.onrender.com",
   `Preview profile points at the test API: ${previewEnv?.EXPO_PUBLIC_API_URL}`
 );
 assert(
@@ -264,6 +265,24 @@ for (const profile of ["preview", "production"] as const) {
   assert(
     /if \(!service && isFocused\)/.test(slotPicker) && /addListener\("blur"/.test(slotPicker),
     "slot picker only redirects to the catalog while it is focused"
+  );
+}
+
+// Error reporting (Sentry, growriva org). The DSN is a public client key, so it
+// is committed; the auth token that uploads source maps is not and must come
+// from an EAS secret. Local development never reports.
+{
+  const dsnShape = /^https:\/\/[0-9a-f]{32}@o\d+\.ingest\.[a-z.]*sentry\.io\/\d+$/;
+  const dev = (easConfig.build?.development?.env ?? {}) as Record<string, string>;
+  assert(dev.EXPO_PUBLIC_SENTRY_DSN === undefined, "development builds do not report to Sentry");
+  for (const profile of ["preview", "production"] as const) {
+    const env = (easConfig.build?.[profile]?.env ?? {}) as Record<string, string>;
+    assert(dsnShape.test(env.EXPO_PUBLIC_SENTRY_DSN ?? ""), `${profile} profile reports errors to a Sentry DSN`);
+  }
+  const options = Array.isArray(sentryPlugin) ? (sentryPlugin[1] as Record<string, string>) : {};
+  assert(
+    options.organization === "growriva" && options.project === "pav-mobile-app" && /sentry\.io\/?$/.test(options.url ?? ""),
+    "Sentry plugin names the org, project and region so source maps upload to the right place"
   );
 }
 

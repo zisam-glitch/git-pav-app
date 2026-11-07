@@ -15,6 +15,8 @@ import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-custom
 import { releaseVanDeposit } from "../lib/van-payments";
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
+import { depositPaymentDetails } from "../lib/payment-details";
+import { alertStaffOfDispute } from "../lib/payment-alerts";
 
 const router = Router();
 const isMockStripe = env.isMockStripe;
@@ -78,17 +80,20 @@ router.post("/create-intent", requireAuth, validateBody(createPaymentIntentSchem
   if (!customerId) return res.status(404).json({ error: "Patient profile not found" });
   const customerEphemeralKeySecret = await customerEphemeralKey(stripe, customerId);
 
+  const payer = await prisma.user.findUnique({ where: { id: req.user!.sub }, select: { email: true } });
+
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amountPence,
     currency: "gbp",
     customer: customerId,
+    ...depositPaymentDetails("clinic", payer?.email),
     metadata: {
       appointmentId: appointment.id,
       patientUserId: req.user!.sub,
       serviceName: appointment.service.name,
     },
     automatic_payment_methods: { enabled: true },
-  }, { idempotencyKey: `appointment-deposit:${appointment.id}:${amountPence}:${customerId}` });
+  }, { idempotencyKey: `appointment-deposit:v2:${appointment.id}:${amountPence}:${customerId}` });
 
   await prisma.appointment.update({
     where: { id: appointment.id },
@@ -336,98 +341,159 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
     throw err;
   }
 
-  if (event.type === "payment_intent.succeeded") {
-    const intent = event.data.object as Stripe.PaymentIntent;
-    const appointmentId = intent.metadata.appointmentId;
+  // The event is claimed above, so if handling it fails for any reason the
+  // claim must be released and a non-2xx returned: otherwise Stripe's retry
+  // would be answered "duplicate" and the payment event lost for good.
+  try {
+    if (event.type === "payment_intent.succeeded") {
+      const intent = event.data.object as Stripe.PaymentIntent;
+      const appointmentId = intent.metadata.appointmentId;
 
-    if (appointmentId) {
-      // Idempotent: only the matching, unexpired hold can transition to confirmed.
-      const result = await prisma.appointment.updateMany({
-        where: {
-          id: appointmentId,
-          status: "draft_hold",
-          stripePaymentId: intent.id,
-          OR: [{ holdExpiresAt: null }, { holdExpiresAt: { gt: new Date() } }],
-        },
-        data: {
-          status: "confirmed",
-          holdExpiresAt: null,
-          depositPaidPence: intent.amount_received,
-        },
-      });
-
-      if (result.count === 1) {
-        await scheduleAppointmentReminderLadder(appointmentId).catch((err) => {
-          console.error("[Stripe Webhook] Failed to schedule reminders:", safeError(err));
+      if (appointmentId) {
+        // Idempotent: only the matching, unexpired hold can transition to confirmed.
+        const result = await prisma.appointment.updateMany({
+          where: {
+            id: appointmentId,
+            status: "draft_hold",
+            stripePaymentId: intent.id,
+            OR: [{ holdExpiresAt: null }, { holdExpiresAt: { gt: new Date() } }],
+          },
+          data: {
+            status: "confirmed",
+            holdExpiresAt: null,
+            depositPaidPence: intent.amount_received,
+          },
         });
-      } else {
-        // Not confirmed by this event. Fine if it is already confirmed / completed
-        // with this payment (a duplicate event, or the confirm call won); otherwise
-        // the money arrived too late for its hold and goes back (CS-17, CS-49).
-        const appointment = await prisma.appointment.findUnique({
-          where: { id: appointmentId },
-          select: { status: true, stripePaymentId: true, patientId: true, holdExpiresAt: true, depositPaidPence: true },
-        });
-        const POST_CONFIRMATION_STATUSES = new Set(["confirmed", "in_progress", "completed", "no_show"]);
-        const alreadyApplied = appointment && (
-          POST_CONFIRMATION_STATUSES.has(appointment.status) ||
-          (appointment.status === "cancelled" && (appointment.depositPaidPence > 0 || appointment.holdExpiresAt === null))
-        ) && appointment.stripePaymentId === intent.id;
 
-        if (!alreadyApplied) {
-          try {
-            await refundLateDeposit({
-              appointmentId: appointment ? appointmentId : null,
-              patientId: appointment?.patientId ?? null,
-              paymentIntentId: intent.id,
-              amountPence: intent.amount_received,
-            });
-          } catch (err) {
-            console.error("[Stripe Webhook] Late deposit refund failed:", err instanceof Error ? err.name : "unknown error");
-            // A non-2xx makes Stripe retry the event, and with it the refund.
-            // Release the claimed event row so Stripe can retry successfully
-            await prisma.processedStripeEvent.delete({ where: { id: event.id } }).catch(() => {});
-            return res.status(500).json({ error: "Late deposit refund failed" });
+        if (result.count === 1) {
+          await scheduleAppointmentReminderLadder(appointmentId).catch((err) => {
+            console.error("[Stripe Webhook] Failed to schedule reminders:", safeError(err));
+          });
+        } else {
+          // Not confirmed by this event. Fine if it is already confirmed / completed
+          // with this payment (a duplicate event, or the confirm call won); otherwise
+          // the money arrived too late for its hold and goes back (CS-17, CS-49).
+          const appointment = await prisma.appointment.findUnique({
+            where: { id: appointmentId },
+            select: { status: true, stripePaymentId: true, patientId: true, holdExpiresAt: true, depositPaidPence: true },
+          });
+          const POST_CONFIRMATION_STATUSES = new Set(["confirmed", "in_progress", "completed", "no_show"]);
+          const alreadyApplied = appointment && (
+            POST_CONFIRMATION_STATUSES.has(appointment.status) ||
+            (appointment.status === "cancelled" && (appointment.depositPaidPence > 0 || appointment.holdExpiresAt === null))
+          ) && appointment.stripePaymentId === intent.id;
+
+          if (!alreadyApplied) {
+            try {
+              await refundLateDeposit({
+                appointmentId: appointment ? appointmentId : null,
+                patientId: appointment?.patientId ?? null,
+                paymentIntentId: intent.id,
+                amountPence: intent.amount_received,
+              });
+            } catch (err) {
+              console.error("[Stripe Webhook] Late deposit refund failed:", err instanceof Error ? err.name : "unknown error");
+              // A non-2xx makes Stripe retry the event, and with it the refund.
+              // Release the claimed event row so Stripe can retry successfully
+              await prisma.processedStripeEvent.delete({ where: { id: event.id } }).catch(() => {});
+              return res.status(500).json({ error: "Late deposit refund failed" });
+            }
           }
-        }
-      }
-
-      await createAuditLogWithIntegrity({
-        action: "stripe.payment_intent.succeeded",
-        actorId: null,
-        resourceId: appointmentId,
-        sessionId: null,
-        ipHash: pseudonymiseIp(req.ip || ""),
-        metadata: { eventId: event.id, applied: result.count === 1 },
-      });
-    } else {
-      // Van flow: the intent carries vanServiceRequestId metadata. If an
-      // accept/capture raced ahead of this event, sync the captured deposit
-      // onto the linked appointment so records stay consistent.
-      const vanRequestId = intent.metadata.vanServiceRequestId;
-      if (vanRequestId && vanRequestId !== "pending") {
-        const vanRequest = await prisma.vanServiceRequest.findUnique({
-          where: { id: vanRequestId },
-          select: { appointmentId: true, paymentIntentId: true },
-        });
-
-        if (vanRequest?.appointmentId && vanRequest.paymentIntentId === intent.id) {
-          await prisma.appointment
-            .updateMany({
-              where: {
-                id: vanRequest.appointmentId,
-                stripePaymentId: intent.id,
-                depositPaidPence: { lt: intent.amount_received },
-              },
-              data: { depositPaidPence: intent.amount_received },
-            })
-            .catch((err) =>
-              console.error("[Stripe Webhook] Van deposit sync failed:", safeError(err))
-            );
         }
 
         await createAuditLogWithIntegrity({
-          action: "stripe.payment_intent.succeeded.van",
+          action: "stripe.payment_intent.succeeded",
+          actorId: null,
+          resourceId: appointmentId,
+          sessionId: null,
+          ipHash: pseudonymiseIp(req.ip || ""),
+          metadata: { eventId: event.id, applied: result.count === 1 },
+        });
+      } else {
+        // Van flow: the intent carries vanServiceRequestId metadata. If an
+        // accept/capture raced ahead of this event, sync the captured deposit
+        // onto the linked appointment so records stay consistent.
+        const vanRequestId = intent.metadata.vanServiceRequestId;
+        if (vanRequestId && vanRequestId !== "pending") {
+          const vanRequest = await prisma.vanServiceRequest.findUnique({
+            where: { id: vanRequestId },
+            select: { appointmentId: true, paymentIntentId: true },
+          });
+
+          if (vanRequest?.appointmentId && vanRequest.paymentIntentId === intent.id) {
+            await prisma.appointment
+              .updateMany({
+                where: {
+                  id: vanRequest.appointmentId,
+                  stripePaymentId: intent.id,
+                  depositPaidPence: { lt: intent.amount_received },
+                },
+                data: { depositPaidPence: intent.amount_received },
+              })
+              .catch((err) =>
+                console.error("[Stripe Webhook] Van deposit sync failed:", safeError(err))
+              );
+          }
+
+          await createAuditLogWithIntegrity({
+            action: "stripe.payment_intent.succeeded.van",
+            actorId: null,
+            resourceId: vanRequestId,
+            sessionId: null,
+            ipHash: pseudonymiseIp(req.ip || ""),
+            metadata: {
+              eventId: event.id,
+              paymentIntentId: intent.id,
+              amountReceived: intent.amount_received,
+            },
+          }).catch(logFailure("audit write stripe.payment_intent.succeeded.van"));
+        }
+      }
+    }
+
+    if (event.type === "payment_intent.amount_capturable_updated") {
+      // The patient authorised the manual-capture van deposit (PaymentSheet
+      // succeeded). Stamp the request so accept-time capture is allowed.
+      const intent = event.data.object as Stripe.PaymentIntent;
+      const vanRequestId = intent.metadata.vanServiceRequestId;
+
+      if (vanRequestId && vanRequestId !== "pending") {
+        // Idempotent: only a pending request transitions, and re-stamping the
+        // same timestamp is harmless.
+        const result = await prisma.vanServiceRequest.updateMany({
+          where: { id: vanRequestId, status: "pending" },
+          data: { depositAuthorizedAt: new Date() },
+        });
+
+        if (result.count === 0) {
+          // WH-2 / VP-3: If the request is no longer pending (e.g. cancelled/expired/declined
+          // while the patient was in PaymentSheet), release the newly authorized hold immediately.
+          const vanRequest = await prisma.vanServiceRequest.findUnique({
+            where: { id: vanRequestId },
+            select: { status: true, paymentIntentId: true },
+          });
+
+          if (vanRequest && ["expired", "cancelled", "declined"].includes(vanRequest.status)) {
+            const release = await releaseVanDeposit(intent.id, "external_cancel");
+            await prisma.vanServiceRequest
+              .update({
+                where: { id: vanRequestId },
+                data: {
+                  depositReleaseStatus: release.status,
+                  depositReleasedAt:
+                    ["released", "already_released", "refunded"].includes(release.status)
+                      ? new Date()
+                      : null,
+                },
+              })
+              .catch((err) =>
+                console.error("[Stripe Webhook] Failed to update terminal van request release status:", safeError(err))
+              );
+          }
+        }
+
+        await createAuditLogWithIntegrity({
+          action: "stripe.payment_intent.amount_capturable_updated.van",
           actorId: null,
           resourceId: vanRequestId,
           sessionId: null,
@@ -435,331 +501,340 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           metadata: {
             eventId: event.id,
             paymentIntentId: intent.id,
-            amountReceived: intent.amount_received,
+            applied: result.count === 1,
           },
-        }).catch(logFailure("audit write stripe.payment_intent.succeeded.van"));
+        }).catch(logFailure("audit write stripe.payment_intent.amount_capturable_updated.van"));
       }
     }
-  }
 
-  if (event.type === "payment_intent.amount_capturable_updated") {
-    // The patient authorised the manual-capture van deposit (PaymentSheet
-    // succeeded). Stamp the request so accept-time capture is allowed.
-    const intent = event.data.object as Stripe.PaymentIntent;
-    const vanRequestId = intent.metadata.vanServiceRequestId;
+    if (event.type === "payment_intent.canceled") {
+      const intent = event.data.object as Stripe.PaymentIntent;
+      const appointmentId = intent.metadata.appointmentId;
+      const vanRequestId = intent.metadata.vanServiceRequestId;
 
-    if (vanRequestId && vanRequestId !== "pending") {
-      // Idempotent: only a pending request transitions, and re-stamping the
-      // same timestamp is harmless.
-      const result = await prisma.vanServiceRequest.updateMany({
-        where: { id: vanRequestId, status: "pending" },
-        data: { depositAuthorizedAt: new Date() },
-      });
+      if (appointmentId) {
+        const appt = await prisma.appointment.findUnique({
+          where: { id: appointmentId },
+          select: { status: true, patientId: true },
+        });
 
-      if (result.count === 0) {
-        // WH-2 / VP-3: If the request is no longer pending (e.g. cancelled/expired/declined
-        // while the patient was in PaymentSheet), release the newly authorized hold immediately.
+        if (appt && appt.status === "draft_hold") {
+          await prisma.appointment.update({
+            where: { id: appointmentId },
+            data: { status: "cancelled", holdExpiresAt: null },
+          });
+
+          await sendPatientNotification(
+            appt.patientId,
+            "Booking Cancelled",
+            "Your booking hold has expired or was cancelled.",
+            { appointmentId, status: "cancelled" }
+          ).catch(() => {});
+        }
+
+        await createAuditLogWithIntegrity({
+          action: "stripe.payment_intent.canceled.appointment",
+          actorId: null,
+          resourceId: appointmentId,
+          sessionId: null,
+          ipHash: pseudonymiseIp(req.ip || ""),
+          metadata: {
+            eventId: event.id,
+            paymentIntentId: intent.id,
+            wasDraftHold: appt?.status === "draft_hold",
+          },
+        }).catch(logFailure("audit write stripe.payment_intent.canceled.appointment"));
+      }
+
+      if (vanRequestId && vanRequestId !== "pending") {
         const vanRequest = await prisma.vanServiceRequest.findUnique({
           where: { id: vanRequestId },
-          select: { status: true, paymentIntentId: true },
+          select: { status: true, patientId: true },
         });
 
-        if (vanRequest && ["expired", "cancelled", "declined"].includes(vanRequest.status)) {
-          const release = await releaseVanDeposit(intent.id, "external_cancel");
-          await prisma.vanServiceRequest
-            .update({
-              where: { id: vanRequestId },
-              data: {
-                depositReleaseStatus: release.status,
-                depositReleasedAt:
-                  ["released", "already_released", "refunded"].includes(release.status)
-                    ? new Date()
-                    : null,
-              },
-            })
-            .catch((err) =>
-              console.error("[Stripe Webhook] Failed to update terminal van request release status:", safeError(err))
-            );
+        // Only act if the request is still pending — i.e. the hold was lifted
+        // externally (Stripe Dashboard) rather than by our own cancel/decline/
+        // expiry paths, which always move the request to a terminal state first.
+        if (vanRequest && vanRequest.status === "pending") {
+          await prisma.vanServiceRequest.update({
+            where: { id: vanRequestId },
+            data: { status: "cancelled", phase: "cancelled" },
+          });
+
+          await sendPatientNotification(
+            vanRequest.patientId,
+            "Van Request Cancelled",
+            "Your van request's deposit hold was released and the request has been cancelled. You have not been charged.",
+            { requestId: vanRequestId, status: "cancelled" }
+          ).catch(() => {});
+        }
+
+        await createAuditLogWithIntegrity({
+          action: "stripe.payment_intent.canceled.van",
+          actorId: null,
+          resourceId: vanRequestId,
+          sessionId: null,
+          ipHash: pseudonymiseIp(req.ip || ""),
+          metadata: {
+            eventId: event.id,
+            paymentIntentId: intent.id,
+            requestWasPending: vanRequest?.status === "pending",
+          },
+        }).catch(logFailure("audit write stripe.payment_intent.canceled.van"));
+      }
+    }
+
+    if (event.type === "payment_intent.payment_failed") {
+      const intent = event.data.object as Stripe.PaymentIntent;
+      const appointmentId = intent.metadata.appointmentId;
+      const vanRequestId = intent.metadata.vanServiceRequestId;
+
+      if (appointmentId) {
+        const appt = await prisma.appointment.findUnique({
+          where: { id: appointmentId },
+          select: { status: true, patientId: true },
+        });
+
+        if (appt && appt.status === "draft_hold") {
+          await sendPatientNotification(
+            appt.patientId,
+            "Deposit Payment Failed",
+            "We couldn't process your deposit payment. Please try another payment method.",
+            { appointmentId, status: "payment_failed" }
+          ).catch(() => {});
+        }
+
+        await createAuditLogWithIntegrity({
+          action: "stripe.payment_intent.payment_failed.appointment",
+          actorId: null,
+          resourceId: appointmentId,
+          sessionId: null,
+          ipHash: pseudonymiseIp(req.ip || ""),
+          metadata: {
+            eventId: event.id,
+            paymentIntentId: intent.id,
+            failureMessage: intent.last_payment_error?.message ?? null,
+          },
+        }).catch(logFailure("audit write stripe.payment_intent.payment_failed.appointment"));
+      }
+
+      if (vanRequestId && vanRequestId !== "pending") {
+        const vanRequest = await prisma.vanServiceRequest.findUnique({
+          where: { id: vanRequestId },
+          select: { status: true, patientId: true },
+        });
+
+        // The request stays pending — the patient can retry authorisation via
+        // POST /api/van/requests/:id/payment-retry, which re-presents PaymentSheet.
+        if (vanRequest && vanRequest.status === "pending") {
+          await sendPatientNotification(
+            vanRequest.patientId,
+            "Deposit Authorization Failed",
+            "We couldn't authorize your van deposit. Open your request to try again — you haven't been charged.",
+            { requestId: vanRequestId, status: "payment_failed" }
+          ).catch(() => {});
+        }
+
+        await createAuditLogWithIntegrity({
+          action: "stripe.payment_intent.payment_failed.van",
+          actorId: null,
+          resourceId: vanRequestId,
+          sessionId: null,
+          ipHash: pseudonymiseIp(req.ip || ""),
+          metadata: {
+            eventId: event.id,
+            paymentIntentId: intent.id,
+            failureMessage: intent.last_payment_error?.message ?? null,
+          },
+        }).catch(logFailure("audit write stripe.payment_intent.payment_failed.van"));
+      }
+    }
+
+    if (event.type === "charge.refunded") {
+      const charge = event.data.object as Stripe.Charge;
+      const paymentIntentId = typeof charge.payment_intent === "string" ? charge.payment_intent : null;
+
+      if (paymentIntentId) {
+        const appt = await prisma.appointment.findFirst({
+          where: { stripePaymentId: paymentIntentId },
+          select: { id: true, depositPaidPence: true },
+        });
+
+        if (appt) {
+          // Stripe charge.amount_refunded is cumulative. Deposit is captured amount minus cumulative refunded amount (CS-49)
+          const totalCaptured = charge.amount_captured ?? charge.amount ?? (appt.depositPaidPence || 0);
+          const newDeposit = Math.max(0, totalCaptured - (charge.amount_refunded || 0));
+          await prisma.appointment.update({
+            where: { id: appt.id },
+            data: { depositPaidPence: newDeposit },
+          });
+
+          await createAuditLogWithIntegrity({
+            action: "stripe.charge.refunded",
+            actorId: null,
+            resourceId: appt.id,
+            sessionId: null,
+            ipHash: pseudonymiseIp(req.ip || ""),
+            metadata: {
+              eventId: event.id,
+              chargeId: charge.id,
+              paymentIntentId,
+              amountRefunded: charge.amount_refunded,
+              depositPaidPence: newDeposit,
+            },
+          }).catch(logFailure("audit write stripe.charge.refunded"));
+        }
+
+        const vanRequest = await prisma.vanServiceRequest.findFirst({
+          where: { paymentIntentId },
+          select: { id: true },
+        });
+
+        if (vanRequest) {
+          await prisma.vanServiceRequest.update({
+            where: { id: vanRequest.id },
+            data: {
+              depositReleaseStatus: "refunded",
+              depositReleasedAt: new Date(),
+            },
+          });
+
+          await createAuditLogWithIntegrity({
+            action: "stripe.charge.refunded.van",
+            actorId: null,
+            resourceId: vanRequest.id,
+            sessionId: null,
+            ipHash: pseudonymiseIp(req.ip || ""),
+            metadata: {
+              eventId: event.id,
+              chargeId: charge.id,
+              paymentIntentId,
+              amountRefunded: charge.amount_refunded,
+            },
+          }).catch(logFailure("audit write stripe.charge.refunded.van"));
         }
       }
-
-      await createAuditLogWithIntegrity({
-        action: "stripe.payment_intent.amount_capturable_updated.van",
-        actorId: null,
-        resourceId: vanRequestId,
-        sessionId: null,
-        ipHash: pseudonymiseIp(req.ip || ""),
-        metadata: {
-          eventId: event.id,
-          paymentIntentId: intent.id,
-          applied: result.count === 1,
-        },
-      }).catch(logFailure("audit write stripe.payment_intent.amount_capturable_updated.van"));
-    }
-  }
-
-  if (event.type === "payment_intent.canceled") {
-    const intent = event.data.object as Stripe.PaymentIntent;
-    const appointmentId = intent.metadata.appointmentId;
-    const vanRequestId = intent.metadata.vanServiceRequestId;
-
-    if (appointmentId) {
-      const appt = await prisma.appointment.findUnique({
-        where: { id: appointmentId },
-        select: { status: true, patientId: true },
-      });
-
-      if (appt && appt.status === "draft_hold") {
-        await prisma.appointment.update({
-          where: { id: appointmentId },
-          data: { status: "cancelled", holdExpiresAt: null },
-        });
-
-        await sendPatientNotification(
-          appt.patientId,
-          "Booking Cancelled",
-          "Your booking hold has expired or was cancelled.",
-          { appointmentId, status: "cancelled" }
-        ).catch(() => {});
-      }
-
-      await createAuditLogWithIntegrity({
-        action: "stripe.payment_intent.canceled.appointment",
-        actorId: null,
-        resourceId: appointmentId,
-        sessionId: null,
-        ipHash: pseudonymiseIp(req.ip || ""),
-        metadata: {
-          eventId: event.id,
-          paymentIntentId: intent.id,
-          wasDraftHold: appt?.status === "draft_hold",
-        },
-      }).catch(logFailure("audit write stripe.payment_intent.canceled.appointment"));
     }
 
-    if (vanRequestId && vanRequestId !== "pending") {
-      const vanRequest = await prisma.vanServiceRequest.findUnique({
-        where: { id: vanRequestId },
-        select: { status: true, patientId: true },
-      });
+    if (event.type === "charge.dispute.created") {
+      const dispute = event.data.object as Stripe.Dispute;
+      const paymentIntentId = typeof dispute.payment_intent === "string" ? dispute.payment_intent : null;
 
-      // Only act if the request is still pending — i.e. the hold was lifted
-      // externally (Stripe Dashboard) rather than by our own cancel/decline/
-      // expiry paths, which always move the request to a terminal state first.
-      if (vanRequest && vanRequest.status === "pending") {
-        await prisma.vanServiceRequest.update({
-          where: { id: vanRequestId },
-          data: { status: "cancelled", phase: "cancelled" },
-        });
+      const appt = paymentIntentId
+        ? await prisma.appointment.findFirst({
+            where: { stripePaymentId: paymentIntentId },
+            select: { id: true, patientId: true },
+          })
+        : null;
 
-        await sendPatientNotification(
-          vanRequest.patientId,
-          "Van Request Cancelled",
-          "Your van request's deposit hold was released and the request has been cancelled. You have not been charged.",
-          { requestId: vanRequestId, status: "cancelled" }
-        ).catch(() => {});
-      }
+      const vanRequest = paymentIntentId
+        ? await prisma.vanServiceRequest.findFirst({
+            where: { paymentIntentId },
+            select: { id: true, patientId: true },
+          })
+        : null;
 
-      await createAuditLogWithIntegrity({
-        action: "stripe.payment_intent.canceled.van",
-        actorId: null,
-        resourceId: vanRequestId,
-        sessionId: null,
-        ipHash: pseudonymiseIp(req.ip || ""),
-        metadata: {
-          eventId: event.id,
-          paymentIntentId: intent.id,
-          requestWasPending: vanRequest?.status === "pending",
-        },
-      }).catch(logFailure("audit write stripe.payment_intent.canceled.van"));
-    }
-  }
+      const resourceId = appt?.id ?? vanRequest?.id ?? paymentIntentId ?? dispute.id;
 
-  if (event.type === "payment_intent.payment_failed") {
-    const intent = event.data.object as Stripe.PaymentIntent;
-    const appointmentId = intent.metadata.appointmentId;
-    const vanRequestId = intent.metadata.vanServiceRequestId;
-
-    if (appointmentId) {
-      const appt = await prisma.appointment.findUnique({
-        where: { id: appointmentId },
-        select: { status: true, patientId: true },
-      });
-
-      if (appt && appt.status === "draft_hold") {
-        await sendPatientNotification(
-          appt.patientId,
-          "Deposit Payment Failed",
-          "We couldn't process your deposit payment. Please try another payment method.",
-          { appointmentId, status: "payment_failed" }
-        ).catch(() => {});
-      }
-
-      await createAuditLogWithIntegrity({
-        action: "stripe.payment_intent.payment_failed.appointment",
-        actorId: null,
-        resourceId: appointmentId,
-        sessionId: null,
-        ipHash: pseudonymiseIp(req.ip || ""),
-        metadata: {
-          eventId: event.id,
-          paymentIntentId: intent.id,
-          failureMessage: intent.last_payment_error?.message ?? null,
-        },
-      }).catch(logFailure("audit write stripe.payment_intent.payment_failed.appointment"));
-    }
-
-    if (vanRequestId && vanRequestId !== "pending") {
-      const vanRequest = await prisma.vanServiceRequest.findUnique({
-        where: { id: vanRequestId },
-        select: { status: true, patientId: true },
-      });
-
-      // The request stays pending — the patient can retry authorisation via
-      // POST /api/van/requests/:id/payment-retry, which re-presents PaymentSheet.
-      if (vanRequest && vanRequest.status === "pending") {
-        await sendPatientNotification(
-          vanRequest.patientId,
-          "Deposit Authorization Failed",
-          "We couldn't authorize your van deposit. Open your request to try again — you haven't been charged.",
-          { requestId: vanRequestId, status: "payment_failed" }
-        ).catch(() => {});
-      }
-
-      await createAuditLogWithIntegrity({
-        action: "stripe.payment_intent.payment_failed.van",
-        actorId: null,
-        resourceId: vanRequestId,
-        sessionId: null,
-        ipHash: pseudonymiseIp(req.ip || ""),
-        metadata: {
-          eventId: event.id,
-          paymentIntentId: intent.id,
-          failureMessage: intent.last_payment_error?.message ?? null,
-        },
-      }).catch(logFailure("audit write stripe.payment_intent.payment_failed.van"));
-    }
-  }
-
-  if (event.type === "charge.refunded") {
-    const charge = event.data.object as Stripe.Charge;
-    const paymentIntentId = typeof charge.payment_intent === "string" ? charge.payment_intent : null;
-
-    if (paymentIntentId) {
-      const appt = await prisma.appointment.findFirst({
-        where: { stripePaymentId: paymentIntentId },
-        select: { id: true, depositPaidPence: true },
-      });
-
-      if (appt) {
-        // Stripe charge.amount_refunded is cumulative. Deposit is captured amount minus cumulative refunded amount (CS-49)
-        const totalCaptured = charge.amount_captured ?? charge.amount ?? (appt.depositPaidPence || 0);
-        const newDeposit = Math.max(0, totalCaptured - (charge.amount_refunded || 0));
-        await prisma.appointment.update({
-          where: { id: appt.id },
-          data: { depositPaidPence: newDeposit },
-        });
-
-        await createAuditLogWithIntegrity({
-          action: "stripe.charge.refunded",
-          actorId: null,
-          resourceId: appt.id,
-          sessionId: null,
-          ipHash: pseudonymiseIp(req.ip || ""),
-          metadata: {
-            eventId: event.id,
-            chargeId: charge.id,
-            paymentIntentId,
-            amountRefunded: charge.amount_refunded,
-            depositPaidPence: newDeposit,
-          },
-        }).catch(logFailure("audit write stripe.charge.refunded"));
-      }
-
-      const vanRequest = await prisma.vanServiceRequest.findFirst({
-        where: { paymentIntentId },
-        select: { id: true },
-      });
-
-      if (vanRequest) {
-        await prisma.vanServiceRequest.update({
-          where: { id: vanRequest.id },
-          data: {
-            depositReleaseStatus: "refunded",
-            depositReleasedAt: new Date(),
-          },
-        });
-
-        await createAuditLogWithIntegrity({
-          action: "stripe.charge.refunded.van",
-          actorId: null,
-          resourceId: vanRequest.id,
-          sessionId: null,
-          ipHash: pseudonymiseIp(req.ip || ""),
-          metadata: {
-            eventId: event.id,
-            chargeId: charge.id,
-            paymentIntentId,
-            amountRefunded: charge.amount_refunded,
-          },
-        }).catch(logFailure("audit write stripe.charge.refunded.van"));
-      }
-    }
-  }
-
-  if (event.type === "charge.dispute.created") {
-    const dispute = event.data.object as Stripe.Dispute;
-    const paymentIntentId = typeof dispute.payment_intent === "string" ? dispute.payment_intent : null;
-
-    const appt = paymentIntentId
-      ? await prisma.appointment.findFirst({
-          where: { stripePaymentId: paymentIntentId },
-          select: { id: true, patientId: true },
-        })
-      : null;
-
-    const vanRequest = paymentIntentId
-      ? await prisma.vanServiceRequest.findFirst({
-          where: { paymentIntentId },
-          select: { id: true, patientId: true },
-        })
-      : null;
-
-    const resourceId = appt?.id ?? vanRequest?.id ?? paymentIntentId ?? dispute.id;
-
-    if (appt) {
-      await sendPatientNotification(
-        appt.patientId,
-        "Payment Dispute Notice",
-        "A dispute was opened for your appointment payment. Our team will review this.",
-        { appointmentId: appt.id, disputeId: dispute.id }
-      ).catch(() => {});
-    } else if (vanRequest) {
-      await sendPatientNotification(
-        vanRequest.patientId,
-        "Payment Dispute Notice",
-        "A dispute was opened for your van visit deposit. Our team will review this.",
-        { requestId: vanRequest.id, disputeId: dispute.id }
-      ).catch(() => {});
-    }
-
-    await createAuditLogWithIntegrity({
-      action: "stripe.charge.dispute.created",
-      actorId: null,
-      resourceId,
-      sessionId: null,
-      ipHash: pseudonymiseIp(req.ip || ""),
-      metadata: {
-        eventId: event.id,
+      // Staff first, and a failed email fails the webhook so Stripe retries:
+      // evidence has a deadline, and a dispute nobody hears about is lost.
+      const staffAlerted = await alertStaffOfDispute({
+        kind: "opened",
         disputeId: dispute.id,
-        amount: dispute.amount,
+        paymentIntentId,
+        amountPence: dispute.amount,
+        currency: dispute.currency,
         reason: dispute.reason,
         status: dispute.status,
-        paymentIntentId,
+        evidenceDueBy: dispute.evidence_details?.due_by ?? null,
         appointmentId: appt?.id ?? null,
         vanRequestId: vanRequest?.id ?? null,
-      },
-    }).catch(logFailure("audit write stripe.charge.dispute.created"));
+        livemode: event.livemode,
+      });
+      if (!staffAlerted) throw new Error("Could not email staff about a new dispute");
+
+      if (appt) {
+        await sendPatientNotification(
+          appt.patientId,
+          "Payment Dispute Notice",
+          "A dispute was opened for your appointment payment. Our team will review this.",
+          { appointmentId: appt.id, disputeId: dispute.id }
+        ).catch(() => {});
+      } else if (vanRequest) {
+        await sendPatientNotification(
+          vanRequest.patientId,
+          "Payment Dispute Notice",
+          "A dispute was opened for your van visit deposit. Our team will review this.",
+          { requestId: vanRequest.id, disputeId: dispute.id }
+        ).catch(() => {});
+      }
+
+      await createAuditLogWithIntegrity({
+        action: "stripe.charge.dispute.created",
+        actorId: null,
+        resourceId,
+        sessionId: null,
+        ipHash: pseudonymiseIp(req.ip || ""),
+        metadata: {
+          eventId: event.id,
+          disputeId: dispute.id,
+          amount: dispute.amount,
+          reason: dispute.reason,
+          status: dispute.status,
+          paymentIntentId,
+          appointmentId: appt?.id ?? null,
+          vanRequestId: vanRequest?.id ?? null,
+        },
+      }).catch(logFailure("audit write stripe.charge.dispute.created"));
+    }
+
+    if (event.type === "charge.dispute.closed") {
+      const dispute = event.data.object as Stripe.Dispute;
+      const paymentIntentId = typeof dispute.payment_intent === "string" ? dispute.payment_intent : null;
+      const appt = paymentIntentId
+        ? await prisma.appointment.findFirst({ where: { stripePaymentId: paymentIntentId }, select: { id: true } })
+        : null;
+      const vanRequest = paymentIntentId
+        ? await prisma.vanServiceRequest.findFirst({ where: { paymentIntentId }, select: { id: true } })
+        : null;
+
+      const staffAlerted = await alertStaffOfDispute({
+        kind: "closed",
+        disputeId: dispute.id,
+        paymentIntentId,
+        amountPence: dispute.amount,
+        currency: dispute.currency,
+        reason: dispute.reason,
+        status: dispute.status,
+        evidenceDueBy: null,
+        appointmentId: appt?.id ?? null,
+        vanRequestId: vanRequest?.id ?? null,
+        livemode: event.livemode,
+      });
+      if (!staffAlerted) throw new Error("Could not email staff about a closed dispute");
+
+      await createAuditLogWithIntegrity({
+        action: "stripe.charge.dispute.closed",
+        actorId: null,
+        resourceId: appt?.id ?? vanRequest?.id ?? paymentIntentId ?? dispute.id,
+        sessionId: null,
+        ipHash: pseudonymiseIp(req.ip || ""),
+        metadata: {
+          eventId: event.id,
+          disputeId: dispute.id,
+          amount: dispute.amount,
+          reason: dispute.reason,
+          outcome: dispute.status,
+          paymentIntentId,
+          appointmentId: appt?.id ?? null,
+          vanRequestId: vanRequest?.id ?? null,
+        },
+      }).catch(logFailure("audit write stripe.charge.dispute.closed"));
+    }
+  } catch (err) {
+    console.error("[Stripe Webhook] Handling failed, releasing the event for retry:", safeError(err));
+    await prisma.processedStripeEvent.delete({ where: { id: event.id } }).catch(() => {});
+    return res.status(500).json({ error: "Webhook handling failed" });
   }
 
   return res.status(200).json({ received: true });

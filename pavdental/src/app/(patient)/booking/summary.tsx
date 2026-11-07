@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useStripe } from "@stripe/stripe-react-native";
+import { initStripe, useStripe } from "@stripe/stripe-react-native";
 import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
@@ -26,6 +26,9 @@ export default function BookingSummaryScreen() {
     return Math.max(0, Math.floor((holdExpiresAt - Date.now()) / 1000));
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  // Once the booking is paid, the confirmed screen sits on top of this one and
+  // clears the draft; without this the cleared draft looks like an expired hold.
+  const paidRef = useRef(false);
   // A rewards voucher off this deposit (decisions log #14). The server checks
   // it and sets the amount; this only previews it.
   const { data: rewardsData } = useRewards();
@@ -36,6 +39,7 @@ export default function BookingSummaryScreen() {
   const [dependantId, setDependantId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (paidRef.current) return;
     if (!service || !slot) {
       router.replace("/(patient)/booking/service-catalog" as any);
     }
@@ -46,6 +50,7 @@ export default function BookingSummaryScreen() {
   const depositDuePence = useVoucher && voucherFits ? depositPence - voucher!.discountPence : depositPence;
 
   useEffect(() => {
+    if (paidRef.current) return;
     if (!holdExpiresAt || holdExpiresAt <= Date.now()) {
       setSecondsRemaining(0);
       Alert.alert(
@@ -71,6 +76,7 @@ export default function BookingSummaryScreen() {
       setSecondsRemaining(remaining);
       if (remaining === 0) {
         clearInterval(interval);
+        if (paidRef.current) return;
         // Handle expired hold
         Alert.alert(
           "Slot Reservation Expired",
@@ -123,8 +129,10 @@ export default function BookingSummaryScreen() {
         // Clinic visits and video consults are booked here; van visits use the
         // van dispatch flow.
         channel: channel ?? "clinic",
-        clinicianId: clinician?.id ?? slot.clinicianId,
-        clinicId: channel === "video" ? undefined : clinic?.id ?? slot.clinicId,
+        // "Any practitioner" leaves these as empty strings, which the API
+        // rejects as not-a-UUID: send nothing so it picks the dentist itself.
+        clinicianId: clinician?.id || slot.clinicianId || undefined,
+        clinicId: channel === "video" ? undefined : clinic?.id || slot.clinicId || undefined,
         startTimeUtc: startTime,
         endTimeUtc: endTime,
         slotId: slot.id,
@@ -139,6 +147,7 @@ export default function BookingSummaryScreen() {
       // deployed: the server rejects mock keys in staging and production).
       if (intent.isMock) {
         await confirmAppointment(appt.id, intent.paymentIntentId);
+        paidRef.current = true;
         setIsProcessing(false);
         router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as never);
         return;
@@ -149,7 +158,15 @@ export default function BookingSummaryScreen() {
         throw new Error("Payment setup failed - no client secret received");
       }
 
-      // 4. Initialise the PaymentSheet with the client secret
+      // 4. Initialise Stripe with the key the server says to use (so a build
+      // without EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY still works), then the
+      // PaymentSheet with the client secret.
+      if (intent.publishableKey) {
+        await initStripe({
+          publishableKey: intent.publishableKey,
+          merchantIdentifier: "merchant.com.pavdental.app",
+        });
+      }
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: "Pav Dental",
         paymentIntentClientSecret: intent.clientSecret,
@@ -200,6 +217,7 @@ export default function BookingSummaryScreen() {
       // 6. Payment collected. Ask the server to confirm now; the Stripe webhook
       // confirms the same way, so if this call fails the webhook still will
       // and the confirmed screen waits for it.
+      paidRef.current = true;
       await confirmAppointment(appt.id, intent.paymentIntentId).catch(() => {});
       setIsProcessing(false);
       router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);

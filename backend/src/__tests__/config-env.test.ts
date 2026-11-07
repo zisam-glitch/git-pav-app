@@ -270,6 +270,8 @@ describe("mock payments never run on a hosted deployment", () => {
     delete process.env.STRIPE_SECRET_KEY;
     try {
       jest.isolateModules(() => {
+        // isolateModules needs a synchronous require
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         expect(() => require("../config/env")).toThrow(/mock payments/);
       });
     } finally {

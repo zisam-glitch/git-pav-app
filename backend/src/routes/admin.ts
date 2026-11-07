@@ -6,7 +6,7 @@ import { Router, Response } from "express";
 import { env } from "../config/env";
 import { prisma } from "../lib/prisma";
 import { awardVisitPoints } from "../lib/rewards";
-import { londonTimeToUtc } from "../lib/availability";
+import { londonDate, londonTimeToUtc } from "../lib/availability";
 import { getCoverageBackend } from "../lib/van-coverage";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
@@ -253,7 +253,7 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
 
   const existing = await prisma.appointment.findUnique({
     where: { id: appointmentId },
-    select: { id: true, status: true, depositPaidPence: true, stripePaymentId: true },
+    select: { id: true, status: true, depositPaidPence: true, stripePaymentId: true, startTimeUtc: true },
   });
   if (!existing) {
     return res.status(404).json({ error: "Appointment not found" });
@@ -266,6 +266,14 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
   const allowed = ALLOWED_ADMIN_STATUS_TRANSITIONS[existing.status] || [];
   if (!allowed.includes(status)) {
     return res.status(409).json({ error: `Cannot transition appointment from ${existing.status} to ${status}` });
+  }
+
+  // Same rule as the clinician's complete (CS-28, decisions log #24): a visit
+  // can be completed on its UK calendar day or later, never ahead of it.
+  // Completing is final (no way back, no refund) and awards loyalty points, so
+  // a mis-click on a future booking must not be able to do either.
+  if ((status === "completed" || status === "in_progress") && londonDate(existing.startTimeUtc) > londonDate(new Date())) {
+    return res.status(400).json({ error: "Cannot start or complete an appointment scheduled for a future date" });
   }
 
   // If cancelling a booking where deposit was paid, issue refund through Stripe

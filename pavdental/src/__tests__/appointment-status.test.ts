@@ -8,6 +8,7 @@ import { join } from "path";
 import {
   appointmentBadge,
   depositPaidLabel,
+  isUpcomingBooking,
   nextVisit,
 } from "../features/booking/appointment-status";
 import { ukDateLabel, ukTime } from "../features/booking/uk-time";
@@ -108,5 +109,22 @@ assert(
 );
 assert(home.includes("nextVisit("), "Home picks the next visit with the shared rule");
 assert(!home.includes('nextAppointment ? "Confirmed"'), "Home doesn't hard-code Confirmed");
+
+// The Bookings list: "Upcoming" is only a paid visit still to happen. A visit
+// marked completed or missed (even one dated in the future), a cancelled one
+// and an unpaid hold must never sit there with a Cancel button.
+{
+  const future = "2026-11-09T10:00:00Z";
+  assert(isUpcomingBooking(visit("a", "confirmed", future), now), "a confirmed future visit is upcoming");
+  assert(isUpcomingBooking(visit("b", "in_progress", "2026-11-03T10:00:00Z"), now), "a visit under way is upcoming");
+  for (const status of ["completed", "no_show", "cancelled", "draft_hold"]) {
+    assert(!isUpcomingBooking(visit("c", status, future), now), `a ${status} visit is not upcoming, even when dated in the future`);
+  }
+  assert(!isUpcomingBooking(visit("d", "confirmed", "2026-11-03T10:00:00Z"), now), "a confirmed visit already over is not upcoming");
+  const list = src("app/(patient)/(tabs)/appointments.tsx");
+  assert(list.includes("isUpcomingBooking(b, now)"), "the Bookings list groups with the shared rule");
+  assert(list.includes("<Badge {...appointmentBadge(booking)}"), "past rows show Completed / Missed / Past");
+  assert(!src("app/(patient)/booking/clinic-picker.tsx").includes("CQC-registered"), "the clinic screen makes no unverified registration claim");
+}
 
 console.log("\n✅ ALL APPOINTMENT STATUS TESTS PASSED\n");

@@ -202,7 +202,11 @@ export default function SlotPickerScreen() {
           onRetry={() => refetch()}
           errorMessage="We couldn't load times for this date. Check your connection and try again."
           emptyHeading="No available times"
-          emptyBody="No available slots for this date. Please check the next day or choose 'Any Practitioner'."
+          emptyBody={
+            clinician?.id
+              ? "No available slots for this date. Try another day, or choose 'Any practitioner'."
+              : "No available slots for this date. Please try another day."
+          }
           emptyIcon="calendar"
           skeletonType="box"
           skeletonCount={1}

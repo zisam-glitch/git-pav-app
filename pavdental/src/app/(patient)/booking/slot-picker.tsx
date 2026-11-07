@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Button, FlowHeader, ChipPill, Toast, QueryState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -14,11 +14,24 @@ export default function SlotPickerScreen() {
   const insets = useSafeAreaInsets();
   const { setSlot, setHoldExpiry, clinician, clinic, service, channel } = useBookingStore();
 
+  // Only while this is the screen being looked at: after payment the confirmed
+  // screen clears the draft while this one is still in the stack beneath it, and
+  // redirecting then sent the patient back to "Choose a treatment".
+  const navigation = useNavigation();
+  const [isFocused, setIsFocused] = useState(true);
   useEffect(() => {
-    if (!service) {
+    const offFocus = navigation.addListener("focus", () => setIsFocused(true));
+    const offBlur = navigation.addListener("blur", () => setIsFocused(false));
+    return () => {
+      offFocus();
+      offBlur();
+    };
+  }, [navigation]);
+  useEffect(() => {
+    if (!service && isFocused) {
       router.replace("/(patient)/booking/service-catalog" as any);
     }
-  }, [service]);
+  }, [service, isFocused]);
 
   // Days and times are the clinic's, in UK time.
   const upcomingDays = useMemo(

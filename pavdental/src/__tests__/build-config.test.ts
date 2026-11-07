@@ -256,6 +256,17 @@ for (const profile of ["preview", "production"] as const) {
   );
 }
 
+// After payment the confirmed screen clears the draft while the slot picker is
+// still in the stack beneath it. It must only redirect to the catalog while it
+// is the screen in view, or "View my appointments" lands on "Choose a treatment".
+{
+  const slotPicker = fs.readFileSync(path.join(__dirname, "../app/(patient)/booking/slot-picker.tsx"), "utf8");
+  assert(
+    /if \(!service && isFocused\)/.test(slotPicker) && /addListener\("blur"/.test(slotPicker),
+    "slot picker only redirects to the catalog while it is focused"
+  );
+}
+
 // Release builds never sign in a fake patient or show the role switcher:
 // both are for screenshot and simulator builds only. Every profile except the
 // local development one is covered, so a new profile (for example a TestFlight

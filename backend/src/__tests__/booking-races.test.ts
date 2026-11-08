@@ -100,6 +100,22 @@ describe("booking races", () => {
     expect(await prisma.appointment.count({ where: { clinicianId, startTimeUtc: new Date(nine), status: { in: [...live] } } })).toBe(1);
   }, 15000);
 
+  it("won't book one patient into two appointments at once, even with different clinicians", async () => {
+    const monday = nextWeekday(1);
+    const first = await makeClinician([{ weekday: 1, start: 540, end: 600 }]);
+    const second = await makeClinician([{ weekday: 1, start: 540, end: 600 }]);
+    const nine = londonTimeToUtc(monday, 540).toISOString();
+    const { token } = await makePatient("double");
+
+    expect((await book(token, { channel: "video", clinicianId: first, startTimeUtc: nine })).status).toBe(201);
+    const clash = await book(token, { channel: "video", clinicianId: second, startTimeUtc: nine });
+    expect(clash.status).toBe(409);
+    expect(clash.body.error).toMatch(/already have an appointment at that time/);
+    // Another patient can still have the second clinician at that time.
+    const other = await makePatient("double-other");
+    expect((await book(other.token, { channel: "video", clinicianId: second, startTimeUtc: nine })).status).toBe(201);
+  });
+
   it("refuses an overlapping live appointment in the database itself", async () => {
     const clinicianId = await makeClinician([]);
     const { profileId } = await makePatient("db");

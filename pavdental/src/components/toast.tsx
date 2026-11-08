@@ -33,7 +33,8 @@ interface ToastProps {
  * Toast — transient top-of-screen feedback for operation results.
  * Announces politely to screen readers; slides/fades unless Reduce Motion is on.
  */
-export function Toast({ message, tone = "info", duration = 3000, onDismiss }: ToastProps) {
+export function Toast({ message, tone = "info", duration = tone === "error" ? 8000 : 3000, onDismiss }: ToastProps) {
+  // An error stays long enough to read: a 3-second one looked like the button did nothing.
   const reduceMotion = useReducedMotion();
   const insets = useSafeAreaInsets();
   const offsetY = useSharedValue(-(insets.top + 72));

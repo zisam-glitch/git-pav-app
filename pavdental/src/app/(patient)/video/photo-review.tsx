@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'expo-image';
+import { pickTriagePhoto, uploadFileName } from '@/features/video/pick-photo';
 import { ThemedText, Card, Button, AppIcon, Toast } from '@/components';
 import { colors, spacing, radius } from '@/theme';
 import { authFetch } from '@/features/auth/auth-api';
@@ -12,6 +13,7 @@ interface ReviewSlot {
   label: string;
   captured: boolean;
   uri?: string;
+  mimeType?: string;
 }
 
 export default function PhotoReviewScreen() {
@@ -27,48 +29,45 @@ export default function PhotoReviewScreen() {
   }>();
   const appointmentId = params.appointmentId;
   // Photos picked on the previous screen, keyed by slot id.
-  const picked: Record<string, string> = (() => {
+  const picked: Record<string, { uri: string; mimeType?: string }> = (() => {
     try {
-      return JSON.parse(params.photos || '{}');
+      const raw = JSON.parse(params.photos || '{}') as Record<string, unknown>;
+      return Object.fromEntries(
+        Object.entries(raw).flatMap(([id, v]) =>
+          typeof v === 'string'
+            ? [[id, { uri: v }]]
+            : v && typeof v === 'object' && typeof (v as any).uri === 'string'
+              ? [[id, v as { uri: string; mimeType?: string }]]
+              : []
+        )
+      );
     } catch {
       return {};
     }
   })();
+  const slotFrom = (id: string, label: string): ReviewSlot => ({
+    id,
+    label,
+    captured: !!picked[id],
+    uri: picked[id]?.uri,
+    mimeType: picked[id]?.mimeType,
+  });
   const [slots, setSlots] = useState<ReviewSlot[]>([
-    {
-      id: 'front',
-      label: 'Front teeth (bite closed)',
-      captured: !!picked.front,
-      uri: picked.front,
-    },
-    {
-      id: 'affected',
-      label: 'Affected / painful area',
-      captured: !!picked.affected,
-      uri: picked.affected,
-    },
-    { id: 'upper', label: 'Upper arch', captured: !!picked.upper, uri: picked.upper },
-    { id: 'lower', label: 'Lower arch', captured: !!picked.lower, uri: picked.lower },
+    slotFrom('front', 'Front teeth (bite closed)'),
+    slotFrom('affected', 'Affected / painful area'),
+    slotFrom('upper', 'Upper arch'),
+    slotFrom('lower', 'Lower arch'),
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; tone: 'success' | 'error' } | null>(null);
 
   const retake = async (id: string) => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        quality: 0.85,
-      });
-      if (!result.canceled && result.assets?.[0]?.uri) {
-        setSlots((prev) =>
-          prev.map((s) => (s.id === id ? { ...s, captured: true, uri: result.assets[0].uri } : s))
-        );
-        setToast({ message: 'Photo updated', tone: 'success' });
-        return;
-      }
-    } catch {
-      // No photo library available: the slot keeps what it had.
-    }
+    const photo = await pickTriagePhoto();
+    if (!photo) return;
+    setSlots((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, captured: true, uri: photo.uri, mimeType: photo.mimeType } : s))
+    );
+    setToast({ message: 'Photo updated', tone: 'success' });
   };
 
   const submit = async (withPhotos: boolean) => {
@@ -84,14 +83,16 @@ export default function PhotoReviewScreen() {
       // Upload the photos the patient added
       const uploadedPhotoUrls: string[] = [];
       let failedUploads = 0;
+      let lastUploadError: string | null = null;
       for (const slot of withPhotos ? slots : []) {
         if (slot.captured && slot.uri) {
           try {
             const formData = new FormData();
+            const mimeType = slot.mimeType || 'image/jpeg';
             formData.append('photo', {
               uri: slot.uri,
-              name: `triage-${slot.id}.jpg`,
-              type: 'image/jpeg',
+              name: uploadFileName(slot.id, mimeType),
+              type: mimeType,
             } as any);
             formData.append('appointmentId', appointmentId);
             formData.append('slotLabel', slot.label);
@@ -100,23 +101,22 @@ export default function PhotoReviewScreen() {
               method: 'POST',
               body: formData,
             });
-            const uploadJson = uploadRes.ok ? await uploadRes.json().catch(() => ({})) : {};
-            if (uploadJson.url) {
+            const uploadJson = await uploadRes.json().catch(() => ({}));
+            if (uploadRes.ok && uploadJson.url) {
               uploadedPhotoUrls.push(uploadJson.url);
             } else {
               failedUploads += 1;
+              if (uploadJson.error) lastUploadError = String(uploadJson.error);
             }
           } catch {
             failedUploads += 1;
+            lastUploadError = "Check your connection and try again.";
           }
         }
       }
       if (failedUploads > 0) {
-        throw new Error(
-          failedUploads === 1
-            ? "One photo didn't upload. Try again, or send without photos."
-            : `${failedUploads} photos didn't upload. Try again, or send without photos.`
-        );
+        const what = failedUploads === 1 ? "One photo didn't upload." : `${failedUploads} photos didn't upload.`;
+        throw new Error(`${what} ${lastUploadError ?? 'Try again, or send without photos.'}`);
       }
 
       const chiefComplaint = params.symptomText?.trim() || 'Intake triage review';
@@ -178,11 +178,16 @@ export default function PhotoReviewScreen() {
           {slots.map((slot) => (
             <Card key={slot.id} style={styles.rowCard}>
               <View style={[styles.thumb, !slot.captured && styles.thumbEmpty]}>
-                <AppIcon
-                  name={slot.captured ? 'image' : 'camera'}
-                  size={22}
-                  color={slot.captured ? colors.onInk : colors.ink}
-                />
+                {slot.uri ? (
+                  <Image
+                    source={{ uri: slot.uri }}
+                    style={styles.thumbImage}
+                    contentFit="cover"
+                    accessibilityLabel={`Your photo of ${slot.label}`}
+                  />
+                ) : (
+                  <AppIcon name="camera" size={22} color={colors.ink} />
+                )}
               </View>
               <View style={styles.rowInfo}>
                 <ThemedText variant="subhead" style={styles.rowTitle}>
@@ -309,9 +314,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.ink,
     borderRadius: radius.lg,
-    height: 48,
+    height: 72,
     justifyContent: 'center',
-    width: 48,
+    overflow: 'hidden',
+    width: 72,
+  },
+  thumbImage: {
+    height: 72,
+    width: 72,
   },
   thumbEmpty: {
     backgroundColor: colors.inkSubtle,

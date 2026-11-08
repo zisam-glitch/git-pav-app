@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ThemedText, Card, Button, AppIcon, DetailRow } from "@/components";
+import { ThemedText, Card, Button, AppIcon, DetailRow, Illustration } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { fetchMyAppointments } from "@/features/booking/booking-api";
@@ -73,13 +73,17 @@ export default function BookingConfirmedScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
         <View style={styles.centerBox}>
-          <View style={[styles.checkCircle, isConfirmed ? styles.confirmedCircle : styles.pendingCircle]}>
-            <AppIcon
-              name={isChecking ? "clock" : isConfirmed ? "check" : "alert"}
-              size={36}
-              color={isChecking ? colors.warning : isConfirmed ? colors.success : colors.danger}
-            />
-          </View>
+          {isConfirmed ? (
+            <Illustration name={isVideo ? "video" : "bookingConfirmed"} size={180} />
+          ) : (
+            <View style={[styles.checkCircle, styles.pendingCircle]}>
+              <AppIcon
+                name={isChecking ? "clock" : "alert"}
+                size={36}
+                color={isChecking ? colors.warning : colors.danger}
+              />
+            </View>
+          )}
 
           <ThemedText variant="largeTitle" style={styles.title}>
             {isChecking ? "Verifying payment..." : isConfirmed ? "Booking confirmed!" : "Payment verification timeout"}
@@ -152,9 +156,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: spacing.xs,
     width: 72,
-  },
-  confirmedCircle: {
-    backgroundColor: colors.successSubtle,
   },
   pendingCircle: {
     backgroundColor: colors.warningSubtle,

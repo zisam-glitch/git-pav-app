@@ -57,6 +57,7 @@ export default function CheckInScreen() {
     return (
       <View style={styles.container}>
         <EmptyState
+          illustration="appointments"
           heading="Nothing to check in for"
           body="Check-in opens 24 hours before your appointment."
           actionLabel="Back to bookings"

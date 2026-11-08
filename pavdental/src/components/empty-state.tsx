@@ -3,6 +3,7 @@ import { colors, spacing, radius } from "@/theme";
 import { ThemedText } from "./themed-text";
 import { Button } from "./button";
 import { AppIcon, type AppIconName } from "./app-icon";
+import { Illustration, type IllustrationName } from "./illustrations";
 
 interface EmptyStateProps {
   /** Short, empathetic heading */
@@ -12,8 +13,10 @@ interface EmptyStateProps {
   /** Primary CTA label */
   actionLabel?: string;
   onAction?: () => void;
-  /** Icon inside the branded mark */
+  /** Icon inside the branded mark, used when there is no illustration */
   icon?: AppIconName;
+  /** Spot illustration in place of the icon mark */
+  illustration?: IllustrationName;
 }
 
 /**
@@ -27,6 +30,7 @@ export function EmptyState({
   actionLabel,
   onAction,
   icon = "check",
+  illustration,
 }: EmptyStateProps) {
   return (
     <View
@@ -34,9 +38,13 @@ export function EmptyState({
       accessibilityRole="none"
       accessibilityLabel={`${heading}${body ? `. ${body}` : ""}`}
     >
-      <View style={styles.illustration}>
-        <AppIcon name={icon} size={36} color={colors.ink} />
-      </View>
+      {illustration ? (
+        <Illustration name={illustration} size={180} />
+      ) : (
+        <View style={styles.illustration}>
+          <AppIcon name={icon} size={36} color={colors.ink} />
+        </View>
+      )}
 
       <ThemedText variant="title" style={styles.heading}>
         {heading}

@@ -163,6 +163,7 @@ export default function PaymentMethodsScreen() {
       <View style={styles.cardsList}>
         {paymentMethods.length === 0 ? (
           <EmptyState
+            illustration="payments"
             heading="No payment methods saved"
             body="Save a payment card for faster deposit checkout, or add one during your next booking."
             actionLabel="Add payment card"

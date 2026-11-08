@@ -254,6 +254,7 @@ export default function ClinicianPatientRecordScreen() {
                 </View>
               ) : (
                 <EmptyState
+                  illustration="writing"
                   heading="No notes recorded yet"
                   body="Record examination findings, diagnosis, and treatment steps."
                   icon="notes"

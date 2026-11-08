@@ -10,6 +10,7 @@ import { colors, spacing, radius } from "@/theme";
 import { ThemedText } from "./themed-text";
 import { Button } from "./button";
 import { AppIcon } from "./app-icon";
+import { Illustration, type IllustrationName } from "./illustrations";
 
 interface ConfirmSheetProps {
   title: string;
@@ -19,6 +20,8 @@ interface ConfirmSheetProps {
   cancelLabel?: string;
   /** destructive renders red confirm + alert icon; neutral renders ink confirm */
   variant?: "neutral" | "destructive";
+  /** Spot illustration in place of the icon, for neutral choices only */
+  illustration?: IllustrationName;
   /** Called after the sheet closes (confirm pressed or swiped away) */
   onConfirm: () => void;
   onCancel?: () => void;
@@ -39,6 +42,7 @@ export function ConfirmSheet({
   confirmLabel,
   cancelLabel = "Cancel",
   variant = "neutral",
+  illustration,
   onConfirm,
   onCancel,
 }: ConfirmSheetProps) {
@@ -81,13 +85,17 @@ export function ConfirmSheet({
       accessibilityLabel={title}
     >
       <BottomSheetView style={[styles.content, { paddingBottom: Math.max(spacing.lg, insets.bottom + spacing.xs) }]}>
-        <View style={[styles.iconWrap, destructive && styles.iconWrapDanger]}>
-          <AppIcon
-            name={destructive ? "alert" : "help"}
-            size={22}
-            color={destructive ? colors.danger : colors.ink}
-          />
-        </View>
+        {illustration && !destructive ? (
+          <Illustration name={illustration} size={120} />
+        ) : (
+          <View style={[styles.iconWrap, destructive && styles.iconWrapDanger]}>
+            <AppIcon
+              name={destructive ? "alert" : "help"}
+              size={22}
+              color={destructive ? colors.danger : colors.ink}
+            />
+          </View>
+        )}
         <ThemedText variant="title" style={styles.title}>
           {title}
         </ThemedText>

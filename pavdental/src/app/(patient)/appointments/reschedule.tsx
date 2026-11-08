@@ -66,6 +66,7 @@ export default function RescheduleScreen() {
     return (
       <View style={styles.container}>
         <EmptyState
+          illustration="notFound"
           heading="Booking not found"
           body="This booking may have been removed or belongs to another account."
           actionLabel="Back"
@@ -82,6 +83,7 @@ export default function RescheduleScreen() {
     return (
       <View style={styles.container}>
         <EmptyState
+          illustration="schedule"
           heading="This booking can't be moved"
           body={tooLate ? TOO_LATE_MESSAGE : "Only a confirmed clinic or video booking can be moved."}
           actionLabel="Back to the booking"
@@ -168,6 +170,7 @@ export default function RescheduleScreen() {
           data={apiSlots === undefined ? undefined : slots}
           onRetry={() => refetch()}
           errorMessage="We couldn't load times for this day. Check your connection and try again."
+          emptyIllustration="schedule"
           emptyHeading="No free times"
           emptyBody="There are no free times on this day. Try another day."
           emptyIcon="calendar"
@@ -211,6 +214,7 @@ export default function RescheduleScreen() {
 
       {confirming && selected?.startTimeUtc ? (
         <ConfirmSheet
+          illustration="schedule"
           title="Move this booking?"
           message={rescheduleQuestion(selected.startTimeUtc)}
           confirmLabel="Move my booking"

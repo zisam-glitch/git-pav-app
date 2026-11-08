@@ -85,6 +85,7 @@ export default function PrescriptionsScreen() {
     return (
       <View style={styles.container}>
         <EmptyState
+          illustration="writing"
           heading="No prescriptions"
           body="Prescriptions issued by your dentist will appear here."
           icon="droplet"

@@ -28,7 +28,7 @@ export default function OperatorCheckInScreen() {
   if (!stopId) {
     return (
       <View style={styles.centered}>
-        <ErrorState message="Open check-in from a stop on your route. No stop is selected." />
+        <ErrorState illustration="notFound" message="Open check-in from a stop on your route. No stop is selected." />
       </View>
     );
   }

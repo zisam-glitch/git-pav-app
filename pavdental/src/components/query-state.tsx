@@ -5,6 +5,7 @@ import { ErrorState } from "./error-state";
 import { EmptyState } from "./empty-state";
 import { NetworkOffline } from "./network-offline";
 import type { AppIconName } from "./app-icon";
+import type { IllustrationName } from "./illustrations";
 import { useIsOnline } from "@/lib/network";
 import { resolveQueryState, QueryStateView } from "@/lib/query-state-resolver";
 import { spacing } from "@/theme";
@@ -28,6 +29,8 @@ export interface QueryStateProps<T> {
   emptyBody?: string;
   /** Empty state icon */
   emptyIcon?: AppIconName;
+  /** Empty state illustration, shown in place of the icon */
+  emptyIllustration?: IllustrationName;
   /** Empty state action label */
   emptyActionLabel?: string;
   /** Empty state action callback */
@@ -57,6 +60,7 @@ export function QueryState<T>({
   emptyHeading = "No items yet",
   emptyBody = "Items will appear here once available.",
   emptyIcon = "calendar",
+  emptyIllustration,
   emptyActionLabel,
   onEmptyAction,
   errorMessage,
@@ -126,6 +130,7 @@ export function QueryState<T>({
           heading={emptyHeading}
           body={emptyBody}
           icon={emptyIcon}
+          illustration={emptyIllustration}
           actionLabel={emptyActionLabel}
           onAction={onEmptyAction}
         />

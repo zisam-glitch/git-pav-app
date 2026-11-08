@@ -3,11 +3,16 @@ import { colors, spacing, radius } from "@/theme";
 import { ThemedText } from "./themed-text";
 import { Button } from "./button";
 import { AppIcon } from "./app-icon";
+import { Illustration, type IllustrationName } from "./illustrations";
 
 interface ErrorStateProps {
   /** User-friendly error message (never raw API errors) */
   message?: string;
   onRetry?: () => void;
+  /** Spot illustration above the message. Default "error". */
+  illustration?: IllustrationName;
+  /** Small icon instead of an illustration, for errors inline in a scrolling screen */
+  compact?: boolean;
 }
 
 /**
@@ -17,6 +22,8 @@ interface ErrorStateProps {
 export function ErrorState({
   message = "Something went wrong. Please try again.",
   onRetry,
+  illustration = "error",
+  compact = false,
 }: ErrorStateProps) {
   return (
     <View
@@ -25,9 +32,13 @@ export function ErrorState({
       accessibilityLiveRegion="polite"
       accessibilityLabel={message}
     >
-      <View style={styles.iconWrap} accessibilityElementsHidden>
-        <AppIcon name="alert" size={30} color={colors.warning} />
-      </View>
+      {compact ? (
+        <View style={styles.iconWrap} accessibilityElementsHidden>
+          <AppIcon name="alert" size={30} color={colors.warning} />
+        </View>
+      ) : (
+        <Illustration name={illustration} size={160} />
+      )}
 
       <ThemedText variant="headline" style={styles.message}>
         {message}

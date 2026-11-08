@@ -101,6 +101,7 @@ export default function ClinicianScheduleScreen() {
             </Card>
           ) : sessions.length === 0 ? (
             <EmptyState
+              illustration="schedule"
               heading="No consultations scheduled"
               body="Appointments booked by patients will appear here."
               icon="calendar"

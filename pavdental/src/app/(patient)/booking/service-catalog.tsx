@@ -144,6 +144,7 @@ export default function ServiceCatalogScreen() {
           data={apiServices === undefined ? undefined : filteredServices}
           onRetry={() => refetch()}
           errorMessage="We couldn't load treatments. Check your connection and try again."
+          emptyIllustration="notFound"
           emptyHeading="No matching services"
           emptyBody="Try clearing your search or choosing another treatment category."
           emptyIcon="search"

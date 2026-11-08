@@ -145,7 +145,7 @@ export default function AppointmentNotesScreen() {
         ) : null}
 
         {!appointmentId ? (
-          <ErrorState message="Open examination notes from a patient's appointment. There is no patient selected." />
+          <ErrorState illustration="notFound" message="Open examination notes from a patient's appointment. There is no patient selected." />
         ) : loading ? (
           <Card elevation="flat" style={styles.loadingCard}>
             <ActivityIndicator color={colors.ink} size="small" />

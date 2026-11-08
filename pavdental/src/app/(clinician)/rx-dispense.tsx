@@ -47,7 +47,7 @@ export default function ClinicianRxDispenseScreen() {
   if (!appointmentId) {
     return (
       <View style={styles.centered}>
-        <ErrorState message="Open a prescription from a patient's appointment. There is no patient selected." />
+        <ErrorState illustration="notFound" message="Open a prescription from a patient's appointment. There is no patient selected." />
       </View>
     );
   }

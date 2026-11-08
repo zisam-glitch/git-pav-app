@@ -201,6 +201,7 @@ export default function SlotPickerScreen() {
           data={apiSlots === undefined ? undefined : visibleSlots}
           onRetry={() => refetch()}
           errorMessage="We couldn't load times for this date. Check your connection and try again."
+          emptyIllustration="schedule"
           emptyHeading="No available times"
           emptyBody={
             clinician?.id

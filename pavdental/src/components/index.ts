@@ -20,6 +20,7 @@ export { Card } from "./card";
 export { ListRow } from "./list-row";
 export { Badge } from "./badge";
 export { Avatar } from "./avatar";
+export { Illustration, type IllustrationName } from "./illustrations";
 export { EmptyState } from "./empty-state";
 export { ErrorState } from "./error-state";
 export { NetworkOffline } from "./network-offline";

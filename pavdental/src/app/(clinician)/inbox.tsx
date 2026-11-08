@@ -183,6 +183,7 @@ export default function ClinicianInboxScreen() {
           />
         ) : filteredThreads.length === 0 ? (
           <EmptyState
+            illustration="messages"
             heading={filter === "unread" ? "No unread messages" : "No messages found"}
             body={search ? `No messages match "${search}".` : "Patient communications in your care appear here."}
             icon="message"

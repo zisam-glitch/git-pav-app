@@ -47,6 +47,7 @@ export default function TreatmentPlansScreen() {
     return (
       <View style={[styles.container, styles.centeredState]}>
         <EmptyState
+          illustration="plans"
           heading="No treatment plans"
           body="Plans prescribed by your clinician will appear here."
           icon="clipboard"

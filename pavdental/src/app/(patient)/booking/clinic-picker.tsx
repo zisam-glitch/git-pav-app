@@ -56,6 +56,7 @@ export default function ClinicPickerScreen() {
         />
       ) : view === "empty" ? (
         <EmptyState
+          illustration="notFound"
           heading="No clinics available"
           body="Practice locations will appear here once configured."
           icon="mapPin"

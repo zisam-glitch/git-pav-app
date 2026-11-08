@@ -66,6 +66,7 @@ export default function AppointmentDetailScreen() {
     return (
       <View style={styles.container}>
         <EmptyState
+          illustration="notFound"
           heading="Appointment not found"
           body="This booking may have been removed or belongs to another account."
           actionLabel="Back to bookings"

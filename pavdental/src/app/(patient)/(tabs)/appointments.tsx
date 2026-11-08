@@ -131,6 +131,7 @@ export default function PatientAppointmentsScreen() {
           />
         ) : upcoming.length === 0 && past.length === 0 ? (
           <EmptyState
+            illustration="appointments"
             heading="No appointments yet"
             body="Book a clinic visit, video consult, or mobile van in a few taps."
             actionLabel="Book an appointment"

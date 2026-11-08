@@ -5,6 +5,8 @@ import { ThemedText, Card, Badge, Button, AppIcon, EmptyState } from "@/componen
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { useCurrentUser, useAuthStore } from "@/features/auth/auth-store";
+import { ukTime } from "@/features/booking/uk-time";
+import { triageSummary } from "@/features/video/triage-summary";
 
 export default function ClinicianScheduleScreen() {
   const router = useRouter();
@@ -30,7 +32,8 @@ export default function ClinicianScheduleScreen() {
     ? liveAppointments.map((a: any) => ({
         id: a.id,
         patientId: a.patientId || a.patient?.id,
-        time: new Date(a.startTimeUtc).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+        // The practice's day and times are UK time, whatever the device is set to.
+        time: ukTime(new Date(a.startTimeUtc)),
         type: a.channel,
         // A child booked by their guardian is the one being seen.
         patientName: a.dependant
@@ -38,8 +41,10 @@ export default function ClinicianScheduleScreen() {
           : a.patient
           ? `${a.patient.firstName} ${a.patient.lastName}${a.patient.age ? ` (${a.patient.age}y)` : ""}`
           : (a.patientName || "Patient"),
-        chiefComplaint: a.service?.name || a.serviceName || "",
-        photosAttached: a.intraoralPhotos?.length || 0,
+        serviceName: a.service?.name || a.serviceName || "",
+        // The patient's own triage answer; the service name is not a symptom.
+        chiefComplaint: triageSummary(a.triageData, a.intraoralPhotos).complaint || "",
+        photosAttached: triageSummary(a.triageData, a.intraoralPhotos).photoCount,
         status: a.status === "confirmed" ? "ready_to_connect" : a.status,
       }))
     : [];
@@ -133,13 +138,18 @@ export default function ClinicianScheduleScreen() {
                         {s.patientName}
                       </ThemedText>
                       <ThemedText variant="caption" style={styles.complaint}>
-                        {s.chiefComplaint}
+                        {s.serviceName}
                       </ThemedText>
+                      {s.chiefComplaint ? (
+                        <ThemedText variant="caption" style={styles.complaint} numberOfLines={2}>
+                          {`"${s.chiefComplaint}"`}
+                        </ThemedText>
+                      ) : null}
                       {s.photosAttached > 0 ? (
                         <View style={styles.photoTagRow}>
                           <AppIcon name="camera" size={12} color={colors.secondaryLabel} />
                           <ThemedText variant="caption" style={styles.photoTag}>
-                            {s.photosAttached} intraoral photos submitted
+                            {s.photosAttached} intraoral photo{s.photosAttached === 1 ? "" : "s"} submitted
                           </ThemedText>
                         </View>
                       ) : null}

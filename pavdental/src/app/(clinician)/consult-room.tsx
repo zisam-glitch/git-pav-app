@@ -6,6 +6,10 @@ import { ThemedText, Card, Badge, Button, AppIcon, Input, SegmentedControl } fro
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { dailyJoinUrl, openVideoCall } from "@/features/video/open-call";
+import { useMyAppointments } from "@/features/hooks/use-dental-api";
+import { triageSummary } from "@/features/video/triage-summary";
+import { useQuery } from "@tanstack/react-query";
+import { Image } from "expo-image";
 
 export default function ClinicianConsultRoomScreen() {
   const router = useRouter();
@@ -18,7 +22,24 @@ export default function ClinicianConsultRoomScreen() {
   // No stand-in patient: the room only exists for a real appointment.
   const patientName = params.patientName || "Patient";
   const appointmentId = params.appointmentId;
-  const chiefComplaint = params.chiefComplaint?.trim() || null;
+  // The schedule has already loaded today's appointments with their triage
+  // answers; read this one from there rather than from a single text param.
+  const { data: todays } = useMyAppointments({ scope: "today" });
+  const appointment = (todays as any[] | undefined)?.find((a) => a.id === appointmentId);
+  const triage = triageSummary(appointment?.triageData, appointment?.intraoralPhotos);
+  const chiefComplaint = triage.complaint || params.chiefComplaint?.trim() || null;
+  // Links to the photos expire, so ask for fresh ones when the room opens.
+  const { data: triagePhotos } = useQuery({
+    queryKey: ["triage-photos", appointmentId],
+    enabled: !!appointmentId,
+    staleTime: 10 * 60 * 1000,
+    queryFn: async () => {
+      const res = await authFetch(`/api/video/triage-photos/${appointmentId}`);
+      if (!res.ok) return [] as { url: string }[];
+      const body = await res.json().catch(() => ({ photos: [] }));
+      return (body.photos ?? []) as { url: string }[];
+    },
+  });
 
   const [activeTab, setActiveTab] = useState<"video" | "triage" | "chart">("video");
   const [selectedTooth, setSelectedTooth] = useState<number>(1);
@@ -213,6 +234,40 @@ export default function ClinicianConsultRoomScreen() {
               <ThemedText variant="body" style={styles.triageText}>
                 {chiefComplaint ? `"${chiefComplaint}"` : "The patient has not submitted any symptoms for this appointment."}
               </ThemedText>
+              {triage.redFlag ? (
+                <ThemedText variant="body" style={styles.roomError} accessibilityRole="alert">
+                  {`Urgent: ${triage.redFlag}`}
+                </ThemedText>
+              ) : null}
+              {triage.painLevel !== null ? (
+                <ThemedText variant="body" style={styles.triageFact}>{`Pain: ${triage.painLevel} out of 10`}</ThemedText>
+              ) : null}
+              {triage.duration ? (
+                <ThemedText variant="body" style={styles.triageFact}>{`How long: ${triage.duration}`}</ThemedText>
+              ) : null}
+              {triage.submitted ? (
+                <ThemedText variant="body" style={styles.triageFact}>
+                  {triage.swelling ? "Facial swelling or gum boil: yes" : "Facial swelling or gum boil: no"}
+                </ThemedText>
+              ) : null}
+              <ThemedText variant="body" style={styles.triageFact}>
+                {triage.photoCount > 0
+                  ? `${triage.photoCount} intraoral photo${triage.photoCount === 1 ? "" : "s"} sent`
+                  : "No intraoral photos sent."}
+              </ThemedText>
+              {triagePhotos && triagePhotos.length > 0 ? (
+                <View style={styles.photoGrid}>
+                  {triagePhotos.map((p, i) => (
+                    <Image
+                      key={p.url}
+                      source={{ uri: p.url }}
+                      style={styles.photoThumb}
+                      contentFit="cover"
+                      accessibilityLabel={`Intraoral photo ${i + 1}`}
+                    />
+                  ))}
+                </View>
+              ) : null}
             </Card>
           </ScrollView>
         ) : (
@@ -449,6 +504,21 @@ const styles = StyleSheet.create({
   triageText: {
     color: colors.secondaryLabel,
     fontStyle: "italic",
+    lineHeight: 20,
+  },
+  photoGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+  },
+  photoThumb: {
+    width: 140,
+    height: 140,
+    borderRadius: radius.md,
+    backgroundColor: colors.inkSubtle,
+  },
+  triageFact: {
+    color: colors.label,
     lineHeight: 20,
   },
   videoArea: {

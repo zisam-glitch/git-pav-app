@@ -367,6 +367,49 @@ router.get("/status/:appointmentId", requireAuth, async (req: AuthRequest, res: 
   });
 });
 
+// ─── GET /api/video/triage-photos/:appointmentId ─────────────────────────────
+// Fresh short-lived links to the intraoral photos sent for one consultation.
+// The links saved at upload time expire after 15 minutes, so the clinician
+// asks for new ones when they open the consult room.
+router.get("/triage-photos/:appointmentId", requireAuth, async (req: AuthRequest, res: Response) => {
+  const appointmentId = String(req.params.appointmentId);
+  const appointment = await prisma.appointment.findUnique({
+    where: { id: appointmentId },
+    select: {
+      id: true,
+      intraoralPhotos: true,
+      clinician: { select: { userId: true } },
+      patient: { select: { userId: true } },
+    },
+  });
+  if (!appointment) {
+    return res.status(404).json({ error: "Consultation appointment not found" });
+  }
+  // The treating clinician and the patient only; admins get no clinical-record access by default.
+  const isClinician = req.user!.sub === appointment.clinician?.userId;
+  if (!isClinician && req.user!.sub !== appointment.patient.userId) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  const photos = await Promise.all(
+    (appointment.intraoralPhotos || []).map(async (key) => {
+      const signed = await objectStorage.getSignedUrl(key, 900);
+      return { url: signed.url, expiresAt: signed.expiresAt.toISOString() };
+    })
+  );
+
+  if (isClinician && photos.length > 0) {
+    await createAuditLogWithIntegrity({
+      action: "video.triage_photos.viewed",
+      actorId: req.user!.sub,
+      resourceId: appointmentId,
+      metadata: { count: photos.length },
+    }).catch(logFailure("audit write video.triage_photos.viewed"));
+  }
+
+  return res.json({ photos });
+});
+
 // ─── GET /api/video/clinician-queue ───────────────────────────────────────────
 // Get clinician's video consultation queue (clinician only)
 router.get("/clinician-queue", requireAuth, async (req: AuthRequest, res: Response) => {

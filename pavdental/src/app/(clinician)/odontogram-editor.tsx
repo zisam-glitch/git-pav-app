@@ -186,7 +186,7 @@ export default function OdontogramEditorScreen() {
         ) : null}
 
         {!patientId ? (
-          <ErrorState message="Open the dental chart from a patient's appointment. There is no patient selected." />
+          <ErrorState illustration="notFound" message="Open the dental chart from a patient's appointment. There is no patient selected." />
         ) : loading ? (
           <Card elevation="flat" style={styles.loadingCard}>
             <ActivityIndicator color={colors.ink} size="small" />

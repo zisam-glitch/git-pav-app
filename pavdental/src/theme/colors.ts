@@ -58,3 +58,28 @@ export const colors = {
   alwaysWhite: "#FFFFFF",
   scrim: "rgba(14, 15, 12, 0.4)",
 } as const;
+
+// ─── Illustration palette ─────────────────────────────────────────────────────
+// Fills for the Streamline "New York" art in src/components/illustrations.
+// The art's own red, navy and purple are swapped for the brand greens; a warm
+// yellow stays as the one contrast colour, and skin keeps three natural tones.
+// Decorative only: never used for text.
+export const illustrationColors = {
+  line: colors.ink, // outlines and hair
+  paper: colors.alwaysWhite,
+  accent: colors.accent, // the art's main pop colour
+  accentDeep: colors.accentPressed,
+  deep: colors.success, // clothing and large dark fills
+  leaf: "#4E7A26",
+  sage: "#C9D6B4",
+  lime: "#D8EE8C",
+  mint: "#C2EBA4",
+  mist: colors.accentSubtle,
+  sun: colors.warningFill,
+  cream: colors.warningSubtle,
+  skinLight: "#F7D7C4",
+  skinMid: "#DFA27F",
+  skinDeep: "#8E5B45",
+} as const;
+
+export type IllustrationColor = keyof typeof illustrationColors;

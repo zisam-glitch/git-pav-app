@@ -298,7 +298,7 @@ export default function PatientHomeScreen() {
 
       {/* Hero Visual Service Cards (Filtered by Category) */}
       {servicesError ? (
-        <ErrorState message="We couldn't load our services. Please try again." onRetry={() => refetchServices()} />
+        <ErrorState compact message="We couldn't load our services. Please try again." onRetry={() => refetchServices()} />
       ) : null}
       <View style={styles.serviceStack}>
         {displayedServices.map((srv) => (

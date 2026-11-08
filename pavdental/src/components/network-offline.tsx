@@ -1,8 +1,8 @@
 import { View, StyleSheet } from "react-native";
-import { colors, spacing, radius } from "@/theme";
+import { colors, spacing } from "@/theme";
 import { ThemedText } from "./themed-text";
 import { Button } from "./button";
-import { AppIcon } from "./app-icon";
+import { Illustration } from "./illustrations";
 
 interface NetworkOfflineProps {
   /** Optional custom message */
@@ -26,9 +26,7 @@ export function NetworkOffline({
       accessibilityLiveRegion="polite"
       accessibilityLabel={message}
     >
-      <View style={styles.iconWrap} accessibilityElementsHidden>
-        <AppIcon name="wifiOff" size={30} color={colors.ink} />
-      </View>
+      <Illustration name="offline" size={160} />
 
       <ThemedText variant="headline" style={styles.message}>
         {message}
@@ -56,14 +54,6 @@ const styles = StyleSheet.create({
   },
   cta: {
     marginTop: spacing.xs,
-  },
-  iconWrap: {
-    alignItems: "center",
-    backgroundColor: colors.inkSubtle,
-    borderRadius: radius.full,
-    height: 64,
-    justifyContent: "center",
-    width: 64,
   },
   message: {
     color: colors.secondaryLabel,

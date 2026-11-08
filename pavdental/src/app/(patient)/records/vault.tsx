@@ -67,6 +67,7 @@ export default function DocumentVaultScreen() {
           />
         ) : documents.length === 0 ? (
           <EmptyState
+            illustration="documents"
             heading="No documents yet"
             body="Documents your dental team shares with you will appear here."
             icon="fileText"

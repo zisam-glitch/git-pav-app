@@ -63,6 +63,7 @@ export default function PrescriptionDetailScreen() {
     return (
       <View style={styles.container}>
         <EmptyState
+          illustration="notFound"
           heading="Prescription not found"
           body="This prescription may have been removed."
           actionLabel="Back to prescriptions"

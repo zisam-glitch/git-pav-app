@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ThemedText, Button, AppIcon } from "@/components";
+import { ThemedText, Button, AppIcon, Illustration } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 
 // ─── Guest limit reached — the Zocdoc "soft wall" ─────────────────────────────
@@ -16,9 +16,7 @@ export default function GuestLimitScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.hero}>
-        <View style={styles.markTile}>
-          <AppIcon name="userPlus" size={30} color={colors.onInk} />
-        </View>
+        <Illustration name="accountCreated" size={170} />
         <ThemedText variant="largeTitle" style={styles.title}>
           One quick step to book
         </ThemedText>
@@ -97,15 +95,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     justifyContent: "center",
     padding: spacing.xl,
-  },
-  markTile: {
-    alignItems: "center",
-    backgroundColor: colors.ink,
-    borderRadius: radius.full,
-    height: 64,
-    justifyContent: "center",
-    marginBottom: spacing.xs,
-    width: 64,
   },
   subtitle: {
     color: colors.secondaryLabel,

@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ThemedText, Button, AppIcon, Card } from "@/components";
+import { ThemedText, Button, AppIcon, Card, Illustration } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 
 // ─── Account created — soft success after late-auth sign-up ───────────────────
@@ -16,9 +16,7 @@ export default function AccountCreatedScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.hero}>
-        <View style={styles.markTile}>
-          <AppIcon name="check" size={32} color={colors.success} />
-        </View>
+        <Illustration name="accountCreated" size={170} />
         <ThemedText variant="largeTitle" style={styles.title}>
           Account created
         </ThemedText>
@@ -91,15 +89,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     justifyContent: "center",
     padding: spacing.xl,
-  },
-  markTile: {
-    alignItems: "center",
-    backgroundColor: colors.successSubtle,
-    borderRadius: radius.full,
-    height: 72,
-    justifyContent: "center",
-    marginBottom: spacing.xs,
-    width: 72,
   },
   subtitle: {
     color: colors.secondaryLabel,

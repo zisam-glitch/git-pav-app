@@ -236,6 +236,7 @@ export default function TreatmentPlanBuilderScreen() {
 
               {items.length === 0 ? (
                 <EmptyState
+                  illustration="plans"
                   heading="No items in this plan"
                   body="Select procedures above to assemble the treatment plan."
                   icon="notes"

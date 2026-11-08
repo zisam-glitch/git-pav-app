@@ -193,6 +193,7 @@ export default function MessagesScreen() {
           />
         ) : filtered.length === 0 ? (
           <EmptyState
+            illustration="messages"
             heading={query ? "No messages found" : "Your inbox is clear"}
             body={query ? `Nothing matches “${query}”.` : "Messages and updates from your dental care team will appear here."}
             actionLabel={query ? undefined : "Send a message"}

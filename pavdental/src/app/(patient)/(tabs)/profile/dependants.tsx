@@ -156,6 +156,7 @@ export default function DependantsScreen() {
       <View style={styles.list}>
         {dependants.length === 0 ? (
           <EmptyState
+            illustration="family"
             heading="No linked dependants"
             body="Add children under 16 where you hold legal parental responsibility to manage their bookings and pediatric records."
             actionLabel="Add child / dependant"

@@ -215,12 +215,12 @@ describe("CS-28: Clinician Portal (PT-3, MB-4)", () => {
       },
     });
     try {
-      const again: any = await (
+      const again = (await (
         await fetch(`${baseUrl}/api/booking/appointments?scope=today`, {
           headers: { Authorization: `Bearer ${clinicianToken}` },
         })
-      ).json();
-      expect(again.find((a: any) => a.id === atMidnight.id)).toBeUndefined();
+      ).json()) as { id: string }[];
+      expect(again.find((a) => a.id === atMidnight.id)).toBeUndefined();
     } finally {
       await prisma.appointment.delete({ where: { id: atMidnight.id } });
     }

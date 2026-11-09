@@ -5,6 +5,7 @@ import { ThemedText, Card, Badge, Button, IconButton, AppIcon, ErrorState } from
 import { colors, spacing, radius } from "@/theme";
 import { fetchOdontogram, updateOdontogram, fetchOdontogramHistory } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
+import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
 
 const TOOTH_CONDITIONS = [
   "healthy",
@@ -210,7 +211,7 @@ export default function OdontogramEditorScreen() {
                   <View key={h.id || idx} style={styles.historyItem}>
                     <View style={styles.historyHeader}>
                       <ThemedText variant="headline" style={styles.historyTooth}>
-                        Tooth #{h.toothNumber} ({h.arch} - {h.quadrant})
+                        {toothLabel(h.toothNumber)} ({h.arch} - {h.quadrant})
                       </ThemedText>
                       <Badge
                         label={toLabel(h.condition)}
@@ -241,14 +242,14 @@ export default function OdontogramEditorScreen() {
             {/* Tooth Grid */}
             <Card style={styles.chartCard}>
               <ThemedText variant="caption" style={styles.archLabel}>
-                Maxillary arch (upper jaw: 1 - 16)
+                Upper (18–11, 21–28)
               </ThemedText>
               <View style={styles.teethRow}>
-                {Array.from({ length: 16 }, (_, i) => i + 1).map((num) => {
+                {UPPER_CHART_ROW.map((num) => {
                   const state = teethState[num];
                   const isSelected = selectedTooth === num;
                   return (
-                    <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Tooth ${num}${state?.condition ? `, ${state.condition}` : ""}`} accessibilityState={{ selected: isSelected }}
+                    <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${toothLabel(num)}${state?.condition ? `, ${state.condition}` : ""}`} accessibilityState={{ selected: isSelected }}
                       key={num}
                       style={[
                         styles.toothButton,
@@ -260,7 +261,7 @@ export default function OdontogramEditorScreen() {
                       onPress={() => handleSelectTooth(num)}
                     >
                       <ThemedText variant="caption" style={styles.toothNumText}>
-                        {num}
+                        {fdiText(num)}
                       </ThemedText>
                     </TouchableOpacity>
                   );
@@ -268,14 +269,14 @@ export default function OdontogramEditorScreen() {
               </View>
 
               <ThemedText variant="caption" style={[styles.archLabel, { marginTop: spacing.md }]}>
-                Mandibular arch (lower jaw: 17 - 32)
+                Lower (48–41, 31–38)
               </ThemedText>
               <View style={styles.teethRow}>
-                {Array.from({ length: 16 }, (_, i) => i + 17).map((num) => {
+                {LOWER_CHART_ROW.map((num) => {
                   const state = teethState[num];
                   const isSelected = selectedTooth === num;
                   return (
-                    <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Tooth ${num}${state?.condition ? `, ${state.condition}` : ""}`} accessibilityState={{ selected: isSelected }}
+                    <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${toothLabel(num)}${state?.condition ? `, ${state.condition}` : ""}`} accessibilityState={{ selected: isSelected }}
                       key={num}
                       style={[
                         styles.toothButton,
@@ -287,7 +288,7 @@ export default function OdontogramEditorScreen() {
                       onPress={() => handleSelectTooth(num)}
                     >
                       <ThemedText variant="caption" style={styles.toothNumText}>
-                        {num}
+                        {fdiText(num)}
                       </ThemedText>
                     </TouchableOpacity>
                   );
@@ -299,7 +300,7 @@ export default function OdontogramEditorScreen() {
             <Card style={styles.card}>
               <View style={styles.inspectorHeader}>
                 <ThemedText variant="headline" style={styles.sectionHeading}>
-                  Tooth #{selectedTooth} details
+                  {toothLabel(selectedTooth)} details
                 </ThemedText>
                 <Badge
                   label={toLabel(teethState[selectedTooth]?.condition || "healthy")}

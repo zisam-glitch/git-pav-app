@@ -25,6 +25,7 @@ export default function OperatorLayout() {
       screenOptions={stackScreenOptions}
     >
       <Stack.Screen name="shift" options={{ title: "Van dispatch console", headerTitle: "" }} />
+      <Stack.Screen name="settings" options={{ title: "Settings" }} />
       <Stack.Screen name="incoming" options={{ title: "Incoming requests", headerTitle: "" }} />
       <Stack.Screen name="route" options={{ title: "Live van queue", headerTitle: "" }} />
       <Stack.Screen name="van-check-in" options={{ title: "Patient arrival check-in", headerTitle: "" }} />

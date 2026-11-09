@@ -135,6 +135,12 @@ export default function OperatorShiftScreen() {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
+        <Button
+          title="Settings and sign out"
+          variant="ghost"
+          size="sm"
+          onPress={() => router.push("/(operator)/settings" as never)}
+        />
         {/* Shift Status Header */}
         <Card style={styles.statusCard}>
           <View style={styles.statusRow}>

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'expo-image';
+import { pickTriagePhoto } from '@/features/video/pick-photo';
 import { ThemedText, Button, AppIcon } from '@/components';
 import { colors, spacing, radius } from '@/theme';
 
@@ -12,6 +13,7 @@ interface PhotoSlot {
   description: string;
   isCaptured: boolean;
   uri?: string;
+  mimeType?: string;
 }
 
 export default function IntraoralPhotosScreen() {
@@ -53,21 +55,13 @@ export default function IntraoralPhotosScreen() {
   ]);
 
   const toggleCapture = async (id: string) => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        quality: 0.85,
-      });
-      if (!result.canceled && result.assets?.[0]?.uri) {
-        setPhotoSlots((prev) =>
-          prev.map((slot) =>
-            slot.id === id ? { ...slot, isCaptured: true, uri: result.assets[0].uri } : slot
-          )
-        );
-      }
-    } catch {
-      // No photo library available: the slot stays empty.
-    }
+    const photo = await pickTriagePhoto();
+    if (!photo) return;
+    setPhotoSlots((prev) =>
+      prev.map((slot) =>
+        slot.id === id ? { ...slot, isCaptured: true, uri: photo.uri, mimeType: photo.mimeType } : slot
+      )
+    );
   };
 
   const handleContinue = () => {
@@ -81,7 +75,9 @@ export default function IntraoralPhotosScreen() {
         duration: params.duration || '',
         photos: JSON.stringify(
           Object.fromEntries(
-            photoSlots.filter((slot) => slot.uri).map((slot) => [slot.id, slot.uri])
+            photoSlots
+              .filter((slot) => slot.uri)
+              .map((slot) => [slot.id, { uri: slot.uri, mimeType: slot.mimeType }])
           )
         ),
       },
@@ -122,11 +118,11 @@ export default function IntraoralPhotosScreen() {
               style={[styles.slotCard, slot.isCaptured && styles.slotCardCaptured]}
             >
               <View style={styles.thumbnailBox}>
-                <AppIcon
-                  name={slot.isCaptured ? 'image' : 'plus'}
-                  size={22}
-                  color={slot.isCaptured ? colors.success : colors.ink}
-                />
+                {slot.uri ? (
+                  <Image source={{ uri: slot.uri }} style={styles.thumbnailImage} contentFit="cover" accessible={false} />
+                ) : (
+                  <AppIcon name="plus" size={22} color={colors.ink} />
+                )}
               </View>
               <View style={styles.slotInfo}>
                 <ThemedText variant="headline" style={styles.slotLabel}>
@@ -141,7 +137,7 @@ export default function IntraoralPhotosScreen() {
                   variant="caption"
                   style={slot.isCaptured ? styles.statusDone : styles.statusPending}
                 >
-                  {slot.isCaptured ? 'Added' : 'Tap to add'}
+                  {slot.isCaptured ? 'Change' : 'Tap to add'}
                 </ThemedText>
               </View>
             </Pressable>
@@ -236,6 +232,11 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     height: 48,
     justifyContent: 'center',
+    overflow: 'hidden',
+    width: 48,
+  },
+  thumbnailImage: {
+    height: 48,
     width: 48,
   },
   tipBold: {

@@ -49,6 +49,7 @@ interface Booking {
   clinician?: { fullName?: string };
   clinic?: { name?: string; address?: string; postcode?: string };
   van?: { name?: string };
+  accessDetails?: { checkedIn?: boolean } | null;
 }
 
 export default function AppointmentDetailScreen() {
@@ -182,6 +183,7 @@ export default function AppointmentDetailScreen() {
           {priceLabel(booking.totalPricePence) ? (
             <DetailRow label="Price" value={priceLabel(booking.totalPricePence) as string} />
           ) : null}
+          {booking.accessDetails?.checkedIn ? <DetailRow label="Check-in" value="You're checked in" /> : null}
           <DetailRow label="Deposit paid" value={depositPaidLabel(booking.depositPaidPence)} />
           {balanceLabel(booking) ? (
             <DetailRow label="Balance to pay at your visit" value={balanceLabel(booking) as string} />
@@ -239,7 +241,7 @@ export default function AppointmentDetailScreen() {
         {canCheckIn(booking) ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Start digital check-in"
+            accessibilityLabel="Check in for your visit"
             onPress={() =>
               router.push({ pathname: "/(patient)/check-in" as never, params: { appointmentId: booking.id } })
             }
@@ -251,10 +253,10 @@ export default function AppointmentDetailScreen() {
               </View>
               <View style={styles.checkInInfo}>
                 <ThemedText variant="headline" style={styles.checkInTitle}>
-                  You're nearly there
+                  Check in for your visit
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.muted}>
-                  Check in before your visit — forms, consent and balance, 5 minutes.
+                  Let the practice know you're on your way. It takes one tap.
                 </ThemedText>
               </View>
               <AppIcon name="chevronRight" size={16} color={colors.alwaysWhite} />

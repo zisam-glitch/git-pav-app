@@ -1,4 +1,4 @@
-interface SlotLike {
+export interface SlotLike {
   isAvailable?: boolean;
   startTimeUtc?: string;
   clinicianId?: string;

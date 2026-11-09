@@ -9,7 +9,7 @@ import { TimeSlot } from "@/features/booking/booking-types";
 import { useSlots, useHoldSlotMutation } from "@/features/hooks/use-dental-api";
 import { ukDayLabel, ukHour, upcomingUkDates } from "@/features/booking/uk-time";
 import { fetchSlots, holdExpiryOnThisPhone } from "@/features/booking/booking-api";
-import { MAX_WEEKS_AHEAD, hasBookableTime, nextAvailableDay } from "@/features/booking/next-available";
+import { MAX_WEEKS_AHEAD, hasBookableTime, nextAvailableDay, type SlotLike } from "@/features/booking/next-available";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { useQueries } from "@tanstack/react-query";
 
@@ -80,7 +80,7 @@ export default function SlotPickerScreen() {
   const bookableByDay: Record<string, boolean | undefined> = {};
   upcomingDays.forEach((d, i) => {
     const q = dayQueries[i];
-    bookableByDay[d.iso] = q?.data === undefined ? undefined : hasBookableTime(q.data as any[], { clinicId: clinic?.id, clinicianId: clinician?.id });
+    bookableByDay[d.iso] = q?.data === undefined ? undefined : hasBookableTime(q.data as SlotLike[], { clinicId: clinic?.id, clinicianId: clinician?.id });
   });
 
   const filteredSlots = slots.filter((slot) => {

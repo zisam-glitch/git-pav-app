@@ -120,6 +120,7 @@ assert(detail.includes('booking.channel === "video"'), "appointment page only of
   }
   assert(/activeTab !== "video" && styles\.hidden/.test(room), "the clinician's call keeps going while they read the triage or the chart");
   assert(/callStartedAt/.test(room) && !/setSeconds\(\(prev\) => prev \+ 1\)/.test(room), "the call timer counts from when the clinician joined, by the clock");
+  assert(!/browser/i.test(read("app/(patient)/video/device-check.tsx")), "the pre-call screen no longer says the call opens in the browser");
   assert(/reason === "ended"\) finish\(\)/.test(patientCall), "the patient goes to the summary when the dentist ends the consultation");
 }
 

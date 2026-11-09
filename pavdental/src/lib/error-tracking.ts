@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/react-native";
 import { scrubEvent } from "./error-scrub";
+import { setCaughtErrorReporter } from "./caught-errors";
 
 // Crash and error reporting (CS-44, decisions log #18). Sentry is outside the
 // clinical boundary, so an event carries the error type, a scrubbed message,
@@ -26,6 +27,7 @@ export function initErrorTracking(): void {
     beforeSend: scrubEvent,
   });
   enabled = true;
+  setCaughtErrorReporter(reportError);
 }
 
 /** Reports an unexpected error. A no-op without a DSN. */

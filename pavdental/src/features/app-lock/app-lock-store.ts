@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { reportCaughtError } from "@/lib/caught-errors";
 import { tokenStore } from '@/lib/token-store';
 import { useAuthStore } from '@/features/auth/auth-store';
 
@@ -89,7 +90,7 @@ export const useAppLockStore = create<AppLockState>((set, get) => ({
 
       return false;
     } catch (error) {
-      console.error('[App Lock] Authentication error:', error);
+      reportCaughtError(error, "app lock authentication error");
       return false;
     }
   },

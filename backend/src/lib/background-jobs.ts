@@ -15,6 +15,9 @@ import { safeError } from "./log-safety";
 // Interval settings
 const SLOT_EXPIRY_INTERVAL_MS = 60 * 1000; // 1 minute
 const NOTIFICATION_DISPATCH_INTERVAL_MS = 60 * 1000; // 1 minute
+const escapeEmailHtml = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
 const VAN_REQUEST_EXPIRY_INTERVAL_MS = 30 * 1000; // 30 seconds
 // A claimed reminder batch (up to 50, each push call capped at 10 s) finishes
 // well inside this; a claim older than it belongs to a dispatcher that died.
@@ -329,7 +332,9 @@ export async function processDueScheduledNotifications(): Promise<{ dispatchedCo
       // PP-1: Check user preferences (missing preferences row defaults to pushEnabled: true)
       const preferences = user.notificationPreferences;
       const pushEnabled = preferences ? preferences.pushEnabled : true;
-      if (!pushEnabled) {
+      // The Email switch is honoured too: a reminder goes by every channel the patient left on.
+      const emailEnabled = Boolean(user.email) && (preferences ? preferences.emailEnabled && preferences.appointmentReminders : true);
+      if (!pushEnabled && !emailEnabled) {
         await prisma.scheduledNotification.update({
           where: { id: notification.id },
           data: { status: "cancelled", sentAt: now },
@@ -355,7 +360,7 @@ export async function processDueScheduledNotifications(): Promise<{ dispatchedCo
         continue;
       }
 
-      const pushTokens = user.pushTokens.map((t) => t.token);
+      const pushTokens = pushEnabled ? user.pushTokens.map((t) => t.token) : [];
 
       try {
         if (pushTokens.length > 0) {
@@ -371,6 +376,18 @@ export async function processDueScheduledNotifications(): Promise<{ dispatchedCo
           if (sendResult.failedCount > 0 && sendResult.sentCount === 0) {
             throw new Error("All push notifications failed to send");
           }
+        }
+
+        if (emailEnabled) {
+          // Best effort: a failed email must not make the push retry and repeat.
+          await communicationService
+            .sendEmail({
+              to: user.email,
+              subject: notification.title,
+              text: `Pav Dental\n\n${notification.body}`,
+              html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h2 style="color: #0D9488;">Pav Dental</h2><p>${escapeEmailHtml(notification.body)}</p></div>`,
+            })
+            .catch((err) => console.error("[BACKGROUND JOBS] Reminder email failed:", safeError(err)));
         }
 
         // Record in notification history

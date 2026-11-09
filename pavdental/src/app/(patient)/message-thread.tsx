@@ -12,6 +12,13 @@ import {
 import { threadMessages } from "@/features/messages/thread";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 
+interface RawThread {
+  id: string;
+  subject?: string;
+  isRead?: boolean;
+  messages?: unknown;
+}
+
 // One conversation: every message, oldest first, with a reply box underneath.
 export default function MessageThreadScreen() {
   const router = useRouter();
@@ -24,14 +31,13 @@ export default function MessageThreadScreen() {
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
   const scroller = useRef<ScrollView>(null);
 
-  const thread = Array.isArray(rawThreads) ? (rawThreads as any[]).find((t) => t.id === id) : undefined;
+  const thread = Array.isArray(rawThreads) ? (rawThreads as RawThread[]).find((t) => t.id === id) : undefined;
   const messages = threadMessages(thread);
 
   const unread = thread ? !thread.isRead : false;
   useEffect(() => {
     if (unread && id) markRead.mutate(id);
     // Mark read once per thread opened.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unread, id]);
 
   useEffect(() => {
@@ -44,9 +50,9 @@ export default function MessageThreadScreen() {
     try {
       await replyMutation.mutateAsync({ threadId: id, body });
       setReply("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Keep what they typed, and say plainly that it did not send.
-      setToast({ message: err?.message || "Your message did not send. Please try again.", tone: "error" });
+      setToast({ message: (err instanceof Error && err.message) || "Your message did not send. Please try again.", tone: "error" });
     }
   };
 

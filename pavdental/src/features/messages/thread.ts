@@ -1,3 +1,11 @@
+interface RawMessage {
+  id?: unknown;
+  senderRole?: string;
+  senderName?: string;
+  body?: unknown;
+  sentAtIso?: unknown;
+}
+
 export interface ThreadMessage {
   id: string;
   mine: boolean;
@@ -8,10 +16,10 @@ export interface ThreadMessage {
 
 /** The messages of one thread, oldest first, marked as the patient's own or the practice's. */
 export function threadMessages(raw: unknown): ThreadMessage[] {
-  const list = (raw as { messages?: unknown[] } | null | undefined)?.messages;
+  const list = (raw as { messages?: RawMessage[] } | null | undefined)?.messages;
   if (!Array.isArray(list)) return [];
   return list
-    .map((m: any) => ({
+    .map((m) => ({
       id: String(m.id),
       mine: m.senderRole === "patient",
       sender: m.senderRole === "patient" ? "You" : m.senderName || "Pav Dental care team",

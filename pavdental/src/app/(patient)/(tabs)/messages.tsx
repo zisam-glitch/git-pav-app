@@ -443,21 +443,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 40,
   },
-  composer: {
-    backgroundColor: colors.systemBackground,
-    borderTopColor: colors.separator,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    gap: spacing.xxs,
-    padding: spacing.md,
-  },
-  composerRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.xs,
-  },
-  composerTo: {
-    color: colors.secondaryLabel,
-  },
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -472,17 +457,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: spacing.xs,
-  },
-  sendBtn: {
-    alignItems: "center",
-    backgroundColor: colors.ink,
-    borderRadius: radius.full,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
-  },
-  sendBtnDisabled: {
-    opacity: 0.4,
   },
   stack: {
     gap: spacing.sm,

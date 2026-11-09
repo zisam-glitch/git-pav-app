@@ -170,6 +170,57 @@ async function runTests() {
   await authApi.signOut();
   assert(logoutBodies[1] === "{}", "The token is forgotten after sign-out");
 
+  // ─── Test 5: only a refused refresh signs the patient out (B1) ────────────
+  const draftService = {
+    id: "srv_checkup",
+    name: "Checkup",
+    pricePence: 6500,
+    depositPence: 2000,
+    durationMinutes: 30,
+    category: "general",
+    channel: "clinic",
+    description: "Checkup",
+  };
+  const tryWithRefreshAnswer = async (answer: () => Promise<Response>) => {
+    (global as any).fetch = async (url: string) => {
+      if (String(url).includes("/api/auth/refresh")) return answer();
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    };
+    await tokenStore.setRefreshToken("still-good-refresh-token");
+    useAuthStore.getState().setAuth("expired-access-token", signedInUser);
+    useBookingStore.getState().setService(draftService as any);
+    let message = "";
+    try {
+      await authFetch("/api/test-protected");
+    } catch (err) {
+      message = err instanceof Error ? err.message : String(err);
+    }
+    return message;
+  };
+
+  for (const [label, answer] of [
+    ["a 503 from the server", async () => new Response("{}", { status: 503 })],
+    ["a 429 from the server", async () => new Response("{}", { status: 429 })],
+    ["no signal", async () => { throw new TypeError("Network request failed"); }],
+  ] as const) {
+    const message = await tryWithRefreshAnswer(answer);
+    assert(/couldn't reach/i.test(message), `With ${label}, the error says we couldn't reach the server`);
+    assert(
+      (await tokenStore.getRefreshToken()) === "still-good-refresh-token",
+      `With ${label}, the refresh token is kept`
+    );
+    assert(useAuthStore.getState().user !== null, `With ${label}, the patient stays signed in`);
+    assert(useBookingStore.getState().service !== null, `With ${label}, the booking draft is kept`);
+  }
+
+  const refusedMessage = await tryWithRefreshAnswer(
+    async () => new Response(JSON.stringify({ error: "Session expired or revoked" }), { status: 401 })
+  );
+  assert(/session expired/i.test(refusedMessage), "A refused refresh says the session expired");
+  assert(useAuthStore.getState().user === null, "A refused refresh signs the patient out");
+  assert((await tokenStore.getRefreshToken()) === null, "A refused refresh deletes the refresh token");
+  assert(useBookingStore.getState().service === null, "A refused refresh clears the booking draft");
+
   // Restore fetch
   global.fetch = originalFetch;
 

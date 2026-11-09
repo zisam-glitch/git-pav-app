@@ -3,7 +3,7 @@ import { View, StyleSheet, Linking } from "react-native";
 import Constants from "expo-constants";
 import { ThemedText, Button } from "@/components";
 import { colors, spacing } from "@/theme";
-import { API_URL } from "@/config/api";
+import { publicFetch } from "@/features/auth/auth-api";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { isOlderVersion } from "@/lib/app-version";
 
@@ -23,19 +23,14 @@ export function UpdateGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let active = true;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
-    fetch(`${API_URL}/api/public/app-config`, { signal: controller.signal })
+    publicFetch("/api/public/app-config")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (active && data) setConfig(data as AppConfig);
       })
-      .catch(() => {})
-      .finally(() => clearTimeout(timer));
+      .catch(() => {});
     return () => {
       active = false;
-      clearTimeout(timer);
-      controller.abort();
     };
   }, []);
 

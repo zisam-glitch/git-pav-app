@@ -5,14 +5,23 @@
 
 type Clinic = { name?: string | null; address?: string | null; postcode?: string | null };
 
-/** Check-in is for a paid, confirmed clinic or van visit in the next 24 hours. */
+/** The server opens check-in this long before the visit. */
+export const CHECK_IN_OPENS_HOURS = 48;
+
+/** Check-in is for a confirmed clinic or van visit, not yet done, inside the server's window. */
 export function canCheckIn(
-  booking: { status: string; channel: string; startTimeUtc: string },
+  booking: {
+    status: string;
+    channel: string;
+    startTimeUtc: string;
+    accessDetails?: { checkedIn?: boolean } | null;
+  },
   now: number = Date.now()
 ): boolean {
   if (booking.status !== "confirmed" || booking.channel === "video") return false;
+  if (booking.accessDetails?.checkedIn) return false;
   const until = new Date(booking.startTimeUtc).getTime() - now;
-  return until > 0 && until < 24 * 60 * 60 * 1000;
+  return until > 0 && until < CHECK_IN_OPENS_HOURS * 60 * 60 * 1000;
 }
 
 /** "Name, street, postcode", leaving out whatever the server didn't send. */

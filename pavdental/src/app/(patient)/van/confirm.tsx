@@ -185,7 +185,7 @@ export default function VanConfirmScreen() {
             label="Treatment"
             value={
               hasService
-                ? `${store.serviceName} (${store.serviceDurationMinutes} min clinical block)`
+                ? `${store.serviceName} (${store.serviceDurationMinutes} min)`
                 : "No service selected"
             }
           />

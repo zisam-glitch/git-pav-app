@@ -121,13 +121,32 @@ router.post("/hold-slot", requireAuth, validateBody(holdSlotSchema), async (req:
   const patientId = req.user!.sub;
   const lockKey = slotLockKey(slotId);
 
+  // If Redis can't be reached the time isn't taken: say so, rather than
+  // telling the patient someone else is holding it (B3).
+  const holdUnavailable = () =>
+    res.status(503).json({
+      success: false,
+      slotId,
+      error: "We couldn't hold that time just now. Please try again in a moment.",
+    });
+
   // SET NX EX — only set if not already held
-  const acquired = await redis
-    .set(lockKey, patientId, "EX", SLOT_HOLD_SECONDS, "NX")
-    .catch(() => null);
+  let acquired: string | null;
+  try {
+    acquired = await redis.set(lockKey, patientId, "EX", SLOT_HOLD_SECONDS, "NX");
+  } catch (err) {
+    logFailure("slot hold (redis set)")(err);
+    return holdUnavailable();
+  }
 
   if (!acquired) {
-    const currentHolder = await redis.get(lockKey).catch(() => null);
+    let currentHolder: string | null;
+    try {
+      currentHolder = await redis.get(lockKey);
+    } catch (err) {
+      logFailure("slot hold (redis get)")(err);
+      return holdUnavailable();
+    }
     if (currentHolder !== patientId) {
       return res.status(409).json({
         success: false,

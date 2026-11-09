@@ -5,7 +5,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, DetailRow, Illustration } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
-import { fetchMyAppointments } from "@/features/booking/booking-api";
+import { fetchAppointmentStatus } from "@/features/booking/booking-api";
+import { watchConfirmation } from "@/features/booking/confirmation-watch";
 
 export default function BookingConfirmedScreen() {
   const router = useRouter();
@@ -15,44 +16,13 @@ export default function BookingConfirmedScreen() {
   const [isChecking, setIsChecking] = useState(true);
   const appointmentId = params.appointmentId;
 
-  // Poll for appointment confirmation status
+  // Ask about this appointment only, every 2 seconds for up to 45, and stop
+  // as soon as it is confirmed. Without an id there is nothing to check.
   useEffect(() => {
-    const checkConfirmation = async () => {
-      try {
-        const appointments = await fetchMyAppointments();
-        
-        // If we have a specific appointmentId, check that one specifically
-        if (appointmentId) {
-          const targetAppointment = appointments.find((apt: any) => apt.id === appointmentId);
-          if (targetAppointment && targetAppointment.status === "confirmed") {
-            setIsConfirmed(true);
-            setIsChecking(false);
-          }
-        } else {
-          // Fallback: check if the most recent appointment is confirmed
-          const recentAppointment = appointments[0];
-          if (recentAppointment && recentAppointment.status === "confirmed") {
-            setIsConfirmed(true);
-            setIsChecking(false);
-          }
-        }
-      } catch (error) {
-        console.error("Error checking appointment status:", error);
-      }
-    };
-
-    // Check immediately, then poll every 2 seconds for up to 45 seconds
-    checkConfirmation();
-    const interval = setInterval(checkConfirmation, 2000);
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
+    return watchConfirmation(appointmentId, fetchAppointmentStatus, (outcome) => {
+      setIsConfirmed(outcome === "confirmed");
       setIsChecking(false);
-    }, 45000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
+    });
   }, [appointmentId]);
 
   const handleFinish = () => {

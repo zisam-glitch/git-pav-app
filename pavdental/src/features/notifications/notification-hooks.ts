@@ -194,6 +194,10 @@ export function useNotificationHistory(limit: number = 20, offset: number = 0) {
   });
 }
 
+interface NotificationResponseLike {
+  notification?: { request?: { content?: { data?: unknown } } };
+}
+
 /**
  * Calls `onTap` with a notification's data when the person taps it, including
  * the tap that launched the app from closed. Returns a function that stops
@@ -202,14 +206,16 @@ export function useNotificationHistory(limit: number = 20, offset: number = 0) {
 export function listenForNotificationTaps(onTap: (data: unknown) => void): () => void {
   if (!Notifications) return () => {};
   let handledLaunch = false;
+  const dataOf = (response: NotificationResponseLike | null | undefined) =>
+    response?.notification?.request?.content?.data;
   Notifications.getLastNotificationResponseAsync?.()
-    .then((response: any) => {
-      if (response && !handledLaunch) onTap(response.notification?.request?.content?.data);
+    .then((response: NotificationResponseLike | null) => {
+      if (response && !handledLaunch) onTap(dataOf(response));
     })
     .catch(() => {});
-  const subscription = Notifications.addNotificationResponseReceivedListener((response: any) => {
+  const subscription = Notifications.addNotificationResponseReceivedListener((response: NotificationResponseLike) => {
     handledLaunch = true;
-    onTap(response.notification?.request?.content?.data);
+    onTap(dataOf(response));
   });
   return () => subscription?.remove?.();
 }

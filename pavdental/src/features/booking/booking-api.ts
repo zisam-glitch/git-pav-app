@@ -116,6 +116,15 @@ export async function fetchMyAppointments(params?: { scope?: string; date?: stri
   return res.json();
 }
 
+/** One of the patient's own appointments, or null if the server doesn't know it. */
+export async function fetchAppointmentStatus(appointmentId: string): Promise<{ id: string; status: string } | null> {
+  const res = await authFetch(`/api/booking/appointments/${encodeURIComponent(appointmentId)}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("Could not load the appointment");
+  const body = await res.json();
+  return { id: String(body.id), status: String(body.status) };
+}
+
 // ─── Payment intent ──────────────────────────────────────────────────────────
 // Amount and confirmation are server-controlled; a verified Stripe webhook is
 // the only path that changes an appointment to confirmed.

@@ -105,7 +105,7 @@
     "test:auth-errors": "npx tsx src/__tests__/auth-errors.test.ts",
     "test:otp-input": "npx tsx src/__tests__/otp-input.test.ts",
     "test:password-rules": "npx tsx src/__tests__/password-rules.test.ts",
-    "test:all": "npm run test && npm run test:account && npm run test:pricing && npm run test:odontogram && npm run test:routing && npm run test:clinical && npm run test:booking && npm run test:screen-time-zone && npm run test:errors && npm run test:client && npm run test:request-timeout && npm run test:states && npm run test:a11y && npm run test:screens && npm run test:routes && npm run test:lock && npm run test:guards && npm run test:hold-expiry && npm run test:config && npm run test:network && npm run test:dependants && npm run test:screen-security && npm run test:offline-notes && npm run test:maestro && npm run test:haptics && npm run test:booking-confirm && npm run test:confirmation-watch && npm run test:van-address && npm run test:video-booking && npm run test:journey-fixes && npm run test:account-security && npm run test:van-map && npm run test:van-entry && npm run test:design && npm run test:redesign-fixes && npm run test:iconsax && npm run test:rewards && npm run test:appointment-status && npm run test:reschedule && npm run test:service-location && npm run test:api-url && npm run test:auth-errors && npm run test:otp-input && npm run test:password-rules && npm run test:illustrations && npm run check:content",
+    "test:all": "npm run test && npm run test:account && npm run test:pricing && npm run test:odontogram && npm run test:routing && npm run test:clinical && npm run test:booking && npm run test:screen-time-zone && npm run test:errors && npm run test:client && npm run test:request-timeout && npm run test:states && npm run test:a11y && npm run test:screens && npm run test:routes && npm run test:lock && npm run test:guards && npm run test:hold-expiry && npm run test:config && npm run test:network && npm run test:dependants && npm run test:screen-security && npm run test:offline-notes && npm run test:maestro && npm run test:haptics && npm run test:booking-confirm && npm run test:confirmation-watch && npm run test:van-address && npm run test:video-booking && npm run test:journey-fixes && npm run test:account-security && npm run test:van-map && npm run test:van-entry && npm run test:design && npm run test:redesign-fixes && npm run test:iconsax && npm run test:rewards && npm run test:appointment-status && npm run test:reschedule && npm run test:service-location && npm run test:api-url && npm run test:auth-errors && npm run test:otp-input && npm run test:password-rules && npm run test:min-version && npm run test:illustrations && npm run check:content",
     "lint": "eslint 'src/**/*.{ts,tsx}' --max-warnings=215",
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
@@ -114,7 +114,8 @@
     "test:confirmation-watch": "npx tsx src/__tests__/confirmation-watch.test.ts",
     "test:screen-time-zone": "npx tsx src/__tests__/screen-time-zone.test.ts",
     "test:hold-expiry": "npx tsx src/__tests__/hold-expiry.test.ts",
-    "test:request-timeout": "npx tsx src/__tests__/request-timeout.test.ts"
+    "test:request-timeout": "npx tsx src/__tests__/request-timeout.test.ts",
+    "test:min-version": "npx tsx src/__tests__/min-version.test.ts"
   },
   "private": true,
   "overrides": {

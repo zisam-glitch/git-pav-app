@@ -194,6 +194,26 @@ export function useNotificationHistory(limit: number = 20, offset: number = 0) {
   });
 }
 
+/**
+ * Calls `onTap` with a notification's data when the person taps it, including
+ * the tap that launched the app from closed. Returns a function that stops
+ * listening. Does nothing where notifications are not available (Expo Go).
+ */
+export function listenForNotificationTaps(onTap: (data: unknown) => void): () => void {
+  if (!Notifications) return () => {};
+  let handledLaunch = false;
+  Notifications.getLastNotificationResponseAsync?.()
+    .then((response: any) => {
+      if (response && !handledLaunch) onTap(response.notification?.request?.content?.data);
+    })
+    .catch(() => {});
+  const subscription = Notifications.addNotificationResponseReceivedListener((response: any) => {
+    handledLaunch = true;
+    onTap(response.notification?.request?.content?.data);
+  });
+  return () => subscription?.remove?.();
+}
+
 // Combined notification management hook
 export function useNotificationManager() {
   const permissions = useNotificationPermissions();

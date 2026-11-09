@@ -110,8 +110,18 @@
         "expo-image-picker",
         {
           "photosPermission": "Pav Dental needs photo library access so you can attach dental photos and clinical documents.",
-          "cameraPermission": "Pav Dental uses the camera so you can take photos of your teeth to send to your dentist.",
-          "microphonePermission": false
+          "cameraPermission": "Pav Dental uses the camera for video consultations with your dentist, and so you can take photos of your teeth to send to them.",
+          "microphonePermission": "Pav Dental uses the microphone so your dentist can hear you during a video consultation."
+        }
+      ],
+      [
+        "@daily-co/config-plugin-rn-daily-js",
+        {
+          "enableCamera": true,
+          "enableMicrophone": true,
+          "enableScreenShare": false,
+          "cameraPermission": "Pav Dental uses the camera for video consultations with your dentist, and so you can take photos of your teeth to send to them.",
+          "microphonePermission": "Pav Dental uses the microphone so your dentist can hear you during a video consultation."
         }
       ],
       [

@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
+import { REFUND_TIMING } from "@/features/booking/cancellation-policy";
 
 // ─── Cancelled confirmation (Mobbin Zocdoc "Cancelled Details") ───────────────
 // Confirms what happened, when the refund lands, and offers one-tap rebook.
@@ -48,8 +49,7 @@ export default function CancelledAppointmentScreen() {
               </ThemedText>
             </View>
             <ThemedText variant="caption" style={styles.muted}>
-              £{(refundPence / 100).toFixed(2)} is being refunded to your card. Banks usually
-              take 5 to 10 working days to show it.
+              £{(refundPence / 100).toFixed(2)} is being refunded to your card. {REFUND_TIMING}
             </ThemedText>
           </Card>
         ) : policyNotice ? (
@@ -66,12 +66,6 @@ export default function CancelledAppointmentScreen() {
             title="Book this again"
             size="lg"
             onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
-          />
-          <Button
-            title="Find another time"
-            variant="secondary"
-            size="lg"
-            onPress={() => router.push("/(patient)/booking/clinic-picker" as never)}
           />
           <Button
             title="Back to my bookings"

@@ -7,6 +7,7 @@ import { colors, spacing } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, isUpcomingBooking } from "@/features/booking/appointment-status";
+import { CANCELLATION_SHEET_MESSAGE } from "@/features/booking/cancellation-policy";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Bookings — upcoming/past grouping with clear status per card ─────────────
@@ -185,7 +186,7 @@ export default function PatientAppointmentsScreen() {
       {pendingCancel ? (
         <ConfirmSheet
           title="Cancel this appointment?"
-          message="Your slot will be released immediately. Any deposit hold will be refunded by your bank within 5 working days."
+          message={CANCELLATION_SHEET_MESSAGE}
           confirmLabel="Cancel appointment"
           cancelLabel="Keep booking"
           variant="destructive"

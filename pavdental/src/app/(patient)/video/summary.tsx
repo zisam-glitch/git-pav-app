@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -25,7 +26,7 @@ export default function VideoSummaryScreen() {
           setSummaryData(data);
         }
       } catch (err) {
-        console.error("Failed to fetch consult summary:", err);
+        reportCaughtError(err, "failed to fetch consult summary");
       } finally {
         setLoading(false);
       }

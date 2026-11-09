@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { reportCaughtError } from "@/lib/caught-errors";
 
 /**
  * React Query Persistence Configuration
@@ -95,7 +96,7 @@ export async function clearPersistedCache(): Promise<void> {
   try {
     await SecureStore.deleteItemAsync(PERSIST_KEY);
   } catch (error) {
-    console.error('[PERSIST] Failed to clear cache:', error);
+    reportCaughtError(error, "persist failed to clear cache");
   }
 }
 

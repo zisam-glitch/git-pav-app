@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { View, StyleSheet, ScrollView, Pressable, Switch, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -52,7 +53,7 @@ export default function VanAccessDetailsScreen() {
       }
     } catch (error) {
       Alert.alert("Error", "Failed to load available services. Please try again.");
-      console.error("Failed to load services:", error);
+      reportCaughtError(error, "failed to load services");
     } finally {
       setLoadingServices(false);
     }

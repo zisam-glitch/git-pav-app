@@ -1,4 +1,5 @@
 import React from "react";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
@@ -69,7 +70,7 @@ export function useNotificationPermissions() {
 
       return finalStatus === "granted";
     } catch (error) {
-      console.error("Error requesting notification permissions:", error);
+      reportCaughtError(error, "error requesting notification permissions");
       setPermissions({ granted: false, canAskAgain: false });
       return false;
     }
@@ -88,7 +89,7 @@ export function useNotificationPermissions() {
       });
       return status === "granted";
     } catch (error) {
-      console.error("Error checking notification permissions:", error);
+      reportCaughtError(error, "error checking notification permissions");
       return false;
     }
   };

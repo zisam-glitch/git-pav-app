@@ -30,3 +30,13 @@ export function scrubEvent(event: ErrorEvent): ErrorEvent {
   }
   return event;
 }
+
+/**
+ * A lost connection or a timed-out request is the network, not a bug, so it
+ * isn't reported.
+ */
+export function isConnectivityError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  if (error.name === "RequestTimeoutError" || error.name === "AbortError") return true;
+  return error instanceof TypeError && /network request failed|failed to fetch|load failed/i.test(error.message);
+}

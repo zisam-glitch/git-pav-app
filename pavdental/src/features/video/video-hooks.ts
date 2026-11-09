@@ -1,4 +1,5 @@
 import React from "react";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "../auth/auth-api";
 import * as ImagePicker from "expo-image-picker";
@@ -56,7 +57,7 @@ export function useMediaPermissions() {
         photoLibrary: libraryStatus.granted,
       };
     } catch (error) {
-      console.error("Error requesting media permissions:", error);
+      reportCaughtError(error, "error requesting media permissions");
       setPermissions({
         camera: false,
         microphone: false,
@@ -87,7 +88,7 @@ export function useMediaPermissions() {
         photoLibrary: libraryStatus.granted,
       };
     } catch (error) {
-      console.error("Error checking media permissions:", error);
+      reportCaughtError(error, "error checking media permissions");
       return {
         camera: false,
         microphone: false,
@@ -147,7 +148,7 @@ export function usePhotoUpload() {
       setUploadStatus("success");
       return data.url;
     } catch (error) {
-      console.error("Error uploading photo:", error);
+      reportCaughtError(error, "error uploading photo");
       setUploadStatus("error");
       throw error;
     }
@@ -192,7 +193,7 @@ export function usePhotoUpload() {
       setUploadStatus("success");
       return data.url;
     } catch (error) {
-      console.error("Error taking and uploading photo:", error);
+      reportCaughtError(error, "error taking and uploading photo");
       setUploadStatus("error");
       throw error;
     }
@@ -349,7 +350,7 @@ export function useVideoConsultation(appointmentId: string) {
       const room = await createRoom.mutateAsync(appointmentId);
       return room;
     } catch (error) {
-      console.error("Error initiating consultation:", error);
+      reportCaughtError(error, "error initiating consultation");
       videoFallback.initiateFallback("Failed to create video room");
       throw error;
     }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -107,7 +108,7 @@ export default function TreatmentPlanDetailScreen() {
     .filter(Boolean)
     .join(", ");
   const prescribedBy = clinicianCredentials ? `${clinicianName} · ${clinicianCredentials}` : clinicianName;
-  const created = new Date(plan.createdAt).toLocaleDateString("en-GB", {
+  const created = new Date(plan.createdAt).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -161,9 +162,9 @@ export default function TreatmentPlanDetailScreen() {
     // Only the server's signature hash is shown; nothing is made up here.
     let hashDisplay = "";
     let signedAtDisplay =
-      now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) +
+      now.toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE, hour: "2-digit", minute: "2-digit" }) +
       ", " +
-      now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+      now.toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" });
 
     try {
       const res = await signPlanMutation.mutateAsync({
@@ -177,9 +178,9 @@ export default function TreatmentPlanDetailScreen() {
       if (res?.signedAt) {
         const dt = new Date(res.signedAt);
         signedAtDisplay =
-          dt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) +
+          dt.toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE, hour: "2-digit", minute: "2-digit" }) +
           ", " +
-          dt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+          dt.toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" });
       }
       setSignedInfo({
         signedAt: signedAtDisplay,

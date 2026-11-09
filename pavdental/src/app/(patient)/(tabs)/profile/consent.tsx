@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { ThemedText, Card, Badge, Button, AppIcon } from "@/components";
 import { requestDataAccessExport } from "@/features/records/records-api";
@@ -104,7 +105,7 @@ export default function ConsentScreen() {
   const formatDate = (isoString?: string) => {
     if (!isoString) return "—";
     try {
-      return new Date(isoString).toLocaleDateString("en-GB", {
+      return new Date(isoString).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
         day: "numeric",
         month: "short",
         year: "numeric",

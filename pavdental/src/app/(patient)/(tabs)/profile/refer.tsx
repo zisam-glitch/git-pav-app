@@ -1,4 +1,5 @@
 import React from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Share } from "react-native";
 import { ThemedText, Card, Button, Badge, QueryState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -14,7 +15,7 @@ import {
 // a voucher, which the practice takes off your next bill.
 
 const dateLabel = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+  iso ? new Date(iso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" }) : "";
 
 export default function ReferScreen() {
   const query = useReferrals();

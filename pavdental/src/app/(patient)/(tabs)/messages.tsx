@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
 import { safeHaptics } from "@/lib/haptics";
 import {
@@ -222,7 +223,7 @@ export default function MessagesScreen() {
                           {msg.from}
                         </ThemedText>
                         <ThemedText variant="caption" style={styles.threadTime}>
-                          {new Date(msg.sentAtIso).toLocaleDateString("en-GB", {
+                          {new Date(msg.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
                             day: "numeric",
                             month: "short",
                           })}

@@ -1,4 +1,5 @@
 import React from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
 import { Badge } from "../badge";
@@ -21,7 +22,7 @@ export interface SessionItemProps {
 }
 
 export function SessionItem({ session, onRevoke, isRevoking = false }: SessionItemProps) {
-  const formattedDate = new Date(session.createdAt).toLocaleDateString("en-GB", {
+  const formattedDate = new Date(session.createdAt).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
     day: "numeric",
     month: "short",
     year: "numeric",

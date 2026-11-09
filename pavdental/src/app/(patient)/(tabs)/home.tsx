@@ -24,7 +24,8 @@ import { fetchActiveVanRequest } from "@/features/van/van-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
 import { useServices, useRewards, useMyAppointments } from "@/features/hooks/use-dental-api";
-import { nextVisit } from "@/features/booking/appointment-status";
+import { appointmentBadge, nextVisit } from "@/features/booking/appointment-status";
+import { appointmentLocation } from "@/features/booking/appointment-labels";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { DentalService } from "@/features/booking/booking-types";
 import { formatGbp } from "@/features/booking/booking-api";
@@ -42,7 +43,7 @@ const CATEGORIES: CategoryFilter[] = [
   { key: "checkup", label: "Checkup" },
   { key: "hygiene", label: "Hygiene" },
   { key: "emergency", label: "Emergency" },
-  { key: "restorative", label: "Surgery" },
+  { key: "restorative", label: "Restorative" },
   { key: "cosmetic", label: "Aesthetics" },
 ];
 
@@ -62,7 +63,6 @@ export default function PatientHomeScreen() {
   const params = useLocalSearchParams<{ triageModal?: string }>();
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("all");
   const [showEmergencyModal, setShowEmergencyModal] = useState<boolean>(false);
-  const [showBalance, setShowBalance] = useState<boolean>(true);
 
   // Services, points, and bookings from API
   const { data: apiServices, isError: servicesError, refetch: refetchServices } = useServices();
@@ -100,13 +100,7 @@ export default function PatientHomeScreen() {
   }, [apiServices, selectedCategory]);
 
   const handleBookService = (srv: DentalService) => {
-    setService({
-      ...srv,
-      id: srv.id,
-      name: srv.name,
-      pricePence: srv.pricePence,
-      depositPence: srv.depositPence ?? Math.round((srv.pricePence || 0) * 0.25),
-    });
+    setService(srv);
     const channel = bookingChannelFor(srv);
     setChannel(channel);
     router.push(firstBookingStep(channel) as never);
@@ -136,20 +130,11 @@ export default function PatientHomeScreen() {
 
         <View style={styles.topRightActions}>
           <IconButton
-            icon={showBalance ? "eyeOff" : "eye"}
-            label={showBalance ? "Hide your name" : "Show your name"}
+            icon="bell"
+            label="Messages"
             variant="soft"
-            onPress={() => setShowBalance((prev) => !prev)}
+            onPress={() => router.push("/(patient)/(tabs)/messages" as never)}
           />
-          <View>
-            <IconButton
-              icon="bell"
-              label="Notifications"
-              variant="soft"
-              onPress={() => router.push("/(patient)/(tabs)/messages" as never)}
-            />
-            <View style={styles.bellDot} pointerEvents="none" />
-          </View>
           <IconButton
             icon="profile"
             label="Profile & settings"
@@ -162,7 +147,7 @@ export default function PatientHomeScreen() {
       {/* Greeting with the hide-details toggle */}
       <View style={styles.titleSection}>
         <ThemedText variant="largeTitle" numberOfLines={2} style={styles.mainTitle}>
-          {showBalance ? `${greeting}, ${userName}` : `${greeting}, ••••`}
+          {`${greeting}, ${userName}`}
         </ThemedText>
       </View>
 
@@ -173,19 +158,19 @@ export default function PatientHomeScreen() {
           <ListRow
             title={
               nextAppointment
-                ? nextAppointment.service?.name || "Dental Examination & Polish"
+                ? nextAppointment.service?.name || "Your appointment"
                 : "No upcoming visits"
             }
             subtitle={
               nextAppointment
-                ? `${ukDateLabel(new Date(nextAppointment.startTimeUtc), { weekday: "short", day: "numeric", month: "short" })} · ${nextAppointment.clinic?.name || nextAppointment.van?.name || "Central Practice"}`
+                ? `${ukDateLabel(new Date(nextAppointment.startTimeUtc), { weekday: "short", day: "numeric", month: "short" })} · ${appointmentLocation(nextAppointment)}`
                 : "Book a clinic visit, video consult, or mobile van in a few taps."
             }
             left={<IconTile icon="calendar" />}
             right={
               <Badge
-                label={nextAppointment ? toLabel(nextAppointment.status) : "Book"}
-                variant={nextAppointment ? "success" : "default"}
+                label={nextAppointment ? appointmentBadge(nextAppointment).label : "Book"}
+                variant={nextAppointment ? appointmentBadge(nextAppointment).variant : "default"}
               />
             }
             chevron
@@ -201,7 +186,7 @@ export default function PatientHomeScreen() {
             }}
             accessibilityLabel={
               nextAppointment
-                ? `Upcoming appointment for ${nextAppointment.service?.name || "Dental Care"}`
+                ? `Upcoming appointment for ${nextAppointment.service?.name || "your visit"}`
                 : "No upcoming visits, tap to book an appointment"
             }
           />
@@ -269,7 +254,7 @@ export default function PatientHomeScreen() {
             <View style={styles.dispatchTitleRow}>
               <View style={styles.liveDot} />
               <ThemedText variant="headline" style={styles.dispatchTitle}>
-                Van Visit {activeVanRequest.phase?.replace("_", " ") || "En Route"}
+                {activeVanRequest.phase ? `Van visit: ${activeVanRequest.phase.replace("_", " ")}` : "Van visit"}
               </ThemedText>
             </View>
             {activeVanRequest.etaLabel ? (
@@ -310,7 +295,6 @@ export default function PatientHomeScreen() {
             actionLabel="Book appointment"
             onPressAction={() => handleBookService(srv)}
             onPressChat={() => router.push("/(patient)/(tabs)/messages" as never)}
-            onPressInfo={() => router.push("/(patient)/booking/service-catalog" as never)}
           />
         ))}
       </View>
@@ -435,17 +419,6 @@ const styles = StyleSheet.create({
   },
   pointsText: {
     color: colors.onAccent,
-  },
-  bellDot: {
-    backgroundColor: colors.info,
-    borderColor: colors.background,
-    borderRadius: radius.full,
-    borderWidth: 2,
-    height: 12,
-    position: "absolute",
-    right: -2,
-    top: -2,
-    width: 12,
   },
   categoryPill: {
     alignItems: "center",

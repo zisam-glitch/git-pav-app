@@ -19,6 +19,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
+import { CANCELLATION_SHEET_MESSAGE } from "@/features/booking/cancellation-policy";
 import { TOO_LATE_MESSAGE, rescheduleState } from "@/features/booking/reschedule";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
@@ -261,7 +262,7 @@ export default function AppointmentDetailScreen() {
       {confirmCancel ? (
         <ConfirmSheet
           title="Cancel this appointment?"
-          message="Your slot will be released immediately. Cancelling 48 hours or more ahead refunds your deposit in full, 24 to 48 hours ahead refunds half, and under 24 hours the deposit is kept."
+          message={CANCELLATION_SHEET_MESSAGE}
           confirmLabel="Cancel appointment"
           cancelLabel="Keep booking"
           variant="destructive"

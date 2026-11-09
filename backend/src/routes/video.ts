@@ -4,9 +4,9 @@ import { prisma } from "../lib/prisma";
 import { hasCareRelationship } from "../middleware/patient-access";
 import multer from "multer";
 import { withIdempotency, idempotencyKeyFrom } from "../lib/idempotency";
-import { validateBody } from "../middleware/validate";
+import { validateBody, validateParams } from "../middleware/validate";
 import { HttpError } from "../middleware/error-handler";
-import { createVideoRoomSchema, submitTriageSchema, admitPatientSchema, endConsultSchema } from "../schemas/video";
+import { createVideoRoomSchema, submitTriageSchema, admitPatientSchema, endConsultSchema, videoAppointmentParamsSchema } from "../schemas/video";
 import { dailyApiClient } from "../lib/api-client";
 import { objectStorage } from "../lib/object-storage";
 import { checkRedFlags, TriageData } from "../lib/triage-escalation";
@@ -18,6 +18,8 @@ import { isPlaceholderCredential } from "../config/placeholder";
 import { logFailure } from "../lib/best-effort";
 
 const router = Router();
+
+export const VIDEO_QUEUE_LIMIT = 50;
 
 // A missing or template key (`replace_with_daily_api_key`) means video is
 // not set up, so rooms are refused rather than requested with a junk key.
@@ -329,7 +331,7 @@ router.post("/submit-triage", requireAuth, validateBody(submitTriageSchema), asy
 
 // ─── GET /api/video/status/:appointmentId ────────────────────────────────────
 // Real-time room admission check for telehealth waiting room
-router.get("/status/:appointmentId", requireAuth, async (req: AuthRequest, res: Response) => {
+router.get("/status/:appointmentId", requireAuth, validateParams(videoAppointmentParamsSchema), async (req: AuthRequest, res: Response) => {
   const appointmentId = String(req.params.appointmentId);
   const appointment = await prisma.appointment.findUnique({
     where: { id: appointmentId },
@@ -360,7 +362,8 @@ router.get("/status/:appointmentId", requireAuth, async (req: AuthRequest, res: 
     status: appointment.status,
     admitted: isAdmitted,
     admittedAt: isAdmitted ? triageData.admittedAt || null : null,
-    clinicianName: appointment.clinician?.fullName || "On-Call Dental Clinician",
+    // No invented title when nobody is assigned yet (B13).
+    clinicianName: appointment.clinician?.fullName ?? null,
     roomUrl: accessDetails.roomUrl || null,
     roomName: accessDetails.roomName || null,
     consultationSummary: triageData.consultationSummary || null,
@@ -441,6 +444,8 @@ router.get("/clinician-queue", requireAuth, async (req: AuthRequest, res: Respon
       service: { select: { name: true } },
     },
     orderBy: { startTimeUtc: "asc" },
+    // A clinician sees at most a day's worth; the rest wait their turn (B11).
+    take: VIDEO_QUEUE_LIMIT,
   });
 
   const decryptedQueue = await Promise.all(
@@ -601,7 +606,7 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
 
 // ─── GET /api/video/summary/:appointmentId ────────────────────────────────────
 // Real consultation summary for patient and clinician (MC-3)
-router.get("/summary/:appointmentId", requireAuth, async (req: AuthRequest, res: Response) => {
+router.get("/summary/:appointmentId", requireAuth, validateParams(videoAppointmentParamsSchema), async (req: AuthRequest, res: Response) => {
   const appointmentId = String(req.params.appointmentId);
   const appointment = await prisma.appointment.findUnique({
     where: { id: appointmentId },
@@ -640,7 +645,7 @@ router.get("/summary/:appointmentId", requireAuth, async (req: AuthRequest, res:
     appointmentId: appointment.id,
     status: appointment.status,
     serviceName: appointment.service.name,
-    clinicianName: appointment.clinician?.fullName || "Dental Clinician",
+    clinicianName: appointment.clinician?.fullName ?? null,
     gdcNumber: appointment.clinician?.gdcNumber || null,
     startTimeUtc: appointment.startTimeUtc,
     endTimeUtc: appointment.endTimeUtc,

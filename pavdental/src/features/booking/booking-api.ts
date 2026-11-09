@@ -68,6 +68,21 @@ export async function holdSlot(slotId: string): Promise<ApiHoldSlotResponse> {
   return res.json();
 }
 
+/**
+ * When the hold runs out, on this phone's clock (B8). The server's own
+ * timestamp is on the server's clock, so a phone a few minutes off would
+ * show the wrong time left; the length of the hold is the same everywhere.
+ */
+export function holdExpiryOnThisPhone(
+  hold: Pick<ApiHoldSlotResponse, "holdDurationSeconds" | "holdExpiresAt">,
+  receivedAt = Date.now()
+): number {
+  if (typeof hold.holdDurationSeconds === "number" && hold.holdDurationSeconds > 0) {
+    return receivedAt + hold.holdDurationSeconds * 1000;
+  }
+  return hold.holdExpiresAt;
+}
+
 // ─── Create Appointment ────────────────────────────────────────────────────────
 export async function createAppointment(data: {
   serviceId: string;

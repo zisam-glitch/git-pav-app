@@ -27,3 +27,9 @@ export const endConsultSchema = z.object({
   treatmentPlan: z.string().trim().max(2000).optional(),
   followUpRecommended: z.enum(["none", "clinic", "van", "video"]).optional(),
 }).strict();
+
+// GET /status/:appointmentId and /summary/:appointmentId. A malformed id is a
+// 400, not a database error and a 500 (B10).
+export const videoAppointmentParamsSchema = z.object({
+  appointmentId: uuid,
+}).strict();

@@ -31,6 +31,10 @@ import { logFailure } from "../lib/best-effort";
 import { checkReschedulable } from "../lib/reschedule-policy";
 
 const router = Router();
+// One client for the process, as in payments.ts, not one per confirm (B12).
+const stripe = new Stripe(env.stripeSecretKey, {
+  apiVersion: "2025-02-24.acacia" as never,
+});
 
 const SLOT_HOLD_SECONDS = 600; // 10 minutes
 // Most appointments a list returns: the newest for a patient, the next for a
@@ -755,9 +759,6 @@ router.patch("/appointments/:id/confirm", requireAuth, validateParams(appointmen
     } else {
       let intent: Stripe.PaymentIntent;
       try {
-        const stripe = new Stripe(env.stripeSecretKey, {
-          apiVersion: "2025-02-24.acacia" as never,
-        });
         intent = await stripe.paymentIntents.retrieve(paymentIntentId);
       } catch {
         return { error: "Failed to verify Stripe PaymentIntent", status: 502 };

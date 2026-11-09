@@ -23,7 +23,8 @@ import { useCurrentUser } from "@/features/auth/auth-store";
 import { fetchActiveVanRequest } from "@/features/van/van-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
-import { useServices, useRewards, useMyAppointments } from "@/features/hooks/use-dental-api";
+import { useServices, useRewards, useMyAppointments, usePatientProfile } from "@/features/hooks/use-dental-api";
+import { describeMissing, missingProfileParts } from "@/features/onboarding/profile-completion";
 import { nextVisit } from "@/features/booking/appointment-status";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { DentalService } from "@/features/booking/booking-types";
@@ -67,6 +68,8 @@ export default function PatientHomeScreen() {
   // Services, points, and bookings from API
   const { data: apiServices, isError: servicesError, refetch: refetchServices } = useServices();
   const { data: rewards } = useRewards();
+  const { data: ownProfile } = usePatientProfile(user?.id ?? "");
+  const finishParts = missingProfileParts(ownProfile);
   const { data: upcomingAppointments } = useMyAppointments({ scope: "upcoming" });
   const nextAppointment = nextVisit(upcomingAppointments as any[] | undefined);
   const pointsBalance: number | undefined = (rewards as any)?.pointsBalance;
@@ -261,6 +264,21 @@ export default function PatientHomeScreen() {
           );
         })}
       </ScrollView>
+
+      {finishParts.length > 0 ? (
+        <Card>
+          <ThemedText variant="headline">Finish your profile</ThemedText>
+          <ThemedText variant="caption" style={{ color: colors.secondaryLabel }}>
+            We still need your {describeMissing(finishParts)} before your first visit.
+          </ThemedText>
+          <Button
+            title="Finish profile"
+            variant="secondary"
+            size="sm"
+            onPress={() => router.push("/onboarding/profile" as never)}
+          />
+        </Card>
+      ) : null}
 
       {/* Active Van Dispatch banner (if running) */}
       {activeVanRequest && (

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { initStripe, useStripe } from "@stripe/stripe-react-native";
+import { initStripe, useStripe, PlatformPay } from "@stripe/stripe-react-native";
 import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
@@ -19,7 +19,13 @@ import { useDependants } from "@/features/account/account-hooks";
 export default function BookingSummaryScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const { initPaymentSheet, presentPaymentSheet, isPlatformPaySupported, confirmPlatformPayPayment } = useStripe();
+  // Only offer the Apple Pay / Google Pay button where the wallet can pay.
+  const [walletReady, setWalletReady] = useState(false);
+  useEffect(() => {
+    isPlatformPaySupported(Platform.OS === "android" ? { googlePay: { testEnv: process.env.EXPO_PUBLIC_APP_ENV !== "production" } } : undefined)
+      .then(setWalletReady, () => setWalletReady(false));
+  }, []);
   const { service, clinic, clinician, slot, holdExpiresAt, resetDraft, channel } = useBookingStore();
   const [secondsRemaining, setSecondsRemaining] = useState<number>(() => {
     if (!holdExpiresAt) return 0;
@@ -105,7 +111,11 @@ export default function BookingSummaryScreen() {
   // One key per visit to this screen: retries of the same booking reuse it.
   const attemptKey = useRef(newBookingAttemptKey());
 
-  const handlePayDeposit = async () => {
+  // "wallet" pays with Apple Pay or Google Pay in the phone's own sheet; "card"
+  // opens Stripe's card form. Either way the patient confirms the payment
+  // themselves (double-click or Face ID, or the sheet's Pay button): nothing
+  // is charged just by tapping a button here.
+  const handlePayDeposit = async (method: "wallet" | "card") => {
     if (!service || !slot) {
       Alert.alert("Incomplete Booking", "Please select a service and time slot before continuing.");
       router.replace("/(patient)/booking/service-catalog" as any);
@@ -167,51 +177,74 @@ export default function BookingSummaryScreen() {
           merchantIdentifier: "merchant.com.pavdental.app",
         });
       }
-      const { error: initError } = await initPaymentSheet({
-        merchantDisplayName: "Pav Dental",
-        paymentIntentClientSecret: intent.clientSecret,
-        // Saved cards appear in the sheet, which also offers to save a new one.
-        ...(intent.customerId && intent.customerEphemeralKeySecret
-          ? { customerId: intent.customerId, customerEphemeralKeySecret: intent.customerEphemeralKeySecret }
-          : {}),
-        returnURL: "pavdental://stripe-return",
-        // Do not allow delayed payment methods (SEPA, BACS, etc.) as slot hold expires in 10 minutes (WH-1/MB-2)
-        allowsDelayedPaymentMethods: false,
-        // Appearance tweaks to match app theme
-        appearance: {
-          colors: {
-            primary: colors.ink as string,
-            background: colors.systemBackground as string,
-            componentBackground: colors.secondaryBackground as string,
-            componentText: colors.label as string,
-            placeholderText: colors.secondaryLabel as string,
+      if (method === "wallet") {
+        const { error: walletError } = await confirmPlatformPayPayment(intent.clientSecret, {
+          applePay: {
+            merchantCountryCode: "GB",
+            currencyCode: "GBP",
+            cartItems: [
+              {
+                label: "Pav Dental deposit",
+                amount: (intent.amountPence / 100).toFixed(2),
+                paymentType: PlatformPay.PaymentType.Immediate,
+              },
+            ],
           },
-        },
-        // Surface Apple Pay / Google Pay inside the native sheet
-        applePay: { merchantCountryCode: "GB" },
-        googlePay: {
-          merchantCountryCode: "GB",
-          currencyCode: "GBP",
-          testEnv: process.env.EXPO_PUBLIC_APP_ENV !== "production",
-        },
-      });
-
-      if (initError) {
-        Alert.alert("Payment Error", initError.message);
-        setIsProcessing(false);
-        return;
-      }
-
-      // 5. Present — user fills card details in native sheet
-      const { error: presentError } = await presentPaymentSheet();
-
-      if (presentError) {
-        // User cancelled or card declined — stay on summary screen
-        if (presentError.code !== "Canceled") {
-          Alert.alert("Payment Failed", presentError.message);
+          googlePay: {
+            merchantCountryCode: "GB",
+            currencyCode: "GBP",
+            merchantName: "Pav Dental",
+            testEnv: process.env.EXPO_PUBLIC_APP_ENV !== "production",
+          },
+        });
+        if (walletError) {
+          if (walletError.code !== "Canceled") Alert.alert("Payment Failed", walletError.message);
+          setIsProcessing(false);
+          return;
         }
-        setIsProcessing(false);
-        return;
+      } else {
+        const { error: initError } = await initPaymentSheet({
+          merchantDisplayName: "Pav Dental",
+          paymentIntentClientSecret: intent.clientSecret,
+          // Saved cards appear in the sheet, which also offers to save a new one.
+          ...(intent.customerId && intent.customerEphemeralKeySecret
+            ? { customerId: intent.customerId, customerEphemeralKeySecret: intent.customerEphemeralKeySecret }
+            : {}),
+          returnURL: "pavdental://stripe-return",
+          // Do not allow delayed payment methods (SEPA, BACS, etc.) as slot hold expires in 10 minutes (WH-1/MB-2)
+          allowsDelayedPaymentMethods: false,
+          // Cards only: the wallet has its own button, so this sheet always
+          // shows the card form or saved cards and a "Pay £x" button.
+          paymentMethodOrder: ["card"],
+          primaryButtonLabel: `Pay ${formatGbp(intent.amountPence)}`,
+          appearance: {
+            colors: {
+              primary: colors.ink as string,
+              background: colors.systemBackground as string,
+              componentBackground: colors.secondaryBackground as string,
+              componentText: colors.label as string,
+              placeholderText: colors.secondaryLabel as string,
+            },
+          },
+        });
+
+        if (initError) {
+          Alert.alert("Payment Error", initError.message);
+          setIsProcessing(false);
+          return;
+        }
+
+        // 5. Present: the patient enters or picks a card and taps Pay.
+        const { error: presentError } = await presentPaymentSheet();
+
+        if (presentError) {
+          // User cancelled or card declined — stay on summary screen
+          if (presentError.code !== "Canceled") {
+            Alert.alert("Payment Failed", presentError.message);
+          }
+          setIsProcessing(false);
+          return;
+        }
       }
 
       // 6. Payment collected. Ask the server to confirm now; the Stripe webhook
@@ -355,37 +388,39 @@ export default function BookingSummaryScreen() {
 
       {/* Wallet-first payment CTAs (Apple/Google Pay primary) */}
       <View style={[styles.footerBar, { paddingBottom: Math.max(spacing.md, insets.bottom) }]}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={
-            Platform.OS === "android" ? "Pay deposit with Google Pay" : "Pay deposit with Apple Pay"
-          }
-          disabled={secondsRemaining === 0 || isProcessing}
-          onPress={handlePayDeposit}
-          style={({ pressed }) => [
-            styles.walletButton,
-            (secondsRemaining === 0 || isProcessing) && styles.walletButtonDisabled,
-            pressed && { opacity: 0.85 },
-          ]}
-        >
-          <ThemedText variant="headline" style={styles.walletText}>
-            {isProcessing ? "Processing…" : Platform.OS === "android" ? "Google Pay" : "Apple Pay"}
-          </ThemedText>
-          <ThemedText variant="headline" style={styles.walletText}>
-            {formatGbp(depositDuePence)}
-          </ThemedText>
-        </Pressable>
+        {walletReady && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={
+              Platform.OS === "android" ? "Pay deposit with Google Pay" : "Pay deposit with Apple Pay"
+            }
+            disabled={secondsRemaining === 0 || isProcessing}
+            onPress={() => handlePayDeposit("wallet")}
+            style={({ pressed }) => [
+              styles.walletButton,
+              (secondsRemaining === 0 || isProcessing) && styles.walletButtonDisabled,
+              pressed && { opacity: 0.85 },
+            ]}
+          >
+            <ThemedText variant="headline" style={styles.walletText}>
+              {isProcessing ? "Processing…" : Platform.OS === "android" ? "Google Pay" : "Apple Pay"}
+            </ThemedText>
+            <ThemedText variant="headline" style={styles.walletText}>
+              {formatGbp(depositDuePence)}
+            </ThemedText>
+          </Pressable>
+        )}
         <Button
-          title={secondsRemaining === 0 ? "Slot expired - select new time" : `Pay by card instead`}
+          title={secondsRemaining === 0 ? "Slot expired - select new time" : walletReady ? "Pay by card instead" : `Pay ${formatGbp(depositDuePence)} by card`}
           size="lg"
-          variant="secondary"
+          variant={walletReady ? "secondary" : "primary"}
           arrow={true}
           loading={isProcessing}
           disabled={secondsRemaining === 0}
           onPress={secondsRemaining === 0 ? () => {
             resetDraft();
             router.replace("/(patient)/booking/slot-picker" as any);
-          } : handlePayDeposit}
+          } : () => handlePayDeposit("card")}
         />
       </View>
     </View>

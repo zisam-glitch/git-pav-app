@@ -82,6 +82,15 @@ async function run() {
   const afterSheet = summary.indexOf("confirmAppointment(appt.id, intent.paymentIntentId)", present);
   assert(present !== -1 && afterSheet > present, "after a real payment the server is asked to confirm");
 
+  // Each button pays the way it says, and the patient confirms the payment
+  // themselves: the card button opens a card-only sheet with a "Pay £x"
+  // button, and the wallet button opens Apple Pay / Google Pay.
+  assert(/handlePayDeposit\("card"\)/.test(summary) && /handlePayDeposit\("wallet"\)/.test(summary), "the card and wallet buttons take different payment routes");
+  assert(/paymentMethodOrder: \["card"\]/.test(summary) && /primaryButtonLabel: `Pay \$\{formatGbp\(intent\.amountPence\)\}`/.test(summary), "the card sheet shows cards and a Pay button with the amount");
+  assert(!/applePay: \{ merchantCountryCode: "GB" \}/.test(summary), "the card sheet doesn't offer the wallet as well");
+  assert(/confirmPlatformPayPayment\(intent\.clientSecret/.test(summary), "the wallet button uses the phone's own wallet sheet");
+  assert(/\{walletReady && \(/.test(summary), "the wallet button only shows where the wallet can pay");
+
   console.log("\n🎉 ALL CLINIC BOOKING CONFIRMATION TESTS PASSED (0 FAILURES)!\n");
 }
 

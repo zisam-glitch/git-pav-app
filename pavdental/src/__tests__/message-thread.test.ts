@@ -33,7 +33,7 @@ const screen = read("app/(patient)/message-thread.tsx");
 const tab = read("app/(patient)/(tabs)/messages.tsx");
 
 assert(screen.includes("multiline"), "The reply box can hold more than one line");
-assert(/tone:\s*"error"/.test(screen) && !/tone:\s*"success"/.test(screen), "A failed send is shown as an error, not a success");
+assert(/setToast\(\{[^}]*tone:\s*"error"/.test(screen) && !/setToast\(\{[^}]*tone:\s*"success"/.test(screen), "A failed send is shown as an error, not a success");
 assert(screen.includes("markRead.mutate"), "Opening a thread marks it read");
 assert(tab.includes("/(patient)/message-thread"), "Tapping a thread opens the conversation");
 assert(!tab.includes("Write a reply"), "The tab no longer has its own one-line reply box");

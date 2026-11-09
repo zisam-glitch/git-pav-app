@@ -1,3 +1,4 @@
+import { bookingStep } from "@/features/booking/booking-steps";
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-native";
 import { useRouter } from "expo-router";
@@ -267,7 +268,7 @@ export default function BookingSummaryScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.topNav}>
-        <FlowHeader step={{ current: 5, total: 5 }} />
+        <FlowHeader step={bookingStep(channel, "pay")} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>

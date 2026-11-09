@@ -1,4 +1,5 @@
 import React from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Linking } from "react-native";
 import { ThemedText, Card, EmptyState, ErrorState, Skeleton, AppIcon, type AppIconName } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -76,7 +77,7 @@ export default function DocumentVaultScreen() {
           <View style={styles.docList}>
             {documents.map((doc: any) => {
               const docDate = doc.createdAt
-                ? new Date(doc.createdAt).toLocaleDateString("en-GB", {
+                ? new Date(doc.createdAt).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
                     day: "numeric",
                     month: "short",
                     year: "numeric",

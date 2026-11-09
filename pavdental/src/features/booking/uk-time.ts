@@ -30,6 +30,17 @@ export function ukDayLabel(date: string): string {
   return new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
 }
 
+/**
+ * "04/03/2015" for a calendar date such as a date of birth ("2015-03-04" or
+ * "2015-03-04T00:00:00.000Z"). It is a date, not an instant, so no time zone
+ * can move it to the day before.
+ */
+export function calendarDateLabel(value: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value));
+  if (!match) return String(value);
+  return `${match[3]}/${match[2]}/${match[1]}`;
+}
+
 /** The next `count` UK calendar dates, starting today. */
 export function upcomingUkDates(count: number, now = new Date()): string[] {
   const today = ukDate(now);

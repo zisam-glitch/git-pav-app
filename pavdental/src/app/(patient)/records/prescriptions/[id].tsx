@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Linking, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, EmptyState, ErrorState, Skeleton } from "@/components";
@@ -75,7 +76,7 @@ export default function PrescriptionDetailScreen() {
   }
 
   const issued = rx.issuedIso
-    ? new Date(rx.issuedIso).toLocaleDateString("en-GB", {
+    ? new Date(rx.issuedIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
         day: "numeric",
         month: "long",
         year: "numeric",

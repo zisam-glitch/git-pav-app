@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-native";
 import * as Haptics from "expo-haptics";
 import {
@@ -218,7 +219,7 @@ export default function ClinicianInboxScreen() {
                           {t.from}
                         </ThemedText>
                         <ThemedText variant="caption" style={styles.threadTime}>
-                          {new Date(t.sentAtIso).toLocaleDateString("en-GB", {
+                          {new Date(t.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
                             day: "numeric",
                             month: "short",
                             hour: "2-digit",
@@ -277,7 +278,7 @@ export default function ClinicianInboxScreen() {
                     {m.body}
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.bubbleTime}>
-                    {new Date(m.sentAtIso).toLocaleTimeString("en-GB", {
+                    {new Date(m.sentAtIso).toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
                       hour: "2-digit",
                       minute: "2-digit",
                     })}

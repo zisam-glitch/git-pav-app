@@ -11,6 +11,7 @@ import {
 import type { DependantItem, DependantRelationship } from "@/features/account/account-api";
 import { changedDependantFields } from "@/features/account/dependant-edits";
 import { colors, spacing, type, radius } from "@/theme";
+import { calendarDateLabel } from "@/features/booking/uk-time";
 
 // Only a parent or guardian adds a child under 16 (decisions log #17).
 const RELATIONSHIPS: DependantRelationship[] = ["Son", "Daughter", "Ward"];
@@ -181,7 +182,7 @@ export default function DependantsScreen() {
                       <Badge variant="info" label={`${dep.relationship} · Age ${age}`} />
                     </View>
                     <ThemedText variant="caption" style={styles.dobText}>
-                      Date of Birth: {new Date(dep.dob).toLocaleDateString("en-GB")}
+                      Date of Birth: {calendarDateLabel(String(dep.dob))}
                     </ThemedText>
                   </View>
                 </View>

@@ -8,6 +8,7 @@ import { useBookingStore } from "@/features/booking/booking-store";
 import { TimeSlot } from "@/features/booking/booking-types";
 import { useSlots, useHoldSlotMutation } from "@/features/hooks/use-dental-api";
 import { ukDayLabel, ukHour, upcomingUkDates } from "@/features/booking/uk-time";
+import { holdExpiryOnThisPhone } from "@/features/booking/booking-api";
 
 export default function SlotPickerScreen() {
   const router = useRouter();
@@ -96,7 +97,7 @@ export default function SlotPickerScreen() {
     // Call Redis slot hold API
     try {
       const res = await holdMutation.mutateAsync(selectedSlot.id);
-      setHoldExpiry(res.holdExpiresAt);
+      setHoldExpiry(holdExpiryOnThisPhone(res));
       router.push("/(patient)/booking/summary" as any);
     } catch (err: any) {
       setHoldError(err?.message || "Could not reserve this slot. Please try another time.");

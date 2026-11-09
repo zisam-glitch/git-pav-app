@@ -259,6 +259,30 @@ router.post("/appointments", requireAuth, validateBody(createAppointmentSchema),
     });
     if (ownHold) return { appointment: ownHold, status: 201 };
 
+    // One person can't be at two appointments at once, even with different
+    // clinicians: the account holder and each dependant are checked apart.
+    const clash = await prisma.appointment.findFirst({
+      where: {
+        patientId: profile.id,
+        dependantId: dependantId || null,
+        startTimeUtc: { lt: endDate },
+        endTimeUtc: { gt: startDate },
+        OR: [
+          { status: { in: ["confirmed", "in_progress"] } },
+          { status: "draft_hold", holdExpiresAt: { gt: new Date() } },
+        ],
+      },
+      select: { id: true },
+    });
+    if (clash) {
+      return {
+        error: dependantId
+          ? "They already have an appointment at that time. Please choose another slot."
+          : "You already have an appointment at that time. Please choose another slot.",
+        status: 409,
+      };
+    }
+
     // Only a real free slot can be booked: inside the clinic's hours and the
     // clinician's rota (CS-30). Van visits are timed by the van dispatch flow.
     let assignedClinicianId: string | undefined = clinicianId;
@@ -404,14 +428,16 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
     // MB-4: Support date-scoped schedule query
     // If date query parameter is provided (e.g. "2026-10-24" or "?scope=today"), scope to that London day.
     // If no date filter is provided, return all upcoming appointments (today forward) to maintain backward compatibility.
-    let dateFilter: { gte: Date; lte?: Date };
+    let dateFilter: { gte: Date; lt?: Date };
     if (req.query.scope === "today" || (req.query.date && typeof req.query.date === "string")) {
       const targetDate = req.query.date && req.query.date !== "today"
         ? new Date(req.query.date as string)
         : new Date();
       const startOfDay = startOfLondonDay(targetDate);
-      const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
-      dateFilter = { gte: startOfDay, lte: endOfDay };
+      // The next London midnight, exclusive: a 00:00 visit belongs to tomorrow.
+      // (Not start + 24h, which is wrong on the days the clocks change.)
+      const endOfDay = startOfLondonDay(new Date(startOfDay.getTime() + 26 * 60 * 60 * 1000));
+      dateFilter = { gte: startOfDay, lt: endOfDay };
     } else {
       dateFilter = { gte: startOfLondonDay(new Date()) };
     }

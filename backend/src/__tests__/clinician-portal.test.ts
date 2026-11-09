@@ -200,6 +200,31 @@ describe("CS-28: Clinician Portal (PT-3, MB-4)", () => {
     const futureFound = schedule.find((a: any) => a.id === ids.appointmentFutureId);
     expect(futureFound).toBeUndefined();
 
+    // A visit at exactly the next London midnight belongs to tomorrow.
+    const midnight = londonTimeToUtc(londonDate(new Date(Date.now() + 24 * 60 * 60 * 1000)), 0);
+    const atMidnight = await prisma.appointment.create({
+      data: {
+        patientId: todayFound.patientId,
+        clinicianId: todayFound.clinicianId,
+        serviceId: todayFound.serviceId,
+        channel: "video",
+        startTimeUtc: midnight,
+        endTimeUtc: new Date(midnight.getTime() + 30 * 60 * 1000),
+        status: "confirmed",
+        totalPricePence: 0,
+      },
+    });
+    try {
+      const again = (await (
+        await fetch(`${baseUrl}/api/booking/appointments?scope=today`, {
+          headers: { Authorization: `Bearer ${clinicianToken}` },
+        })
+      ).json()) as { id: string }[];
+      expect(again.find((a) => a.id === atMidnight.id)).toBeUndefined();
+    } finally {
+      await prisma.appointment.delete({ where: { id: atMidnight.id } });
+    }
+
     // Querying without scope filter returns all future appointments (backward compatible)
     const allRes = await fetch(`${baseUrl}/api/booking/appointments`, {
       headers: { Authorization: `Bearer ${clinicianToken}` },

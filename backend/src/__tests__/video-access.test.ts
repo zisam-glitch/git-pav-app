@@ -234,6 +234,26 @@ describe("CS-48: video consultation access", () => {
     });
   });
 
+  describe("triage photo links", () => {
+    it("gives the patient and the treating clinician fresh links, and nobody else", async () => {
+      await prisma.appointment.update({
+        where: { id: appointmentId },
+        data: { intraoralPhotos: [`triage/${appointmentId}/synthetic-1.jpg`] },
+      });
+      for (const token of [tokens.patient, tokens.clinician]) {
+        const res = await get(`/api/video/triage-photos/${appointmentId}`, token);
+        expect(res.status).toBe(200);
+        const body = (await res.json()) as { photos: { url: string; expiresAt: string }[] };
+        expect(body.photos).toHaveLength(1);
+        expect(body.photos[0].url).toContain("sig=");
+        expect(Date.parse(body.photos[0].expiresAt)).toBeGreaterThan(Date.now());
+      }
+      for (const token of [tokens.stranger, tokens.otherPatient, tokens.admin]) {
+        expect((await get(`/api/video/triage-photos/${appointmentId}`, token)).status).toBe(403);
+      }
+    });
+  });
+
   describe("client data that claims to be encrypted or server-written", () => {
     it("refuses a ready-made envelope, or a non-text gate code, as access details", async () => {
       const envelope = await encryptField({ roomUrl: "https://evil.example.test" });

@@ -12,6 +12,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { bookingChannelFor, channelParam, firstBookingStep } from "../features/booking/start-booking";
 import { useBookingStore } from "../features/booking/booking-store";
+import { triageSummary } from "../features/video/triage-summary";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -72,5 +73,36 @@ assert(
   "appointment page opens the intake for that appointment"
 );
 assert(detail.includes('booking.channel === "video"'), "appointment page only offers it for video appointments");
+
+// The clinician reads the patient's own triage answers, not the service name.
+{
+  const t = triageSummary(
+    {
+      chiefComplaint: " Synthetic ache, lower left ",
+      painLevel: 4,
+      duration: "Past 24-48 hours",
+      symptoms: ["Synthetic ache", "Swelling"],
+      photos: ["https://example.test/a.jpg"],
+      redFlag: { isRedFlag: true, reason: "Red flag detected: swelling" },
+      submittedAt: "2026-11-08T18:00:00Z",
+    },
+    ["triage/a.jpg", "triage/b.jpg"]
+  );
+  assert(t.complaint === "Synthetic ache, lower left", "the complaint is the patient's own words");
+  assert(t.painLevel === 4 && t.duration === "Past 24-48 hours", "pain and duration come through");
+  assert(t.swelling, "swelling is read from the symptoms");
+  assert(t.redFlag === "Red flag detected: swelling", "an urgent answer is flagged with its reason");
+  assert(t.photoCount === 2, "the photo count includes every stored photo");
+  const empty = triageSummary(null);
+  assert(empty.complaint === null && !empty.submitted && empty.photoCount === 0, "no answers yet reads as not submitted");
+
+  const read = (p: string) => readFileSync(join(__dirname, "..", p), "utf8");
+  const schedule = read("app/(clinician)/schedule.tsx");
+  assert(!schedule.includes("chiefComplaint: a.service?.name"), "the schedule no longer passes the service name off as a symptom");
+  assert(schedule.includes("ukTime(new Date(a.startTimeUtc))"), "the schedule shows UK times, whatever the device time zone");
+  const room = read("app/(clinician)/consult-room.tsx");
+  assert(room.includes("triageSummary(appointment?.triageData"), "the consult room shows the stored triage answers");
+  assert(room.includes("/api/video/triage-photos/"), "the consult room asks for fresh photo links");
+}
 
 console.log("\n🎉 ALL VIDEO BOOKING TESTS PASSED (0 FAILURES)!\n");

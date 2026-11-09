@@ -139,7 +139,7 @@ export default function OperatorShiftScreen() {
           title="Settings and sign out"
           variant="ghost"
           size="sm"
-          onPress={() => router.push("/(operator)/settings" as never)}
+          onPress={() => router.push("/(operator)/operator-settings" as never)}
         />
         {/* Shift Status Header */}
         <Card style={styles.statusCard}>

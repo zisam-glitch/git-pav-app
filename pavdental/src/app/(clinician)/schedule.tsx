@@ -56,7 +56,7 @@ export default function ClinicianScheduleScreen() {
           title="Settings and sign out"
           variant="ghost"
           size="sm"
-          onPress={() => router.push("/(clinician)/settings" as never)}
+          onPress={() => router.push("/(clinician)/clinician-settings" as never)}
         />
         {/* Clinician Header (MB-4: No clipping at 320/375px) */}
         <View style={styles.header}>

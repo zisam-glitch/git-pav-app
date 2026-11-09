@@ -22,10 +22,10 @@ assert(shared.includes("authApi.signOut()"), "The settings screen signs out thro
 assert(shared.includes("ConfirmSheet"), "Signing out asks first");
 
 for (const group of ["(clinician)", "(operator)"]) {
-  assert(existsSync(join(app, group, "settings.tsx")), `${group} has a settings screen`);
-  assert(readFileSync(join(app, group, "_layout.tsx"), "utf8").includes('name="settings"'), `${group} lists the settings screen`);
+  assert(existsSync(join(app, group, group === "(clinician)" ? "clinician-settings.tsx" : "operator-settings.tsx")), `${group} has a settings screen`);
+  assert(readFileSync(join(app, group, "_layout.tsx"), "utf8").includes('settings"'), `${group} lists the settings screen`);
 }
-assert(readFileSync(join(app, "(clinician)/schedule.tsx"), "utf8").includes("/(clinician)/settings"), "The clinician schedule links to settings");
-assert(readFileSync(join(app, "(operator)/shift.tsx"), "utf8").includes("/(operator)/settings"), "The operator shift screen links to settings");
+assert(readFileSync(join(app, "(clinician)/schedule.tsx"), "utf8").includes("/(clinician)/clinician-settings"), "The clinician schedule links to settings");
+assert(readFileSync(join(app, "(operator)/shift.tsx"), "utf8").includes("/(operator)/operator-settings"), "The operator shift screen links to settings");
 
 console.log("\n🎉 ALL STAFF SIGN-OUT TESTS PASSED!\n");

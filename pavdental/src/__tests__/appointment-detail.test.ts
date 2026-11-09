@@ -33,12 +33,14 @@ const now = Date.parse("2026-11-10T10:00:00Z");
 const in5h = new Date(now + 5 * 3600_000).toISOString();
 const in3d = new Date(now + 72 * 3600_000).toISOString();
 
-assert(canCheckIn({ status: "confirmed", channel: "clinic", startTimeUtc: in5h }, now), "A confirmed clinic visit within 24 hours offers check-in");
+assert(canCheckIn({ status: "confirmed", channel: "clinic", startTimeUtc: in5h }, now), "A confirmed clinic visit within 48 hours offers check-in");
 assert(!canCheckIn({ status: "cancelled", channel: "clinic", startTimeUtc: in5h }, now), "A cancelled visit does not offer check-in (R9)");
 assert(!canCheckIn({ status: "completed", channel: "clinic", startTimeUtc: in5h }, now), "A completed visit does not offer check-in");
 assert(!canCheckIn({ status: "draft_hold", channel: "clinic", startTimeUtc: in5h }, now), "An unpaid hold does not offer check-in");
 assert(!canCheckIn({ status: "confirmed", channel: "video", startTimeUtc: in5h }, now), "A video visit does not offer check-in");
+assert(canCheckIn({ status: "confirmed", channel: "clinic", startTimeUtc: new Date(now + 40 * 3600_000).toISOString() }, now), "Check-in is offered from 48 hours ahead, as the server allows");
 assert(!canCheckIn({ status: "confirmed", channel: "clinic", startTimeUtc: in3d }, now), "A visit three days away does not offer check-in yet");
+assert(!canCheckIn({ status: "confirmed", channel: "clinic", startTimeUtc: in5h, accessDetails: { checkedIn: true } }, now), "A visit already checked in does not offer it again");
 
 assert(clinicAddressLine({ name: "Pav Dental", address: "786 Leeds Road", postcode: "BD3 9TY" }) === "Pav Dental, 786 Leeds Road, BD3 9TY", "Address line joins name, street and postcode");
 assert(clinicAddressLine({ name: "Pav Dental" }) === "Pav Dental", "Address line copes with a missing street");

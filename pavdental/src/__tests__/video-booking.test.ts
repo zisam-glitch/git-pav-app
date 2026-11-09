@@ -105,4 +105,22 @@ assert(detail.includes('booking.channel === "video"'), "appointment page only of
   assert(room.includes("/api/video/triage-photos/"), "the consult room asks for fresh photo links");
 }
 
+// The call runs natively in the app (Daily's React Native SDK), not in a
+// browser window, on both the patient's and the clinician's side.
+{
+  const read = (f: string) => readFileSync(join(__dirname, "..", f), "utf8");
+  const native = read("features/video/native-call.tsx");
+  const patientCall = read("app/(patient)/video/call.tsx");
+  const room = read("app/(clinician)/consult-room.tsx");
+  assert(/from "@daily-co\/react-native-daily-js"/.test(native) && /call\.join\(\{ url, token \}\)/.test(native), "the call joins Daily's room natively with the meeting token");
+  assert(/call\s*\.leave\(\)[\s\S]*?call\.destroy\(\)/.test(native), "closing the screen leaves the call and frees the camera");
+  assert(/audioTrack=\{null\}/.test(native), "the person's own audio isn't played back to them");
+  for (const [name, src] of [["patient call screen", patientCall], ["consult room", room]] as const) {
+    assert(/<NativeVideoCall/.test(src) && !/openVideoCall|WebBrowser|openBrowserAsync/.test(src), `${name} runs the call in the app, not a browser`);
+  }
+  assert(/activeTab !== "video" && styles\.hidden/.test(room), "the clinician's call keeps going while they read the triage or the chart");
+  assert(/callStartedAt/.test(room) && !/setSeconds\(\(prev\) => prev \+ 1\)/.test(room), "the call timer counts from when the clinician joined, by the clock");
+  assert(/reason === "ended"\) finish\(\)/.test(patientCall), "the patient goes to the summary when the dentist ends the consultation");
+}
+
 console.log("\n🎉 ALL VIDEO BOOKING TESTS PASSED (0 FAILURES)!\n");

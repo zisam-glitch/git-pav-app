@@ -121,5 +121,16 @@
   "private": true,
   "overrides": {
     "node-forge": "^1.4.2"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@daily-co/react-native-daily-js",
+          "@daily-co/react-native-webrtc",
+          "react-native-background-timer"
+        ]
+      }
+    }
   }
 }

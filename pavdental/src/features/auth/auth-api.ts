@@ -35,11 +35,54 @@ export async function clearSessionState() {
   useOnboardingStore.getState().reset();
 }
 
+// ─── Request time limit (B7) ─────────────────────────────────────────────────
+// Without one, a request on a weak signal can hang with a spinner for
+// minutes. Uploads (photos, documents) get longer.
+const requestLimits = { requestMs: 20_000, uploadMs: 60_000 };
+
+/** Tests shorten the limits; the app keeps the defaults. */
+export function configureRequestTimeouts(limits: Partial<typeof requestLimits>) {
+  Object.assign(requestLimits, limits);
+}
+export const TIMEOUT_MESSAGE = "This is taking too long. Check your connection and try again.";
+
+export class RequestTimeoutError extends Error {
+  constructor() {
+    super(TIMEOUT_MESSAGE);
+    this.name = "RequestTimeoutError";
+  }
+}
+
+export async function timedFetch(url: string, options: RequestInit = {}, timeoutMs?: number): Promise<Response> {
+  const isUpload = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const limit = timeoutMs ?? (isUpload ? requestLimits.uploadMs : requestLimits.requestMs);
+  const controller = new AbortController();
+  // A caller's own signal still cancels the request.
+  const callerSignal = options.signal;
+  if (callerSignal?.aborted) controller.abort();
+  const onCallerAbort = () => controller.abort();
+  callerSignal?.addEventListener?.("abort", onCallerAbort);
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, limit);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (err) {
+    if (timedOut) throw new RequestTimeoutError();
+    throw err;
+  } finally {
+    clearTimeout(timer);
+    callerSignal?.removeEventListener?.("abort", onCallerAbort);
+  }
+}
+
 // ─── Unauthenticated fetch for public endpoints ──────────────────────────────
 // The only other place the app calls `fetch` directly (lint enforces this), so
 // every request goes to API_URL and none skips the client by accident.
 export function publicFetch(path: string, options: RequestInit = {}): Promise<Response> {
-  return fetch(`${API_URL}${path}`, options);
+  return timedFetch(`${API_URL}${path}`, options);
 }
 
 // ─── Core authenticated fetch with transparent refresh ───────────────────────
@@ -59,7 +102,7 @@ export async function authFetch(
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await timedFetch(`${API_URL}${path}`, {
     ...options,
     headers,
   });
@@ -76,7 +119,7 @@ export async function authFetch(
       }
       throw new Error("We couldn't reach Pav Dental. Check your connection and try again.");
     }
-    return fetch(`${API_URL}${path}`, {
+    return timedFetch(`${API_URL}${path}`, {
       ...options,
       headers: { ...headers, Authorization: `Bearer ${freshToken}` },
     });
@@ -119,7 +162,7 @@ async function doRefresh(): Promise<string> {
     throw new SessionExpiredError();
   }
 
-  const res = await fetch(`${API_URL}/api/auth/refresh`, {
+  const res = await timedFetch(`${API_URL}/api/auth/refresh`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken }),
@@ -142,7 +185,7 @@ async function doRefresh(): Promise<string> {
 // ─── Auth API ─────────────────────────────────────────────────────────────────
 export const authApi = {
   checkEmail: async (email: string): Promise<{ exists: boolean; email: string }> => {
-    const res = await fetch(`${API_URL}/api/auth/check-email`, {
+    const res = await timedFetch(`${API_URL}/api/auth/check-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email.trim() }),
@@ -162,7 +205,7 @@ export const authApi = {
     phone?: string,
     referralCode?: string
   ) => {
-    const res = await fetch(`${API_URL}/api/auth/register`, {
+    const res = await timedFetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, firstName, lastName, phone, ...(referralCode ? { referralCode } : {}) }),
@@ -177,7 +220,7 @@ export const authApi = {
   // Staff (and patients who turned it on) get { mfaRequired: true } first and
   // a security code by SMS or email; calling again with the code signs in.
   signIn: async (email: string, password: string, mfaCode?: string) => {
-    const res = await fetch(`${API_URL}/api/auth/login`, {
+    const res = await timedFetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, ...(mfaCode ? { mfaCode } : {}) }),
@@ -209,7 +252,7 @@ export const authApi = {
   },
 
   requestPhoneOtp: async (phone: string) => {
-    const res = await fetch(`${API_URL}/api/auth/otp/request`, {
+    const res = await timedFetch(`${API_URL}/api/auth/otp/request`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone }),
@@ -219,7 +262,7 @@ export const authApi = {
   },
 
   verifyPhoneOtp: async (phone: string, code: string) => {
-    const res = await fetch(`${API_URL}/api/auth/otp/verify`, {
+    const res = await timedFetch(`${API_URL}/api/auth/otp/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone, code }),
@@ -233,7 +276,7 @@ export const authApi = {
 
   forgotPassword: async (email: string) => {
     // Fire-and-forget — always 200 to prevent email enumeration
-    await fetch(`${API_URL}/api/auth/password-reset/request`, {
+    await timedFetch(`${API_URL}/api/auth/password-reset/request`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -241,7 +284,7 @@ export const authApi = {
   },
 
   resetPassword: async (token: string, password: string) => {
-    const res = await fetch(`${API_URL}/api/auth/password-reset/confirm`, {
+    const res = await timedFetch(`${API_URL}/api/auth/password-reset/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, newPassword: password }),
@@ -251,7 +294,7 @@ export const authApi = {
   },
 
   confirmEmailVerification: async (token: string) => {
-    const res = await fetch(`${API_URL}/api/auth/verify-email/confirm`, {
+    const res = await timedFetch(`${API_URL}/api/auth/verify-email/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
@@ -262,7 +305,7 @@ export const authApi = {
 
   /** The six-digit code from the verification email. Needs the address too. */
   confirmEmailCode: async (email: string, code: string) => {
-    const res = await fetch(`${API_URL}/api/auth/verify-email/confirm`, {
+    const res = await timedFetch(`${API_URL}/api/auth/verify-email/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, code }),
@@ -272,7 +315,7 @@ export const authApi = {
   },
 
   resendEmailVerification: async (email: string) => {
-    const res = await fetch(`${API_URL}/api/auth/verify-email/request`, {
+    const res = await timedFetch(`${API_URL}/api/auth/verify-email/request`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

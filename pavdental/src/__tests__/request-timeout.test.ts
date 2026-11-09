@@ -40,7 +40,7 @@ async function run() {
   console.log("\n⏱  RUNNING REQUEST TIMEOUT TESTS (B7)...\n");
   const originalFetch = global.fetch;
   const calls: string[] = [];
-  (global as any).fetch = hangingFetch(calls);
+  globalThis.fetch = hangingFetch(calls) as typeof globalThis.fetch;
   configureRequestTimeouts({ requestMs: 40, uploadMs: 120 });
 
   assert((await messageOf(timedFetch("https://api.example.test/x"))) === TIMEOUT_MESSAGE, "A hung request gives up with a clear message");
@@ -74,7 +74,7 @@ async function run() {
   assert((await cancelled) !== TIMEOUT_MESSAGE && (await cancelled) !== "STILL HANGING", "A caller's own cancel still works");
 
   // A quick answer is passed straight through.
-  (global as any).fetch = async () => new Response(JSON.stringify({ ok: true }), { status: 200 });
+  globalThis.fetch = (async () => new Response(JSON.stringify({ ok: true }), { status: 200 })) as typeof globalThis.fetch;
   const res = await timedFetch("https://api.example.test/z");
   assert(res.status === 200, "A quick answer comes back unchanged");
 

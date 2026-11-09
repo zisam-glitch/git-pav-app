@@ -21,6 +21,7 @@ import { toLabel } from "@/lib/text";
 import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
 import { TOO_LATE_MESSAGE, rescheduleState } from "@/features/booking/reschedule";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
+import { WAITING_ROOM_OPENS_MINUTES, waitingRoomOpen } from "@/features/video/waiting-room-window";
 
 // ─── Appointment detail — full context + lifecycle actions ────────────────────
 // Reference pattern: Mobbin Zocdoc appointment detail (map, cancel)
@@ -169,14 +170,20 @@ export default function AppointmentDetailScreen() {
                   router.push({ pathname: "/(patient)/video/intake" as never, params: { appointmentId: booking.id } })
                 }
               />
-              <Button
-                title="Go to the waiting room"
-                variant="secondary"
-                size="md"
-                onPress={() =>
-                  router.push({ pathname: "/(patient)/video/device-check" as never, params: { appointmentId: booking.id } })
-                }
-              />
+              {waitingRoomOpen(booking) ? (
+                <Button
+                  title="Go to the waiting room"
+                  variant="secondary"
+                  size="md"
+                  onPress={() =>
+                    router.push({ pathname: "/(patient)/video/device-check" as never, params: { appointmentId: booking.id } })
+                  }
+                />
+              ) : (
+                <ThemedText variant="caption" style={styles.muted}>
+                  The waiting room opens {WAITING_ROOM_OPENS_MINUTES} minutes before your visit.
+                </ThemedText>
+              )}
             </View>
           </Card>
         ) : null}

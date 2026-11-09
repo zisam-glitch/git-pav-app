@@ -12,6 +12,7 @@ import {
   markAppointmentNoShow,
 } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
+import { fdiText } from "@/features/records/tooth-number";
 
 export default function ClinicianPatientRecordScreen() {
   const router = useRouter();
@@ -289,7 +290,7 @@ export default function ClinicianPatientRecordScreen() {
                   {teeth.map((t: any) => (
                     <View key={t.id || t.toothNumber} style={styles.toothChip}>
                       <ThemedText variant="headline" style={styles.toothNum}>
-                        #{t.toothNumber}
+                        {fdiText(t.toothNumber)}
                       </ThemedText>
                       <Badge
                         label={toLabel(t.condition)}

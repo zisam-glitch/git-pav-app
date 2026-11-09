@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Button, EmptyState, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { toothLabel } from "@/features/records/tooth-number";
+import { toothLabel, fdiToUniversal } from "@/features/records/tooth-number";
 import { createTreatmentPlan } from "@/features/records/records-api";
 import { useServices } from "@/features/hooks/use-dental-api";
 
@@ -37,8 +37,12 @@ export default function TreatmentPlanBuilderScreen() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // The clinician types the FDI number (e.g. 36); it is stored as Universal.
+  const toothFromInput = (): number | undefined =>
+    selectedTooth ? fdiToUniversal(parseInt(selectedTooth, 10)) ?? undefined : undefined;
+
   function addItem(proc: { code: string; description: string; costPence: number }) {
-    const tooth = selectedTooth ? parseInt(selectedTooth, 10) : undefined;
+    const tooth = toothFromInput();
     setItems((prev) => [
       ...prev,
       {
@@ -56,7 +60,7 @@ export default function TreatmentPlanBuilderScreen() {
     const costPence = Math.round(parseFloat(customCostPounds) * 100);
     if (isNaN(costPence) || costPence <= 0) return;
 
-    const tooth = selectedTooth ? parseInt(selectedTooth, 10) : undefined;
+    const tooth = toothFromInput();
     setItems((prev) => [
       ...prev,
       {
@@ -162,11 +166,11 @@ export default function TreatmentPlanBuilderScreen() {
               </ThemedText>
               <View style={styles.toothInputRow}>
                 <ThemedText variant="caption" style={styles.toothLabel}>
-                  Tooth # (optional):
+                  Tooth, FDI (optional):
                 </ThemedText>
                 <TextInput
                   style={styles.toothInput}
-                  placeholder="1-32"
+                  placeholder="e.g. 36"
                   placeholderTextColor={colors.tertiaryLabel}
                   keyboardType="numeric"
                   value={selectedTooth}

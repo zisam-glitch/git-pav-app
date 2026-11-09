@@ -10,6 +10,7 @@ import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { triageSummary } from "@/features/video/triage-summary";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
+import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
 
 export default function ClinicianConsultRoomScreen() {
   const router = useRouter();
@@ -282,13 +283,13 @@ export default function ClinicianConsultRoomScreen() {
 
               {/* Upper Arch */}
               <ThemedText variant="caption" style={styles.archLabel}>
-                Upper Arch (Maxillary #1–#16)
+                Upper (18–11, 21–28)
               </ThemedText>
               <View style={styles.archRow}>
-                {Array.from({ length: 16 }, (_, i) => i + 1).map((num) => {
+                {UPPER_CHART_ROW.map((num) => {
                   const isSelected = selectedTooth === num;
                   return (
-                    <Pressable accessibilityRole="button" accessibilityLabel={`Tooth ${num}`} accessibilityState={{ selected: isSelected }}
+                    <Pressable accessibilityRole="button" accessibilityLabel={toothLabel(num)} accessibilityState={{ selected: isSelected }}
                       key={num}
                       onPress={() => setSelectedTooth(num)}
                       style={[
@@ -303,7 +304,7 @@ export default function ClinicianConsultRoomScreen() {
                           isSelected && styles.toothNumTextSelected,
                         ]}
                       >
-                        {num}
+                        {fdiText(num)}
                       </ThemedText>
                     </Pressable>
                   );
@@ -312,13 +313,13 @@ export default function ClinicianConsultRoomScreen() {
 
               {/* Lower Arch */}
               <ThemedText variant="caption" style={styles.archLabel}>
-                Lower Arch (Mandibular #17–#32)
+                Lower (48–41, 31–38)
               </ThemedText>
               <View style={styles.archRow}>
-                {Array.from({ length: 16 }, (_, i) => i + 17).map((num) => {
+                {LOWER_CHART_ROW.map((num) => {
                   const isSelected = selectedTooth === num;
                   return (
-                    <Pressable accessibilityRole="button" accessibilityLabel={`Tooth ${num}`} accessibilityState={{ selected: isSelected }}
+                    <Pressable accessibilityRole="button" accessibilityLabel={toothLabel(num)} accessibilityState={{ selected: isSelected }}
                       key={num}
                       onPress={() => setSelectedTooth(num)}
                       style={[
@@ -333,7 +334,7 @@ export default function ClinicianConsultRoomScreen() {
                           isSelected && styles.toothNumTextSelected,
                         ]}
                       >
-                        {num}
+                        {fdiText(num)}
                       </ThemedText>
                     </Pressable>
                   );
@@ -344,7 +345,7 @@ export default function ClinicianConsultRoomScreen() {
             {/* Selected Tooth Detail */}
             <Card style={styles.triageCard}>
               <View style={styles.odontogramHeader}>
-                <ThemedText variant="headline">Tooth #{selectedTooth}</ThemedText>
+                <ThemedText variant="headline">{toothLabel(selectedTooth)}</ThemedText>
               </View>
               <ThemedText variant="body" style={styles.triageText}>
                 No findings recorded for this tooth.

@@ -65,23 +65,39 @@ export async function authFetch(
   });
 
   if (res.status === 401) {
+    let freshToken: string;
     try {
-      const freshToken = await ensureValidToken(true);
-      const retryHeaders: Record<string, string> = {
-        ...headers,
-        Authorization: `Bearer ${freshToken}`,
-      };
-      return await fetch(`${API_URL}${path}`, {
-        ...options,
-        headers: retryHeaders,
-      });
-    } catch {
-      await clearSessionState();
-      throw new Error("Session expired. Please sign in again.");
+      freshToken = await ensureValidToken(true);
+    } catch (err) {
+      // Only a refused refresh ends the session. A server error or no signal
+      // keeps the patient signed in, with their booking draft, to try again.
+      if (err instanceof SessionExpiredError) {
+        throw new Error("Session expired. Please sign in again.");
+      }
+      throw new Error("We couldn't reach Pav Dental. Check your connection and try again.");
     }
+    return fetch(`${API_URL}${path}`, {
+      ...options,
+      headers: { ...headers, Authorization: `Bearer ${freshToken}` },
+    });
   }
 
   return res;
+}
+
+/** The server turned the refresh token down: the session is over. */
+export class SessionExpiredError extends Error {
+  constructor() {
+    super("Session expired");
+    this.name = "SessionExpiredError";
+  }
+}
+
+// The refresh endpoint answers 401 for a token it won't honour (expired,
+// revoked, deactivated account) and 400 for one it can't read. Anything else
+// (5xx, 429, a dropped connection) is temporary.
+function refreshWasRefused(status: number) {
+  return status === 400 || status === 401 || status === 403;
 }
 
 export async function ensureValidToken(forceRefresh = false): Promise<string> {
@@ -98,7 +114,10 @@ export async function ensureValidToken(forceRefresh = false): Promise<string> {
 
 async function doRefresh(): Promise<string> {
   const refreshToken = await tokenStore.getRefreshToken();
-  if (!refreshToken) throw new Error("No refresh token");
+  if (!refreshToken) {
+    await clearSessionState();
+    throw new SessionExpiredError();
+  }
 
   const res = await fetch(`${API_URL}/api/auth/refresh`, {
     method: "POST",
@@ -106,9 +125,12 @@ async function doRefresh(): Promise<string> {
     body: JSON.stringify({ refreshToken }),
   });
 
-  if (!res.ok) {
+  if (refreshWasRefused(res.status)) {
     await clearSessionState();
-    throw new Error("Refresh failed");
+    throw new SessionExpiredError();
+  }
+  if (!res.ok) {
+    throw new Error(`Refresh failed temporarily (${res.status})`);
   }
 
   const data = await res.json();

@@ -438,6 +438,61 @@ export async function processDueScheduledNotifications(): Promise<{ dispatchedCo
   }
 }
 
+export interface ReminderLadderInput {
+  channel: string;
+  dateFormatted: string;
+  timeFormatted: string;
+  /** The clinician's name, or the clinic's when none is assigned. */
+  personName: string;
+  clinicName: string;
+}
+
+/**
+ * The wording of the 48h / 24h / 2h reminders. A video consultation has no
+ * clinic to arrive at, so it gets its own words (V3).
+ */
+export function buildReminderLadder(input: ReminderLadderInput): { hoursBefore: number; title: string; body: string }[] {
+  const { channel, dateFormatted, timeFormatted, personName, clinicName } = input;
+  if (channel === "video") {
+    return [
+      {
+        hoursBefore: 48,
+        title: "Video consultation in 48 hours - Pav Dental",
+        body: `Reminder: Your video consultation is on ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`,
+      },
+      {
+        hoursBefore: 24,
+        title: "Video consultation tomorrow - Pav Dental",
+        body: `Your video consultation is tomorrow at ${timeFormatted} with ${personName}. Check your camera and microphone in the app before then.`,
+      },
+      {
+        hoursBefore: 2,
+        title: "Video consultation in 2 hours - Pav Dental",
+        body: `Your video consultation is at ${timeFormatted}. The waiting room opens in the app 10 minutes before.`,
+      },
+    ];
+  }
+  return [
+    {
+      hoursBefore: 48,
+      title: "Appointment in 48 Hours - Pav Dental",
+      // CS-54: Neutral copy on lock screen (no clinical service names)
+      body: `Reminder: Your appointment is scheduled for ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`,
+    },
+    {
+      hoursBefore: 24,
+      title: "Appointment Tomorrow - Pav Dental",
+      body: `Your visit is tomorrow at ${timeFormatted} with ${personName}. Please remember to arrive 10 minutes early.`,
+    },
+    {
+      hoursBefore: 2,
+      title: "Appointment in 2 Hours - Pav Dental",
+      // CS-54: Neutral copy on lock screen (no clinical service names)
+      body: `See you soon! Your appointment is at ${timeFormatted} at ${clinicName}. Tap for directions and check-in info.`,
+    },
+  ];
+}
+
 /**
  * Schedules the 48h / 24h / 2h reminder notification ladder for a confirmed appointment.
  */
@@ -457,7 +512,6 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
 
     const userId = appointment.patient.userId;
     const startTime = new Date(appointment.startTimeUtc);
-    const serviceName = appointment.service?.name || "Dental Appointment";
     const clinicName = appointment.clinic?.name || "Pav Dental";
     const timeFormatted = startTime.toLocaleTimeString("en-GB", {
       timeZone: "Europe/London",
@@ -471,25 +525,13 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
       month: "short",
     });
 
-    const ladder = [
-      {
-        hoursBefore: 48,
-        title: "Appointment in 48 Hours - Pav Dental",
-        // CS-54: Neutral copy on lock screen (no clinical service names)
-        body: `Reminder: Your appointment is scheduled for ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`,
-      },
-      {
-        hoursBefore: 24,
-        title: "Appointment Tomorrow - Pav Dental",
-        body: `Your visit is tomorrow at ${timeFormatted} with ${appointment.clinician?.fullName || clinicName}. Please remember to arrive 10 minutes early.`,
-      },
-      {
-        hoursBefore: 2,
-        title: "Appointment in 2 Hours - Pav Dental",
-        // CS-54: Neutral copy on lock screen (no clinical service names)
-        body: `See you soon! Your appointment is at ${timeFormatted} at ${clinicName}. Tap for directions and check-in info.`,
-      },
-    ];
+    const ladder = buildReminderLadder({
+      channel: appointment.channel,
+      dateFormatted,
+      timeFormatted,
+      personName: appointment.clinician?.fullName || clinicName,
+      clinicName,
+    });
 
     const now = Date.now();
 
@@ -499,12 +541,17 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
       // Only schedule if the reminder time is in the future
       if (scheduledFor.getTime() > now) {
         // BJ-4: Guard against duplicate scheduling on webhook replay or concurrent redeliveries
+        // Matched per appointment (V8): two bookings at the same time, for a
+        // parent and a child, must each get their own reminder.
         const existing = await prisma.scheduledNotification.findFirst({
           where: {
             userId,
             scheduledFor,
-            title: step.title,
             status: "pending",
+            AND: [
+              { data: { path: ["appointmentId"], equals: appointment.id } },
+              { data: { path: ["hoursBefore"], equals: step.hoursBefore } },
+            ],
           },
         });
 

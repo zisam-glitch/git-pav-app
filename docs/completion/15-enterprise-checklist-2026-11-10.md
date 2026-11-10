@@ -57,7 +57,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       screens use `any` (171 non-test uses). Generate types for every endpoint and replace `any`.
 - [ ] **A4 (P1, S) Shared enums, not string literals.** `status`, `channel` and `role` are compared as raw strings in 71
       places. Use one union type and small helpers (`isConfirmed(b)`), so a new status cannot be missed in one screen.
-- [ ] **A5 (P1, XS) Delete dead code:** `lib/react-query-persistence.ts`, `features/payment/payment-hooks.ts`,
+- [x] **A5 (P1, XS) Delete dead code:** `lib/react-query-persistence.ts`, `features/payment/payment-hooks.ts`,
       `components/better-icons-registry.ts`, the unused illustrations (`designer-keynote`, `designer-working`, `keynote`,
       `color-palette`, `graph-collapse`), and `backend/src/lib/structured-logging.ts` or start using it (see I3).
 - [ ] **A6 (P2, L) Split the 19 screens over 400 lines** into a screen plus small components and hooks
@@ -78,12 +78,12 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       loading, error, retry, caching and cancellation behave the same.
 - [ ] **B2 (P1, S) A query-key factory** (`keys.appointments.list()`, `keys.slots(params)`), not free strings.
       `"operator-shift"` is typed by hand 14 times; one typo means a screen never refreshes.
-- [ ] **B3 (P1, S) One money formatter.** Use `formatGbp` everywhere; remove `pounds()` in `appointment-detail.ts`
+- [x] **B3 (P1, S) One money formatter.** Use `formatGbp` everywhere; remove `pounds()` in `appointment-detail.ts`
       (added in this work, a duplicate), `depositPaidLabel`, and the 8 inline `toFixed(2)` calls. Add a `Money` type or
       keep pence as integers until display.
 - [ ] **B4 (P1, S) One time/date module.** 23 `toLocale*` calls and 23 `timeZone` mentions are scattered. Route all
       through `uk-time.ts`; the clinician screens were missed once already (B6 on 9 Nov).
-- [ ] **B5 (P1, S) Do not guess prices.** `service-catalog.tsx:98` still falls back to a 25% deposit if the server sends
+- [x] **B5 (P1, S) Do not guess prices.** `service-catalog.tsx:98` still falls back to a 25% deposit if the server sends
       none. The server owns the deposit; show an error instead.
 - [ ] **B6 (P2, M) Optimistic updates** for the actions that feel slow: mark message read, cancel, change preferences.
       There are none today (0 `onMutate`).
@@ -133,7 +133,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 
 ## E. Security and privacy (app side)
 
-- [ ] **E1 (P0, S) Never show a provider's raw error text to patients.** `Payment Failed` shows Stripe's `message`.
+- [x] **E1 (P0, S) Never show a provider's raw error text to patients.** `Payment Failed` shows Stripe's `message`.
       Map to plain wording and log the code.
 - [ ] **E2 (P1, S) Certificate pinning decision** and jailbreak/root detection decision, written in an ADR.
 - [ ] **E3 (P1, XS) Check what the OS keeps.** Task-switcher snapshots (`screen-security` exists), clipboard use,
@@ -158,6 +158,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       over the 10 main flows, test at 200% text, fix touch targets under 44 pt.
 - [ ] **F4 (P1, S) `testID`s on every interactive element.** Only 3 exist; the Maestro flows select by visible text and
       broke when wording changed. Add IDs and switch the flows to them.
+      *Progress: test IDs on the shared buttons and the main actions (PR 115); more screens to cover.*
 - [ ] **F5 (P2, M) Empty, loading, error and offline states** for every list and detail screen, from one `QueryState`
       pattern (it exists; 11 screens that use the main hooks should be checked against it).
 - [ ] **F6 (P2, M) Dark mode and larger-screen layout** decision (currently light-only phone-only; fine to defer,
@@ -174,9 +175,12 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **G1 (P0, L) Component tests.** Add React Native Testing Library and test the real screens: booking summary,
       appointment detail (each status), cancel flow, message thread, check-in. Replace source-reading tests
       (47 files) as you go; keep a few as architecture guards.
+      *Progress: started (PR 114): tooling plus 17 real screen tests (appointment detail, message thread, check-in, Button, Input). 47 older source-reading tests remain.*
 - [ ] **G2 (P0, M) Run Maestro in CI** on every pull request against a seeded staging or local stack (EAS or a
       macOS runner with a simulator). Today the 9 flows are not run by CI.
+      *Progress: started (PR 115): flows are checked against the app and 58 stale steps are listed. Still needed: rewrite those flows against a dev build and run Maestro in CI.*
 - [ ] **G3 (P1, S) Coverage report and a floor** (for example 70% on `features/`), failing the build when it drops.
+      *Progress: floor set (PR 116) at today's 7%; raise it as tests are added.*
 - [ ] **G4 (P1, M) Contract tests** between app and backend (the generated types help): CI fails if a response shape
       changes without the app being updated.
 - [ ] **G5 (P1, M) Visual regression** (Storybook or screenshots) for the 20 shared components.
@@ -247,7 +251,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 
 Being honest about what I added that you should not copy:
 
-- [ ] **K1** `appointment-detail.ts` added a sixth money formatter (`pounds`). Replace with `formatGbp` (B3).
+- [x] **K1** `appointment-detail.ts` added a sixth money formatter (`pounds`). Replace with `formatGbp` (B3).
 - [ ] **K2** Several new tests I wrote read source text (for example `cancel-wording`, `home-truthful`, `plain-wording`).
       They guard against regressions in wording but are exactly the kind of test G1 should replace.
 - [ ] **K3** Booking and cancellation emails send "fire and forget" with no retry (D1).

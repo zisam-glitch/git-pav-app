@@ -28,3 +28,9 @@ export function threadMessages(raw: unknown): ThreadMessage[] {
     }))
     .sort((a, b) => a.sentAtIso.localeCompare(b.sentAtIso));
 }
+
+/** How many conversations have something the patient has not read. */
+export function unreadThreadCount(raw: unknown): number {
+  if (!Array.isArray(raw)) return 0;
+  return raw.filter((t) => t && typeof t === "object" && (t as { isRead?: unknown }).isRead === false).length;
+}

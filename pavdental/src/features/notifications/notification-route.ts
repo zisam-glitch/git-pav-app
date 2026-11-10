@@ -11,6 +11,14 @@ export interface NotificationTarget {
 export function routeForNotification(data: unknown): NotificationTarget | null {
   if (!data || typeof data !== "object") return null;
   const d = data as Record<string, unknown>;
+  // A new message: the dentist's inbox, or the patient's conversation.
+  if (d.type === "message") {
+    if (d.audience === "clinician") return { pathname: "/(clinician)/inbox", params: {} };
+    if (typeof d.threadId === "string" && d.threadId) {
+      return { pathname: "/(patient)/message-thread", params: { id: d.threadId } };
+    }
+    return null;
+  }
   if (typeof d.requestId === "string" && d.requestId) {
     return { pathname: "/(patient)/van/live-track", params: { requestId: d.requestId } };
   }

@@ -11,6 +11,21 @@ import { encryptField, decryptString } from "../lib/encryption";
 import { communicationService } from "../lib/communication-service";
 import { env } from "../config/env";
 import { safeError } from "../lib/log-safety";
+import { withIdempotency, idempotencyKeyFrom } from "../lib/idempotency";
+
+type Outcome = { status: number; body?: unknown; error?: string };
+
+/** The caller's Idempotency-Key, scoped to them and the action; "invalid" when malformed. */
+function scopedKey(req: AuthRequest, action: string): string | null | "invalid" {
+  const k = idempotencyKeyFrom(req.header("Idempotency-Key"));
+  if (k === "invalid") return "invalid";
+  return k ? `${action}:${req.user!.sub}:${k}` : null;
+}
+
+function sendOutcome(res: Response, out: Outcome) {
+  if (out.error) return res.status(out.status).json({ error: out.error });
+  return res.status(out.status).json(out.body);
+}
 import { sendUserNotification } from "../lib/patient-push";
 
 const router = Router();
@@ -188,6 +203,13 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
   const userId = req.user!.sub;
   const userRole = req.user!.role;
   const { subject, body, recipientType, recipientClinicianId, recipientName } = req.body;
+  const key = scopedKey(req, "message-create");
+  if (key === "invalid") {
+    return res.status(400).json({ error: "Idempotency-Key must be 8 to 128 letters, digits, '-', '_' or ':'" });
+  }
+
+  // A retry with the same key returns the first result instead of sending again (V47).
+  const outcome = await withIdempotency<Outcome>(key, async () => {
 
   // Resolve routing
   let resolvedAssignedClinicianId: string | null = null;
@@ -311,10 +333,12 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
     },
   });
 
-  return res.status(201).json({
+  return {
+    status: 201,
+    body: {
     id: thread.id,
     from: thread.senderName,
-    subject: thread.subject,
+    subject,
     preview: thread.preview,
     sentAtIso: thread.updatedAt.toISOString(),
     isRead: !thread.patientUnread,
@@ -328,7 +352,11 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
       body,
       sentAtIso: m.sentAt.toISOString(),
     })),
+    },
+  } as Outcome;
   });
+
+  return sendOutcome(res, outcome);
 });
 
 // ─── POST /api/messages/:id/reply ─────────────────────────────────────────────
@@ -343,6 +371,13 @@ router.post(
     const userRole = req.user!.role;
     const { body } = req.body;
 
+    const key = scopedKey(req, `message-reply:${threadId}`);
+    if (key === "invalid") {
+      return res.status(400).json({ error: "Idempotency-Key must be 8 to 128 letters, digits, '-', '_' or ':'" });
+    }
+
+    // A retry with the same key returns the first result instead of sending again (V47).
+    const outcome = await withIdempotency<Outcome>(key, async () => {
     const thread = await prisma.messageThread.findFirst({
       where: { AND: [{ id: threadId }, await visibleThreadsWhere(req)] },
       include: {
@@ -351,7 +386,7 @@ router.post(
     });
 
     if (!thread) {
-      return res.status(404).json({ error: "Message thread not found" });
+      return { status: 404, error: "Message thread not found" } as Outcome;
     }
 
     // Determine sender display name (real staff name or patient name, MS-3)
@@ -462,7 +497,7 @@ router.post(
       },
     });
 
-    return res.status(201).json({
+    return { status: 201, body: {
       message: {
         id: message.id,
         senderRole: message.senderRole,
@@ -479,7 +514,10 @@ router.post(
         isRead: !(isStaff ? updatedThread.staffUnread : updatedThread.patientUnread),
         hasAttachment: updatedThread.hasAttachment,
       },
+    } } as Outcome;
     });
+
+    return sendOutcome(res, outcome);
   }
 );
 

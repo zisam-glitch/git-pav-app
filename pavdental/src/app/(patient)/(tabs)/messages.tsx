@@ -38,7 +38,7 @@ export default function MessagesScreen() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [showTriage, setShowTriage] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
   // New message compose state
   const [isComposing, setIsComposing] = useState(false);
@@ -89,23 +89,22 @@ export default function MessagesScreen() {
         recipientType: newRecipientType,
       });
       safeHaptics.notificationAsync("success").catch(() => {});
-      setToast(
-        newRecipientType === "care_team"
-          ? "Message sent to your care team"
-          : "Message sent to practice team"
-      );
+      setToast({
+        message: newRecipientType === "care_team" ? "Message sent to your care team" : "Message sent to practice team",
+        tone: "success",
+      });
       setIsComposing(false);
       setNewSubject("");
       setNewBody("");
       refetch();
     } catch (err: any) {
-      setToast(err?.message || "Could not send message");
+      setToast({ message: err?.message || "Your message did not send. Please try again.", tone: "error" });
     }
   };
 
   return (
     <View style={styles.container}>
-      {toast ? <Toast message={toast} tone="success" onDismiss={() => setToast(null)} /> : null}
+      {toast ? <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} /> : null}
       <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
         <View style={styles.headerRow}>
           <View style={styles.headerTitleGroup}>
@@ -307,6 +306,8 @@ export default function MessagesScreen() {
               placeholder="Type your message here…"
               value={newBody}
               onChangeText={setNewBody}
+              multiline
+              maxLength={4000}
             />
 
             <View style={styles.modalActions}>

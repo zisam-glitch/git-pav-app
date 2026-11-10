@@ -118,6 +118,19 @@ export async function fetchMessagingMeta() {
   return res.json();
 }
 
+// One Idempotency-Key per message being sent, kept until it succeeds, so a
+// double tap or a retry after a slow response cannot send it twice (V47).
+const pendingSendKeys = new Map<string, string>();
+function sendKeyFor(scope: string, body: string): string {
+  const id = `${scope}:${body}`;
+  let key = pendingSendKeys.get(id);
+  if (!key) {
+    key = `msg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+    pendingSendKeys.set(id, key);
+  }
+  return key;
+}
+
 export async function createMessageThread(payload: {
   subject: string;
   body: string;
@@ -127,20 +140,25 @@ export async function createMessageThread(payload: {
   clinicianRole?: string;
   clinicianName?: string;
 }) {
+  const sendId = `new:${payload.subject}`;
   const res = await authFetch("/api/messages", {
     method: "POST",
+    headers: { "Idempotency-Key": sendKeyFor(sendId, payload.body) },
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error("Could not create message thread");
+  pendingSendKeys.delete(`${sendId}:${payload.body}`);
   return res.json();
 }
 
 export async function replyToMessageThread(threadId: string, body: string) {
   const res = await authFetch(`/api/messages/${threadId}/reply`, {
     method: "POST",
+    headers: { "Idempotency-Key": sendKeyFor(threadId, body) },
     body: JSON.stringify({ body }),
   });
   if (!res.ok) throw new Error("Could not send message reply");
+  pendingSendKeys.delete(`${threadId}:${body}`);
   return res.json();
 }
 

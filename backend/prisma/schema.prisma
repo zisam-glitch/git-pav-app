@@ -368,6 +368,7 @@ model Appointment {
   referralQualified    Referral?
   appointmentNote      AppointmentNote?
   toothHistory         ToothHistory[]
+  messageThread        MessageThread?     @relation("AppointmentThread")
 
   @@index([patientId])
   @@index([clinicianId])
@@ -817,9 +818,12 @@ model MessageThread {
   hasAttachment       Boolean           @default(false) @map("has_attachment")
   recipientType       String            @default("practice") @map("recipient_type") @db.VarChar(50)
   assignedClinicianId String?           @map("assigned_clinician_id") @db.Uuid
+  /// The video appointment this conversation is about, if any: one per appointment.
+  appointmentId       String?           @unique @map("appointment_id") @db.Uuid
   createdAt           DateTime          @default(now()) @map("created_at")
   updatedAt           DateTime          @updatedAt @map("updated_at")
   messages            Message[]
+  appointment         Appointment?      @relation("AppointmentThread", fields: [appointmentId], references: [id], onDelete: SetNull)
   patientUser         User              @relation(fields: [patientUserId], references: [id], onDelete: Restrict)
   assignedClinician   ClinicianProfile? @relation("ClinicianAssignedThreads", fields: [assignedClinicianId], references: [id], onDelete: SetNull)
 

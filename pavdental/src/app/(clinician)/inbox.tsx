@@ -293,7 +293,7 @@ export default function ClinicianInboxScreen() {
             <View style={styles.composerRow}>
               <Input
                 label=""
-                placeholder="Write clinical reply to patient…"
+                placeholder="Write a reply to the patient…"
                 value={replyText}
                 onChangeText={setReplyText}
                 multiline
@@ -301,7 +301,7 @@ export default function ClinicianInboxScreen() {
               />
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Send clinical reply"
+                accessibilityLabel="Send reply"
                 onPress={handleSendReply}
                 disabled={!replyText.trim() || replyMutation.isPending}
                 style={({ pressed }) => [

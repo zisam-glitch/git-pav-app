@@ -86,7 +86,8 @@ async function visibleThreadsWhere(req: AuthRequest): Promise<Prisma.MessageThre
       ],
     };
   }
-  return { patientUserId: sub };
+  // A conversation the patient has hidden stays out of their list (V56).
+  return { patientUserId: sub, patientHiddenAt: null };
 }
 
 const threadIdParamsSchema = z.object({ id: z.string().guid() }).strict();
@@ -202,7 +203,7 @@ function escapeHtml(str: string): string {
 router.post("/", requireAuth, validateBody(createThreadSchema), async (req: AuthRequest, res: Response) => {
   const userId = req.user!.sub;
   const userRole = req.user!.role;
-  const { subject, body, recipientType, recipientClinicianId, recipientName } = req.body;
+  const { subject, body, recipientType, recipientClinicianId } = req.body;
   const key = scopedKey(req, "message-create");
   if (key === "invalid") {
     return res.status(400).json({ error: "Idempotency-Key must be 8 to 128 letters, digits, '-', '_' or ':'" });
@@ -214,7 +215,8 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
   // Resolve routing
   let resolvedAssignedClinicianId: string | null = null;
   let resolvedRecipientType = recipientType || "practice";
-  let resolvedRecipientName = recipientName || "Pav Dental Clinical Team";
+  // The name on the thread comes from the server, never from the app (V55).
+  let resolvedRecipientName = "Pav Dental Clinical Team";
   let clinicianUserEmail: string | null = null;
 
   if (recipientClinicianId) {
@@ -233,7 +235,8 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
     const patientProfile = await prisma.patientProfile.findUnique({ where: { userId } });
     if (patientProfile) {
       const recentAppt = await prisma.appointment.findFirst({
-        where: { patientId: patientProfile.id },
+        // Only a dentist who has seen the patient, or is seeing them now (V55).
+        where: { patientId: patientProfile.id, clinicianId: { not: null }, status: { in: ["completed", "in_progress"] } },
         orderBy: { startTimeUtc: "desc" },
         include: { clinician: { include: { user: true } } },
       });
@@ -414,6 +417,8 @@ router.post(
           isRead: isStaff ? true : false,
           staffUnread: !isStaff,
           patientUnread: isStaff,
+          // A new reply from the practice brings a hidden conversation back.
+          ...(isStaff ? { patientHiddenAt: null } : {}),
         },
         include: {
           messages: { orderBy: { sentAt: "asc" } },
@@ -423,7 +428,6 @@ router.post(
 
     const decryptedSubject = await decryptString(thread.subject);
     const safeSender = escapeHtml(senderDisplayName);
-    const safeSubject = escapeHtml(decryptedSubject);
 
     // MS-3: Notifications on reply
     if (isStaff) {
@@ -438,9 +442,10 @@ router.post(
         communicationService
           .sendEmail({
             to: patientEmail,
-            subject: `[Pav Dental] Reply from ${safeSender}: ${safeSubject}`,
-            text: `${senderDisplayName} has replied to your message thread: "${decryptedSubject}".\n\nPlease open the Pav Dental app to view.`,
-            html: `<p><strong>${safeSender}</strong> has replied to your message thread: <em>${safeSubject}</em>.</p><p>Please open the Pav Dental app to read and reply.</p>`,
+            // The subject line may describe a health problem, so it never leaves the app (V57).
+            subject: "[Pav Dental] You have a new message",
+            text: `${senderDisplayName} has replied to your conversation.\n\nPlease open the Pav Dental app to read it.`,
+            html: `<p><strong>${safeSender}</strong> has replied to your conversation.</p><p>Please open the Pav Dental app to read and reply.</p>`,
           })
           .catch((err) => console.error("[Messages] Failed to notify patient of staff reply:", safeError(err)));
       }
@@ -547,22 +552,22 @@ router.delete("/:id", requireAuth, validateParams(threadIdParamsSchema), async (
   const userId = req.user!.sub;
 
   const existing = await prisma.messageThread.findFirst({
-    where: { id: threadId, patientUserId: userId },
+    where: { id: threadId, patientUserId: userId, patientHiddenAt: null },
   });
 
   if (!existing) {
     return res.status(404).json({ error: "Message thread not found" });
   }
 
-  const messageCount = await prisma.message.count({ where: { threadId } });
-
-  await prisma.messageThread.delete({
+  // The patient hides it from their own list; the practice keeps it, because a
+  // dentist's written advice may be part of the clinical record (V56).
+  await prisma.messageThread.update({
     where: { id: threadId },
+    data: { patientHiddenAt: new Date() },
   });
 
-  // CS-29: the thread is gone for good, so record who removed it and its shape.
   await createAuditLogWithIntegrity({
-    action: "message.thread_deleted",
+    action: "message.thread_hidden",
     actorId: userId,
     resourceId: threadId,
     sessionId: req.user!.sessionId,
@@ -570,7 +575,6 @@ router.delete("/:id", requireAuth, validateParams(threadIdParamsSchema), async (
     metadata: {
       recipientType: existing.recipientType,
       assignedClinicianId: existing.assignedClinicianId,
-      messageCount,
     },
   });
 

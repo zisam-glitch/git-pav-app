@@ -5,7 +5,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import { canSaveConsult, consultPayload, FOLLOW_UP_OPTIONS } from "../features/video/consult-form";
-import { answersFromDraft as tdFromDraft, draftBody as tdBody, hasAnswers as tdHasAnswers } from "../features/video/triage-draft";
+import { DURATIONS as tdDurations, answersFromDraft as tdFromDraft, draftBody as tdBody, hasAnswers as tdHasAnswers } from "../features/video/triage-draft";
 import { waitingRoomOpen } from "../features/video/waiting-room-window";
 
 function assert(condition: boolean, message: string) {
@@ -36,7 +36,7 @@ const summary = read("video/summary.tsx");
 const detail = read("appointments/[id].tsx");
 
 assert(/painLevels = \[0, 1/.test(intake), "Pain can be 0 (R19)");
-assert(intake.includes("3 to 7 days"), "There is an option between 2 days and a week (R19)");
+assert(intake.includes("DURATIONS") && tdDurations.includes("3 to 7 days"), "There is an option between 2 days and a week (R19)");
 assert(!photos.includes("|| '5'"), "A missing pain score is not turned into 5 on the photos screen");
 assert(!/: 5;/.test(review), "A missing pain score is not turned into 5 on the review screen");
 assert(/summaryData\?\.status === "completed"/.test(summary), "'Completed' is shown only when the visit is completed (R13)");

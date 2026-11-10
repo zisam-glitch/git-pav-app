@@ -78,7 +78,10 @@ export function Input({
           editable={!disabled}
           placeholder={placeholder}
           placeholderTextColor={colors.tertiaryLabel}
-          accessibilityLabel={label ?? placeholder}
+          // A label passed by the caller wins; an empty label ("" is used where the
+          // field has no visible title) falls back to the placeholder, so a screen
+          // reader never meets an unnamed field.
+          accessibilityLabel={props.accessibilityLabel || label || placeholder}
           accessibilityHint={hint}
           accessibilityState={{ disabled }}
           onFocus={(e) => {

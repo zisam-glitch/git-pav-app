@@ -137,9 +137,9 @@ export default function PatientHomeScreen() {
         <View style={styles.topRightActions}>
           <IconButton
             icon="bell"
-            label="Messages"
+            label="Notifications"
             variant="soft"
-            onPress={() => router.push("/(patient)/(tabs)/messages" as never)}
+            onPress={() => router.push("/(patient)/notifications" as never)}
           />
           <IconButton
             icon="profile"

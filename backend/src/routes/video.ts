@@ -16,6 +16,7 @@ import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
 import { isPlaceholderCredential } from "../config/placeholder";
 import { logFailure } from "../lib/best-effort";
+import { withLockedAppointment, sniffImageMime, MAX_TRIAGE_PHOTOS } from "../lib/video-triage";
 import { sendPatientNotification } from "../lib/patient-push";
 
 const router = Router();
@@ -70,7 +71,8 @@ async function getOrCreatePrivateRoom(name: string, expSeconds: number) {
       properties: {
         exp: expSeconds,
         eject_at_room_exp: true,
-        enable_chat: true,
+        // The app has no in-call chat; messages go through the inbox (V24).
+        enable_chat: false,
         enable_screenshare: false,
         enable_prejoin_ui: false,
         start_video_off: false,
@@ -156,7 +158,7 @@ router.post("/rooms", requireAuth, validateBody(createVideoRoomSchema), async (r
       isMock: false,
     });
   } catch (err: any) {
-    console.error("[VIDEO ROOM ERROR]", err?.statusCode ?? "network", err?.message);
+    console.error("[VIDEO ROOM ERROR]", { status: err?.statusCode ?? "network" });
     return res.status(502).json({ error: "The video service didn't respond. Please try again." });
   }
 });
@@ -171,74 +173,70 @@ router.post("/upload-triage-photo", requireAuth, upload.single("photo"), async (
     }
 
     const { appointmentId, slotLabel } = req.body as { appointmentId?: string; slotLabel?: string };
-
-    let existingAppointment: {
-      id: string;
-      triageData: unknown;
-      intraoralPhotos: string[];
-      patient: { id: string; userId: string };
-      clinician: { userId: string } | null;
-    } | null = null;
-
-    if (appointmentId) {
-      existingAppointment = await prisma.appointment.findUnique({
-        where: { id: appointmentId },
-        include: { patient: true, clinician: true },
-      });
-
-      if (!existingAppointment) {
-        return res.status(404).json({ error: "Appointment not found" });
-      }
-
-      const isAuthorized =
-        req.user!.sub === existingAppointment.patient.userId ||
-        req.user!.sub === existingAppointment.clinician?.userId ||
-        req.user!.role === "admin";
-
-      if (!isAuthorized) {
-        return res.status(403).json({ error: "Forbidden" });
-      }
+    // A photo always belongs to one consultation (V29).
+    if (!appointmentId || !videoAppointmentParamsSchema.safeParse({ appointmentId }).success) {
+      return res.status(400).json({ error: "A valid appointmentId is required" });
     }
 
-    const ext = req.file.mimetype === "image/png" ? "png" : req.file.mimetype === "image/webp" ? "webp" : "jpg";
-    const keyScope = appointmentId || req.user!.sub;
-    const fileKey = `triage/${keyScope}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    // The type the phone claims is not trusted; the bytes decide.
+    const realMime = sniffImageMime(req.file.buffer);
+    if (!realMime) {
+      return res.status(400).json({ error: "Only JPEG, PNG, and WebP image files are allowed" });
+    }
 
-    const uploaded = await objectStorage.upload(fileKey, req.file.buffer, req.file.mimetype, {
+    const existing = await prisma.appointment.findUnique({
+      where: { id: appointmentId },
+      include: { patient: true, clinician: true },
+    });
+    if (!existing) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+    const isAuthorized =
+      req.user!.sub === existing.patient.userId ||
+      req.user!.sub === existing.clinician?.userId ||
+      req.user!.role === "admin";
+    if (!isAuthorized) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    if (existing.channel !== "video" || (existing.status !== "confirmed" && existing.status !== "in_progress")) {
+      return res.status(409).json({ error: "Photos can only be added to an open video consultation" });
+    }
+    if ((existing.intraoralPhotos?.length ?? 0) >= MAX_TRIAGE_PHOTOS) {
+      return res.status(409).json({ error: `You can add up to ${MAX_TRIAGE_PHOTOS} photos` });
+    }
+
+    const ext = realMime === "image/png" ? "png" : realMime === "image/webp" ? "webp" : "jpg";
+    const fileKey = `triage/${appointmentId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+    const uploaded = await objectStorage.upload(fileKey, req.file.buffer, realMime, {
       uploadedBy: req.user!.sub,
-      appointmentId: appointmentId || "unlinked",
+      appointmentId,
       slotLabel: slotLabel || "intraoral",
     });
 
-    // Record in patient's DocumentVault if patient profile exists
-    const targetPatientId =
-      existingAppointment?.patient.id ??
-      (
-        await prisma.patientProfile.findUnique({
-          where: { userId: req.user!.sub },
-          select: { id: true },
-        })
-      )?.id;
-
-    if (targetPatientId) {
-      await prisma.documentVault.create({
+    // Add the photo under the appointment's row lock, so uploads sent in
+    // parallel cannot lose each other's photo (V25), and recheck the cap there.
+    const added = await withLockedAppointment(appointmentId, async (tx, appointment) => {
+      if (!appointment) return false;
+      if (appointment.intraoralPhotos.length >= MAX_TRIAGE_PHOTOS) return false;
+      await tx.appointment.update({
+        where: { id: appointmentId },
+        data: { intraoralPhotos: { push: uploaded.key } },
+      });
+      await tx.documentVault.create({
         data: {
-          patientId: targetPatientId,
+          patientId: appointment.patientId,
           docType: "intraoral_photo",
           title: slotLabel ? `Triage Photo — ${slotLabel}` : "Telehealth Triage Photo",
           fileKey: uploaded.key,
           fileSizeBytes: String(uploaded.size),
         },
       });
-    }
-
-    if (existingAppointment) {
-      await prisma.appointment.update({
-        where: { id: existingAppointment.id },
-        data: {
-          intraoralPhotos: [...(existingAppointment.intraoralPhotos || []), uploaded.key],
-        },
-      });
+      return true;
+    });
+    if (!added) {
+      await objectStorage.delete(uploaded.key).catch(logFailure("triage photo cleanup"));
+      return res.status(409).json({ error: `You can add up to ${MAX_TRIAGE_PHOTOS} photos` });
     }
 
     return res.status(201).json({
@@ -266,62 +264,64 @@ router.post("/submit-triage", requireAuth, validateBody(submitTriageSchema), asy
   const idempotencyKey = clientKey ? `submit-triage:${userId}:${clientKey}` : null;
 
   return withIdempotency(idempotencyKey, async () => {
-    const appointment = await prisma.appointment.findUnique({
-      where: { id: appointmentId },
-      include: { patient: { include: { user: true } } },
+    return withLockedAppointment(appointmentId, async (tx, appointment) => {
+      if (!appointment) {
+        return { error: "Appointment not found", status: 404 };
+      }
+
+      if (appointment.patient.user.id !== userId) {
+        return { error: "Unauthorized", status: 403 };
+      }
+
+      // Answers only make sense for an open video consultation (V28).
+      if (appointment.channel !== "video") {
+        return { error: "This appointment isn't a video consultation", status: 409 };
+      }
+      if (appointment.status !== "confirmed" && appointment.status !== "in_progress") {
+        return { error: "This consultation isn't open", status: 409 };
+      }
+
+      // VD-2: Run red-flag symptom checking on submitted triage data
+      const symptomsList = (symptoms || []).map((s: string) => s.toLowerCase());
+      const triageInput: TriageData = {
+        chiefComplaint,
+        painLevel,
+        symptoms,
+        duration,
+        difficultyBreathing: symptomsList.some((s: string) => s.includes("breath") || s.includes("chok") || s.includes("airway")),
+        swelling: symptomsList.some((s: string) => s.includes("swell")),
+        bleeding: symptomsList.some((s: string) => s.includes("bleed")),
+        fever: symptomsList.some((s: string) => s.includes("fever") || s.includes("temperature")),
+      };
+      const redFlagResult = checkRedFlags(triageInput);
+
+      // VD-3: Merge triage data rather than replacing wholesale (preserves photos, admittedAt, etc.).
+      // The row is locked, so this read-merge-write cannot lose a concurrent change (V25).
+      const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
+      const mergedPhotos = photos && photos.length > 0 ? photos : (currentTriage.photos || []);
+
+      const mergedTriage = {
+        ...currentTriage,
+        chiefComplaint,
+        painLevel,
+        duration,
+        symptoms,
+        photos: mergedPhotos,
+        redFlag: redFlagResult.isRedFlag ? redFlagResult : null,
+        submittedAt: new Date().toISOString(),
+      };
+
+      await tx.appointment.update({
+        where: { id: appointmentId },
+        data: { triageData: (await encryptField(mergedTriage)) as any },
+      });
+
+      return {
+        triageData: mergedTriage,
+        redFlag: redFlagResult.isRedFlag ? redFlagResult : null,
+        status: 200,
+      };
     });
-
-    if (!appointment) {
-      return { error: "Appointment not found", status: 404 };
-    }
-
-    if (appointment.patient.user.id !== userId) {
-      return { error: "Unauthorized", status: 403 };
-    }
-
-    // VD-2: Run red-flag symptom checking on submitted triage data
-    const symptomsList = (symptoms || []).map((s: string) => s.toLowerCase());
-    const triageInput: TriageData = {
-      chiefComplaint,
-      painLevel,
-      symptoms,
-      duration,
-      difficultyBreathing: symptomsList.some((s: string) => s.includes("breath") || s.includes("chok") || s.includes("airway")),
-      swelling: symptomsList.some((s: string) => s.includes("swell")),
-      bleeding: symptomsList.some((s: string) => s.includes("bleed")),
-      fever: symptomsList.some((s: string) => s.includes("fever") || s.includes("temperature")),
-    };
-    const redFlagResult = checkRedFlags(triageInput);
-
-    // VD-3: Merge triage data rather than replacing wholesale (preserves photos, admittedAt, etc.)
-    const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
-    const mergedPhotos = photos && photos.length > 0 ? photos : (currentTriage.photos || []);
-
-    const mergedTriage = {
-      ...currentTriage,
-      chiefComplaint,
-      painLevel,
-      duration,
-      symptoms,
-      photos: mergedPhotos,
-      redFlag: redFlagResult.isRedFlag ? redFlagResult : null,
-      submittedAt: new Date().toISOString(),
-    };
-
-    const encryptedTriage = await encryptField(mergedTriage);
-
-    await prisma.appointment.update({
-      where: { id: appointmentId },
-      data: {
-        triageData: encryptedTriage as any,
-      },
-    });
-
-    return {
-      triageData: mergedTriage,
-      redFlag: redFlagResult.isRedFlag ? redFlagResult : null,
-      status: 200,
-    };
   }).then((result) => {
     if (result.error) {
       return res.status(result.status).json({ error: result.error });
@@ -376,7 +376,7 @@ router.get("/status/:appointmentId", requireAuth, validateParams(videoAppointmen
 // Fresh short-lived links to the intraoral photos sent for one consultation.
 // The links saved at upload time expire after 15 minutes, so the clinician
 // asks for new ones when they open the consult room.
-router.get("/triage-photos/:appointmentId", requireAuth, async (req: AuthRequest, res: Response) => {
+router.get("/triage-photos/:appointmentId", requireAuth, validateParams(videoAppointmentParamsSchema), async (req: AuthRequest, res: Response) => {
   const appointmentId = String(req.params.appointmentId);
   const appointment = await prisma.appointment.findUnique({
     where: { id: appointmentId },
@@ -485,50 +485,48 @@ router.post("/admit-patient", requireAuth, validateBody(admitPatientSchema), asy
       return { error: "Clinician profile not found", status: 404 };
     }
 
-    const appointment = await prisma.appointment.findUnique({
-      where: { id: appointmentId },
+    return withLockedAppointment(appointmentId, async (tx, appointment) => {
+      if (!appointment) {
+        return { error: "Appointment not found", status: 404 };
+      }
+
+      if (appointment.clinicianId !== clinician.id) {
+        return { error: "Not assigned to this clinician", status: 403 };
+      }
+
+      if (appointment.channel !== "video" || (appointment.status !== "confirmed" && appointment.status !== "in_progress")) {
+        return { error: "Only an open video consultation can be joined", status: 409 };
+      }
+
+      const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
+      // Admitting twice keeps the first admission time.
+      const updatedTriage = {
+        ...currentTriage,
+        admittedAt: (currentTriage.admittedAt as string | undefined) ?? new Date().toISOString(),
+        admittedBy: (currentTriage.admittedBy as string | undefined) ?? clinician.id,
+      };
+
+      const updated = await tx.appointment.update({
+        where: { id: appointmentId },
+        data: {
+          status: "in_progress",
+          triageData: (await encryptField(updatedTriage)) as any,
+        },
+      });
+
+      // Tell a patient who has put the phone down. Only the first admit: a repeat
+      // (the clinician tapping again) must not buzz the phone twice. Neutral text.
+      if (appointment.status === "confirmed") {
+        void sendPatientNotification(
+          appointment.patientId,
+          "Your clinician is ready",
+          "Open the Pav Dental app to join your video consultation.",
+          { appointmentId }
+        );
+      }
+
+      return { appointment: { ...updated, triageData: updatedTriage }, status: 200 };
     });
-
-    if (!appointment) {
-      return { error: "Appointment not found", status: 404 };
-    }
-
-    if (appointment.clinicianId !== clinician.id) {
-      return { error: "Not assigned to this clinician", status: 403 };
-    }
-
-    if (appointment.channel !== "video" || (appointment.status !== "confirmed" && appointment.status !== "in_progress")) {
-      return { error: "Only an open video consultation can be joined", status: 409 };
-    }
-
-    const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
-    const updatedTriage = {
-      ...currentTriage,
-      admittedAt: new Date().toISOString(),
-      admittedBy: clinician.id,
-    };
-    const encryptedTriage = await encryptField(updatedTriage);
-
-    const updated = await prisma.appointment.update({
-      where: { id: appointmentId },
-      data: {
-        status: "in_progress",
-        triageData: encryptedTriage as any,
-      },
-    });
-
-    // Tell a patient who has put the phone down. Only the first admit: a repeat
-    // (the clinician tapping again) must not buzz the phone twice. Neutral text.
-    if (appointment.status === "confirmed") {
-      void sendPatientNotification(
-        appointment.patientId,
-        "Your clinician is ready",
-        "Open the Pav Dental app to join your video consultation.",
-        { appointmentId }
-      );
-    }
-
-    return { appointment: { ...updated, triageData: updatedTriage }, status: 200 };
   }).then((result) => {
     if (result.error) {
       return res.status(result.status).json({ error: result.error });
@@ -553,46 +551,86 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
     return res.status(404).json({ error: "Clinician profile not found" });
   }
 
-  const appointment = await prisma.appointment.findUnique({
-    where: { id: appointmentId },
+  type EndResult =
+    | { kind: "error"; status: number; error: string }
+    | { kind: "done"; appointmentId: string; status: string; completedAt: string; summary: Record<string, unknown>; first: boolean };
+
+  const outcome: EndResult = await withLockedAppointment(appointmentId, async (tx, appointment): Promise<EndResult> => {
+    if (!appointment) return { kind: "error", status: 404, error: "Appointment not found" };
+    if (appointment.clinicianId !== clinician.id) {
+      return { kind: "error", status: 403, error: "Not assigned to this clinician" };
+    }
+    if (appointment.channel !== "video") {
+      return { kind: "error", status: 409, error: "Only a video consultation can be completed" };
+    }
+
+    const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
+
+    // Safe to send twice: a second call returns the summary already saved (V26).
+    if (appointment.status === "completed" && currentTriage.consultationSummary) {
+      const saved = currentTriage.consultationSummary as Record<string, unknown>;
+      return {
+        kind: "done",
+        appointmentId: appointment.id,
+        status: appointment.status,
+        completedAt: String(saved.completedAt ?? ""),
+        summary: saved,
+        first: false,
+      };
+    }
+    // A consult nobody was let into did not happen, so it cannot be completed (V26).
+    if (appointment.status !== "in_progress") {
+      return { kind: "error", status: 409, error: "The patient hasn't been let in, so this consultation can't be completed" };
+    }
+
+    const completedAt = new Date().toISOString();
+    const consultationSummary = {
+      completedAt,
+      completedBy: clinician.fullName,
+      notes: notes || null,
+      diagnosis: diagnosis || null,
+      treatmentPlan: treatmentPlan || null,
+      followUpRecommended: followUpRecommended || "none",
+    };
+
+    const updated = await tx.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        status: "completed",
+        triageData: (await encryptField({ ...currentTriage, consultationSummary })) as any,
+      },
+    });
+    return {
+      kind: "done",
+      appointmentId: updated.id,
+      status: updated.status,
+      completedAt,
+      summary: consultationSummary,
+      first: true,
+    };
   });
 
-  if (!appointment) {
-    return res.status(404).json({ error: "Appointment not found" });
+  if (outcome.kind === "error") {
+    return res.status(outcome.status).json({ error: outcome.error });
   }
-
-  if (appointment.clinicianId !== clinician.id) {
-    return res.status(403).json({ error: "Not assigned to this clinician" });
+  if (!outcome.first) {
+    return res.json({
+      appointmentId: outcome.appointmentId,
+      status: outcome.status,
+      completedAt: outcome.completedAt,
+      summary: outcome.summary,
+    });
   }
+  const completedAt = outcome.completedAt;
+  const consultationSummary = outcome.summary;
+  const updated = { id: outcome.appointmentId, status: outcome.status };
 
-  if (appointment.channel !== "video" || (appointment.status !== "in_progress" && appointment.status !== "confirmed")) {
-    return res.status(409).json({ error: "Only an in-progress or confirmed video consultation can be completed" });
-  }
-
-  const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
-  const completedAt = new Date().toISOString();
-
-  const consultationSummary = {
-    completedAt,
-    completedBy: clinician.fullName,
-    notes: notes || null,
-    diagnosis: diagnosis || null,
-    treatmentPlan: treatmentPlan || null,
-    followUpRecommended: followUpRecommended || "none",
-  };
-
-  const updatedTriage = {
-    ...currentTriage,
-    consultationSummary,
-  };
-
-  const updated = await prisma.appointment.update({
-    where: { id: appointmentId },
-    data: {
-      status: "completed",
-      triageData: (await encryptField(updatedTriage)) as any,
-    },
-  });
+  // Close the Daily room so the other person is not left in an open call (V27).
+  await dailyApiClient
+    .delete(`/rooms/${roomNameFor(appointmentId)}`, { headers: { Authorization: `Bearer ${DAILY_API_KEY}` } })
+    .catch((err: { statusCode?: number }) => {
+      if (err?.statusCode !== 404) logFailure("close daily room")(err);
+    });
 
   // Cancel any lingering appointment reminders since consult is completed
   await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));

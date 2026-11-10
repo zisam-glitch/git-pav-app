@@ -4,7 +4,7 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
-import { threadMessages } from "../features/messages/thread";
+import { threadMessages, unreadThreadCount } from "../features/messages/thread";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -37,5 +37,9 @@ assert(/setToast\(\{[^}]*tone:\s*"error"/.test(screen) && !/setToast\(\{[^}]*ton
 assert(screen.includes("markRead.mutate"), "Opening a thread marks it read");
 assert(tab.includes("/(patient)/message-thread"), "Tapping a thread opens the conversation");
 assert(!tab.includes("Write a reply"), "The tab no longer has its own one-line reply box");
+
+assert(unreadThreadCount([{ isRead: false }, { isRead: true }, { isRead: false }]) === 2, "The unread count counts conversations with something new");
+assert(unreadThreadCount(undefined) === 0 && unreadThreadCount([{}]) === 0, "No data means no badge");
+assert(read("app/(patient)/(tabs)/_layout.tsx").includes("tabBarBadge"), "The Messages tab shows the unread count");
 
 console.log("\n🎉 ALL MESSAGE THREAD TESTS PASSED!\n");

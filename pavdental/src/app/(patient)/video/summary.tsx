@@ -7,11 +7,19 @@ import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 
+const FOLLOW_UP_WORDS: Record<string, string> = {
+  clinic: "A visit at the clinic.",
+  van: "A visit from the van, at your home.",
+  video: "Another video consultation.",
+};
+
 export default function VideoSummaryScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
   const [summaryData, setSummaryData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     async function fetchSummary() {
@@ -19,20 +27,26 @@ export default function VideoSummaryScreen() {
         setLoading(false);
         return;
       }
+      setLoading(true);
+      setLoadFailed(false);
       try {
         const res = await authFetch(`/api/video/summary/${appointmentId}`);
         if (res.ok) {
           const data = await res.json();
           setSummaryData(data);
+        } else {
+          // Say so, instead of leaving a summary that looks empty (V33).
+          setLoadFailed(true);
         }
       } catch (err) {
         reportCaughtError(err, "failed to fetch consult summary");
+        setLoadFailed(true);
       } finally {
         setLoading(false);
       }
     }
     fetchSummary();
-  }, [appointmentId]);
+  }, [appointmentId, attempt]);
 
   const summary = summaryData?.summary;
   const hasNotesOrDiagnosis = !!(summary?.diagnosis || summary?.notes || summary?.treatmentPlan);
@@ -63,6 +77,13 @@ export default function VideoSummaryScreen() {
             </ThemedText>
             {loading ? (
               <ActivityIndicator color={colors.ink} />
+            ) : loadFailed ? (
+              <View style={styles.summaryDetails}>
+                <ThemedText variant="body" style={styles.findingText}>
+                  We couldn't load your summary. Check your connection and try again.
+                </ThemedText>
+                <Button title="Try again" variant="secondary" size="md" onPress={() => setAttempt((n) => n + 1)} />
+              </View>
             ) : hasNotesOrDiagnosis ? (
               <View style={styles.summaryDetails}>
                 {summary?.diagnosis && (
@@ -95,6 +116,16 @@ export default function VideoSummaryScreen() {
                     </ThemedText>
                   </View>
                 )}
+                {summary?.followUpRecommended && summary.followUpRecommended !== "none" ? (
+                  <View style={styles.summaryBlock}>
+                    <ThemedText variant="subhead" style={styles.blockTitle}>
+                      Follow-up advised
+                    </ThemedText>
+                    <ThemedText variant="body" style={styles.findingText}>
+                      {FOLLOW_UP_WORDS[String(summary.followUpRecommended)] ?? "Your clinician advised a follow-up."}
+                    </ThemedText>
+                  </View>
+                ) : null}
               </View>
             ) : (
               <ThemedText variant="body" style={styles.findingText}>

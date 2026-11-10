@@ -26,6 +26,8 @@ assert(routeForNotification({ requestId: "r1", appointmentId: "a1" })?.pathname 
 const msg = routeForNotification({ type: "message", audience: "patient", threadId: "t1" });
 assert(msg?.pathname === "/(patient)/message-thread" && msg.params.id === "t1", "A new message opens that conversation");
 assert(routeForNotification({ type: "message", audience: "clinician", threadId: "t1" })?.pathname === "/(clinician)/inbox", "A message for the dentist opens the inbox");
+const wr = routeForNotification({ appointmentId: "a1", screen: "waiting_room" });
+assert(wr?.pathname === "/(patient)/video/device-check" && wr.params.appointmentId === "a1", "The 10-minute video reminder opens the waiting room");
 assert(routeForNotification({}) === null && routeForNotification(null) === null && routeForNotification("x") === null, "Anything else just opens the app");
 assert(routeForNotification({ appointmentId: 5 }) === null, "A malformed id is ignored");
 

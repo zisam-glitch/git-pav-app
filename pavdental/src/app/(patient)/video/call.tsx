@@ -6,11 +6,11 @@ import * as Haptics from "expo-haptics";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
-import { dailyJoinUrl, openVideoCall } from "@/features/video/open-call";
+import { NativeVideoCall, CallEndReason } from "@/features/video/native-call";
 
-// The call itself runs in Daily's private room, shown in an in-app browser
-// window over this screen: the app asks the server for this appointment's room
-// and a meeting token, and the token is what lets the patient in (CS-07).
+// The call runs natively in this screen (Daily's private room): the app asks
+// the server for this appointment's room and a meeting token, and the token is
+// what lets the patient in (CS-07).
 type Room = { url: string; token: string };
 
 export default function VideoCallScreen() {
@@ -20,6 +20,7 @@ export default function VideoCallScreen() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [opened, setOpened] = useState(false);
+  const [inCall, setInCall] = useState(false);
 
   const loadRoom = useCallback(async () => {
     if (!appointmentId) {
@@ -52,16 +53,11 @@ export default function VideoCallScreen() {
     loadRoom();
   }, [loadRoom]);
 
-  const joinCall = async () => {
+  const joinCall = () => {
     if (!room) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    try {
-      setOpened(true);
-      // Resolves when the patient closes the call window and is back here.
-      await openVideoCall(dailyJoinUrl(room.url, room.token));
-    } catch {
-      setError("Your phone couldn't open the video call. Please try again.");
-    }
+    setOpened(true);
+    setInCall(true);
   };
 
   const finish = () => {
@@ -70,6 +66,20 @@ export default function VideoCallScreen() {
       params: { appointmentId: appointmentId || "" },
     });
   };
+
+  const onLeft = (reason: CallEndReason) => {
+    setInCall(false);
+    // The dentist ended the consultation: show the summary straight away.
+    if (reason === "ended") finish();
+  };
+
+  if (inCall && room) {
+    return (
+      <SafeAreaView style={styles.callSafe} edges={["top", "bottom"]}>
+        <NativeVideoCall url={room.url} token={room.token} otherLabel="your dentist" onLeft={onLeft} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -80,7 +90,7 @@ export default function VideoCallScreen() {
           </View>
 
           <ThemedText variant="largeTitle" style={styles.title}>
-            {loading ? "Opening your room" : error ? "Can't join yet" : "Your clinician is ready"}
+            {loading ? "Opening your room" : error ? "Can't join yet" : opened ? "You left the call" : "Your clinician is ready"}
           </ThemedText>
 
           {error ? (
@@ -90,7 +100,9 @@ export default function VideoCallScreen() {
           ) : (
             !loading && (
               <ThemedText variant="subhead" style={styles.subtitle}>
-                The call opens on top of this screen. Allow camera and microphone access when asked, and tap Done when the call ends.
+                {opened
+                  ? "Rejoin if you left by mistake, or tell us you've finished."
+                  : "Allow camera and microphone access when your phone asks. Leave the call with the red button when you're done."}
               </ThemedText>
             )
           )}
@@ -130,6 +142,10 @@ export default function VideoCallScreen() {
 const styles = StyleSheet.create({
   actions: {
     gap: spacing.xs,
+  },
+  callSafe: {
+    backgroundColor: "#0B0F0A",
+    flex: 1,
   },
   center: {
     alignItems: "center",

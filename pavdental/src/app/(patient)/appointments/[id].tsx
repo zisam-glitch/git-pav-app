@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Linking } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -14,11 +14,21 @@ import {
   EmptyState,
   IconButton,
 } from "@/components";
+import { PRACTICE_CONFIG } from "@/config/practice";
 import { appointmentClinician, appointmentLocation } from "@/features/booking/appointment-labels";
 import { colors, spacing, radius } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
+import {
+  balanceLabel,
+  canCheckIn,
+  clinicAddressLine,
+  directionsUrl,
+  priceLabel,
+  visitFor,
+} from "@/features/booking/appointment-detail";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
+import { CANCELLATION_SHEET_MESSAGE } from "@/features/booking/cancellation-policy";
 import { TOO_LATE_MESSAGE, rescheduleState } from "@/features/booking/reschedule";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 import { WAITING_ROOM_OPENS_MINUTES, waitingRoomOpen } from "@/features/video/waiting-room-window";
@@ -34,17 +44,20 @@ interface Booking {
   startTimeUtc: string;
   endTimeUtc?: string;
   depositPaidPence?: number;
+  totalPricePence?: number;
+  dependant?: { firstName?: string; lastName?: string } | null;
   service?: { name?: string };
   clinician?: { fullName?: string };
-  clinic?: { name?: string; addressLine1?: string };
+  clinic?: { name?: string; address?: string; postcode?: string };
   van?: { name?: string };
+  accessDetails?: { checkedIn?: boolean } | null;
 }
 
 export default function AppointmentDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: apiAppointments, isLoading } = useMyAppointments();
+  const { data: apiAppointments, isLoading, isError, refetch } = useMyAppointments();
   const cancelMutation = useCancelAppointmentMutation();
 
   const [confirmCancel, setConfirmCancel] = useState(false);
@@ -59,6 +72,21 @@ export default function AppointmentDetailScreen() {
         <View style={styles.content}>
           <View style={{ padding: spacing.md, minHeight: 180, backgroundColor: colors.inkSubtle, borderRadius: radius.lg }} />
         </View>
+      </View>
+    );
+  }
+
+  if (isError && !booking) {
+    return (
+      <View style={styles.container}>
+        <EmptyState
+          illustration="notFound"
+          heading="We couldn't load this appointment"
+          body="Check your connection and try again. Your booking has not changed."
+          actionLabel="Try again"
+          onAction={() => refetch()}
+          icon="calendar"
+        />
       </View>
     );
   }
@@ -86,7 +114,6 @@ export default function AppointmentDetailScreen() {
 
   const isPast = start.getTime() < Date.now();
   const isCancelled = booking.status === "cancelled";
-  const within24h = !isPast && start.getTime() - Date.now() < 24 * 60 * 60 * 1000;
   // A booked video consult is joined from here until its slot ends: answer the
   // triage questions, then wait for the clinician to let the patient in.
   const end = new Date(booking.endTimeUtc ?? booking.startTimeUtc);
@@ -152,9 +179,38 @@ export default function AppointmentDetailScreen() {
           <DetailRow label="Date" value={dateLine} />
           <DetailRow label="Time" value={timeLine} />
           <DetailRow label="Clinician" value={clinicianName} />
-          <DetailRow label="Location" value={booking.clinic?.addressLine1 ? `${locationName}, ${booking.clinic.addressLine1}` : locationName} />
+          <DetailRow label="For" value={visitFor(booking)} />
+          <DetailRow label="Location" value={clinicAddressLine(booking.clinic) ?? locationName} />
+          {priceLabel(booking.totalPricePence) ? (
+            <DetailRow label="Price" value={priceLabel(booking.totalPricePence) as string} />
+          ) : null}
+          {booking.accessDetails?.checkedIn ? <DetailRow label="Check-in" value="You're checked in" /> : null}
           <DetailRow label="Deposit paid" value={depositPaidLabel(booking.depositPaidPence)} />
+          {balanceLabel(booking) ? (
+            <DetailRow label="Balance to pay at your visit" value={balanceLabel(booking) as string} />
+          ) : null}
         </Card>
+
+        {!isCancelled && !isPast ? (
+          <View style={styles.contactActions}>
+            {directionsUrl(booking.clinic) ? (
+              <Button
+                title="Get directions"
+                variant="secondary"
+                size="md"
+                style={styles.footerBtn}
+                onPress={() => Linking.openURL(directionsUrl(booking.clinic) as string).catch(() => {})}
+              />
+            ) : null}
+            <Button
+              title="Call the practice"
+              variant="secondary"
+              size="md"
+              style={styles.footerBtn}
+              onPress={() => Linking.openURL(PRACTICE_CONFIG.telUrl).catch(() => {})}
+            />
+          </View>
+        ) : null}
 
         {canJoinVideo ? (
           <Card elevation="flat" style={styles.videoCard}>
@@ -189,10 +245,10 @@ export default function AppointmentDetailScreen() {
         ) : null}
 
         {/* Pre-visit check-in (Mobbin checklist entry) */}
-        {within24h && booking.channel !== "video" ? (
+        {canCheckIn(booking) ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Start digital check-in"
+            accessibilityLabel="Check in for your visit"
             onPress={() =>
               router.push({ pathname: "/(patient)/check-in" as never, params: { appointmentId: booking.id } })
             }
@@ -204,10 +260,10 @@ export default function AppointmentDetailScreen() {
               </View>
               <View style={styles.checkInInfo}>
                 <ThemedText variant="headline" style={styles.checkInTitle}>
-                  You're nearly there
+                  Check in for your visit
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.muted}>
-                  Check in before your visit — forms, consent and balance, 5 minutes.
+                  Let the practice know you're on your way. It takes one tap.
                 </ThemedText>
               </View>
               <AppIcon name="chevronRight" size={16} color={colors.alwaysWhite} />
@@ -268,7 +324,7 @@ export default function AppointmentDetailScreen() {
       {confirmCancel ? (
         <ConfirmSheet
           title="Cancel this appointment?"
-          message="Your slot will be released immediately. Cancelling 48 hours or more ahead refunds your deposit in full, 24 to 48 hours ahead refunds half, and under 24 hours the deposit is kept."
+          message={CANCELLATION_SHEET_MESSAGE}
           confirmLabel="Cancel appointment"
           cancelLabel="Keep booking"
           variant="destructive"
@@ -281,6 +337,10 @@ export default function AppointmentDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  contactActions: {
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
   videoActions: {
     gap: spacing.xs,
     marginTop: spacing.sm,

@@ -345,6 +345,9 @@ model Appointment {
   holdExpiresAt        DateTime?          @map("hold_expires_at")
   accessDetails        Json?              @map("access_details")
   triageData           Json?              @map("triage_data")
+  /// Video: when the patient first reported in to the waiting room, and when they last did.
+  patientWaitingSince  DateTime?          @map("patient_waiting_since")
+  patientLastSeenAt    DateTime?          @map("patient_last_seen_at")
   intraoralPhotos      String[]           @map("intraoral_photos")
   totalPricePence      Int                @map("total_price_pence")
   depositPaidPence     Int                @default(0) @map("deposit_paid_pence")
@@ -368,6 +371,7 @@ model Appointment {
   referralQualified    Referral?
   appointmentNote      AppointmentNote?
   toothHistory         ToothHistory[]
+  messageThread        MessageThread?     @relation("AppointmentThread")
 
   @@index([patientId])
   @@index([clinicianId])
@@ -817,9 +821,12 @@ model MessageThread {
   hasAttachment       Boolean           @default(false) @map("has_attachment")
   recipientType       String            @default("practice") @map("recipient_type") @db.VarChar(50)
   assignedClinicianId String?           @map("assigned_clinician_id") @db.Uuid
+  /// The video appointment this conversation is about, if any: one per appointment.
+  appointmentId       String?           @unique @map("appointment_id") @db.Uuid
   createdAt           DateTime          @default(now()) @map("created_at")
   updatedAt           DateTime          @updatedAt @map("updated_at")
   messages            Message[]
+  appointment         Appointment?      @relation("AppointmentThread", fields: [appointmentId], references: [id], onDelete: SetNull)
   patientUser         User              @relation(fields: [patientUserId], references: [id], onDelete: Restrict)
   assignedClinician   ClinicianProfile? @relation("ClinicianAssignedThreads", fields: [assignedClinicianId], references: [id], onDelete: SetNull)
 

@@ -12,11 +12,19 @@ import { objectStorage } from "../lib/object-storage";
 import { checkRedFlags, TriageData } from "../lib/triage-escalation";
 import { encryptField, decryptField } from "../lib/encryption";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
+import { postToAppointmentThread, consultSummaryText } from "../lib/appointment-thread";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
 import { isPlaceholderCredential } from "../config/placeholder";
 import { logFailure } from "../lib/best-effort";
-import { withLockedAppointment, sniffImageMime, MAX_TRIAGE_PHOTOS } from "../lib/video-triage";
+import {
+  withLockedAppointment,
+  sniffImageMime,
+  MAX_TRIAGE_PHOTOS,
+  patientIsPresent,
+  waitingRoomIsOpen,
+  WAITING_ROOM_OPENS_MINUTES,
+} from "../lib/video-triage";
 import { sendPatientNotification } from "../lib/patient-push";
 
 const router = Router();
@@ -364,12 +372,81 @@ router.get("/status/:appointmentId", requireAuth, validateParams(videoAppointmen
     admitted: isAdmitted,
     admittedAt: isAdmitted ? triageData.admittedAt || null : null,
     startTimeUtc: appointment.startTimeUtc.toISOString(),
+    patientWaiting: patientIsPresent(appointment.patientLastSeenAt),
     // No invented title when nobody is assigned yet (B13).
     clinicianName: appointment.clinician?.fullName ?? null,
     roomUrl: accessDetails.roomUrl || null,
     roomName: accessDetails.roomName || null,
     consultationSummary: triageData.consultationSummary || null,
   });
+});
+
+// ─── POST /api/video/waiting/:appointmentId ──────────────────────────────────
+// The patient's app reports in while the waiting room is open, and gets back
+// what the status check returns. This is how the dentist learns the patient is
+// there (V10). It only works from 10 minutes before the start (V15).
+router.post("/waiting/:appointmentId", requireAuth, validateParams(videoAppointmentParamsSchema), async (req: AuthRequest, res: Response) => {
+  const appointmentId = String(req.params.appointmentId);
+  const appointment = await prisma.appointment.findUnique({
+    where: { id: appointmentId },
+    include: {
+      clinician: { select: { fullName: true } },
+      patient: { select: { userId: true } },
+    },
+  });
+  // Same answer for "no such appointment" and "not yours".
+  if (!appointment || appointment.patient.userId !== req.user!.sub) {
+    return res.status(404).json({ error: "Consultation appointment not found" });
+  }
+  if (appointment.channel !== "video") {
+    return res.status(409).json({ error: "This appointment isn't a video consultation" });
+  }
+  if (appointment.status !== "confirmed" && appointment.status !== "in_progress") {
+    return res.status(409).json({ error: "This consultation isn't open", status: appointment.status });
+  }
+  if (!waitingRoomIsOpen(appointment.startTimeUtc, appointment.endTimeUtc)) {
+    const opensAt = new Date(appointment.startTimeUtc.getTime() - WAITING_ROOM_OPENS_MINUTES * 60_000);
+    const early = Date.now() < opensAt.getTime();
+    return res.status(409).json({
+      error: early ? "The waiting room isn't open yet" : "This consultation's time has passed",
+      code: early ? "not_open_yet" : "time_passed",
+      opensAt: opensAt.toISOString(),
+    });
+  }
+
+  const now = new Date();
+  // A gap longer than the presence window means they left and came back.
+  const stillHere = patientIsPresent(appointment.patientLastSeenAt, now.getTime());
+  const updated = await prisma.appointment.update({
+    where: { id: appointmentId },
+    data: {
+      patientLastSeenAt: now,
+      ...(stillHere && appointment.patientWaitingSince ? {} : { patientWaitingSince: now }),
+    },
+  });
+
+  return res.json({
+    appointmentId,
+    status: updated.status,
+    admitted: updated.status === "in_progress",
+    startTimeUtc: updated.startTimeUtc.toISOString(),
+    clinicianName: appointment.clinician?.fullName ?? null,
+    patientWaiting: true,
+  });
+});
+
+// ─── POST /api/video/waiting/:appointmentId/leave ────────────────────────────
+// The patient leaves the waiting room: the dentist stops seeing them as waiting.
+router.post("/waiting/:appointmentId/leave", requireAuth, validateParams(videoAppointmentParamsSchema), async (req: AuthRequest, res: Response) => {
+  const appointmentId = String(req.params.appointmentId);
+  const result = await prisma.appointment.updateMany({
+    where: { id: appointmentId, patient: { userId: req.user!.sub } },
+    data: { patientWaitingSince: null, patientLastSeenAt: null },
+  });
+  if (result.count === 0) {
+    return res.status(404).json({ error: "Consultation appointment not found" });
+  }
+  return res.json({ ok: true });
 });
 
 // ─── GET /api/video/triage-photos/:appointmentId ─────────────────────────────
@@ -454,6 +531,9 @@ router.get("/clinician-queue", requireAuth, async (req: AuthRequest, res: Respon
     queue.map(async (item) => ({
       ...item,
       triageData: await decryptField(item.triageData),
+      // Is the patient in the waiting room right now, and since when (V10).
+      patientWaiting: patientIsPresent(item.patientLastSeenAt),
+      patientWaitingSince: patientIsPresent(item.patientLastSeenAt) ? item.patientWaitingSince : null,
     }))
   );
 
@@ -631,6 +711,15 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
     .catch((err: { statusCode?: number }) => {
       if (err?.statusCode !== 404) logFailure("close daily room")(err);
     });
+
+  // The summary also lands in the conversation for this appointment, so the
+  // patient can read it there and reply (V48). Best effort: the consult is
+  // already completed.
+  await postToAppointmentThread(
+    appointmentId,
+    { role: "clinician", userId: req.user!.sub, name: clinician.fullName.startsWith("Dr.") ? clinician.fullName : `Dr. ${clinician.fullName}` },
+    consultSummaryText(consultationSummary as { diagnosis?: string | null; notes?: string | null; treatmentPlan?: string | null; followUpRecommended?: string | null })
+  ).catch(logFailure("deliver consult summary to the conversation"));
 
   // Cancel any lingering appointment reminders since consult is completed
   await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));

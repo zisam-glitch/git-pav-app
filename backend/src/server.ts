@@ -31,6 +31,7 @@ import adminErasureRoutes from "./routes/admin-erasure";
 import consentRoutes from "./routes/consents";
 import triageRoutes from "./routes/triage";
 import messageRoutes from "./routes/messages";
+import appointmentMessageRoutes from "./routes/appointment-messages";
 import financingRoutes from "./routes/financing";
 import rewardRoutes from "./routes/rewards";
 import { adminReferralRoutes, patientReferralRoutes } from "./routes/referrals";
@@ -221,6 +222,7 @@ app.use("/api/admin", requireAuth, auditMiddleware, adminRoutes, adminScheduleRo
 app.use("/api/consents", requireAuth, auditMiddleware, consentRoutes);
 app.use("/api/triage", requireAuth, auditMiddleware, triageRoutes);
 app.use("/api/messages", requireAuth, auditMiddleware, messageRoutes);
+app.use("/api/appointment-messages", requireAuth, auditMiddleware, appointmentMessageRoutes);
 app.use("/api/financing", requireAuth, auditMiddleware, financingRoutes);
 app.use("/api/rewards", requireAuth, auditMiddleware, rewardRoutes);
 app.use("/api/referrals", requireAuth, auditMiddleware, patientReferralRoutes);

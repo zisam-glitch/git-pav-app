@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
 import { NativeVideoCall } from "@/features/video/native-call";
+import { patientPresenceLine } from "@/features/video/waiting-state";
 
 export default function ClinicianConsultRoomScreen() {
   const router = useRouter();
@@ -137,6 +138,22 @@ export default function ClinicianConsultRoomScreen() {
       setSendingMessage(false);
     }
   };
+
+  // The server knows whether the patient is waiting and whether they were let in,
+  // so this reads it, rather than remembering admission on the phone only (V10).
+  const { data: presence } = useQuery({
+    queryKey: ["video-presence", appointmentId],
+    enabled: !!appointmentId,
+    refetchInterval: 5000,
+    queryFn: async () => {
+      const res = await authFetch(`/api/video/status/${appointmentId}`);
+      if (!res.ok) return null;
+      return (await res.json()) as { admitted?: boolean; patientWaiting?: boolean };
+    },
+  });
+  useEffect(() => {
+    if (presence?.admitted) setAdmitted(true);
+  }, [presence?.admitted]);
 
   const admitPatient = async () => {
     if (!appointmentId) return;
@@ -269,7 +286,7 @@ export default function ClinicianConsultRoomScreen() {
                 {patientName}
               </ThemedText>
               <ThemedText variant="caption" style={styles.roomTag}>
-                {admitted ? "Patient let in. They can join the call now." : "The patient is kept in the waiting room until you let them in."}
+                {patientPresenceLine({ admitted, waiting: !!presence?.patientWaiting })}
               </ThemedText>
               {roomError && (
                 <ThemedText variant="caption" style={styles.roomError} accessibilityRole="alert">
@@ -288,7 +305,7 @@ export default function ClinicianConsultRoomScreen() {
               <Button
                 title={admitted ? "Patient let in" : "Let patient in"}
                 variant="secondary"
-                disabled={admitted || !room}
+                disabled={admitted}
                 loading={admitting}
                 onPress={admitPatient}
               />

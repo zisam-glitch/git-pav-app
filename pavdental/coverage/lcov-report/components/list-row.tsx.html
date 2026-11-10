@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>7/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>12/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.28% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -255,7 +255,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -274,26 +274,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -375,13 +375,13 @@ interface ListRowProps {
  * Pass left/right slots for icons, badges, or interactive controls.
  * Do not add more content props — compose with slots instead.
  */
-export function <span class="fstat-no" title="function not covered" >ListRow(</span>{
+export function ListRow({
   title,
   subtitle,
   left,
   right,
-  chevron = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
-  separator = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
+  chevron = false,
+  separator = false,
   inset = <span class="branch-0 cbranch-no" title="branch not covered" >"card",</span>
   onPress,
   style,
@@ -390,38 +390,38 @@ export function <span class="fstat-no" title="function not covered" >ListRow(</s
   accessibilityHint,
 }: ListRowProps) {
   const inner = (
-<span class="cstat-no" title="statement not covered" >    &lt;View style={[styles.row, inset === "flush" &amp;&amp; styles.rowFlush, style]}&gt;</span>
-      {left ? &lt;View style={styles.leftSlot}&gt;{left}&lt;/View&gt; : null}
+    &lt;View style={[styles.row, inset === "flush" &amp;&amp; styles.rowFlush, style]}&gt;
+      {left ? &lt;View style={styles.leftSlot}&gt;{left}&lt;/View&gt; : <span class="branch-1 cbranch-no" title="branch not covered" >null}</span>
 &nbsp;
       &lt;View style={styles.content}&gt;
         &lt;ThemedText variant="headline" style={styles.titleText}&gt;{title}&lt;/ThemedText&gt;
         {subtitle ? (
           &lt;ThemedText variant="footnote" style={styles.subtitleText}&gt;{subtitle}&lt;/ThemedText&gt;
-        ) : null}
+        ) : <span class="branch-1 cbranch-no" title="branch not covered" >null}</span>
       &lt;/View&gt;
 &nbsp;
-      {right ? &lt;View style={styles.rightSlot}&gt;{right}&lt;/View&gt; : null}
+      {right ? &lt;View style={styles.rightSlot}&gt;{right}&lt;/View&gt; : <span class="branch-1 cbranch-no" title="branch not covered" >null}</span>
       {chevron ? (
-        &lt;AppIcon name="chevronRight" size={20} color={colors.label} style={styles.chevron} /&gt;
+<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;AppIcon name="chevronRight" size={20} color={colors.label} style={styles.chevron} /&gt;</span>
       ) : null}
 &nbsp;
-      {separator ? &lt;View style={styles.separator} /&gt; : null}
+      {separator ? <span class="branch-0 cbranch-no" title="branch not covered" >&lt;View style={styles.separator} /&gt; </span>: null}
     &lt;/View&gt;
   );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (!onPress) <span class="cstat-no" title="statement not covered" >return inner;</span></span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!onPress) <span class="cstat-no" title="statement not covered" >return inner;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;Pressable
       accessibilityRole="button"
       testID={testID}
-      accessibilityLabel={accessibilityLabel ?? title}
+      accessibilityLabel={accessibilityLabel ?? <span class="branch-1 cbranch-no" title="branch not covered" >title}</span>
       accessibilityHint={accessibilityHint}
-      onPress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
-<span class="cstat-no" title="statement not covered" >        safeHaptics.impactAsync("light").catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; {});</span>
-<span class="cstat-no" title="statement not covered" >        onPress();</span>
+      onPress={() =&gt; {
+        safeHaptics.impactAsync("light").catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; {});
+        onPress();
       }}
-      style={<span class="fstat-no" title="function not covered" >({</span> pressed }) =&gt; (<span class="cstat-no" title="statement not covered" >{ opacity: pressed ? 0.7 : 1 })</span>}
+      style={({ pressed }) =&gt; ({ opacity: pressed ? <span class="branch-0 cbranch-no" title="branch not covered" >0.7 </span>: 1 })}
     &gt;
       {inner}
     &lt;/Pressable&gt;
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-10T03:22:47.336Z
+                at 2026-11-10T03:40:39.476Z
             </div>
         <script src="../prettify.js"></script>
         <script>

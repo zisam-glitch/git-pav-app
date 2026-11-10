@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
-import { View, StyleSheet, ScrollView, Pressable, Modal, RefreshControl } from "react-native";
+import { View, StyleSheet, FlatList, Pressable, Modal, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { safeHaptics } from "@/lib/haptics";
 import {
@@ -105,7 +105,14 @@ export default function MessagesScreen() {
   return (
     <View style={styles.container}>
       {toast ? <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} /> : null}
-      <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
+      <FlatList
+        data={!isLoading && !(isError && rawThreads === undefined) ? filtered : []}
+        keyExtractor={(msg) => msg.id}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
+        ListHeaderComponent={
+          <View style={styles.headerStack}>
         <View style={styles.headerRow}>
           <View style={styles.headerTitleGroup}>
             <ThemedText variant="overline">Secure inbox</ThemedText>
@@ -161,81 +168,80 @@ export default function MessagesScreen() {
           onChangeText={setQuery}
           accessibilityLabel="Search messages"
         />
-
-        {isLoading ? (
-          <View style={styles.stack}>
-            <Skeleton height={84} />
-            <Skeleton height={84} />
           </View>
-        ) : isError && rawThreads === undefined ? (
-          <ErrorState
-            message="We couldn't load your messages. Check your connection and try again."
-            onRetry={() => refetch()}
-          />
-        ) : filtered.length === 0 ? (
-          <EmptyState
-            illustration="messages"
-            heading={query ? "No messages found" : "Your inbox is clear"}
-            body={query ? `Nothing matches “${query}”.` : "Messages and updates from your dental care team will appear here."}
-            actionLabel={query ? undefined : "Send a message"}
-            onAction={query ? undefined : () => setIsComposing(true)}
-            icon="message"
-          />
-        ) : (
-          <View style={styles.stack}>
-            {filtered.map((msg) => {
-              const unread = !msg.isRead;
-              return (
-                <Pressable
-                  key={msg.id}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Message from ${msg.from}: ${msg.subject}`}
-                  onPress={() => openMessage(msg)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
-                >
-                  <Card style={[styles.threadCard, unread && styles.threadCardUnread]}>
-                    <View style={styles.avatarTile}>
-                      <AppIcon name="message" size={18} color={unread ? colors.onInk : colors.ink} />
-                    </View>
-                    <View style={styles.threadInfo}>
-                      <View style={styles.threadTop}>
-                        <ThemedText variant="subhead" style={styles.threadFrom} numberOfLines={1}>
-                          {msg.from}
-                        </ThemedText>
-                        <ThemedText variant="caption" style={styles.threadTime}>
-                          {new Date(msg.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
-                            day: "numeric",
-                            month: "short",
-                          })}
-                        </ThemedText>
-                      </View>
-                      <ThemedText
-                        variant="body"
-                        style={unread ? styles.threadSubjectUnread : styles.threadSubject}
-                        numberOfLines={1}
-                      >
-                        {msg.subject}
-                      </ThemedText>
-                      <ThemedText variant="caption" style={styles.threadPreview} numberOfLines={2}>
-                        {msg.preview}
-                      </ThemedText>
-                      {msg.hasAttachment ? (
-                        <View style={styles.attachRow}>
-                          <AppIcon name="fileText" size={12} color={colors.secondaryLabel} />
-                          <ThemedText variant="caption" style={styles.attachText}>
-                            Attachment
-                          </ThemedText>
-                        </View>
-                      ) : null}
-                    </View>
-                    {unread ? <View style={styles.unreadDot} /> : null}
-                  </Card>
-                </Pressable>
-              );
-            })}
+        }
+        renderItem={({ item: msg }) => {
+          const unread = !msg.isRead;
+          return (
+    <Pressable
+            accessibilityRole="button"
+      accessibilityLabel={`Message from ${msg.from}: ${msg.subject}`}
+      onPress={() => openMessage(msg)}
+      style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
+    >
+      <Card style={[styles.threadCard, unread && styles.threadCardUnread]}>
+        <View style={styles.avatarTile}>
+          <AppIcon name="message" size={18} color={unread ? colors.onInk : colors.ink} />
+        </View>
+        <View style={styles.threadInfo}>
+          <View style={styles.threadTop}>
+            <ThemedText variant="subhead" style={styles.threadFrom} numberOfLines={1}>
+              {msg.from}
+            </ThemedText>
+            <ThemedText variant="caption" style={styles.threadTime}>
+              {new Date(msg.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
+                day: "numeric",
+                month: "short",
+              })}
+            </ThemedText>
           </View>
-        )}
-      </ScrollView>
+          <ThemedText
+            variant="body"
+            style={unread ? styles.threadSubjectUnread : styles.threadSubject}
+            numberOfLines={1}
+          >
+            {msg.subject}
+          </ThemedText>
+          <ThemedText variant="caption" style={styles.threadPreview} numberOfLines={2}>
+            {msg.preview}
+          </ThemedText>
+          {msg.hasAttachment ? (
+            <View style={styles.attachRow}>
+              <AppIcon name="fileText" size={12} color={colors.secondaryLabel} />
+              <ThemedText variant="caption" style={styles.attachText}>
+                Attachment
+              </ThemedText>
+            </View>
+          ) : null}
+        </View>
+        {unread ? <View style={styles.unreadDot} /> : null}
+      </Card>
+    </Pressable>
+          );
+        }}
+        ListEmptyComponent={
+          isLoading ? (
+            <View style={styles.stack}>
+              <Skeleton height={84} />
+              <Skeleton height={84} />
+            </View>
+          ) : isError && rawThreads === undefined ? (
+            <ErrorState
+              message="We couldn't load your messages. Check your connection and try again."
+              onRetry={() => refetch()}
+            />
+          ) : (
+            <EmptyState
+              illustration="messages"
+              heading={query ? "No messages found" : "Your inbox is clear"}
+              body={query ? `Nothing matches “${query}”.` : "Messages and updates from your dental care team will appear here."}
+              actionLabel={query ? undefined : "Send a message"}
+              onAction={query ? undefined : () => setIsComposing(true)}
+              icon="message"
+            />
+          )
+        }
+      />
 
       {/* Frame 6: emergency triage modal */}
       <EmergencyTriageModal visible={showTriage} onClose={() => setShowTriage(false)} />
@@ -455,6 +461,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
+  },
+  headerStack: {
+    gap: spacing.sm,
   },
   headerRow: {
     alignItems: "center",

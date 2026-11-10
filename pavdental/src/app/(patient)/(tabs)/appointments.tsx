@@ -1,5 +1,6 @@
+import { buildAppointmentRows } from "@/features/booking/appointment-rows";
 import React, { useMemo, useState } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, EmptyState, ErrorState, Skeleton, ConfirmSheet, Toast, ListRow, IconTile, type AppIconName } from "@/components";
@@ -103,6 +104,10 @@ export default function PatientAppointmentsScreen() {
     return { upcoming, past };
   }, [apiAppointments]);
 
+  // A flat list of rows, so only those on screen are drawn.
+  const showRows = !isLoading && !isError && (upcoming.length > 0 || past.length > 0);
+  const rows = useMemo(() => buildAppointmentRows(upcoming, past), [upcoming, past]);
+
   const confirmCancel = () => {
     if (!pendingCancel) return;
     const id = pendingCancel;
@@ -120,70 +125,64 @@ export default function PatientAppointmentsScreen() {
         <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} />
       ) : null}
 
-      <ScrollView contentContainerStyle={styles.list} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
-        {isLoading ? (
-          <View style={styles.stack}>
-            <Skeleton height={110} borderRadius={16} />
-            <Skeleton height={110} borderRadius={16} />
-            <Skeleton height={110} borderRadius={16} />
-          </View>
-        ) : isError ? (
-          <ErrorState
-            message="Could not load your appointments. Please try again."
-            onRetry={() => refetch()}
-          />
-        ) : upcoming.length === 0 && past.length === 0 ? (
-          <EmptyState
-            illustration="appointments"
-            heading="No appointments yet"
-            body="Book a clinic visit, video consult, or mobile van in a few taps."
-            actionLabel="Book an appointment"
-            onAction={() => router.push("/(patient)/booking/service-catalog" as never)}
-            icon="calendar"
-          />
-        ) : (
-          <>
-            {upcoming.length > 0 ? (
-              <View style={styles.group}>
-                <ThemedText variant="title">Upcoming</ThemedText>
-                <View style={styles.stack}>
-                  {upcoming.map((b) => (
-                    <BookingRow key={b.id} booking={b} past={false} onCancel={setPendingCancel} />
-                  ))}
-                </View>
-              </View>
-            ) : (
-              <View style={styles.group}>
-                <ThemedText variant="title">Upcoming</ThemedText>
-                <Card style={styles.emptyUpcomingCard}>
-                  <ThemedText variant="headline">No upcoming visits</ThemedText>
-                  <ThemedText variant="subhead" style={styles.emptyUpcomingBody}>
-                    You have no upcoming appointments booked. Choose a treatment below to book your next check-up or cleaning.
-                  </ThemedText>
-                </Card>
-              </View>
-            )}
-
-            {past.length > 0 ? (
-              <View style={styles.group}>
-                <ThemedText variant="title">Past</ThemedText>
-                <View style={styles.stack}>
-                  {past.map((b) => (
-                    <BookingRow key={b.id} booking={b} past={true} onCancel={setPendingCancel} />
-                  ))}
-                </View>
-              </View>
-            ) : null}
-
+      <FlatList
+        data={showRows ? rows : []}
+        keyExtractor={(row) => row.key}
+        contentContainerStyle={styles.list}
+        refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
+        renderItem={({ item }) => {
+          if (item.kind === "heading") {
+            return (
+              <ThemedText variant="title" style={item.key === "heading-past" ? styles.pastHeading : undefined}>
+                {item.title}
+              </ThemedText>
+            );
+          }
+          if (item.kind === "no-upcoming") {
+            return (
+              <Card style={styles.emptyUpcomingCard}>
+                <ThemedText variant="headline">No upcoming visits</ThemedText>
+                <ThemedText variant="subhead" style={styles.emptyUpcomingBody}>
+                  You have no upcoming appointments booked. Choose a treatment below to book your next check-up or cleaning.
+                </ThemedText>
+              </Card>
+            );
+          }
+          return (
+            <BookingRow booking={item.booking} past={item.past} onCancel={setPendingCancel} />
+          );
+        }}
+        ListEmptyComponent={
+          isLoading ? (
+            <View style={styles.stack}>
+              <Skeleton height={110} borderRadius={16} />
+              <Skeleton height={110} borderRadius={16} />
+              <Skeleton height={110} borderRadius={16} />
+            </View>
+          ) : isError ? (
+            <ErrorState message="Could not load your appointments. Please try again." onRetry={() => refetch()} />
+          ) : (
+            <EmptyState
+              illustration="appointments"
+              heading="No appointments yet"
+              body="Book a clinic visit, video consult, or mobile van in a few taps."
+              actionLabel="Book an appointment"
+              onAction={() => router.push("/(patient)/booking/service-catalog" as never)}
+              icon="calendar"
+            />
+          )
+        }
+        ListFooterComponent={
+          showRows ? (
             <Button
               title="Book another appointment"
               size="lg"
               onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
               style={styles.bookAgain}
             />
-          </>
-        )}
-      </ScrollView>
+          ) : null
+        }
+      />
 
       {pendingCancel ? (
         <ConfirmSheet
@@ -217,14 +216,14 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     padding: spacing.md,
   },
-  group: {
-    gap: spacing.xs,
-  },
   list: {
-    gap: spacing.lg,
+    gap: spacing.xxs,
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
+  },
+  pastHeading: {
+    marginTop: spacing.lg,
   },
   stack: {
     gap: spacing.xxs,

@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
-import { View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Modal, RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { safeHaptics } from "@/lib/haptics";
 import {
   ThemedText,
@@ -48,6 +49,7 @@ export default function MessagesScreen() {
   const { hoursText } = usePracticeHours();
   const { data: rawThreads, isLoading, isError, refetch } = useMessageThreads();
   const createMutation = useCreateMessageThreadMutation();
+  const refresh = usePullToRefresh();
 
   const threads: ThreadListItem[] = Array.isArray(rawThreads)
     ? rawThreads.map((t: any) => ({
@@ -104,7 +106,7 @@ export default function MessagesScreen() {
   return (
     <View style={styles.container}>
       {toast ? <Toast message={toast} tone="success" onDismiss={() => setToast(null)} /> : null}
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
         <View style={styles.headerRow}>
           <View style={styles.headerTitleGroup}>
             <ThemedText variant="overline">Secure inbox</ThemedText>

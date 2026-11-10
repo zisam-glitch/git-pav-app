@@ -124,10 +124,10 @@ export default function WaitingRoomScreen() {
         <View style={styles.actions}>
           {isRunningLate(startTimeUtc, now) || trouble ? (
             <Button
-              title="Message the practice"
+              title="Message your dentist"
               variant="secondary"
               size="md"
-              onPress={() => router.push("/(patient)/(tabs)/messages" as never)}
+              onPress={() => router.push({ pathname: "/(patient)/video/message" as never, params: { appointmentId: appointmentId || "" } })}
             />
           ) : null}
           <Button

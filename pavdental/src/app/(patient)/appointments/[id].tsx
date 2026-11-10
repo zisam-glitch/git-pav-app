@@ -247,6 +247,14 @@ export default function AppointmentDetailScreen() {
                   The waiting room opens {WAITING_ROOM_OPENS_MINUTES} minutes before your visit.
                 </ThemedText>
               )}
+              <Button
+                title="Message your dentist"
+                variant="ghost"
+                size="md"
+                onPress={() =>
+                  router.push({ pathname: "/(patient)/video/message" as never, params: { appointmentId: booking.id } })
+                }
+              />
             </View>
           </Card>
         ) : null}

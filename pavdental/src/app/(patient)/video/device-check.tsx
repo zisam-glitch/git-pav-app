@@ -84,8 +84,8 @@ export default function DeviceCheckScreen() {
             To get the most from your call
           </ThemedText>
           <ThemedText variant="caption" style={styles.fallbackText}>
-            Find a quiet, well-lit spot and keep your phone charged. If the video doesn't work, message the practice
-            from the Messages tab.
+            Find a quiet, well-lit spot and keep your phone charged. If the video doesn't work, you can message
+            your dentist from the waiting room.
           </ThemedText>
         </View>
       </ScrollView>

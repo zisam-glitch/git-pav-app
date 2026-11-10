@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, Pressable, ActivityIndicator, StyleProp, ViewStyle } from "react-native";
+import { useKeepAwake } from "expo-keep-awake";
 import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/react-native-daily-js";
 import { ThemedText, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -43,6 +44,8 @@ export function callErrorMessage(raw: string | undefined): string {
 }
 
 export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props) {
+  // The screen must not dim and lock in the middle of a consultation (V17).
+  useKeepAwake();
   const callRef = useRef<DailyCall | null>(null);
   const onLeftRef = useRef(onLeft);
   onLeftRef.current = onLeft;
@@ -55,6 +58,8 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const [leaving, setLeaving] = useState(false);
+  // Once the other person has been in the call, their absence means they left (V21).
+  const [otherHasJoined, setOtherHasJoined] = useState(false);
 
   useEffect(() => {
     unmountingRef.current = false;
@@ -100,6 +105,9 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
 
   const local = participants.local;
   const remote = Object.values(participants).find((p) => !p.local);
+  useEffect(() => {
+    if (remote) setOtherHasJoined(true);
+  }, [remote]);
   const remoteVideo = playable(remote?.tracks.video);
   const remoteAudio = playable(remote?.tracks.audio);
   const localVideo = camOn ? playable(local?.tracks.video) : null;
@@ -146,7 +154,13 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
             <>
               <ActivityIndicator color={colors.onInk} />
               <ThemedText variant="headline" style={styles.stageText}>
-                {phase === "joining" ? "Connecting…" : remote ? `${otherLabel} has their camera off` : `Waiting for ${otherLabel} to join…`}
+                {phase === "joining"
+                  ? "Connecting…"
+                  : remote
+                    ? `${otherLabel} has their camera off`
+                    : otherHasJoined
+                      ? `${otherLabel} has left the call. You can wait here or leave.`
+                      : `Waiting for ${otherLabel} to join…`}
               </ThemedText>
             </>
           )}

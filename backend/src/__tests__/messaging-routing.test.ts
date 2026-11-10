@@ -202,13 +202,17 @@ describe("CS-29: Messaging that reaches people (MS-3)", () => {
     // Thread preview reflects staff name
     expect(replyData.thread.preview).toContain("Dr. Tariq Pav: Please wait 2 hours");
 
-    // Patient was notified via email of the staff reply
+    // Patient was notified via email of the staff reply. The subject line says
+    // only that a message came; the thread subject may describe a health
+    // problem, so it stays in the app (V57). The body names who replied.
     expect(sendEmailSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         to: patient.user.email,
-        subject: expect.stringContaining("Dr. Tariq Pav"),
+        subject: "[Pav Dental] You have a new message",
+        text: expect.stringContaining("Dr. Tariq Pav"),
       })
     );
+    expect(JSON.stringify(sendEmailSpy.mock.calls)).not.toContain("Post-op care instructions");
   });
 
   it("clinician sees routed thread in their inbox and unread status is maintained", async () => {

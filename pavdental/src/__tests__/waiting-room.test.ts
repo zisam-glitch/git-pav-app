@@ -4,6 +4,7 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
+import { cameraProblem, cameraProblemMessage, needsSettings, levelBars } from "../features/video/camera-check-state";
 import { isRunningLate, waitingTrouble, patientPresenceLine, waitingStatusLine } from "../features/video/waiting-state";
 
 function assert(condition: boolean, message: string) {
@@ -44,5 +45,15 @@ assert(waitingStatusLine({ admitted: true, late: true }) === "You're in", "Being
 assert(screen.includes("/api/video/waiting/") && screen.includes("AppState"), "The waiting room reports in and pauses in the background");
 assert(screen.includes("/leave"), "Leaving tells the practice");
 assert(!screen.includes("Consultation ready"), "The waiting room does not claim the consultation is ready");
+
+// Pre-call camera and microphone check (V18)
+assert(cameraProblem("permissions") === "blocked" && needsSettings("blocked"), "A refused permission sends the patient to Settings");
+assert(cameraProblem("cam-in-use") === "in_use" && cameraProblem("mic-in-use") === "in_use" && !needsSettings("in_use"), "A camera in use by another app says so");
+assert(cameraProblem("not-found") === "missing" && cameraProblem(undefined) === "other", "A missing camera and an unknown problem are told apart");
+assert(cameraProblemMessage("blocked").includes("Settings"), "The blocked message says where to fix it");
+assert(levelBars(0) === 0 && levelBars(NaN) === 0 && levelBars(-1) === 0, "Silence lights no bars");
+assert(levelBars(0.05) >= 1 && levelBars(1) === 5 && levelBars(0.3) > levelBars(0.05), "Louder sound lights more bars, up to the top");
+const check = readFileSync(join(__dirname, "../app/(patient)/video/device-check.tsx"), "utf8");
+assert(check.includes("<CameraCheck />"), "The pre-call check tests the camera and microphone");
 
 console.log("\n🎉 ALL WAITING ROOM TESTS PASSED!\n");

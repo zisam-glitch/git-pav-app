@@ -29,8 +29,10 @@ assert(!plainBookingError(new Error("undefined is not a function")).includes("un
 assert(plainBookingError("weird") === "Something went wrong with your booking. Please try again.", "A non-error gets the general line");
 
 const summary = readFileSync(join(__dirname, "../app/(patient)/booking/summary.tsx"), "utf8");
-assert(!/Alert\.alert\([^)]*(walletError|initError|presentError)\.message/.test(summary), "The booking screen never alerts with a provider message");
+assert(!/Alert\.alert\([^)]*\.message\)/.test(summary.replace(/outcome\.message/g, "")), "The booking screen never alerts with a provider message");
 assert(!/err\?\.message \?\? "Could not process payment/.test(summary), "The booking screen does not alert with a raw caught message");
-assert(summary.includes("reportCaughtError(presentError"), "The original error still goes to the error reporter");
+const payment = readFileSync(join(__dirname, "../features/booking/booking-payment.ts"), "utf8");
+assert(payment.includes("deps.report(paid.error"), "The original error still goes to the error reporter");
+assert(summary.includes("report: reportCaughtError"), "The booking screen hands the real reporter to the payment code");
 
 console.log("\n🎉 ALL PLAIN PAYMENT ERROR TESTS PASSED!\n");

@@ -60,6 +60,11 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     heading: "Preferences",
     rows: [
       {
+        title: "Notifications",
+        icon: "bell",
+        route: "/(patient)/notifications",
+      },
+      {
         title: "Notification preferences",
         icon: "bell",
         route: "/(patient)/(tabs)/profile/notifications",

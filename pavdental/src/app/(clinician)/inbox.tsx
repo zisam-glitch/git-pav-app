@@ -46,7 +46,7 @@ export default function ClinicianInboxScreen() {
   const [search, setSearch] = useState("");
   const [activeThread, setActiveThread] = useState<ThreadItem | null>(null);
   const [replyText, setReplyText] = useState("");
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
   const { hoursText } = usePracticeHours();
   const { data: rawThreads, isLoading, isError, refetch, isRefetching } = useMessageThreads();
@@ -103,7 +103,7 @@ export default function ClinicianInboxScreen() {
     try {
       await replyMutation.mutateAsync({ threadId: activeThread.id, body });
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      setToast("Reply sent to patient");
+      setToast({ message: "Reply sent to patient", tone: "success" });
       setReplyText("");
       // Refresh thread list
       await refetch();
@@ -127,13 +127,13 @@ export default function ClinicianInboxScreen() {
           : null
       );
     } catch (err: any) {
-      setToast(err?.message || "Could not send reply");
+      setToast({ message: err?.message || "Your reply did not send. Please try again.", tone: "error" });
     }
   };
 
   return (
     <View style={styles.container}>
-      {toast ? <Toast message={toast} tone="success" onDismiss={() => setToast(null)} /> : null}
+      {toast ? <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} /> : null}
 
       {/* Emergency Guidance & SLA Notice */}
       <View style={styles.slaBanner}>
@@ -296,6 +296,8 @@ export default function ClinicianInboxScreen() {
                 placeholder="Write clinical reply to patient…"
                 value={replyText}
                 onChangeText={setReplyText}
+                multiline
+                maxLength={4000}
               />
               <Pressable
                 accessibilityRole="button"

@@ -4,7 +4,7 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
-import { isRunningLate, waitingTrouble } from "../features/video/waiting-state";
+import { isRunningLate, waitingTrouble, patientPresenceLine, waitingStatusLine } from "../features/video/waiting-state";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -33,5 +33,16 @@ assert(!screen.includes("Ignore transient network errors"), "Errors are no longe
 assert(screen.includes("Message your dentist") && screen.includes("/(patient)/video/message"), "A late or failing waiting room can message the dentist about this visit");
 const video = readFileSync(join(__dirname, "../../../backend/src/routes/video.ts"), "utf8");
 assert(video.includes('"Your clinician is ready"'), "The patient gets a push when let in");
+
+// Presence (V10, V11)
+assert(patientPresenceLine({ admitted: false, waiting: true }) === "The patient is in the waiting room.", "The dentist is told the patient is waiting");
+assert(patientPresenceLine({ admitted: false, waiting: false }).includes("hasn't come"), "The dentist is told when the patient has not come in");
+assert(patientPresenceLine({ admitted: true, waiting: false }).includes("let in"), "Admission wins over presence");
+assert(waitingStatusLine({ admitted: false, late: false, opensAt: "2026-11-10T09:50:00Z" }) === "You're early", "Before the window opens the patient is early");
+assert(waitingStatusLine({ admitted: false, late: true }) === "Running a few minutes late", "A late start says so");
+assert(waitingStatusLine({ admitted: true, late: true }) === "You're in", "Being let in wins over lateness");
+assert(screen.includes("/api/video/waiting/") && screen.includes("AppState"), "The waiting room reports in and pauses in the background");
+assert(screen.includes("/leave"), "Leaving tells the practice");
+assert(!screen.includes("Consultation ready"), "The waiting room does not claim the consultation is ready");
 
 console.log("\n🎉 ALL WAITING ROOM TESTS PASSED!\n");

@@ -119,7 +119,6 @@ describe("admin attention counts", () => {
 
     const before = await read();
     expect(before.status).toBe(200);
-    (globalThis as { __attnBefore?: Attention }).__attnBefore = before.body;
   });
 
   afterAll(async () => {
@@ -138,13 +137,24 @@ describe("admin attention counts", () => {
   });
 
   it("counts today's visits, and which are still to come", async () => {
-    const before = (globalThis as { __attnBefore?: Attention }).__attnBefore!;
-    await visit(ukToday, 10 * 60, "confirmed");
-    await visit(ukToday, 11 * 60, "completed");
-    const after = (await read()).body;
-    expect(after.visitsToday).toBeGreaterThanOrEqual(before.visitsToday + 2);
-    expect(after.visitsLeftToday).toBeGreaterThanOrEqual(before.visitsLeftToday + 1);
-
+    // Other suites share this database and delete their own visits at any
+    // moment, so one comparison against a count read long ago can see their
+    // rows disappear and not ours appear. Read fresh each attempt; a real bug
+    // fails every attempt, noise has to hit all of them.
+    const attempts: string[] = [];
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const before = (await read()).body;
+      // 23:59 is still to come at any time of day this suite can run (the old
+      // 10:00 stopped being "to come" once it was past 10 o'clock).
+      await visit(ukToday, 23 * 60 + 59, "confirmed");
+      await visit(ukToday, 11 * 60, "completed");
+      const after = (await read()).body;
+      const today = after.visitsToday - before.visitsToday;
+      const left = after.visitsLeftToday - before.visitsLeftToday;
+      if (today >= 2 && left >= 1) return;
+      attempts.push(`visitsToday +${today}, visitsLeftToday +${left}`);
+    }
+    throw new Error(`The new visits were never counted: ${attempts.join("; ")}`);
   });
 
   it("doesn't count a cancelled visit today or a confirmed one yesterday", async () => {

@@ -16,3 +16,18 @@ export function isRunningLate(startTimeUtc: string | null, now: number = Date.no
   if (!startTimeUtc) return false;
   return now - new Date(startTimeUtc).getTime() > 5 * 60_000;
 }
+
+/** What the dentist is told about the patient, from the server's record. */
+export function patientPresenceLine(input: { admitted: boolean; waiting: boolean }): string {
+  if (input.admitted) return "Patient let in. They can join the call now.";
+  if (input.waiting) return "The patient is in the waiting room.";
+  return "The patient hasn't come into the waiting room yet.";
+}
+
+/** What the patient is told while they wait, from the server's record. */
+export function waitingStatusLine(input: { admitted: boolean; late: boolean; opensAt?: string | null }): string {
+  if (input.admitted) return "You're in";
+  if (input.opensAt) return "You're early";
+  if (input.late) return "Running a few minutes late";
+  return "Your dentist knows you're here";
+}

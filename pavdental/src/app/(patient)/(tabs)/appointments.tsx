@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, EmptyState, ErrorState, Skeleton, ConfirmSheet, Toast, ListRow, IconTile, type AppIconName } from "@/components";
 import { appointmentClinician, appointmentLocation } from "@/features/booking/appointment-labels";
@@ -83,6 +84,7 @@ export default function PatientAppointmentsScreen() {
   const router = useRouter();
   const { data: apiAppointments, isLoading, isError, refetch } = useMyAppointments();
   const cancelMutation = useCancelAppointmentMutation();
+  const refresh = usePullToRefresh();
   const [pendingCancel, setPendingCancel] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
@@ -118,7 +120,7 @@ export default function PatientAppointmentsScreen() {
         <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} />
       ) : null}
 
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView contentContainerStyle={styles.list} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
         {isLoading ? (
           <View style={styles.stack}>
             <Skeleton height={110} borderRadius={16} />

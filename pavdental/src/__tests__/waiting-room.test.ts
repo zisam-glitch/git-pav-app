@@ -30,7 +30,7 @@ assert(!isRunningLate(null, Date.parse("2026-11-10T11:00:00Z")), "Without a star
 
 const screen = readFileSync(join(__dirname, "../app/(patient)/video/waiting.tsx"), "utf8");
 assert(!screen.includes("Ignore transient network errors"), "Errors are no longer ignored for ever");
-assert(screen.includes("Message the practice"), "A late or failing waiting room can message the practice");
+assert(screen.includes("Message your dentist") && screen.includes("/(patient)/video/message"), "A late or failing waiting room can message the dentist about this visit");
 const video = readFileSync(join(__dirname, "../../../backend/src/routes/video.ts"), "utf8");
 assert(video.includes('"Your clinician is ready"'), "The patient gets a push when let in");
 

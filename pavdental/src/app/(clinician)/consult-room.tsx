@@ -57,6 +57,11 @@ export default function ClinicianConsultRoomScreen() {
   const [admitted, setAdmitted] = useState(false);
   const [admitting, setAdmitting] = useState(false);
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+  // A message to the patient, in this visit's conversation (V49).
+  const [showMessage, setShowMessage] = useState(false);
+  const [messageText, setMessageText] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [messageNote, setMessageNote] = useState<{ text: string; failed: boolean } | null>(null);
   const [concludeNotes, setConcludeNotes] = useState("");
   const [concludeDiagnosis, setConcludeDiagnosis] = useState("");
   const [concludePlan, setConcludePlan] = useState("");
@@ -108,6 +113,30 @@ export default function ClinicianConsultRoomScreen() {
     }
     initRoom();
   }, [appointmentId]);
+
+  const sendMessage = async () => {
+    const body = messageText.trim();
+    if (!body || !appointmentId || sendingMessage) return;
+    setSendingMessage(true);
+    setMessageNote(null);
+    try {
+      const res = await authFetch(`/api/appointment-messages/${appointmentId}`, {
+        method: "POST",
+        body: JSON.stringify({ body }),
+      });
+      if (res.ok) {
+        setMessageText("");
+        setMessageNote({ text: "Message sent to the patient.", failed: false });
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setMessageNote({ text: data?.error || "Your message did not send. Please try again.", failed: true });
+      }
+    } catch {
+      setMessageNote({ text: "Your message did not send. Check your connection and try again.", failed: true });
+    } finally {
+      setSendingMessage(false);
+    }
+  };
 
   const admitPatient = async () => {
     if (!appointmentId) return;
@@ -433,12 +462,39 @@ export default function ClinicianConsultRoomScreen() {
           </Card>
         )}
 
+        {showMessage && (
+          <Card style={styles.summaryFormCard}>
+            <ThemedText variant="headline">Message the patient</ThemedText>
+            <Input
+              label=""
+              placeholder="Write to the patient…"
+              multiline
+              maxLength={4000}
+              value={messageText}
+              onChangeText={setMessageText}
+              accessibilityLabel="Message to the patient"
+            />
+            {messageNote ? (
+              <ThemedText variant="caption" accessibilityRole={messageNote.failed ? "alert" : undefined} style={messageNote.failed ? styles.roomError : undefined}>
+                {messageNote.text}
+              </ThemedText>
+            ) : null}
+            <Button title="Send message" loading={sendingMessage} disabled={!messageText.trim()} onPress={sendMessage} />
+          </Card>
+        )}
+
         {/* Clinician Action Control Bar */}
         <View style={styles.controls}>
           <Button
             title="End call and write prescription"
             size="lg"
             onPress={handleEndAndPrescribe}
+          />
+          <Button
+            title={showMessage ? "Hide message box" : "Message patient"}
+            variant="ghost"
+            size="md"
+            onPress={() => setShowMessage(!showMessage)}
           />
           <Button
             title={showSummaryModal ? "Hide summary form" : "End call and record summary"}

@@ -40,4 +40,9 @@ assert(!/: 5;/.test(review), "A missing pain score is not turned into 5 on the r
 assert(/summaryData\?\.status === "completed"/.test(summary), "'Completed' is shown only when the visit is completed (R13)");
 assert(detail.includes("waitingRoomOpen(booking)"), "The appointment screen offers the waiting room only when it is open (R12)");
 
+// The dentist can write to the patient from the consult room (V49)
+const consultRoom = readFileSync(join(__dirname, "../app/(clinician)/consult-room.tsx"), "utf8");
+assert(consultRoom.includes("/api/appointment-messages/") && consultRoom.includes("Message patient"), "The dentist can message the patient from the consult room");
+assert(consultRoom.includes("did not send"), "A failed message to the patient is shown as a failure");
+
 console.log("\n🎉 ALL VIDEO TESTS PASSED!\n");

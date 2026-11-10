@@ -212,7 +212,7 @@ export default function VanAccessDetailsScreen() {
 
         {/* Parking Type Selector */}
         <View style={styles.section}>
-          <ThemedText variant="headline">Where will the surgical van park?</ThemedText>
+          <ThemedText variant="headline">Where will the dental van park?</ThemedText>
           <View style={styles.optionGroup}>
             <Pressable accessibilityLabel="Private driveway"
               accessibilityRole="radio"

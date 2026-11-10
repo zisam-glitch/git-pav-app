@@ -192,7 +192,7 @@ export default function VideoIntakeScreen() {
       {/* Footer */}
       <View style={styles.footer}>
         <Button
-          title="Take intraoral photos"
+          title="Add photos of your teeth"
               arrow
           size="lg"
           onPress={handleContinue}

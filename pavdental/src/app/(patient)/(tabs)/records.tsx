@@ -22,14 +22,14 @@ interface RecordLink {
 const links: RecordLink[] = [
   {
     icon: "activity",
-    title: "Digital odontogram",
+    title: "Tooth chart",
     subtitle: "Interactive 32-tooth dental chart",
     route: "/(patient)/records/odontogram",
     category: "vault",
   },
   {
     icon: "clipboard",
-    title: "Treatment estimates & plans",
+    title: "Treatment plans",
     subtitle: "Review and approve digital treatment plans",
     route: "/(patient)/records/plans",
     category: "estimates",
@@ -100,7 +100,7 @@ export default function PatientRecordsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
       <SegmentedControl
         segments={[
-          { key: "vault", label: "Clinical vault" },
+          { key: "vault", label: "Documents" },
           { key: "activity", label: "Activity & recall" },
           { key: "estimates", label: "Estimates" },
         ]}
@@ -156,7 +156,7 @@ export default function PatientRecordsScreen() {
                 Initial dental charting pending
               </ThemedText>
               <ThemedText variant="caption" style={styles.initialCareSub}>
-                Your digital odontogram and recall timer will populate automatically after your first check-up.
+                Your tooth chart and recall timer will populate automatically after your first check-up.
               </ThemedText>
             </View>
           </View>

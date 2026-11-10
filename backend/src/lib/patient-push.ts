@@ -20,13 +20,29 @@ export async function sendPatientNotification(
   try {
     const patient = await prisma.patientProfile.findUnique({
       where: { id: patientId },
-      include: { user: { select: { id: true } } },
+      select: { userId: true },
     });
-
     if (!patient) return;
+    await sendUserNotification(patient.userId, title, body, data);
+  } catch (error) {
+    console.error("Failed to send patient notification:", safeError(error));
+  }
+}
 
+/**
+ * The same push for a user id: used for patients, and for dentists, who also
+ * have a user with push tokens. Respects the user's push preference and
+ * records the delivery. Never throws.
+ */
+export async function sendUserNotification(
+  userId: string,
+  title: string,
+  body: string,
+  data: Record<string, unknown> = {}
+): Promise<void> {
+  try {
     const preferences = await prisma.notificationPreference.findUnique({
-      where: { userId: patient.userId },
+      where: { userId },
     });
 
     // PP-1: Missing preferences row defaults to pushEnabled: true
@@ -34,7 +50,7 @@ export async function sendPatientNotification(
     if (!pushEnabled) return;
 
     const tokens = await prisma.pushToken.findMany({
-      where: { userId: patient.userId, active: true },
+      where: { userId, active: true },
     });
 
     if (tokens.length === 0) return;
@@ -51,7 +67,7 @@ export async function sendPatientNotification(
 
     await prisma.notificationHistory.create({
       data: {
-        userId: patient.userId,
+        userId,
         type: "push",
         title,
         body,
@@ -61,6 +77,6 @@ export async function sendPatientNotification(
       },
     });
   } catch (error) {
-    console.error("Failed to send patient notification:", safeError(error));
+    console.error("Failed to send notification:", safeError(error));
   }
 }

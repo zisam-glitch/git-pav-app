@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, ListRow, AppIcon, Button, type AppIconName, SegmentedControl, IconTile } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -67,6 +68,7 @@ export default function PatientRecordsScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<RecordsTab>("vault");
   const user = useCurrentUser();
+  const refresh = usePullToRefresh();
   const userId = user?.id || "";
 
   const { data: apiTeeth } = useOdontogram(userId);
@@ -95,7 +97,7 @@ export default function PatientRecordsScreen() {
   }, [activeTab]);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}>
       <SegmentedControl
         segments={[
           { key: "vault", label: "Clinical vault" },

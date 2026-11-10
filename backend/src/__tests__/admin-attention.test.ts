@@ -167,24 +167,33 @@ describe("admin attention counts", () => {
   });
 
   it("counts threads waiting for staff, and erasure requests, with those past their month apart", async () => {
-    const before = (await read()).body;
-    const thread = await prisma.messageThread.create({
-      data: { patientUserId, senderName: "Synthetic", subject: `Synthetic subject ${tag}`, preview: "Synthetic preview", staffUnread: true },
-    });
-    threadIds.push(thread.id);
+    // Other suites share this database and delete their own threads and
+    // requests at any moment, so read a fresh baseline each attempt. A real bug
+    // fails every attempt; noise has to hit all of them.
     const day = 24 * 3600_000;
-    for (const request of [
-      { status: "pending" as const, dueAt: new Date(Date.now() - 2 * day) },
-      { status: "pending" as const, dueAt: new Date(Date.now() + 20 * day) },
-      { status: "completed" as const, dueAt: new Date(Date.now() - 5 * day) },
-    ]) {
-      const row = await prisma.erasureRequest.create({ data: { userId: patientUserId, source: "app", ...request } });
-      erasureIds.push(row.id);
+    const attempts: string[] = [];
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const before = (await read()).body;
+      const thread = await prisma.messageThread.create({
+        data: { patientUserId, senderName: "Synthetic", subject: `Synthetic subject ${tag}`, preview: "Synthetic preview", staffUnread: true },
+      });
+      threadIds.push(thread.id);
+      for (const request of [
+        { status: "pending" as const, dueAt: new Date(Date.now() - 2 * day) },
+        { status: "pending" as const, dueAt: new Date(Date.now() + 20 * day) },
+        { status: "completed" as const, dueAt: new Date(Date.now() - 5 * day) },
+      ]) {
+        const row = await prisma.erasureRequest.create({ data: { userId: patientUserId, source: "app", ...request } });
+        erasureIds.push(row.id);
+      }
+      const after = (await read()).body;
+      const threads = after.unreadThreads - before.unreadThreads;
+      const open = after.erasureOpen - before.erasureOpen;
+      const overdue = after.erasureOverdue - before.erasureOverdue;
+      if (threads >= 1 && open >= 2 && overdue >= 1) return;
+      attempts.push(`unreadThreads +${threads}, erasureOpen +${open}, erasureOverdue +${overdue}`);
     }
-    const after = (await read()).body;
-    expect(after.unreadThreads).toBeGreaterThanOrEqual(before.unreadThreads + 1);
-    expect(after.erasureOpen).toBeGreaterThanOrEqual(before.erasureOpen + 2);
-    expect(after.erasureOverdue).toBeGreaterThanOrEqual(before.erasureOverdue + 1);
+    throw new Error(`The new rows were never counted: ${attempts.join("; ")}`);
   });
 
   it("doesn't call a finished or not-yet-due erasure request overdue, or a read thread waiting", async () => {

@@ -1,3 +1,5 @@
+import { reportCaughtError } from "@/lib/caught-errors";
+import { plainBookingError, plainPaymentError } from "@/features/payment/payment-errors";
 import { bookingStep } from "@/features/booking/booking-steps";
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-native";
@@ -200,7 +202,10 @@ export default function BookingSummaryScreen() {
           },
         });
         if (walletError) {
-          if (walletError.code !== "Canceled") Alert.alert("Payment Failed", walletError.message);
+          if (walletError.code !== "Canceled") {
+            reportCaughtError(walletError, "wallet payment failed");
+            Alert.alert("Payment failed", plainPaymentError(walletError));
+          }
           setIsProcessing(false);
           return;
         }
@@ -231,7 +236,8 @@ export default function BookingSummaryScreen() {
         });
 
         if (initError) {
-          Alert.alert("Payment Error", initError.message);
+          reportCaughtError(initError, "payment sheet setup failed");
+          Alert.alert("Payment failed", plainPaymentError(initError));
           setIsProcessing(false);
           return;
         }
@@ -242,7 +248,8 @@ export default function BookingSummaryScreen() {
         if (presentError) {
           // User cancelled or card declined — stay on summary screen
           if (presentError.code !== "Canceled") {
-            Alert.alert("Payment Failed", presentError.message);
+            reportCaughtError(presentError, "payment sheet failed");
+            Alert.alert("Payment failed", plainPaymentError(presentError));
           }
           setIsProcessing(false);
           return;
@@ -257,7 +264,8 @@ export default function BookingSummaryScreen() {
       setIsProcessing(false);
       router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);
     } catch (err: any) {
-      Alert.alert("Something went wrong", err?.message ?? "Could not process payment.");
+      reportCaughtError(err, "booking payment failed");
+      Alert.alert("Something went wrong", plainBookingError(err));
       setIsProcessing(false);
     }
   };

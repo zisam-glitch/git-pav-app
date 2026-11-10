@@ -451,45 +451,59 @@ export interface ReminderLadderInput {
  * The wording of the 48h / 24h / 2h reminders. A video consultation has no
  * clinic to arrive at, so it gets its own words (V3).
  */
-export function buildReminderLadder(input: ReminderLadderInput): { hoursBefore: number; title: string; body: string }[] {
+export interface ReminderStep {
+  hoursBefore: number;
+  minutesBefore: number;
+  title: string;
+  body: string;
+  /** Where tapping the reminder goes, when it is not the appointment screen. */
+  screen?: "waiting_room";
+}
+
+export function buildReminderLadder(input: ReminderLadderInput): ReminderStep[] {
   const { channel, dateFormatted, timeFormatted, personName, clinicName } = input;
+  const step = (minutesBefore: number, title: string, body: string, screen?: "waiting_room"): ReminderStep => ({
+    hoursBefore: minutesBefore / 60,
+    minutesBefore,
+    title,
+    body,
+    ...(screen ? { screen } : {}),
+  });
   if (channel === "video") {
+    // 24 hours, 1 hour and 10 minutes before; the last opens the waiting room (V7).
     return [
-      {
-        hoursBefore: 48,
-        title: "Video consultation in 48 hours - Pav Dental",
-        body: `Reminder: Your video consultation is on ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`,
-      },
-      {
-        hoursBefore: 24,
-        title: "Video consultation tomorrow - Pav Dental",
-        body: `Your video consultation is tomorrow at ${timeFormatted} with ${personName}. Check your camera and microphone in the app before then.`,
-      },
-      {
-        hoursBefore: 2,
-        title: "Video consultation in 2 hours - Pav Dental",
-        body: `Your video consultation is at ${timeFormatted}. The waiting room opens in the app 10 minutes before.`,
-      },
+      step(
+        24 * 60,
+        "Video consultation tomorrow - Pav Dental",
+        `Your video consultation is tomorrow at ${timeFormatted} with ${personName}. Check your camera and microphone in the app before then.`
+      ),
+      step(60, "Video consultation in 1 hour - Pav Dental", `Your video consultation is at ${timeFormatted}. Find a quiet, well-lit spot.`),
+      step(
+        10,
+        "Your video consultation is about to start",
+        `The waiting room is open. Tap to join your video consultation at ${timeFormatted}.`,
+        "waiting_room"
+      ),
     ];
   }
   return [
-    {
-      hoursBefore: 48,
-      title: "Appointment in 48 Hours - Pav Dental",
+    step(
+      48 * 60,
+      "Appointment in 48 Hours - Pav Dental",
       // CS-54: Neutral copy on lock screen (no clinical service names)
-      body: `Reminder: Your appointment is scheduled for ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`,
-    },
-    {
-      hoursBefore: 24,
-      title: "Appointment Tomorrow - Pav Dental",
-      body: `Your visit is tomorrow at ${timeFormatted} with ${personName}. Please remember to arrive 10 minutes early.`,
-    },
-    {
-      hoursBefore: 2,
-      title: "Appointment in 2 Hours - Pav Dental",
+      `Reminder: Your appointment is scheduled for ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`
+    ),
+    step(
+      24 * 60,
+      "Appointment Tomorrow - Pav Dental",
+      `Your visit is tomorrow at ${timeFormatted} with ${personName}. Please remember to arrive 10 minutes early.`
+    ),
+    step(
+      2 * 60,
+      "Appointment in 2 Hours - Pav Dental",
       // CS-54: Neutral copy on lock screen (no clinical service names)
-      body: `See you soon! Your appointment is at ${timeFormatted} at ${clinicName}. Tap for directions and check-in info.`,
-    },
+      `See you soon! Your appointment is at ${timeFormatted} at ${clinicName}. Tap for directions and check-in info.`
+    ),
   ];
 }
 
@@ -536,22 +550,19 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
     const now = Date.now();
 
     for (const step of ladder) {
-      const scheduledFor = new Date(startTime.getTime() - step.hoursBefore * 60 * 60 * 1000);
+      const scheduledFor = new Date(startTime.getTime() - step.minutesBefore * 60 * 1000);
 
       // Only schedule if the reminder time is in the future
       if (scheduledFor.getTime() > now) {
         // BJ-4: Guard against duplicate scheduling on webhook replay or concurrent redeliveries
-        // Matched per appointment (V8): two bookings at the same time, for a
-        // parent and a child, must each get their own reminder.
+        // Matched per appointment and time (V8): two bookings at the same time,
+        // for a parent and a child, must each get their own reminder.
         const existing = await prisma.scheduledNotification.findFirst({
           where: {
             userId,
             scheduledFor,
             status: "pending",
-            AND: [
-              { data: { path: ["appointmentId"], equals: appointment.id } },
-              { data: { path: ["hoursBefore"], equals: step.hoursBefore } },
-            ],
+            data: { path: ["appointmentId"], equals: appointment.id },
           },
         });
 
@@ -565,6 +576,8 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
                 appointmentId: appointment.id,
                 type: "appointment_reminder",
                 hoursBefore: step.hoursBefore,
+                minutesBefore: step.minutesBefore,
+                ...(step.screen ? { screen: step.screen } : {}),
                 startTimeUtc: appointment.startTimeUtc.toISOString(),
               },
               scheduledFor,

@@ -12,6 +12,7 @@ import { objectStorage } from "../lib/object-storage";
 import { checkRedFlags, TriageData } from "../lib/triage-escalation";
 import { encryptField, decryptField } from "../lib/encryption";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
+import { postToAppointmentThread, consultSummaryText } from "../lib/appointment-thread";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
 import { isPlaceholderCredential } from "../config/placeholder";
@@ -710,6 +711,15 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
     .catch((err: { statusCode?: number }) => {
       if (err?.statusCode !== 404) logFailure("close daily room")(err);
     });
+
+  // The summary also lands in the conversation for this appointment, so the
+  // patient can read it there and reply (V48). Best effort: the consult is
+  // already completed.
+  await postToAppointmentThread(
+    appointmentId,
+    { role: "clinician", userId: req.user!.sub, name: clinician.fullName.startsWith("Dr.") ? clinician.fullName : `Dr. ${clinician.fullName}` },
+    consultSummaryText(consultationSummary as { diagnosis?: string | null; notes?: string | null; treatmentPlan?: string | null; followUpRecommended?: string | null })
+  ).catch(logFailure("deliver consult summary to the conversation"));
 
   // Cancel any lingering appointment reminders since consult is completed
   await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));

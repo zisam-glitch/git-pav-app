@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { AppState, AppStateStatus, StyleSheet, View } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClientProvider, focusManager } from "@tanstack/react-query";
@@ -13,7 +13,8 @@ import { tokenStore } from "@/lib/token-store";
 import { authApi } from "@/features/auth/auth-api";
 import { useAppLockStore } from "@/features/app-lock/app-lock-store";
 import { AppLockScreen } from "@/features/app-lock/app-lock-screen";
-import { useNotificationManager } from "@/features/notifications/notification-hooks";
+import { listenForNotificationTaps, useNotificationManager } from "@/features/notifications/notification-hooks";
+import { routeForNotification } from "@/features/notifications/notification-route";
 import { initErrorTracking, reportError } from "@/lib/error-tracking";
 import { ThemedText, Button, OfflineBanner, navTheme } from "@/components";
 import { setupNetworkMonitoring } from "@/lib/network";
@@ -34,6 +35,16 @@ const STRIPE_PUBLISHABLE_KEY =
 function NotificationSetup() {
   const { setupNotifications } = useNotificationManager();
   const accessToken = useAuthStore((s) => s.accessToken);
+  const router = useRouter();
+
+  // Tapping a notification opens the thing it is about.
+  useEffect(() => {
+    if (!accessToken) return;
+    return listenForNotificationTaps((data) => {
+      const target = routeForNotification(data);
+      if (target) router.push(target as never);
+    });
+  }, [accessToken]);
 
   useEffect(() => {
     if (!accessToken || __DEV__) return;

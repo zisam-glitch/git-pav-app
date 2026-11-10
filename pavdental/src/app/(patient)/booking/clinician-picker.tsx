@@ -1,3 +1,4 @@
+import { bookingStep } from "@/features/booking/booking-steps";
 import React from "react";
 import { View, StyleSheet, ScrollView, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
@@ -23,7 +24,7 @@ export default function ClinicianPickerScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.topNav}>
-        <FlowHeader step={{ current: 3, total: 5 }} />
+        <FlowHeader step={bookingStep(channel, "dentist")} />
       </View>
 
       <View style={styles.header}>
@@ -126,7 +127,7 @@ export default function ClinicianPickerScreen() {
                   >
                     <View style={styles.profileLink}>
                       <ThemedText variant="caption" style={styles.profileLinkText}>
-                        View profile & reviews
+                        View profile
                       </ThemedText>
                       <AppIcon name="chevronRight" size={13} color={colors.ink} />
                     </View>

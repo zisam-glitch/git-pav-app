@@ -17,7 +17,7 @@ import {
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { appointmentClinician, appointmentLocation } from "@/features/booking/appointment-labels";
 import { colors, spacing, radius } from "@/theme";
-import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
+import { useAppointment, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import {
   balanceLabel,
   canCheckIn,
@@ -57,14 +57,13 @@ export default function AppointmentDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: apiAppointments, isLoading, isError, refetch } = useMyAppointments();
+  const { data: apiBooking, isLoading, isError, refetch } = useAppointment(id);
   const cancelMutation = useCancelAppointmentMutation();
 
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
-  const source: Booking[] = (apiAppointments ?? []) as Booking[];
-  const booking = source.find((b) => b.id === id);
+  const booking = (apiBooking ?? undefined) as Booking | undefined;
   // Once the answers are in, the button stops asking for them again (V36).
   const triageAnswered = Boolean(
     (booking as { triageData?: { submittedAt?: string } | null } | undefined)?.triageData?.submittedAt

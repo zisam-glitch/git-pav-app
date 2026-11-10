@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Button, ConfirmSheet, EmptyState, IconButton, QueryState, Toast } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { useMyAppointments, useRescheduleAppointmentMutation, useSlots } from "@/features/hooks/use-dental-api";
+import { useAppointment, useRescheduleAppointmentMutation, useSlots } from "@/features/hooks/use-dental-api";
 import { TimeSlot } from "@/features/booking/booking-types";
 import {
   RESCHEDULE_DAYS,
@@ -34,10 +34,10 @@ export default function RescheduleScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { appointmentId } = useLocalSearchParams<{ appointmentId: string }>();
-  const { data: apiAppointments, isLoading: loadingBooking } = useMyAppointments();
+  const { data: apiBooking, isLoading: loadingBooking } = useAppointment(appointmentId);
   const moveMutation = useRescheduleAppointmentMutation();
 
-  const booking = ((apiAppointments ?? []) as Booking[]).find((b) => b.id === appointmentId);
+  const booking = (apiBooking ?? undefined) as Booking | undefined;
 
   const days = useMemo(() => upcomingUkDates(RESCHEDULE_DAYS).map((iso) => ({ iso, label: ukDayLabel(iso) })), []);
   const [dayIso, setDayIso] = useState<string>(days[0].iso);

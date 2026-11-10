@@ -1,3 +1,4 @@
+import { sendAppointmentEmail } from "../lib/patient-email";
 import { Router, Response } from "express";
 import Stripe from "stripe";
 import { env } from "../config/env";
@@ -132,6 +133,7 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
       },
     }).catch(logFailure("audit write appointment.cancelled.van"));
 
+    void sendAppointmentEmail("cancelled", appointment.id, { refundPence: refundAmountPence });
     return res.json(summary(refundAmountPence, policy.refundPercentage, stripeRefundId, policy.policyNotice));
   }
 
@@ -228,6 +230,10 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
     },
   }).catch(logFailure("audit write appointment.cancelled"));
 
+  // An unpaid hold that lapses or is dropped is not a booking the patient knew about.
+  if (appointment.status === "confirmed") {
+    void sendAppointmentEmail("cancelled", appointment.id, { refundPence: refundAmountPence });
+  }
   return res.json(summary(refundAmountPence, refundPercentage, stripeRefundId, policyNotice));
 }
 

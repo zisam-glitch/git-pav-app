@@ -60,6 +60,11 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     heading: "Preferences",
     rows: [
       {
+        title: "Notifications",
+        icon: "bell",
+        route: "/(patient)/notifications",
+      },
+      {
         title: "Notification preferences",
         icon: "bell",
         route: "/(patient)/(tabs)/profile/notifications",
@@ -98,6 +103,16 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
         title: "Privacy and consent",
         icon: "shield",
         route: "/(patient)/(tabs)/profile/consent",
+      },
+    ],
+  },
+  {
+    heading: "Help",
+    rows: [
+      {
+        title: "Help and contact",
+        icon: "phone",
+        route: "/(patient)/help",
       },
     ],
   },

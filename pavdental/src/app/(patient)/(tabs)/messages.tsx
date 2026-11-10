@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Modal, RefreshControl } from "react-native";
@@ -21,8 +22,6 @@ import {
   useMessageThreads,
   usePracticeHours,
   useCreateMessageThreadMutation,
-  useReplyMessageThreadMutation,
-  useMarkMessageThreadReadMutation,
 } from "@/features/hooks/use-dental-api";
 
 export interface ThreadListItem {
@@ -36,9 +35,8 @@ export interface ThreadListItem {
 }
 
 export default function MessagesScreen() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [replyTo, setReplyTo] = useState<ThreadListItem | null>(null);
-  const [replyText, setReplyText] = useState("");
   const [showTriage, setShowTriage] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -52,8 +50,6 @@ export default function MessagesScreen() {
   const { data: rawThreads, isLoading, isError, refetch } = useMessageThreads();
   const createMutation = useCreateMessageThreadMutation();
   const refresh = usePullToRefresh();
-  const replyMutation = useReplyMessageThreadMutation();
-  const markReadMutation = useMarkMessageThreadReadMutation();
 
   const threads: ThreadListItem[] = Array.isArray(rawThreads)
     ? rawThreads.map((t: any) => ({
@@ -79,26 +75,9 @@ export default function MessagesScreen() {
 
   const unreadCount = threads.filter((m) => !m.isRead).length;
 
+  // The conversation opens on its own screen, which marks it read.
   const openMessage = (msg: ThreadListItem) => {
-    if (!msg.isRead) {
-      markReadMutation.mutate(msg.id);
-    }
-    setReplyTo(msg);
-    setReplyText("");
-  };
-
-  const sendReply = async () => {
-    if (!replyTo || !replyText.trim()) return;
-    const body = replyText.trim();
-    try {
-      await replyMutation.mutateAsync({ threadId: replyTo.id, body });
-      safeHaptics.notificationAsync("success").catch(() => {});
-      setToast("Reply sent to your care team");
-      setReplyTo(null);
-      setReplyText("");
-    } catch (err: any) {
-      setToast(err?.message || "Could not send reply");
-    }
+    router.push({ pathname: "/(patient)/message-thread" as never, params: { id: msg.id } });
   };
 
   const handleCreateThread = async () => {
@@ -258,36 +237,6 @@ export default function MessagesScreen() {
           </View>
         )}
       </ScrollView>
-
-      {/* Reply composer */}
-      {replyTo ? (
-        <View style={styles.composer}>
-          <ThemedText variant="caption" style={styles.composerTo}>
-            Reply to {replyTo.from}
-          </ThemedText>
-          <View style={styles.composerRow}>
-            <Input
-              label=""
-              placeholder="Write a reply…"
-              value={replyText}
-              onChangeText={setReplyText}
-            />
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Send reply"
-              onPress={sendReply}
-              style={({ pressed }) => [
-                styles.sendBtn,
-                pressed && { opacity: 0.8 },
-                (!replyText.trim() || replyMutation.isPending) && styles.sendBtnDisabled,
-              ]}
-            >
-              <AppIcon name="arrowRight" size={18} color={colors.onInk} />
-            </Pressable>
-          </View>
-          <Button title="Close" variant="ghost" size="sm" onPress={() => setReplyTo(null)} />
-        </View>
-      ) : null}
 
       {/* Frame 6: emergency triage modal */}
       <EmergencyTriageModal visible={showTriage} onClose={() => setShowTriage(false)} />
@@ -496,21 +445,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 40,
   },
-  composer: {
-    backgroundColor: colors.systemBackground,
-    borderTopColor: colors.separator,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    gap: spacing.xxs,
-    padding: spacing.md,
-  },
-  composerRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.xs,
-  },
-  composerTo: {
-    color: colors.secondaryLabel,
-  },
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -525,17 +459,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: spacing.xs,
-  },
-  sendBtn: {
-    alignItems: "center",
-    backgroundColor: colors.ink,
-    borderRadius: radius.full,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
-  },
-  sendBtnDisabled: {
-    opacity: 0.4,
   },
   stack: {
     gap: spacing.sm,

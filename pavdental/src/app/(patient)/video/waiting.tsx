@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
+import { PRACTICE_CONFIG } from "@/config/practice";
+import { isRunningLate, waitingTrouble, type WaitingTrouble } from "@/features/video/waiting-state";
 
 export default function WaitingRoomScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
   const [statusLabel, setStatusLabel] = useState("Waiting");
+  const [trouble, setTrouble] = useState<WaitingTrouble>(null);
+  const [startTimeUtc, setStartTimeUtc] = useState<string | null>(null);
+  const [now, setNow] = useState(Date.now());
+  const failures = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -17,8 +23,19 @@ export default function WaitingRoomScreen() {
       if (!appointmentId) return;
       try {
         const res = await authFetch(`/api/video/status/${appointmentId}`);
-        if (!active || !res.ok) return;
+        if (!active) return;
+        if (!res.ok) {
+          // A 404 or 403 will not fix itself; anything else may be a passing blip.
+          failures.current += res.status === 404 || res.status === 403 ? 3 : 1;
+          setTrouble(waitingTrouble({ failures: failures.current }));
+          return;
+        }
+        failures.current = 0;
         const data = await res.json();
+        if (typeof data?.startTimeUtc === "string") setStartTimeUtc(data.startTimeUtc);
+        const closed = waitingTrouble({ failures: 0, status: data?.status });
+        setTrouble(closed);
+        if (closed) return;
         if (data?.admitted || data?.status === "in_progress" || data?.status === "IN_PROGRESS") {
           setStatusLabel("Clinician Admitted You");
           router.replace({
@@ -27,11 +44,16 @@ export default function WaitingRoomScreen() {
           });
         }
       } catch {
-        // Ignore transient network errors while polling
+        if (!active) return;
+        failures.current += 1;
+        setTrouble(waitingTrouble({ failures: failures.current }));
       }
     }
     pollRoomStatus();
-    const interval = setInterval(pollRoomStatus, 4000);
+    const interval = setInterval(() => {
+      setNow(Date.now());
+      pollRoomStatus();
+    }, 4000);
     return () => {
       active = false;
       clearInterval(interval);
@@ -77,6 +99,20 @@ export default function WaitingRoomScreen() {
             </View>
           </Card>
 
+          {trouble === "connection" ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              We can't reach the practice. Check your connection; we'll keep trying.
+            </ThemedText>
+          ) : trouble === "closed" ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              This consultation is no longer open. Go back to your bookings to see what happened.
+            </ThemedText>
+          ) : isRunningLate(startTimeUtc, now) ? (
+            <ThemedText variant="caption" style={styles.subtitle}>
+              Your clinician is running a little late. Please stay here, or call us on {PRACTICE_CONFIG.phone}.
+            </ThemedText>
+          ) : null}
+
           <View style={styles.reassuranceBox}>
             <AppIcon name="lock" size={14} color={colors.secondaryLabel} />
             <ThemedText variant="caption" style={styles.reassuranceText}>
@@ -86,8 +122,16 @@ export default function WaitingRoomScreen() {
         </View>
 
         <View style={styles.actions}>
+          {isRunningLate(startTimeUtc, now) || trouble ? (
+            <Button
+              title="Message the practice"
+              variant="secondary"
+              size="md"
+              onPress={() => router.push("/(patient)/(tabs)/messages" as never)}
+            />
+          ) : null}
           <Button
-            title="Cancel & leave waiting room"
+            title="Leave waiting room"
             variant="ghost"
             size="md"
             onPress={() => router.replace("/(patient)/(tabs)/home")}

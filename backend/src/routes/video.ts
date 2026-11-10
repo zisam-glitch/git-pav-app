@@ -17,6 +17,7 @@ import { safeError } from "../lib/log-safety";
 import { isPlaceholderCredential } from "../config/placeholder";
 import { logFailure } from "../lib/best-effort";
 import { withLockedAppointment, sniffImageMime, MAX_TRIAGE_PHOTOS } from "../lib/video-triage";
+import { sendPatientNotification } from "../lib/patient-push";
 
 const router = Router();
 
@@ -362,6 +363,7 @@ router.get("/status/:appointmentId", requireAuth, validateParams(videoAppointmen
     status: appointment.status,
     admitted: isAdmitted,
     admittedAt: isAdmitted ? triageData.admittedAt || null : null,
+    startTimeUtc: appointment.startTimeUtc.toISOString(),
     // No invented title when nobody is assigned yet (B13).
     clinicianName: appointment.clinician?.fullName ?? null,
     roomUrl: accessDetails.roomUrl || null,
@@ -511,6 +513,17 @@ router.post("/admit-patient", requireAuth, validateBody(admitPatientSchema), asy
           triageData: (await encryptField(updatedTriage)) as any,
         },
       });
+
+      // Tell a patient who has put the phone down. Only the first admit: a repeat
+      // (the clinician tapping again) must not buzz the phone twice. Neutral text.
+      if (appointment.status === "confirmed") {
+        void sendPatientNotification(
+          appointment.patientId,
+          "Your clinician is ready",
+          "Open the Pav Dental app to join your video consultation.",
+          { appointmentId }
+        );
+      }
 
       return { appointment: { ...updated, triageData: updatedTriage }, status: 200 };
     });

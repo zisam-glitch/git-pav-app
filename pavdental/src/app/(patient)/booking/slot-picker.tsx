@@ -9,7 +9,10 @@ import { useBookingStore } from "@/features/booking/booking-store";
 import { TimeSlot } from "@/features/booking/booking-types";
 import { useSlots, useHoldSlotMutation } from "@/features/hooks/use-dental-api";
 import { ukDayLabel, ukHour, upcomingUkDates } from "@/features/booking/uk-time";
-import { holdExpiryOnThisPhone } from "@/features/booking/booking-api";
+import { fetchSlots, holdExpiryOnThisPhone } from "@/features/booking/booking-api";
+import { MAX_WEEKS_AHEAD, hasBookableTime, nextAvailableDay, type SlotLike } from "@/features/booking/next-available";
+import { PRACTICE_CONFIG } from "@/config/practice";
+import { useQueries } from "@tanstack/react-query";
 
 export default function SlotPickerScreen() {
   const router = useRouter();
@@ -36,9 +39,11 @@ export default function SlotPickerScreen() {
   }, [service, isFocused]);
 
   // Days and times are the clinic's, in UK time.
+  // A week at a time, up to four weeks, when nothing is free sooner.
+  const [weeks, setWeeks] = useState(1);
   const upcomingDays = useMemo(
-    () => upcomingUkDates(7).map((iso) => ({ iso, label: ukDayLabel(iso) })),
-    []
+    () => upcomingUkDates(7 * weeks).map((iso) => ({ iso, label: ukDayLabel(iso) })),
+    [weeks]
   );
 
   const [selectedDate, setSelectedDate] = useState<string>(upcomingDays[0].label);
@@ -59,6 +64,25 @@ export default function SlotPickerScreen() {
   });
 
   const slots: TimeSlot[] = (apiSlots ?? []) as TimeSlot[];
+
+  // Which of the shown days have a free time, so an empty day is not a dead end.
+  const dayQueries = useQueries({
+    queries: upcomingDays.map((d) => {
+      const params = {
+        date: d.iso,
+        channel: channel ?? "clinic",
+        clinicId: clinic?.id,
+        clinicianId: clinician?.id,
+        serviceId: service?.id,
+      };
+      return { queryKey: ["slots", params], queryFn: () => fetchSlots(params), enabled: !!service };
+    }),
+  });
+  const bookableByDay: Record<string, boolean | undefined> = {};
+  upcomingDays.forEach((d, i) => {
+    const q = dayQueries[i];
+    bookableByDay[d.iso] = q?.data === undefined ? undefined : hasBookableTime(q.data as SlotLike[], { clinicId: clinic?.id, clinicianId: clinician?.id });
+  });
 
   const filteredSlots = slots.filter((slot) => {
     if (slot.dateFormatted && slot.dateFormatted !== selectedDate) return false;
@@ -89,6 +113,8 @@ export default function SlotPickerScreen() {
     : null;
 
   const holdMutation = useHoldSlotMutation();
+
+  const nextDay = nextAvailableDay(upcomingDays, bookableByDay, isoDate);
 
   const handleContinue = async () => {
     if (!selectedSlot) return;
@@ -196,6 +222,25 @@ export default function SlotPickerScreen() {
         <ThemedText variant="headline" style={styles.sectionHeader}>
           Available Times for {selectedDate}
         </ThemedText>
+
+        {!isLoading && !isError && apiSlots !== undefined && visibleSlots.length === 0 ? (
+          nextDay ? (
+            <Button
+              title={`Next available: ${nextDay.label}`}
+              variant="secondary"
+              onPress={() => {
+                setSelectedDate(nextDay.label);
+                setSelectedSlotState(null);
+              }}
+            />
+          ) : weeks < MAX_WEEKS_AHEAD ? (
+            <Button title="Look at the following week" variant="secondary" onPress={() => setWeeks((w) => w + 1)} />
+          ) : (
+            <ThemedText variant="caption" style={styles.sectionHeader}>
+              No times in the next {MAX_WEEKS_AHEAD} weeks. Please call us on {PRACTICE_CONFIG.phone}.
+            </ThemedText>
+          )
+        ) : null}
 
         <QueryState
           isLoading={isLoading}

@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { ThemedText, Button, FlowHeader, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
+import { queryClient } from "@/lib/query-client";
 import { useAuthStore } from "@/features/auth/auth-store";
 import {
   useOnboardingStore,
@@ -95,6 +96,8 @@ export default function OnboardingConsentsScreen() {
         }
       }
 
+      // The Home card and the booking check both read the saved profile.
+      await queryClient.invalidateQueries({ queryKey: ["patient-profile"] });
       router.push("/onboarding/complete");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Could not finish setup. Please try again.";
@@ -207,7 +210,7 @@ export default function OnboardingConsentsScreen() {
               />
             </View>
             <ThemedText variant="subhead" style={styles.cardBody}>
-              Receive SMS and email reminders when your routine 6-month checkup or hygiene session is due.
+              Receive email reminders when your routine 6-month checkup or hygiene session is due.
             </ThemedText>
           </View>
         </View>

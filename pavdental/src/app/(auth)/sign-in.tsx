@@ -191,7 +191,7 @@ export default function SignInScreen() {
             />
 
             <Button
-              title="Use phone OTP instead"
+              title="Sign in with a text code"
               variant="secondary"
               size="md"
               onPress={() => router.push("/(auth)/otp")}

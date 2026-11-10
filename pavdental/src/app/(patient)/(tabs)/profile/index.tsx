@@ -60,6 +60,11 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     heading: "Preferences",
     rows: [
       {
+        title: "Notifications",
+        icon: "bell",
+        route: "/(patient)/notifications",
+      },
+      {
         title: "Notification preferences",
         icon: "bell",
         route: "/(patient)/(tabs)/profile/notifications",
@@ -95,9 +100,19 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
         route: "/(patient)/(tabs)/profile/sessions",
       },
       {
-        title: "Consent & GDPR",
+        title: "Privacy and consent",
         icon: "shield",
         route: "/(patient)/(tabs)/profile/consent",
+      },
+    ],
+  },
+  {
+    heading: "Help",
+    rows: [
+      {
+        title: "Help and contact",
+        icon: "phone",
+        route: "/(patient)/help",
       },
     ],
   },
@@ -261,10 +276,10 @@ export default function ProfileScreen() {
           </View>
         ) : null}
 
-        {/* Danger zone */}
+        {/* Account actions */}
         <View style={styles.group}>
           <ThemedText variant="title" style={styles.groupHeading}>
-            Danger zone
+            Account
           </ThemedText>
           <View>
             <ListRow

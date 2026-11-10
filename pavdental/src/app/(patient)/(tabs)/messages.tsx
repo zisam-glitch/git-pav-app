@@ -256,7 +256,7 @@ export default function MessagesScreen() {
             <View style={styles.recipientSelector}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to practice team"
+                accessibilityLabel="Send to the practice team"
                 onPress={() => setNewRecipientType("practice")}
                 style={[
                   styles.recipientOption,

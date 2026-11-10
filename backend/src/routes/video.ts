@@ -6,7 +6,7 @@ import multer from "multer";
 import { withIdempotency, idempotencyKeyFrom } from "../lib/idempotency";
 import { validateBody, validateParams } from "../middleware/validate";
 import { HttpError } from "../middleware/error-handler";
-import { createVideoRoomSchema, submitTriageSchema, admitPatientSchema, endConsultSchema, videoAppointmentParamsSchema } from "../schemas/video";
+import { triageDraftSchema, createVideoRoomSchema, submitTriageSchema, admitPatientSchema, endConsultSchema, videoAppointmentParamsSchema } from "../schemas/video";
 import { dailyApiClient } from "../lib/api-client";
 import { objectStorage } from "../lib/object-storage";
 import { checkRedFlags, TriageData } from "../lib/triage-escalation";
@@ -308,8 +308,11 @@ router.post("/submit-triage", requireAuth, validateBody(submitTriageSchema), asy
       const currentTriage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
       const mergedPhotos = photos && photos.length > 0 ? photos : (currentTriage.photos || []);
 
+      // The draft has done its job once the real answers are in.
+      const { draft: _draft, ...withoutDraft } = currentTriage;
+      void _draft;
       const mergedTriage = {
-        ...currentTriage,
+        ...withoutDraft,
         chiefComplaint,
         painLevel,
         duration,
@@ -336,6 +339,49 @@ router.post("/submit-triage", requireAuth, validateBody(submitTriageSchema), asy
     }
     return res.status(result.status).json(result);
   });
+});
+
+// ─── PUT /api/video/triage-draft/:appointmentId ───────────────────────────────
+// Saves the patient's triage answers so far (V31). Kept inside the same
+// encrypted record as the final answers, under the appointment's row lock.
+router.put(
+  "/triage-draft/:appointmentId",
+  requireAuth,
+  validateParams(videoAppointmentParamsSchema),
+  validateBody(triageDraftSchema),
+  async (req: AuthRequest, res: Response) => {
+    const appointmentId = String(req.params.appointmentId);
+    const result = await withLockedAppointment(appointmentId, async (tx, appointment) => {
+      // Same answer for "no such appointment" and "not yours".
+      if (!appointment || appointment.patient.user.id !== req.user!.sub) return { status: 404, error: "Appointment not found" };
+      if (appointment.channel !== "video" || (appointment.status !== "confirmed" && appointment.status !== "in_progress")) {
+        return { status: 409, error: "This consultation isn't open" };
+      }
+      const current = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
+      const draft = { ...((current.draft as Record<string, unknown>) || {}), ...req.body, savedAt: new Date().toISOString() };
+      await tx.appointment.update({
+        where: { id: appointmentId },
+        data: { triageData: (await encryptField({ ...current, draft })) as never },
+      });
+      return { status: 200 };
+    });
+    if ("error" in result && result.error) return res.status(result.status).json({ error: result.error });
+    return res.json({ ok: true });
+  }
+);
+
+// ─── GET /api/video/triage-draft/:appointmentId ───────────────────────────────
+router.get("/triage-draft/:appointmentId", requireAuth, validateParams(videoAppointmentParamsSchema), async (req: AuthRequest, res: Response) => {
+  const appointmentId = String(req.params.appointmentId);
+  const appointment = await prisma.appointment.findUnique({
+    where: { id: appointmentId },
+    select: { triageData: true, patient: { select: { userId: true } } },
+  });
+  if (!appointment || appointment.patient.userId !== req.user!.sub) {
+    return res.status(404).json({ error: "Appointment not found" });
+  }
+  const triage = (await decryptField<Record<string, unknown>>(appointment.triageData)) || {};
+  return res.json({ draft: triage.draft ?? null });
 });
 
 // ─── GET /api/video/status/:appointmentId ────────────────────────────────────

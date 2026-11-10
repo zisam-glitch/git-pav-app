@@ -47,3 +47,17 @@ export function sniffImageMime(buf: Buffer): "image/jpeg" | "image/png" | "image
   }
   return null;
 }
+
+/** The patient counts as waiting while their app has reported in this recently. */
+export const PATIENT_PRESENT_SECONDS = 30;
+/** The waiting room opens this long before the start time (decision 6). */
+export const WAITING_ROOM_OPENS_MINUTES = 10;
+
+export function patientIsPresent(lastSeenAt: Date | null | undefined, now: number = Date.now()): boolean {
+  return !!lastSeenAt && now - lastSeenAt.getTime() <= PATIENT_PRESENT_SECONDS * 1000;
+}
+
+/** True from 10 minutes before the start until the slot ends. */
+export function waitingRoomIsOpen(start: Date, end: Date, now: number = Date.now()): boolean {
+  return now >= start.getTime() - WAITING_ROOM_OPENS_MINUTES * 60_000 && now < end.getTime();
+}

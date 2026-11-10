@@ -70,7 +70,7 @@ export default function IntraoralPhotosScreen() {
       params: {
         appointmentId: params.appointmentId || '',
         symptomText: params.symptomText || '',
-        painLevel: params.painLevel || '5',
+        painLevel: params.painLevel ?? '',
         hasSwelling: params.hasSwelling || 'false',
         duration: params.duration || '',
         photos: JSON.stringify(

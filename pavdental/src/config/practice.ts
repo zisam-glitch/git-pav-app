@@ -6,7 +6,7 @@
 export const PRACTICE_CONFIG = {
   name: "Pav Dental",
   phone: process.env.EXPO_PUBLIC_PRACTICE_PHONE ?? "0800 1938 786",
-  telUrl: "tel:08001938786",
+  telUrl: `tel:${(process.env.EXPO_PUBLIC_PRACTICE_PHONE ?? "0800 1938 786").replace(/[^\d+]/g, "")}`,
   email: "hello@pavdental.com",
   emergencyTel: "tel:999",
   urgentTel: "tel:111",

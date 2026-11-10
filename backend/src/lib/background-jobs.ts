@@ -459,7 +459,7 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
         hoursBefore: 48,
         title: "Appointment in 48 Hours - Pav Dental",
         // CS-54: Neutral copy on lock screen (no clinical service names)
-        body: `Reminder: Your appointment is scheduled for ${dateFormatted} at ${timeFormatted}. Free cancellations available up to 48 hours prior.`,
+        body: `Reminder: Your appointment is scheduled for ${dateFormatted} at ${timeFormatted}. You can cancel or move it from the app.`,
       },
       {
         hoursBefore: 24,

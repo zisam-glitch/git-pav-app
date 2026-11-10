@@ -6,8 +6,8 @@ import NetInfo from "@react-native-community/netinfo";
 import { ThemedText, Button, Card, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 
-// The call itself opens in the browser (D-01), which asks for the camera and
-// microphone there. All the app can honestly check here is the connection.
+// The call runs in the app, and the phone asks for the camera and microphone
+// when it starts. All the app can honestly check here is the connection.
 type Connection = "checking" | "wifi" | "cellular" | "other" | "offline";
 
 const CONNECTION_LABEL: Record<Connection, string> = {
@@ -49,8 +49,8 @@ export default function DeviceCheckScreen() {
             Before your video call
           </ThemedText>
           <ThemedText variant="caption" style={styles.subtitle}>
-            Your call opens in your phone's browser. When it opens, allow the camera and microphone so your dentist can
-            see and hear you.
+            Your call runs here in the app. When it starts, allow the camera and microphone so your dentist can see and
+            hear you.
           </ThemedText>
         </View>
 

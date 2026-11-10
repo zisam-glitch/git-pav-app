@@ -203,7 +203,7 @@ export default function VanServiceAreaScreen() {
             />
             {currentLocation && (
               <ThemedText variant="caption" style={styles.locationText}>
-                Coordinates: {currentLocation.lat.toFixed(4)}, {currentLocation.lng.toFixed(4)}
+                Location found
               </ThemedText>
             )}
           </View>
@@ -255,7 +255,7 @@ export default function VanServiceAreaScreen() {
               {isVanOnline ? (
                 <View style={styles.dispatchOnlineBanner}>
                   <ThemedText variant="headline" style={styles.dispatchEtaTitle}>
-                    Estimated arrival: {availability?.etaLabel || "~20–30 min"}
+                    {availability?.etaLabel ? `Estimated arrival: ${availability.etaLabel}` : "Arrival time confirmed when the operator accepts"}
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.dispatchEtaSub}>
                     {availability?.queueLength === 0

@@ -1,3 +1,4 @@
+import { UpdateGate } from "@/features/app-config/update-gate";
 import { useEffect } from "react";
 import { AppState, AppStateStatus, StyleSheet, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
@@ -173,16 +174,18 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <ThemeProvider value={navTheme}>
               <StatusBar style="dark" />
-              <NotificationSetup />
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(auth)" />
-                <Stack.Screen name="onboarding" />
-                <Stack.Screen name="(patient)" />
-                <Stack.Screen name="(clinician)" />
-                <Stack.Screen name="(operator)" />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <OfflineBanner />
+              <UpdateGate>
+                <NotificationSetup />
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(auth)" />
+                  <Stack.Screen name="onboarding" />
+                  <Stack.Screen name="(patient)" />
+                  <Stack.Screen name="(clinician)" />
+                  <Stack.Screen name="(operator)" />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <OfflineBanner />
+              </UpdateGate>
             </ThemeProvider>
           </QueryClientProvider>
         </StripeProvider>

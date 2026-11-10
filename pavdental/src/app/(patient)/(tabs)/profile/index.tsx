@@ -107,6 +107,16 @@ const groups: { heading: string; rows: MenuRow[] }[] = [
     ],
   },
   {
+    heading: "Help",
+    rows: [
+      {
+        title: "Help and contact",
+        icon: "phone",
+        route: "/(patient)/help",
+      },
+    ],
+  },
+  {
     heading: "Legal & policies",
     rows: [
       {

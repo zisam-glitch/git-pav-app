@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import NetInfo from "@react-native-community/netinfo";
 import { ThemedText, Button, Card, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { CameraCheck } from "@/features/video/camera-check";
 
 // The call runs in the app, and the phone asks for the camera and microphone
 // when it starts. All the app can honestly check here is the connection.
@@ -77,6 +78,10 @@ export default function DeviceCheckScreen() {
               Connect to Wi-Fi or mobile data to join the call.
             </ThemedText>
           ) : null}
+        </Card>
+
+        <Card style={styles.card}>
+          <CameraCheck />
         </Card>
 
         <View style={styles.fallbackBox}>

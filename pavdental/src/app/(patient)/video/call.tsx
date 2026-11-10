@@ -22,11 +22,11 @@ export default function VideoCallScreen() {
   const [opened, setOpened] = useState(false);
   const [inCall, setInCall] = useState(false);
 
-  const loadRoom = useCallback(async () => {
+  const loadRoom = useCallback(async (): Promise<Room | null> => {
     if (!appointmentId) {
       setError("We couldn't find this consultation. Please go back and open it from your appointments.");
       setLoading(false);
-      return;
+      return null;
     }
     setLoading(true);
     setError(null);
@@ -39,11 +39,14 @@ export default function VideoCallScreen() {
       if (!res.ok || !data?.url || !data?.token) {
         setError(data?.error || "We couldn't open the video room. Please try again.");
         setRoom(null);
-      } else {
-        setRoom({ url: data.url, token: data.token });
+        return null;
       }
+      const fresh = { url: data.url as string, token: data.token as string };
+      setRoom(fresh);
+      return fresh;
     } catch {
       setError("You seem to be offline. Check your connection and try again.");
+      return null;
     } finally {
       setLoading(false);
     }
@@ -53,8 +56,11 @@ export default function VideoCallScreen() {
     loadRoom();
   }, [loadRoom]);
 
-  const joinCall = () => {
-    if (!room) return;
+  const joinCall = async () => {
+    // A rejoin after a long consultation asks for a new token, not the one
+    // fetched when the screen opened (V20).
+    const current = opened ? await loadRoom() : room;
+    if (!current) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     setOpened(true);
     setInCall(true);

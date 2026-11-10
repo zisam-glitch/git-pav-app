@@ -65,6 +65,10 @@ export default function AppointmentDetailScreen() {
 
   const source: Booking[] = (apiAppointments ?? []) as Booking[];
   const booking = source.find((b) => b.id === id);
+  // Once the answers are in, the button stops asking for them again (V36).
+  const triageAnswered = Boolean(
+    (booking as { triageData?: { submittedAt?: string } | null } | undefined)?.triageData?.submittedAt
+  );
 
   if (isLoading) {
     return (
@@ -216,11 +220,14 @@ export default function AppointmentDetailScreen() {
           <Card elevation="flat" style={styles.videoCard}>
             <ThemedText variant="headline">Your video consult</ThemedText>
             <ThemedText variant="caption" style={styles.muted}>
-              Answer the triage questions first so your clinician can read them, then wait in the waiting room until they let you in.
+              {triageAnswered
+                ? "Your triage answers have been sent. You can change them until your clinician lets you in."
+                : "Answer the triage questions first so your clinician can read them, then wait in the waiting room until they let you in."}
             </ThemedText>
             <View style={styles.videoActions}>
               <Button
-                title="Answer the triage questions"
+                title={triageAnswered ? "Change your triage answers" : "Answer the triage questions"}
+                variant={triageAnswered ? "secondary" : "primary"}
                 size="md"
                 onPress={() =>
                   router.push({ pathname: "/(patient)/video/intake" as never, params: { appointmentId: booking.id } })

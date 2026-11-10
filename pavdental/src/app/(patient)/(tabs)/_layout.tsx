@@ -2,6 +2,8 @@ import { View, StyleSheet } from "react-native";
 import { Tabs } from "expo-router";
 import { colors, type } from "@/theme";
 import { AppIcon, ThemedText, type AppIconName } from "@/components";
+import { useMessageThreads } from "@/features/hooks/use-dental-api";
+import { unreadThreadCount } from "@/features/messages/thread";
 
 // ─── Patient tab shell — 5 destinations ───────────────────────────────────────
 // Reference tab bar: flat light grey, no top border, filled glyphs. The active
@@ -35,6 +37,9 @@ function tabLabel(text: string) {
 }
 
 export default function PatientTabsLayout() {
+  // The Messages tab shows how many conversations have something new (V54).
+  const { data: threads } = useMessageThreads();
+  const unread = unreadThreadCount(threads);
   return (
     <Tabs
       screenOptions={{
@@ -88,6 +93,7 @@ export default function PatientTabsLayout() {
         options={{
           title: "Messages",
           tabBarLabel: tabLabel("Messages"),
+          tabBarBadge: unread > 0 ? unread : undefined,
           tabBarIcon: ({ focused }) => <TabIcon name="message" focused={focused} />,
         }}
       />

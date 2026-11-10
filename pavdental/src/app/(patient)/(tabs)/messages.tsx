@@ -47,7 +47,7 @@ export default function MessagesScreen() {
   const [newRecipientType, setNewRecipientType] = useState<"practice" | "care_team">("practice");
 
   const { hoursText } = usePracticeHours();
-  const { data: rawThreads, isLoading, isError, refetch } = useMessageThreads();
+  const { data: rawThreads, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessageThreads();
   const createMutation = useCreateMessageThreadMutation();
   const refresh = usePullToRefresh();
 
@@ -111,6 +111,10 @@ export default function MessagesScreen() {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
         ListHeaderComponent={
           <View style={styles.headerStack}>
         <View style={styles.headerRow}>

@@ -27,7 +27,7 @@ export default function MessageThreadScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: rawThreads, isLoading, isError, refetch } = useMessageThreads();
+  const { data: rawThreads, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessageThreads();
   const replyMutation = useReplyMessageThreadMutation();
   const markRead = useMarkMessageThreadReadMutation();
   const [reply, setReply] = useState("");
@@ -39,6 +39,12 @@ export default function MessageThreadScreen() {
 
   const thread = Array.isArray(rawThreads) ? (rawThreads as RawThread[]).find((t) => t.id === id) : undefined;
   const messages = threadMessages(thread);
+
+  // Opened from a notification for a conversation older than the first page:
+  // load further pages until it turns up.
+  useEffect(() => {
+    if (!thread && id && hasNextPage && !isFetchingNextPage) fetchNextPage();
+  }, [thread, id, hasNextPage, isFetchingNextPage]);
 
   const unread = thread ? !thread.isRead : false;
   useEffect(() => {
@@ -78,7 +84,7 @@ export default function MessageThreadScreen() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || (!thread && (hasNextPage || isFetchingNextPage))) {
     return (
       <View style={styles.container}>
         <View style={styles.content}>

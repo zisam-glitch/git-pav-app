@@ -52,7 +52,7 @@ export default function ClinicianInboxScreen() {
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
   const { hoursText } = usePracticeHours();
-  const { data: rawThreads, isLoading, isError, refetch, isRefetching } = useMessageThreads();
+  const { data: rawThreads, isLoading, isError, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessageThreads();
   const replyMutation = useReplyMessageThreadMutation();
   const markReadMutation = useMarkMessageThreadReadMutation();
 
@@ -181,6 +181,10 @@ export default function ClinicianInboxScreen() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
         renderItem={({ item: t }) => {
       const unread = !t.isRead;
       const isSelected = activeThread?.id === t.id;

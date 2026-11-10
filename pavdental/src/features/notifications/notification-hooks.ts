@@ -1,6 +1,7 @@
 import React from "react";
 import { reportCaughtError } from "@/lib/caught-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { nextOffset, flattenPages, uniqueById } from "@/lib/paging";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
 import { useIsAuthenticated } from "../auth/auth-store";
@@ -190,6 +191,28 @@ export function useNotificationHistory(limit: number = 20, offset: number = 0) {
 
       return response.json() as Promise<NotificationHistory[]>;
     },
+    enabled: isAuthenticated,
+  });
+}
+
+export const NOTIFICATION_PAGE_SIZE = 30;
+
+/** What this phone was sent, newest first, a page at a time; `fetchNextPage` adds older ones. */
+export function useNotificationHistoryPages() {
+  const isAuthenticated = useIsAuthenticated();
+  return useInfiniteQuery({
+    queryKey: ["notification-history", "pages"],
+    queryFn: async ({ pageParam }) => {
+      const response = await authFetch(
+        `/api/notifications/history?limit=${NOTIFICATION_PAGE_SIZE}&offset=${pageParam}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch notification history");
+      return (await response.json()) as NotificationHistory[];
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      nextOffset(lastPage, pages.reduce((n, p) => n + (Array.isArray(p) ? p.length : 0), 0), NOTIFICATION_PAGE_SIZE),
+    select: (d) => uniqueById(flattenPages<NotificationHistory>(d.pages)),
     enabled: isAuthenticated,
   });
 }

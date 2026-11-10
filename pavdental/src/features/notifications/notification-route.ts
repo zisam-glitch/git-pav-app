@@ -22,6 +22,10 @@ export function routeForNotification(data: unknown): NotificationTarget | null {
   if (typeof d.requestId === "string" && d.requestId) {
     return { pathname: "/(patient)/van/live-track", params: { requestId: d.requestId } };
   }
+  // The last video reminder opens the waiting room, not just the appointment (V7).
+  if (d.screen === "waiting_room" && typeof d.appointmentId === "string" && d.appointmentId) {
+    return { pathname: "/(patient)/video/device-check", params: { appointmentId: d.appointmentId } };
+  }
   if (typeof d.appointmentId === "string" && d.appointmentId) {
     return { pathname: "/(patient)/appointments/[id]", params: { id: d.appointmentId } };
   }

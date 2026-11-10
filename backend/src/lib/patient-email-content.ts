@@ -74,3 +74,24 @@ ${lines.map((l) => `<p>${escapeHtml(l)}</p>`).join("\n")}
   return { subject, text, html };
 }
 
+
+/**
+ * The push for a booking change. Names the date and time, never the treatment
+ * (lock-screen privacy, CS-54). A video consultation says so, because it has
+ * no clinic to go to.
+ */
+export function buildAppointmentPush(d: {
+  kind: AppointmentEmailKind;
+  startTimeUtc: Date;
+  channel: string;
+}): { title: string; body: string } {
+  const when = whenLine(d.startTimeUtc);
+  const noun = d.channel === "video" ? "video consultation" : "appointment";
+  if (d.kind === "booked") {
+    return { title: "Booking confirmed", body: `Your ${noun} is confirmed for ${when}.` };
+  }
+  if (d.kind === "rescheduled") {
+    return { title: "Booking moved", body: `Your ${noun} is now on ${when}.` };
+  }
+  return { title: "Booking cancelled", body: `Your ${noun} on ${when} has been cancelled.` };
+}

@@ -9,7 +9,8 @@
 import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { safeError } from "./log-safety";
-import { buildAppointmentEmail, type AppointmentEmailKind } from "./patient-email-content";
+import { buildAppointmentEmail, buildAppointmentPush, type AppointmentEmailKind } from "./patient-email-content";
+import { sendPatientNotification } from "./patient-push";
 
 export async function sendAppointmentEmail(
   kind: AppointmentEmailKind,
@@ -48,5 +49,47 @@ export async function sendAppointmentEmail(
     await communicationService.sendEmail({ to: user.email, ...email });
   } catch (err) {
     console.error("[PatientEmail] Failed to send appointment email:", safeError(err));
+  }
+}
+
+/**
+ * Tells the patient about a booking change on both channels: a push, and the
+ * email. Each honours its own switch, and each failure stays its own, so a
+ * failed email never stops the push (V1, V2).
+ */
+export async function notifyAppointmentChange(
+  kind: AppointmentEmailKind,
+  appointmentId: string,
+  extra: { refundPence?: number } = {}
+): Promise<void> {
+  await Promise.allSettled([sendAppointmentEmail(kind, appointmentId, extra), sendAppointmentPush(kind, appointmentId)]);
+}
+
+async function sendAppointmentPush(kind: AppointmentEmailKind, appointmentId: string): Promise<void> {
+  try {
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: appointmentId },
+      select: {
+        patientId: true,
+        startTimeUtc: true,
+        channel: true,
+        patient: { select: { user: { select: { notificationPreferences: true } } } },
+      },
+    });
+    if (!appointment) return;
+    const prefs = appointment.patient?.user?.notificationPreferences;
+    // The same "appointment confirmations" setting as the email; push switch is checked inside.
+    if (prefs && !prefs.appointmentConfirmations) return;
+    const { title, body } = buildAppointmentPush({
+      kind,
+      startTimeUtc: appointment.startTimeUtc,
+      channel: String(appointment.channel),
+    });
+    await sendPatientNotification(appointment.patientId, title, body, {
+      type: `appointment_${kind}`,
+      appointmentId,
+    });
+  } catch (err) {
+    console.error("[PatientEmail] Failed to send appointment push:", safeError(err));
   }
 }

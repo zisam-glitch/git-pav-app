@@ -1,4 +1,4 @@
-import { sendAppointmentEmail } from "../lib/patient-email";
+import { notifyAppointmentChange } from "../lib/patient-email";
 import { Request, Response, Router } from "express";
 import Stripe from "stripe";
 import { env } from "../config/env";
@@ -370,7 +370,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           await scheduleAppointmentReminderLadder(appointmentId).catch((err) => {
             console.error("[Stripe Webhook] Failed to schedule reminders:", safeError(err));
           });
-          void sendAppointmentEmail("booked", appointmentId);
+          void notifyAppointmentChange("booked", appointmentId);
         } else {
           // Not confirmed by this event. Fine if it is already confirmed / completed
           // with this payment (a duplicate event, or the confirm call won); otherwise

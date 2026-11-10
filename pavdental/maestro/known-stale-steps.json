@@ -1,0 +1,292 @@
+[
+  {
+    "flow": "j1-auth-signup-signin.yaml",
+    "step": "assertVisible",
+    "text": "Dental care, designed around you"
+  },
+  {
+    "flow": "j1-auth-signup-signin.yaml",
+    "step": "assertVisible",
+    "text": "Join Pav Dental"
+  },
+  {
+    "flow": "j1-auth-signup-signin.yaml",
+    "step": "tapOn",
+    "text": "At least 8 characters"
+  },
+  {
+    "flow": "j1-auth-signup-signin.yaml",
+    "step": "assertVisible",
+    "text": "Enter verification code"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "assertVisible",
+    "text": "Select a service"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "tapOn",
+    "text": "Routine Check-Up & Clean"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "assertVisible",
+    "text": "Choose location"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "tapOn",
+    "text": "Pav Dental Central"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "assertVisible",
+    "text": "Select appointment time"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "assertVisible",
+    "text": "Review booking"
+  },
+  {
+    "flow": "j2-booking-clinic.yaml",
+    "step": "tapOn",
+    "text": "Pay deposit & confirm"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Mobile Van"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "assertVisible",
+    "text": "Mobile dental service area"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Enter your full UK postcode"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Check coverage"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "assertVisible",
+    "text": "Van access details"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Flat 4, 10 Downing Street"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Off-street driveway"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Standard UK 3-pin plug available"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Continue to booking"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "assertVisible",
+    "text": "Confirm mobile van booking"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "tapOn",
+    "text": "Request mobile van"
+  },
+  {
+    "flow": "j4-van-request.yaml",
+    "step": "assertVisible",
+    "text": "Van Visit"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "assertVisible",
+    "text": "What seems to be the issue?"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "tapOn",
+    "text": "Toothache or sensitivity"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "tapOn",
+    "text": "Past 24-48 hours"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "tapOn",
+    "text": "Pain level 5"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "assertVisible",
+    "text": "Take or upload photos"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "tapOn",
+    "text": "Skip for now"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "assertVisible",
+    "text": "Camera & microphone check"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "tapOn",
+    "text": "Join waiting room"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "assertVisible",
+    "text": "Your dentist will join shortly"
+  },
+  {
+    "flow": "j5-video-consult.yaml",
+    "step": "tapOn",
+    "text": "Join video consultation"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "assertVisible",
+    "text": "Clinician Schedule"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "tapOn",
+    "text": "Add Clinical Note"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "tapOn",
+    "text": "Save clinical note"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "tapOn",
+    "text": "Issue Prescription"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "tapOn",
+    "text": "Select medication"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "tapOn",
+    "text": "Amoxicillin 500mg"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "tapOn",
+    "text": "Sign and Issue Prescription"
+  },
+  {
+    "flow": "j7-clinician-flow.yaml",
+    "step": "assertVisible",
+    "text": "Prescription signed"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "assertVisible",
+    "text": "Van Operator Portal"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "assertVisible",
+    "text": "Pre-trip vehicle check"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Tire pressure & fluids checked"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Generator fuel level full"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Sterilization unit functional"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Confirm & Start Route"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "assertVisible",
+    "text": "Today's Route"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Stop #1"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Capture Stop Notes"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "assertVisible",
+    "text": "Notes saved locally (queued for background sync)"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "tapOn",
+    "text": "Complete Stop"
+  },
+  {
+    "flow": "j8-operator-shift.yaml",
+    "step": "assertVisible",
+    "text": "Stop Completed"
+  },
+  {
+    "flow": "j9-account-deletion.yaml",
+    "step": "assertVisible",
+    "text": "Delete your account"
+  },
+  {
+    "flow": "j9-account-deletion.yaml",
+    "step": "assertVisible",
+    "text": "GDPR right to erasure"
+  },
+  {
+    "flow": "j9-account-deletion.yaml",
+    "step": "tapOn",
+    "text": "Delete My Account"
+  },
+  {
+    "flow": "j9-account-deletion.yaml",
+    "step": "tapOn",
+    "text": "Confirm Account Deletion"
+  },
+  {
+    "flow": "j9-account-deletion.yaml",
+    "step": "assertVisible",
+    "text": "Dental care, designed around you"
+  }
+]

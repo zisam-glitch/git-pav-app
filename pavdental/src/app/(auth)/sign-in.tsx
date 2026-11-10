@@ -113,6 +113,7 @@ export default function SignInScreen() {
 
           <View style={styles.form}>
             <Input
+              testID="sign-in-email"
               label="Email address"
               placeholder="name@example.co.uk"
               keyboardType="email-address"
@@ -127,6 +128,7 @@ export default function SignInScreen() {
             />
 
             <Input
+              testID="sign-in-password"
               label="Password"
               placeholder="Enter your password"
               secureTextEntry={!showPassword}
@@ -183,6 +185,7 @@ export default function SignInScreen() {
 
           <View style={styles.actions}>
             <Button
+              testID="sign-in-submit"
               title={codeSent ? "Verify and sign in" : "Sign in"}
               size="lg"
               arrow

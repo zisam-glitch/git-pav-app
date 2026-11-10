@@ -30,11 +30,14 @@ appId: com.pavdental.app
 - launchApp
 - assertVisible: "Sign in"
 - tapOn: "Sign in"
-- tapOn: "jane.doe@example.co.uk"
+- tapOn:
+    id: "sign-in-email"
 - inputText: "patient.maestro@example.test"
-- tapOn: "Your password"
+- tapOn:
+    id: "sign-in-password"
 - inputText: "StrongPass123!"
-- tapOn: "Sign in"
+- tapOn:
+    id: "sign-in-submit"
 
 # 5. Biometric Unlock Prompt
 - assertVisible: "Unlock Pav Dental"

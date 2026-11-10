@@ -290,6 +290,7 @@ export default function SignUpScreen() {
             </View>
 
             <Button
+              testID="sign-up-submit"
               title="Create account"
               size="lg"
               arrow

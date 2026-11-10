@@ -29,6 +29,8 @@ interface ListRowProps {
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  /** Stable id for end-to-end tests: survives a change of wording */
+  testID?: string;
 }
 
 /**
@@ -49,6 +51,7 @@ export function ListRow({
   onPress,
   style,
   accessibilityLabel,
+  testID,
   accessibilityHint,
 }: ListRowProps) {
   const inner = (
@@ -76,6 +79,7 @@ export function ListRow({
   return (
     <Pressable
       accessibilityRole="button"
+      testID={testID}
       accessibilityLabel={accessibilityLabel ?? title}
       accessibilityHint={accessibilityHint}
       onPress={() => {

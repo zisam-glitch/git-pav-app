@@ -42,15 +42,17 @@ export default function VideoSummaryScreen() {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.header}>
-            <View style={styles.checkBadge}>
-              <AppIcon name="checkCircle" size={20} color={colors.success} />
-              <ThemedText variant="headline">Completed</ThemedText>
-            </View>
+            {summaryData?.status === "completed" ? (
+              <View style={styles.checkBadge}>
+                <AppIcon name="checkCircle" size={20} color={colors.success} />
+                <ThemedText variant="headline">Completed</ThemedText>
+              </View>
+            ) : null}
             <ThemedText variant="largeTitle" style={styles.title}>
               Consultation summary
             </ThemedText>
             <ThemedText variant="subhead" style={styles.subtitle}>
-              Your video consultation has ended.
+              {summaryData?.status === "completed" ? "Your video consultation has ended." : "Your clinician will add a summary here after your consultation."}
             </ThemedText>
           </View>
 

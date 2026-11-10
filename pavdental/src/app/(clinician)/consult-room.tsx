@@ -5,12 +5,12 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, Input, SegmentedControl } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
-import { dailyJoinUrl, openVideoCall } from "@/features/video/open-call";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { triageSummary } from "@/features/video/triage-summary";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
+import { NativeVideoCall } from "@/features/video/native-call";
 
 export default function ClinicianConsultRoomScreen() {
   const router = useRouter();
@@ -45,9 +45,14 @@ export default function ClinicianConsultRoomScreen() {
   const [activeTab, setActiveTab] = useState<"video" | "triage" | "chart">("video");
   const [selectedTooth, setSelectedTooth] = useState<number>(1);
   // The private Daily room for this appointment and the clinician's owner
-  // token. The call runs in an in-app browser window; the token is what lets them in.
-  const [joinUrl, setJoinUrl] = useState<string | null>(null);
-  const [seconds, setSeconds] = useState(0);
+  // token. The call runs natively in the Video call tab and keeps going while
+  // the clinician reads the triage or the chart; the token is what lets them in.
+  const [room, setRoom] = useState<{ url: string; token: string } | null>(null);
+  const [inCall, setInCall] = useState(false);
+  // The timer counts from when the clinician joined, measured against the
+  // clock, so it stays right after the screen was in the background.
+  const [callStartedAt, setCallStartedAt] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const [roomError, setRoomError] = useState<string | null>(null);
   const [admitted, setAdmitted] = useState(false);
   const [admitting, setAdmitting] = useState(false);
@@ -93,7 +98,7 @@ export default function ClinicianConsultRoomScreen() {
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data?.url && data?.token) {
-          setJoinUrl(dailyJoinUrl(data.url, data.token));
+          setRoom({ url: data.url, token: data.token });
         } else {
           setRoomError(data?.error || "Could not open the video room. Try again from your schedule.");
         }
@@ -124,13 +129,21 @@ export default function ClinicianConsultRoomScreen() {
     }
   };
 
-  // Live Call Timer
+  // Live call timer
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds((prev) => prev + 1);
-    }, 1000);
+    if (!callStartedAt) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [callStartedAt]);
+  const seconds = callStartedAt ? Math.max(0, Math.floor((now - callStartedAt) / 1000)) : 0;
+
+  const joinCall = () => {
+    if (!room) return;
+    setCallStartedAt((prev) => prev ?? Date.now());
+    setInCall(true);
+    setActiveTab("video");
+  };
 
   const formatTime = (totalSec: number) => {
     const mins = Math.floor(totalSec / 60);
@@ -194,8 +207,32 @@ export default function ClinicianConsultRoomScreen() {
           />
         </View>
 
+        {/* The call stays mounted (and audible) on the other tabs. */}
+        {inCall && room && (
+          <View style={[styles.videoArea, activeTab !== "video" && styles.hidden]}>
+            <NativeVideoCall
+              url={room.url}
+              token={room.token}
+              otherLabel="the patient"
+              onLeft={() => setInCall(false)}
+              style={styles.callStage}
+            />
+            {!admitted && (
+              <View style={styles.callActions}>
+                <Button title="Let patient in" variant="secondary" loading={admitting} onPress={admitPatient} />
+              </View>
+            )}
+            {roomError && (
+              <ThemedText variant="caption" style={styles.roomError} accessibilityRole="alert">
+                {roomError}
+              </ThemedText>
+            )}
+          </View>
+        )}
+
         {/* Dynamic Center Area */}
         {activeTab === "video" ? (
+          inCall ? null : (
           <View style={styles.videoArea}>
             <View style={styles.streamBox}>
               <AppIcon name="video" size={44} color={colors.tertiaryLabel} />
@@ -214,20 +251,21 @@ export default function ClinicianConsultRoomScreen() {
 
             <View style={styles.callActions}>
               <Button
-                title="Join video call"
-                disabled={!joinUrl}
-                loading={!joinUrl && !roomError}
-                onPress={() => joinUrl && openVideoCall(joinUrl).catch(() => setRoomError("Couldn't open the video call."))}
+                title={callStartedAt ? "Rejoin video call" : "Join video call"}
+                disabled={!room}
+                loading={!room && !roomError}
+                onPress={joinCall}
               />
               <Button
                 title={admitted ? "Patient let in" : "Let patient in"}
                 variant="secondary"
-                disabled={admitted || !joinUrl}
+                disabled={admitted || !room}
                 loading={admitting}
                 onPress={admitPatient}
               />
             </View>
           </View>
+          )
         ) : activeTab === "triage" ? (
           <ScrollView contentContainerStyle={styles.triageScroll}>
             <Card style={styles.triageCard}>
@@ -423,6 +461,13 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     marginTop: spacing.md,
     width: "100%",
+  },
+  callStage: {
+    borderRadius: radius.lg,
+    width: "100%",
+  },
+  hidden: {
+    display: "none",
   },
   container: {
     flex: 1,

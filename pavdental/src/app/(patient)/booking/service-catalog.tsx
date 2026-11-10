@@ -1,6 +1,7 @@
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { usePatientProfile } from "@/features/hooks/use-dental-api";
 import { describeMissing, missingProfileParts } from "@/features/onboarding/profile-completion";
+import { bookingStep } from "@/features/booking/booking-steps";
 import React, { useState, useMemo } from "react";
 import { View, StyleSheet, ScrollView, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -104,7 +105,7 @@ export default function ServiceCatalogScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.topNav}>
-        <FlowHeader step={{ current: 1, total: 5 }} />
+        <FlowHeader step={bookingStep(onlyChannel, "treatment")} />
       </View>
       <ScrollView
         contentContainerStyle={styles.content}

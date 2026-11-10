@@ -122,7 +122,7 @@ export default function VanLiveTrackScreen() {
       <SafeAreaView style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.ink} />
         <ThemedText variant="caption" style={styles.loadingText}>
-          Connecting to live van dispatch system...
+          Finding the van...
         </ThemedText>
       </SafeAreaView>
     );

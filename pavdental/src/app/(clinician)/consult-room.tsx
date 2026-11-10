@@ -7,6 +7,7 @@ import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { triageSummary } from "@/features/video/triage-summary";
+import { FOLLOW_UP_OPTIONS, canSaveConsult, consultPayload, type FollowUp } from "@/features/video/consult-form";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
@@ -66,6 +67,7 @@ export default function ClinicianConsultRoomScreen() {
   const [concludeNotes, setConcludeNotes] = useState("");
   const [concludeDiagnosis, setConcludeDiagnosis] = useState("");
   const [concludePlan, setConcludePlan] = useState("");
+  const [concludeFollowUp, setConcludeFollowUp] = useState<FollowUp>("none");
   const [isEnding, setIsEnding] = useState(false);
 
   const handleEndConsultation = async () => {
@@ -74,13 +76,14 @@ export default function ClinicianConsultRoomScreen() {
     try {
       const res = await authFetch("/api/video/end-consult", {
         method: "POST",
-        body: JSON.stringify({
-          appointmentId,
-          notes: concludeNotes.trim() || "Consultation concluded via video call.",
-          diagnosis: concludeDiagnosis.trim() || undefined,
-          treatmentPlan: concludePlan.trim() || undefined,
-          followUpRecommended: "none",
-        }),
+        body: JSON.stringify(
+          consultPayload(appointmentId, {
+            diagnosis: concludeDiagnosis,
+            notes: concludeNotes,
+            plan: concludePlan,
+            followUp: concludeFollowUp,
+          })
+        ),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -448,32 +451,36 @@ export default function ClinicianConsultRoomScreen() {
 
         {showSummaryModal && (
           <Card style={styles.summaryFormCard}>
-            <ThemedText variant="headline">Record consultation summary</ThemedText>
+            <ThemedText variant="headline">What to tell the patient</ThemedText>
+            <ThemedText variant="caption">The patient reads exactly this when the visit ends.</ThemedText>
             <Input
-              label="Diagnosis"
-              placeholder="e.g. Localized dentine hypersensitivity"
+              label="What you found"
+              placeholder="e.g. Sensitivity in the lower left molar"
               value={concludeDiagnosis}
               onChangeText={setConcludeDiagnosis}
             />
             <Input
-              label="Clinical notes"
-              placeholder="Observations and discussion during video consult"
+              label="Advice"
+              placeholder="What the patient should do now"
               multiline
               numberOfLines={3}
               value={concludeNotes}
               onChangeText={setConcludeNotes}
             />
             <Input
-              label="Treatment plan / advice"
-              placeholder="Recommended home care or next steps"
+              label="Plan"
+              placeholder="Next steps, if any"
               multiline
               numberOfLines={3}
               value={concludePlan}
               onChangeText={setConcludePlan}
             />
+            <ThemedText variant="footnote">Follow-up visit needed</ThemedText>
+            <SegmentedControl segments={FOLLOW_UP_OPTIONS} value={concludeFollowUp} onChange={setConcludeFollowUp} />
             <Button
-              title="Save summary & complete visit"
+              title="Save and complete visit"
               loading={isEnding}
+              disabled={!canSaveConsult({ diagnosis: concludeDiagnosis, notes: concludeNotes, plan: concludePlan, followUp: concludeFollowUp })}
               onPress={handleEndConsultation}
             />
           </Card>

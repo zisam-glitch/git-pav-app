@@ -4,6 +4,7 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
+import { canSaveConsult, consultPayload, FOLLOW_UP_OPTIONS } from "../features/video/consult-form";
 import { waitingRoomOpen } from "../features/video/waiting-room-window";
 
 function assert(condition: boolean, message: string) {
@@ -50,5 +51,15 @@ const intakeScreen = readFileSync(join(__dirname, "../app/(patient)/video/intake
 const videoRoutes = readFileSync(join(__dirname, "../../../backend/src/routes/video.ts"), "utf8");
 assert(!videoRoutes.includes("enable_recording"), "Rooms are created without recording, so the statement below is true");
 assert(intakeScreen.includes("Your video visit is not recorded") && !intakeScreen.includes("dualRecordingConsent"), "The intake says the visit is not recorded and has no recording-consent switch");
+
+// The end-of-consult form saves only what the dentist wrote (V34)
+const empty = { diagnosis: "  ", notes: "", plan: "", followUp: "none" as const };
+assert(!canSaveConsult(empty), "A visit cannot be completed with nothing recorded");
+assert(canSaveConsult({ ...empty, notes: "Rinse with salt water" }) && canSaveConsult({ ...empty, followUp: "clinic" }), "Advice, or a follow-up, is enough to complete the visit");
+const payload = consultPayload("a1", { diagnosis: " Sore gum ", notes: "", plan: "", followUp: "van" });
+assert(payload.diagnosis === "Sore gum" && payload.notes === undefined && payload.treatmentPlan === undefined, "Empty fields are left out, not filled with a stock sentence");
+assert(payload.followUpRecommended === "van", "The follow-up the dentist chose is sent");
+assert(FOLLOW_UP_OPTIONS.map((o) => o.key).join() === "none,clinic,van,video", "The follow-up choices match the server");
+assert(!consultRoom.includes("Consultation concluded via video call."), "No stock sentence is saved as the dentist's notes");
 
 console.log("\n🎉 ALL VIDEO TESTS PASSED!\n");

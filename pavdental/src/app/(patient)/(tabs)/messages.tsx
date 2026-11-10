@@ -250,13 +250,13 @@ export default function MessagesScreen() {
             </View>
 
             <ThemedText variant="caption" style={styles.modalSubtext}>
-              Route message to:
+              Who is this for?
             </ThemedText>
 
             <View style={styles.recipientSelector}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to practice team"
+                accessibilityLabel="Send to the practice team"
                 onPress={() => setNewRecipientType("practice")}
                 style={[
                   styles.recipientOption,
@@ -275,7 +275,7 @@ export default function MessagesScreen() {
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to care team clinician"
+                accessibilityLabel="Send to your dentist"
                 onPress={() => setNewRecipientType("care_team")}
                 style={[
                   styles.recipientOption,
@@ -289,7 +289,7 @@ export default function MessagesScreen() {
                     newRecipientType === "care_team" && styles.recipientTextActive,
                   ]}
                 >
-                  Care team clinician
+                  Your dentist
                 </ThemedText>
               </Pressable>
             </View>

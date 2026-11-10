@@ -46,6 +46,9 @@ const banned = [
   "authorised sessions",
   "Danger zone",
   "has been dispatched",
+  "Route message to",
+  "Care team clinician",
+  "Consultation ready",
 ];
 for (const phrase of banned) {
   assert(!text.toLowerCase().includes(phrase.toLowerCase()), `Patient screens no longer say "${phrase}"`);

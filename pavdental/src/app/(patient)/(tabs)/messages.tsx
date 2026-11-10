@@ -250,7 +250,7 @@ export default function MessagesScreen() {
             </View>
 
             <ThemedText variant="caption" style={styles.modalSubtext}>
-              Route message to:
+              Who is this for?
             </ThemedText>
 
             <View style={styles.recipientSelector}>
@@ -289,7 +289,7 @@ export default function MessagesScreen() {
                     newRecipientType === "care_team" && styles.recipientTextActive,
                   ]}
                 >
-                  Care team clinician
+                  Your dentist
                 </ThemedText>
               </Pressable>
             </View>

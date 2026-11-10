@@ -272,7 +272,7 @@ describe("CS-29: Messaging that reaches people (MS-3)", () => {
     expect((await fetch(`${baseUrl}/api/messages?offset=-1`, { headers })).status).toBe(400);
   });
 
-  it("records an audit entry when a patient deletes a thread (CS-29)", async () => {
+  it("hides a thread from the patient and keeps it for the practice, with an audit entry (CS-29, V56)", async () => {
     const patient = await makePatient("delete-pt", "Delete", "Patient");
     const res = await fetch(`${baseUrl}/api/messages`, {
       method: "POST",
@@ -288,14 +288,19 @@ describe("CS-29: Messaging that reaches people (MS-3)", () => {
       headers: { Authorization: `Bearer ${patient.token}` },
     });
     expect(del.status).toBe(200);
-    expect(await prisma.messageThread.findUnique({ where: { id: thread.id } })).toBeNull();
+    // Gone from the patient's list, still in the database for the practice.
+    const kept = await prisma.messageThread.findUnique({ where: { id: thread.id } });
+    expect(kept).not.toBeNull();
+    expect(kept!.patientHiddenAt).not.toBeNull();
+    const list = (await (await fetch(`${baseUrl}/api/messages`, { headers: { Authorization: `Bearer ${patient.token}` } })).json()) as { id: string }[];
+    expect(list.some((t) => t.id === thread.id)).toBe(false);
 
     const entry = await prisma.auditLog.findFirst({
-      where: { action: "message.thread_deleted", resourceId: thread.id },
+      where: { action: "message.thread_hidden", resourceId: thread.id },
     });
     expect(entry).not.toBeNull();
     expect(entry!.actorId).toBe(patient.user.id);
-    expect(entry!.metadata).toMatchObject({ recipientType: "practice", messageCount: 1 });
+    expect(entry!.metadata).toMatchObject({ recipientType: "practice" });
   });
 
   it("keeps a separate unread state for the patient and for staff (CS-29)", async () => {

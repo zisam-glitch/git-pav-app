@@ -45,4 +45,10 @@ const consultRoom = readFileSync(join(__dirname, "../app/(clinician)/consult-roo
 assert(consultRoom.includes("/api/appointment-messages/") && consultRoom.includes("Message patient"), "The dentist can message the patient from the consult room");
 assert(consultRoom.includes("did not send"), "A failed message to the patient is shown as a failure");
 
+// Recording: the visit is not recorded, so the intake says so and asks for no consent (decision 4, V32)
+const intake = readFileSync(join(__dirname, "../app/(patient)/video/intake.tsx"), "utf8");
+const videoRoutes = readFileSync(join(__dirname, "../../../backend/src/routes/video.ts"), "utf8");
+assert(!videoRoutes.includes("enable_recording"), "Rooms are created without recording, so the statement below is true");
+assert(intake.includes("Your video visit is not recorded") && !intake.includes("dualRecordingConsent"), "The intake says the visit is not recorded and has no recording-consent switch");
+
 console.log("\n🎉 ALL VIDEO TESTS PASSED!\n");

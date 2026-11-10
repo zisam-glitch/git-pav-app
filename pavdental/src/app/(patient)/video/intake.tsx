@@ -18,7 +18,6 @@ export default function VideoIntakeScreen() {
   const [painLevel, setPainLevel] = useState<number | null>(null);
   const [hasSwelling, setHasSwelling] = useState(false);
   const [duration, setDuration] = useState<string | null>(null);
-  const [dualRecordingConsent, setDualRecordingConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const painLevels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -35,10 +34,6 @@ export default function VideoIntakeScreen() {
     }
     if (duration === null) {
       setError("Please say how long you have had the problem.");
-      return;
-    }
-    if (!dualRecordingConsent) {
-      setError("Please consent to the clinical consultation terms to continue.");
       return;
     }
     router.push({
@@ -166,26 +161,12 @@ export default function VideoIntakeScreen() {
           </View>
         </View>
 
-        {/* Dual Consent */}
+        {/* What the visit is. There is no recording, so there is nothing to agree to (decision 4). */}
         <Card style={styles.consentCard}>
-          <View style={styles.consentRow}>
-            <View style={styles.consentInfo}>
-              <ThemedText variant="headline">Clinical video record consent</ThemedText>
-              <ThemedText variant="caption" style={styles.sub}>
-                I consent to this remote video examination under UK General Dental Council guidelines.
-              </ThemedText>
-            </View>
-            <Switch
-              value={dualRecordingConsent}
-              onValueChange={(val) => {
-                setDualRecordingConsent(val);
-                if (error) setError(null);
-              }}
-              trackColor={{ true: colors.successFill, false: colors.inkSubtle }}
-              accessibilityRole="switch"
-              accessibilityLabel="Clinical Video Record Consent"
-            />
-          </View>
+          <ThemedText variant="headline">Your video visit is not recorded</ThemedText>
+          <ThemedText variant="caption" style={styles.sub}>
+            It is a live call between you and your dentist. Your dentist will see the answers and photos you send here.
+          </ThemedText>
         </Card>
       </ScrollView>
 
@@ -206,16 +187,6 @@ const styles = StyleSheet.create({
   consentCard: {
     backgroundColor: colors.systemBackground,
     padding: spacing.md,
-  },
-  consentInfo: {
-    flex: 1,
-    gap: 2,
-    paddingRight: spacing.sm,
-  },
-  consentRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
   container: {
     backgroundColor: colors.background,

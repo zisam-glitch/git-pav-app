@@ -15,7 +15,7 @@ import {
   useServices,
 } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
-import { formatGbp } from "@/features/booking/booking-api";
+import { formatGbp } from "@/lib/money";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { bookingChannelFor, firstBookingStep } from "@/features/booking/start-booking";
 import { serviceForPlanItem } from "@/features/booking/plan-booking";

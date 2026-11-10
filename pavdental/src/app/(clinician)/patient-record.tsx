@@ -1,3 +1,4 @@
+import { formatGbp } from "@/lib/money";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -346,7 +347,7 @@ export default function ClinicianPatientRecordScreen() {
                         />
                       </View>
                       <ThemedText variant="caption" style={styles.planCost}>
-                        Total: £{(p.totalCostPence / 100).toFixed(2)} · {p.items?.length || 0} item(s)
+                        Total: {formatGbp(p.totalCostPence)} · {p.items?.length || 0} item(s)
                       </ThemedText>
                     </View>
                   ))}

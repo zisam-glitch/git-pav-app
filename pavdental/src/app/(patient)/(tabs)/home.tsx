@@ -30,7 +30,7 @@ import { appointmentBadge, nextVisit } from "@/features/booking/appointment-stat
 import { appointmentLocation } from "@/features/booking/appointment-labels";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { DentalService } from "@/features/booking/booking-types";
-import { formatGbp } from "@/features/booking/booking-api";
+import { formatGbp } from "@/lib/money";
 import { toLabel } from "@/lib/text";
 
 type CategoryKey = "all" | "checkup" | "hygiene" | "emergency" | "restorative" | "cosmetic";

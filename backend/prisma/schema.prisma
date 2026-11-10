@@ -843,6 +843,8 @@ model Message {
   senderRole String        @map("sender_role") @db.VarChar(30)
   senderName String        @map("sender_name") @db.VarChar(150)
   body       String
+  /// Object-storage keys of photos attached to this message.
+  attachmentKeys String[]  @default([]) @map("attachment_keys")
   sentAt     DateTime      @default(now()) @map("sent_at")
   thread     MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 

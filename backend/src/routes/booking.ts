@@ -1,3 +1,4 @@
+import { sendAppointmentEmail } from "../lib/patient-email";
 import { Router, Response } from "express";
 import Stripe from "stripe";
 import { Prisma } from "@prisma/client";
@@ -810,6 +811,7 @@ router.patch("/appointments/:id/confirm", requireAuth, validateParams(appointmen
       await scheduleAppointmentReminderLadder(apptId).catch((err) => {
         console.error("[Booking] Failed to schedule reminders:", safeError(err));
       });
+      void sendAppointmentEmail("booked", apptId);
     }
 
     const confirmed = await prisma.appointment.findUniqueOrThrow({ where: { id: apptId } });
@@ -937,6 +939,7 @@ router.post("/appointments/:id/reschedule", requireAuth, validateParams(appointm
   }).catch(logFailure("audit write appointment.rescheduled"));
 
   const updated = await prisma.appointment.findUniqueOrThrow({ where: { id: appointment.id } });
+  void sendAppointmentEmail("rescheduled", appointment.id);
   return res.json(summary(updated, true));
 });
 

@@ -119,7 +119,7 @@ export default function NotificationsScreen() {
 
         <ToggleSwitch
           label="Email notifications"
-          description="Treatment plans and prescriptions"
+          description="Booking confirmations, changes and reminders"
           value={emailEnabled}
           onValueChange={(val) => {
             setEmailEnabled(val);
@@ -128,16 +128,7 @@ export default function NotificationsScreen() {
           icon={<AppIcon name="mail" size={18} color={colors.label} />}
         />
 
-        <ToggleSwitch
-          label="SMS text messages"
-          description="Emergency reminders and two-factor security codes"
-          value={smsEnabled}
-          onValueChange={(val) => {
-            setSmsEnabled(val);
-            savePreference({ smsEnabled: val });
-          }}
-          icon={<AppIcon name="message" size={18} color={colors.label} />}
-        />
+        {/* No SMS switch until text messages are built: a switch that does nothing is not shown. */}
       </View>
 
       {/* Appointment & Clinical Alerts */}

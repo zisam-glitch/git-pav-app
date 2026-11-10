@@ -120,9 +120,11 @@ export default function PhotoReviewScreen() {
       }
 
       const chiefComplaint = params.symptomText?.trim() || 'Intake triage review';
-      const painLevelNum = Number.isInteger(Number(params.painLevel))
-        ? Math.max(0, Math.min(10, Number(params.painLevel)))
-        : 5;
+      // Never invent a pain score: without one, go back and ask.
+      if (!params.painLevel || !Number.isInteger(Number(params.painLevel))) {
+        throw new Error('Please go back and choose how bad the pain is.');
+      }
+      const painLevelNum = Math.max(0, Math.min(10, Number(params.painLevel)));
       const symptomsList: string[] = [];
       if (params.symptomText?.trim()) symptomsList.push(params.symptomText.trim());
       if (params.hasSwelling === 'true') symptomsList.push('Swelling');

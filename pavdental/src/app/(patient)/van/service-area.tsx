@@ -185,10 +185,10 @@ export default function VanServiceAreaScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <ThemedText variant="largeTitle" style={styles.title}>
-            Live van dispatch area
+            Check if the van comes to you
           </ThemedText>
           <ThemedText variant="subhead" style={styles.subtitle}>
-            Enter your location to verify coverage and view live estimated arrival times from our active surgery van.
+            Enter your location to verify coverage and view live estimated arrival times from our dental van.
           </ThemedText>
         </View>
 
@@ -203,7 +203,7 @@ export default function VanServiceAreaScreen() {
             />
             {currentLocation && (
               <ThemedText variant="caption" style={styles.locationText}>
-                Coordinates: {currentLocation.lat.toFixed(4)}, {currentLocation.lng.toFixed(4)}
+                Location found
               </ThemedText>
             )}
           </View>
@@ -255,7 +255,7 @@ export default function VanServiceAreaScreen() {
               {isVanOnline ? (
                 <View style={styles.dispatchOnlineBanner}>
                   <ThemedText variant="headline" style={styles.dispatchEtaTitle}>
-                    Estimated arrival: {availability?.etaLabel || "~20–30 min"}
+                    {availability?.etaLabel ? `Estimated arrival: ${availability.etaLabel}` : "Arrival time confirmed when the operator accepts"}
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.dispatchEtaSub}>
                     {availability?.queueLength === 0
@@ -269,7 +269,7 @@ export default function VanServiceAreaScreen() {
                     No van currently on duty in your area
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.offlineSub}>
-                    Our surgery van operates live dispatch shifts. No operator is currently online in this polygon.
+                    Our dental van works set shifts. No van is on shift in your area right now.
                   </ThemedText>
                   <View style={styles.alternativeButtons}>
                     <Button
@@ -313,7 +313,7 @@ export default function VanServiceAreaScreen() {
                 Outside van coverage sector
               </ThemedText>
               <ThemedText variant="caption" style={styles.outBody}>
-                Our mobile surgery van does not currently cover this postcode. You can book an appointment at our central clinic practice or schedule a video consult.
+                Our mobile dental van does not currently cover this postcode. You can book an appointment at our central clinic practice or schedule a video consult.
               </ThemedText>
             <View style={styles.alternativeButtons}>
                 <Button

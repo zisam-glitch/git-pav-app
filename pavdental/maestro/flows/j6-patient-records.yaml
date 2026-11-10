@@ -13,7 +13,7 @@ appId: com.pavdental.app
 - back
 
 # 3. Document Vault
-- tapOn: "Document vault"
+- tapOn: "Documents"
 - assertVisible: "All downloads are streamed securely via encrypted"
 - back
 
@@ -23,5 +23,5 @@ appId: com.pavdental.app
 - back
 
 # 5. Treatment Plans
-- tapOn: "Treatment estimates & plans"
+- tapOn: "Treatment plans"
 - assertVisible: "Treatment plans"

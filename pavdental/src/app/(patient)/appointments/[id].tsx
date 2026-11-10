@@ -325,6 +325,7 @@ export default function AppointmentDetailScreen() {
               />
             ) : null}
             <Button
+              testID="appointment-cancel"
               title="Cancel"
               variant="destructive"
               size="lg"

@@ -201,6 +201,7 @@ export default function PatientHomeScreen() {
 
       {/* Full-width grey action, like the reference "Add products" button */}
       <Button
+        testID="home-book"
         title="Book an appointment"
         variant="secondary"
         icon={<AppIcon name="plus" size={18} color={colors.ink} />}

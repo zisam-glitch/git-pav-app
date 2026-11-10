@@ -412,6 +412,7 @@ export default function BookingSummaryScreen() {
           </Pressable>
         )}
         <Button
+          testID="booking-pay-card"
           title={secondsRemaining === 0 ? "Slot expired - select new time" : walletReady ? "Pay by card instead" : `Pay ${formatGbp(depositDuePence)} by card`}
           size="lg"
           variant={walletReady ? "secondary" : "primary"}

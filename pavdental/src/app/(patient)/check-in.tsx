@@ -85,7 +85,7 @@ export default function CheckInScreen() {
       </ScrollView>
 
       <View style={[styles.footerBar, { paddingBottom: Math.max(spacing.md, insets.bottom) }]}>
-        <Button title="Check in" size="lg" loading={busy} onPress={complete} />
+        <Button testID="check-in-submit" title="Check in" size="lg" loading={busy} onPress={complete} />
       </View>
     </View>
   );

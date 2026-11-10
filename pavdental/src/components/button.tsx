@@ -79,6 +79,8 @@ interface ButtonProps {
   style?: StyleProp<ViewStyle>;
   /** Accessibility label override — defaults to title */
   accessibilityLabel?: string;
+  /** Stable id for end-to-end tests: survives a change of wording */
+  testID?: string;
   /** Optional icon to render alongside the title */
   icon?: React.ReactNode;
   /** Position of the icon relative to title (default "left") */
@@ -102,6 +104,7 @@ export function Button({
   disabled = false,
   style,
   accessibilityLabel,
+  testID,
   icon,
   iconPosition = "left",
   arrow = false,
@@ -128,6 +131,7 @@ export function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      testID={testID}
       accessibilityLabel={accessibilityLabel ?? title}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}

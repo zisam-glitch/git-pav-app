@@ -8,7 +8,8 @@ appId: com.pavdental.app
 - assertVisible: "Upcoming"
 
 # 2. Select Appointment to Cancel
-- tapOn: "Cancel booking"
+- tapOn:
+    id: "appointment-cancel"
 
 # 3. Confirmation Sheet
 - assertVisible: "Cancel this appointment?"

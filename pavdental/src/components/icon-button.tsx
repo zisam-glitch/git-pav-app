@@ -8,6 +8,8 @@ interface IconButtonProps {
   /** Accessibility label — REQUIRED for icon-only buttons */
   label: string;
   onPress?: () => void;
+  /** Stable id for end-to-end tests: survives a change of wording */
+  testID?: string;
   size?: number;
   color?: string;
   /** Filled ink, soft grey fill (reference back/close buttons), or transparent */
@@ -27,6 +29,7 @@ interface IconButtonProps {
 export function IconButton({
   icon,
   label,
+  testID,
   onPress,
   size = 20,
   color = colors.ink,
@@ -49,6 +52,7 @@ export function IconButton({
   return (
     <Pressable
       accessibilityRole="button"
+      testID={testID}
       accessibilityLabel={label}
       accessibilityState={{ disabled }}
       disabled={disabled}

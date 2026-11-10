@@ -17,11 +17,9 @@ jest.mock("@tanstack/react-query", () => ({
 }));
 
 jest.mock("@/features/hooks/use-dental-api", () => ({
-  useMyAppointments: () => ({
-    data: [
-      { id: "appt-1", startTimeUtc: new Date(Date.now() + 5 * 3600_000).toISOString(), service: { name: "Check-up" } },
-      { id: "appt-2", startTimeUtc: new Date(Date.now() + 9 * 3600_000).toISOString(), service: { name: "Hygiene" } },
-    ],
+  // The screen asks for the one appointment it was opened for.
+  useAppointment: (id: string | undefined) => ({
+    data: id ? { id, startTimeUtc: new Date(Date.now() + 5 * 3600_000).toISOString(), service: { name: "Check-up" } } : undefined,
   }),
 }));
 

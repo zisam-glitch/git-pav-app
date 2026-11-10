@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { ThemedText, Button, Toast, EmptyState } from "@/components";
 import { colors, spacing } from "@/theme";
-import { useMyAppointments } from "@/features/hooks/use-dental-api";
+import { useAppointment } from "@/features/hooks/use-dental-api";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 import { CHECK_IN_OPENS_HOURS } from "@/features/booking/appointment-detail";
 import { completeAppointmentCheckIn } from "@/features/records/records-api";
@@ -20,14 +20,13 @@ export default function CheckInScreen() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
-  const { data: apiAppointments } = useMyAppointments();
+  const { data: apiBooking } = useAppointment(appointmentId);
 
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
   // Only the booking we were sent for; never "the first one in the list".
-  const source = (apiAppointments ?? []) as any[];
-  const booking = appointmentId ? source.find((b) => b.id === appointmentId) ?? null : null;
+  const booking = (appointmentId ? apiBooking ?? null : null) as { id: string; startTimeUtc: string; service?: { name?: string } } | null;
   const start = booking ? new Date(booking.startTimeUtc) : null;
   const whenLine =
     start &&

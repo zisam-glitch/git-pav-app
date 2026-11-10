@@ -1,3 +1,4 @@
+import { findInCachedLists } from "../booking/appointment-cache";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { rewardsQueryOptions } from "../records/rewards-query";
 import { PRACTICE_CONFIG } from "@/config/practice";
@@ -8,6 +9,7 @@ import {
   fetchClinicians,
   fetchSlots,
   fetchMyAppointments,
+  fetchAppointment,
   holdSlot,
   createAppointment,
   cancelAppointment,
@@ -96,6 +98,28 @@ export function useMyAppointments(params?: { scope?: string; date?: string }) {
 export function useHoldSlotMutation() {
   return useMutation({
     mutationFn: (slotId: string) => holdSlot(slotId),
+  });
+}
+
+/**
+ * One appointment. Its key starts with "my-appointments", so every place that
+ * refreshes the bookings (cancel, reschedule, check-in) refreshes this too. It
+ * starts from the row the Bookings list already has, so the screen opens at once.
+ */
+export function useAppointment(id: string | undefined) {
+  const queryClient = useQueryClient();
+  const cached = () =>
+    findInCachedLists(
+      queryClient.getQueriesData({ queryKey: ["my-appointments"] }) as Array<[unknown, unknown]>,
+      (key) => queryClient.getQueryState(key as readonly unknown[])?.dataUpdatedAt,
+      id
+    );
+  return useQuery({
+    queryKey: ["my-appointments", "detail", id],
+    queryFn: () => fetchAppointment(id as string),
+    enabled: !!id,
+    initialData: () => cached()?.row ?? undefined,
+    initialDataUpdatedAt: () => cached()?.updatedAt,
   });
 }
 

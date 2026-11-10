@@ -10,10 +10,10 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: () => ({ id: "appt-1" }),
 }));
 
-const mockUseMyAppointments = jest.fn();
+const mockUseAppointment = jest.fn();
 const mockCancel = jest.fn();
 jest.mock("@/features/hooks/use-dental-api", () => ({
-  useMyAppointments: (...args: unknown[]) => mockUseMyAppointments(...args),
+  useAppointment: (...args: unknown[]) => mockUseAppointment(...args),
   useCancelAppointmentMutation: () => ({ mutate: mockCancel, isPending: false }),
 }));
 
@@ -37,7 +37,7 @@ function booking(overrides: Record<string, unknown> = {}) {
 }
 
 function withAppointments(list: unknown[]) {
-  mockUseMyAppointments.mockReturnValue({ data: list, isLoading: false, isError: false, refetch: jest.fn() });
+  mockUseAppointment.mockReturnValue({ data: list[0] ?? null, isLoading: false, isError: false, refetch: jest.fn() });
 }
 
 beforeEach(() => {
@@ -76,12 +76,24 @@ describe("AppointmentDetailScreen", () => {
 
   it("says the load failed, not that the booking is missing, and retries", () => {
     const refetch = jest.fn();
-    mockUseMyAppointments.mockReturnValue({ data: undefined, isLoading: false, isError: true, refetch });
+    mockUseAppointment.mockReturnValue({ data: undefined, isLoading: false, isError: true, refetch });
     renderScreen(<AppointmentDetailScreen />);
     expect(screen.getByText("We couldn't load this appointment")).toBeTruthy();
     expect(screen.queryByText(/belongs to another account/)).toBeNull();
     fireEvent.press(screen.getByRole("button", { name: "Try again" }));
     expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("asks the server for this one appointment, by its id", () => {
+    withAppointments([booking()]);
+    renderScreen(<AppointmentDetailScreen />);
+    expect(mockUseAppointment).toHaveBeenCalledWith("appt-1");
+  });
+
+  it("says the booking was not found when the server does not know it", () => {
+    mockUseAppointment.mockReturnValue({ data: null, isLoading: false, isError: false, refetch: jest.fn() });
+    renderScreen(<AppointmentDetailScreen />);
+    expect(screen.getByText("Appointment not found")).toBeTruthy();
   });
 
   it("asks before cancelling, shows the real policy, then cancels this booking", () => {

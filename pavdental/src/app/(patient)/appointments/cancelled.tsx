@@ -5,7 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { useMyAppointments } from "@/features/hooks/use-dental-api";
+import { useAppointment } from "@/features/hooks/use-dental-api";
 import { REFUND_TIMING } from "@/features/booking/cancellation-policy";
 
 // ─── Cancelled confirmation (Mobbin Zocdoc "Cancelled Details") ───────────────
@@ -19,9 +19,9 @@ export default function CancelledAppointmentScreen() {
     refundAmountPence?: string;
     policyNotice?: string;
   }>();
-  const { data: appointments } = useMyAppointments();
+  const { data: apiBooking } = useAppointment(appointmentId);
 
-  const booking = (appointments as any[] | undefined)?.find((b) => b.id === appointmentId);
+  const booking = apiBooking as { service?: { name?: string } } | null | undefined;
   const serviceName = booking?.service?.name || "Your appointment";
   // What the server actually refunded, not the service's list deposit.
   const refundPence = Number(refundAmountPence) || 0;

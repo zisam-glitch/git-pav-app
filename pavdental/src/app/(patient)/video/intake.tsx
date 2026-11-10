@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,6 +9,8 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Input, Button, Card } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { authFetch } from "@/features/auth/auth-api";
+import { DURATIONS, answersFromDraft, draftBody, hasAnswers } from "@/features/video/triage-draft";
 
 export default function VideoIntakeScreen() {
   const router = useRouter();
@@ -19,9 +21,49 @@ export default function VideoIntakeScreen() {
   const [hasSwelling, setHasSwelling] = useState(false);
   const [duration, setDuration] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Answers are saved as the patient goes, and come back if they left (V31).
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const touched = useRef(false);
+
+  useEffect(() => {
+    let active = true;
+    async function loadDraft() {
+      if (!appointmentId) return setDraftLoaded(true);
+      try {
+        const res = await authFetch(`/api/video/triage-draft/${appointmentId}`);
+        const data = res.ok ? await res.json().catch(() => null) : null;
+        // Only fill the form if the patient has not started typing in the meantime.
+        if (active && !touched.current && data?.draft) {
+          const saved = answersFromDraft(data.draft);
+          if (saved.symptomText !== undefined) setSymptomText(saved.symptomText);
+          if (saved.painLevel !== undefined) setPainLevel(saved.painLevel);
+          if (saved.hasSwelling !== undefined) setHasSwelling(saved.hasSwelling);
+          if (saved.duration !== undefined) setDuration(saved.duration);
+        }
+      } catch {
+        // No draft to bring back; the form still works.
+      }
+      if (active) setDraftLoaded(true);
+    }
+    loadDraft();
+    return () => {
+      active = false;
+    };
+  }, [appointmentId]);
+
+  useEffect(() => {
+    if (!draftLoaded || !appointmentId) return;
+    const answers = { symptomText, painLevel, hasSwelling, duration };
+    if (!hasAnswers(answers)) return;
+    const timer = setTimeout(() => {
+      // Best effort: a failed save must never get in the patient's way.
+      authFetch(`/api/video/triage-draft/${appointmentId}`, { method: "PUT", body: JSON.stringify(draftBody(answers)) }).catch(() => {});
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [draftLoaded, appointmentId, symptomText, painLevel, hasSwelling, duration]);
 
   const painLevels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const durations = ["Less than 24 hours", "1 to 2 days", "3 to 7 days", "Over a week"];
+  const durations = DURATIONS;
 
   const handleContinue = () => {
     if (!symptomText.trim()) {
@@ -77,6 +119,7 @@ export default function VideoIntakeScreen() {
           containerStyle={styles.textAreaContainer}
           value={symptomText}
           onChangeText={(val) => {
+            touched.current = true;
             setSymptomText(val);
             if (error) setError(null);
           }}
@@ -97,6 +140,7 @@ export default function VideoIntakeScreen() {
                 <Pressable accessibilityRole="radio" accessibilityLabel={`Pain level ${lvl}`} accessibilityState={{ selected }}
                   key={lvl}
                   onPress={() => {
+                    touched.current = true;
                     setPainLevel(lvl);
                     if (error) setError(null);
                   }}
@@ -124,7 +168,10 @@ export default function VideoIntakeScreen() {
           </View>
           <Switch
             value={hasSwelling}
-            onValueChange={setHasSwelling}
+            onValueChange={(v) => {
+              touched.current = true;
+              setHasSwelling(v);
+            }}
             trackColor={{ true: colors.successFill, false: colors.inkSubtle }}
             accessibilityRole="switch"
             accessibilityLabel="Facial Swelling or Gum Boil"
@@ -144,6 +191,7 @@ export default function VideoIntakeScreen() {
                   accessibilityLabel={`Duration: ${d}`}
                   accessibilityState={{ selected: active }}
                   onPress={() => {
+                    touched.current = true;
                     setDuration(d);
                     if (error) setError(null);
                   }}

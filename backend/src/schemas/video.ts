@@ -33,3 +33,12 @@ export const endConsultSchema = z.object({
 export const videoAppointmentParamsSchema = z.object({
   appointmentId: uuid,
 }).strict();
+
+// The patient's answers so far, saved while they fill the intake in, so leaving
+// the app half way loses nothing (V31). Every field is optional.
+export const triageDraftSchema = z.object({
+  symptomText: z.string().max(500).optional(),
+  painLevel: z.number().int().min(0).max(10).nullable().optional(),
+  hasSwelling: z.boolean().optional(),
+  duration: z.string().max(100).nullable().optional(),
+}).strict();

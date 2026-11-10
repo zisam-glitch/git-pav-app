@@ -5,6 +5,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import { canSaveConsult, consultPayload, FOLLOW_UP_OPTIONS } from "../features/video/consult-form";
+import { DURATIONS as tdDurations, answersFromDraft as tdFromDraft, draftBody as tdBody, hasAnswers as tdHasAnswers } from "../features/video/triage-draft";
 import { waitingRoomOpen } from "../features/video/waiting-room-window";
 
 function assert(condition: boolean, message: string) {
@@ -35,7 +36,7 @@ const summary = read("video/summary.tsx");
 const detail = read("appointments/[id].tsx");
 
 assert(/painLevels = \[0, 1/.test(intake), "Pain can be 0 (R19)");
-assert(intake.includes("3 to 7 days"), "There is an option between 2 days and a week (R19)");
+assert(intake.includes("DURATIONS") && tdDurations.includes("3 to 7 days"), "There is an option between 2 days and a week (R19)");
 assert(!photos.includes("|| '5'"), "A missing pain score is not turned into 5 on the photos screen");
 assert(!/: 5;/.test(review), "A missing pain score is not turned into 5 on the review screen");
 assert(/summaryData\?\.status === "completed"/.test(summary), "'Completed' is shown only when the visit is completed (R13)");
@@ -61,5 +62,16 @@ assert(payload.diagnosis === "Sore gum" && payload.notes === undefined && payloa
 assert(payload.followUpRecommended === "van", "The follow-up the dentist chose is sent");
 assert(FOLLOW_UP_OPTIONS.map((o) => o.key).join() === "none,clinic,van,video", "The follow-up choices match the server");
 assert(!consultRoom.includes("Consultation concluded via video call."), "No stock sentence is saved as the dentist's notes");
+
+// Triage answers are saved as the patient goes, and come back (V31)
+const tdBlank = { symptomText: "", painLevel: null, hasSwelling: false, duration: null };
+assert(!tdHasAnswers(tdBlank) && tdHasAnswers({ ...tdBlank, painLevel: 0 }), "An untouched form saves nothing, a pain score of 0 counts as an answer");
+assert(tdBody({ ...tdBlank, symptomText: "Ache", painLevel: 3 }).painLevel === 3, "The draft carries the answers");
+const tdBack = tdFromDraft({ symptomText: "Ache", painLevel: 3, hasSwelling: true, duration: "1 to 2 days" });
+assert(tdBack.symptomText === "Ache" && tdBack.painLevel === 3 && tdBack.hasSwelling === true && tdBack.duration === "1 to 2 days", "A saved draft comes back");
+const tdBad = tdFromDraft({ symptomText: 5, painLevel: 11, hasSwelling: "yes", duration: "Soon" });
+assert(Object.keys(tdBad).length === 0 && Object.keys(tdFromDraft(null)).length === 0, "A malformed draft is ignored, not trusted");
+const tdIntake = readFileSync(join(__dirname, "../app/(patient)/video/intake.tsx"), "utf8");
+assert(tdIntake.includes("/api/video/triage-draft/") && tdIntake.includes("draftLoaded"), "The intake saves and restores its answers, and does not save before the draft has loaded");
 
 console.log("\n🎉 ALL VIDEO TESTS PASSED!\n");

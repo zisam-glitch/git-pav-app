@@ -30,3 +30,18 @@ export function joinTimeBucket(ms: number): string {
   if (ms < 10000) return "5_to_10s";
   return "over_10s";
 }
+
+/** What the person sees when the call can't start or stops. */
+export function callErrorMessage(raw: string | undefined): string {
+  const msg = (raw ?? "").toLowerCase();
+  if (msg.includes("ended") || msg.includes("expired") || msg.includes("eject")) {
+    return "This consultation has ended.";
+  }
+  if (msg.includes("payment") || msg.includes("account")) {
+    return "Video calls aren't available right now. Please contact the practice.";
+  }
+  if (msg.includes("network") || msg.includes("connect") || msg.includes("offline")) {
+    return "The call lost its connection. Check your internet and try again.";
+  }
+  return "The video call stopped unexpectedly. Please try again.";
+}

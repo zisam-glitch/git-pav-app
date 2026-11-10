@@ -5,7 +5,9 @@ import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/re
 import { ThemedText, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { reportCallEvent } from "@/lib/call-events";
-import { linkStatus, linkMessage, shouldGoAudioOnly, joinTimeBucket, type NetworkState } from "./call-health";
+import { callErrorMessage, linkStatus, linkMessage, shouldGoAudioOnly, joinTimeBucket, type NetworkState } from "./call-health";
+
+export { callErrorMessage };
 
 // The video consult runs natively inside the app (Daily's React Native SDK),
 // not in a browser window: the app asks the server for this appointment's
@@ -28,21 +30,6 @@ type Phase = "joining" | "joined" | "error";
 
 function playable(track: DailyParticipant["tracks"]["video"] | undefined) {
   return track && (track.state === "playable" || track.state === "loading") ? track.persistentTrack ?? null : null;
-}
-
-/** What the person sees when the call can't start or stops. */
-export function callErrorMessage(raw: string | undefined): string {
-  const msg = (raw ?? "").toLowerCase();
-  if (msg.includes("ended") || msg.includes("expired") || msg.includes("eject")) {
-    return "This consultation has ended.";
-  }
-  if (msg.includes("payment") || msg.includes("account")) {
-    return "Video calls aren't available right now. Please contact the practice.";
-  }
-  if (msg.includes("network") || msg.includes("connect") || msg.includes("offline")) {
-    return "The call lost its connection. Check your internet and try again.";
-  }
-  return "The video call stopped unexpectedly. Please try again.";
 }
 
 export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props) {

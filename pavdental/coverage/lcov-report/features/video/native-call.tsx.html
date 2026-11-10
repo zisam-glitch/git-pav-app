@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/109</span>
+                <span class='fraction'>0/101</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/98</span>
+                <span class='fraction'>0/82</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/100</span>
+                <span class='fraction'>0/92</span>
             </div>
         
             
@@ -431,20 +431,7 @@
 <a name='L366'></a><a href='#L366'>366</a>
 <a name='L367'></a><a href='#L367'>367</a>
 <a name='L368'></a><a href='#L368'>368</a>
-<a name='L369'></a><a href='#L369'>369</a>
-<a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a>
-<a name='L373'></a><a href='#L373'>373</a>
-<a name='L374'></a><a href='#L374'>374</a>
-<a name='L375'></a><a href='#L375'>375</a>
-<a name='L376'></a><a href='#L376'>376</a>
-<a name='L377'></a><a href='#L377'>377</a>
-<a name='L378'></a><a href='#L378'>378</a>
-<a name='L379'></a><a href='#L379'>379</a>
-<a name='L380'></a><a href='#L380'>380</a>
-<a name='L381'></a><a href='#L381'>381</a>
-<a name='L382'></a><a href='#L382'>382</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L369'></a><a href='#L369'>369</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -473,20 +460,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -832,7 +806,9 @@ import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/re
 import { ThemedText, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { reportCallEvent } from "@/lib/call-events";
-import { linkStatus, linkMessage, shouldGoAudioOnly, joinTimeBucket, type NetworkState } from "./call-health";
+import { callErrorMessage, linkStatus, linkMessage, shouldGoAudioOnly, joinTimeBucket, type NetworkState } from "./call-health";
+&nbsp;
+export { callErrorMessage };
 &nbsp;
 // The video consult runs natively inside the app (Daily's React Native SDK),
 // not in a browser window: the app asks the server for this appointment's
@@ -855,21 +831,6 @@ type Phase = "joining" | "joined" | "error";
 &nbsp;
 function <span class="fstat-no" title="function not covered" >playable(</span>track: DailyParticipant["tracks"]["video"] | undefined) {
 <span class="cstat-no" title="statement not covered" >  return track &amp;&amp; (track.state === "playable" || track.state === "loading") ? track.persistentTrack ?? null : null;</span>
-}
-&nbsp;
-/** What the person sees when the call can't start or stops. */
-export function <span class="fstat-no" title="function not covered" >callErrorMessage(</span>raw: string | undefined): string {
-  const msg = <span class="cstat-no" title="statement not covered" >(raw ?? "").toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >  if (msg.includes("ended") || msg.includes("expired") || msg.includes("eject")) {</span>
-<span class="cstat-no" title="statement not covered" >    return "This consultation has ended.";</span>
-  }
-<span class="cstat-no" title="statement not covered" >  if (msg.includes("payment") || msg.includes("account")) {</span>
-<span class="cstat-no" title="statement not covered" >    return "Video calls aren't available right now. Please contact the practice.";</span>
-  }
-<span class="cstat-no" title="statement not covered" >  if (msg.includes("network") || msg.includes("connect") || msg.includes("offline")) {</span>
-<span class="cstat-no" title="statement not covered" >    return "The call lost its connection. Check your internet and try again.";</span>
-  }
-<span class="cstat-no" title="statement not covered" >  return "The video call stopped unexpectedly. Please try again.";</span>
 }
 &nbsp;
 export function <span class="fstat-no" title="function not covered" >NativeVideoCall(</span>{ url, token, otherLabel, onLeft, style }: Props) {
@@ -1213,7 +1174,7 @@ const styles = <span class="cstat-no" title="statement not covered" >StyleSheet.
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-10T03:40:39.476Z
+                at 2026-11-10T03:55:30.954Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

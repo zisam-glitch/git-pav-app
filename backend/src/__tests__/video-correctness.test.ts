@@ -24,8 +24,13 @@ describe("Video consult correctness (V25 to V30)", () => {
   let pricePence = 0;
   const created: string[] = [];
 
+  // One clinician cannot have overlapping appointments, so each test
+  // appointment gets its own 40-minute slot. They sit a month back, so other
+  // suites that count today's visits never see them come and go.
+  let slot = 0;
   const newAppointment = async (over: Record<string, unknown> = {}) => {
-    const start = new Date(Date.now() - 5 * 60 * 1000);
+    slot += 1;
+    const start = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000 - slot * 40 * 60 * 1000);
     const appt = await prisma.appointment.create({
       data: {
         patientId: patientProfileId,
@@ -64,15 +69,16 @@ describe("Video consult correctness (V25 to V30)", () => {
 
   const triageOf = async (id: string) => {
     const row = await prisma.appointment.findUniqueOrThrow({ where: { id } });
-    return (await decryptField<Record<string, any>>(row.triageData)) || {};
+    return (await decryptField<Record<string, unknown>>(row.triageData)) || {};
   };
 
   beforeAll(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const serverModule = require("../server");
     const app = serverModule.default ?? serverModule;
     server = http.createServer(app);
     await new Promise<void>((resolve) => server.listen(0, resolve));
-    baseUrl = `http://localhost:${(server.address() as any).port}`;
+    baseUrl = `http://localhost:${(server.address() as { port: number }).port}`;
 
     const patientUser = await prisma.user.create({
       data: { email: `vc-patient-${tag}@example.test`, passwordHash: "mock-hash", role: "patient" },
@@ -101,6 +107,7 @@ describe("Video consult correctness (V25 to V30)", () => {
     await prisma.patientProfile.deleteMany({ where: { id: patientProfileId } });
     await prisma.clinicianProfile.deleteMany({ where: { id: clinicianProfileId } });
     await new Promise<void>((resolve) => server.close(() => resolve()));
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { redis } = require("../lib/redis");
     try { redis.disconnect(); } catch {}
   });
@@ -124,10 +131,10 @@ describe("Video consult correctness (V25 to V30)", () => {
       const id = await newAppointment({ status: "in_progress" });
       const first = await post("end-consult", clinicianToken, { appointmentId: id, diagnosis: "Synthetic" });
       expect(first.status).toBe(200);
-      const a: any = await first.json();
+      const a = (await first.json()) as { completedAt: string };
       const second = await post("end-consult", clinicianToken, { appointmentId: id, diagnosis: "Different" });
       expect(second.status).toBe(200);
-      const b: any = await second.json();
+      const b = (await second.json()) as { completedAt: string; summary: { diagnosis: string } };
       expect(b.completedAt).toBe(a.completedAt);
       expect(b.summary.diagnosis).toBe("Synthetic");
     });

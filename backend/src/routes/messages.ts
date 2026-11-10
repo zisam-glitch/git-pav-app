@@ -11,6 +11,7 @@ import { encryptField, decryptString } from "../lib/encryption";
 import { communicationService } from "../lib/communication-service";
 import { env } from "../config/env";
 import { safeError } from "../lib/log-safety";
+import { sendUserNotification } from "../lib/patient-push";
 
 const router = Router();
 
@@ -261,6 +262,21 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
   // MS-3: Notify recipient staff (care team clinician or practice inbox). The
   // email names no patient and no subject: it goes through a third-party mail
   // service (decisions log D-19).
+  // A push that says only that something arrived: no name, no subject (V44).
+  if (resolvedAssignedClinicianId) {
+    const assigned = await prisma.clinicianProfile.findUnique({
+      where: { id: resolvedAssignedClinicianId },
+      select: { userId: true },
+    });
+    if (assigned) {
+      void sendUserNotification(assigned.userId, "New message", "You have a new patient message in the Pav Dental app.", {
+        type: "message",
+        audience: "clinician",
+        threadId: thread.id,
+      });
+    }
+  }
+
   if (resolvedAssignedClinicianId && clinicianUserEmail) {
     communicationService
       .sendEmail({
@@ -376,7 +392,12 @@ router.post(
 
     // MS-3: Notifications on reply
     if (isStaff) {
-      // Staff replied -> notify patient
+      // Staff replied -> notify patient. The push says only that a message came (V44).
+      void sendUserNotification(thread.patientUserId, "New message from Pav Dental", "Open the Pav Dental app to read it.", {
+        type: "message",
+        audience: "patient",
+        threadId: thread.id,
+      });
       const patientEmail = thread.patientUser?.email;
       if (patientEmail) {
         communicationService
@@ -391,6 +412,17 @@ router.post(
     } else {
       // Patient replied -> notify care team / clinician or practice inbox
       if (thread.assignedClinicianId) {
+        const assigned = await prisma.clinicianProfile.findUnique({
+          where: { id: thread.assignedClinicianId },
+          select: { userId: true },
+        });
+        if (assigned) {
+          void sendUserNotification(assigned.userId, "New message", "You have a new patient message in the Pav Dental app.", {
+            type: "message",
+            audience: "clinician",
+            threadId: thread.id,
+          });
+        }
         const clinician = await prisma.clinicianProfile.findUnique({
           where: { id: thread.assignedClinicianId },
           include: { user: true },

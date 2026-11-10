@@ -244,6 +244,4 @@ export async function checkVanCoverage(params: { lat?: number; lng?: number; pos
 }
 
 // ─── Helper: format pence to GBP ─────────────────────────────────────────────
-export function formatGbp(pence: number): string {
-  return `£${(pence / 100).toFixed(2)}`;
-}
+export { formatGbp } from "../../lib/money";

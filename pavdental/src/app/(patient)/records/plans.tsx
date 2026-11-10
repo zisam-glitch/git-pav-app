@@ -7,7 +7,7 @@ import { colors, spacing, radius } from "@/theme";
 import { toothLabel } from "@/features/records/tooth-number";
 import { useTreatmentPlans } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
-import { formatGbp } from "@/features/booking/booking-api";
+import { formatGbp } from "@/lib/money";
 
 export default function TreatmentPlansScreen() {
   const router = useRouter();

@@ -186,6 +186,7 @@ export default function BookingSummaryScreen() {
             cartItems: [
               {
                 label: "Pav Dental deposit",
+                // The wallet sheet wants a plain decimal string, not "£85.00".
                 amount: (intent.amountPence / 100).toFixed(2),
                 paymentType: PlatformPay.PaymentType.Immediate,
               },

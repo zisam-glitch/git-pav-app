@@ -1,3 +1,5 @@
+import { formatGbp } from "../../lib/money";
+
 /**
  * Small, pure helpers for the appointment screen, so what it says about a
  * visit comes from the booking and can be tested without rendering.
@@ -40,10 +42,9 @@ export function visitFor(booking: {
   return [d.firstName, d.lastName].filter(Boolean).join(" ") || "You";
 }
 
-const pounds = (pence: number) => `£${(pence / 100).toFixed(2)}`;
 
 export function priceLabel(totalPricePence: number | null | undefined): string | null {
-  return typeof totalPricePence === "number" ? pounds(totalPricePence) : null;
+  return typeof totalPricePence === "number" ? formatGbp(totalPricePence) : null;
 }
 
 /** What is still to pay in person. Nothing for a cancelled visit. */
@@ -53,7 +54,7 @@ export function balanceLabel(booking: {
   status: string;
 }): string | null {
   if (booking.status === "cancelled" || typeof booking.totalPricePence !== "number") return null;
-  return pounds(Math.max(0, booking.totalPricePence - (booking.depositPaidPence ?? 0)));
+  return formatGbp(Math.max(0, booking.totalPricePence - (booking.depositPaidPence ?? 0)));
 }
 
 /** A maps link for the clinic's address; opens in whichever maps app the phone prefers. */

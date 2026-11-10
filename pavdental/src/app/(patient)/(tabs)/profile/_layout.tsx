@@ -46,7 +46,7 @@ export default function ProfileSubLayout() {
       <Stack.Screen
         name="consent"
         options={{
-          title: "Consent & GDPR",
+          title: "Privacy and consent",
         }}
       />
       <Stack.Screen

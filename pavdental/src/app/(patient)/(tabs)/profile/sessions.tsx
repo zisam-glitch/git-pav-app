@@ -89,7 +89,7 @@ export default function SessionsScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.headerBox}>
         <ThemedText variant="subhead" style={styles.headerSub}>
-          Active authorised sessions
+          Devices signed in
         </ThemedText>
         <ThemedText variant="caption" style={styles.headerDesc}>
           These are devices and browsers that currently have an active refresh session to your Pav Dental health record.

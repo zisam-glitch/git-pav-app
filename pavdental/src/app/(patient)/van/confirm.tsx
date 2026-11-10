@@ -23,7 +23,7 @@ export default function VanConfirmScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const accessPayload = store.getAccessDetailsPayload();
-  const etaLabel = store.availability?.etaLabel || "~20–30 min";
+  const etaLabel = store.availability?.etaLabel || null;
 
   /**
    * Create the request, then — when the backend is in real-Stripe mode —
@@ -164,7 +164,7 @@ export default function VanConfirmScreen() {
         {/* Banner */}
         <View style={styles.holdBanner}>
           <ThemedText variant="caption" style={styles.holdText}>
-            Live dispatch · operator accepts within 4 minutes
+            Live dispatch · an operator will confirm your visit
           </ThemedText>
         </View>
 
@@ -180,12 +180,12 @@ export default function VanConfirmScreen() {
           <DetailRow label="Address" value={fullAddress || "—"} emphasis />
           <DetailRow label="Parking" value={parkingLabelMap[accessPayload.parkingType] || "Private driveway"} />
           {accessPayload.gateCode ? <DetailRow label="Gate or buzzer" value={accessPayload.gateCode} /> : null}
-          <DetailRow label="Arrives" value={`${etaLabel} from operator accept`} emphasis />
+          <DetailRow label="Arrives" value={etaLabel ? `${etaLabel} from operator accept` : "Confirmed when the operator accepts"} emphasis />
           <DetailRow
             label="Treatment"
             value={
               hasService
-                ? `${store.serviceName} (${store.serviceDurationMinutes} min clinical block)`
+                ? `${store.serviceName} (${store.serviceDurationMinutes} min)`
                 : "No service selected"
             }
           />

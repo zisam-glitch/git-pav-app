@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Input, Button, Card, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useVanStore } from "@/features/van/van-store";
+import { useBookingStore } from "@/features/booking/booking-store";
 import { fetchServices } from "@/features/van/van-api";
 import { Service } from "@/features/van/van-types";
 import { PRACTICE_CONFIG } from "@/config/practice";
@@ -18,6 +19,8 @@ export default function VanAccessDetailsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const store = useVanStore();
+  // The treatment picked in the catalogue is saved to the booking draft.
+  const pickedServiceId = useBookingStore((s) => s.service?.id);
 
   const [addressLine1, setAddressLine1] = useState(store.addressLine1 || "");
   const [addressLine2, setAddressLine2] = useState(store.addressLine2 || "");
@@ -33,7 +36,7 @@ export default function VanAccessDetailsScreen() {
   // Fetch services from API
   const [services, setServices] = useState<Service[]>([]);
   const [loadingServices, setLoadingServices] = useState(true);
-  const [selectedServiceId, setSelectedServiceId] = useState<string>(store.serviceId || "");
+  const [selectedServiceId, setSelectedServiceId] = useState<string>(store.serviceId || pickedServiceId || "");
 
   useEffect(() => {
     loadServices();
@@ -209,7 +212,7 @@ export default function VanAccessDetailsScreen() {
 
         {/* Parking Type Selector */}
         <View style={styles.section}>
-          <ThemedText variant="headline">Where will the surgical van park?</ThemedText>
+          <ThemedText variant="headline">Where will the dental van park?</ThemedText>
           <View style={styles.optionGroup}>
             <Pressable accessibilityLabel="Private driveway"
               accessibilityRole="radio"
@@ -227,7 +230,7 @@ export default function VanAccessDetailsScreen() {
                   Private driveway (recommended)
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.optionSub}>
-                  Sufficient space for a 7.4m vehicle off the main road.
+                  Enough space for the van, off the main road.
                 </ThemedText>
               </Card>
             </Pressable>
@@ -248,7 +251,7 @@ export default function VanAccessDetailsScreen() {
                   On-street kerbside permit bay
                 </ThemedText>
                 <ThemedText variant="caption" style={styles.optionSub}>
-                  Resident permit or visitor voucher will be provided on arrival.
+                  If you have a permit or visitor voucher for the van, say so in the notes.
                 </ThemedText>
               </Card>
             </Pressable>

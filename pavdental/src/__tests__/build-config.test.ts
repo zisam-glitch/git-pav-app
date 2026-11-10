@@ -103,11 +103,19 @@ assert(/shift/i.test(whenInUse), "location text still covers the operator's use 
   assert(/getForegroundPermissionsAsync/.test(onOpen), "coverage screen only reads an earlier answer when it opens");
 }
 const imagePickerPlugin = plugins.find((p: unknown) => Array.isArray(p) && p[0] === "expo-image-picker");
+// Video consults run natively in the app (Daily), so the app asks for the
+// camera and microphone, and every plugin that sets that wording says why.
+const dailyPlugin = plugins.find((p: unknown) => Array.isArray(p) && p[0] === "@daily-co/config-plugin-rn-daily-js");
 assert(
-  appConfig.ios?.infoPlist?.NSMicrophoneUsageDescription === undefined &&
-    imagePickerPlugin?.[1]?.microphonePermission === false,
-  "app.json asks for no microphone access (calls open in the browser), including through expo-image-picker"
+  dailyPlugin?.[1]?.enableCamera === true && dailyPlugin?.[1]?.enableMicrophone === true && dailyPlugin?.[1]?.enableScreenShare === false,
+  "app.json sets up Daily for camera and microphone, without screen sharing"
 );
+for (const [name, opts] of [["expo-image-picker", imagePickerPlugin?.[1]], ["Daily", dailyPlugin?.[1]]] as const) {
+  assert(
+    /video consultation/i.test(opts?.microphonePermission ?? "") && /video consultation/i.test(opts?.cameraPermission ?? ""),
+    `${name} plugin explains the camera and microphone are for video consultations (no plugin blocks the microphone)`
+  );
+}
 assert(
   typeof imagePickerPlugin?.[1]?.cameraPermission === "string" && typeof imagePickerPlugin?.[1]?.photosPermission === "string",
   "expo-image-picker plugin sets the camera and photo library wording (RB-08)"

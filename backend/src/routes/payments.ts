@@ -1,3 +1,4 @@
+import { isStripeMissingResource } from "../lib/stripe-errors";
 import { notifyAppointmentChange } from "../lib/patient-email";
 import { Request, Response, Router } from "express";
 import Stripe from "stripe";
@@ -288,8 +289,13 @@ router.delete("/methods/:id", requireAuth, async (req: AuthRequest, res: Respons
   if (!method) return res.status(404).json({ error: "Payment method not found" });
 
   if (!isMockStripe) {
-    // Detach from Stripe so the card is no longer chargeable
-    await stripe.paymentMethods.detach(method.stripePaymentMethodId);
+    // Detach from Stripe so the card is no longer chargeable. A card Stripe
+    // no longer has is already gone, so the local row can still be removed.
+    try {
+      await stripe.paymentMethods.detach(method.stripePaymentMethodId);
+    } catch (err) {
+      if (!isStripeMissingResource(err)) throw err;
+    }
   }
 
   await prisma.savedPaymentMethod.delete({ where: { id } });

@@ -50,9 +50,10 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       *Better:* one `GET /api/config/policies` (or fields on the appointment: `canCancel`, `refundIfCancelledNow`,
       `canReschedule`, `checkInOpensAt`) so the app shows what the server will actually do and never has to guess.
       The text I added in `cancellation-policy.ts` is a copy and should become server data.
-- [ ] **A2 (P1, M) Move payment orchestration out of the screen** into `useBookingPayment()` or a small state machine
+- [x] **A2 (P1, M) Move payment orchestration out of the screen** into `useBookingPayment()` or a small state machine
       (idle, creating, paying, confirming, done, failed) that is unit-testable, and keep `summary.tsx` for layout.
       Same for `video/call.tsx`, `van/live-track.tsx`, `records/plans/[id].tsx`.
+      *Done for the booking payment (PR 120): `booking-payment.ts` with 14 behaviour tests and 5 screen tests. The other three screens are still to do.*
 - [ ] **A3 (P1, M) Use the generated API types everywhere.** `api-contract.gen.ts` is imported by only 2 files, while
       screens use `any` (171 non-test uses). Generate types for every endpoint and replace `any`.
 - [ ] **A4 (P1, S) Shared enums, not string literals.** `status`, `channel` and `role` are compared as raw strings in 71

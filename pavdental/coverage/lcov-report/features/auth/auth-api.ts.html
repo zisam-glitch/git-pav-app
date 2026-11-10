@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">3.57% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/140</span>
+                <span class='fraction'>5/140</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">4.03% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/124</span>
+                <span class='fraction'>5/124</span>
             </div>
         
             
@@ -420,14 +420,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -446,13 +446,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -591,7 +591,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -763,14 +763,14 @@ export { API_URL, apiUrl };
 // ─── Push token of this device ───────────────────────────────────────────────
 // Sent on sign-out so the server stops pushing to a device nobody is signed
 // in on (MF-03). Set each launch when the token is registered.
-let registeredPushToken: string | null = <span class="cstat-no" title="statement not covered" >null;</span>
+let registeredPushToken: string | null = null;
 &nbsp;
 export function <span class="fstat-no" title="function not covered" >rememberPushToken(</span>token: string) {
 <span class="cstat-no" title="statement not covered" >  registeredPushToken = token;</span>
 }
 &nbsp;
 // ─── In-flight refresh de-duplication ────────────────────────────────────────
-let refreshPromise: Promise&lt;string&gt; | null = <span class="cstat-no" title="statement not covered" >null;</span>
+let refreshPromise: Promise&lt;string&gt; | null = null;
 &nbsp;
 /**
  * Fully purges local state on signOut or unrecoverable session expiry.
@@ -789,13 +789,13 @@ export async function <span class="fstat-no" title="function not covered" >clear
 // ─── Request time limit (B7) ─────────────────────────────────────────────────
 // Without one, a request on a weak signal can hang with a spinner for
 // minutes. Uploads (photos, documents) get longer.
-const requestLimits = <span class="cstat-no" title="statement not covered" >{ requestMs: 20_000, uploadMs: 60_000 };</span>
+const requestLimits = { requestMs: 20_000, uploadMs: 60_000 };
 &nbsp;
 /** Tests shorten the limits; the app keeps the defaults. */
 export function <span class="fstat-no" title="function not covered" >configureRequestTimeouts(</span>limits: Partial&lt;typeof requestLimits&gt;) {
 <span class="cstat-no" title="statement not covered" >  Object.assign(requestLimits, limits);</span>
 }
-export const TIMEOUT_MESSAGE = <span class="cstat-no" title="statement not covered" >"This is taking too long. Check your connection and try again.";</span>
+export const TIMEOUT_MESSAGE = "This is taking too long. Check your connection and try again.";
 &nbsp;
 export class RequestTimeoutError extends Error {
 <span class="fstat-no" title="function not covered" >  co</span>nstructor() {
@@ -934,7 +934,7 @@ async function <span class="fstat-no" title="function not covered" >doRefresh(</
 }
 &nbsp;
 // ─── Auth API ─────────────────────────────────────────────────────────────────
-export const authApi = <span class="cstat-no" title="statement not covered" >{</span>
+export const authApi = {
   checkEmail: <span class="fstat-no" title="function not covered" >as</span>ync (email: string): Promise&lt;{ exists: boolean; email: string }&gt; =&gt; {
     const res = <span class="cstat-no" title="statement not covered" >await timedFetch(`${API_URL}/api/auth/check-email`, {</span>
       method: "POST",
@@ -1099,7 +1099,7 @@ export const authApi = <span class="cstat-no" title="statement not covered" >{</
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-10T03:01:03.413Z
+                at 2026-11-10T03:22:47.336Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

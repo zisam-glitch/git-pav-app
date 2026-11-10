@@ -1,11 +1,12 @@
 import { reportCaughtError } from "@/lib/caught-errors";
-import { plainBookingError, plainPaymentError } from "@/features/payment/payment-errors";
+import { runBookingPayment } from "@/features/booking/booking-payment";
+import { useStripePay } from "@/features/booking/use-stripe-pay";
 import { bookingStep } from "@/features/booking/booking-steps";
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { initStripe, useStripe, PlatformPay } from "@stripe/stripe-react-native";
+import { useStripe } from "@stripe/stripe-react-native";
 import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useBookingStore } from "@/features/booking/booking-store";
@@ -22,7 +23,7 @@ import { useDependants } from "@/features/account/account-hooks";
 export default function BookingSummaryScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { initPaymentSheet, presentPaymentSheet, isPlatformPaySupported, confirmPlatformPayPayment } = useStripe();
+  const { isPlatformPaySupported } = useStripe();
   // Only offer the Apple Pay / Google Pay button where the wallet can pay.
   const [walletReady, setWalletReady] = useState(false);
   useEffect(() => {
@@ -113,160 +114,57 @@ export default function BookingSummaryScreen() {
 
   // One key per visit to this screen: retries of the same booking reuse it.
   const attemptKey = useRef(newBookingAttemptKey());
+  const stripePay = useStripePay();
 
   // "wallet" pays with Apple Pay or Google Pay in the phone's own sheet; "card"
   // opens Stripe's card form. Either way the patient confirms the payment
   // themselves (double-click or Face ID, or the sheet's Pay button): nothing
-  // is charged just by tapping a button here.
+  // is charged just by tapping a button here. The steps live in
+  // features/booking/booking-payment.ts; this only shows the outcome.
   const handlePayDeposit = async (method: "wallet" | "card") => {
-    if (!service || !slot) {
-      Alert.alert("Incomplete Booking", "Please select a service and time slot before continuing.");
-      router.replace("/(patient)/booking/service-catalog" as any);
-      return;
-    }
-
-    if (!slot.startTimeUtc || !slot.endTimeUtc) {
-      Alert.alert("Invalid Slot", "Selected slot is missing timing details. Please choose another slot.");
-      router.replace("/(patient)/booking/slot-picker" as any);
-      return;
-    }
-
     setIsProcessing(true);
-    try {
-      const startTime = slot.startTimeUtc;
-      const endTime = slot.endTimeUtc;
+    const outcome = await runBookingPayment(
+      {
+        createAppointment,
+        createPaymentIntent,
+        confirmAppointment,
+        initStripe: stripePay.initStripe,
+        payWithWallet: stripePay.payWithWallet,
+        payWithSheet: stripePay.payWithSheet,
+        // Once paid, the confirmed screen sits on top and clears the draft;
+        // without this the cleared draft looks like an expired hold.
+        onPaid: () => {
+          paidRef.current = true;
+        },
+        report: reportCaughtError,
+      },
+      {
+        service,
+        slot,
+        channel,
+        clinic,
+        clinician,
+        dependantId,
+        voucherCode: useVoucher && voucherFits ? voucher!.voucherCode : undefined,
+        attemptKey: attemptKey.current,
+        method,
+      }
+    );
+    setIsProcessing(false);
 
-      // 1. Create draft appointment
-      const appt = await createAppointment({
-        serviceId: service.id,
-        // Clinic visits and video consults are booked here; van visits use the
-        // van dispatch flow.
-        channel: channel ?? "clinic",
-        // "Any practitioner" leaves these as empty strings, which the API
-        // rejects as not-a-UUID: send nothing so it picks the dentist itself.
-        clinicianId: clinician?.id || slot.clinicianId || undefined,
-        clinicId: channel === "video" ? undefined : clinic?.id || slot.clinicId || undefined,
-        startTimeUtc: startTime,
-        endTimeUtc: endTime,
-        slotId: slot.id,
-        dependantId: dependantId ?? undefined,
-      }, attemptKey.current);
-
-      // 2. Create PaymentIntent on the server — amount is server-authoritative
-      const intent = await createPaymentIntent(appt.id, useVoucher && voucherFits ? voucher!.voucherCode : undefined);
-
-      // Local development runs Stripe in mock mode: there is no card to take,
-      // so the server confirms the mock intent directly (never reachable when
-      // deployed: the server rejects mock keys in staging and production).
-      if (intent.isMock) {
-        await confirmAppointment(appt.id, intent.paymentIntentId);
-        paidRef.current = true;
-        setIsProcessing(false);
-        router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as never);
+    switch (outcome.kind) {
+      case "confirmed":
+        router.push(`/(patient)/booking/confirmed?appointmentId=${outcome.appointmentId}` as never);
         return;
-      }
-
-      // 3. Validate that we have a real payment intent
-      if (!intent.clientSecret) {
-        throw new Error("Payment setup failed - no client secret received");
-      }
-
-      // 4. Initialise Stripe with the key the server says to use (so a build
-      // without EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY still works), then the
-      // PaymentSheet with the client secret.
-      if (intent.publishableKey) {
-        await initStripe({
-          publishableKey: intent.publishableKey,
-          merchantIdentifier: "merchant.com.pavdental.app",
-        });
-      }
-      if (method === "wallet") {
-        const { error: walletError } = await confirmPlatformPayPayment(intent.clientSecret, {
-          applePay: {
-            merchantCountryCode: "GB",
-            currencyCode: "GBP",
-            cartItems: [
-              {
-                label: "Pav Dental deposit",
-                // The wallet sheet wants a plain decimal string, not "£85.00".
-                amount: (intent.amountPence / 100).toFixed(2),
-                paymentType: PlatformPay.PaymentType.Immediate,
-              },
-            ],
-          },
-          googlePay: {
-            merchantCountryCode: "GB",
-            currencyCode: "GBP",
-            merchantName: "Pav Dental",
-            testEnv: process.env.EXPO_PUBLIC_APP_ENV !== "production",
-          },
-        });
-        if (walletError) {
-          if (walletError.code !== "Canceled") {
-            reportCaughtError(walletError, "wallet payment failed");
-            Alert.alert("Payment failed", plainPaymentError(walletError));
-          }
-          setIsProcessing(false);
-          return;
-        }
-      } else {
-        const { error: initError } = await initPaymentSheet({
-          merchantDisplayName: "Pav Dental",
-          paymentIntentClientSecret: intent.clientSecret,
-          // Saved cards appear in the sheet, which also offers to save a new one.
-          ...(intent.customerId && intent.customerEphemeralKeySecret
-            ? { customerId: intent.customerId, customerEphemeralKeySecret: intent.customerEphemeralKeySecret }
-            : {}),
-          returnURL: "pavdental://stripe-return",
-          // Do not allow delayed payment methods (SEPA, BACS, etc.) as slot hold expires in 10 minutes (WH-1/MB-2)
-          allowsDelayedPaymentMethods: false,
-          // Cards only: the wallet has its own button, so this sheet always
-          // shows the card form or saved cards and a "Pay £x" button.
-          paymentMethodOrder: ["card"],
-          primaryButtonLabel: `Pay ${formatGbp(intent.amountPence)}`,
-          appearance: {
-            colors: {
-              primary: colors.ink as string,
-              background: colors.systemBackground as string,
-              componentBackground: colors.secondaryBackground as string,
-              componentText: colors.label as string,
-              placeholderText: colors.secondaryLabel as string,
-            },
-          },
-        });
-
-        if (initError) {
-          reportCaughtError(initError, "payment sheet setup failed");
-          Alert.alert("Payment failed", plainPaymentError(initError));
-          setIsProcessing(false);
-          return;
-        }
-
-        // 5. Present: the patient enters or picks a card and taps Pay.
-        const { error: presentError } = await presentPaymentSheet();
-
-        if (presentError) {
-          // User cancelled or card declined — stay on summary screen
-          if (presentError.code !== "Canceled") {
-            reportCaughtError(presentError, "payment sheet failed");
-            Alert.alert("Payment failed", plainPaymentError(presentError));
-          }
-          setIsProcessing(false);
-          return;
-        }
-      }
-
-      // 6. Payment collected. Ask the server to confirm now; the Stripe webhook
-      // confirms the same way, so if this call fails the webhook still will
-      // and the confirmed screen waits for it.
-      paidRef.current = true;
-      await confirmAppointment(appt.id, intent.paymentIntentId).catch(() => {});
-      setIsProcessing(false);
-      router.push(`/(patient)/booking/confirmed?appointmentId=${appt.id}` as any);
-    } catch (err: any) {
-      reportCaughtError(err, "booking payment failed");
-      Alert.alert("Something went wrong", plainBookingError(err));
-      setIsProcessing(false);
+      case "incomplete":
+        Alert.alert(outcome.title, outcome.message);
+        router.replace(`/(patient)/booking/${outcome.redirect}` as never);
+        return;
+      case "failed":
+        Alert.alert(outcome.title, outcome.message);
+        return;
+      case "cancelled":
+        return;
     }
   };
 

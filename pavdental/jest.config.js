@@ -2,7 +2,7 @@
 // (The older tsx-run tests in src/__tests__ stay as they are.)
 module.exports = {
   preset: "jest-expo",
-  testMatch: ["<rootDir>/src/__component__/**/*.test.tsx"],
+  testMatch: ["<rootDir>/src/__component__/**/*.test.{ts,tsx}"],
   moduleNameMapper: { "^@/(.*)$": "<rootDir>/src/$1" },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   collectCoverageFrom: [
@@ -16,6 +16,6 @@ module.exports = {
   // tsx-run tests read source text and do not count here.)
   coverageReporters: ["text-summary", "lcov"],
   coverageThreshold: {
-    global: { statements: 6, branches: 6, functions: 4, lines: 7 },
+    global: { statements: 9, branches: 9, functions: 6, lines: 10 },
   },
 };

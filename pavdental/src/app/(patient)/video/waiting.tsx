@@ -101,7 +101,7 @@ export default function WaitingRoomScreen() {
 
           <ThemedText variant="subhead" style={styles.subtitle}>
             {opensAt
-              ? `The waiting room opens at ${new Date(opensAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}.`
+              ? `The waiting room opens at ${new Date(opensAt).toLocaleTimeString("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" })}.`
               : "Your dentist will let you in soon. Please keep this screen open."}
           </ThemedText>
 

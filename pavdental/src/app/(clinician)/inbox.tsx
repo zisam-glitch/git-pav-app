@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
-import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-native";
+import { View, StyleSheet, ScrollView, FlatList, Pressable, RefreshControl } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import {
@@ -174,85 +174,87 @@ export default function ClinicianInboxScreen() {
         />
       </View>
 
-      <ScrollView
+      <FlatList
+        data={!isLoading && !(isError && rawThreads === undefined) ? filteredThreads : []}
+        keyExtractor={(t) => t.id}
+        extraData={activeThread?.id}
         contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
-      >
-        {isLoading ? (
-          <View style={styles.stack}>
-            <Skeleton height={80} />
-            <Skeleton height={80} />
-            <Skeleton height={80} />
-          </View>
-        ) : isError && rawThreads === undefined ? (
-          <ErrorState
-            message="We couldn't load messages. Check your connection and try again."
-            onRetry={() => refetch()}
-          />
-        ) : filteredThreads.length === 0 ? (
-          <EmptyState
-            illustration="messages"
-            heading={filter === "unread" ? "No unread messages" : "No messages found"}
-            body={search ? `No messages match "${search}".` : "Patient communications in your care appear here."}
-            icon="message"
-          />
-        ) : (
-          <View style={styles.stack}>
-            {filteredThreads.map((t) => {
-              const unread = !t.isRead;
-              const isSelected = activeThread?.id === t.id;
-              return (
-                <Pressable
-                  key={t.id}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Message from ${t.from}: ${t.subject}`}
-                  onPress={() => openThread(t)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
-                >
-                  <Card
-                   
-                    style={[
-                      styles.threadCard,
-                      unread && styles.threadCardUnread,
-                      isSelected && styles.threadCardSelected,
-                    ]}
-                  >
-                    <View style={styles.avatarTile}>
-                      <AppIcon name="message" size={18} color={unread ? colors.onInk : colors.ink} />
-                    </View>
-                    <View style={styles.threadInfo}>
-                      <View style={styles.threadTop}>
-                        <ThemedText variant="subhead" style={styles.threadPatient} numberOfLines={1}>
-                          {t.from}
-                        </ThemedText>
-                        <ThemedText variant="caption" style={styles.threadTime}>
-                          {new Date(t.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
-                            day: "numeric",
-                            month: "short",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </ThemedText>
-                      </View>
-                      <ThemedText
-                        variant="body"
-                        style={unread ? styles.threadSubjectUnread : styles.threadSubject}
-                        numberOfLines={1}
-                      >
-                        {t.subject}
-                      </ThemedText>
-                      <ThemedText variant="caption" style={styles.threadPreview} numberOfLines={2}>
-                        {t.preview}
-                      </ThemedText>
-                    </View>
-                    {unread ? <View style={styles.unreadDot} /> : null}
-                  </Card>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
-      </ScrollView>
+        renderItem={({ item: t }) => {
+      const unread = !t.isRead;
+      const isSelected = activeThread?.id === t.id;
+      return (
+        <Pressable
+          key={t.id}
+          accessibilityRole="button"
+          accessibilityLabel={`Message from ${t.from}: ${t.subject}`}
+          onPress={() => openThread(t)}
+          style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
+        >
+          <Card
+           
+            style={[
+              styles.threadCard,
+              unread && styles.threadCardUnread,
+              isSelected && styles.threadCardSelected,
+            ]}
+          >
+            <View style={styles.avatarTile}>
+              <AppIcon name="message" size={18} color={unread ? colors.onInk : colors.ink} />
+            </View>
+            <View style={styles.threadInfo}>
+              <View style={styles.threadTop}>
+                <ThemedText variant="subhead" style={styles.threadPatient} numberOfLines={1}>
+                  {t.from}
+                </ThemedText>
+                <ThemedText variant="caption" style={styles.threadTime}>
+                  {new Date(t.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </ThemedText>
+              </View>
+              <ThemedText
+                variant="body"
+                style={unread ? styles.threadSubjectUnread : styles.threadSubject}
+                numberOfLines={1}
+              >
+                {t.subject}
+              </ThemedText>
+              <ThemedText variant="caption" style={styles.threadPreview} numberOfLines={2}>
+                {t.preview}
+              </ThemedText>
+            </View>
+            {unread ? <View style={styles.unreadDot} /> : null}
+          </Card>
+        </Pressable>
+          );
+        }}
+        ListEmptyComponent={
+          isLoading ? (
+            <View style={styles.stack}>
+              <Skeleton height={80} />
+              <Skeleton height={80} />
+              <Skeleton height={80} />
+            </View>
+          ) : isError && rawThreads === undefined ? (
+            <ErrorState
+              message="We couldn't load messages. Check your connection and try again."
+              onRetry={() => refetch()}
+            />
+          ) : (
+            <EmptyState
+              illustration="messages"
+              heading={filter === "unread" ? "No unread messages" : "No messages found"}
+              body={search ? `No messages match "${search}".` : "Patient communications in your care appear here."}
+              icon="message"
+            />
+          )
+        }
+      />
 
       {/* Conversation / Reply Modal or Bottom Sheet */}
       {activeThread ? (
@@ -370,6 +372,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   scrollContent: {
+    gap: spacing.sm,
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,

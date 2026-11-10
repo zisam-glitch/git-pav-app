@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { Card, EmptyState, ErrorState, IconTile, ListRow, Skeleton } from "@/components";
 import { colors, spacing } from "@/theme";
@@ -15,42 +15,45 @@ export default function NotificationsScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {isLoading ? (
-          <Skeleton height={72} />
-        ) : isError ? (
-          <ErrorState message="We couldn't load your notifications. Check your connection and try again." onRetry={() => refetch()} />
-        ) : items.length === 0 ? (
-          <EmptyState
-            illustration="messages"
-            heading="No notifications yet"
-            body="Reminders and updates about your visits will appear here."
-            icon="bell"
-          />
-        ) : (
-          <Card padding="none">
-            {items.map((n) => {
-              const target = routeForNotification(n.data);
-              return (
-                <ListRow
-                  key={n.id}
-                  title={n.title}
-                  subtitle={`${n.body}\n${new Date(n.sentAt).toLocaleString("en-GB", {
-                    timeZone: PRACTICE_TIME_ZONE,
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`}
-                  left={<IconTile icon="bell" />}
-                  chevron={!!target}
-                  onPress={target ? () => router.push(target as never) : undefined}
-                />
-              );
-            })}
-          </Card>
-        )}
-      </ScrollView>
+      <FlatList
+        data={isLoading || isError ? [] : items}
+        keyExtractor={(n) => n.id}
+        contentContainerStyle={styles.content}
+        renderItem={({ item: n }) => {
+          const target = routeForNotification(n.data);
+          return (
+            <Card padding="none">
+              <ListRow
+                title={n.title}
+                subtitle={`${n.body}\n${new Date(n.sentAt).toLocaleString("en-GB", {
+                  timeZone: PRACTICE_TIME_ZONE,
+                  day: "numeric",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}`}
+                left={<IconTile icon="bell" />}
+                chevron={!!target}
+                onPress={target ? () => router.push(target as never) : undefined}
+              />
+            </Card>
+          );
+        }}
+        ListEmptyComponent={
+          isLoading ? (
+            <Skeleton height={72} />
+          ) : isError ? (
+            <ErrorState message="We couldn't load your notifications. Check your connection and try again." onRetry={() => refetch()} />
+          ) : (
+            <EmptyState
+              illustration="messages"
+              heading="No notifications yet"
+              body="Reminders and updates about your visits will appear here."
+              icon="bell"
+            />
+          )
+        }
+      />
     </View>
   );
 }

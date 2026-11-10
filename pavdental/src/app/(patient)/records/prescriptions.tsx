@@ -1,5 +1,6 @@
+import { buildGroupedRows } from "@/lib/list-rows";
 import React from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, FlatList, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, EmptyState, ErrorState, AppIcon, Skeleton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -94,31 +95,25 @@ export default function PrescriptionsScreen() {
     );
   }
 
+  const rows = buildGroupedRows([
+    { key: "active", title: "Active", items: active },
+    { key: "past", title: "Past courses", items: past },
+  ]);
+
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {active.length > 0 ? (
-          <View style={styles.group}>
-            <ThemedText variant="overline">Active</ThemedText>
-            <View style={styles.stack}>
-              {active.map((rx) => (
-                <Row key={rx.id} rx={rx} />
-              ))}
-            </View>
-          </View>
-        ) : null}
-
-        {past.length > 0 ? (
-          <View style={styles.group}>
-            <ThemedText variant="overline">Past courses</ThemedText>
-            <View style={styles.stack}>
-              {past.map((rx) => (
-                <Row key={rx.id} rx={rx} />
-              ))}
-            </View>
-          </View>
-        ) : null}
-      </ScrollView>
+      <FlatList
+        data={rows}
+        keyExtractor={(row) => row.key}
+        contentContainerStyle={styles.content}
+        renderItem={({ item: row }) =>
+          row.kind === "heading" ? (
+            <ThemedText variant="overline">{row.title}</ThemedText>
+          ) : (
+            <Row rx={row.item} />
+          )
+        }
+      />
     </View>
   );
 }
@@ -129,13 +124,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    gap: spacing.lg,
+    gap: spacing.sm,
     paddingHorizontal: spacing.gutter,
     paddingVertical: spacing.md,
     paddingBottom: spacing.xxl,
-  },
-  group: {
-    gap: spacing.xs,
   },
   rowCard: {
     alignItems: "center",
@@ -160,8 +152,5 @@ const styles = StyleSheet.create({
   },
   rowTitle: {
     color: colors.label,
-  },
-  stack: {
-    gap: spacing.sm,
   },
 });

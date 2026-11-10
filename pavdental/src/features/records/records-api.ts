@@ -151,14 +151,14 @@ export async function createMessageThread(payload: {
   return res.json();
 }
 
-export async function replyToMessageThread(threadId: string, body: string) {
+export async function replyToMessageThread(threadId: string, body: string, attachmentKeys: string[] = []) {
   const res = await authFetch(`/api/messages/${threadId}/reply`, {
     method: "POST",
-    headers: { "Idempotency-Key": sendKeyFor(threadId, body) },
-    body: JSON.stringify({ body }),
+    headers: { "Idempotency-Key": sendKeyFor(threadId, `${body}|${attachmentKeys.join(",")}`) },
+    body: JSON.stringify({ body, ...(attachmentKeys.length > 0 ? { attachmentKeys } : {}) }),
   });
   if (!res.ok) throw new Error("Could not send message reply");
-  pendingSendKeys.delete(`${threadId}:${body}`);
+  pendingSendKeys.delete(`${threadId}:${body}|${attachmentKeys.join(",")}`);
   return res.json();
 }
 
@@ -293,3 +293,14 @@ export async function fetchOdontogramHistory(userId: string) {
   return res.json();
 }
 
+
+/** Uploads one photo to a conversation and returns the key to send with the reply (V53). */
+export async function uploadMessagePhoto(threadId: string, photo: { uri: string; mimeType: string }): Promise<string> {
+  const form = new FormData();
+  const ext = photo.mimeType === "image/png" ? "png" : photo.mimeType === "image/webp" ? "webp" : "jpg";
+  form.append("photo", { uri: photo.uri, name: `message.${ext}`, type: photo.mimeType } as unknown as Blob);
+  const res = await authFetch(`/api/messages/${threadId}/photos`, { method: "POST", body: form });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || typeof data?.key !== "string") throw new Error(data?.error || "The photo did not upload");
+  return data.key;
+}

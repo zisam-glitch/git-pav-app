@@ -4,6 +4,7 @@ interface RawMessage {
   senderName?: string;
   body?: unknown;
   sentAtIso?: unknown;
+  attachments?: unknown;
 }
 
 export interface ThreadMessage {
@@ -12,6 +13,8 @@ export interface ThreadMessage {
   sender: string;
   body: string;
   sentAtIso: string;
+  /** Links to photos sent with the message. */
+  photos: string[];
 }
 
 /** The messages of one thread, oldest first, marked as the patient's own or the practice's. */
@@ -25,6 +28,9 @@ export function threadMessages(raw: unknown): ThreadMessage[] {
       sender: m.senderRole === "patient" ? "You" : m.senderName || "Pav Dental care team",
       body: String(m.body ?? ""),
       sentAtIso: String(m.sentAtIso ?? ""),
+      photos: Array.isArray(m.attachments)
+        ? m.attachments.map((a) => (a as { url?: unknown })?.url).filter((u): u is string => typeof u === "string")
+        : [],
     }))
     .sort((a, b) => a.sentAtIso.localeCompare(b.sentAtIso));
 }

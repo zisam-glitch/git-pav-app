@@ -42,4 +42,11 @@ assert(unreadThreadCount([{ isRead: false }, { isRead: true }, { isRead: false }
 assert(unreadThreadCount(undefined) === 0 && unreadThreadCount([{}]) === 0, "No data means no badge");
 assert(read("app/(patient)/(tabs)/_layout.tsx").includes("tabBarBadge"), "The Messages tab shows the unread count");
 
+// Photos in messages (V53)
+const withPhotos = threadMessages({ messages: [{ id: "p1", senderRole: "patient", body: "", sentAtIso: "2026-11-10T10:00:00Z", attachments: [{ url: "https://x/y.jpg" }, { nope: 1 }, { url: 5 }] }, { id: "p2", senderRole: "clinician", body: "ok", sentAtIso: "2026-11-10T10:01:00Z" }] });
+assert(withPhotos[0].photos.length === 1 && withPhotos[0].photos[0] === "https://x/y.jpg", "A message's photo links are read, and malformed ones are ignored");
+assert(withPhotos[1].photos.length === 0, "A message with no photos has none");
+assert(screen.includes("uploadMessagePhoto") && screen.includes("Add a photo"), "The patient can add a photo to a reply");
+assert(readFileSync(join(__dirname, "../app/(clinician)/inbox.tsx"), "utf8").includes("Photo from the patient"), "The dentist sees the photos a patient sent");
+
 console.log("\n🎉 ALL MESSAGE THREAD TESTS PASSED!\n");

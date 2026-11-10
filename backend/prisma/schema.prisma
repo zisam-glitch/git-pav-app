@@ -345,6 +345,9 @@ model Appointment {
   holdExpiresAt        DateTime?          @map("hold_expires_at")
   accessDetails        Json?              @map("access_details")
   triageData           Json?              @map("triage_data")
+  /// Video: when the patient first reported in to the waiting room, and when they last did.
+  patientWaitingSince  DateTime?          @map("patient_waiting_since")
+  patientLastSeenAt    DateTime?          @map("patient_last_seen_at")
   intraoralPhotos      String[]           @map("intraoral_photos")
   totalPricePence      Int                @map("total_price_pence")
   depositPaidPence     Int                @default(0) @map("deposit_paid_pence")

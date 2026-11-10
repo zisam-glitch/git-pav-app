@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator, AppState } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { PRACTICE_CONFIG } from "@/config/practice";
-import { isRunningLate, waitingTrouble, type WaitingTrouble } from "@/features/video/waiting-state";
+import { isRunningLate, waitingTrouble, waitingStatusLine, type WaitingTrouble } from "@/features/video/waiting-state";
 
 export default function WaitingRoomScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
-  const [statusLabel, setStatusLabel] = useState("Waiting");
   const [trouble, setTrouble] = useState<WaitingTrouble>(null);
   const [startTimeUtc, setStartTimeUtc] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
+  const [opensAt, setOpensAt] = useState<string | null>(null);
+  const [admitted, setAdmitted] = useState(false);
   const failures = useRef(0);
 
   useEffect(() => {
@@ -22,8 +23,21 @@ export default function WaitingRoomScreen() {
     async function pollRoomStatus() {
       if (!appointmentId) return;
       try {
-        const res = await authFetch(`/api/video/status/${appointmentId}`);
+        // Reporting in tells the dentist the patient is here (V10).
+        const res = await authFetch(`/api/video/waiting/${appointmentId}`, { method: "POST" });
         if (!active) return;
+        if (res.status === 409) {
+          const early = await res.json().catch(() => ({}));
+          // Not open yet is not a failure: say when it opens, and keep checking.
+          if (early?.code === "not_open_yet") {
+            setOpensAt(early.opensAt ?? null);
+            setTrouble(null);
+            return;
+          }
+          setTrouble("closed");
+          return;
+        }
+        setOpensAt(null);
         if (!res.ok) {
           // A 404 or 403 will not fix itself; anything else may be a passing blip.
           failures.current += res.status === 404 || res.status === 403 ? 3 : 1;
@@ -37,7 +51,7 @@ export default function WaitingRoomScreen() {
         setTrouble(closed);
         if (closed) return;
         if (data?.admitted || data?.status === "in_progress" || data?.status === "IN_PROGRESS") {
-          setStatusLabel("Clinician Admitted You");
+          setAdmitted(true);
           router.replace({
             pathname: "/(patient)/video/call" as any,
             params: { appointmentId },
@@ -49,14 +63,27 @@ export default function WaitingRoomScreen() {
         setTrouble(waitingTrouble({ failures: failures.current }));
       }
     }
-    pollRoomStatus();
-    const interval = setInterval(() => {
-      setNow(Date.now());
+    // Check on an interval only while the app is in front, and check at once
+    // when it comes back (V13).
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const start = () => {
+      if (interval) return;
       pollRoomStatus();
-    }, 4000);
+      interval = setInterval(() => {
+        setNow(Date.now());
+        pollRoomStatus();
+      }, 5000);
+    };
+    const stop = () => {
+      if (interval) clearInterval(interval);
+      interval = null;
+    };
+    if (AppState.currentState === "active") start();
+    const sub = AppState.addEventListener("change", (state) => (state === "active" ? start() : stop()));
     return () => {
       active = false;
-      clearInterval(interval);
+      stop();
+      sub.remove();
     };
   }, [appointmentId, router]);
 
@@ -73,26 +100,28 @@ export default function WaitingRoomScreen() {
           </ThemedText>
 
           <ThemedText variant="subhead" style={styles.subtitle}>
-            Your clinician will connect with you shortly. Please keep this screen open.
+            {opensAt
+              ? `The waiting room opens at ${new Date(opensAt).toLocaleTimeString("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" })}.`
+              : "Your dentist will let you in soon. Please keep this screen open."}
           </ThemedText>
 
           {/* Consultation Pre-flight Checklist */}
           <Card style={styles.queueCard}>
             <View style={styles.queueHeaderRow}>
               <ThemedText variant="headline" style={styles.queueCardTitle}>
-                Consultation ready
+                Your video visit
               </ThemedText>
-              <Badge label={statusLabel} />
+              <Badge label={waitingStatusLine({ admitted, late: isRunningLate(startTimeUtc, now), opensAt })} />
             </View>
 
             <View style={styles.checklist}>
               <View style={styles.checkItem}>
                 <View style={styles.checkTextGroup}>
                   <ThemedText variant="subhead" style={styles.checkTitle}>
-                    Clinician connection
+                    Your dentist
                   </ThemedText>
                   <ThemedText variant="caption" style={styles.muted}>
-                    Waiting for your clinician to join
+                    Waiting for your dentist to let you in
                   </ThemedText>
                 </View>
               </View>
@@ -134,7 +163,11 @@ export default function WaitingRoomScreen() {
             title="Leave waiting room"
             variant="ghost"
             size="md"
-            onPress={() => router.replace("/(patient)/(tabs)/home")}
+            onPress={() => {
+              // Tell the practice the patient has gone, then leave.
+              if (appointmentId) authFetch(`/api/video/waiting/${appointmentId}/leave`, { method: "POST" }).catch(() => {});
+              router.replace("/(patient)/(tabs)/home");
+            }}
           />
         </View>
       </View>

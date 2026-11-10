@@ -21,8 +21,8 @@ export default function VideoIntakeScreen() {
   const [dualRecordingConsent, setDualRecordingConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const painLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const durations = ["Less than 24 hours", "Past 24-48 hours", "Over a week"];
+  const painLevels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const durations = ["Less than 24 hours", "1 to 2 days", "3 to 7 days", "Over a week"];
 
   const handleContinue = () => {
     if (!symptomText.trim()) {
@@ -30,7 +30,7 @@ export default function VideoIntakeScreen() {
       return;
     }
     if (painLevel === null) {
-      setError("Please choose how bad the pain is, from 1 to 10.");
+      setError("Please choose how bad the pain is, from 0 to 10.");
       return;
     }
     if (duration === null) {
@@ -90,10 +90,10 @@ export default function VideoIntakeScreen() {
         {/* Pain Severity Scale */}
         <View style={styles.section}>
           <ThemedText variant="headline">
-            {painLevel === null ? "Pain severity (1 to 10)" : `Pain severity: ${painLevel} / 10`}
+            {painLevel === null ? "Pain severity (0 to 10)" : `Pain severity: ${painLevel} / 10`}
           </ThemedText>
           <ThemedText variant="caption" style={styles.sub}>
-            1 = Mild discomfort, 10 = Severe, unmanageable pain
+            0 = No pain, 10 = Severe, unmanageable pain
           </ThemedText>
           <View style={styles.painRow}>
             {painLevels.map((lvl) => {
@@ -192,7 +192,7 @@ export default function VideoIntakeScreen() {
       {/* Footer */}
       <View style={styles.footer}>
         <Button
-          title="Take intraoral photos"
+          title="Add photos of your teeth"
               arrow
           size="lg"
           onPress={handleContinue}

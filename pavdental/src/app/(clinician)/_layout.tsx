@@ -18,6 +18,7 @@ export default function ClinicianLayout() {
       screenOptions={stackScreenOptions}
     >
       <Stack.Screen name="schedule" options={{ title: "Clinician daily schedule" }} />
+      <Stack.Screen name="clinician-settings" options={{ title: "Settings" }} />
       <Stack.Screen name="inbox" options={{ title: "Clinician messages" }} />
       <Stack.Screen name="consult-room" options={{ headerShown: false }} />
       <Stack.Screen name="rx-dispense" options={{ title: "Private prescription", headerTitle: "" }} />

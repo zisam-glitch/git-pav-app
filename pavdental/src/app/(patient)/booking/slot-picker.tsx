@@ -1,3 +1,4 @@
+import { bookingStep } from "@/features/booking/booking-steps";
 import React, { useState, useMemo, useEffect } from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter, useNavigation } from "expo-router";
@@ -146,7 +147,7 @@ export default function SlotPickerScreen() {
 
       {/* Top Navigation */}
       <View style={styles.topNav}>
-        <FlowHeader step={{ current: 4, total: 5 }} />
+        <FlowHeader step={bookingStep(channel, "time")} />
       </View>
 
       {/* Date Selector Row */}

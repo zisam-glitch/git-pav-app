@@ -1,5 +1,9 @@
+import { useCurrentUser } from "@/features/auth/auth-store";
+import { usePatientProfile } from "@/features/hooks/use-dental-api";
+import { describeMissing, missingProfileParts } from "@/features/onboarding/profile-completion";
+import { bookingStep } from "@/features/booking/booking-steps";
 import React, { useState, useMemo } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { safeHaptics } from "@/lib/haptics";
 import {
@@ -69,7 +73,23 @@ export default function ServiceCatalogScreen() {
     });
   }, [services, selectedCategory, search, onlyChannel]);
 
+  const user = useCurrentUser();
+  const { data: profile } = usePatientProfile(user?.id ?? "");
+
   const handleSelectService = (service: DentalService) => {
+    // Onboarding can be skipped; before a first booking, offer to finish it.
+    const missing = missingProfileParts(profile);
+    if (missing.length > 0) {
+      Alert.alert(
+        "Finish your profile first",
+        `Your dentist needs your ${describeMissing(missing)} before your visit. It takes about two minutes.`,
+        [
+          { text: "Not now", style: "cancel" },
+          { text: "Finish profile", onPress: () => router.push("/onboarding/profile" as never) },
+        ]
+      );
+      return;
+    }
     setService({
       ...service,
       id: service.id,
@@ -85,7 +105,7 @@ export default function ServiceCatalogScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.topNav}>
-        <FlowHeader step={{ current: 1, total: 5 }} />
+        <FlowHeader step={bookingStep(onlyChannel, "treatment")} />
       </View>
       <ScrollView
         contentContainerStyle={styles.content}

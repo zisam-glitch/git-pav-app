@@ -13,8 +13,8 @@ function assert(condition: boolean, message: string) {
 
 async function run() {
   console.log("\n🎁 RUNNING REWARDS REFRESH TESTS...\n");
-  // Same defaults as src/lib/query-client.ts (5 minute staleTime).
-  const client = new QueryClient({ defaultOptions: { queries: { staleTime: 5 * 60 * 1000, retry: false } } });
+  // Same defaults as src/lib/query-client.ts (30 second staleTime).
+  const client = new QueryClient({ defaultOptions: { queries: { staleTime: 30 * 1000, retry: false } } });
 
   client.mount(); // subscribes to focusManager, as QueryClientProvider does
 

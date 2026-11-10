@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-native";
 import * as Haptics from "expo-haptics";
+import { Image } from "expo-image";
 import {
   ThemedText,
   SegmentedControl,
@@ -38,6 +39,8 @@ export interface ThreadItem {
     senderName: string;
     body: string;
     sentAtIso: string;
+    /** Links to photos the patient sent. */
+    photos: string[];
   }>;
 }
 
@@ -71,6 +74,9 @@ export default function ClinicianInboxScreen() {
               senderName: m.senderName,
               body: m.body || "",
               sentAtIso: m.sentAtIso || new Date().toISOString(),
+              photos: Array.isArray(m.attachments)
+                ? m.attachments.map((a: { url?: unknown }) => a?.url).filter((u: unknown): u is string => typeof u === "string")
+                : [],
             }))
           : [],
       }))
@@ -120,6 +126,7 @@ export default function ClinicianInboxScreen() {
                   senderRole: "clinician",
                   senderName: "You (Clinician)",
                   body,
+                  photos: [],
                   sentAtIso: new Date().toISOString(),
                 },
               ],
@@ -274,9 +281,14 @@ export default function ClinicianInboxScreen() {
                   <ThemedText variant="caption" style={styles.bubbleSender}>
                     {m.senderName}
                   </ThemedText>
-                  <ThemedText variant="body" style={isClinician ? styles.bubbleTextClinician : styles.bubbleTextPatient}>
-                    {m.body}
-                  </ThemedText>
+                  {m.body ? (
+                    <ThemedText variant="body" style={isClinician ? styles.bubbleTextClinician : styles.bubbleTextPatient}>
+                      {m.body}
+                    </ThemedText>
+                  ) : null}
+                  {m.photos.map((url) => (
+                    <Image key={url} source={{ uri: url }} style={{ borderRadius: radius.md, height: 200, width: 240 }} contentFit="cover" accessibilityLabel="Photo from the patient" />
+                  ))}
                   <ThemedText variant="caption" style={styles.bubbleTime}>
                     {new Date(m.sentAtIso).toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
                       hour: "2-digit",

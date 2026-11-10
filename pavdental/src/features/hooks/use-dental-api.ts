@@ -256,8 +256,8 @@ export function useCreateMessageThreadMutation() {
 export function useReplyMessageThreadMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ threadId, body }: { threadId: string; body: string }) =>
-      replyToMessageThread(threadId, body),
+    mutationFn: ({ threadId, body, attachmentKeys }: { threadId: string; body: string; attachmentKeys?: string[] }) =>
+      replyToMessageThread(threadId, body, attachmentKeys),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["message-threads"] });
     },

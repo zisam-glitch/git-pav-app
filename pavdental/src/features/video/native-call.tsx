@@ -4,6 +4,8 @@ import { useKeepAwake } from "expo-keep-awake";
 import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/react-native-daily-js";
 import { ThemedText, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { reportCallEvent } from "@/lib/call-events";
+import { linkStatus, linkMessage, shouldGoAudioOnly, joinTimeBucket, type NetworkState } from "./call-health";
 
 // The video consult runs natively inside the app (Daily's React Native SDK),
 // not in a browser window: the app asks the server for this appointment's
@@ -60,17 +62,50 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
   const [leaving, setLeaving] = useState(false);
   // Once the other person has been in the call, their absence means they left (V21).
   const [otherHasJoined, setOtherHasJoined] = useState(false);
+  // The connection: dropped (the library is retrying), or weak (V16).
+  const [interrupted, setInterrupted] = useState(false);
+  const [network, setNetwork] = useState<NetworkState>("unknown");
+  const [audioOnly, setAudioOnly] = useState(false);
+  const audioOnlyDone = useRef(false);
+  const camOnRef = useRef(true);
 
   useEffect(() => {
     unmountingRef.current = false;
     const call = Daily.createCallObject();
     callRef.current = call;
     const refresh = () => setParticipants({ ...call.participants() });
+    const joinStarted = Date.now();
 
     call
       .on("joined-meeting", () => {
         setPhase("joined");
         refresh();
+        reportCallEvent("call.joined", { join_time: joinTimeBucket(Date.now() - joinStarted) });
+      })
+      .on("network-connection", (event) => {
+        const state = String(event?.event ?? "");
+        if (state.includes("interrupt")) {
+          setInterrupted(true);
+          reportCallEvent("call.interrupted");
+        } else if (state.includes("connected")) {
+          setInterrupted((was) => {
+            if (was) reportCallEvent("call.recovered");
+            return false;
+          });
+        }
+      })
+      .on("network-quality-change", (event) => {
+        const state = (event?.networkState ?? "unknown") as NetworkState;
+        setNetwork(state);
+        // A bad connection turns the camera off once, so the voice gets through (audio-only).
+        if (shouldGoAudioOnly({ network: state, alreadyDone: audioOnlyDone.current, cameraOn: camOnRef.current })) {
+          audioOnlyDone.current = true;
+          call.setLocalVideo(false);
+          camOnRef.current = false;
+          setCamOn(false);
+          setAudioOnly(true);
+          reportCallEvent("call.audio_only");
+        }
       })
       .on("participant-joined", refresh)
       .on("participant-updated", refresh)
@@ -89,8 +124,10 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
       });
 
     call.join({ url, token }).catch((err: unknown) => {
-      setError(callErrorMessage(err instanceof Error ? err.message : String(err)));
+      const message = callErrorMessage(err instanceof Error ? err.message : String(err));
+      setError(message);
       setPhase("error");
+      reportCallEvent("call.join_failed", { reason: message === "This consultation has ended." ? "ended" : "other" });
     });
 
     return () => {
@@ -102,6 +139,9 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
         .finally(() => call.destroy().catch(() => {}));
     };
   }, [url, token]);
+
+  const link = linkStatus({ interrupted, network });
+  const linkText = linkMessage(link, audioOnly && !camOn);
 
   const local = participants.local;
   const remote = Object.values(participants).find((p) => !p.local);
@@ -120,7 +160,9 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
   const toggleCam = () => {
     const next = !camOn;
     callRef.current?.setLocalVideo(next);
+    camOnRef.current = next;
     setCamOn(next);
+    if (next) setAudioOnly(false);
   };
   const flip = () => {
     callRef.current?.cycleCamera().catch(() => {});
@@ -178,6 +220,18 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
           )}
         </View>
       )}
+
+      {linkText ? (
+        <View
+          style={[styles.banner, styles.linkBanner, deviceProblem ? { top: spacing.md + 72 } : null]}
+          accessibilityRole="alert"
+          accessibilityLiveRegion="polite"
+        >
+          <ThemedText variant="caption" style={styles.linkBannerText}>
+            {linkText}
+          </ThemedText>
+        </View>
+      ) : null}
 
       {deviceProblem && (
         <View style={styles.banner} accessibilityRole="alert">
@@ -257,6 +311,12 @@ const styles = StyleSheet.create({
   },
   bannerText: {
     color: colors.danger,
+  },
+  linkBanner: {
+    backgroundColor: colors.inkSubtle,
+  },
+  linkBannerText: {
+    color: colors.ink,
   },
   center: {
     ...StyleSheet.absoluteFill,

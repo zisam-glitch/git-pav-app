@@ -53,7 +53,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [x] **A2 (P1, M) Move payment orchestration out of the screen** into `useBookingPayment()` or a small state machine
       (idle, creating, paying, confirming, done, failed) that is unit-testable, and keep `summary.tsx` for layout.
       Same for `video/call.tsx`, `van/live-track.tsx`, `records/plans/[id].tsx`.
-      *Done for the booking payment (PR 120): `booking-payment.ts` with 14 behaviour tests and 5 screen tests. The other three screens are still to do.*
+      *Done for all four: booking payment (PR 120), video call (PR 123), van live-tracking (PR 126), treatment plan (PR 127). Each has function tests and screen tests.*
 - [ ] **A3 (P1, M) Use the generated API types everywhere.** `api-contract.gen.ts` is imported by only 2 files, while
       screens use `any` (171 non-test uses). Generate types for every endpoint and replace `any`.
 - [ ] **A4 (P1, S) Shared enums, not string literals.** `status`, `channel` and `role` are compared as raw strings in 71
@@ -88,8 +88,9 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       none. The server owns the deposit; show an error instead.
 - [ ] **B6 (P2, M) Optimistic updates** for the actions that feel slow: mark message read, cancel, change preferences.
       There are none today (0 `onMutate`).
-- [ ] **B7 (P2, M) Fetch one appointment, not the list.** The detail screen still loads every appointment to find one,
+- [x] **B7 (P2, M) Fetch one appointment, not the list.** The detail screen still loads every appointment to find one,
       and the booking-confirmed screen did too (B4/B5 on 9 Nov). The server has `GET /appointments/:id`.
+      *Progress: done (PR 125): detail, check-in, reschedule and cancelled screens use `useAppointment(id)`.*
 - [ ] **B8 (P2, M) Decide what survives an app restart.** The booking draft (treatment, clinic, time) is in memory only.
       Save the non-clinical draft locally so a call or a kill does not lose it. Do not persist health answers.
 - [ ] **B9 (P2, S) Pagination and infinite lists** for appointments, messages, notifications and documents
@@ -97,8 +98,9 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 
 ## C. Performance
 
-- [ ] **C1 (P0, M) Virtualise long lists** with `FlashList` (appointments, messages, notifications, documents,
+- [x] **C1 (P0, M) Virtualise long lists** with `FlashList` (appointments, messages, notifications, documents,
       prescriptions, clinician schedule). Today everything renders at once.
+      *Progress: done (PR 122) with FlatList for Bookings, Messages, Notifications, Documents, Prescriptions and the clinician inbox; the smaller lists and server pagination (B9) remain.*
 - [x] **C2 (P1, S) Trim the JavaScript bundle and set a size budget.** *Done (this PR).* Measured with
       `expo export` on 10 Nov: the minified Android JavaScript was 7,455 KB (the Hermes bytecode 10 MB).
       The earlier note about 844 KB of illustrations was wrong: that was disk blocks; the 14 pieces are 594 KB of

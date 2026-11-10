@@ -54,7 +54,7 @@ export default function ForgotPasswordScreen() {
             </ThemedText>
             <ThemedText variant="subhead" style={styles.subtitle}>
               {submitted
-                ? `If an account exists for ${email}, a reset link has been dispatched.`
+                ? `If an account exists for ${email}, we've sent a reset link.`
                 : "Enter your registered email address and we'll send instructions to reset your password."}
             </ThemedText>
           </View>

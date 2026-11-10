@@ -39,7 +39,7 @@ export default function DocumentVaultScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <ThemedText variant="largeTitle" style={styles.title}>
-            Document vault
+            Documents
           </ThemedText>
           <ThemedText variant="subhead" style={styles.subtitle}>
             Documents your dental team shares with you, stored encrypted.

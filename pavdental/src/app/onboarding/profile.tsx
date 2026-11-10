@@ -1,3 +1,4 @@
+import { parseDob } from "@/features/onboarding/dob";
 import React, { useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,17 +16,10 @@ export default function OnboardingProfileScreen() {
   const [emergencyPhone, setEmergencyPhone] = useState("");
   const setProfile = useOnboardingStore((s) => s.setProfile);
 
-  /** DD/MM/YYYY → ISO YYYY-MM-DD (backend contract) */
-  const toIsoDob = (value: string): string | null => {
-    const m = value.trim().match(/^(\d{2})\s*\/\s*(\d{2})\s*\/\s*(\d{4})$/);
-    if (!m) return null;
-    return `${m[3]}-${m[2]}-${m[1]}`;
-  };
-
   const handleNext = () => {
-    const isoDob = toIsoDob(dob);
+    const isoDob = parseDob(dob);
     if (!isoDob) {
-      setDobError("Please enter your date of birth as DD / MM / YYYY (e.g. 15/04/1990)");
+      setDobError("Please enter a real date of birth as DD / MM / YYYY (e.g. 15/04/1990)");
       return;
     }
     setProfile({

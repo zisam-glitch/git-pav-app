@@ -52,6 +52,12 @@ export default function ClinicianScheduleScreen() {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
+        <Button
+          title="Settings and sign out"
+          variant="ghost"
+          size="sm"
+          onPress={() => router.push("/(clinician)/clinician-settings" as never)}
+        />
         {/* Clinician Header (MB-4: No clipping at 320/375px) */}
         <View style={styles.header}>
           <View style={styles.docRow}>

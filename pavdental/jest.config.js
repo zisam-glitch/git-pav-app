@@ -16,6 +16,6 @@ module.exports = {
   // tsx-run tests read source text and do not count here.)
   coverageReporters: ["text-summary", "lcov"],
   coverageThreshold: {
-    global: { statements: 11, branches: 12, functions: 7, lines: 12 },
+    global: { statements: 14, branches: 15, functions: 10, lines: 14 },
   },
 };

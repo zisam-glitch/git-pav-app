@@ -1,3 +1,6 @@
+import { reportCaughtError } from "@/lib/caught-errors";
+import { plainBookingError } from "@/features/payment/payment-errors";
+import { authorizeDeposit, cancelDoneMessage, cancelPrompt, formatCountdown, secondsUntil } from "@/features/van/live-track-actions";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ActivityIndicator, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,13 +39,7 @@ export default function VanLiveTrackScreen() {
   // Calculate remaining seconds for pending requests
   useEffect(() => {
     if (request?.status === "pending" && request.expiresAt) {
-      const updateTimer = () => {
-        const remaining = Math.max(
-          0,
-          Math.floor((new Date(request.expiresAt).getTime() - Date.now()) / 1000)
-        );
-        setSecondsRemaining(remaining);
-      };
+      const updateTimer = () => setSecondsRemaining(secondsUntil(request.expiresAt));
       updateTimer();
       const interval = setInterval(updateTimer, 1000);
       return () => clearInterval(interval);
@@ -55,25 +52,22 @@ export default function VanLiveTrackScreen() {
     mutationFn: (id: string) => cancelVanRequest(id),
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["van-request-live"] });
-      const depositLine = result.depositRetained
-        ? " The van was already on its way, so your deposit has been kept to cover the call-out."
-        : "";
-      Alert.alert("Request Cancelled", `Your van visit request has been cancelled.${depositLine}`, [
+      Alert.alert("Request cancelled", cancelDoneMessage(result), [
         { text: "OK", onPress: () => router.replace("/(patient)/(tabs)/home") },
       ]);
     },
-    onError: (err: any) => {
-      Alert.alert("Cannot Cancel", err.message || "Could not cancel request.");
+    onError: (err: unknown) => {
+      reportCaughtError(err, "van request cancel failed");
+      Alert.alert("Cannot cancel", plainBookingError(err));
     },
   });
 
   const handleCancel = () => {
     if (!request) return;
+    const prompt = cancelPrompt(request);
     Alert.alert(
-      "Cancel Van Request",
-      request.phase === "en_route" || request.phase === "on_site"
-        ? "The van is already on its way, so your deposit will be kept to cover the call-out. Cancel anyway?"
-        : "Are you sure you want to cancel your mobile surgery request? Your deposit will be returned.",
+      prompt.title,
+      prompt.message,
       [
         { text: "Keep Visit", style: "cancel" },
         {
@@ -93,28 +87,23 @@ export default function VanLiveTrackScreen() {
   const handleAuthorizeDeposit = async () => {
     if (!request) return;
     setIsAuthorizing(true);
-    try {
-      const retry = await retryDepositAuthorization(request.id);
-      if (retry.alreadyAuthorized || !retry.clientSecret) {
-        // Webhook already stamped it — refresh state.
-        queryClient.invalidateQueries({ queryKey: ["van-request-live"] });
-        return;
-      }
-      await presentVanDepositSheet(retry.clientSecret, {
-        initPaymentSheet,
-        presentPaymentSheet,
-      }, retry);
-      // Authorized — poll will pick up the stamped request.
-      queryClient.invalidateQueries({ queryKey: ["van-request-live"] });
-    } catch (err: any) {
-      if (err instanceof DepositCanceledError) {
-        // Silent — banner stays, patient can tap again.
-      } else {
-        Alert.alert("Authorization Failed", err?.message || "Could not authorize the deposit. You have not been charged.");
-      }
-    } finally {
-      setIsAuthorizing(false);
+    const outcome = await authorizeDeposit(
+      {
+        retry: retryDepositAuthorization,
+        presentSheet: (clientSecret, retry) =>
+          presentVanDepositSheet(clientSecret, { initPaymentSheet, presentPaymentSheet }, retry as Parameters<typeof presentVanDepositSheet>[2]),
+        isClosedByPatient: (err) => err instanceof DepositCanceledError,
+      },
+      request.id
+    );
+    setIsAuthorizing(false);
+    if (outcome.kind === "failed") {
+      reportCaughtError(outcome.error, "van deposit authorization failed");
+      Alert.alert("Authorization failed", outcome.message);
+      return;
     }
+    // "already" and "authorized": the next poll shows the stamped request.
+    if (outcome.kind !== "closed") queryClient.invalidateQueries({ queryKey: ["van-request-live"] });
   };
 
   if (isLoading && !request) {
@@ -134,7 +123,7 @@ export default function VanLiveTrackScreen() {
         <AppIcon name="truck" size={32} color={colors.secondaryLabel} />
         <ThemedText variant="headline">No active van request</ThemedText>
         <ThemedText variant="caption" style={styles.loadingText}>
-          You don't have a mobile surgery visit in progress right now.
+          You don't have a mobile dental van visit in progress right now.
         </ThemedText>
         <Button
           title="Request mobile dental van"
@@ -195,12 +184,6 @@ export default function VanLiveTrackScreen() {
       </View>
     </View>
   );
-
-  const formatTimer = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s < 10 ? "0" : ""}${s}`;
-  };
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -299,7 +282,7 @@ export default function VanLiveTrackScreen() {
             <View style={styles.pendingAlertBox}>
               <ThemedText variant="caption" style={styles.pendingText}>
                 <ThemedText variant="caption" style={styles.boldText}>
-                  {secondsRemaining !== null ? formatTimer(secondsRemaining) : "4:00"} left
+                  {secondsRemaining !== null ? formatCountdown(secondsRemaining) : "4:00"} left
                 </ThemedText>{" "}
                 for a van to accept. If none can, the request ends and any deposit hold is released.
               </ThemedText>

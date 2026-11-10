@@ -1,3 +1,5 @@
+import { reportCaughtError } from "@/lib/caught-errors";
+import { declinePlan, decisionFromStatus, findPlan, planBadge, prescribedBy, signPlan } from "@/features/records/plan-actions";
 import React, { useState, useEffect } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
@@ -54,13 +56,12 @@ export default function TreatmentPlanDetailScreen() {
     }
   }, [signSheet]);
 
-  const source = (apiPlans ?? []) as any[];
-  const plan = (id ? source.find((p) => p.id === id) : source[0]) ?? null;
+  const plan = findPlan(apiPlans as any[] | undefined, id) as any;
 
   // A plan answered on an earlier visit shows that answer, not the buttons again.
   useEffect(() => {
-    if (plan?.status === "accepted") setDecision("accepted");
-    else if (plan?.status === "declined") setDecision("declined");
+    const earlier = decisionFromStatus(plan?.status);
+    if (earlier) setDecision(earlier);
   }, [plan?.status]);
 
   if (isLoading) {
@@ -102,12 +103,7 @@ export default function TreatmentPlanDetailScreen() {
   const completedCount = decision === "accepted" ? items.length : 0;
   const progress = items.length ? completedCount / items.length : 0;
 
-  const clinicianName = plan.clinician?.fullName || "Your clinician";
-  // Credentials come from the clinician's record, never a hardcoded number.
-  const clinicianCredentials = [plan.clinician?.roleTitle, plan.clinician?.gdcNumber && `GDC ${plan.clinician.gdcNumber}`]
-    .filter(Boolean)
-    .join(", ");
-  const prescribedBy = clinicianCredentials ? `${clinicianName} · ${clinicianCredentials}` : clinicianName;
+  const prescribed = prescribedBy(plan.clinician);
   const created = new Date(plan.createdAt).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
     day: "numeric",
     month: "short",
@@ -115,91 +111,64 @@ export default function TreatmentPlanDetailScreen() {
   });
 
   const handleDecline = async () => {
-    try {
-      await declinePlanMutation.mutateAsync(plan.id);
+    const outcome = await declinePlan({ decline: (planId) => declinePlanMutation.mutateAsync(planId) }, plan.id);
+    setConfirmDecision(null);
+    if (outcome.kind === "declined") {
       setDecision("declined");
-      setConfirmDecision(null);
-      setToast({
-        message: "Treatment plan declined — clinician notified",
-        tone: "success",
-      });
-    } catch (err: any) {
-      setConfirmDecision(null);
-      setToast({
-        message: err?.message || "Could not decline treatment plan. Please try again.",
-        tone: "error",
-      });
+      setToast({ message: "Treatment plan declined — clinician notified", tone: "success" });
+      return;
     }
+    reportCaughtError(outcome.error, "treatment plan decline failed");
+    setToast({ message: outcome.message, tone: "error" });
   };
 
+  const formatSignedAt = (when: Date) =>
+    when.toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE, hour: "2-digit", minute: "2-digit" }) +
+    ", " +
+    when.toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" });
+
   const handleSignPlan = async () => {
-    try {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-      if (hasHardware && isEnrolled) {
-        const auth = await LocalAuthentication.authenticateAsync({
-          promptMessage: "Confirm it's you",
-          fallbackLabel: "Use passcode",
-          disableDeviceFallback: false,
-        });
-        if (!auth.success) {
-          setToast({
-            message: "Biometric verification was cancelled or failed.",
-            tone: "error",
+    const outcome = await signPlan(
+      {
+        // Face ID or fingerprint where the phone has it; no check where it does not (web).
+        verifyIdentity: async () => {
+          const hasHardware = await LocalAuthentication.hasHardwareAsync();
+          const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+          if (!hasHardware || !isEnrolled) return "unavailable";
+          const auth = await LocalAuthentication.authenticateAsync({
+            promptMessage: "Confirm it's you",
+            fallbackLabel: "Use passcode",
+            disableDeviceFallback: false,
           });
-          return;
-        }
-      }
-    } catch {
-      // Graceful fallback when LocalAuthentication hardware API is unavailable (e.g. Web)
-    }
+          return auth.success ? "verified" : "cancelled";
+        },
+        sign: (input) => signPlanMutation.mutateAsync(input),
+      },
+      plan.id,
+      user
+    );
 
+    if (outcome.kind === "not-verified") {
+      setToast({ message: "Biometric verification was cancelled or failed.", tone: "error" });
+      return;
+    }
+    setShowSignSheet(false);
+    if (outcome.kind === "failed") {
+      reportCaughtError(outcome.error, "treatment plan sign failed");
+      setToast({ message: outcome.message, tone: "error" });
+      return;
+    }
     safeHaptics.notificationAsync("success").catch(() => {});
-    const signerName = user?.firstName
-      ? `${user.firstName} ${user.lastName || ""}`.trim()
-      : user?.email || "Authenticated Patient";
-    const now = new Date();
-    // Only the server's signature hash is shown; nothing is made up here.
-    let hashDisplay = "";
-    let signedAtDisplay =
-      now.toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE, hour: "2-digit", minute: "2-digit" }) +
-      ", " +
-      now.toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" });
-
-    try {
-      const res = await signPlanMutation.mutateAsync({
-        planId: plan.id,
-        signerName,
-        signatureData: `read-confirmation:${signerName}`,
-      });
-      if (res?.signatureHash) {
-        hashDisplay = res.signatureHash;
-      }
-      if (res?.signedAt) {
-        const dt = new Date(res.signedAt);
-        signedAtDisplay =
-          dt.toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE, hour: "2-digit", minute: "2-digit" }) +
-          ", " +
-          dt.toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" });
-      }
-      setSignedInfo({
-        signedAt: signedAtDisplay,
-        hash: hashDisplay,
-        signerName,
-      });
-      setDecision("accepted");
-      setShowSignSheet(false);
-      setToast({
-        message: "Plan acknowledged — you've confirmed you've read this plan. Consent to treatment will be taken in person at your visit.",
-        tone: "success",
-      });
-    } catch (err: any) {
-      setShowSignSheet(false);
-      setToast({
-        message: err?.message || "Could not save your confirmation. Please try again.",
-        tone: "error",
-      });
-    }
+    setSignedInfo({
+      signedAt: formatSignedAt(outcome.signedAt ? new Date(outcome.signedAt) : new Date()),
+      hash: outcome.hash,
+      signerName: outcome.signerName,
+    });
+    setDecision("accepted");
+    setToast({
+      message: "Plan acknowledged — you've confirmed you've read this plan. Consent to treatment will be taken in person at your visit.",
+      tone: "success",
+    });
   };
 
   const handleBookFirstAppointment = () => {
@@ -227,14 +196,12 @@ export default function TreatmentPlanDetailScreen() {
               {plan.title}
             </ThemedText>
             <Badge
-              label={
-                decision === "accepted" ? "Read" : decision === "declined" ? "Declined" : "Awaiting review"
-              }
-              variant={decision === "declined" ? "danger" : decision === "accepted" ? "success" : "warning"}
+              label={planBadge(decision).label}
+              variant={planBadge(decision).variant}
             />
           </View>
           <ThemedText variant="caption" style={styles.muted}>
-            Prescribed by {prescribedBy} · {created}
+            Prescribed by {prescribed} · {created}
           </ThemedText>
         </Card>
 
@@ -431,7 +398,7 @@ export default function TreatmentPlanDetailScreen() {
                   </ThemedText>
                 </View>
                 <ThemedText variant="caption" style={styles.muted}>
-                  Prescribed by {prescribedBy}
+                  Prescribed by {prescribed}
                 </ThemedText>
 
                 <View style={styles.miniItemsDivider} />

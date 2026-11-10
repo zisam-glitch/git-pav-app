@@ -275,7 +275,7 @@ export default function MessagesScreen() {
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Route to care team clinician"
+                accessibilityLabel="Send to your dentist"
                 onPress={() => setNewRecipientType("care_team")}
                 style={[
                   styles.recipientOption,

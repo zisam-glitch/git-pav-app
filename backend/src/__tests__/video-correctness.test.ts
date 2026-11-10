@@ -25,11 +25,12 @@ describe("Video consult correctness (V25 to V30)", () => {
   const created: string[] = [];
 
   // One clinician cannot have overlapping appointments, so each test
-  // appointment gets its own 40-minute slot.
+  // appointment gets its own 40-minute slot. They sit a month back, so other
+  // suites that count today's visits never see them come and go.
   let slot = 0;
   const newAppointment = async (over: Record<string, unknown> = {}) => {
     slot += 1;
-    const start = new Date(Date.now() - slot * 40 * 60 * 1000);
+    const start = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000 - slot * 40 * 60 * 1000);
     const appt = await prisma.appointment.create({
       data: {
         patientId: patientProfileId,

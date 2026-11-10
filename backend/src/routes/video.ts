@@ -485,7 +485,8 @@ router.post("/admit-patient", requireAuth, validateBody(admitPatientSchema), asy
       return { error: "Clinician profile not found", status: 404 };
     }
 
-    return withLockedAppointment(appointmentId, async (tx, appointment) => {
+    let tellPatient: string | null = null;
+    const admitted = await withLockedAppointment(appointmentId, async (tx, appointment) => {
       if (!appointment) {
         return { error: "Appointment not found", status: 404 };
       }
@@ -525,8 +526,23 @@ router.post("/admit-patient", requireAuth, validateBody(admitPatientSchema), asy
         );
       }
 
+      // Only the first admit tells the patient; a repeat tap must not buzz the phone twice.
+      if (appointment.status === "confirmed") tellPatient = appointment.patientId;
+
       return { appointment: { ...updated, triageData: updatedTriage }, status: 200 };
     });
+
+    // Tell a patient who has put the phone down. Sent once the admission is
+    // saved, with neutral text (it shows on a lock screen).
+    if (tellPatient) {
+      void sendPatientNotification(
+        tellPatient,
+        "Your clinician is ready",
+        "Open the Pav Dental app to join your video consultation.",
+        { appointmentId }
+      );
+    }
+    return admitted;
   }).then((result) => {
     if (result.error) {
       return res.status(result.status).json({ error: result.error });

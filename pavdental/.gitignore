@@ -41,3 +41,6 @@ yarn-error.*
 /android
 testsprite_tests/tmp/
 testsprite_tests/tmp/config.json
+
+# Jest coverage output
+coverage/

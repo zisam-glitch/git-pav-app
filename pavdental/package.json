@@ -152,7 +152,7 @@
     "test:call-health": "npx tsx src/__tests__/call-health.test.ts",
     "test:inbox-sends": "npx tsx src/__tests__/inbox-sends.test.ts",
     "test:appt-conversation": "npx tsx src/__tests__/appointment-conversation.test.ts",
-    "test:components": "jest --watchman=false",
+    "test:components": "jest --watchman=false --coverage",
     "test:coverage": "jest --watchman=false --coverage"
   },
   "private": true,

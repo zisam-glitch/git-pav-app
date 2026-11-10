@@ -11,4 +11,11 @@ module.exports = {
     "!src/**/*.d.ts",
     "!src/components/illustrations/**",
   ],
+  // A floor, not a goal: coverage may not fall below today's level, and the
+  // numbers are raised as real screen tests are added. (Most of the older
+  // tsx-run tests read source text and do not count here.)
+  coverageReporters: ["text-summary", "lcov"],
+  coverageThreshold: {
+    global: { statements: 6, branches: 6, functions: 4, lines: 7 },
+  },
 };

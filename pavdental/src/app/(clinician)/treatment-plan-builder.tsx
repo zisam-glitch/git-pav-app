@@ -1,3 +1,4 @@
+import { formatGbp } from "@/lib/money";
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -126,7 +127,7 @@ export default function TreatmentPlanBuilderScreen() {
             </ThemedText>
             <ThemedText variant="body" style={styles.successBody}>
               Plan "{title}" has been saved with {items.length} items totaling £
-              {(totalPence / 100).toFixed(2)}. The patient can review and sign it via the app.
+              {formatGbp(totalPence)}. The patient can review and sign it via the app.
             </ThemedText>
             <Button
               title="Return to patient file"
@@ -190,7 +191,7 @@ export default function TreatmentPlanBuilderScreen() {
                     <Button
                       key={svc.id}
                       icon={<AppIcon name="plus" size={16} color={colors.ink} />}
-                      title={`${svc.name} (£${(svc.pricePence / 100).toFixed(2).replace(/\.00$/, "")})`}
+                      title={`${svc.name} (${formatGbp(svc.pricePence).replace(/\.00$/, "")})`}
                       size="sm"
                       variant="secondary"
                       onPress={() => addItem({ code: svc.id, description: svc.name, costPence: svc.pricePence })}
@@ -254,7 +255,7 @@ export default function TreatmentPlanBuilderScreen() {
                           {item.description}
                         </ThemedText>
                         <ThemedText variant="caption" style={styles.itemCode}>
-                          Code: {item.code} · £{(item.costPence / 100).toFixed(2)}
+                          Code: {item.code} · {formatGbp(item.costPence)}
                         </ThemedText>
                       </View>
                       <Button
@@ -271,7 +272,7 @@ export default function TreatmentPlanBuilderScreen() {
                       Total estimated cost:
                     </ThemedText>
                     <ThemedText variant="title" style={styles.totalVal}>
-                      £{(totalPence / 100).toFixed(2)}
+                      {formatGbp(totalPence)}
                     </ThemedText>
                   </View>
 

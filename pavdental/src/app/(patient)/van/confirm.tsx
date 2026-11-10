@@ -1,3 +1,4 @@
+import { formatGbp } from "@/lib/money";
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
@@ -199,13 +200,13 @@ export default function VanConfirmScreen() {
 
           <DetailRow
             label="Treatment and call-out"
-            value={hasService ? `£${(store.servicePricePence / 100).toFixed(2)}` : "–"}
+            value={hasService ? formatGbp(store.servicePricePence) : "–"}
           />
 
           <View style={styles.rowBetween}>
             <ThemedText variant="headline">Deposit due on accept</ThemedText>
             <ThemedText variant="title" style={styles.depositPrice}>
-              {depositPence > 0 ? `£${(depositPence / 100).toFixed(2)}` : "None"}
+              {depositPence > 0 ? formatGbp(depositPence) : "None"}
             </ThemedText>
           </View>
 

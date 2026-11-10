@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchVanRequest, fetchActiveVanRequest } from "@/features/van/van-api";
-import { formatGbp } from "@/features/booking/booking-api";
+import { formatGbp } from "@/lib/money";
 
 export default function VanCompleteScreen() {
   const router = useRouter();

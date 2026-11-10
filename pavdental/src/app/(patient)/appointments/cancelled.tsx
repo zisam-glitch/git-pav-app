@@ -1,3 +1,4 @@
+import { formatGbp } from "@/lib/money";
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -49,7 +50,7 @@ export default function CancelledAppointmentScreen() {
               </ThemedText>
             </View>
             <ThemedText variant="caption" style={styles.muted}>
-              £{(refundPence / 100).toFixed(2)} is being refunded to your card. {REFUND_TIMING}
+              {formatGbp(refundPence)} is being refunded to your card. {REFUND_TIMING}
             </ThemedText>
           </Card>
         ) : policyNotice ? (

@@ -1,3 +1,4 @@
+import { formatGbp } from "../../lib/money";
 import { toLabel } from "../../lib/text";
 
 type AppointmentLike = {
@@ -50,7 +51,7 @@ export function appointmentBadge(
 
 /** What the patient actually paid, not the service's list deposit. */
 export function depositPaidLabel(depositPaidPence: number | null | undefined): string {
-  return depositPaidPence ? `£${(depositPaidPence / 100).toFixed(2)}` : "—";
+  return depositPaidPence ? formatGbp(depositPaidPence) : "—";
 }
 
 /**

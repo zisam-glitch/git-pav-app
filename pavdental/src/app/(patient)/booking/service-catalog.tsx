@@ -20,7 +20,7 @@ import { colors, spacing, radius } from "@/theme";
 import { useServices } from "@/features/hooks/use-dental-api";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { DentalService } from "@/features/booking/booking-types";
-import { formatGbp } from "@/features/booking/booking-api";
+import { formatGbp } from "@/lib/money";
 import { bookingChannelFor, channelParam, firstBookingStep } from "@/features/booking/start-booking";
 import { toLabel } from "@/lib/text";
 
@@ -90,13 +90,8 @@ export default function ServiceCatalogScreen() {
       );
       return;
     }
-    setService({
-      ...service,
-      id: service.id,
-      name: service.name,
-      pricePence: service.pricePence,
-      depositPence: service.depositPence ?? Math.round((service.pricePence || 0) * 0.25),
-    });
+    // The server owns the deposit: no guessing a percentage here.
+    setService(service);
     const channel = bookingChannelFor(service, onlyChannel);
     setChannel(channel);
     router.push(firstBookingStep(channel) as never);

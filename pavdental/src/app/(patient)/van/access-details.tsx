@@ -1,3 +1,4 @@
+import { formatGbp } from "@/lib/money";
 import React, { useState, useEffect } from "react";
 import { reportCaughtError } from "@/lib/caught-errors";
 import { View, StyleSheet, ScrollView, Pressable, Switch, Alert, ActivityIndicator } from "react-native";
@@ -196,7 +197,7 @@ export default function VanAccessDetailsScreen() {
                           {srv.name}
                         </ThemedText>
                         <ThemedText variant="mono" style={styles.priceText}>
-                          £{(srv.pricePence / 100).toFixed(2)}
+                          {formatGbp(srv.pricePence)}
                         </ThemedText>
                       </View>
                       <ThemedText variant="caption" style={styles.serviceDesc}>

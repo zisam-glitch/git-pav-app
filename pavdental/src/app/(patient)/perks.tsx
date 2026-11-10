@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge, Toast, IconButton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useRewards, useRedeemRewardMutation } from "@/features/hooks/use-dental-api";
-import { formatGbp } from "@/features/booking/booking-api";
+import { formatGbp } from "@/lib/money";
 
 // Everything here comes from the server (decisions log #14): points are
 // earned only for completed visits and spent as money off a later deposit.

@@ -26,7 +26,7 @@ export default function BookingSummaryScreen() {
     isPlatformPaySupported(Platform.OS === "android" ? { googlePay: { testEnv: process.env.EXPO_PUBLIC_APP_ENV !== "production" } } : undefined)
       .then(setWalletReady, () => setWalletReady(false));
   }, []);
-  const { service, clinic, clinician, slot, holdExpiresAt, resetDraft, channel } = useBookingStore();
+  const { service, clinic, clinician, slot, holdExpiresAt, releaseSlot, channel } = useBookingStore();
   const [secondsRemaining, setSecondsRemaining] = useState<number>(() => {
     if (!holdExpiresAt) return 0;
     return Math.max(0, Math.floor((holdExpiresAt - Date.now()) / 1000));
@@ -60,13 +60,13 @@ export default function BookingSummaryScreen() {
     if (!holdExpiresAt || holdExpiresAt <= Date.now()) {
       setSecondsRemaining(0);
       Alert.alert(
-        "Slot Reservation Expired",
+        "Your held time has run out",
         "Your slot reservation has expired or is invalid. Please select a time slot.",
         [
           {
             text: "Select Slot",
             onPress: () => {
-              resetDraft();
+              releaseSlot();
               router.replace("/(patient)/booking/slot-picker" as any);
             },
           },
@@ -85,13 +85,13 @@ export default function BookingSummaryScreen() {
         if (paidRef.current) return;
         // Handle expired hold
         Alert.alert(
-          "Slot Reservation Expired",
+          "Your held time has run out",
           "Your slot reservation has expired. Please select a new time slot.",
           [
             {
               text: "OK",
               onPress: () => {
-                resetDraft();
+                releaseSlot();
                 router.replace("/(patient)/booking/slot-picker" as any);
               },
             },
@@ -418,7 +418,7 @@ export default function BookingSummaryScreen() {
           loading={isProcessing}
           disabled={secondsRemaining === 0}
           onPress={secondsRemaining === 0 ? () => {
-            resetDraft();
+            releaseSlot();
             router.replace("/(patient)/booking/slot-picker" as any);
           } : () => handlePayDeposit("card")}
         />

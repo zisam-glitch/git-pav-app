@@ -16,6 +16,8 @@ interface BookingDraftState {
   setClinician: (clinician: Clinician | null) => void;
   setSlot: (slot: TimeSlot) => void;
   setHoldExpiry: (expiresAt: number | null) => void;
+  /** Drop the held slot and its countdown, keeping what the patient chose. */
+  releaseSlot: () => void;
   resetDraft: () => void;
 }
 
@@ -35,6 +37,7 @@ export const useBookingStore = create<BookingDraftState>((set) => ({
   setClinician: (clinician) => set({ clinician }),
   setSlot: (slot) => set({ slot }),
   setHoldExpiry: (holdExpiresAt) => set({ holdExpiresAt }),
+  releaseSlot: () => set({ slot: null, holdExpiresAt: null }),
   resetDraft: () =>
     set({
       channel: null,

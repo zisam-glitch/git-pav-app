@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { safeHaptics } from "@/lib/haptics";
@@ -58,6 +59,7 @@ function getHeroImage(category?: string, name?: string) {
 export default function PatientHomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const refresh = usePullToRefresh();
   const user = useCurrentUser();
   const { setService, setChannel } = useBookingStore();
   const params = useLocalSearchParams<{ triageModal?: string }>();
@@ -109,6 +111,7 @@ export default function PatientHomeScreen() {
   return (
     <ScrollView
       style={styles.container}
+      refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.xs }]}
       showsVerticalScrollIndicator={false}
     >

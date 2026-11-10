@@ -239,6 +239,7 @@ export function useMessageThreads() {
   return useQuery({
     queryKey: ["message-threads"],
     queryFn: fetchMessageThreads,
+    refetchInterval: 30 * 1000, // a reply from the practice shows without a restart
   });
 }
 

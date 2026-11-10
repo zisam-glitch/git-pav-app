@@ -27,6 +27,11 @@ function sendOutcome(res: Response, out: Outcome) {
   return res.status(out.status).json(out.body);
 }
 import { sendUserNotification } from "../lib/patient-push";
+import multer from "multer";
+import { HttpError } from "../middleware/error-handler";
+import { objectStorage } from "../lib/object-storage";
+import { sniffImageMime } from "../lib/video-triage";
+import { keysForThread, signedAttachments, photoKeyPrefix, MAX_MESSAGE_PHOTOS } from "../lib/message-photos";
 
 const router = Router();
 
@@ -110,9 +115,12 @@ const createThreadSchema = z
 
 const replyMessageSchema = z
   .object({
-    body: z.string().trim().min(1).max(4000),
+    body: z.string().trim().max(4000),
+    // Keys returned by the photo upload for this conversation (V53).
+    attachmentKeys: z.array(z.string().max(200)).max(MAX_MESSAGE_PHOTOS).optional(),
   })
-  .strict();
+  .strict()
+  .refine((v) => v.body.length > 0 || (v.attachmentKeys?.length ?? 0) > 0, { message: "Write a message or add a photo" });
 
 // ─── GET /api/messages/meta ───────────────────────────────────────────────────
 // SLA and clinical emergency guidance banner info
@@ -182,6 +190,7 @@ router.get("/", requireAuth, validateQuery(listThreadsQuerySchema), async (req: 
               senderName: m.senderName,
               body: await decryptString(m.body),
               sentAtIso: m.sentAt.toISOString(),
+              attachments: await signedAttachments(m.attachmentKeys),
             }))
           ),
         };
@@ -395,6 +404,9 @@ router.post(
     // Determine sender display name (real staff name or patient name, MS-3)
     const senderDisplayName = await getSenderDisplayName(userId, userRole);
 
+    // Only photos uploaded to this conversation are accepted (V53).
+    const attachmentKeys = keysForThread(thread.id, req.body.attachmentKeys);
+
     // DB-3: Encrypt reply message body at rest
     const encrypted = await encryptField(body);
     const storedBody = JSON.stringify(encrypted);
@@ -408,6 +420,7 @@ router.post(
           senderRole: userRole,
           senderName: senderDisplayName, // MS-3: real clinician/staff name, never hardcoded "You"
           body: storedBody,
+          attachmentKeys: attachmentKeys,
         },
       }),
       prisma.messageThread.update({
@@ -417,6 +430,7 @@ router.post(
           isRead: isStaff ? true : false,
           staffUnread: !isStaff,
           patientUnread: isStaff,
+          ...(attachmentKeys.length > 0 ? { hasAttachment: true } : {}),
           // A new reply from the practice brings a hidden conversation back.
           ...(isStaff ? { patientHiddenAt: null } : {}),
         },
@@ -509,12 +523,13 @@ router.post(
         senderName: message.senderName,
         body,
         sentAtIso: message.sentAt.toISOString(),
+        attachments: await signedAttachments(attachmentKeys),
       },
       thread: {
         id: updatedThread.id,
         from: updatedThread.senderName,
         subject: decryptedSubject,
-        preview: `${senderDisplayName}: ${body.slice(0, 160)}`,
+        preview: `${senderDisplayName}: ${body ? body.slice(0, 160) : "Sent a photo"}`,
         sentAtIso: updatedThread.updatedAt.toISOString(),
         isRead: !(isStaff ? updatedThread.staffUnread : updatedThread.patientUnread),
         hasAttachment: updatedThread.hasAttachment,
@@ -523,6 +538,56 @@ router.post(
     });
 
     return sendOutcome(res, outcome);
+  }
+);
+
+// ─── POST /api/messages/:id/photos ────────────────────────────────────────────
+// Uploads one photo to a conversation (V53). It returns a key; the photo is
+// attached when that key is sent with a reply. Same checks as triage photos:
+// the real file type is read from the bytes, and the size is capped.
+const photoUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    if (["image/jpeg", "image/png", "image/webp"].includes(file.mimetype)) cb(null, true);
+    else cb(new HttpError(400, "Only JPEG, PNG, and WebP image files are allowed"));
+  },
+});
+
+router.post(
+  "/:id/photos",
+  requireAuth,
+  validateParams(threadIdParamsSchema),
+  photoUpload.single("photo"),
+  async (req: AuthRequest, res: Response) => {
+    const threadId = String(req.params.id);
+    const thread = await prisma.messageThread.findFirst({
+      where: { AND: [{ id: threadId }, await visibleThreadsWhere(req)] },
+      select: { id: true },
+    });
+    if (!thread) return res.status(404).json({ error: "Message thread not found" });
+    if (!req.file || req.file.buffer.length === 0) return res.status(400).json({ error: "No photo provided" });
+
+    const mime = sniffImageMime(req.file.buffer);
+    if (!mime) return res.status(400).json({ error: "Only JPEG, PNG, and WebP image files are allowed" });
+
+    const ext = mime === "image/png" ? "png" : mime === "image/webp" ? "webp" : "jpg";
+    const key = `${photoKeyPrefix(thread.id)}${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const uploaded = await objectStorage.upload(key, req.file.buffer, mime, {
+      uploadedBy: req.user!.sub,
+      threadId: thread.id,
+    });
+
+    await createAuditLogWithIntegrity({
+      action: "message.photo_uploaded",
+      actorId: req.user!.sub,
+      resourceId: thread.id,
+      sessionId: req.user!.sessionId,
+      ipHash: pseudonymiseIp(req.ip || ""),
+      metadata: { size: uploaded.size },
+    });
+
+    return res.status(201).json({ key: uploaded.key, size: uploaded.size });
   }
 );
 

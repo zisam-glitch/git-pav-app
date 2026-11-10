@@ -99,9 +99,21 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 
 - [ ] **C1 (P0, M) Virtualise long lists** with `FlashList` (appointments, messages, notifications, documents,
       prescriptions, clinician schedule). Today everything renders at once.
-- [ ] **C2 (P1, S) Trim the JavaScript bundle.** 19 illustration files total 844 KB of source in the bundle. Load the
-      few used as images (or SVG assets), delete the rest. Check the bundle with `expo export --dump-sourcemap` and a
-      visualiser; set a size budget in CI.
+- [x] **C2 (P1, S) Trim the JavaScript bundle and set a size budget.** *Done (this PR).* Measured with
+      `expo export` on 10 Nov: the minified Android JavaScript was 7,455 KB (the Hermes bytecode 10 MB).
+      The earlier note about 844 KB of illustrations was wrong: that was disk blocks; the 14 pieces are 594 KB of
+      source, already rounded and loaded one at a time. Real findings and what was done:
+      - **Done:** `react-native-web` and `react-dom` (about 450 KB) were in every phone bundle through expo-router's
+        static-rendering code. Phone builds now get an empty module for them (`metro.config.js`); the bundle is
+        6,974 KB, 6.4% smaller. *Needs a check on a device: nothing should change, but it was not run on a phone.*
+      - **Done:** `scripts/check-bundle-size.mjs` builds the bundle in CI and fails above `bundle-budget.json`
+        (today + 2%), printing the biggest packages. `--update` resets it when growth is intended.
+      - **Still big, not touched:** reanimated 738 KB, react-native 566, `zod` 493, expo-router 445,
+        `iconsax-react-native` 414 (each icon file carries six styles; the app uses two), Sentry core 309 and RN SDK
+        198 plus browser/replay about 210, `@daily-co/daily-js` 268, our own code 1,246 KB.
+      - **Ideas, each needs a device check:** use `zod/mini` or drop it for plain checks on the few forms;
+        trim the icon files to the two styles used at build time; replace `react-hook-form` (83 KB); ask whether
+        Sentry's replay code can be left out on phones; remove `@shopify/flash-list` (declared, no code imports it).
 - [ ] **C3 (P1, S) Image handling.** Only 5 files use `expo-image` (caching, placeholders). Use it for every remote image,
       with sized thumbnails from the server. Local JPEGs are 30 to 90 KB; convert to WebP.
 - [ ] **C4 (P1, M) Measure, then fix.** There are no startup, screen-load or JS-frame measurements. Add Sentry performance

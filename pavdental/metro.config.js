@@ -12,6 +12,12 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
       type: "sourceFile",
     };
   }
+  // Phones never run the web renderer. expo-router's static-rendering code
+  // reaches for it, which put about 450 KB of web code in every phone bundle;
+  // an empty module there is never run (react-dom cannot start in React Native anyway).
+  if (platform !== "web" && /^(react-native-web|react-dom)(\/|$)/.test(moduleName)) {
+    return { type: "empty" };
+  }
   if (originalResolveRequest) {
     return originalResolveRequest(context, moduleName, platform);
   }

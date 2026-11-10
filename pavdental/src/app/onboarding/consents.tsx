@@ -207,7 +207,7 @@ export default function OnboardingConsentsScreen() {
               />
             </View>
             <ThemedText variant="subhead" style={styles.cardBody}>
-              Receive SMS and email reminders when your routine 6-month checkup or hygiene session is due.
+              Receive email reminders when your routine 6-month checkup or hygiene session is due.
             </ThemedText>
           </View>
         </View>

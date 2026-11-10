@@ -43,7 +43,6 @@ export default function AuthLayout() {
       <Stack.Screen name="otp" />
       <Stack.Screen name="verify-email" />
       <Stack.Screen name="account-created" />
-      <Stack.Screen name="guest-limit" />
       <Stack.Screen name="forgot" />
       <Stack.Screen name="reset" />
       <Stack.Screen name="reset-password" />

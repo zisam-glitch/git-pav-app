@@ -14,7 +14,7 @@ export default function RecordsLayout() {
       <Stack.Screen name="plans/[id]" options={{ title: "Plan details" }} />
       <Stack.Screen name="prescriptions" options={{ title: "Prescriptions & meds" }} />
       <Stack.Screen name="prescriptions/[id]" options={{ title: "Prescription details" }} />
-      <Stack.Screen name="vault" options={{ title: "Document vault", headerTitle: "" }} />
+      <Stack.Screen name="vault" options={{ title: "Documents", headerTitle: "" }} />
       <Stack.Screen name="financing" options={{ title: "Payment plans", headerTitle: "" }} />
       <Stack.Screen name="insights" options={{ title: "Oral health insights", headerTitle: "" }} />
     </Stack>

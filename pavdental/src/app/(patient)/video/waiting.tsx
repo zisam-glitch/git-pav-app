@@ -47,7 +47,7 @@ export default function WaitingRoomScreen() {
           </View>
 
           <ThemedText variant="largeTitle" style={styles.title}>
-            Telehealth waiting room
+            Waiting room
           </ThemedText>
 
           <ThemedText variant="subhead" style={styles.subtitle}>

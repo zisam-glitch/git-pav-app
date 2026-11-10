@@ -7,11 +7,11 @@ import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { NativeVideoCall, CallEndReason } from "@/features/video/native-call";
+import { callScreenCopy, requestVideoRoom, type Room } from "@/features/video/video-room";
 
 // The call runs natively in this screen (Daily's private room): the app asks
 // the server for this appointment's room and a meeting token, and the token is
 // what lets the patient in (CS-07).
-type Room = { url: string; token: string };
 
 export default function VideoCallScreen() {
   const router = useRouter();
@@ -23,33 +23,19 @@ export default function VideoCallScreen() {
   const [inCall, setInCall] = useState(false);
 
   const loadRoom = useCallback(async (): Promise<Room | null> => {
-    if (!appointmentId) {
-      setError("We couldn't find this consultation. Please go back and open it from your appointments.");
-      setLoading(false);
-      return null;
-    }
     setLoading(true);
     setError(null);
-    try {
-      const res = await authFetch("/api/video/rooms", {
-        method: "POST",
-        body: JSON.stringify({ appointmentId }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.url || !data?.token) {
-        setError(data?.error || "We couldn't open the video room. Please try again.");
-        setRoom(null);
-        return null;
-      }
-      const fresh = { url: data.url as string, token: data.token as string };
-      setRoom(fresh);
-      return fresh;
-    } catch {
-      setError("You seem to be offline. Check your connection and try again.");
+    const result = await requestVideoRoom(appointmentId, (body) =>
+      authFetch("/api/video/rooms", { method: "POST", body: JSON.stringify(body) })
+    );
+    setLoading(false);
+    if (!result.ok) {
+      setError(result.message);
+      setRoom(null);
       return null;
-    } finally {
-      setLoading(false);
     }
+    setRoom(result.room);
+    return result.room;
   }, [appointmentId]);
 
   useEffect(() => {
@@ -79,6 +65,8 @@ export default function VideoCallScreen() {
     if (reason === "ended") finish();
   };
 
+  const copy = callScreenCopy({ loading, error, opened });
+
   if (inCall && room) {
     return (
       <SafeAreaView style={styles.callSafe} edges={["top", "bottom"]}>
@@ -96,22 +84,18 @@ export default function VideoCallScreen() {
           </View>
 
           <ThemedText variant="largeTitle" style={styles.title}>
-            {loading ? "Opening your room" : error ? "Can't join yet" : opened ? "You left the call" : "Your clinician is ready"}
+            {copy.title}
           </ThemedText>
 
-          {error ? (
-            <ThemedText variant="subhead" style={styles.subtitle} accessibilityRole="alert">
-              {error}
+          {copy.body ? (
+            <ThemedText
+              variant="subhead"
+              style={styles.subtitle}
+              accessibilityRole={error ? "alert" : undefined}
+            >
+              {copy.body}
             </ThemedText>
-          ) : (
-            !loading && (
-              <ThemedText variant="subhead" style={styles.subtitle}>
-                {opened
-                  ? "Rejoin if you left by mistake, or tell us you've finished."
-                  : "Allow camera and microphone access when your phone asks. Leave the call with the red button when you're done."}
-              </ThemedText>
-            )
-          )}
+          ) : null}
 
           {!loading && !error && (
             <Card style={styles.infoCard}>

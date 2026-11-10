@@ -244,17 +244,21 @@ for (const profile of ["preview", "production"] as const) {
 // Payment screen guards (found in the first real Stripe test on staging).
 {
   const summary = fs.readFileSync(path.join(__dirname, "../app/(patient)/booking/summary.tsx"), "utf8");
+  const payment = fs.readFileSync(path.join(__dirname, "../features/booking/booking-payment.ts"), "utf8");
+  const stripePay = fs.readFileSync(path.join(__dirname, "../features/booking/use-stripe-pay.ts"), "utf8");
   // "Any practitioner" leaves clinicianId as "": sending it makes the API
   // reject the booking as "Invalid request body".
   assert(
-    /clinicianId:\s*clinician\?\.id \|\| slot\.clinicianId \|\| undefined/.test(summary) &&
-      /clinic\?\.id \|\| slot\.clinicId \|\| undefined/.test(summary),
+    /clinicianId:\s*input\.clinician\?\.id \|\| slot\.clinicianId \|\| undefined/.test(payment) &&
+      /input\.clinic\?\.id \|\| slot\.clinicId \|\| undefined/.test(payment),
     "booking sends no clinicianId/clinicId rather than an empty string"
   );
   // Stripe must be started with the server's key, so a build without
   // EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY can still take a payment.
   assert(
-    /initStripe\(\{[^}]*publishableKey: intent\.publishableKey[^}]*merchantIdentifier: "merchant\.com\.pavdental\.app"/s.test(summary),
+    /deps\.initStripe\(intent\.publishableKey\)/.test(payment) &&
+      /initStripe\(\{[^}]*publishableKey[^}]*merchantIdentifier: MERCHANT_ID/s.test(stripePay) &&
+      /MERCHANT_ID = "merchant\.com\.pavdental\.app"/.test(stripePay),
     "payment starts Stripe with the server's publishable key and the entitled merchant ID"
   );
   // A video consult has no practice or van, so its balance line must not send

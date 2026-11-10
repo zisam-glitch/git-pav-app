@@ -69,26 +69,29 @@ async function run() {
   }
 
   // ─── The summary screen uses it in the right places ────────────────────────
+  // The steps live in booking-payment.ts (tested for behaviour in
+  // src/__component__/booking-payment.test.ts); the Stripe sheets in use-stripe-pay.ts.
   const summary = readFileSync(join(__dirname, "../app/(patient)/booking/summary.tsx"), "utf8");
-  const mockBranch = summary.indexOf("if (intent.isMock)");
-  const sheetInit = summary.indexOf("await initPaymentSheet(");
-  assert(mockBranch !== -1, "summary screen checks the server's isMock flag");
-  assert(mockBranch < sheetInit, "the mock check happens before the PaymentSheet is opened");
+  const payment = readFileSync(join(__dirname, "../features/booking/booking-payment.ts"), "utf8");
+  const stripePay = readFileSync(join(__dirname, "../features/booking/use-stripe-pay.ts"), "utf8");
+  const mockBranch = payment.indexOf("if (intent.isMock)");
+  const sheetStep = payment.indexOf("deps.payWithSheet(intent)");
+  assert(mockBranch !== -1, "payment code checks the server's isMock flag");
+  assert(mockBranch < sheetStep, "the mock check happens before the PaymentSheet is opened");
   assert(
-    /if \(intent\.isMock\) \{[\s\S]*?confirmAppointment\(appt\.id, intent\.paymentIntentId\)[\s\S]*?return;/.test(summary),
+    /if \(intent\.isMock\) \{[\s\S]*?deps\.confirmAppointment\(appointment\.id, intent\.paymentIntentId\)[\s\S]*?return \{ kind: "confirmed"/.test(payment),
     "mock mode confirms on the server and skips the PaymentSheet"
   );
-  const present = summary.indexOf("await presentPaymentSheet()");
-  const afterSheet = summary.indexOf("confirmAppointment(appt.id, intent.paymentIntentId)", present);
-  assert(present !== -1 && afterSheet > present, "after a real payment the server is asked to confirm");
+  const afterSheet = payment.indexOf("deps.confirmAppointment(appointment.id, intent.paymentIntentId)", sheetStep);
+  assert(sheetStep !== -1 && afterSheet > sheetStep, "after a real payment the server is asked to confirm");
 
   // Each button pays the way it says, and the patient confirms the payment
   // themselves: the card button opens a card-only sheet with a "Pay £x"
   // button, and the wallet button opens Apple Pay / Google Pay.
   assert(/handlePayDeposit\("card"\)/.test(summary) && /handlePayDeposit\("wallet"\)/.test(summary), "the card and wallet buttons take different payment routes");
-  assert(/paymentMethodOrder: \["card"\]/.test(summary) && /primaryButtonLabel: `Pay \$\{formatGbp\(intent\.amountPence\)\}`/.test(summary), "the card sheet shows cards and a Pay button with the amount");
-  assert(!/applePay: \{ merchantCountryCode: "GB" \}/.test(summary), "the card sheet doesn't offer the wallet as well");
-  assert(/confirmPlatformPayPayment\(intent\.clientSecret/.test(summary), "the wallet button uses the phone's own wallet sheet");
+  assert(/paymentMethodOrder: \["card"\]/.test(stripePay) && /primaryButtonLabel: `Pay \$\{formatGbp\(intent\.amountPence\)\}`/.test(stripePay), "the card sheet shows cards and a Pay button with the amount");
+  assert(!/applePay: \{ merchantCountryCode: "GB" \}/.test(stripePay.slice(stripePay.indexOf("payWithSheet"))), "the card sheet doesn't offer the wallet as well");
+  assert(/confirmPlatformPayPayment\(intent\.clientSecret/.test(stripePay), "the wallet button uses the phone's own wallet sheet");
   assert(/\{walletReady && \(/.test(summary), "the wallet button only shows where the wallet can pay");
 
   console.log("\n🎉 ALL CLINIC BOOKING CONFIRMATION TESTS PASSED (0 FAILURES)!\n");

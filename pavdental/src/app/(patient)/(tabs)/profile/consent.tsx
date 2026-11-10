@@ -89,10 +89,10 @@ export default function ConsentScreen() {
         format: "json",
       });
       Alert.alert(
-        "GDPR Export Generated",
+        "Your data is ready",
         res?.sha256
-          ? `Your encrypted Subject Access Request (SAR) bundle (SHA-256: ${String(res.sha256).slice(0, 12)}…) has been generated and securely stored in your Document Vault for download.`
-          : "Your encrypted Subject Access Request (SAR) bundle has been generated and stored in your Document Vault for download.",
+          ? `Your data download (reference ${String(res.sha256).slice(0, 12)}…) is ready in Documents.`
+          : "Your data download is ready in Documents.",
         [{ text: "OK" }]
       );
     } catch (err: any) {
@@ -253,10 +253,10 @@ export default function ConsentScreen() {
         <Card style={styles.card}>
           <ThemedText variant="headline">Export your dental records</ThemedText>
           <ThemedText variant="caption" style={styles.cardDesc}>
-            Receive an authenticated data export bundle containing your treatment plans, odontogram history, and signed consents, securely saved to your Document Vault.
+            Receive an authenticated data export bundle containing your treatment plans, tooth chart history, and signed consents, securely saved in Documents.
           </ThemedText>
           <Button
-            title={isExporting ? "Generating bundle..." : "Request GDPR data bundle"}
+            title={isExporting ? "Preparing your data..." : "Download my data"}
             variant="secondary"
             onPress={handleExportData}
             disabled={isExporting}

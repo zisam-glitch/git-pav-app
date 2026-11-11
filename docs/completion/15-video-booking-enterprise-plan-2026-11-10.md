@@ -300,7 +300,7 @@ V48, V49, V51, V53 to V58, V60.
 | V22 | Backgrounding mid-call on iOS is not handled or tested. |
 | V37 | No "next available" in the slot picker; step counter and hold-expiry handling unchecked. |
 | V40 | No week view of video bookings for dentists. |
-| V41 | Mostly done. `GET /api/admin/appointments/:id/video-activity` and a "Call and notices" panel on each video row of the dashboard's App appointments screen: whether the call took place, when the patient reported in, was let in and the call ended, the pushes and reminders recorded for the visit with their delivery status, and the size of the conversation (never its text). Left: emails are not recorded anywhere yet (V6), so they do not appear; and call times come from the existing visit record, not from Daily (phase 2 presence). |
+| V41 | Mostly done. `GET /api/admin/appointments/:id/video-activity` and a "Call and notices" panel on each video row of the dashboard's App appointments screen: whether the call took place, when the patient reported in, was let in and the call ended, the pushes and reminders recorded for the visit with their delivery status, and the size of the conversation (never its text). Emails are now recorded too (V6), so they appear from then on. Left: call times come from the existing visit record, not from Daily (phase 2 presence). |
 | V42 | Call screen colours are still hard-coded. |
 
 **Blocked on the owner:** V14 (no-show rule and refunds, decision 5), V35 (clinician wording), V59 (clinician wording),

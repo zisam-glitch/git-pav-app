@@ -90,8 +90,8 @@ export function VideoActivityDialog({ appointmentId, patientName }: { appointmen
                 <p className="text-muted-foreground text-xs">None recorded for this visit. Emails are not recorded here.</p>
               ) : (
                 <ul className="flex flex-col gap-1">
-                  {activity.notices.map((notice, i) => (
-                    <li key={`${notice.at}-${i}`} className="flex items-start justify-between gap-3">
+                  {activity.notices.map((notice) => (
+                    <li key={`${notice.kind}:${notice.at}:${notice.title}`} className="flex items-start justify-between gap-3">
                       <span>
                         <span className="text-muted-foreground text-xs">{noticeKindLabel(notice.kind)} · </span>
                         {notice.title}

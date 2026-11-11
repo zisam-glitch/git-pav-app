@@ -19,10 +19,15 @@ describe("admin: video visit activity", () => {
   let videoId = "";
   let clinicId = "";
 
+  type Body = {
+    call: { outcome: string; waitedMinutes: number | null };
+    notices: { title: string }[];
+    conversation: unknown;
+  };
   const get = (path: string, token = adminToken) =>
     fetch(`${baseUrl}${path}`, { headers: { Authorization: `Bearer ${token}` } }).then(async (r) => ({
       status: r.status,
-      body: (await r.json()) as Record<string, any>,
+      body: (await r.json()) as Body,
     }));
 
   beforeAll(async () => {
@@ -88,7 +93,7 @@ describe("admin: video visit activity", () => {
     expect(res.status).toBe(200);
     expect(res.body.call.outcome).toBe("took_place");
     expect(res.body.call.waitedMinutes).toBe(5);
-    const titles = (res.body.notices as { title: string }[]).map((n) => n.title);
+    const titles = res.body.notices.map((n) => n.title);
     expect([...titles].sort()).toEqual(["Booking confirmed", "Video consultation in 1 hour"]);
     expect(res.body.conversation).toBeNull();
   });

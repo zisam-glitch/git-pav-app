@@ -3,14 +3,14 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { Card, EmptyState, ErrorState, IconTile, ListRow, Skeleton } from "@/components";
 import { colors, spacing } from "@/theme";
-import { useNotificationHistory } from "@/features/notifications/notification-hooks";
+import { useNotificationHistoryPages } from "@/features/notifications/notification-hooks";
 import { routeForNotification } from "@/features/notifications/notification-route";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 
 // What we have sent to this phone, newest first. Tapping one opens what it is about.
 export default function NotificationsScreen() {
   const router = useRouter();
-  const { data, isLoading, isError, refetch } = useNotificationHistory(50, 0);
+  const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useNotificationHistoryPages();
   const items = Array.isArray(data) ? data.filter((n) => n.type === "push") : [];
 
   return (
@@ -19,6 +19,11 @@ export default function NotificationsScreen() {
         data={isLoading || isError ? [] : items}
         keyExtractor={(n) => n.id}
         contentContainerStyle={styles.content}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isFetchingNextPage ? <Skeleton height={72} /> : null}
         renderItem={({ item: n }) => {
           const target = routeForNotification(n.data);
           return (

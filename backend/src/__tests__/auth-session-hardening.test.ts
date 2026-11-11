@@ -19,6 +19,8 @@ describe("CS-54: Auth and Session Hardening", () => {
 
   beforeAll(async () => {
     const app = express();
+    // As in production behind the load balancer: the forwarded address is used.
+    app.set("trust proxy", true);
     app.use(express.json());
     app.use(attachOptionalAuth);
 
@@ -351,6 +353,40 @@ describe("CS-54: Auth and Session Hardening", () => {
       const restoredUser = await prisma.user.findUnique({ where: { id: testUserId } });
       expect(restoredUser?.failedLoginAttempts).toBe(0);
       expect(restoredUser?.lockedUntil).toBeNull();
+    });
+
+    const loginFrom = (ip: string, password: string) =>
+      fetch(`${baseUrl}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Forwarded-For": ip },
+        body: JSON.stringify({ email: testUserEmail, password }),
+      });
+
+    it("S1: stops guessing one account from many addresses, and answers like a wrong password", async () => {
+      for (let i = 1; i <= 10; i++) {
+        const res = await loginFrom(`198.51.100.${i}`, "AttackerGuess!");
+        expect(res.status).toBe(401);
+      }
+      // An eleventh address, even with the right password, is not let through for now.
+      const res = await loginFrom("198.51.100.99", "CorrectPassword123!");
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ error: "Invalid credentials" });
+    });
+
+    it("S1: a few wrong guesses from several addresses do not stop the owner", async () => {
+      for (let i = 1; i <= 4; i++) await loginFrom(`198.51.100.${i}`, "AttackerGuess!");
+      const res = await loginFrom("203.0.113.42", "CorrectPassword123!");
+      expect(res.status).toBe(200);
+    });
+
+    it("S2: old wrong passwords do not make the owner's next sign-in ask for a code", async () => {
+      // Seven wrong passwords on the row, but none in the last 15 minutes.
+      await prisma.user.update({ where: { id: testUserId }, data: { failedLoginAttempts: 7 } });
+      const res = await loginFrom("203.0.113.42", "CorrectPassword123!");
+      expect(res.status).toBe(200);
+      const json = (await res.json()) as any;
+      expect(json.mfaRequired).toBeUndefined();
+      expect(json.accessToken).toBeDefined();
     });
   });
 

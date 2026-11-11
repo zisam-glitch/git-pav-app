@@ -280,7 +280,7 @@ export default function ClinicianInboxScreen() {
                   key={m.id}
                   style={[styles.bubbleContainer, isClinician ? styles.bubbleClinician : styles.bubblePatient]}
                 >
-                  <ThemedText variant="caption" style={styles.bubbleSender}>
+                  <ThemedText variant="caption" style={[styles.bubbleSender, isClinician && styles.bubbleMetaOnInk]}>
                     {m.senderName}
                   </ThemedText>
                   {m.body ? (
@@ -291,7 +291,7 @@ export default function ClinicianInboxScreen() {
                   {m.photos.map((url) => (
                     <Image key={url} source={{ uri: url }} style={{ borderRadius: radius.md, height: 200, width: 240 }} contentFit="cover" accessibilityLabel="Photo from the patient" />
                   ))}
-                  <ThemedText variant="caption" style={styles.bubbleTime}>
+                  <ThemedText variant="caption" style={[styles.bubbleTime, isClinician && styles.bubbleMetaOnInk]}>
                     {new Date(m.sentAtIso).toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
                       hour: "2-digit",
                       minute: "2-digit",
@@ -305,14 +305,17 @@ export default function ClinicianInboxScreen() {
           {/* Reply Input */}
           <View style={styles.replyComposer}>
             <View style={styles.composerRow}>
-              <Input
-                label=""
-                placeholder="Write a reply to the patient…"
-                value={replyText}
-                onChangeText={setReplyText}
-                multiline
-                maxLength={4000}
-              />
+              <View style={styles.composerInput}>
+                <Input
+                  label=""
+                  placeholder="Write a reply to the patient…"
+                  accessibilityLabel="Reply to the patient"
+                  value={replyText}
+                  onChangeText={setReplyText}
+                  multiline
+                  maxLength={4000}
+                />
+              </View>
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Send reply"
@@ -503,6 +506,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: spacing.xs,
+  },
+  // Without flex the box shrinks to a sliver beside the send button.
+  composerInput: {
+    flex: 1,
+  },
+  // The sender and time on a dark bubble: the usual grey is unreadable there.
+  bubbleMetaOnInk: {
+    color: colors.onInk,
+    opacity: 0.75,
   },
   sendBtn: {
     alignItems: "center",

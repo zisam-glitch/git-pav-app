@@ -295,7 +295,7 @@ V48, V49, V51, V53 to V58, V60.
 
 | ID | What is missing |
 |---|---|
-| V50 | Server half built: `GET /api/messages?view=summary` (last message only) and `GET /api/messages/:id?limit=&before=` (one conversation, paged). The app still uses the full list; switching the two inbox screens over is the remaining half. |
+| V50 | Mostly done. Server: `?view=summary` and `GET /api/messages/:id` (paged). App: the patient list and tab badge use the summary list; the patient conversation screen loads one paged conversation with "Show earlier messages". Left: the dentist's Inbox still loads the full list; it moves over with its rebuild (V52). |
 | V19 | No speaker, earpiece or Bluetooth choice; nothing for an incoming phone call. |
 | V22 | Backgrounding mid-call on iOS is not handled or tested. |
 | V37 | No "next available" in the slot picker; step counter and hold-expiry handling unchecked. |

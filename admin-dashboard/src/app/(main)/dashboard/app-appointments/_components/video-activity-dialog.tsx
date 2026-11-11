@@ -87,7 +87,7 @@ export function VideoActivityDialog({ appointmentId, patientName }: { appointmen
             <section className="flex flex-col gap-1">
               <h3 className="font-medium">Notices to the patient</h3>
               {activity.notices.length === 0 ? (
-                <p className="text-muted-foreground text-xs">None recorded for this visit. Emails are not recorded here.</p>
+                <p className="text-muted-foreground text-xs">None recorded for this visit. Emails sent before they were recorded do not appear.</p>
               ) : (
                 <ul className="flex flex-col gap-1">
                   {activity.notices.map((notice) => (

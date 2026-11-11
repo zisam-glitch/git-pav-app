@@ -13,6 +13,7 @@ describe("video visit activity wording", () => {
 
   it("names notice kinds and delivery statuses, and passes an unknown status through", () => {
     assert.equal(noticeKindLabel("push"), "Push");
+    assert.equal(noticeKindLabel("email"), "Email");
     assert.equal(noticeKindLabel("reminder"), "Reminder");
     assert.equal(noticeStatusLabel("sent"), "Sent");
     assert.equal(noticeStatusLabel("cancelled"), "Not sent, visit changed");

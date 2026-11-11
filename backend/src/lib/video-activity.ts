@@ -16,7 +16,7 @@ export interface VideoActivityInput {
   patientWaitingSince: Date | null;
   /** The decrypted triage record, read only for the admitted and completed times. */
   triage: Record<string, unknown> | null;
-  /** Push notices recorded against this appointment. */
+  /** Pushes and emails recorded against this appointment (`type` is "email" for an email). */
   pushes: { type: string; title: string; sentAt: Date; status: string }[];
   /** Reminders scheduled for this appointment. */
   reminders: { title: string; scheduledFor: Date; sentAt: Date | null; status: string }[];
@@ -33,8 +33,8 @@ export interface VideoActivity {
     /** Whole minutes from the patient reporting in to being let in, when both are known. */
     waitedMinutes: number | null;
   };
-  /** Pushes and reminders together, earliest first. */
-  notices: { kind: "push" | "reminder"; title: string; at: string; status: string }[];
+  /** Pushes, emails and reminders together, earliest first. */
+  notices: { kind: "push" | "email" | "reminder"; title: string; at: string; status: string }[];
   conversation: { messageCount: number; lastMessageAt: string | null } | null;
 }
 
@@ -61,7 +61,7 @@ export function buildVideoActivity(input: VideoActivityInput, now: Date = new Da
   const waitedMs = waiting && admittedAt ? Date.parse(admittedAt) - Date.parse(waiting) : null;
 
   const notices = [
-    ...input.pushes.map((p) => ({ kind: "push" as const, title: p.title, at: p.sentAt.toISOString(), status: p.status })),
+    ...input.pushes.map((p) => ({ kind: (p.type === "email" ? "email" : "push") as "email" | "push", title: p.title, at: p.sentAt.toISOString(), status: p.status })),
     // A reminder that has not gone yet is shown at the time it is due.
     ...input.reminders.map((r) => ({
       kind: "reminder" as const,

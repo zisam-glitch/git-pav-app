@@ -11,7 +11,7 @@ export interface VideoActivity {
     completedAt: string | null;
     waitedMinutes: number | null;
   };
-  notices: { kind: "push" | "reminder"; title: string; at: string; status: string }[];
+  notices: { kind: "push" | "email" | "reminder"; title: string; at: string; status: string }[];
   conversation: { messageCount: number; lastMessageAt: string | null } | null;
 }
 
@@ -24,7 +24,7 @@ export const OUTCOME_LABELS: Record<CallOutcome, string> = {
   not_recorded: "Its time has passed and no call was recorded",
 };
 
-const NOTICE_KIND_LABELS = { push: "Push", reminder: "Reminder" } as const;
+const NOTICE_KIND_LABELS = { push: "Push", email: "Email", reminder: "Reminder" } as const;
 
 const NOTICE_STATUS_LABELS: Record<string, string> = {
   sent: "Sent",
@@ -34,7 +34,7 @@ const NOTICE_STATUS_LABELS: Record<string, string> = {
   cancelled: "Not sent, visit changed",
 };
 
-export function noticeKindLabel(kind: "push" | "reminder"): string {
+export function noticeKindLabel(kind: "push" | "email" | "reminder"): string {
   return NOTICE_KIND_LABELS[kind];
 }
 

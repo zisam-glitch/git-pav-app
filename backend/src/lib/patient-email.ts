@@ -12,6 +12,27 @@ import { safeError } from "./log-safety";
 import { buildAppointmentEmail, buildAppointmentPush, type AppointmentEmailKind } from "./patient-email-content";
 import { sendPatientNotification } from "./patient-push";
 
+/**
+ * The record kept of an appointment email (V6): that it was sent and whether it was delivered,
+ * against the appointment. It keeps the subject, never the body.
+ */
+export function appointmentEmailRecord(input: {
+  userId: string;
+  appointmentId: string;
+  kind: AppointmentEmailKind;
+  subject: string;
+  delivered: boolean;
+}) {
+  return {
+    userId: input.userId,
+    type: "email",
+    title: input.subject,
+    body: "",
+    data: { type: `appointment_${input.kind}`, appointmentId: input.appointmentId },
+    status: input.delivered ? "sent" : "failed",
+  };
+}
+
 export async function sendAppointmentEmail(
   kind: AppointmentEmailKind,
   appointmentId: string,
@@ -24,7 +45,7 @@ export async function sendAppointmentEmail(
         clinic: { select: { name: true, address: true, postcode: true } },
         patient: {
           select: {
-            user: { select: { email: true, notificationPreferences: true } },
+            user: { select: { id: true, email: true, notificationPreferences: true } },
           },
         },
       },
@@ -46,7 +67,10 @@ export async function sendAppointmentEmail(
       placeLine,
       refundPence: extra.refundPence,
     });
-    await communicationService.sendEmail({ to: user.email, ...email });
+    const result = await communicationService.sendEmail({ to: user.email, ...email });
+    await prisma.notificationHistory.create({
+      data: appointmentEmailRecord({ userId: user.id, appointmentId, kind, subject: email.subject, delivered: result.success }),
+    });
   } catch (err) {
     console.error("[PatientEmail] Failed to send appointment email:", safeError(err));
   }

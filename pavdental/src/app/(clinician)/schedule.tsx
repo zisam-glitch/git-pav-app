@@ -1,5 +1,6 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, EmptyState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -12,6 +13,7 @@ export default function ClinicianScheduleScreen() {
   const router = useRouter();
   const currentUser = useCurrentUser();
   const { data: liveAppointments, isLoading, error, refetch } = useMyAppointments({ scope: "today" });
+  const refresh = usePullToRefresh();
 
   // MB-4: Prevent "Dr. Dr." double prefix
   const rawFirst = currentUser?.firstName || "";
@@ -51,7 +53,10 @@ export default function ClinicianScheduleScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
+      >
         <Button
           title="Settings and sign out"
           variant="ghost"

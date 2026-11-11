@@ -1,7 +1,10 @@
 import { formatGbp } from "@/lib/money";
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Alert } from "react-native";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { visitOutcomeCopy, recordVisitOutcome, failedPartsMessage, type VisitOutcome } from "@/features/clinician/visit-outcome";
 import { ThemedText, Card, Badge, Button, EmptyState, IconButton, AppIcon, ListRow, IconTile } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import {
@@ -33,6 +36,11 @@ export default function ClinicianPatientRecordScreen() {
   const [notes, setNotes] = useState<any>(null);
   const [actionInProgress, setActionInProgress] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  // Parts of the record that did not load: shown as a warning, never as "empty".
+  const [failed, setFailed] = useState<string[]>([]);
+  const [outcome, setOutcome] = useState<VisitOutcome | null>(null);
+  const queryClient = useQueryClient();
+  const loadedOnce = useRef(false);
 
   const patientId = params.patientId || "";
   const appointmentId = params.appointmentId || "";
@@ -43,20 +51,29 @@ export default function ClinicianPatientRecordScreen() {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    // Coming back from an editor refreshes quietly; only the first load shows a spinner.
+    if (!loadedOnce.current) setLoading(true);
     setError(null);
+    const missed: string[] = [];
+    const soft = <T,>(part: string, p: Promise<T>, fallback: T) =>
+      p.catch(() => {
+        missed.push(part);
+        return fallback;
+      });
     try {
       const [profData, odontData, planData, noteData] = await Promise.all([
         // A refused or failed profile load is shown as an error, not as an empty record.
         fetchPatientProfile(patientId),
-        fetchOdontogram(patientId).catch(() => []),
-        fetchTreatmentPlans(patientId).catch(() => []),
-        appointmentId ? fetchAppointmentNotes(appointmentId).catch(() => null) : null,
+        soft("dental chart", fetchOdontogram(patientId), [] as any[]),
+        soft("treatment plans", fetchTreatmentPlans(patientId), [] as any[]),
+        appointmentId ? soft("examination notes", fetchAppointmentNotes(appointmentId), null) : null,
       ]);
       setProfile(profData);
       setTeeth(odontData || []);
       setPlans(planData || []);
       setNotes(noteData);
+      setFailed(missed);
+      loadedOnce.current = true;
     } catch (err: any) {
       setError(err?.message || "Failed to load clinical record");
     } finally {
@@ -64,34 +81,43 @@ export default function ClinicianPatientRecordScreen() {
     }
   }
 
-  useEffect(() => {
-    loadRecord();
-  }, [patientId, appointmentId]);
+  // On opening, and again each time the screen comes back into view, so notes,
+  // chart and plans edited on the next screen show here straight away.
+  useFocusEffect(
+    useCallback(() => {
+      loadRecord();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [patientId, appointmentId]),
+  );
 
-  async function handleComplete() {
-    if (!appointmentId) return;
-    setActionInProgress(true);
-    try {
-      await completeAppointment(appointmentId);
-      setStatusMessage("Appointment marked as completed.");
-    } catch (err: any) {
-      setError(err?.message || "Failed to complete appointment");
-    } finally {
-      setActionInProgress(false);
-    }
-  }
-
-  async function handleNoShow() {
-    if (!appointmentId) return;
-    setActionInProgress(true);
-    try {
-      await markAppointmentNoShow(appointmentId);
-      setStatusMessage("Patient marked as no-show.");
-    } catch (err: any) {
-      setError(err?.message || "Failed to mark no-show");
-    } finally {
-      setActionInProgress(false);
-    }
+  function confirmOutcome(kind: VisitOutcome) {
+    if (!appointmentId || actionInProgress) return;
+    const copy = visitOutcomeCopy(kind, params.patientName);
+    Alert.alert(copy.title, copy.message, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: copy.confirmLabel,
+        style: kind === "no_show" ? "destructive" : "default",
+        onPress: async () => {
+          setActionInProgress(true);
+          const result = await recordVisitOutcome(
+            { complete: completeAppointment, noShow: markAppointmentNoShow },
+            kind,
+            appointmentId,
+          );
+          setActionInProgress(false);
+          if (result.ok) {
+            setOutcome(kind);
+            setError(null);
+            setStatusMessage(copy.doneMessage);
+            // Today's schedule and the appointment lists show the new status.
+            queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+          } else {
+            Alert.alert("Not saved", result.message);
+          }
+        },
+      },
+    ]);
   }
 
   return (
@@ -147,6 +173,14 @@ export default function ClinicianPatientRecordScreen() {
           </Card>
         ) : (
           <>
+            {failedPartsMessage(failed) ? (
+              <Card elevation="flat" style={styles.errorCard}>
+                <ThemedText variant="caption" style={styles.errorBody}>
+                  {failedPartsMessage(failed)}
+                </ThemedText>
+                <Button title="Try again" size="sm" variant="secondary" onPress={loadRecord} />
+              </Card>
+            ) : null}
             {/* Quick Actions */}
             <Card style={styles.actionCard}>
               <ThemedText variant="headline" style={styles.sectionHeading}>
@@ -190,21 +224,21 @@ export default function ClinicianPatientRecordScreen() {
                   }
                 />
               </View>
-              {appointmentId ? (
+              {appointmentId && !outcome ? (
                 <View style={styles.statusActionRow}>
                   <Button
                     title="Mark completed"
                     size="sm"
                     variant="primary"
                     disabled={actionInProgress}
-                    onPress={handleComplete}
+                    onPress={() => confirmOutcome("complete")}
                   />
                   <Button
                     title="Mark no-show"
                     size="sm"
                     variant="destructive"
                     disabled={actionInProgress}
-                    onPress={handleNoShow}
+                    onPress={() => confirmOutcome("no_show")}
                   />
                 </View>
               ) : null}
@@ -228,7 +262,11 @@ export default function ClinicianPatientRecordScreen() {
                   }
                 />
               </View>
-              {notes ? (
+              {failed.includes("examination notes") ? (
+                <ThemedText variant="caption" style={styles.emptyNote}>
+                  Notes could not be loaded.
+                </ThemedText>
+              ) : notes ? (
                 <View style={styles.notesBlock}>
                   {notes.diagnosis ? (
                     <View style={styles.diagRow}>
@@ -282,7 +320,11 @@ export default function ClinicianPatientRecordScreen() {
                   }
                 />
               </View>
-              {teeth.length === 0 ? (
+              {failed.includes("dental chart") ? (
+                <ThemedText variant="caption" style={styles.emptyNote}>
+                  The chart could not be loaded.
+                </ThemedText>
+              ) : teeth.length === 0 ? (
                 <ThemedText variant="caption" style={styles.emptyNote}>
                   All 32 teeth currently charted healthy or unrecorded. Tap 'Update Chart' to mark conditions.
                 </ThemedText>
@@ -329,7 +371,11 @@ export default function ClinicianPatientRecordScreen() {
                   }
                 />
               </View>
-              {plans.length === 0 ? (
+              {failed.includes("treatment plans") ? (
+                <ThemedText variant="caption" style={styles.emptyNote}>
+                  Plans could not be loaded.
+                </ThemedText>
+              ) : plans.length === 0 ? (
                 <ThemedText variant="caption" style={styles.emptyNote}>
                   No treatment plans created for this patient yet.
                 </ThemedText>

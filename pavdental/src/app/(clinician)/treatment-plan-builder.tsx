@@ -126,7 +126,7 @@ export default function TreatmentPlanBuilderScreen() {
               Treatment plan created
             </ThemedText>
             <ThemedText variant="body" style={styles.successBody}>
-              Plan "{title}" has been saved with {items.length} items totaling £
+              Plan "{title.trim() || "Treatment Plan"}" has been saved with {items.length} items totaling £
               {formatGbp(totalPence)}. The patient can review and sign it via the app.
             </ThemedText>
             <Button

@@ -470,7 +470,8 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
       where: {
         clinicianId: clinician.id,
         startTimeUtc: dateFilter,
-        status: { notIn: ["cancelled", "no_show"] },
+        // An unpaid hold is not a booking yet: it must not appear on the rota.
+        status: { notIn: ["cancelled", "no_show", "draft_hold"] },
       },
       include: {
         service: { select: { name: true, durationMinutes: true } },

@@ -1,4 +1,5 @@
 import { buildVideoActivity, callOutcome, type VideoActivityInput } from "../lib/video-activity";
+import { appointmentEmailRecord } from "../lib/patient-email";
 
 const now = new Date("2026-11-12T12:00:00Z");
 const base: VideoActivityInput = {
@@ -42,7 +43,7 @@ describe("Video visit activity for staff (V41)", () => {
     const a = buildVideoActivity(
       {
         ...base,
-        pushes: [{ type: "appointment_confirmed", title: "Booking confirmed", sentAt: new Date("2026-11-10T10:00:00Z"), status: "sent" }],
+        pushes: [{ type: "appointment_booked", title: "Booking confirmed", sentAt: new Date("2026-11-10T10:00:00Z"), status: "sent" }],
         reminders: [
           { title: "Video consultation in 1 hour", scheduledFor: new Date("2026-11-12T08:00:00Z"), sentAt: new Date("2026-11-12T08:00:20Z"), status: "sent" },
           { title: "Your video consultation is about to start", scheduledFor: new Date("2026-11-12T08:50:00Z"), sentAt: null, status: "cancelled" },
@@ -71,5 +72,38 @@ describe("Video visit activity for staff (V41)", () => {
     const a = buildVideoActivity({ ...base, thread: { messageCount: 3, lastMessageAt: new Date("2026-11-12T09:26:00Z") } }, now);
     expect(a.conversation).toEqual({ messageCount: 3, lastMessageAt: "2026-11-12T09:26:00.000Z" });
     expect(buildVideoActivity(base, now).conversation).toBeNull();
+  });
+
+  it("shows an email as an email, not a push (V6)", () => {
+    const a = buildVideoActivity(
+      {
+        ...base,
+        pushes: [
+          { type: "push", title: "Booking confirmed", sentAt: new Date("2026-11-10T10:00:00Z"), status: "sent" },
+          { type: "email", title: "Your video consultation is booked", sentAt: new Date("2026-11-10T10:00:05Z"), status: "failed" },
+        ],
+      },
+      now
+    );
+    expect(a.notices.map((n) => `${n.kind}:${n.status}`)).toEqual(["push:sent", "email:failed"]);
+  });
+});
+
+describe("The record kept of an appointment email (V6)", () => {
+  const input = { userId: "u1", appointmentId: "a1", kind: "booked" as const, subject: "Your video consultation is booked", delivered: true };
+
+  it("is tied to the appointment, keeps the subject and never a body", () => {
+    expect(appointmentEmailRecord(input)).toEqual({
+      userId: "u1",
+      type: "email",
+      title: "Your video consultation is booked",
+      body: "",
+      data: { type: "appointment_booked", appointmentId: "a1" },
+      status: "sent",
+    });
+  });
+
+  it("records a failed delivery as failed", () => {
+    expect(appointmentEmailRecord({ ...input, delivered: false }).status).toBe("failed");
   });
 });

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, TextInput, ActivityIndicator } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, ScrollView, TextInput, ActivityIndicator, Alert } from "react-native";
+import { useQueryClient } from "@tanstack/react-query";
+import { visitOutcomeCopy, recordVisitOutcome, type VisitOutcome } from "@/features/clinician/visit-outcome";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Button, IconButton, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -27,6 +29,14 @@ export default function AppointmentNotesScreen() {
   const [notes, setNotes] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [treatmentPlan, setTreatmentPlan] = useState("");
+  // If the saved notes could not be read, the form must not be saved: it would
+  // replace notes the clinician never saw.
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const queryClient = useQueryClient();
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (leaveTimer.current) clearTimeout(leaveTimer.current); }, []);
 
   useEffect(() => {
     async function load() {
@@ -36,6 +46,7 @@ export default function AppointmentNotesScreen() {
       }
       setLoading(true);
       setError(null);
+      setLoadFailed(false);
       try {
         const data = await fetchAppointmentNotes(appointmentId);
         if (data) {
@@ -43,14 +54,15 @@ export default function AppointmentNotesScreen() {
           setDiagnosis(data.diagnosis || "");
           setTreatmentPlan(data.treatmentPlan || "");
         }
-      } catch (err: any) {
-        // Non-critical if no note yet
+      } catch {
+        // "No note yet" comes back as an empty answer, not an error, so this is a real failure.
+        setLoadFailed(true);
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, [appointmentId]);
+  }, [appointmentId, reloadKey]);
 
   async function handleSaveNotes() {
     if (!appointmentId || !notes.trim()) return;
@@ -71,41 +83,47 @@ export default function AppointmentNotesScreen() {
     }
   }
 
-  async function handleComplete() {
-    if (!appointmentId) return;
-    setSaving(true);
-    setError(null);
-    try {
-      if (notes.trim()) {
-        await saveAppointmentNotes(appointmentId, {
-          notes: notes.trim(),
-          diagnosis: diagnosis.trim() || undefined,
-          treatmentPlan: treatmentPlan.trim() || undefined,
-        });
-      }
-      await completeAppointment(appointmentId);
-      setSuccessMessage("Appointment marked as completed.");
-      setTimeout(() => router.back(), 1000);
-    } catch (err: any) {
-      setError(err?.message || "Failed to complete appointment");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleNoShow() {
-    if (!appointmentId) return;
-    setSaving(true);
-    setError(null);
-    try {
-      await markAppointmentNoShow(appointmentId);
-      setSuccessMessage("Patient marked as no-show.");
-      setTimeout(() => router.back(), 1000);
-    } catch (err: any) {
-      setError(err?.message || "Failed to mark no-show");
-    } finally {
-      setSaving(false);
-    }
+  function confirmOutcome(kind: VisitOutcome) {
+    if (!appointmentId || saving || finished) return;
+    const copy = visitOutcomeCopy(kind, params.patientName);
+    Alert.alert(copy.title, copy.message, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: copy.confirmLabel,
+        style: kind === "no_show" ? "destructive" : "default",
+        onPress: async () => {
+          setSaving(true);
+          setError(null);
+          try {
+            if (kind === "complete" && notes.trim()) {
+              await saveAppointmentNotes(appointmentId, {
+                notes: notes.trim(),
+                diagnosis: diagnosis.trim() || undefined,
+                treatmentPlan: treatmentPlan.trim() || undefined,
+              });
+            }
+          } catch (err: any) {
+            setSaving(false);
+            setError(err?.message || "Couldn't save the notes, so the visit was not closed.");
+            return;
+          }
+          const result = await recordVisitOutcome(
+            { complete: completeAppointment, noShow: markAppointmentNoShow },
+            kind,
+            appointmentId,
+          );
+          setSaving(false);
+          if (result.ok) {
+            setFinished(true);
+            setSuccessMessage(copy.doneMessage);
+            queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+            leaveTimer.current = setTimeout(() => router.back(), 1000);
+          } else {
+            setError(result.message);
+          }
+        },
+      },
+    ]);
   }
 
   return (
@@ -153,6 +171,8 @@ export default function AppointmentNotesScreen() {
               Loading examination notes…
             </ThemedText>
           </Card>
+        ) : loadFailed ? (
+          <ErrorState message="We couldn't load the saved notes, so they can't be edited safely. Check the connection and try again." onRetry={() => setReloadKey((k) => k + 1)} />
         ) : (
           <Card style={styles.card}>
             <ThemedText variant="caption" style={styles.label}>
@@ -195,7 +215,7 @@ export default function AppointmentNotesScreen() {
                 title={saving ? "Saving…" : "Save notes"}
                 size="md"
                 variant="primary"
-                disabled={saving || !notes.trim()}
+                disabled={saving || finished || !notes.trim()}
                 onPress={handleSaveNotes}
               />
               <View style={styles.actionRow}>
@@ -203,15 +223,15 @@ export default function AppointmentNotesScreen() {
                   title="Complete visit"
                   size="md"
                   variant="secondary"
-                  disabled={saving}
-                  onPress={handleComplete}
+                  disabled={saving || finished}
+                  onPress={() => confirmOutcome("complete")}
                 />
                 <Button
                   title="Mark no-show"
                   size="md"
                   variant="destructive"
-                  disabled={saving}
-                  onPress={handleNoShow}
+                  disabled={saving || finished}
+                  onPress={() => confirmOutcome("no_show")}
                 />
               </View>
             </View>

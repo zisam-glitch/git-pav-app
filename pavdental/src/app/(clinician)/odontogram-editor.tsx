@@ -41,6 +41,11 @@ export default function OdontogramEditorScreen() {
   const [history, setHistory] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
+  // A chart that failed to load must never look like 32 healthy teeth: saving
+  // it would overwrite the patient's real chart.
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+
   // Initialize 32 teeth
   useEffect(() => {
     async function loadData() {
@@ -50,9 +55,10 @@ export default function OdontogramEditorScreen() {
       }
       setLoading(true);
       setError(null);
+      setLoadFailed(false);
       try {
         const [records, hist] = await Promise.all([
-          fetchOdontogram(patientId).catch(() => []),
+          fetchOdontogram(patientId),
           fetchOdontogramHistory(patientId).catch(() => []),
         ]);
 
@@ -69,13 +75,14 @@ export default function OdontogramEditorScreen() {
         setTeethState(initial);
         setHistory(hist || []);
       } catch (err: any) {
+        setLoadFailed(true);
         setError(err?.message || "Failed to load odontogram");
       } finally {
         setLoading(false);
       }
     }
     loadData();
-  }, [patientId]);
+  }, [patientId, reloadKey]);
 
   function getArchAndQuadrant(toothNumber: number): { arch: "upper" | "lower"; quadrant: "upper_right" | "upper_left" | "lower_right" | "lower_left" } {
     if (toothNumber >= 1 && toothNumber <= 8) {
@@ -116,7 +123,7 @@ export default function OdontogramEditorScreen() {
   }
 
   async function handleSaveChart() {
-    if (!patientId) return;
+    if (!patientId || loadFailed) return;
     setSaving(true);
     setError(null);
     setSuccessMessage(null);
@@ -196,6 +203,8 @@ export default function OdontogramEditorScreen() {
               Loading dental chart…
             </ThemedText>
           </Card>
+        ) : loadFailed ? (
+          <ErrorState message="We couldn't load this patient's chart, so it can't be edited safely. Check the connection and try again." onRetry={() => setReloadKey((k) => k + 1)} />
         ) : showHistory ? (
           /* History View (PT-3 audit) */
           <Card style={styles.card}>

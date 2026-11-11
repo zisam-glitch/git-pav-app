@@ -235,6 +235,33 @@ describe("CS-28: Clinician Portal (PT-3, MB-4)", () => {
     expect(allSchedule.find((a: any) => a.id === ids.appointmentFutureId)).toBeDefined();
   });
 
+  it("an unpaid hold is not on the clinician's rota", async () => {
+    const at = londonTimeToUtc(londonDate(new Date()), 15 * 60);
+    const hold = await prisma.appointment.create({
+      data: {
+        patientId: (await prisma.appointment.findUniqueOrThrow({ where: { id: ids.appointmentTodayId } })).patientId,
+        clinicianId: (await prisma.appointment.findUniqueOrThrow({ where: { id: ids.appointmentTodayId } })).clinicianId,
+        serviceId: ids.serviceId,
+        channel: "clinic",
+        startTimeUtc: at,
+        endTimeUtc: new Date(at.getTime() + 30 * 60 * 1000),
+        status: "draft_hold",
+        totalPricePence: 0,
+      },
+    });
+    try {
+      for (const q of ["?scope=today", ""]) {
+        const list = (await (
+          await fetch(`${baseUrl}/api/booking/appointments${q}`, { headers: { Authorization: `Bearer ${clinicianToken}` } })
+        ).json()) as { id: string }[];
+        expect(list.find((a) => a.id === hold.id)).toBeUndefined();
+        expect(list.find((a) => a.id === ids.appointmentTodayId)).toBeDefined();
+      }
+    } finally {
+      await prisma.appointment.delete({ where: { id: hold.id } });
+    }
+  });
+
   it("PT-3: updates odontogram with append-only tooth history and audits changes", async () => {
     // Update tooth #11 to 'decay'
     const res1 = await fetch(`${baseUrl}/api/patients/${ids.patientProfileId}/odontogram`, {

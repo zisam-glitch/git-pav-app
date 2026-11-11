@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";
@@ -8,11 +8,15 @@ import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { useCurrentUser, useAuthStore } from "@/features/auth/auth-store";
 import { ukTime } from "@/features/booking/uk-time";
 import { triageSummary } from "@/features/video/triage-summary";
+import { groupByUkDay } from "@/features/clinician/week-schedule";
 
 export default function ClinicianScheduleScreen() {
   const router = useRouter();
   const currentUser = useCurrentUser();
-  const { data: liveAppointments, isLoading, error, refetch } = useMyAppointments({ scope: "today" });
+  // "Today" asks the server for the day; "Next 7 days" asks for everything upcoming and groups it by UK day.
+  const [view, setView] = useState<"today" | "week">("today");
+  const [videoOnly, setVideoOnly] = useState(false);
+  const { data: liveAppointments, isLoading, error, refetch } = useMyAppointments(view === "today" ? { scope: "today" } : undefined);
   const refresh = usePullToRefresh();
 
   // MB-4: Prevent "Dr. Dr." double prefix
@@ -33,6 +37,8 @@ export default function ClinicianScheduleScreen() {
   const sessions = (liveAppointments && liveAppointments.length > 0)
     ? liveAppointments.map((a: any) => ({
         id: a.id,
+        startTimeUtc: a.startTimeUtc as string,
+        channel: a.channel as string,
         patientId: a.patientId || a.patient?.id,
         // The practice's day and times are UK time, whatever the device is set to.
         time: ukTime(new Date(a.startTimeUtc)),
@@ -51,80 +57,7 @@ export default function ClinicianScheduleScreen() {
       }))
     : [];
 
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
-      >
-        <Button
-          title="Settings and sign out"
-          variant="ghost"
-          size="sm"
-          onPress={() => router.push("/(clinician)/clinician-settings" as never)}
-        />
-        {/* Clinician Header (MB-4: No clipping at 320/375px) */}
-        <View style={styles.header}>
-          <View style={styles.docRow}>
-            <View style={styles.avatar}>
-              <ThemedText variant="title" style={styles.avatarText}>
-                {clinicianName.split(" ").pop()?.[0] || "D"}
-              </ThemedText>
-            </View>
-            <View style={styles.docInfo}>
-              <ThemedText variant="headline" style={styles.docName}>
-                {clinicianName}
-              </ThemedText>
-              <ThemedText variant="caption" style={styles.gdcSubtext}>
-                {gdcText}
-              </ThemedText>
-            </View>
-          </View>
-          <View style={styles.badgeWrapper}>
-            <Badge label="Clinical duty active" variant="success" />
-            <Button
-              title="Patient inbox"
-              arrow
-              variant="secondary"
-              size="sm"
-              onPress={() => router.push("/(clinician)/inbox" as any)}
-            />
-          </View>
-        </View>
-
-        {/* Schedule Section */}
-        <View style={styles.section}>
-          <ThemedText variant="headline" style={styles.sectionTitle}>
-            Today's consultations & visits ({sessions.length} patient{sessions.length !== 1 ? "s" : ""})
-          </ThemedText>
-
-          {isLoading ? (
-            <Card elevation="flat" style={styles.loadingCard}>
-              <ActivityIndicator color={colors.ink} size="small" />
-              <ThemedText variant="body" style={styles.loadingText}>
-                Loading daily schedule…
-              </ThemedText>
-            </Card>
-          ) : error ? (
-            <Card elevation="flat" style={styles.errorCard}>
-              <ThemedText variant="headline" style={styles.errorTitle}>
-                Could not load consultations
-              </ThemedText>
-              <ThemedText variant="caption" style={styles.errorBody}>
-                An error occurred while fetching your rota for today.
-              </ThemedText>
-              <Button title="Try again" size="sm" variant="secondary" onPress={() => refetch()} />
-            </Card>
-          ) : sessions.length === 0 ? (
-            <EmptyState
-              illustration="schedule"
-              heading="No consultations scheduled"
-              body="Appointments booked by patients will appear here."
-              icon="calendar"
-            />
-          ) : (
-            <View style={styles.sessionList}>
-              {sessions.map((s: any) => {
+  const renderSession = (s: any) => {
                 const isVideo = s.type === "video";
                 // A consult already under way (the patient was let in, or the
                 // visit started) still needs its room and record.
@@ -209,7 +142,129 @@ export default function ClinicianScheduleScreen() {
                     ) : null}
                   </Card>
                 );
-              })}
+  };
+
+  const weekGroups = groupByUkDay(sessions, { channel: videoOnly ? "video" : undefined });
+  const weekCount = weekGroups.reduce((n, g) => n + g.items.length, 0);
+
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
+      >
+        <Button
+          title="Settings and sign out"
+          variant="ghost"
+          size="sm"
+          onPress={() => router.push("/(clinician)/clinician-settings" as never)}
+        />
+        {/* Clinician Header (MB-4: No clipping at 320/375px) */}
+        <View style={styles.header}>
+          <View style={styles.docRow}>
+            <View style={styles.avatar}>
+              <ThemedText variant="title" style={styles.avatarText}>
+                {clinicianName.split(" ").pop()?.[0] || "D"}
+              </ThemedText>
+            </View>
+            <View style={styles.docInfo}>
+              <ThemedText variant="headline" style={styles.docName}>
+                {clinicianName}
+              </ThemedText>
+              <ThemedText variant="caption" style={styles.gdcSubtext}>
+                {gdcText}
+              </ThemedText>
+            </View>
+          </View>
+          <View style={styles.badgeWrapper}>
+            <Badge label="Clinical duty active" variant="success" />
+            <Button
+              title="Patient inbox"
+              arrow
+              variant="secondary"
+              size="sm"
+              onPress={() => router.push("/(clinician)/inbox" as any)}
+            />
+          </View>
+        </View>
+
+        {/* Schedule Section */}
+        <View style={styles.section}>
+          <View style={styles.viewToggle}>
+            <Button
+              title="Today"
+              size="sm"
+              variant={view === "today" ? "primary" : "secondary"}
+              onPress={() => setView("today")}
+              accessibilityLabel={view === "today" ? "Today, selected" : "Today"}
+            />
+            <Button
+              title="Next 7 days"
+              size="sm"
+              variant={view === "week" ? "primary" : "secondary"}
+              onPress={() => setView("week")}
+              accessibilityLabel={view === "week" ? "Next 7 days, selected" : "Next 7 days"}
+            />
+            {view === "week" ? (
+              <Button
+                title={videoOnly ? "Video only: on" : "Video only"}
+                size="sm"
+                variant={videoOnly ? "primary" : "ghost"}
+                onPress={() => setVideoOnly((v) => !v)}
+                accessibilityLabel={videoOnly ? "Video only, on" : "Video only, off"}
+              />
+            ) : null}
+          </View>
+          <ThemedText variant="headline" style={styles.sectionTitle}>
+            {view === "today"
+              ? `Today's consultations & visits (${sessions.length} patient${sessions.length !== 1 ? "s" : ""})`
+              : `Next 7 days (${weekCount} ${videoOnly ? "video consult" : "visit"}${weekCount !== 1 ? "s" : ""})`}
+          </ThemedText>
+
+          {isLoading ? (
+            <Card elevation="flat" style={styles.loadingCard}>
+              <ActivityIndicator color={colors.ink} size="small" />
+              <ThemedText variant="body" style={styles.loadingText}>
+                Loading daily schedule…
+              </ThemedText>
+            </Card>
+          ) : error ? (
+            <Card elevation="flat" style={styles.errorCard}>
+              <ThemedText variant="headline" style={styles.errorTitle}>
+                Could not load consultations
+              </ThemedText>
+              <ThemedText variant="caption" style={styles.errorBody}>
+                {view === "today" ? "An error occurred while fetching your rota for today." : "An error occurred while fetching your next 7 days."}
+              </ThemedText>
+              <Button title="Try again" size="sm" variant="secondary" onPress={() => refetch()} />
+            </Card>
+          ) : view === "week" ? (
+            <View style={styles.sessionList}>
+              {weekGroups.map((g) => (
+                <View key={g.date} style={styles.dayGroup}>
+                  <ThemedText variant="headline" style={styles.dayHeading} accessibilityRole="header">
+                    {g.label}
+                  </ThemedText>
+                  {g.items.length === 0 ? (
+                    <ThemedText variant="caption" style={styles.dayEmpty}>
+                      {videoOnly ? "No video consults" : "Nothing booked"}
+                    </ThemedText>
+                  ) : (
+                    g.items.map(renderSession)
+                  )}
+                </View>
+              ))}
+            </View>
+          ) : sessions.length === 0 ? (
+            <EmptyState
+              illustration="schedule"
+              heading="No consultations scheduled"
+              body="Appointments booked by patients will appear here."
+              icon="calendar"
+            />
+          ) : (
+            <View style={styles.sessionList}>
+              {sessions.map(renderSession)}
             </View>
           )}
         </View>
@@ -260,6 +315,10 @@ export default function ClinicianScheduleScreen() {
 }
 
 const styles = StyleSheet.create({
+  dayEmpty: { color: colors.secondaryLabel },
+  dayGroup: { gap: spacing.xs },
+  dayHeading: { color: colors.label, fontWeight: "700" },
+  viewToggle: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs },
   actionRow: {
     borderTopColor: colors.separator,
     borderTopWidth: StyleSheet.hairlineWidth,

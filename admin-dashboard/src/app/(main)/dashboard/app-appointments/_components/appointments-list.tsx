@@ -26,6 +26,8 @@ import {
 import { appRequest, todayInUk, ukDateTime } from "@/lib/pav-schedule";
 import { formatPounds } from "@/lib/pav-team";
 
+import { VideoActivityDialog } from "./video-activity-dialog";
+
 type Page = { appointments: AppAppointment[]; total: number };
 
 const STATUS_VARIANT: Partial<Record<AppointmentStatus, "default" | "secondary" | "destructive" | "outline">> = {
@@ -119,6 +121,12 @@ export function AppointmentsList() {
                       .filter(Boolean)
                       .join(" · ")}
                   </div>
+                  {appointment.channel === "video" ? (
+                    <VideoActivityDialog
+                      appointmentId={appointment.id}
+                      patientName={appointment.dependantName ?? appointment.patientName}
+                    />
+                  ) : null}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <div>{formatPounds(appointment.depositPaidPence)} deposit</div>

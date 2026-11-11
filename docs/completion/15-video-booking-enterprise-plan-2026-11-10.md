@@ -296,12 +296,12 @@ V48, V49, V51, V53 to V58, V60.
 | ID | What is missing |
 |---|---|
 | V50 | Mostly done. Server: `?view=summary` and `GET /api/messages/:id` (paged). App: the patient list and tab badge use the summary list; the patient conversation screen loads one paged conversation with "Show earlier messages". Left: the dentist's Inbox still loads the full list; it moves over with its rebuild (V52). |
-| V19 | No speaker, earpiece or Bluetooth choice; nothing for an incoming phone call. |
+| V19 | Half done. A speaker / earpiece button on the call screen (the call library's video and voice modes); a connected Bluetooth headset is taken by the OS, not chosen in the app. Not built or tested: what happens when a phone call arrives mid-consult. Needs a real phone. |
 | V22 | Backgrounding mid-call on iOS is not handled or tested. |
 | V37 | No "next available" in the slot picker; step counter and hold-expiry handling unchecked. |
 | V40 | No week view of video bookings for dentists. |
 | V41 | Mostly done. `GET /api/admin/appointments/:id/video-activity` and a "Call and notices" panel on each video row of the dashboard's App appointments screen: whether the call took place, when the patient reported in, was let in and the call ended, the pushes and reminders recorded for the visit with their delivery status, and the size of the conversation (never its text). Emails are now recorded too (V6), so they appear from then on. Left: call times come from the existing visit record, not from Daily (phase 2 presence). |
-| V42 | Call screen colours are still hard-coded. |
+| V42 | Colours done (theme tokens `callStage`, `callControl`, `callControlSubtle`). The wider design pass on the call screen (screen-reader walk-through, largest font size) is still open. |
 
 **Blocked on the owner:** V14 (no-show rule and refunds, decision 5), V35 (clinician wording), V59 (clinician wording),
 V9 and V56/V57 wording (DPO). Phase 6 also needs a real Daily test key on staging (decision 8).

@@ -57,6 +57,11 @@ export const colors = {
   alwaysBlack: "#000000",
   alwaysWhite: "#FFFFFF",
   scrim: "rgba(14, 15, 12, 0.4)",
+
+  // The call screen is dark whatever the theme, so the picture and white controls always read (V42).
+  callStage: "#0B0F0A",
+  callControl: "rgba(255,255,255,0.18)",
+  callControlSubtle: "rgba(255,255,255,0.12)",
 } as const;
 
 // ─── Illustration palette ─────────────────────────────────────────────────────

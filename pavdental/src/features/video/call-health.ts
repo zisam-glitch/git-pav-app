@@ -45,3 +45,20 @@ export function callErrorMessage(raw: string | undefined): string {
   }
   return "The video call stopped unexpectedly. Please try again.";
 }
+
+/** Where the other person's voice comes out: the loudspeaker, or the earpiece held to the ear (V19). A connected Bluetooth headset takes over by itself. */
+export type AudioRoute = "speaker" | "earpiece";
+
+export function nextAudioRoute(route: AudioRoute): AudioRoute {
+  return route === "speaker" ? "earpiece" : "speaker";
+}
+
+/** The call library's name for a route: "video" mode is the loudspeaker, "voice" the earpiece. */
+export function dailyAudioMode(route: AudioRoute): "video" | "voice" {
+  return route === "speaker" ? "video" : "voice";
+}
+
+/** The label of the button that switches the route: it names where the sound will go next. */
+export function audioRouteLabel(route: AudioRoute): string {
+  return route === "speaker" ? "Use the earpiece" : "Use the speaker";
+}

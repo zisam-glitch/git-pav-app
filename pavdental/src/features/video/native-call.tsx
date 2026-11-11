@@ -5,7 +5,18 @@ import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/re
 import { ThemedText, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { reportCallEvent } from "@/lib/call-events";
-import { callErrorMessage, linkStatus, linkMessage, shouldGoAudioOnly, joinTimeBucket, type NetworkState } from "./call-health";
+import {
+  callErrorMessage,
+  linkStatus,
+  linkMessage,
+  shouldGoAudioOnly,
+  joinTimeBucket,
+  nextAudioRoute,
+  dailyAudioMode,
+  audioRouteLabel,
+  type AudioRoute,
+  type NetworkState,
+} from "./call-health";
 
 export { callErrorMessage };
 
@@ -55,6 +66,8 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
   const [audioOnly, setAudioOnly] = useState(false);
   const audioOnlyDone = useRef(false);
   const camOnRef = useRef(true);
+  // The call starts on the loudspeaker; the person can hold it to their ear instead (V19).
+  const [route, setRoute] = useState<AudioRoute>("speaker");
 
   useEffect(() => {
     unmountingRef.current = false;
@@ -151,6 +164,11 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
     setCamOn(next);
     if (next) setAudioOnly(false);
   };
+  const switchRoute = () => {
+    const next = nextAudioRoute(route);
+    callRef.current?.setNativeInCallAudioMode(dailyAudioMode(next));
+    setRoute(next);
+  };
   const flip = () => {
     callRef.current?.cycleCamera().catch(() => {});
   };
@@ -244,6 +262,12 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
           onPress={toggleCam}
         />
         <ControlButton icon="refresh" label="Switch camera" disabled={phase !== "joined" || !camOn} onPress={flip} />
+        <ControlButton
+          icon={route === "speaker" ? "speaker" : "earpiece"}
+          label={audioRouteLabel(route)}
+          disabled={phase !== "joined"}
+          onPress={switchRoute}
+        />
         <ControlButton icon="phoneOff" label="Leave call" danger disabled={leaving} onPress={leave} />
       </View>
     </View>
@@ -314,11 +338,11 @@ const styles = StyleSheet.create({
   },
   control: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.18)",
-    borderRadius: 28,
-    height: 56,
+    backgroundColor: colors.callControl,
+    borderRadius: radius.full,
+    height: 52,
     justifyContent: "center",
-    width: 56,
+    width: 52,
   },
   controlActive: {
     backgroundColor: colors.onInk,
@@ -332,7 +356,8 @@ const styles = StyleSheet.create({
   controls: {
     bottom: spacing.lg,
     flexDirection: "row",
-    gap: spacing.md,
+    // Five 52pt buttons and four gaps: 308pt, which fits a 320pt phone.
+    gap: spacing.sm,
     justifyContent: "center",
     left: 0,
     position: "absolute",
@@ -340,7 +365,7 @@ const styles = StyleSheet.create({
   },
   selfOff: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: colors.callControlSubtle,
     justifyContent: "center",
   },
   selfVideo: {
@@ -357,7 +382,7 @@ const styles = StyleSheet.create({
     top: spacing.md,
   },
   stage: {
-    backgroundColor: "#0B0F0A",
+    backgroundColor: colors.callStage,
     flex: 1,
     overflow: "hidden",
   },

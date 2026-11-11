@@ -5,7 +5,7 @@
 import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
-import { decodePolyline, MAP_MAX_ZOOM, trackingSheet, trackingView, vanIsAssigned } from "../features/van/tracking";
+import { decodePolyline, MAP_MAX_ZOOM, positionAgeLabel, trackingSheet, trackingView, vanIsAssigned } from "../features/van/tracking";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -142,5 +142,17 @@ assert(MAP_MAX_ZOOM >= 16 && MAP_MAX_ZOOM <= 17, `maps stop at street level (zoo
 const nativeMap = readFileSync(join(__dirname, "../features/van/van-tracking-map.tsx"), "utf8");
 assert(nativeMap.includes("maxZoomLevel={MAP_MAX_ZOOM}"), "the phone map caps its zoom");
 assert(webMap.includes("maxZoom: MAP_MAX_ZOOM"), "the web map uses the same cap");
+
+// ─── A frozen marker must not look live (N19) ────────────────────────────────
+const clock = new Date("2031-03-11T10:00:00Z");
+const minsAgo = (m: number) => new Date(clock.getTime() - m * 60_000).toISOString();
+assert(positionAgeLabel(minsAgo(1), clock) === null, "a fresh position shows no age");
+assert(positionAgeLabel(minsAgo(4), clock) === "Last seen 4 min ago", "an old position says how old");
+assert(positionAgeLabel(minsAgo(90), clock) === "Last seen over an hour ago", "a very old position says so");
+assert(positionAgeLabel(null, clock) === null && positionAgeLabel("not a date", clock) === null, "no position or a bad date shows nothing");
+
+// ─── A failed check is not "no request" (N25) ────────────────────────────────
+const liveTrack = readFileSync(join(__dirname, "../app/(patient)/van/live-track.tsx"), "utf8");
+assert(liveTrack.includes("!request && isError") && liveTrack.includes("<ErrorState"), "a failed status check offers a retry, not a new request");
 
 console.log("\n🎉 ALL VAN MAP TESTS PASSED (0 FAILURES)!\n");

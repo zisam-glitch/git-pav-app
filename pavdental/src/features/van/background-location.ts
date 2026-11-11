@@ -37,6 +37,7 @@ if (Platform.OS !== "web") {
         lat: last.coords.latitude,
         lng: last.coords.longitude,
         accuracyM: last.coords.accuracy ?? undefined,
+        recordedAt: new Date(last.timestamp).toISOString(),
       });
     } catch {
       // Non-fatal: the next update tries again.

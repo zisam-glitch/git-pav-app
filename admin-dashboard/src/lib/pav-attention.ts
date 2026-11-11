@@ -11,6 +11,8 @@ export interface Attention {
   cardFailuresLastWeek: number;
   depositReleaseFailures: number;
   vansOut: number;
+  /** Vans on shift that have stopped reporting their position. Absent from an older backend. */
+  quietVans?: number;
   asOf: string;
 }
 
@@ -66,6 +68,17 @@ export function attentionItems(a: Attention): AttentionItem[] {
       note: a.depositReleaseFailures > 0 ? "The deposit hold couldn't be released" : "None stuck",
       href: "/dashboard/van-shifts",
       tone: a.depositReleaseFailures > 0 ? "urgent" : "clear",
+    },
+    {
+      key: "quiet-vans",
+      label: "Vans not reporting in",
+      count: a.quietVans ?? 0,
+      note:
+        (a.quietVans ?? 0) > 0
+          ? "On shift but silent. Patients aren't offered them. Call the crew"
+          : "Every van on shift is reporting",
+      href: "/dashboard/van-shifts",
+      tone: (a.quietVans ?? 0) > 0 ? "urgent" : "clear",
     },
     {
       key: "inbox",

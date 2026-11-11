@@ -310,3 +310,14 @@ Phone calls or SMS between patient and crew, tips, live typing, more than one va
 across several vans with a solver, van stock and equipment tracking, the clinical record made during the visit
 (tooth chart and notes are their own screens), and the website. Real van areas still need drawing (V-05); the
 plan assumes they exist before launch.
+
+## Phase 1 status, 12 Nov 2026
+
+Built: N1, N2, N3, N5, N6, N13, N14, N16, N18, N19, N24, N25. Checked here: typecheck, lint (at the 577 limit), the
+new position-report unit tests, the dashboard attention tests and the app test scripts for the screens touched.
+**Not run here:** the database-backed backend suites, because this machine has no PostGIS. The new
+`van-dispatch-rules.test.ts` and the existing `van-races`, `admin-van-shifts` and appointment-cancel suites need CI.
+
+Left from phase 1 and why: the database rule that two open stops on a shift cannot share a queue position (part of
+N2) needs a migration that has to be tried against a real database first; the in-app operator "new request" sound
+depends on the push settings of the build and needs a real phone (phase 6).

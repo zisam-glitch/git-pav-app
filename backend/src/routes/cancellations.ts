@@ -11,7 +11,7 @@ import {
   getCancellationPolicy,
   appointmentRefundPolicy,
 } from "../lib/cancellation-policy";
-import { releaseVanDeposit } from "../lib/van-payments";
+import { cancelVanRequestForPatient } from "../lib/van-cancel";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { pseudonymiseIp } from "../lib/audit-security";
@@ -79,43 +79,11 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
     }
 
     const policy = getCancellationPolicy({ channel: "van", phase: vanRequest.phase });
-    let stripeRefundId: string | null = null;
-    let depositOutcome: string | null = null;
-
-    if (vanRequest.paymentIntentId) {
-      const release = await releaseVanDeposit(vanRequest.paymentIntentId, "patient_cancelled", {
-        retainCaptured: policy.keepsDeposit,
-      });
-      depositOutcome = release.status;
-      if (release.status === "failed") {
-        return res.status(502).json({
-          error: "Could not release deposit",
-          message: "The payment hold could not be released right now. Please try cancelling again in a moment.",
-        });
-      }
-      if (release.refundId) stripeRefundId = release.refundId;
-    }
-
-    await prisma.vanServiceRequest.update({
-      where: { id: vanRequest.id },
-      data: {
-        status: "cancelled",
-        phase: "cancelled",
-        depositReleaseStatus: depositOutcome,
-        depositReleasedAt:
-          ["released", "already_released", "refunded", "retained"].includes(depositOutcome ?? "")
-            ? new Date()
-            : null,
-      },
-    });
-
-    await prisma.appointment.update({
-      where: { id: appointment.id },
-      data: { status: "cancelled" },
-    });
-
-    // Clear pending scheduled reminders for this cancelled van appointment
-    await cancelAppointmentReminders(appointment.id);
+    // The same code the tracking screen uses: lock, deposit rule, queue
+    // renumbering, reminders and the other patients' ETAs (N3).
+    const cancelled = await cancelVanRequestForPatient(vanRequest.id);
+    if (cancelled.status !== 200) return res.status(cancelled.status).json(cancelled.body);
+    const stripeRefundId = cancelled.refundId ?? null;
 
     const refundAmountPence = policy.keepsDeposit ? 0 : appointment.depositPaidPence;
 

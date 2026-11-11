@@ -195,6 +195,8 @@ export async function sendLocationPing(data: {
   lat: number;
   lng: number;
   accuracyM?: number;
+  /** When the phone took the fix (ISO 8601): a report held up in a tunnel isn't mistaken for a fresh one. */
+  recordedAt?: string;
 }): Promise<void> {
   const res = await authFetch("/api/van/shift/location", {
     method: "POST",

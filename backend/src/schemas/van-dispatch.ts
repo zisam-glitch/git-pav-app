@@ -16,6 +16,8 @@ export const locationPingSchema = z.object({
   lat,
   lng,
   accuracyM: z.number().positive().optional(),
+  /** When the phone took the fix (ISO 8601), so a delayed report isn't mistaken for a fresh one. */
+  recordedAt: z.string().datetime().optional(),
 }).strict();
 
 export const phaseUpdateSchema = z.object({

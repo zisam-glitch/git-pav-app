@@ -1,3 +1,4 @@
+import { POSITION_STALE_MS } from "../lib/van-location";
 import crypto from "crypto";
 import argon2 from "argon2";
 import Stripe from "stripe";
@@ -1225,6 +1226,7 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
     cardFailures,
     depositReleaseFailures,
     vansOut,
+    quietVans,
   ] = await Promise.all([
     prisma.appointment.count({ where: { ...today, status: { in: TODAY_VISIT_STATUSES } } }),
     prisma.appointment.count({ where: { ...today, status: { in: OPEN_VISIT_STATUSES } } }),
@@ -1236,6 +1238,11 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
     }),
     prisma.vanServiceRequest.count({ where: { depositReleaseStatus: "failed" } }),
     prisma.vanShift.count({ where: { endedAt: null, status: { in: ["online", "paused"] } } }),
+    // Online but no position report for a while: patients are no longer offered
+    // this van, and the crew may not know (N14).
+    prisma.vanShift.count({
+      where: { endedAt: null, status: "online", lastLocationAt: { lt: new Date(now.getTime() - POSITION_STALE_MS) } },
+    }),
   ]);
 
   return res.json({
@@ -1247,6 +1254,7 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
     cardFailuresLastWeek: cardFailures,
     depositReleaseFailures,
     vansOut,
+    quietVans,
     asOf: now.toISOString(),
   });
 });

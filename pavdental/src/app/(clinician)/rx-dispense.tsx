@@ -75,8 +75,15 @@ export default function ClinicianRxDispenseScreen() {
   const canSubmit =
     medication.trim() !== "" && dosageInstructions.trim() !== "" && pharmacyName.trim() !== "" && allergiesChecked;
 
+  // Back to where the prescription was opened from (the consultation room, to
+  // write the summary), or the schedule if there is nowhere to go back to.
+  const leave = () => {
+    if (router.canGoBack()) router.back();
+    else router.replace("/(clinician)/schedule");
+  };
+
   const handleSignAndSend = async () => {
-    if (!canSubmit) return;
+    if (!canSubmit || isSubmitting) return;
     setIsSubmitting(true);
     try {
       const res = await authFetch("/api/prescriptions", {
@@ -94,21 +101,15 @@ export default function ClinicianRxDispenseScreen() {
       }
       const issued = await res.json().catch(() => ({}));
 
-      // Conclude video consultation and record summary if this visit was a video consult
-      await authFetch("/api/video/end-consult", {
-        method: "POST",
-        body: JSON.stringify({
-          appointmentId,
-          notes: `Prescription issued: ${medication.trim()} (${dosageInstructions.trim()}). Dispensing via ${pharmacyName.trim()}.`,
-          treatmentPlan: "Complete medication course as prescribed. Follow up if symptoms worsen.",
-          followUpRecommended: "clinic",
-        }),
-      }).catch(() => {});
+      // The visit is not ended here. Ending a video consult saves the summary the
+      // patient reads, and that is the dentist's to write: an automatic one would
+      // put words in their mouth, and the first summary saved is the only one kept.
       // Decisions log #4: a pharmacy needs the prescriber's own signature, so
       // the PDF is printed and signed in ink before it goes to the patient.
-      const next = "Print the PDF and sign it in ink before giving it to the patient. A copy is in their app for their records.";
+      const next =
+        "Print the PDF and sign it in ink before giving it to the patient. A copy is in their app for their records. The visit is still open: record the summary to end it.";
       Alert.alert("Prescription issued", issued.reference ? `Reference ${issued.reference}. ${next}` : next, [
-        { text: "Done", style: "cancel", onPress: () => router.replace("/(clinician)/schedule") },
+        { text: "Done", style: "cancel", onPress: leave },
         {
           text: "Open PDF to print",
           onPress: async () => {
@@ -120,7 +121,7 @@ export default function ClinicianRxDispenseScreen() {
             } catch (err: any) {
               Alert.alert("Couldn't open the prescription", err?.message || "Open it from the patient's prescriptions instead.");
             } finally {
-              router.replace("/(clinician)/schedule");
+              leave();
             }
           },
         },

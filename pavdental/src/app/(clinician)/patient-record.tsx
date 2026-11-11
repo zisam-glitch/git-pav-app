@@ -86,7 +86,6 @@ export default function ClinicianPatientRecordScreen() {
   useFocusEffect(
     useCallback(() => {
       loadRecord();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [patientId, appointmentId]),
   );
 

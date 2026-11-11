@@ -120,6 +120,22 @@ describe("appointment cancellation", () => {
     expect(again.body).toMatchObject({ refundAmountPence: 0, stripeRefundId: null });
   });
 
+  it("replays the first answer, with the real refund, when the same Idempotency-Key is sent again (D3)", async () => {
+    const id = await makeAppointment("confirmed", 72);
+    const send = () =>
+      fetch(`${baseUrl}/api/booking/appointments/${id}/cancel-with-refund`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Idempotency-Key": `cancel-${id}` },
+      }).then(async (r) => ({ status: r.status, body: (await r.json()) as Record<string, unknown> }));
+
+    const first = await send();
+    expect(first.body).toMatchObject({ refundPercentage: 100, refundAmountPence: 2000 });
+    // The patient's response was lost and the app tries again: it must still be told about the refund.
+    const retry = await send();
+    expect(retry.status).toBe(200);
+    expect(retry.body).toEqual(first.body);
+  });
+
   it("cancels a held slot without a refund", async () => {
     const id = await makeAppointment("draft_hold");
     const res = await cancel(id);

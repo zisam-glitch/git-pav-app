@@ -162,6 +162,10 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
   return res.status(201).json({ ...validatedResponse, verificationEmail });
 });
 
+const ACCOUNT_FAILURE_LIMIT = 10;
+const ACCOUNT_FAILURE_WINDOW_SECONDS = 900;
+const SUSPICIOUS_FAILURES = 5;
+
 // ─── POST /api/auth/login ──────────────────────────────────────────────────────
 router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -184,10 +188,23 @@ router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (r
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
-  const clientIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+  // req.ip follows the TRUST_PROXY setting. The raw X-Forwarded-For header is
+  // whatever the caller sends, so it can't be used to tell callers apart (S1).
+  const clientIp = req.ip || "unknown";
   const ipHash = pseudonymiseIp(clientIp);
   const userIpLockKey = `login-lock:${user.id}:${ipHash}`;
   const userIpFailKey = `login-fail:${user.id}:${ipHash}`;
+  // Failures against this account from anywhere (S1, S2).
+  const accountFailKey = `login-fail:${user.id}:all`;
+
+  // S1: guessing one account's password from many addresses is capped too.
+  // Over the limit, even a right password is not checked until the window
+  // ends, and the answer is the same as for a wrong one.
+  const accountFailsSoFar = Number((await redis.get(accountFailKey).catch(() => null)) ?? 0);
+  if (accountFailsSoFar >= ACCOUNT_FAILURE_LIMIT) {
+    await burnPasswordCheck(password);
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
 
   const isUserIpLocked = await redis.get(userIpLockKey).catch(() => null);
   if (isUserIpLocked) {
@@ -205,6 +222,11 @@ router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (r
     });
     const failedAttempts = updated.failedLoginAttempts;
     const lockoutThreshold = 5;
+
+    const accountFails = await redis.incr(accountFailKey).catch(() => 1);
+    if (accountFails === 1) {
+      await redis.expire(accountFailKey, ACCOUNT_FAILURE_WINDOW_SECONDS).catch(() => {});
+    }
 
     // Exponential backoff for this attacker's IP in Redis against this user
     const ipFails = await redis.incr(userIpFailKey).catch(() => 1);
@@ -229,9 +251,13 @@ router.post("/login", authLimiterMiddleware, validateBody(loginSchema), async (r
   });
   await redis.del(userIpFailKey).catch(() => {});
   await redis.del(userIpLockKey).catch(() => {});
+  await redis.del(accountFailKey).catch(() => {});
 
-  // AT-7: If account had suspicious failed attempts from other IPs, enforce step-up MFA
-  const isSuspiciousLogin = (user.failedLoginAttempts || 0) >= 5;
+  // AT-7: If the account had several wrong passwords from other addresses just
+  // now, enforce step-up MFA. "Just now" is the last 15 minutes (S2): the
+  // counter on the user row never expires, so a few typos months apart would
+  // otherwise send the owner a security code at every later sign-in.
+  const isSuspiciousLogin = accountFailsSoFar >= SUSPICIOUS_FAILURES;
 
   // Staff always need a second factor; patients only if they turned it on
   // (CS-08, MF-1). The session is created only once the code is checked.

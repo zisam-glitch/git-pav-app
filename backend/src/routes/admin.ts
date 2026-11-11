@@ -14,6 +14,8 @@ import { endVanShift } from "../lib/van-shift-end";
 import { passwordResetService } from "../lib/otp-service";
 import { communicationService } from "../lib/communication-service";
 import { safeError } from "../lib/log-safety";
+import { decryptField } from "../lib/encryption";
+import { buildVideoActivity } from "../lib/video-activity";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { requireAuth, requireRole, AuthRequest } from "../middleware/auth";
 import { validateParams, validateQuery, validateBody } from "../middleware/validate";
@@ -243,6 +245,61 @@ router.get("/appointments", requireAuth, requireRole("admin"), validateQuery(adm
   }));
 
   return res.json({ appointments: formatted, total, page, limit });
+});
+
+// ─── GET /api/admin/appointments/:id/video-activity ───────────────────────────
+// For one video visit: whether the call took place and which notices went to the
+// patient (V41). Timing and delivery only: no message text, triage answers or provider errors.
+router.get("/appointments/:id/video-activity", requireAuth, requireRole("admin"), validateParams(appointmentIdParamsSchema), async (req: AuthRequest, res: Response) => {
+  const id = String(req.params.id);
+  const appointment = await prisma.appointment.findUnique({
+    where: { id },
+    select: {
+      channel: true,
+      status: true,
+      startTimeUtc: true,
+      endTimeUtc: true,
+      patientWaitingSince: true,
+      triageData: true,
+      patient: { select: { userId: true } },
+    },
+  });
+  if (!appointment) return res.status(404).json({ error: "Appointment not found" });
+  if (appointment.channel !== "video") return res.status(409).json({ error: "Only a video visit has call activity" });
+
+  const aboutThisVisit = { path: ["appointmentId"], equals: id };
+  const [pushes, reminders, thread, triage] = await Promise.all([
+    prisma.notificationHistory.findMany({
+      where: { userId: appointment.patient.userId, data: aboutThisVisit },
+      select: { type: true, title: true, sentAt: true, status: true },
+      orderBy: { sentAt: "asc" },
+      take: 50,
+    }),
+    prisma.scheduledNotification.findMany({
+      where: { userId: appointment.patient.userId, data: aboutThisVisit },
+      select: { title: true, scheduledFor: true, sentAt: true, status: true },
+      orderBy: { scheduledFor: "asc" },
+      take: 50,
+    }),
+    prisma.messageThread.findUnique({
+      where: { appointmentId: id },
+      select: { _count: { select: { messages: true } }, messages: { orderBy: { sentAt: "desc" }, take: 1, select: { sentAt: true } } },
+    }),
+    decryptField<Record<string, unknown> | null>(appointment.triageData),
+  ]);
+
+  return res.json(
+    buildVideoActivity({
+      status: appointment.status,
+      startTimeUtc: appointment.startTimeUtc,
+      endTimeUtc: appointment.endTimeUtc,
+      patientWaitingSince: appointment.patientWaitingSince,
+      triage: triage && typeof triage === "object" ? triage : null,
+      pushes,
+      reminders,
+      thread: thread ? { messageCount: thread._count.messages, lastMessageAt: thread.messages[0]?.sentAt ?? null } : null,
+    })
+  );
 });
 
 // ─── PATCH /api/admin/appointments/:id/status ─────────────────────────────────

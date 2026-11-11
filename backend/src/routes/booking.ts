@@ -30,6 +30,7 @@ import { encryptField, decryptField, decryptString, encryptAccessDetails, encryp
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
 import { checkReschedulable } from "../lib/reschedule-policy";
+import { CHECK_IN_OPENS_HOURS, CHECK_IN_CLOSES_HOURS } from "../lib/booking-policies";
 
 const router = Router();
 // One client for the process, as in payments.ts, not one per confirm (B12).
@@ -977,8 +978,8 @@ router.post("/appointments/:id/check-in", requireAuth, validateParams(appointmen
   const nowMs = Date.now();
   const startMs = appointment.startTimeUtc.getTime();
   const endMs = appointment.endTimeUtc.getTime();
-  const CHECK_IN_OPEN_WINDOW_MS = 48 * 60 * 60 * 1000;
-  const CHECK_IN_CLOSE_WINDOW_MS = 2 * 60 * 60 * 1000;
+  const CHECK_IN_OPEN_WINDOW_MS = CHECK_IN_OPENS_HOURS * 60 * 60 * 1000;
+  const CHECK_IN_CLOSE_WINDOW_MS = CHECK_IN_CLOSES_HOURS * 60 * 60 * 1000;
 
   if (nowMs < startMs - CHECK_IN_OPEN_WINDOW_MS) {
     return res.status(400).json({ error: "Check-in window is not yet open for this appointment" });

@@ -45,11 +45,15 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 
 ## A. Structure and code quality
 
-- [ ] **A1 (P0, M) Send the rules from the server.** App and server both hold the cancellation policy (full, half, none),
+- [~] **A1 (P0, M) Send the rules from the server.** App and server both hold the cancellation policy (full, half, none),
       the reschedule window (48 h), the check-in window (48 h), the waiting-room opening (10 min) and deposit rules.
       *Better:* one `GET /api/config/policies` (or fields on the appointment: `canCancel`, `refundIfCancelledNow`,
       `canReschedule`, `checkInOpensAt`) so the app shows what the server will actually do and never has to guess.
       The text I added in `cancellation-policy.ts` is a copy and should become server data.
+      *Mostly done: `GET /api/public/policies` sends the refund tiers (with the cancel message built from them), reschedule notice,
+      check-in window and waiting-room opening, from the constants the server enforces; the app loads it at start and shows the
+      server's cancel wording (built-in text only until then; a backend test fails if the two drift). Left: per-appointment
+      flags (`canCancel`, `refundIfCancelledNow`) and moving the app's own 10-minute and 48-hour checks onto these numbers.*
 - [x] **A2 (P1, M) Move payment orchestration out of the screen** into `useBookingPayment()` or a small state machine
       (idle, creating, paying, confirming, done, failed) that is unit-testable, and keep `summary.tsx` for layout.
       Same for `video/call.tsx`, `van/live-track.tsx`, `records/plans/[id].tsx`.

@@ -1,4 +1,5 @@
 import { UpdateGate } from "@/features/app-config/update-gate";
+import { loadBookingPolicies } from "@/features/booking/policies";
 import { useEffect } from "react";
 import { AppState, AppStateStatus, StyleSheet, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
@@ -100,6 +101,11 @@ export default function RootLayout() {
     return () => {
       unsubscribe();
     };
+  }, []);
+
+  // ── The booking rules come from the server, so the app says what it does (A1) ──
+  useEffect(() => {
+    void loadBookingPolicies();
   }, []);
 
   // ── Hydrate auth on cold start ──────────────────────────────────────────

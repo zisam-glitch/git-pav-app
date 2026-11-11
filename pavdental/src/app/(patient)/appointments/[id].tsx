@@ -28,7 +28,7 @@ import {
 } from "@/features/booking/appointment-detail";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointment-status";
-import { CANCELLATION_SHEET_MESSAGE } from "@/features/booking/cancellation-policy";
+import { cancellationSheetMessage } from "@/features/booking/policies";
 import { TOO_LATE_MESSAGE, rescheduleState } from "@/features/booking/reschedule";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 import { WAITING_ROOM_OPENS_MINUTES, waitingRoomOpen } from "@/features/video/waiting-room-window";
@@ -339,7 +339,7 @@ export default function AppointmentDetailScreen() {
       {confirmCancel ? (
         <ConfirmSheet
           title="Cancel this appointment?"
-          message={CANCELLATION_SHEET_MESSAGE}
+          message={cancellationSheetMessage()}
           confirmLabel="Cancel appointment"
           cancelLabel="Keep booking"
           variant="destructive"

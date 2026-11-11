@@ -18,6 +18,10 @@ export interface CancellationPolicyResult {
  * Derives refund percentage, policy notice, and whether the deposit is retained
  * based on the channel, notice given (hours), and van phase.
  */
+/** Notice for a full deposit refund, and for half. Below the second the deposit is kept. */
+export const FULL_REFUND_HOURS = 48;
+export const HALF_REFUND_HOURS = 24;
+
 export function getCancellationPolicy(params: {
   channel: CancellationChannel;
   hoursUntilVisit?: number;
@@ -43,14 +47,14 @@ export function getCancellationPolicy(params: {
 
   // Clinic and Video visits (notice-based tiers)
   const hours = params.hoursUntilVisit ?? 0;
-  if (hours >= 48) {
+  if (hours >= FULL_REFUND_HOURS) {
     return {
       refundPercentage: 100,
       policyNotice: "Full deposit refund issued (>48 hours notice given).",
       keepsDeposit: false,
     };
   }
-  if (hours >= 24) {
+  if (hours >= HALF_REFUND_HOURS) {
     return {
       refundPercentage: 50,
       policyNotice: "50% deposit refund issued (24-48 hours notice given).",

@@ -295,7 +295,7 @@ V48, V49, V51, V53 to V58, V60.
 
 | ID | What is missing |
 |---|---|
-| V50 | No "open one thread" endpoint and no paging; `GET /api/messages` still returns every thread's messages. |
+| V50 | Server half built: `GET /api/messages?view=summary` (last message only) and `GET /api/messages/:id?limit=&before=` (one conversation, paged). The app still uses the full list; switching the two inbox screens over is the remaining half. |
 | V19 | No speaker, earpiece or Bluetooth choice; nothing for an incoming phone call. |
 | V22 | Backgrounding mid-call on iOS is not handled or tested. |
 | V37 | No "next available" in the slot picker; step counter and hold-expiry handling unchecked. |

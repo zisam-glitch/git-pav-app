@@ -281,3 +281,29 @@ feels. Nothing in this plan adds a paid service.
 Text messages to a phone (SMS), live typing indicators, on-demand video with no booking (open decision 3 in
 plan 13), recording calls, group calls, interpreters, and the
 website. Booking for a child (plan 13) is assumed to land separately and before public launch.
+
+## Status audit, 12 Nov 2026
+
+Checked against the code on `main` (e527fb9) by search, not by running the app. A "done" below means the code for it
+exists; none of it has been proved on a real phone (phase 6 is still open).
+
+**Done (code present):** V1, V2, V3, V4, V5, V7, V8, V10, V11, V12, V13, V15, V16, V17, V18, V20, V21, V23, V24 to V30,
+V31, V32, V33, V34, V36, V38, V39, V43, V44, V45 (message list refetches every 30 seconds and on app focus), V46, V47,
+V48, V49, V51, V53 to V58, V60.
+
+**Not built, can start now (no decision needed):**
+
+| ID | What is missing |
+|---|---|
+| V50 | No "open one thread" endpoint and no paging; `GET /api/messages` still returns every thread's messages. |
+| V19 | No speaker, earpiece or Bluetooth choice; nothing for an incoming phone call. |
+| V22 | Backgrounding mid-call on iOS is not handled or tested. |
+| V37 | No "next available" in the slot picker; step counter and hold-expiry handling unchecked. |
+| V40 | No week view of video bookings for dentists. |
+| V41 | The dashboard shows nothing about notices sent or whether the call took place. |
+| V42 | Call screen colours are still hard-coded. |
+
+**Blocked on the owner:** V14 (no-show rule and refunds, decision 5), V35 (clinician wording), V59 (clinician wording),
+V9 and V56/V57 wording (DPO). Phase 6 also needs a real Daily test key on staging (decision 8).
+
+**Suggested order:** V50, then V40 and V41, then V19, V22 and V42 together with the real-device pass.

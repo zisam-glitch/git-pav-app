@@ -9,7 +9,7 @@ import { colors, spacing } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, isUpcomingBooking } from "@/features/booking/appointment-status";
-import { CANCELLATION_SHEET_MESSAGE } from "@/features/booking/cancellation-policy";
+import { cancellationSheetMessage } from "@/features/booking/policies";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Bookings — upcoming/past grouping with clear status per card ─────────────
@@ -187,7 +187,7 @@ export default function PatientAppointmentsScreen() {
       {pendingCancel ? (
         <ConfirmSheet
           title="Cancel this appointment?"
-          message={CANCELLATION_SHEET_MESSAGE}
+          message={cancellationSheetMessage()}
           confirmLabel="Cancel appointment"
           cancelLabel="Keep booking"
           variant="destructive"

@@ -15,6 +15,7 @@ import bookingRoutes from "./routes/booking";
 import vanRoutes from "./routes/van";
 import publicVanRoutes from "./routes/public-van";
 import publicAppConfigRoutes from "./routes/public-app-config";
+import publicPoliciesRoutes from "./routes/public-policies";
 import vanStopsRoutes from "./routes/van-stops";
 import vanQueueRoutes from "./routes/van-queue";
 import auditRoutes from "./routes/audit";
@@ -186,6 +187,7 @@ app.get("/health/audit-integrity", requireAuth, requireRole("admin"), async (_re
 app.use("/api/services", serviceRoutes);
 app.use("/api/public/van", publicVanRoutes);
 app.use("/api/public/app-config", publicAppConfigRoutes);
+app.use("/api/public/policies", publicPoliciesRoutes);
 
 // Protected routes with audit logging
 // NOTE: the more specific /api/auth/* sub-routers must be mounted BEFORE the

@@ -27,8 +27,8 @@ const detail = read("app/(patient)/appointments/[id].tsx");
 const cancelled = read("app/(patient)/appointments/cancelled.tsx");
 
 assert(/full/.test(CANCELLATION_SHEET_MESSAGE) && /half/.test(CANCELLATION_SHEET_MESSAGE) && /kept/.test(CANCELLATION_SHEET_MESSAGE), "The message states full, half and no refund");
-assert(list.includes("CANCELLATION_SHEET_MESSAGE"), "The bookings list uses the shared message");
-assert(detail.includes("CANCELLATION_SHEET_MESSAGE"), "The detail screen uses the shared message");
+assert(list.includes("cancellationSheetMessage()"), "The bookings list uses the shared message");
+assert(detail.includes("cancellationSheetMessage()"), "The detail screen uses the shared message");
 assert(!/refunded by your bank within 5 working days/.test(list), "The list no longer promises a refund within 5 days");
 assert(cancelled.includes("REFUND_TIMING"), "The cancelled screen uses the shared refund timing");
 assert(!/5 to 10 working days/.test(cancelled), "No hard-coded refund timing on the cancelled screen");

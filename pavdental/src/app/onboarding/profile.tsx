@@ -1,3 +1,4 @@
+import { isPlausiblePhone } from "@/features/onboarding/validation";
 import { parseDob } from "@/features/onboarding/dob";
 import React, { useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
@@ -14,12 +15,17 @@ export default function OnboardingProfileScreen() {
   const [gender, setGender] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
   const [emergencyPhone, setEmergencyPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const setProfile = useOnboardingStore((s) => s.setProfile);
 
   const handleNext = () => {
     const isoDob = parseDob(dob);
     if (!isoDob) {
       setDobError("Please enter a real date of birth as DD / MM / YYYY (e.g. 15/04/1990)");
+      return;
+    }
+    if (!isPlausiblePhone(emergencyPhone)) {
+      setPhoneError("Enter a phone number with at least 7 digits, or leave it empty.");
       return;
     }
     setProfile({
@@ -87,7 +93,11 @@ export default function OnboardingProfileScreen() {
               placeholder="+44 7123 456789"
               keyboardType="phone-pad"
               value={emergencyPhone}
-              onChangeText={setEmergencyPhone}
+              error={phoneError ?? undefined}
+              onChangeText={(v) => {
+                setEmergencyPhone(v);
+                if (phoneError) setPhoneError(null);
+              }}
             />
           </View>
 

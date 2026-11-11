@@ -1,3 +1,4 @@
+import { normalisePostcode } from "@/features/onboarding/validation";
 import React, { useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,7 +19,9 @@ export default function OnboardingAddressScreen() {
 
   const handleNext = () => {
     const errs: Record<string, string> = {};
+    const cleanPostcode = normalisePostcode(postcode);
     if (!postcode.trim()) errs.postcode = "Postcode is required.";
+    else if (!cleanPostcode) errs.postcode = "Enter a UK postcode, like SW1A 1AA.";
     if (!addressLine1.trim()) errs.addressLine1 = "Address line 1 is required.";
     if (!city.trim()) errs.city = "City is required.";
 
@@ -28,7 +31,7 @@ export default function OnboardingAddressScreen() {
     }
 
     setAddress({
-      postcode: postcode.trim().toUpperCase(),
+      postcode: cleanPostcode ?? postcode.trim().toUpperCase(),
       addressLine1: addressLine1.trim(),
       addressLine2: addressLine2.trim(),
       city: city.trim(),

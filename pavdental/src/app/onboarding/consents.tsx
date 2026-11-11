@@ -6,6 +6,7 @@ import { ThemedText, Button, FlowHeader, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authFetch } from "@/features/auth/auth-api";
 import { queryClient } from "@/lib/query-client";
+import { onboardingSaveError } from "@/features/onboarding/validation";
 import { useAuthStore } from "@/features/auth/auth-store";
 import {
   useOnboardingStore,
@@ -74,7 +75,7 @@ export default function OnboardingConsentsScreen() {
       });
       if (!profileRes.ok) {
         const err = (await profileRes.json().catch(() => ({}))) as { error?: string };
-        throw new Error(err.error || "Could not save your profile");
+        throw new Error(onboardingSaveError(err.error));
       }
 
       // 2. Consents → consent records (versioned and audited)
@@ -92,7 +93,7 @@ export default function OnboardingConsentsScreen() {
         });
         if (!res.ok && res.status !== 409) {
           const err = (await res.json().catch(() => ({}))) as { error?: string };
-          throw new Error(err.error || `Could not record ${grant.consentType} consent`);
+          throw new Error(onboardingSaveError(err.error));
         }
       }
 

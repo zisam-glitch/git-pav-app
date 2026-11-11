@@ -133,7 +133,16 @@ describe("appointment cancellation", () => {
     // The patient's response was lost and the app tries again: it must still be told about the refund.
     const retry = await send();
     expect(retry.status).toBe(200);
-    expect(retry.body).toEqual(first.body);
+    // Every response gets its own requestId and timestamp, so compare what the patient is told.
+    const told = ({ appointmentId, refundPercentage, refundAmountPence, stripeRefundId, policyNotice }: Record<string, unknown>) => ({
+      appointmentId,
+      refundPercentage,
+      refundAmountPence,
+      stripeRefundId,
+      policyNotice,
+    });
+    expect(told(retry.body)).toEqual(told(first.body));
+    expect(retry.body.stripeRefundId).toBe(first.body.stripeRefundId);
   });
 
   it("cancels a held slot without a refund", async () => {

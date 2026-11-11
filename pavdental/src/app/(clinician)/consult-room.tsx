@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Pressable, ScrollView } from "react-native";
+import { View, StyleSheet, Pressable, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, Input, SegmentedControl } from "@/components";
@@ -8,7 +8,9 @@ import { authFetch } from "@/features/auth/auth-api";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { triageSummary } from "@/features/video/triage-summary";
 import { FOLLOW_UP_OPTIONS, canSaveConsult, consultPayload, type FollowUp } from "@/features/video/consult-form";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchOdontogram } from "@/features/records/records-api";
+import { toothFinding } from "@/features/records/tooth-finding";
 import { Image } from "expo-image";
 import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
 import { NativeVideoCall } from "@/features/video/native-call";
@@ -32,17 +34,28 @@ export default function ClinicianConsultRoomScreen() {
   const triage = triageSummary(appointment?.triageData, appointment?.intraoralPhotos);
   const chiefComplaint = triage.complaint || params.chiefComplaint?.trim() || null;
   // Links to the photos expire, so ask for fresh ones when the room opens.
-  const { data: triagePhotos } = useQuery({
+  const { data: triagePhotos, isError: photosFailed } = useQuery({
     queryKey: ["triage-photos", appointmentId],
     enabled: !!appointmentId,
     staleTime: 10 * 60 * 1000,
     queryFn: async () => {
       const res = await authFetch(`/api/video/triage-photos/${appointmentId}`);
-      if (!res.ok) return [] as { url: string }[];
+      if (!res.ok) throw new Error("photos");
       const body = await res.json().catch(() => ({ photos: [] }));
       return (body.photos ?? []) as { url: string }[];
     },
   });
+
+  const queryClient = useQueryClient();
+  // The patient's chart, read for the tooth detail. A failed read is said, never shown as "no findings".
+  const patientId: string | undefined = appointment?.patientId || appointment?.patient?.id;
+  const chart = useQuery({
+    queryKey: ["consult-chart", patientId],
+    enabled: !!patientId,
+    staleTime: 60 * 1000,
+    queryFn: () => fetchOdontogram(patientId as string),
+  });
+  const [roomAttempt, setRoomAttempt] = useState(0);
 
   const [activeTab, setActiveTab] = useState<"video" | "triage" | "chart">("video");
   const [selectedTooth, setSelectedTooth] = useState<number>(1);
@@ -89,6 +102,8 @@ export default function ClinicianConsultRoomScreen() {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Could not complete consultation");
       }
+      // The schedule shows the visit as done.
+      queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
       router.replace("/(clinician)/schedule");
     } catch (err: any) {
       setRoomError(err?.message || "Failed to end consultation");
@@ -100,6 +115,7 @@ export default function ClinicianConsultRoomScreen() {
   useEffect(() => {
     async function initRoom() {
       if (!appointmentId) return;
+      setRoomError(null);
       try {
         const res = await authFetch("/api/video/rooms", {
           method: "POST",
@@ -116,7 +132,7 @@ export default function ClinicianConsultRoomScreen() {
       }
     }
     initRoom();
-  }, [appointmentId]);
+  }, [appointmentId, roomAttempt]);
 
   const sendMessage = async () => {
     const body = messageText.trim();
@@ -200,6 +216,18 @@ export default function ClinicianConsultRoomScreen() {
     return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
+  // Leaving while the call is on would drop the patient mid-consultation.
+  const exitRoom = () => {
+    if (!inCall) {
+      router.replace("/(clinician)/schedule");
+      return;
+    }
+    Alert.alert("Leave the consultation?", "The video call will end for you. The patient may still be in the room.", [
+      { text: "Stay", style: "cancel" },
+      { text: "Leave", style: "destructive", onPress: () => router.replace("/(clinician)/schedule") },
+    ]);
+  };
+
   const handleEndAndPrescribe = () => {
     router.push({
       pathname: "/(clinician)/rx-dispense" as any,
@@ -235,7 +263,7 @@ export default function ClinicianConsultRoomScreen() {
             <Badge label={`${formatTime(seconds)}`} variant="success" />
           </View>
           <Pressable accessibilityRole="button" accessibilityLabel="Exit consultation room"
-            onPress={() => router.replace("/(clinician)/schedule")}
+            onPress={exitRoom}
             style={styles.exitBtn}
           >
             <ThemedText variant="caption" style={styles.exitText}>
@@ -305,6 +333,9 @@ export default function ClinicianConsultRoomScreen() {
                 loading={!room && !roomError}
                 onPress={joinCall}
               />
+              {!room && roomError ? (
+                <Button title="Try opening the room again" variant="secondary" onPress={() => setRoomAttempt((n) => n + 1)} />
+              ) : null}
               <Button
                 title={admitted ? "Patient let in" : "Let patient in"}
                 variant="secondary"
@@ -343,6 +374,11 @@ export default function ClinicianConsultRoomScreen() {
                   ? `${triage.photoCount} intraoral photo${triage.photoCount === 1 ? "" : "s"} sent`
                   : "No intraoral photos sent."}
               </ThemedText>
+              {photosFailed ? (
+                <ThemedText variant="caption" style={styles.roomError} accessibilityRole="alert">
+                  The photos couldn't be loaded. Check the connection and reopen this tab.
+                </ThemedText>
+              ) : null}
               {triagePhotos && triagePhotos.length > 0 ? (
                 <View style={styles.photoGrid}>
                   {triagePhotos.map((p, i) => (
@@ -435,7 +471,11 @@ export default function ClinicianConsultRoomScreen() {
                 <ThemedText variant="headline">{toothLabel(selectedTooth)}</ThemedText>
               </View>
               <ThemedText variant="body" style={styles.triageText}>
-                No findings recorded for this tooth.
+                {chart.isError
+                  ? "The chart couldn't be loaded, so nothing can be said about this tooth."
+                  : chart.isLoading || !patientId
+                  ? patientId ? "Loading the chart…" : "The chart opens once the appointment has loaded."
+                  : toothFinding(Array.isArray(chart.data) ? chart.data : [], selectedTooth)}
               </ThemedText>
               <View style={styles.actionPillRow}>
                 <Button

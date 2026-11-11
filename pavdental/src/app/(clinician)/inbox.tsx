@@ -52,7 +52,7 @@ export default function ClinicianInboxScreen() {
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
   const { hoursText } = usePracticeHours();
-  const { data: rawThreads, isLoading, isError, refetch, isRefetching } = useMessageThreads();
+  const { data: rawThreads, isLoading, isError, refetch, isRefetching } = useMessageThreads("full");
   const replyMutation = useReplyMessageThreadMutation();
   const markReadMutation = useMarkMessageThreadReadMutation();
 

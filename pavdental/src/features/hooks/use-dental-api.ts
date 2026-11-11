@@ -1,5 +1,5 @@
 import { findInCachedLists } from "../booking/appointment-cache";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { rewardsQueryOptions } from "../records/rewards-query";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { resolvePracticeHours } from "../booking/uk-time";
@@ -27,6 +27,7 @@ import {
   fetchPatientPrescriptions,
   fetchDocuments,
   fetchMessageThreads,
+  fetchMessageThreadPage,
   createMessageThread,
   replyToMessageThread,
   markMessageThreadRead,
@@ -259,11 +260,24 @@ export function useDocumentVault(userId: string) {
 }
 
 // ─── Messages, Financing, Rewards & Insights Hooks ────────────────────────────
-export function useMessageThreads() {
+/** The conversation list. "summary" (the default) loads only each last message; "full" loads every message. */
+export function useMessageThreads(view: "full" | "summary" = "summary") {
   return useQuery({
-    queryKey: ["message-threads"],
-    queryFn: fetchMessageThreads,
+    queryKey: ["message-threads", view],
+    queryFn: () => fetchMessageThreads(view),
     refetchInterval: 30 * 1000, // a reply from the practice shows without a restart
+  });
+}
+
+/** One open conversation, a page of messages at a time; fetchNextPage loads older ones. */
+export function useMessageThread(threadId: string | undefined) {
+  return useInfiniteQuery({
+    queryKey: ["message-threads", "thread", threadId],
+    queryFn: ({ pageParam }) => fetchMessageThreadPage(threadId as string, pageParam),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.nextBefore ?? undefined,
+    enabled: !!threadId,
+    refetchInterval: 10 * 1000, // a reply shows while the conversation is open
   });
 }
 

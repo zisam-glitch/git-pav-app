@@ -101,6 +101,15 @@ const listThreadsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0),
   recipientType: z.enum(["practice", "care_team", "clinician"]).optional(),
+  // "summary" returns each thread with its last message only (V50); "full" keeps every message.
+  view: z.enum(["full", "summary"]).default("full"),
+}).strict();
+
+// One conversation, newest messages first a page at a time (V50). `before` is the id of the
+// oldest message the app already has; the page returned is the messages sent just before it.
+const threadPageQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(100).default(30),
+  before: z.string().guid().optional(),
 }).strict();
 
 const createThreadSchema = z
@@ -132,11 +141,13 @@ router.get("/meta", requireAuth, (_req: AuthRequest, res: Response) => {
 // Returns persistent message threads for the authenticated user.
 router.get("/", requireAuth, validateQuery(listThreadsQuerySchema), async (req: AuthRequest, res: Response) => {
   const isStaff = req.user!.role === "clinician" || req.user!.role === "admin";
-  const { limit, offset, recipientType } = req.query as unknown as {
+  const { limit, offset, recipientType, view } = req.query as unknown as {
     limit: number;
     offset: number;
     recipientType?: string;
+    view: "full" | "summary";
   };
+  const summaryOnly = view === "summary";
   const visible = await visibleThreadsWhere(req);
   const threads = await prisma.messageThread.findMany({
     where: recipientType ? { AND: [visible, { recipientType }] } : visible,
@@ -146,9 +157,8 @@ router.get("/", requireAuth, validateQuery(listThreadsQuerySchema), async (req: 
           patientProfile: { select: { firstName: true, lastName: true } },
         },
       },
-      messages: {
-        orderBy: { sentAt: "asc" },
-      },
+      // The light list needs the last message only, so it never loads or decrypts the rest.
+      messages: summaryOnly ? { orderBy: [{ sentAt: "desc" }, { id: "desc" }], take: 1 } : { orderBy: { sentAt: "asc" } },
     },
     // id breaks ties so a page boundary never repeats or skips a thread.
     orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
@@ -183,21 +193,81 @@ router.get("/", requireAuth, validateQuery(listThreadsQuerySchema), async (req: 
           assignedClinicianId: t.assignedClinicianId,
           patientName,
           patientUserId: t.patientUserId,
-          messages: await Promise.all(
-            t.messages.map(async (m) => ({
-              id: m.id,
-              senderRole: m.senderRole,
-              senderName: m.senderName,
-              body: await decryptString(m.body),
-              sentAtIso: m.sentAt.toISOString(),
-              attachments: await signedAttachments(m.attachmentKeys),
-            }))
-          ),
+          messages: summaryOnly ? [] : await Promise.all(t.messages.map(toMessageDto)),
         };
       })
     )
   );
 });
+
+async function toMessageDto(m: { id: string; senderRole: string; senderName: string; body: string; sentAt: Date; attachmentKeys: string[] }) {
+  return {
+    id: m.id,
+    senderRole: m.senderRole,
+    senderName: m.senderName,
+    body: await decryptString(m.body),
+    sentAtIso: m.sentAt.toISOString(),
+    attachments: await signedAttachments(m.attachmentKeys),
+  };
+}
+
+// ─── GET /api/messages/:id ────────────────────────────────────────────────────
+// One conversation with a page of its messages (oldest first within the page), so opening a
+// thread does not load the whole inbox (V50). Same visibility rules as the list.
+router.get(
+  "/:id",
+  requireAuth,
+  validateParams(threadIdParamsSchema),
+  validateQuery(threadPageQuerySchema),
+  async (req: AuthRequest, res: Response) => {
+    const threadId = String(req.params.id);
+    const { limit, before } = req.query as unknown as { limit: number; before?: string };
+    const isStaff = req.user!.role === "clinician" || req.user!.role === "admin";
+
+    const t = await prisma.messageThread.findFirst({
+      where: { AND: [{ id: threadId }, await visibleThreadsWhere(req)] },
+      include: { patientUser: { include: { patientProfile: { select: { firstName: true, lastName: true } } } } },
+    });
+    if (!t) return res.status(404).json({ error: "Message thread not found" });
+
+    if (before) {
+      const cursor = await prisma.message.findFirst({ where: { id: before, threadId }, select: { id: true } });
+      if (!cursor) return res.status(400).json({ error: "Unknown message to page from" });
+    }
+
+    // One extra row tells us whether there is an older page without a second query.
+    const rows = await prisma.message.findMany({
+      where: { threadId },
+      orderBy: [{ sentAt: "desc" }, { id: "desc" }],
+      take: limit + 1,
+      ...(before ? { cursor: { id: before }, skip: 1 } : {}),
+    });
+    const hasMore = rows.length > limit;
+    const page = rows.slice(0, limit).reverse();
+
+    const profile = t.patientUser?.patientProfile;
+    const patientName = profile
+      ? `${profile.firstName} ${profile.lastName}`.trim()
+      : (t.patientUser?.email ? t.patientUser.email.split("@")[0] : "Patient");
+
+    return res.json({
+      id: t.id,
+      from: isStaff ? (patientName || "Patient") : t.senderName,
+      subject: await decryptString(t.subject),
+      isRead: !(isStaff ? t.staffUnread : t.patientUnread),
+      hasAttachment: t.hasAttachment,
+      recipientType: t.recipientType,
+      assignedClinicianId: t.assignedClinicianId,
+      appointmentId: t.appointmentId,
+      patientName,
+      patientUserId: t.patientUserId,
+      messages: await Promise.all(page.map(toMessageDto)),
+      hasMore,
+      // Pass this back as `before` to load the page of older messages.
+      nextBefore: hasMore && page.length > 0 ? page[0].id : null,
+    });
+  }
+);
 
 function escapeHtml(str: string): string {
   return str

@@ -8,26 +8,19 @@ import { pickTriagePhoto } from "@/features/video/pick-photo";
 import { uploadMessagePhoto } from "@/features/records/records-api";
 import { colors, spacing, radius } from "@/theme";
 import {
-  useMessageThreads,
+  useMessageThread,
   useReplyMessageThreadMutation,
   useMarkMessageThreadReadMutation,
 } from "@/features/hooks/use-dental-api";
 import { threadMessages } from "@/features/messages/thread";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
 
-interface RawThread {
-  id: string;
-  subject?: string;
-  isRead?: boolean;
-  messages?: unknown;
-}
-
-// One conversation: every message, oldest first, with a reply box underneath.
+// One conversation: the newest messages, oldest first, with earlier ones a tap away and a reply box underneath.
 export default function MessageThreadScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: rawThreads, isLoading, isError, refetch } = useMessageThreads();
+  const { data, isLoading, isError, error, refetch, hasNextPage, fetchNextPage, isFetchingNextPage } = useMessageThread(id);
   const replyMutation = useReplyMessageThreadMutation();
   const markRead = useMarkMessageThreadReadMutation();
   const [reply, setReply] = useState("");
@@ -37,8 +30,10 @@ export default function MessageThreadScreen() {
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
   const scroller = useRef<ScrollView>(null);
 
-  const thread = Array.isArray(rawThreads) ? (rawThreads as RawThread[]).find((t) => t.id === id) : undefined;
-  const messages = threadMessages(thread);
+  // pages[0] is the newest page and holds the current subject and read state; later pages are older.
+  const thread = data?.pages[0];
+  const messages = threadMessages({ messages: data ? [...data.pages].reverse().flatMap((p) => p.messages) : [] });
+  const newestId = messages[messages.length - 1]?.id;
 
   const unread = thread ? !thread.isRead : false;
   useEffect(() => {
@@ -46,9 +41,10 @@ export default function MessageThreadScreen() {
     // Mark read once per thread opened.
   }, [unread, id]);
 
+  // Scroll down for a new message, not when older ones load above.
   useEffect(() => {
     scroller.current?.scrollToEnd({ animated: false });
-  }, [messages.length]);
+  }, [newestId]);
 
   const addPhoto = async () => {
     if (!id || uploading || pending.length >= 4) return;
@@ -88,7 +84,7 @@ export default function MessageThreadScreen() {
       </View>
     );
   }
-  if (isError && rawThreads === undefined) {
+  if (isError && data === undefined && !/not found/i.test(error instanceof Error ? error.message : "")) {
     return (
       <View style={styles.container}>
         <ErrorState message="We couldn't load this conversation. Check your connection and try again." onRetry={() => refetch()} />
@@ -121,6 +117,15 @@ export default function MessageThreadScreen() {
         <ThemedText variant="headline" style={styles.subject}>
           {thread.subject}
         </ThemedText>
+        {hasNextPage ? (
+          <Button
+            title={isFetchingNextPage ? "Loading…" : "Show earlier messages"}
+            variant="ghost"
+            size="sm"
+            loading={isFetchingNextPage}
+            onPress={() => fetchNextPage()}
+          />
+        ) : null}
         {messages.map((m) => (
           <View key={m.id} style={[styles.bubble, m.mine ? styles.mine : styles.theirs]}>
             <ThemedText variant="caption" style={m.mine ? styles.metaMine : styles.meta}>

@@ -106,9 +106,29 @@ export async function fetchDocuments(userId: string) {
 }
 
 // ─── Clinical Care Messaging ──────────────────────────────────────────────────
-export async function fetchMessageThreads() {
-  const res = await authFetch("/api/messages");
+/** "summary" returns each conversation with its last message only; "full" returns every message. */
+export async function fetchMessageThreads(view: "full" | "summary" = "full") {
+  const res = await authFetch(view === "summary" ? "/api/messages?view=summary" : "/api/messages");
   if (!res.ok) throw new Error("Could not load message threads");
+  return res.json();
+}
+
+export interface MessageThreadPage {
+  id: string;
+  subject: string;
+  isRead: boolean;
+  messages: unknown[];
+  hasMore: boolean;
+  /** Pass as `before` to get the page of older messages. */
+  nextBefore: string | null;
+}
+
+/** One conversation and a page of its messages (newest page first; `before` gets older ones). */
+export async function fetchMessageThreadPage(threadId: string, before?: string): Promise<MessageThreadPage> {
+  const qs = before ? `?before=${encodeURIComponent(before)}` : "";
+  const res = await authFetch(`/api/messages/${threadId}${qs}`);
+  if (res.status === 404) throw new Error("Message thread not found");
+  if (!res.ok) throw new Error("Could not load message thread");
   return res.json();
 }
 

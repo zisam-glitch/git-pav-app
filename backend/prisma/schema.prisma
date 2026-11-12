@@ -532,14 +532,14 @@ model AuditLog {
 }
 
 model PushToken {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  token     String   @unique
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @map("user_id") @db.Uuid
+  token     String       @unique
   platform  String
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   tickets   PushTicket[]
 
   @@index([userId])
@@ -626,8 +626,8 @@ model WaitlistEntry {
   claimedAt     DateTime? @map("claimed_at")
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
   @@unique([serviceId, preferredDate, userId])
+  @@index([userId])
   @@index([serviceId, preferredDate, position])
   @@map("waitlist_entries")
 }
@@ -763,39 +763,40 @@ model VanLocationPing {
 
 /// Patient request + live queue item
 model VanServiceRequest {
-  id                  String           @id @default(uuid()) @db.Uuid
-  shiftId             String           @map("shift_id") @db.Uuid
-  vanId               String           @map("van_id") @db.Uuid
-  patientId           String           @map("patient_id") @db.Uuid
-  serviceId           String           @map("service_id")
-  status              VanRequestStatus @default(pending)
-  phase               VanStopPhase     @default(queued)
-  queuePosition       Int?             @map("queue_position")
-  patientLat          Float            @map("patient_lat")
-  patientLng          Float            @map("patient_lng")
-  accessDetails       Json             @map("access_details")
-  requestedAt         DateTime         @default(now()) @map("requested_at")
-  expiresAt           DateTime         @map("expires_at")
-  acceptedAt          DateTime?        @map("accepted_at")
-  treatmentStartedAt  DateTime?        @map("treatment_started_at")
-  completedAt         DateTime?        @map("completed_at")
-  etaSecondsSnapshot  Int?             @map("eta_seconds_snapshot")
-  appointmentId       String?          @unique @map("appointment_id") @db.Uuid
-  paymentIntentId     String?          @map("payment_intent_id")
-  depositAuthorizedAt DateTime?        @map("deposit_authorized_at")
-  depositReleaseStatus String?         @map("deposit_release_status") @db.VarChar(50)
-  depositReleasedAt    DateTime?       @map("deposit_released_at")
+  id                   String            @id @default(uuid()) @db.Uuid
+  shiftId              String            @map("shift_id") @db.Uuid
+  vanId                String            @map("van_id") @db.Uuid
+  patientId            String            @map("patient_id") @db.Uuid
+  serviceId            String            @map("service_id")
+  status               VanRequestStatus  @default(pending)
+  phase                VanStopPhase      @default(queued)
+  queuePosition        Int?              @map("queue_position")
+  patientLat           Float             @map("patient_lat")
+  patientLng           Float             @map("patient_lng")
+  accessDetails        Json              @map("access_details")
+  requestedAt          DateTime          @default(now()) @map("requested_at")
+  expiresAt            DateTime          @map("expires_at")
+  acceptedAt           DateTime?         @map("accepted_at")
+  treatmentStartedAt   DateTime?         @map("treatment_started_at")
+  completedAt          DateTime?         @map("completed_at")
+  etaSecondsSnapshot   Int?              @map("eta_seconds_snapshot")
+  appointmentId        String?           @unique @map("appointment_id") @db.Uuid
+  paymentIntentId      String?           @map("payment_intent_id")
+  depositAuthorizedAt  DateTime?         @map("deposit_authorized_at")
+  depositReleaseStatus String?           @map("deposit_release_status") @db.VarChar(50)
+  depositReleasedAt    DateTime?         @map("deposit_released_at")
   /// Last ETA pushed to the patient (drives material-delta gating)
-  lastEtaSeconds      Int?             @map("last_eta_seconds")
-  lastEtaPushedAt     DateTime?        @map("last_eta_pushed_at")
-  notes               String?
-  createdAt           DateTime         @default(now()) @map("created_at")
-  updatedAt           DateTime         @updatedAt @map("updated_at")
-  appointment         Appointment?     @relation(fields: [appointmentId], references: [id])
-  patient             PatientProfile   @relation(fields: [patientId], references: [id])
-  service             Service          @relation(fields: [serviceId], references: [id])
-  shift               VanShift         @relation(fields: [shiftId], references: [id])
-  van                 Van              @relation(fields: [vanId], references: [id])
+  lastEtaSeconds       Int?              @map("last_eta_seconds")
+  lastEtaPushedAt      DateTime?         @map("last_eta_pushed_at")
+  notes                String?
+  createdAt            DateTime          @default(now()) @map("created_at")
+  updatedAt            DateTime          @updatedAt @map("updated_at")
+  appointment          Appointment?      @relation(fields: [appointmentId], references: [id])
+  patient              PatientProfile    @relation(fields: [patientId], references: [id])
+  service              Service           @relation(fields: [serviceId], references: [id])
+  shift                VanShift          @relation(fields: [shiftId], references: [id])
+  van                  Van               @relation(fields: [vanId], references: [id])
+  events               VanRequestEvent[]
 
   @@index([shiftId, status])
   @@index([vanId, status])
@@ -838,15 +839,15 @@ model MessageThread {
 }
 
 model Message {
-  id         String        @id @default(uuid()) @db.Uuid
-  threadId   String        @map("thread_id") @db.Uuid
-  senderRole String        @map("sender_role") @db.VarChar(30)
-  senderName String        @map("sender_name") @db.VarChar(150)
-  body       String
+  id             String        @id @default(uuid()) @db.Uuid
+  threadId       String        @map("thread_id") @db.Uuid
+  senderRole     String        @map("sender_role") @db.VarChar(30)
+  senderName     String        @map("sender_name") @db.VarChar(150)
+  body           String
   /// Object-storage keys of photos attached to this message.
-  attachmentKeys String[]  @default([]) @map("attachment_keys")
-  sentAt     DateTime      @default(now()) @map("sent_at")
-  thread     MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  attachmentKeys String[]      @default([]) @map("attachment_keys")
+  sentAt         DateTime      @default(now()) @map("sent_at")
+  thread         MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@index([threadId, sentAt])
   @@map("messages")
@@ -1023,6 +1024,23 @@ enum ToothCondition {
   crown
   implant
   root_canal
+}
+
+/// One line of a van visit's history: what happened, from which phase to which,
+/// who did it (a role, never a person) and when. Written in the same
+/// transaction as the change, so the history cannot disagree with the state.
+model VanRequestEvent {
+  id        String            @id @default(uuid()) @db.Uuid
+  requestId String            @map("request_id") @db.Uuid
+  type      String            @db.VarChar(40)
+  fromPhase String?           @map("from_phase") @db.VarChar(20)
+  toPhase   String?           @map("to_phase") @db.VarChar(20)
+  actorRole String?           @map("actor_role") @db.VarChar(20)
+  at        DateTime          @default(now())
+  request   VanServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, at])
+  @@map("van_request_events")
 }
 
 enum VanShiftStatus {

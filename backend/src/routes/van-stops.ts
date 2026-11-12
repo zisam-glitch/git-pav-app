@@ -14,9 +14,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 import { validateParams } from "../middleware/validate";
-import { sendPatientNotification } from "../lib/patient-push";
-import { broadcastEtaUpdates } from "../lib/van-eta-broadcast";
-import { safeError } from "../lib/log-safety";
+import { changeVanPhase } from "../lib/van-dispatch";
 
 const router = Router();
 
@@ -60,30 +58,17 @@ router.post(
       return res.json({ ok: true, phase: stop.phase });
     }
 
-    // Compare-and-set: of two taps at once only one moves the stop, so the
-    // patient is told once (N5).
-    const moved = await prisma.vanServiceRequest.updateMany({
-      where: { id: stop.id, phase: { in: ["queued", "en_route"] }, status: { in: ["accepted", "in_progress"] } },
-      data: { phase: "on_site", status: "in_progress" },
+    // The same rules and the same compare-and-set as every other phase change
+    // (lib/van-dispatch.ts): of two taps at once only one moves the stop, so
+    // the patient is told once.
+    const result = await changeVanPhase({
+      shiftId: shift.id,
+      requestId: stop.id,
+      phase: "on_site",
+      actorRole: "operator",
+      viaCheckIn: true,
     });
-    if (moved.count !== 1) {
-      const current = await prisma.vanServiceRequest.findUnique({ where: { id: stop.id }, select: { phase: true } });
-      return res.json({ ok: true, phase: current?.phase ?? stop.phase });
-    }
-
-    // VS-1: Send "Van Has Arrived" notification to patient (same as van.ts phase update)
-    await sendPatientNotification(
-      stop.patientId,
-      "Van Has Arrived",
-      "The dental van has arrived at your location. Please be ready for your appointment.",
-      { requestId: stop.id, phase: "on_site" }
-    );
-
-    // VS-1: Broadcast ETA updates for remaining stops on shift
-    void broadcastEtaUpdates(shift.id).catch((err) =>
-      console.error("[VAN ETA PUSH] check-in broadcast failed:", safeError(err))
-    );
-
+    if (result.status !== 200) return res.status(result.status).json(result.body);
     return res.json({ ok: true, phase: "on_site" });
   }
 );

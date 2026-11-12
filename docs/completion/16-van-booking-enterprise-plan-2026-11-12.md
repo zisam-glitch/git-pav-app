@@ -321,3 +321,14 @@ new position-report unit tests, the dashboard attention tests and the app test s
 Left from phase 1 and why: the database rule that two open stops on a shift cannot share a queue position (part of
 N2) needs a migration that has to be tried against a real database first; the in-app operator "new request" sound
 depends on the push settings of the build and needs a real phone (phase 6).
+
+## Phase 2 status
+
+**Done (first pull request of phase 2):** the rulebook (`backend/src/lib/van-dispatch.ts`). Phase changes and
+check-in go through one function: one lock, one table of allowed moves, one compare-and-set, one set of follow-ups.
+A new table `van_request_events` keeps each visit's history (requested, accepted, declined, expired, cancelled, each
+phase change, check-in, shift end), written in the same transaction as the change. It holds a role, never a person.
+**Still to do in phase 2:** move accept, decline, cancel, expiry and shift end fully into the module (today they only
+write their history entry through it), the stored plan with arrival times (N20, N10), pending requests counting as
+provisional stops (N7, N12), placing a new request at the cheapest position (N8), and the promise window. The
+Stripe-outside-the-lock change (N22) waits for the owner's go-ahead.

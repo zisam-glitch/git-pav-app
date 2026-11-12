@@ -5,6 +5,7 @@ import { communicationService } from "./communication-service";
 import { pseudonymiseIp } from "./audit-security";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
 import { releaseVanDeposit } from "./van-payments";
+import { recordVanEvent } from "./van-dispatch";
 import { sendPatientNotification } from "./patient-push";
 import { awardMissedVisitPoints } from "./rewards";
 import { checkPushReceipts } from "./push-receipts";
@@ -676,6 +677,7 @@ export async function processExpiredVanRequests(): Promise<{ expiredCount: numbe
             },
           });
 
+          await recordVanEvent(tx, { requestId: request.id, type: "expired", actorRole: "system" });
           expiredCount++;
           shouldNotify = true;
         },

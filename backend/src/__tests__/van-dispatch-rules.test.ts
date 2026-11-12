@@ -154,6 +154,30 @@ describe("van dispatch rules", () => {
     expect(skip.status).toBe(409);
   });
 
+  it("writes the visit's history in order, once per change, in the same transaction as the change", async () => {
+    const { token, stops } = await shiftWithStops("history", 1);
+    const phase = (p: string) => call("POST", `/api/van/requests/${stops[0].id}/phase`, token, { phase: p });
+    await Promise.all([phase("en_route"), phase("en_route")]);
+    expect((await phase("on_site")).status).toBe(200);
+    expect((await phase("on_site")).status).toBe(200);
+
+    const events = await prisma.vanRequestEvent.findMany({ where: { requestId: stops[0].id }, orderBy: { at: "asc" } });
+    expect(events.map((e) => [e.type, e.fromPhase, e.toPhase, e.actorRole])).toEqual([
+      ["accepted", "queued", "queued", "operator"],
+      ["phase_changed", "queued", "en_route", "operator"],
+      ["phase_changed", "en_route", "on_site", "operator"],
+    ]);
+  });
+
+  it("checks in once however many times it is tapped, with the same push and history as a phase change", async () => {
+    const { token, stops } = await shiftWithStops("checkin", 1);
+    const taps = await Promise.all(Array.from({ length: 3 }, () => call("POST", `/api/van/stops/${stops[0].id}/check-in`, token)));
+    expect(taps.map((t) => t.status)).toEqual([200, 200, 200]);
+    expect(taps.every((t) => t.body.phase === "on_site")).toBe(true);
+    expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).phase).toBe("on_site");
+    expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "checked_in" } })).toBe(1);
+  });
+
   it("stamps the appointment with the real treatment times (N6)", async () => {
     const { token, stops } = await shiftWithStops("times", 1);
     const phase = (p: string) => call("POST", `/api/van/requests/${stops[0].id}/phase`, token, { phase: p });
@@ -198,6 +222,7 @@ describe("van dispatch rules", () => {
     expect(await positions(shift.id)).toEqual([{ id: stops[1].id, queuePosition: 1 }]);
     expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).status).toBe("cancelled");
     // The hold is released the same way as from the tracking screen.
+    expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "cancelled" } })).toBe(1);
     const intent = intents.get(`pi_fake_cancel0_${tag}`)!;
     expect(["canceled", "succeeded"]).toContain(intent.status);
   });

@@ -11,6 +11,7 @@
 import { prisma } from "./prisma";
 import { releaseVanDeposit, vanCancellationKeepsDeposit } from "./van-payments";
 import { renumberQueue } from "./van-queue";
+import { recordVanEvent } from "./van-dispatch";
 import { cancelAppointmentReminders } from "./background-jobs";
 import { broadcastEtaUpdates } from "./van-eta-broadcast";
 import { logFailure } from "./best-effort";
@@ -81,6 +82,7 @@ export async function cancelVanRequestForPatient(requestId: string): Promise<Van
           },
         });
 
+        await recordVanEvent(tx, { requestId: fresh.id, type: "cancelled", fromPhase: fresh.phase, toPhase: "cancelled", actorRole: "patient" });
         if (fresh.appointmentId) {
           await tx.appointment.updateMany({ where: { id: fresh.appointmentId }, data: { status: "cancelled" } });
         }

@@ -3,7 +3,6 @@ import crypto from "crypto";
 import Stripe from "stripe";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
-import { awardVisitPoints } from "../lib/rewards";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 import { HttpError } from "../middleware/error-handler";
 import { validateBody, validateParams, validateQuery } from "../middleware/validate";
@@ -25,7 +24,7 @@ import {
   MAX_ETA_SECONDS,
   roadRoute,
 } from "../lib/van-eta";
-import { clinicalRecordEncryptionService, decryptString, encryptField } from "../lib/encryption";
+import { clinicalRecordEncryptionService, decryptString } from "../lib/encryption";
 import { haversineMetres, postcodeToCoordinates } from "../lib/geo";
 import { getOnlineShiftsCoveringPoint } from "../lib/van-coverage";
 import { broadcastEtaUpdates, isMaterialDrift } from "../lib/van-eta-broadcast";
@@ -42,6 +41,7 @@ import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-custom
 import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
 import { renumberQueue } from "../lib/van-queue";
+import { changeVanPhase, recordVanEvent } from "../lib/van-dispatch";
 import { cancelVanRequestForPatient } from "../lib/van-cancel";
 
 const router = Router();
@@ -517,6 +517,7 @@ router.post("/requests/:id/accept", requireAuth, requireRole("operator"), valida
       });
       await tx.vanServiceRequest.update({ where: { id: request.id }, data: { appointmentId: appointment.id } });
       await renumberQueue(tx, shift.id, "accepted_at");
+      await recordVanEvent(tx, { requestId: request.id, type: "accepted", fromPhase: "queued", toPhase: "queued", actorRole: "operator" });
 
       return { status: 200, body: await tx.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } }) };
     },
@@ -639,6 +640,7 @@ router.post("/requests/:id/decline", requireAuth, requireRole("operator"), valid
           depositReleasedAt: releasedAt,
         },
       });
+      await recordVanEvent(tx, { requestId: request.id, type: "declined", actorRole: "operator" });
 
       return {
         status: 200,
@@ -670,149 +672,23 @@ router.post("/requests/:id/decline", requireAuth, requireRole("operator"), valid
 });
 
 // POST /api/van/requests/:id/phase
-//
-// Safe to tap twice or retry (N5). The change runs under the shift lock with a
-// compare-and-set, so a repeat returns the current state and sends nothing a
-// second time, and only the first stop in the queue may set off. Treatment
-// start and finish also stamp the appointment's real times (N6).
+// The rules (allowed moves, queue order, repeat-safety, real appointment times,
+// history, what the patient is told) live in lib/van-dispatch.ts.
 router.post("/requests/:id/phase", requireAuth, requireRole("operator"), validateParams(vanRequestIdParamsSchema), validateBody(phaseUpdateSchema), async (req: AuthRequest, res: Response) => {
   const opProfile = await getOperatorProfile(req.user!.sub);
 
   const shift = await getActiveShift(opProfile.id);
   if (!shift) return res.status(404).json({ error: "No active shift" });
 
-  const requestId = String(req.params.id);
   const { phase, notes } = req.body;
-  const now = new Date();
-  const closing = phase === "completed" || phase === "no_show";
-  const encryptedNotes = closing && notes ? JSON.stringify(await encryptField(notes)) : null;
-
-  // VR-3: Explicit phase transition validation table
-  const VALID_PHASE_TRANSITIONS: Record<string, string[]> = {
-    queued: ["en_route"],
-    en_route: ["on_site"],
-    on_site: ["in_treatment", "no_show"],
-    in_treatment: ["completed"],
-  };
-
-  type PhaseOutcome =
-    | { status: number; body: Record<string, unknown> }
-    | { status: 200; body: Record<string, unknown>; repeat: true }
-    | { status: 200; body: Record<string, unknown>; patientId: string; appointmentId: string | null };
-
-  const outcome: PhaseOutcome = await prisma.$transaction(
-    async (tx): Promise<PhaseOutcome> => {
-      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shift.id}`}))`;
-
-      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
-      if (!request) return { status: 404, body: { error: "Request not found" } };
-      if (request.shiftId !== shift.id) return { status: 403, body: { error: "Request not on your shift" } };
-
-      // A repeat of a change that already went through: report it, do nothing.
-      if (request.phase === phase && ["accepted", "in_progress", "completed", "no_show"].includes(request.status)) {
-        return { status: 200, body: request, repeat: true };
-      }
-      if (!["accepted", "in_progress"].includes(request.status)) {
-        return { status: 409, body: { error: `Cannot update phase for status: ${request.status}` } };
-      }
-
-      const allowedNextPhases = VALID_PHASE_TRANSITIONS[request.phase] || [];
-      if (!allowedNextPhases.includes(phase)) {
-        return {
-          status: 409,
-          body: {
-            error: "Illegal phase transition",
-            message: `Cannot transition stop from '${request.phase}' to '${phase}'. Allowed next phases: ${allowedNextPhases.join(", ") || "none (terminal state)"}`,
-          },
-        };
-      }
-
-      // The van drives to one patient at a time, in queue order.
-      if (phase === "en_route" && request.queuePosition != null) {
-        const ahead = await tx.vanServiceRequest.count({
-          where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] }, queuePosition: { lt: request.queuePosition } },
-        });
-        if (ahead > 0) {
-          return { status: 409, body: { error: "Earlier stops first", message: "Finish or cancel the stops ahead of this one before setting off." } };
-        }
-      }
-
-      const updateData: Prisma.VanServiceRequestUpdateManyMutationInput = { phase, status: "in_progress" };
-      if (phase === "in_treatment") updateData.treatmentStartedAt = now;
-      if (closing) {
-        updateData.status = phase === "completed" ? "completed" : "no_show";
-        updateData.completedAt = now;
-        if (encryptedNotes) updateData.notes = encryptedNotes;
-      }
-
-      const claimed = await tx.vanServiceRequest.updateMany({
-        where: { id: request.id, phase: request.phase, status: request.status },
-        data: updateData,
-      });
-      if (claimed.count !== 1) {
-        return { status: 409, body: { error: "Request changed while updating. Refresh and try again." } };
-      }
-
-      // The booking behind the visit follows the real times (N6).
-      if (request.appointmentId) {
-        if (phase === "in_treatment") {
-          const service = await tx.service.findUnique({ where: { id: request.serviceId }, select: { durationMinutes: true } });
-          await tx.appointment.updateMany({
-            where: { id: request.appointmentId, status: { in: ["confirmed", "in_progress"] } },
-            data: {
-              status: "in_progress",
-              startTimeUtc: now,
-              endTimeUtc: new Date(now.getTime() + (service?.durationMinutes ?? 45) * 60 * 1000),
-            },
-          });
-        } else if (closing) {
-          await tx.appointment.updateMany({
-            where: { id: request.appointmentId, status: { in: ["confirmed", "in_progress"] } },
-            data: phase === "completed" ? { status: "completed", endTimeUtc: now } : { status: "no_show" },
-          });
-        }
-      }
-
-      if (closing) await renumberQueue(tx, shift.id, "queue_position");
-
-      return {
-        status: 200,
-        body: await tx.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } }),
-        patientId: request.patientId,
-        appointmentId: request.appointmentId,
-      };
-    },
-    { maxWait: 10_000, timeout: 30_000 }
-  );
-
-  if (!("patientId" in outcome)) return res.status(outcome.status).json(outcome.body);
-  const { patientId, appointmentId } = outcome;
-
-  // A completed visit earns the patient's points (decisions log #14). The
-  // visit is already closed; a failure here is caught up by the background
-  // sweep rather than failing the operator's update.
-  if (phase === "completed" && appointmentId) {
-    await awardVisitPoints(appointmentId).catch((err) => {
-      console.error("[Van] Visit points award failed:", err instanceof Error ? err.name : "unknown error");
-    });
-  }
-
-  const messages: Record<string, [string, string]> = {
-    en_route: ["Van is On the Way", "The dental van is now en route to your location."],
-    on_site: ["Van Has Arrived", "The dental van has arrived at your location. Please be ready for your appointment."],
-    completed: ["Visit Completed", "Your van visit has been completed. Thank you for choosing Pav Dental."],
-    no_show: ["Missed Appointment", "Our van arrived but you were not available. Please contact us to reschedule."],
-  };
-  const message = messages[phase];
-  if (message) await sendPatientNotification(patientId, message[0], message[1], { requestId, phase });
-
-  // Queue shape changed (advance, completion, or no-show) — every remaining
-  // patient's ETA may have shifted. Fire-and-forget, gated by drift/throttle.
-  void broadcastEtaUpdates(shift.id).catch((err) =>
-    console.error("[VAN ETA PUSH] post-phase broadcast failed:", safeError(err))
-  );
-
-  return res.json(outcome.body);
+  const result = await changeVanPhase({
+    shiftId: shift.id,
+    requestId: String(req.params.id),
+    phase,
+    notes,
+    actorRole: "operator",
+  });
+  return res.status(result.status).json(result.body);
 });
 
 // ─── PATIENT — Availability & Requests ────────────────────────────────────────
@@ -1054,6 +930,10 @@ router.post("/requests", requireAuth, validateBody(createVanRequestSchema), asyn
     }
     throw error;
   }
+
+  await recordVanEvent(prisma, { requestId: request.id, type: "requested", actorRole: "patient" }).catch((err) =>
+    console.error("[Van] history entry failed:", safeError(err))
+  );
 
   // Send notification to patient about request creation
   await sendPatientNotification(

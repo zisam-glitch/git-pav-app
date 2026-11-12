@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import { releaseVanDeposit } from "./van-payments";
 import { sendPatientNotification } from "./patient-push";
+import { recordVanEvent } from "./van-dispatch";
 
 export type EndVanShiftResult =
   | { ended: true; shift: Awaited<ReturnType<typeof prisma.vanShift.update>>; expiredRequests: number; failedReleases: string[] }
@@ -52,6 +53,7 @@ export async function endVanShift(shift: { id: string }): Promise<EndVanShiftRes
             depositReleasedAt: releasedAt,
           },
         });
+        await recordVanEvent(tx, { requestId: pending.id, type: "shift_ended", actorRole: "system" });
         expiredRequests += 1;
         const message =
           releaseStatus === "failed"

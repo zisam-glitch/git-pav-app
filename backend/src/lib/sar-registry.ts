@@ -377,6 +377,7 @@ export const NON_PATIENT_DATA_MODELS: Record<string, string> = {
   VanServicePolygon: "Geographic van service coverage boundaries",
   VanShift: "Operator driving shifts",
   VanLocationPing: "Vehicle GPS telemetry pings",
+  VanRequestEvent: "Operational history of a van visit (event, phase, role, time); no personal data, the visit itself is in VanServiceRequest",
   VanOperatorAssignment: "Operator vehicle assignments",
   OperatorProfile: "Van driver staff profile records",
   Service: "Catalogue of dental treatments and baseline pricing",

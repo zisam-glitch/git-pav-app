@@ -32,7 +32,7 @@ export const vanRequestIdParamsSchema = z.object({ id: uuid }).strict();
 // stops are pinned and excluded from client ordering.
 export const reorderQueueSchema = z
   .object({
-    order: z.array(uuid).min(1),
+    order: z.array(uuid).min(1).max(50),
   })
   .strict();
 

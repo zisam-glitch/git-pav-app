@@ -98,9 +98,13 @@ async function applyQueuedOrder(
         orderedIds.every((id) => queuedIds.has(id));
       if (!isPermutation) return { ok: false as const, currentOrder: queued.map((q) => q.id) };
 
-      const all = [...pinned.map((p) => p.id), ...orderedIds];
+      // Sort the server's own list by the submitted order, so the loop below is
+      // bounded by the queue itself and not by the request.
+      const rank = new Map(orderedIds.map((id, index) => [id, index]));
+      const sortedQueued = [...queued].sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
+      const all = [...pinned, ...sortedQueued];
       for (let i = 0; i < all.length; i++) {
-        await tx.vanServiceRequest.update({ where: { id: all[i] }, data: { queuePosition: i + 1 } });
+        await tx.vanServiceRequest.update({ where: { id: all[i].id }, data: { queuePosition: i + 1 } });
       }
       return { ok: true as const };
     },

@@ -148,8 +148,12 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **D4 (P2, M) One hold, not two.** A slot is held in Redis (10 minutes) and again in the database. The countdown and
       the real expiry can differ. Pick one source of truth.
 - [ ] **D5 (P2, S) Backoff and jitter on retries.** Check `retry: 2` with fixed delays against a struggling server.
-- [ ] **D6 (P2, S) Remove the mock-payment branch from the shipped app.** `summary.tsx` carries `if (intent.isMock)`
+- [~] **D6 (P2, S) Remove the mock-payment branch from the shipped app.** `summary.tsx` carries `if (intent.isMock)`
       client-side. The server refuses mock keys when deployed, but the code path should not ship at all.
+      *Mostly done: the booking payment only skips the card for a mock-Stripe server when the build says so (`allowMockPayment`,
+      set from `__DEV__`; left out means no), and the van request stops on a mock-payment server outside development. The mock
+      code itself still ships, because removing it would break local development; it just cannot run in a release build. The
+      saved-card screen's "not available in test mode" message does not skip any payment and is unchanged.*
 - [ ] **D7 (P3, M) Graceful degradation** when Redis, Daily, Stripe or Postmark is down: what does the patient see
       for each? Write it down and test it.
 

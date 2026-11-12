@@ -46,6 +46,8 @@ function setup(over: Partial<PaymentDeps> = {}) {
       calls.push("paid");
     }),
     report: jest.fn(),
+    // The mock-payment test below is about a development build; the shipped-app case sets this to false.
+    allowMockPayment: true,
     ...over,
   };
   return { deps, calls };
@@ -123,6 +125,14 @@ describe("runBookingPayment", () => {
     expect(calls).toEqual(["create", "confirm", "paid"]);
     expect(deps.payWithSheet).not.toHaveBeenCalled();
     expect(deps.payWithWallet).not.toHaveBeenCalled();
+  });
+
+  it("never skips the card for a mock-payment server in a build that does not allow it (D6)", async () => {
+    const { deps, calls } = setup({ allowMockPayment: false, createPaymentIntent: jest.fn(async () => intent({ isMock: true, clientSecret: null })) });
+    const out = await runBookingPayment(deps, input());
+    expect(out.kind).toBe("failed");
+    expect(calls).not.toContain("confirm");
+    expect(deps.onPaid).not.toHaveBeenCalled();
   });
 
   it("fails plainly when the server sends no client secret", async () => {

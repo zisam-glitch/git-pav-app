@@ -137,6 +137,8 @@ export default function BookingSummaryScreen() {
           paidRef.current = true;
         },
         report: reportCaughtError,
+        // A mock Stripe server can only be skipped past in a development build.
+        allowMockPayment: __DEV__,
       },
       {
         service,

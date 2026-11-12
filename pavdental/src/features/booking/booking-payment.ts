@@ -56,6 +56,11 @@ export interface PaymentDeps {
   onPaid(): void;
   /** Called with errors worth reporting (scrubbed by the reporter). */
   report(error: unknown, source: string): void;
+  /**
+   * Whether this build may skip taking a card because the server says Stripe is in mock mode. Only a development
+   * build says yes. Left out, it is no: a shipped app never confirms a booking without taking payment (D6).
+   */
+  allowMockPayment?: boolean;
 }
 
 export type PaymentOutcome =
@@ -110,6 +115,9 @@ export async function runBookingPayment(deps: PaymentDeps, input: BookingInput):
     // Local development runs Stripe in mock mode: no card to take, the server
     // confirms the mock payment directly (the server refuses mock keys when deployed).
     if (intent.isMock) {
+      if (!deps.allowMockPayment) {
+        return { kind: "failed", title: "Payment unavailable", message: "Payments aren't available right now. Please try again later." };
+      }
       await deps.confirmAppointment(appointment.id, intent.paymentIntentId);
       deps.onPaid();
       return { kind: "confirmed", appointmentId: appointment.id };

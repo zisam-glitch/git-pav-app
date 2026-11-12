@@ -50,6 +50,10 @@ export default function VanConfirmScreen() {
       });
       requestId = request.id;
 
+      // A shipped app never carries on past a mock-payment server: no deposit would have been held (D6).
+      if (request.isMockPayment && !__DEV__) {
+        throw new Error("Payments aren't available right now. Please try again later.");
+      }
       if (request.isMockPayment || !request.clientSecret) {
         // Mock-Stripe backend (or no deposit configured) — straight to tracking.
         store.setActiveRequestId(request.id);

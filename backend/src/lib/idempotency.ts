@@ -1,4 +1,5 @@
 import { redis } from "./redis";
+import { logFailure } from "./best-effort";
 
 // Replays the result of an operation retried with the same key, so a client
 // that lost a response can safely send the request again (ID-1).
@@ -28,19 +29,28 @@ export async function withIdempotency<T>(key: string | null, operation: () => Pr
   if (!key) return operation();
   const redisKey = `idempotency:${key}`;
 
-  const claimed = await redis.set(redisKey, IN_FLIGHT, "EX", IN_FLIGHT_TTL, "NX");
+  // If Redis can't be reached, the protection is lost but the action must still work: cancelling, replying
+  // and ending a consult do not wait on a cache. The action's own checks (the database) still hold (D7).
+  let claimed: string | null;
+  try {
+    claimed = await redis.set(redisKey, IN_FLIGHT, "EX", IN_FLIGHT_TTL, "NX");
+  } catch (err) {
+    logFailure("idempotency (redis claim)")(err);
+    return operation();
+  }
   if (!claimed) {
-    const existing = await redis.get(redisKey);
+    const existing = await redis.get(redisKey).catch(() => null);
     if (existing && existing !== IN_FLIGHT) return JSON.parse(existing) as T;
     return { error: "This request is already being processed. Please wait a moment.", status: 409 } as T;
   }
 
   try {
     const result = await operation();
+    // The action has happened: failing to record it must not turn a success into an error.
     if (result && typeof result === "object" && "error" in result) {
-      await redis.del(redisKey);
+      await redis.del(redisKey).catch(logFailure("idempotency (redis release)"));
     } else {
-      await redis.set(redisKey, JSON.stringify(result), "EX", IDEMPOTENCY_TTL);
+      await redis.set(redisKey, JSON.stringify(result), "EX", IDEMPOTENCY_TTL).catch(logFailure("idempotency (redis store)"));
     }
     return result;
   } catch (error) {

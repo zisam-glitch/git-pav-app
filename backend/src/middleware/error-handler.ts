@@ -44,6 +44,28 @@ function getOrSetRequestId(req: Request, res?: Response): string {
   return id;
 }
 
+/** What the patient is told when something we depend on is down: short, plain, and it says to try again. */
+export const DEPENDENCY_OUTAGE_MESSAGE = "A service we rely on isn't responding right now. Please try again in a moment.";
+
+const OUTAGE_CODES = new Set(["ECONNREFUSED", "ECONNRESET", "ETIMEDOUT", "ENOTFOUND", "EAI_AGAIN", "EPIPE"]);
+
+/**
+ * True when the error means a service we depend on could not be reached or is failing on its side (Stripe, Redis,
+ * the database, or a network call that timed out), as opposed to a bug of ours or a bad request (D7).
+ */
+export function isDependencyOutage(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { type?: string; code?: unknown; name?: string; message?: string; cause?: unknown };
+  if (e.type === "StripeConnectionError" || e.type === "StripeAPIError") return true;
+  if (typeof e.code === "string" && (OUTAGE_CODES.has(e.code) || ["P1001", "P1002", "P1017"].includes(e.code))) return true;
+  if (e.name === "MaxRetriesPerRequestError" || e.name === "PrismaClientInitializationError") return true;
+  if (e.name === "TimeoutError" || e.name === "AbortError") return true;
+  if (typeof e.message === "string" && /Connection is closed|Stream isn't writeable|^fetch failed$/.test(e.message)) {
+    return true;
+  }
+  return !!e.cause && e.cause !== err && isDependencyOutage(e.cause);
+}
+
 export function errorHandler(
   err: Error,
   req: Request,
@@ -73,6 +95,10 @@ export function errorHandler(
   } else if (err.message && err.message.includes("image files are allowed")) {
     status = 400;
     clientMessage = err.message;
+  } else if (isDependencyOutage(err)) {
+    status = 503;
+    clientMessage = DEPENDENCY_OUTAGE_MESSAGE;
+    res.setHeader("Retry-After", "10");
   } else {
     const explicitStatus = (err as any).status ?? (err as any).statusCode;
     if (typeof explicitStatus === "number" && explicitStatus >= 400 && explicitStatus < 500) {
@@ -101,9 +127,11 @@ export function errorHandler(
 
   const isDevelopment = process.env.NODE_ENV === 'development';
   const isClientError = status < 500;
+  // A dependency outage is still reported to us as a server error, but the patient gets the plain message.
+  const showMessage = isClientError || status === 503;
 
   res.status(status).json({
-    error: isClientError ? (clientMessage ?? err.message) : isDevelopment ? err.message : 'Internal server error',
+    error: showMessage ? (clientMessage ?? err.message) : isDevelopment ? err.message : 'Internal server error',
     requestId,
     timestamp,
     ...(isDevelopment && status >= 500 && { stack: err.stack }),

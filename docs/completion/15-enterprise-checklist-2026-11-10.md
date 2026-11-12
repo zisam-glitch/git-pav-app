@@ -150,8 +150,10 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **D5 (P2, S) Backoff and jitter on retries.** Check `retry: 2` with fixed delays against a struggling server.
 - [ ] **D6 (P2, S) Remove the mock-payment branch from the shipped app.** `summary.tsx` carries `if (intent.isMock)`
       client-side. The server refuses mock keys when deployed, but the code path should not ship at all.
-- [ ] **D7 (P3, M) Graceful degradation** when Redis, Daily, Stripe or Postmark is down: what does the patient see
+- [x] **D7 (P3, M) Graceful degradation** when Redis, Daily, Stripe or Postmark is down: what does the patient see
       for each? Write it down and test it.
+      *Done: [`16-dependency-failures.md`](16-dependency-failures.md) says what the patient sees for each; idempotency now works
+      without Redis and provider outages answer with a plain 503. Not tried against a real outage.*
 
 ## E. Security and privacy (app side)
 

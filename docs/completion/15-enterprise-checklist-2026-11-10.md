@@ -140,8 +140,11 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       runner with retries and back-off, record the result.
 - [ ] **D2 (P1, M) Offline behaviour.** Only the van operator's notes queue offline. For patients: show cached
       appointments read-only, queue message replies, and say plainly what needs a connection.
-- [ ] **D3 (P1, S) Idempotency on every money or booking action** from the app (a key per attempt exists for create;
+- [~] **D3 (P1, S) Idempotency on every money or booking action** from the app (a key per attempt exists for create;
       check confirm, cancel, reschedule, payment retry).
+      *Partly done: cancel takes an `Idempotency-Key` (shared `runIdempotent` wrapper), so a retry after a lost reply gets the
+      first answer with the real refund; the app sends one key per cancel attempt. Reschedule was already safe (a repeat returns
+      `changed: false`). Left: payment-intent create and the booking confirm step.*
 - [ ] **D4 (P2, M) One hold, not two.** A slot is held in Redis (10 minutes) and again in the database. The countdown and
       the real expiry can differ. Pick one source of truth.
 - [ ] **D5 (P2, S) Backoff and jitter on retries.** Check `retry: 2` with fixed delays against a struggling server.

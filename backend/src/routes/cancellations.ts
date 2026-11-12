@@ -17,6 +17,7 @@ import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
+import { runIdempotent } from "../lib/idempotent-handler";
 
 export { appointmentRefundPolicy } from "../lib/cancellation-policy";
 
@@ -240,7 +241,9 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
 // ─── POST /api/booking/appointments/:id/cancel-with-refund ────────────────────
 // ─── POST /api/booking/appointments/:id/cancel ────────────────────────────────
 // The unified cancel path: both endpoints invoke the same policy and handler (CS-18).
-router.post("/:id/cancel-with-refund", requireAuth, validateParams(appointmentIdParamsSchema), handleAppointmentCancel);
-router.post("/:id/cancel", requireAuth, validateParams(appointmentIdParamsSchema), handleAppointmentCancel);
+// With an Idempotency-Key, a retry after a lost response gets the first answer (with the real refund) back (D3).
+const cancelOnce = (req: AuthRequest, res: Response) => runIdempotent(req, res, "cancel", handleAppointmentCancel);
+router.post("/:id/cancel-with-refund", requireAuth, validateParams(appointmentIdParamsSchema), cancelOnce);
+router.post("/:id/cancel", requireAuth, validateParams(appointmentIdParamsSchema), cancelOnce);
 
 export default router;

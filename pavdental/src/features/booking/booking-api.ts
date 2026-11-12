@@ -1,4 +1,5 @@
 import { authFetch, publicFetch } from "../auth/auth-api";
+import { attemptKey, finishAttempt } from "../../lib/attempt-key";
 import type { ApiHoldSlotResponse, ApiSlot } from "../api-contract.gen";
 import { DentalService, ClinicLocation, Clinician, TimeSlot } from "./booking-types";
 import { ukDayLabel, ukDate, ukTime } from "./uk-time";
@@ -201,14 +202,18 @@ export interface CancellationResult {
 }
 
 // The one cancel path: the server applies the deposit refund policy.
+// One key per cancel attempt, kept until it works: a retry after a lost reply gets the first answer, refund and all (D3).
 export async function cancelAppointment(appointmentId: string): Promise<CancellationResult> {
+  const scope = `cancel:${appointmentId}`;
   const res = await authFetch(`/api/booking/appointments/${appointmentId}/cancel-with-refund`, {
     method: "POST",
+    headers: { "Idempotency-Key": attemptKey(scope) },
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || "Cancellation failed");
   }
+  finishAttempt(scope);
   return res.json();
 }
 

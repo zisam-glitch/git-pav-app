@@ -34,6 +34,7 @@ import {
   getPolygonCentroid,
 } from "./geo";
 import { safeError } from "./log-safety";
+import { isPositionStale } from "./van-location";
 
 export type CoverageBackendMode = "postgis" | "js";
 
@@ -185,10 +186,14 @@ async function findCoveringVansJs(point: Point): Promise<VanCoverageMatch[]> {
  * Used by the patient availability and request-creation flows.
  */
 export async function getOnlineShiftsCoveringPoint(point: Point) {
-  const shifts = await prisma.vanShift.findMany({
-    where: { status: "online", endedAt: null },
-    include: { van: { include: { servicePolygons: true } } },
-  });
+  // A van that has stopped reporting (phone dead, no signal) is not offered to
+  // new patients: its last position is no basis for an ETA (N14).
+  const shifts = (
+    await prisma.vanShift.findMany({
+      where: { status: "online", endedAt: null },
+      include: { van: { include: { servicePolygons: true } } },
+    })
+  ).filter((shift) => !isPositionStale(shift.lastLocationAt));
 
   const backend = await getCoverageBackend();
 

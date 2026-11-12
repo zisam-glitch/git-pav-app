@@ -60,10 +60,16 @@ router.post(
       return res.json({ ok: true, phase: stop.phase });
     }
 
-    await prisma.vanServiceRequest.update({
-      where: { id: stop.id },
+    // Compare-and-set: of two taps at once only one moves the stop, so the
+    // patient is told once (N5).
+    const moved = await prisma.vanServiceRequest.updateMany({
+      where: { id: stop.id, phase: { in: ["queued", "en_route"] }, status: { in: ["accepted", "in_progress"] } },
       data: { phase: "on_site", status: "in_progress" },
     });
+    if (moved.count !== 1) {
+      const current = await prisma.vanServiceRequest.findUnique({ where: { id: stop.id }, select: { phase: true } });
+      return res.json({ ok: true, phase: current?.phase ?? stop.phase });
+    }
 
     // VS-1: Send "Van Has Arrived" notification to patient (same as van.ts phase update)
     await sendPatientNotification(

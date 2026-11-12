@@ -39,6 +39,7 @@ describe("admin attention counts", () => {
     cardFailuresLastWeek: number;
     depositReleaseFailures: number;
     vansOut: number;
+    quietVans: number;
     asOf: string;
   };
 
@@ -261,6 +262,7 @@ describe("admin attention counts", () => {
       "depositReleaseFailures",
       "erasureOpen",
       "erasureOverdue",
+      "quietVans",
       "unreadThreads",
       "vansOut",
       "visitsLeftToday",

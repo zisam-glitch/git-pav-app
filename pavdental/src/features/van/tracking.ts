@@ -161,3 +161,18 @@ export function trackingSheet(request: SheetInput): TrackingSheet {
     tone: "waiting",
   };
 }
+
+/**
+ * How old the van's last position is, for the patient's map (N19). Nothing for
+ * the first two minutes (the van reports every 20 seconds, so that is normal),
+ * then "Last seen 3 min ago", so a frozen marker is not mistaken for a live one.
+ */
+export function positionAgeLabel(lastLocationAt: string | Date | null | undefined, now = new Date()): string | null {
+  if (!lastLocationAt) return null;
+  const then = new Date(lastLocationAt).getTime();
+  if (!Number.isFinite(then)) return null;
+  const minutes = Math.floor((now.getTime() - then) / 60_000);
+  if (minutes < 2) return null;
+  if (minutes >= 60) return "Last seen over an hour ago";
+  return `Last seen ${minutes} min ago`;
+}

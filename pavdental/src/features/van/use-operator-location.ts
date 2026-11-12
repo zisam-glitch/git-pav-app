@@ -22,7 +22,7 @@ import { sendLocationPing } from "./van-api";
 import { startShiftBackgroundLocation, stopShiftBackgroundLocation } from "./background-location";
 import { PRACTICE_CONFIG } from "@/config/practice";
 
-export type OperatorFix = { lat: number; lng: number };
+export type OperatorFix = { lat: number; lng: number; accuracyM?: number; at?: number };
 
 const PING_INTERVAL_MS = 20_000; // matches the previous ping cadence
 const WATCH_ACCURACY = Location.Accuracy.Balanced;
@@ -89,6 +89,8 @@ export function useOperatorLocation(options: { enabled: boolean }) {
             const next: OperatorFix = {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
+              accuracyM: position.coords.accuracy ?? undefined,
+              at: position.timestamp,
             };
             latestFixRef.current = next;
             setFix(next);
@@ -117,7 +119,12 @@ export function useOperatorLocation(options: { enabled: boolean }) {
           const current = latestFixRef.current;
           if (!current) return; // no fix yet — skip silently
           try {
-            await sendLocationPing({ lat: current.lat, lng: current.lng });
+            await sendLocationPing({
+              lat: current.lat,
+              lng: current.lng,
+              accuracyM: current.accuracyM,
+              recordedAt: current.at ? new Date(current.at).toISOString() : undefined,
+            });
           } catch {
             // Location ping errors are non-fatal
           }

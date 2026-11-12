@@ -13,6 +13,7 @@ const quiet = {
   cardFailuresLastWeek: 0,
   depositReleaseFailures: 0,
   vansOut: 0,
+  quietVans: 0,
   asOf: "2031-03-11T10:00:00.000Z",
 };
 const find = (items, key) => items.find((item) => item.key === key);
@@ -20,7 +21,7 @@ const find = (items, key) => items.find((item) => item.key === key);
 describe("attentionItems", () => {
   it("is all clear or just information when nothing needs a person", () => {
     const items = attentionItems(quiet);
-    assert.equal(items.length, 6);
+    assert.equal(items.length, 7);
     assert.equal(hasUrgent(items), false);
     assert.ok(items.every((item) => item.tone === "clear" || item.tone === "info"));
     assert.equal(find(items, "erasure").note, "None waiting");
@@ -40,6 +41,14 @@ describe("attentionItems", () => {
     const erasure = find(attentionItems({ ...quiet, erasureOpen: 2 }), "erasure");
     assert.equal(erasure.tone, "action");
     assert.equal(erasure.note, "All within the one-month deadline");
+  });
+
+  it("makes a van that has stopped reporting urgent, and tolerates an older backend that doesn't send it", () => {
+    const items = attentionItems({ ...quiet, vansOut: 2, quietVans: 1 });
+    assert.equal(find(items, "quiet-vans").tone, "urgent");
+    assert.equal(find(items, "quiet-vans").count, 1);
+    const { quietVans, ...older } = quiet;
+    assert.equal(find(attentionItems(older), "quiet-vans").tone, "clear");
   });
 
   it("makes failed payments and stuck deposits urgent", () => {
@@ -66,7 +75,7 @@ describe("attentionItems", () => {
     });
     assert.deepEqual(
       items.map((item) => item.key),
-      ["erasure", "card", "inbox", "visits", "vans", "deposit"],
+      ["erasure", "card", "inbox", "visits", "vans", "deposit", "quiet-vans"],
     );
   });
 

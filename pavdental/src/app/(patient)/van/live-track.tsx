@@ -6,12 +6,12 @@ import { View, StyleSheet, Alert, ActivityIndicator, Pressable } from "react-nat
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThemedText, Button, AppIcon } from "@/components";
+import { ThemedText, Button, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { fetchVanRequest, fetchActiveVanRequest, cancelVanRequest, retryDepositAuthorization, presentVanDepositSheet, DepositCanceledError } from "@/features/van/van-api";
 import type { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { useStripe } from "@stripe/stripe-react-native";
-import { trackingSheet, trackingView, vanIsAssigned } from "@/features/van/tracking";
+import { positionAgeLabel, trackingSheet, trackingView, vanIsAssigned } from "@/features/van/tracking";
 import { VanTrackingMap } from "@/features/van/van-tracking-map";
 
 export default function VanLiveTrackScreen() {
@@ -25,7 +25,7 @@ export default function VanLiveTrackScreen() {
   const [sheetHeight, setSheetHeight] = useState(0);
 
   // Poll request status every 5s
-  const { data: apiRequest, isLoading } = useQuery<VanServiceRequest | null>({
+  const { data: apiRequest, isLoading, isError, refetch } = useQuery<VanServiceRequest | null>({
     queryKey: ["van-request-live", params.requestId],
     queryFn: () =>
       params.requestId
@@ -117,6 +117,19 @@ export default function VanLiveTrackScreen() {
     );
   }
 
+  // A failed check is not "no request": the deposit may be held and the van on
+  // its way. Say we can't reach the server and let them retry (N25).
+  if (!request && isError) {
+    return (
+      <SafeAreaView style={styles.centerContainer}>
+        <ErrorState
+          message="We couldn't reach the server to check on your van. Your request hasn't changed. Check your connection and try again."
+          onRetry={() => refetch()}
+        />
+      </SafeAreaView>
+    );
+  }
+
   if (!request) {
     return (
       <SafeAreaView style={styles.centerContainer}>
@@ -144,6 +157,7 @@ export default function VanLiveTrackScreen() {
   const status = request?.status ?? "pending";
   const sheet = trackingSheet(request);
 
+  const vanAgeLabel = trackingView(request).van ? positionAgeLabel(request.shift?.lastLocationAt) : null;
   const isTerminal = ["declined", "expired", "completed", "cancelled"].includes(status);
   // No van is assigned until an operator accepts, whatever the server sent.
   const vanAssigned = vanIsAssigned(status);
@@ -260,6 +274,16 @@ export default function VanLiveTrackScreen() {
               ))}
             </View>
           )}
+
+          {isError ? (
+            <ThemedText variant="caption" style={styles.staleText} accessibilityLiveRegion="polite">
+              Can't reach us. Showing your last update. Retrying…
+            </ThemedText>
+          ) : vanAgeLabel ? (
+            <ThemedText variant="caption" style={styles.staleText}>
+              {vanAgeLabel}
+            </ThemedText>
+          ) : null}
 
           {status === "pending" && request.depositAuthorized === false && (
             <View style={styles.depositBanner}>
@@ -578,6 +602,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: spacing.xs,
+  },
+  staleText: {
+    color: colors.warning,
   },
   statusKicker: {
     color: colors.secondaryLabel,

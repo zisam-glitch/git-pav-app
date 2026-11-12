@@ -16,6 +16,8 @@ export const locationPingSchema = z.object({
   lat,
   lng,
   accuracyM: z.number().positive().optional(),
+  /** When the phone took the fix (ISO 8601), so a delayed report isn't mistaken for a fresh one. */
+  recordedAt: z.string().datetime().optional(),
 }).strict();
 
 export const phaseUpdateSchema = z.object({
@@ -30,7 +32,7 @@ export const vanRequestIdParamsSchema = z.object({ id: uuid }).strict();
 // stops are pinned and excluded from client ordering.
 export const reorderQueueSchema = z
   .object({
-    order: z.array(uuid).min(1),
+    order: z.array(uuid).min(1).max(50),
   })
   .strict();
 

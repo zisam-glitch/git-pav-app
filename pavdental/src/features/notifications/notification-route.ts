@@ -19,6 +19,8 @@ export function routeForNotification(data: unknown): NotificationTarget | null {
     }
     return null;
   }
+  // A new request for the van crew: the incoming list, not a patient screen.
+  if (d.type === "van_request_incoming") return { pathname: "/(operator)/incoming", params: {} };
   if (typeof d.requestId === "string" && d.requestId) {
     return { pathname: "/(patient)/van/live-track", params: { requestId: d.requestId } };
   }

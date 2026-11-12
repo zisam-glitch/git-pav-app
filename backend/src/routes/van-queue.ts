@@ -22,6 +22,8 @@ import { requireAuth, AuthRequest } from "../middleware/auth";
 import { validateBody } from "../middleware/validate";
 import { reorderQueueSchema } from "../schemas/van-dispatch";
 import { optimizeStopOrder, Point } from "../lib/van-eta";
+import { broadcastEtaUpdates } from "../lib/van-eta-broadcast";
+import { safeError } from "../lib/log-safety";
 
 const router = Router();
 
@@ -63,16 +65,65 @@ async function requireActiveShift(
   return { operatorId: operatorProfile.id, shiftId: shift.id };
 }
 
-async function renumberQueue(shiftId: string, orderedIds: string[]): Promise<void> {
-  await prisma.$transaction(async (tx) => {
-    for (let i = 0; i < orderedIds.length; i++) {
-      await tx.vanServiceRequest.update({
-        where: { id: orderedIds[i] },
-        data: { queuePosition: i + 1 },
-      });
-    }
-  });
+/**
+ * Applies a new order to the unstarted stops under the shift lock (N2). Stops
+ * already under way stay ahead of them, keeping their own order, and the whole
+ * queue is numbered 1..n so no two stops share a place. Re-reads the queue
+ * inside the lock: if it changed since the caller looked (an accept, a cancel),
+ * nothing is written and the caller is told.
+ */
+async function applyQueuedOrder(
+  shiftId: string,
+  orderedIds: string[]
+): Promise<{ ok: true } | { ok: false; currentOrder: string[] }> {
+  return prisma.$transaction(
+    async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shiftId}`}))`;
+      const [pinned, queued] = await Promise.all([
+        tx.vanServiceRequest.findMany({
+          where: { shiftId, status: "in_progress" },
+          select: { id: true },
+          orderBy: [{ queuePosition: "asc" }, { id: "asc" }],
+        }),
+        tx.vanServiceRequest.findMany({
+          where: { shiftId, status: "accepted", phase: "queued" },
+          select: { id: true },
+          orderBy: [{ queuePosition: "asc" }, { id: "asc" }],
+        }),
+      ]);
+      const queuedIds = new Set(queued.map((q) => q.id));
+      const isPermutation =
+        orderedIds.length === queued.length &&
+        new Set(orderedIds).size === orderedIds.length &&
+        orderedIds.every((id) => queuedIds.has(id));
+      if (!isPermutation) return { ok: false as const, currentOrder: queued.map((q) => q.id) };
+
+      // Sort the server's own list by the submitted order, so the loop below is
+      // bounded by the queue itself and not by the request.
+      const rank = new Map(orderedIds.map((id, index) => [id, index]));
+      const sortedQueued = [...queued].sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
+      const all = [...pinned, ...sortedQueued];
+      for (let i = 0; i < all.length; i++) {
+        await tx.vanServiceRequest.update({ where: { id: all[i].id }, data: { queuePosition: i + 1 } });
+      }
+      return { ok: true as const };
+    },
+    { maxWait: 10_000, timeout: 30_000 }
+  );
 }
+
+function refreshEtas(shiftId: string): void {
+  // The order changed, so every patient's ETA may have too.
+  void broadcastEtaUpdates(shiftId).catch((err) =>
+    console.error("[VAN ETA PUSH] post-reorder broadcast failed:", safeError(err))
+  );
+}
+
+const staleQueueResponse = (currentOrder: string[]) => ({
+  error: "Order does not match the current queue",
+  message: "Refresh the queue and try again — another change may have landed first.",
+  currentOrder,
+});
 
 // ─── POST /api/van/shift/optimize ────────────────────────────────────────
 router.post("/optimize", requireAuth, async (req: AuthRequest, res: Response) => {
@@ -84,6 +135,7 @@ router.post("/optimize", requireAuth, async (req: AuthRequest, res: Response) =>
     select: { id: true, patientLat: true, patientLng: true, queuePosition: true },
     orderBy: { queuePosition: "asc" },
   });
+
   if (queued.length <= 1) {
     return res.json({
       reordered: 0,
@@ -101,26 +153,28 @@ router.post("/optimize", requireAuth, async (req: AuthRequest, res: Response) =>
     orderBy: { queuePosition: "asc" },
   });
 
-  // Origin: the van's current position; if no GPS fix yet, the first queued
-  // stop is treated as the anchor.
+  // Origin: where the van will be when it is free (the last stop under way),
+  // else its current position; with no GPS fix yet, the first queued stop.
   const shift = await prisma.vanShift.findUnique({
     where: { id: ctx.shiftId },
     select: { lastLat: true, lastLng: true },
   });
-  const vanPoint: Point | null =
-    shift?.lastLat != null && shift?.lastLng != null
-      ? { lat: shift.lastLat, lng: shift.lastLng }
-      : null;
-
+  const lastPinned = inProgress[inProgress.length - 1];
   const stopPoints: Point[] = queued.map((q) => ({ lat: q.patientLat, lng: q.patientLng }));
-  const origin: Point = vanPoint ?? stopPoints[0];
+  const origin: Point = lastPinned
+    ? { lat: lastPinned.patientLat, lng: lastPinned.patientLng }
+    : shift?.lastLat != null && shift?.lastLng != null
+      ? { lat: shift.lastLat, lng: shift.lastLng }
+      : stopPoints[0];
 
   const optimal = await optimizeStopOrder(origin, stopPoints);
   const orderedIds = optimal.map((i) => queued[i].id);
+  const changed = orderedIds.some((id, i) => queued[i].id !== id);
 
-  const changed = orderedIds.some((id, i) => queued[i] && queued[i].id !== id);
   if (changed) {
-    await renumberQueue(ctx.shiftId, orderedIds);
+    const applied = await applyQueuedOrder(ctx.shiftId, orderedIds);
+    if (!applied.ok) return res.status(409).json(staleQueueResponse(applied.currentOrder));
+    refreshEtas(ctx.shiftId);
   }
 
   return res.json({
@@ -144,30 +198,13 @@ router.post(
 
     const { order } = req.body as { order: string[] };
 
-    const queued = await prisma.vanServiceRequest.findMany({
-      where: { shiftId: ctx.shiftId, status: "accepted", phase: "queued" },
-      select: { id: true },
-      orderBy: { queuePosition: "asc" },
-    });
-    const queuedIds = new Set(queued.map((q) => q.id));
-
     // The submitted order must be exactly a permutation of the queued stops —
-    // no dropping, duplicating, or touching in-progress/completed stops.
-    const submitted = new Set(order);
-    const isPermutation =
-      order.length === queued.length && order.every((id) => queuedIds.has(id)) &&
-      submitted.size === order.length;
+    // no dropping, duplicating, or touching in-progress/completed stops. The
+    // check runs inside the lock.
+    const applied = await applyQueuedOrder(ctx.shiftId, order);
+    if (!applied.ok) return res.status(409).json(staleQueueResponse(applied.currentOrder));
 
-    if (!isPermutation) {
-      return res.status(409).json({
-        error: "Order does not match the current queue",
-        message: "Refresh the queue and try again — another change may have landed first.",
-        currentOrder: queued.map((q) => q.id),
-      });
-    }
-
-    await renumberQueue(ctx.shiftId, order);
-
+    refreshEtas(ctx.shiftId);
     return res.json({ success: true, order });
   }
 );

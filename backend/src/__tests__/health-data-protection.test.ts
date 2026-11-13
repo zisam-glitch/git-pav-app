@@ -27,8 +27,8 @@ describe("CS-50: Health data protection at rest and in transit", () => {
     const serverModule = require("../server");
     const app = serverModule.default ?? serverModule;
     server = http.createServer(app);
-    await new Promise<void>((resolve) => server.listen(3016, resolve));
-    baseUrl = "http://localhost:3016";
+    await new Promise<void>((resolve) => server.listen(3041, resolve));
+    baseUrl = "http://localhost:3041";
 
     sendEmailSpy = jest.spyOn(communicationService, "sendEmail").mockImplementation(async () => ({
       success: true,

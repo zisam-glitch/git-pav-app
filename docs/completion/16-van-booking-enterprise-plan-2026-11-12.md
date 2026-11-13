@@ -328,7 +328,13 @@ depends on the push settings of the build and needs a real phone (phase 6).
 check-in go through one function: one lock, one table of allowed moves, one compare-and-set, one set of follow-ups.
 A new table `van_request_events` keeps each visit's history (requested, accepted, declined, expired, cancelled, each
 phase change, check-in, shift end), written in the same transaction as the change. It holds a role, never a person.
-**Still to do in phase 2:** move accept, decline, cancel, expiry and shift end fully into the module (today they only
+**Done (second pull request):** accept and decline are in the rulebook too (`acceptVanRequest`, `declineVanRequest`,
+and the pure rule `checkDecision`). The route handlers only find the shift and call them. Two behaviour changes: a
+second tap on Decline returns the declined request and releases, records and sends nothing again (it used to be an
+error), and the "shift is paused" check is now made under the shift lock. The deposit capture moved to
+`van-payments.ts` unchanged; when money is held, taken and returned is the same. Checked here: typecheck, lint and the
+pure tests. The new database-backed tests in `van-dispatch-rules.test.ts` need CI.
+**Still to do in phase 2:** move cancel, expiry and shift end fully into the module (today they only
 write their history entry through it), the stored plan with arrival times (N20, N10), pending requests counting as
 provisional stops (N7, N12), placing a new request at the cheapest position (N8), and the promise window. The
 Stripe-outside-the-lock change (N22) waits for the owner's go-ahead.

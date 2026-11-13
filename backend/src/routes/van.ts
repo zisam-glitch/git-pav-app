@@ -32,7 +32,6 @@ import { env } from "../config/env";
 import {
   releaseVanDeposit,
   isDepositAuthorized,
-  VanDepositReleaseStatus,
 } from "../lib/van-payments";
 import { sendPatientNotification, sendUserNotification } from "../lib/patient-push";
 import { judgePing } from "../lib/van-location";
@@ -40,8 +39,7 @@ import { endVanShift } from "../lib/van-shift-end";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
-import { renumberQueue } from "../lib/van-queue";
-import { changeVanPhase, recordVanEvent } from "../lib/van-dispatch";
+import { acceptVanRequest, changeVanPhase, declineVanRequest, recordVanEvent } from "../lib/van-dispatch";
 import { cancelVanRequestForPatient } from "../lib/van-cancel";
 
 const router = Router();
@@ -443,232 +441,29 @@ router.get("/shift/current", requireAuth, requireRole("operator"), async (req: A
 });
 
 // POST /api/van/requests/:id/accept
+// POST /api/van/requests/:id/decline
 //
-// Safe to tap twice or retry (VR-1). Accepts on one shift run one at a time
-// under a transaction-scoped advisory lock, so the queue-depth check and
-// position can't race. The request moves pending -> accepted with a
-// compare-and-set in the same transaction that creates the appointment, so
-// exactly one appointment exists. The deposit capture is keyed per request,
-// and an intent that is already captured counts as captured, so a retry
-// after a lost response succeeds instead of failing as "not authorised".
+// Both are safe to tap twice or retry. The rules (who may answer what, the
+// lock, the deposit, the appointment, the history, what the patient is told)
+// live in lib/van-dispatch.ts.
 router.post("/requests/:id/accept", requireAuth, requireRole("operator"), validateParams(vanRequestIdParamsSchema), async (req: AuthRequest, res: Response) => {
   const opProfile = await getOperatorProfile(req.user!.sub);
 
   const shift = await getActiveShift(opProfile.id);
   if (!shift) return res.status(404).json({ error: "No active shift" });
-  if (shift.status === "paused") return res.status(409).json({ error: "Shift is paused. Resume before accepting." });
 
-  const requestId = String(req.params.id);
-  const outcome = await prisma.$transaction(
-    async (tx) => {
-      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shift.id}`}))`;
-
-      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
-      if (!request) return { status: 404, body: { error: "Request not found" } };
-      if (request.shiftId !== shift.id) return { status: 403, body: { error: "Request not on your shift" } };
-      // A repeat of an accept that already went through.
-      if (request.status === "accepted" && request.appointmentId) return { status: 200, body: request, alreadyAccepted: true };
-      if (request.status !== "pending") return { status: 409, body: { error: `Request is already ${request.status}` } };
-
-      if (request.expiresAt && new Date() > request.expiresAt) {
-        return { status: 409, body: { error: "Request expired", message: "This request has expired. The patient may submit a new request." } };
-      }
-
-      const acceptedCount = await tx.vanServiceRequest.count({
-        where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] } },
-      });
-      if (acceptedCount >= MAX_QUEUE_DEPTH) {
-        return { status: 409, body: { error: "Queue full", message: `Maximum ${MAX_QUEUE_DEPTH} stops allowed.` } };
-      }
-
-      const service = await tx.service.findUnique({ where: { id: request.serviceId } });
-      if (!service) return { status: 404, body: { error: "Service not found" } };
-
-      if (request.paymentIntentId && !isMockStripe) {
-        const captureFailure = await captureVanDeposit(request.id, request.paymentIntentId);
-        if (captureFailure) return captureFailure;
-      } else if (request.paymentIntentId && !(await isDepositAuthorized(request.paymentIntentId, request.depositAuthorizedAt))) {
-        // Mock payments still need a hold, so tests can catch an accept without one (N24).
-        return { status: 409, body: { error: "Deposit not authorized", message: "The patient has not authorized the deposit yet." } };
-      }
-
-      const claimed = await tx.vanServiceRequest.updateMany({
-        where: { id: request.id, status: "pending" },
-        data: { status: "accepted", phase: "queued", queuePosition: acceptedCount + 1, acceptedAt: new Date() },
-      });
-      if (claimed.count !== 1) return { status: 409, body: { error: "Request changed while accepting. Refresh and try again." } };
-
-      const etaSeconds = request.etaSecondsSnapshot || 1800; // Default 30 min if no snapshot
-      const startTime = new Date(Date.now() + etaSeconds * 1000);
-      const appointment = await tx.appointment.create({
-        data: {
-          patientId: request.patientId,
-          serviceId: request.serviceId,
-          channel: "van",
-          vanId: request.vanId,
-          startTimeUtc: startTime,
-          endTimeUtc: new Date(startTime.getTime() + service.durationMinutes * 60 * 1000),
-          status: "confirmed",
-          accessDetails: request.accessDetails as any,
-          totalPricePence: service.pricePence,
-          depositPaidPence: request.paymentIntentId ? service.depositPence : 0,
-          stripePaymentId: request.paymentIntentId,
-        },
-      });
-      await tx.vanServiceRequest.update({ where: { id: request.id }, data: { appointmentId: appointment.id } });
-      await renumberQueue(tx, shift.id, "accepted_at");
-      await recordVanEvent(tx, { requestId: request.id, type: "accepted", fromPhase: "queued", toPhase: "queued", actorRole: "operator" });
-
-      return { status: 200, body: await tx.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } }) };
-    },
-    // Holds the lock across the Stripe capture; a timeout rolls back and the
-    // retry finds the deposit already captured.
-    { maxWait: 10_000, timeout: 30_000 }
-  );
-
-  if (outcome.status !== 200 || "alreadyAccepted" in outcome) {
-    return res.status(outcome.status).json(outcome.body);
-  }
-  const updated = outcome.body as { id: string; patientId: string };
-
-  await sendPatientNotification(
-    updated.patientId,
-    "Van Request Accepted",
-    "Your van visit request has been accepted. The van is on its way!",
-    { requestId: updated.id, status: "accepted" }
-  );
-
-  // Seed the patient's first live ETA immediately (bypasses drift/throttle
-  // gates) so the acceptance notification carries a real arrival estimate.
-  // EB-1: force only for the newly accepted request, not every patient on the shift.
-  void broadcastEtaUpdates(shift.id, { forceRequestId: updated.id }).catch((err) =>
-    console.error("[VAN ETA PUSH] post-accept broadcast failed:", safeError(err))
-  );
-
-  return res.json(updated);
+  const result = await acceptVanRequest({ shiftId: shift.id, requestId: String(req.params.id), actorRole: "operator" });
+  return res.status(result.status).json(result.body);
 });
 
-/**
- * Captures a van deposit, or confirms it was already captured. Returns the
- * error response to send, or null when the deposit is captured.
- */
-async function captureVanDeposit(requestId: string, paymentIntentId: string): Promise<{ status: number; body: Record<string, string> } | null> {
-  // The intent must be authorised (the patient completed PaymentSheet). A
-  // pre-capture check gives the operator an actionable message instead of a
-  // raw Stripe error.
-  let intent: Stripe.PaymentIntent;
-  try {
-    intent = await stripe.paymentIntents.retrieve(paymentIntentId);
-  } catch (error) {
-    console.error("Failed to retrieve PaymentIntent for capture:", safeError(error));
-    return { status: 502, body: { error: "Payment service unavailable", message: "Could not verify the deposit before acceptance. Please try again." } };
-  }
-
-  // Captured by an earlier attempt whose response was lost.
-  if (intent.status === "succeeded") return null;
-
-  if (intent.status !== "requires_capture") {
-    return {
-      status: 409,
-      body: {
-        error: "Deposit not authorized",
-        message:
-          intent.status === "canceled"
-            ? "The patient's deposit hold was released. Please decline this request."
-            : `The patient has not completed deposit authorization (status: ${intent.status}). Ask them to authorize the deposit, then accept.`,
-      },
-    };
-  }
-
-  const failed = { status: 409, body: { error: "Payment capture failed", message: "The payment could not be captured. Please ask the patient to try again." } };
-  try {
-    // Keyed per request id: a retried accept reuses the same key instead of
-    // capturing blind.
-    const captured = await stripe.paymentIntents.capture(paymentIntentId, undefined, {
-      idempotencyKey: `van-deposit-capture:${requestId}`,
-    });
-    if (captured.status !== "succeeded") {
-      console.error(`Payment capture failed for intent ${paymentIntentId}: ${captured.status}`);
-      return failed;
-    }
-    return null;
-  } catch (error) {
-    console.error("Failed to capture payment:", safeError(error));
-    return failed;
-  }
-}
-
-// POST /api/van/requests/:id/decline
 router.post("/requests/:id/decline", requireAuth, requireRole("operator"), validateParams(vanRequestIdParamsSchema), async (req: AuthRequest, res: Response) => {
   const opProfile = await getOperatorProfile(req.user!.sub);
 
   const shift = await getActiveShift(opProfile.id);
   if (!shift) return res.status(404).json({ error: "No active shift" });
 
-  const requestId = String(req.params.id);
-  // Run decline under the accept lock with compare-and-set so accept and decline cannot race (CS-49)
-  const outcome = await prisma.$transaction(
-    async (tx) => {
-      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shift.id}`}))`;
-      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
-      if (!request) return { status: 404, body: { error: "Request not found" } };
-      if (request.shiftId !== shift.id) return { status: 403, body: { error: "Request not on your shift" } };
-      if (request.status !== "pending") return { status: 409, body: { error: `Request is already ${request.status}` } };
-
-      const claimed = await tx.vanServiceRequest.updateMany({
-        where: { id: request.id, status: "pending" },
-        data: { status: "declined" },
-      });
-      if (claimed.count !== 1) {
-        return { status: 409, body: { error: "Request changed while declining" } };
-      }
-
-      let releaseStatus: VanDepositReleaseStatus | null = null;
-      let releasedAt: Date | null = null;
-      if (request.paymentIntentId) {
-        const release = await releaseVanDeposit(request.paymentIntentId, "operator_declined");
-        releaseStatus = release.status;
-        if (["released", "already_released", "refunded"].includes(release.status)) {
-          releasedAt = new Date();
-        }
-      }
-
-      const updated = await tx.vanServiceRequest.update({
-        where: { id: request.id },
-        data: {
-          depositReleaseStatus: releaseStatus,
-          depositReleasedAt: releasedAt,
-        },
-      });
-      await recordVanEvent(tx, { requestId: request.id, type: "declined", actorRole: "operator" });
-
-      return {
-        status: 200,
-        body: { ...updated, releaseStatus },
-        patientId: request.patientId,
-        requestId: request.id,
-        releaseStatus,
-      };
-    },
-    { maxWait: 10_000, timeout: 30_000 }
-  );
-
-  if (outcome.status !== 200) {
-    return res.status(outcome.status).json(outcome.body);
-  }
-
-  // Send notification to patient outside the transaction
-  const declineMessage = outcome.releaseStatus === "failed"
-    ? "Unfortunately, your van visit request could not be accommodated at this time. We are releasing your deposit hold."
-    : "Unfortunately, your van visit request could not be accommodated at this time. No deposit was taken — please try again later.";
-  await sendPatientNotification(
-    outcome.patientId!,
-    "Van Request Declined",
-    declineMessage,
-    { requestId: outcome.requestId, status: "declined" }
-  ).catch(() => {});
-
-  return res.json(outcome.body);
+  const result = await declineVanRequest({ shiftId: shift.id, requestId: String(req.params.id), actorRole: "operator" });
+  return res.status(result.status).json(result.body);
 });
 
 // POST /api/van/requests/:id/phase

@@ -10,6 +10,7 @@ import crypto from "crypto";
 //   N6  the appointment follows the real treatment times
 //   N16 the operator sees initials, not names, before accepting
 //   N18 an impossible position report is refused
+// Phase 2: accept and decline go through the rulebook (lib/van-dispatch.ts).
 
 type FakeIntent = { id: string; status: string };
 const intents = new Map<string, FakeIntent>();
@@ -176,6 +177,54 @@ describe("van dispatch rules", () => {
     expect(taps.every((t) => t.body.phase === "on_site")).toBe(true);
     expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).phase).toBe("on_site");
     expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "checked_in" } })).toBe(1);
+  });
+
+  it("declines once however many times it is tapped: one release, one history entry, the same answer", async () => {
+    const { token } = await makeOperator("decline");
+    const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+    const { request } = await makePendingRequest(shift, "decline");
+
+    const taps = await Promise.all(Array.from({ length: 3 }, () => call("POST", `/api/van/requests/${request.id}/decline`, token)));
+    expect(taps.map((t) => t.status)).toEqual([200, 200, 200]);
+    expect(taps.every((t) => t.body.status === "declined" && t.body.releaseStatus === "released")).toBe(true);
+    expect(await prisma.vanRequestEvent.count({ where: { requestId: request.id, type: "declined" } })).toBe(1);
+    expect(intents.get(request.paymentIntentId!)!.status).toBe("canceled");
+    expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } })).depositReleasedAt).not.toBeNull();
+
+    // Declined is final: it cannot then be accepted.
+    const accept = await call("POST", `/api/van/requests/${request.id}/accept`, token);
+    expect(accept.status).toBe(409);
+    expect(await prisma.appointment.count({ where: { patientId: request.patientId } })).toBe(0);
+  });
+
+  it("gives one answer when accept and decline are tapped at once", async () => {
+    const { token } = await makeOperator("both");
+    const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+    const { request } = await makePendingRequest(shift, "both");
+
+    const [accept, decline] = await Promise.all([
+      call("POST", `/api/van/requests/${request.id}/accept`, token),
+      call("POST", `/api/van/requests/${request.id}/decline`, token),
+    ]);
+    expect([accept.status, decline.status].sort()).toEqual([200, 409]);
+    const after = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } });
+    const events = await prisma.vanRequestEvent.findMany({ where: { requestId: request.id, type: { in: ["accepted", "declined"] } } });
+    expect(events.map((e) => e.type)).toEqual([after.status]);
+    expect(await prisma.appointment.count({ where: { patientId: request.patientId } })).toBe(after.status === "accepted" ? 1 : 0);
+  });
+
+  it("does not accept on a paused shift, and accepts once it is resumed", async () => {
+    const { token } = await makeOperator("paused");
+    const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+    const { request } = await makePendingRequest(shift, "paused");
+
+    expect((await call("POST", "/api/van/shift/pause", token)).status).toBe(200);
+    const refused = await call("POST", `/api/van/requests/${request.id}/accept`, token);
+    expect(refused.status).toBe(409);
+    expect(intents.get(request.paymentIntentId!)!.status).toBe("requires_capture");
+
+    expect((await call("POST", "/api/van/shift/resume", token)).status).toBe(200);
+    expect((await call("POST", `/api/van/requests/${request.id}/accept`, token)).status).toBe(200);
   });
 
   it("stamps the appointment with the real treatment times (N6)", async () => {

@@ -1,4 +1,4 @@
-import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage } from "../lib/van-dispatch";
+import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage, pendingCloseMessage, checkCancel } from "../lib/van-dispatch";
 
 // The rulebook for a van stop's phase, as pure functions (plan 16, phase 2).
 describe("checkPhaseChange", () => {
@@ -80,5 +80,42 @@ describe("declineMessage", () => {
     expect(declineMessage("failed")).not.toContain("No deposit was taken");
     expect(declineMessage("released")).toContain("No deposit was taken");
     expect(declineMessage(null)).toContain("No deposit was taken");
+  });
+});
+
+// A request that ends without an accept: declined, timed out, or the shift ended.
+describe("pendingCloseMessage", () => {
+  it("has a title and a reason for each way a request can end without an accept", () => {
+    expect(pendingCloseMessage("declined", null).title).toBe("Van Request Declined");
+    expect(pendingCloseMessage("expired", null)).toMatchObject({ title: "Van Request Expired", body: expect.stringContaining("in time") });
+    expect(pendingCloseMessage("shift_ended", null)).toMatchObject({ title: "Van Went Offline", body: expect.stringContaining("ended its shift") });
+  });
+
+  it("only says no deposit was taken when the hold is not still waiting to be released", () => {
+    for (const how of ["declined", "expired", "shift_ended"] as const) {
+      expect(pendingCloseMessage(how, "failed").body).toContain("We are releasing your deposit hold");
+      expect(pendingCloseMessage(how, "failed").body).not.toContain("No deposit was taken");
+      expect(pendingCloseMessage(how, "released").body).toContain("No deposit was taken");
+    }
+  });
+});
+
+// A patient cancelling: allowed until treatment starts, and safe to repeat.
+describe("checkCancel", () => {
+  it("lets a request be cancelled while it waits, is queued, or the van is on its way or outside", () => {
+    for (const [status, phase] of [["pending", null], ["accepted", "queued"], ["in_progress", "en_route"], ["in_progress", "on_site"]] as const) {
+      expect(checkCancel({ status, phase })).toEqual({ kind: "go" });
+    }
+  });
+
+  it("treats cancelling twice as a repeat, not an error", () => {
+    expect(checkCancel({ status: "cancelled", phase: "cancelled" })).toEqual({ kind: "repeat" });
+  });
+
+  it("refuses once treatment has started, and for a request that already ended another way", () => {
+    expect(checkCancel({ status: "in_progress", phase: "in_treatment" })).toMatchObject({ kind: "refuse", error: expect.stringContaining("during treatment") });
+    for (const status of ["completed", "no_show", "declined", "expired"]) {
+      expect(checkCancel({ status, phase: null })).toMatchObject({ kind: "refuse", error: `Request is already ${status}` });
+    }
   });
 });

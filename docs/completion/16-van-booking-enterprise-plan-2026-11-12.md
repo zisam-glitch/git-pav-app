@@ -334,7 +334,15 @@ second tap on Decline returns the declined request and releases, records and sen
 error), and the "shift is paused" check is now made under the shift lock. The deposit capture moved to
 `van-payments.ts` unchanged; when money is held, taken and returned is the same. Checked here: typecheck, lint and the
 pure tests. The new database-backed tests in `van-dispatch-rules.test.ts` need CI.
-**Still to do in phase 2:** move cancel, expiry and shift end fully into the module (today they only
-write their history entry through it), the stored plan with arrival times (N20, N10), pending requests counting as
+**Done (third pull request):** the time-out, the patient's cancel and the end of a shift are in the rulebook
+(`expireVanRequest`, `cancelVanRequest`, `endVanShift`, with the pure rule `checkCancel`). Decline, time-out and
+shift end share one function for a request that ends without an accept (`closePendingRequest`) and one set of
+messages (`pendingCloseMessage`). `van-cancel.ts` and `van-shift-end.ts` are gone. Behaviour changes: ending a shift
+checks for open stops, closes the pending requests and takes the shift offline in one transaction under the shift
+lock (before, an accept could land between the check and the end, leaving an accepted visit on an ended shift);
+the "van went offline" push is sent after that transaction commits; a second Cancel tap returns the cancelled visit
+instead of an error. When the deposit is held, taken, returned or kept is the same. Checked here: typecheck, lint and
+the pure tests; the database-backed tests need CI.
+**Still to do in phase 2:** the stored plan with arrival times (N20, N10), pending requests counting as
 provisional stops (N7, N12), placing a new request at the cheapest position (N8), and the promise window. The
 Stripe-outside-the-lock change (N22) waits for the owner's go-ahead.

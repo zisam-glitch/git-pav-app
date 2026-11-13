@@ -165,6 +165,56 @@ async function auditRelease(
 }
 
 /**
+ * Captures a van deposit, or confirms it was already captured. Returns the
+ * error response to send, or null when the deposit is captured.
+ */
+export async function captureVanDeposit(requestId: string, paymentIntentId: string): Promise<{ status: number; body: Record<string, string> } | null> {
+  // The intent must be authorised (the patient completed PaymentSheet). A
+  // pre-capture check gives the operator an actionable message instead of a
+  // raw Stripe error.
+  let intent: Stripe.PaymentIntent;
+  try {
+    intent = await getStripe().paymentIntents.retrieve(paymentIntentId);
+  } catch (error) {
+    console.error("Failed to retrieve PaymentIntent for capture:", safeError(error));
+    return { status: 502, body: { error: "Payment service unavailable", message: "Could not verify the deposit before acceptance. Please try again." } };
+  }
+
+  // Captured by an earlier attempt whose response was lost.
+  if (intent.status === "succeeded") return null;
+
+  if (intent.status !== "requires_capture") {
+    return {
+      status: 409,
+      body: {
+        error: "Deposit not authorized",
+        message:
+          intent.status === "canceled"
+            ? "The patient's deposit hold was released. Please decline this request."
+            : `The patient has not completed deposit authorization (status: ${intent.status}). Ask them to authorize the deposit, then accept.`,
+      },
+    };
+  }
+
+  const failed = { status: 409, body: { error: "Payment capture failed", message: "The payment could not be captured. Please ask the patient to try again." } };
+  try {
+    // Keyed per request id: a retried accept reuses the same key instead of
+    // capturing blind.
+    const captured = await getStripe().paymentIntents.capture(paymentIntentId, undefined, {
+      idempotencyKey: `van-deposit-capture:${requestId}`,
+    });
+    if (captured.status !== "succeeded") {
+      console.error(`Payment capture failed for intent ${paymentIntentId}: ${captured.status}`);
+      return failed;
+    }
+    return null;
+  } catch (error) {
+    console.error("Failed to capture payment:", safeError(error));
+    return failed;
+  }
+}
+
+/**
  * Whether the patient has authorised the deposit PaymentIntent for this
  * van request (i.e. PaymentSheet succeeded and the hold is in place).
  */

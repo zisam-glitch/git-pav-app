@@ -5,8 +5,9 @@
 // Now the phase change (and the check-in, which is a phase change) lives here:
 // one lock, one table of allowed moves, one compare-and-set, one history entry
 // written in the same transaction, and one set of things that follow (the
-// patient's push, visit points, everyone's ETA). The accept, decline, cancel,
-// expiry and shift-end paths write their history through `recordVanEvent`.
+// patient's push, visit points, everyone's ETA). Accept and decline live here
+// too, under the same lock. The cancel, expiry and shift-end paths still only
+// write their history through `recordVanEvent`.
 
 import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
@@ -16,6 +17,8 @@ import { awardVisitPoints } from "./rewards";
 import { sendPatientNotification } from "./patient-push";
 import { broadcastEtaUpdates } from "./van-eta-broadcast";
 import { safeError } from "./log-safety";
+import { MAX_QUEUE_DEPTH } from "./van-eta";
+import { captureVanDeposit, isDepositAuthorized, isMockStripe, releaseVanDeposit, VanDepositReleaseStatus } from "./van-payments";
 
 // ─── History ──────────────────────────────────────────────────────────────
 
@@ -110,7 +113,8 @@ export const PHASE_MESSAGES: Record<string, { title: string; body: string }> = {
 
 // ─── The phase change ─────────────────────────────────────────────────────
 
-export type PhaseChangeResult = { status: number; body: Record<string, unknown> };
+export type DispatchResult = { status: number; body: Record<string, unknown> };
+export type PhaseChangeResult = DispatchResult;
 
 type TxOutcome =
   | PhaseChangeResult
@@ -238,6 +242,220 @@ export async function changeVanPhase(opts: {
   void broadcastEtaUpdates(shiftId).catch((err) =>
     console.error("[VAN ETA PUSH] post-phase broadcast failed:", safeError(err))
   );
+
+  return { status: outcome.status, body: outcome.body };
+}
+
+// ─── Accept and decline ───────────────────────────────────────────────────
+
+export type VanDecision = "accept" | "decline";
+
+export type DecisionCheck =
+  | { kind: "go" }
+  | { kind: "repeat" }
+  | { kind: "refuse"; error: string; message?: string };
+
+const DECIDED_STATUS: Record<VanDecision, string> = { accept: "accepted", decline: "declined" };
+
+/**
+ * Whether a request may be accepted or declined. Pure.
+ *
+ * Only a pending request can be answered. The same answer given twice is a
+ * repeat (a second tap, or a retry after a lost response), not an error. A
+ * request whose time has run out can be declined but not accepted.
+ */
+export function checkDecision(
+  request: { status: string; appointmentId: string | null; expiresAt: Date | null },
+  decision: VanDecision,
+  now: Date
+): DecisionCheck {
+  if (request.status === DECIDED_STATUS[decision]) {
+    // An accept only counts as done once its appointment exists.
+    if (decision === "decline" || request.appointmentId) return { kind: "repeat" };
+  }
+  if (request.status !== "pending") return { kind: "refuse", error: `Request is already ${request.status}` };
+  if (decision === "accept" && request.expiresAt && now > request.expiresAt) {
+    return { kind: "refuse", error: "Request expired", message: "This request has expired. The patient may submit a new request." };
+  }
+  return { kind: "go" };
+}
+
+/** What the patient is told when a van cannot take their request. Pure. */
+export function declineMessage(releaseStatus: VanDepositReleaseStatus | null): string {
+  return releaseStatus === "failed"
+    ? "Unfortunately, your van visit request could not be accommodated at this time. We are releasing your deposit hold."
+    : "Unfortunately, your van visit request could not be accommodated at this time. No deposit was taken — please try again later.";
+}
+
+const refusal = (check: { error: string; message?: string }): DispatchResult => ({
+  status: 409,
+  body: check.message ? { error: check.error, message: check.message } : { error: check.error },
+});
+
+type DecisionOutcome = DispatchResult | (DispatchResult & { changed: true; patientId: string });
+
+/**
+ * Accepts a pending request onto a shift.
+ *
+ * Safe to tap twice or retry (VR-1). Answers on one shift run one at a time
+ * under the shift lock, so the queue-depth check and position cannot race. The
+ * request moves pending -> accepted with a compare-and-set in the same
+ * transaction that creates the appointment and writes the history, so exactly
+ * one appointment exists. The deposit capture is keyed per request, and an
+ * intent already captured counts as captured, so a retry after a lost
+ * response succeeds. A paused shift accepts nothing.
+ */
+export async function acceptVanRequest(opts: { shiftId: string; requestId: string; actorRole: VanActorRole }): Promise<DispatchResult> {
+  const { shiftId, requestId, actorRole } = opts;
+
+  const outcome: DecisionOutcome = await prisma.$transaction(
+    async (tx): Promise<DecisionOutcome> => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shiftId}`}))`;
+
+      // Read under the lock: the shift may have been paused or ended since the caller looked.
+      const shift = await tx.vanShift.findUnique({ where: { id: shiftId }, select: { status: true, endedAt: true } });
+      if (!shift || shift.endedAt || shift.status === "offline") return { status: 404, body: { error: "No active shift" } };
+      if (shift.status === "paused") return { status: 409, body: { error: "Shift is paused. Resume before accepting." } };
+
+      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
+      if (!request) return { status: 404, body: { error: "Request not found" } };
+      if (request.shiftId !== shiftId) return { status: 403, body: { error: "Request not on your shift" } };
+
+      const now = new Date();
+      const check = checkDecision(request, "accept", now);
+      if (check.kind === "repeat") return { status: 200, body: request };
+      if (check.kind === "refuse") return refusal(check);
+
+      const acceptedCount = await tx.vanServiceRequest.count({
+        where: { shiftId, status: { in: ["accepted", "in_progress"] } },
+      });
+      if (acceptedCount >= MAX_QUEUE_DEPTH) {
+        return { status: 409, body: { error: "Queue full", message: `Maximum ${MAX_QUEUE_DEPTH} stops allowed.` } };
+      }
+
+      const service = await tx.service.findUnique({ where: { id: request.serviceId } });
+      if (!service) return { status: 404, body: { error: "Service not found" } };
+
+      if (request.paymentIntentId && !isMockStripe) {
+        const captureFailure = await captureVanDeposit(request.id, request.paymentIntentId);
+        if (captureFailure) return captureFailure;
+      } else if (request.paymentIntentId && !(await isDepositAuthorized(request.paymentIntentId, request.depositAuthorizedAt))) {
+        // Mock payments still need a hold, so tests can catch an accept without one (N24).
+        return { status: 409, body: { error: "Deposit not authorized", message: "The patient has not authorized the deposit yet." } };
+      }
+
+      const claimed = await tx.vanServiceRequest.updateMany({
+        where: { id: request.id, status: "pending" },
+        data: { status: "accepted", phase: "queued", queuePosition: acceptedCount + 1, acceptedAt: now },
+      });
+      if (claimed.count !== 1) return { status: 409, body: { error: "Request changed while accepting. Refresh and try again." } };
+
+      const etaSeconds = request.etaSecondsSnapshot || 1800; // 30 minutes when there is no snapshot
+      const startTime = new Date(now.getTime() + etaSeconds * 1000);
+      const appointment = await tx.appointment.create({
+        data: {
+          patientId: request.patientId,
+          serviceId: request.serviceId,
+          channel: "van",
+          vanId: request.vanId,
+          startTimeUtc: startTime,
+          endTimeUtc: new Date(startTime.getTime() + service.durationMinutes * 60 * 1000),
+          status: "confirmed",
+          accessDetails: request.accessDetails as Prisma.InputJsonValue,
+          totalPricePence: service.pricePence,
+          depositPaidPence: request.paymentIntentId ? service.depositPence : 0,
+          stripePaymentId: request.paymentIntentId,
+        },
+      });
+      await tx.vanServiceRequest.update({ where: { id: request.id }, data: { appointmentId: appointment.id } });
+      await renumberQueue(tx, shiftId, "accepted_at");
+      await recordVanEvent(tx, { requestId: request.id, type: "accepted", fromPhase: "queued", toPhase: "queued", actorRole });
+
+      return {
+        status: 200,
+        body: await tx.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } }),
+        changed: true,
+        patientId: request.patientId,
+      };
+    },
+    // Holds the lock across the Stripe capture; a timeout rolls back and the
+    // retry finds the deposit already captured.
+    { maxWait: 10_000, timeout: 30_000 }
+  );
+
+  if (!("changed" in outcome)) return outcome;
+
+  await sendPatientNotification(
+    outcome.patientId,
+    "Van Request Accepted",
+    "Your van visit request has been accepted. The van is on its way!",
+    { requestId, status: "accepted" }
+  );
+
+  // Seed the patient's first live ETA at once (past the drift and throttle
+  // gates), for the newly accepted request only (EB-1).
+  void broadcastEtaUpdates(shiftId, { forceRequestId: requestId }).catch((err) =>
+    console.error("[VAN ETA PUSH] post-accept broadcast failed:", safeError(err))
+  );
+
+  return { status: outcome.status, body: outcome.body };
+}
+
+/**
+ * Declines a pending request and lifts the deposit hold.
+ *
+ * Runs under the same lock as accept with a compare-and-set, so the two
+ * cannot both win (CS-49). Safe to repeat: a second tap returns the declined
+ * request and releases, records and sends nothing again.
+ */
+export async function declineVanRequest(opts: { shiftId: string; requestId: string; actorRole: VanActorRole }): Promise<DispatchResult> {
+  const { shiftId, requestId, actorRole } = opts;
+
+  const outcome: DecisionOutcome = await prisma.$transaction(
+    async (tx): Promise<DecisionOutcome> => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shiftId}`}))`;
+
+      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
+      if (!request) return { status: 404, body: { error: "Request not found" } };
+      if (request.shiftId !== shiftId) return { status: 403, body: { error: "Request not on your shift" } };
+
+      const check = checkDecision(request, "decline", new Date());
+      if (check.kind === "repeat") return { status: 200, body: { ...request, releaseStatus: request.depositReleaseStatus } };
+      if (check.kind === "refuse") return refusal(check);
+
+      const claimed = await tx.vanServiceRequest.updateMany({
+        where: { id: request.id, status: "pending" },
+        data: { status: "declined" },
+      });
+      if (claimed.count !== 1) return { status: 409, body: { error: "Request changed while declining" } };
+
+      let releaseStatus: VanDepositReleaseStatus | null = null;
+      let releasedAt: Date | null = null;
+      if (request.paymentIntentId) {
+        const release = await releaseVanDeposit(request.paymentIntentId, "operator_declined");
+        releaseStatus = release.status;
+        if (["released", "already_released", "refunded"].includes(release.status)) releasedAt = new Date();
+      }
+
+      const updated = await tx.vanServiceRequest.update({
+        where: { id: request.id },
+        data: { depositReleaseStatus: releaseStatus, depositReleasedAt: releasedAt },
+      });
+      await recordVanEvent(tx, { requestId: request.id, type: "declined", actorRole });
+
+      return { status: 200, body: { ...updated, releaseStatus }, changed: true, patientId: request.patientId };
+    },
+    { maxWait: 10_000, timeout: 30_000 }
+  );
+
+  if (!("changed" in outcome)) return outcome;
+
+  await sendPatientNotification(
+    outcome.patientId,
+    "Van Request Declined",
+    declineMessage((outcome.body.releaseStatus as VanDepositReleaseStatus | null) ?? null),
+    { requestId, status: "declined" }
+  ).catch(() => {});
 
   return { status: outcome.status, body: outcome.body };
 }

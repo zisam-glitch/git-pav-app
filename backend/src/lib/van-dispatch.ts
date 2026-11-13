@@ -5,9 +5,9 @@
 // Now the phase change (and the check-in, which is a phase change) lives here:
 // one lock, one table of allowed moves, one compare-and-set, one history entry
 // written in the same transaction, and one set of things that follow (the
-// patient's push, visit points, everyone's ETA). Accept and decline live here
-// too, under the same lock. The cancel, expiry and shift-end paths still only
-// write their history through `recordVanEvent`.
+// patient's push, visit points, everyone's ETA). Accept, decline, the time-out,
+// the patient's cancel and the end of a shift live here too, under the same
+// lock, each with its rule as a pure function.
 
 import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
@@ -18,7 +18,17 @@ import { sendPatientNotification } from "./patient-push";
 import { broadcastEtaUpdates } from "./van-eta-broadcast";
 import { safeError } from "./log-safety";
 import { MAX_QUEUE_DEPTH } from "./van-eta";
-import { captureVanDeposit, isDepositAuthorized, isMockStripe, releaseVanDeposit, VanDepositReleaseStatus } from "./van-payments";
+import {
+  captureVanDeposit,
+  isDepositAuthorized,
+  isMockStripe,
+  releaseVanDeposit,
+  VanDepositReleaseReason,
+  VanDepositReleaseStatus,
+  vanCancellationKeepsDeposit,
+} from "./van-payments";
+import { cancelAppointmentReminders } from "./background-jobs";
+import { logFailure } from "./best-effort";
 
 // ─── History ──────────────────────────────────────────────────────────────
 
@@ -280,11 +290,89 @@ export function checkDecision(
   return { kind: "go" };
 }
 
+// ─── A request that ends without an accept ────────────────────────────────
+
+/** The three ways a pending request ends without a van taking it. */
+export type PendingClose = "declined" | "expired" | "shift_ended";
+
+const PENDING_CLOSES: Record<
+  PendingClose,
+  { status: "declined" | "expired"; releaseReason: VanDepositReleaseReason; title: string; lead: string }
+> = {
+  declined: {
+    status: "declined",
+    releaseReason: "operator_declined",
+    title: "Van Request Declined",
+    lead: "Unfortunately, your van visit request could not be accommodated at this time.",
+  },
+  expired: {
+    status: "expired",
+    releaseReason: "expired",
+    title: "Van Request Expired",
+    lead: "No operator accepted your van request in time, so it has expired.",
+  },
+  shift_ended: {
+    status: "expired",
+    releaseReason: "shift_ended",
+    title: "Van Went Offline",
+    lead: "The van has ended its shift before accepting your request.",
+  },
+};
+
+/** What the patient is told when their request ends without an accept. Pure. */
+export function pendingCloseMessage(how: PendingClose, releaseStatus: VanDepositReleaseStatus | null): { title: string; body: string } {
+  const { title, lead } = PENDING_CLOSES[how];
+  const deposit = releaseStatus === "failed" ? "We are releasing your deposit hold." : "No deposit was taken — please try again later.";
+  return { title, body: `${lead} ${deposit}` };
+}
+
 /** What the patient is told when a van cannot take their request. Pure. */
 export function declineMessage(releaseStatus: VanDepositReleaseStatus | null): string {
-  return releaseStatus === "failed"
-    ? "Unfortunately, your van visit request could not be accommodated at this time. We are releasing your deposit hold."
-    : "Unfortunately, your van visit request could not be accommodated at this time. No deposit was taken — please try again later.";
+  return pendingCloseMessage("declined", releaseStatus).body;
+}
+
+/** A hold that is known to be gone, so the release needs no retry. */
+const HOLD_LIFTED: VanDepositReleaseStatus[] = ["released", "already_released", "refunded", "mock"];
+
+type ClosedPending = { releaseStatus: VanDepositReleaseStatus | null; updated: Record<string, unknown> };
+
+/**
+ * Ends a pending request without an accept. Call it inside the shift lock.
+ *
+ * One compare-and-set from pending, one release of the deposit hold, one
+ * history entry. Returns null when the request was no longer pending, and
+ * then nothing was released or recorded. A release that fails is stored as
+ * failed and retried by the background job; it never blocks the close.
+ */
+async function closePendingRequest(
+  tx: Prisma.TransactionClient,
+  request: { id: string; paymentIntentId: string | null },
+  how: PendingClose,
+  actorRole: VanActorRole
+): Promise<ClosedPending | null> {
+  const { status, releaseReason } = PENDING_CLOSES[how];
+  const claimed = await tx.vanServiceRequest.updateMany({ where: { id: request.id, status: "pending" }, data: { status } });
+  if (claimed.count !== 1) return null;
+
+  let releaseStatus: VanDepositReleaseStatus | null = null;
+  if (request.paymentIntentId) {
+    releaseStatus = (await releaseVanDeposit(request.paymentIntentId, releaseReason)).status;
+  }
+  const updated = await tx.vanServiceRequest.update({
+    where: { id: request.id },
+    data: {
+      depositReleaseStatus: releaseStatus,
+      depositReleasedAt: releaseStatus && HOLD_LIFTED.includes(releaseStatus) ? new Date() : null,
+    },
+  });
+  await recordVanEvent(tx, { requestId: request.id, type: how, actorRole });
+  return { releaseStatus, updated };
+}
+
+/** Tells the patient their request ended without an accept. Never throws. */
+async function notifyPendingClosed(patientId: string, requestId: string, how: PendingClose, releaseStatus: VanDepositReleaseStatus | null) {
+  const { title, body } = pendingCloseMessage(how, releaseStatus);
+  await sendPatientNotification(patientId, title, body, { requestId, status: PENDING_CLOSES[how].status }).catch(() => {});
 }
 
 const refusal = (check: { error: string; message?: string }): DispatchResult => ({
@@ -423,39 +511,243 @@ export async function declineVanRequest(opts: { shiftId: string; requestId: stri
       if (check.kind === "repeat") return { status: 200, body: { ...request, releaseStatus: request.depositReleaseStatus } };
       if (check.kind === "refuse") return refusal(check);
 
-      const claimed = await tx.vanServiceRequest.updateMany({
-        where: { id: request.id, status: "pending" },
-        data: { status: "declined" },
-      });
-      if (claimed.count !== 1) return { status: 409, body: { error: "Request changed while declining" } };
+      const closed = await closePendingRequest(tx, request, "declined", actorRole);
+      if (!closed) return { status: 409, body: { error: "Request changed while declining" } };
 
-      let releaseStatus: VanDepositReleaseStatus | null = null;
-      let releasedAt: Date | null = null;
-      if (request.paymentIntentId) {
-        const release = await releaseVanDeposit(request.paymentIntentId, "operator_declined");
-        releaseStatus = release.status;
-        if (["released", "already_released", "refunded"].includes(release.status)) releasedAt = new Date();
-      }
-
-      const updated = await tx.vanServiceRequest.update({
-        where: { id: request.id },
-        data: { depositReleaseStatus: releaseStatus, depositReleasedAt: releasedAt },
-      });
-      await recordVanEvent(tx, { requestId: request.id, type: "declined", actorRole });
-
-      return { status: 200, body: { ...updated, releaseStatus }, changed: true, patientId: request.patientId };
+      return { status: 200, body: { ...closed.updated, releaseStatus: closed.releaseStatus }, changed: true, patientId: request.patientId };
     },
     { maxWait: 10_000, timeout: 30_000 }
   );
 
   if (!("changed" in outcome)) return outcome;
 
-  await sendPatientNotification(
-    outcome.patientId,
-    "Van Request Declined",
-    declineMessage((outcome.body.releaseStatus as VanDepositReleaseStatus | null) ?? null),
-    { requestId, status: "declined" }
-  ).catch(() => {});
+  await notifyPendingClosed(outcome.patientId, requestId, "declined", (outcome.body.releaseStatus as VanDepositReleaseStatus | null) ?? null);
 
   return { status: outcome.status, body: outcome.body };
+}
+
+// ─── Time-out ─────────────────────────────────────────────────────────────
+
+/**
+ * Times out a pending request nobody answered, and lifts the deposit hold.
+ *
+ * Under the shift lock with a compare-and-set, so it cannot race an accept or
+ * a decline (CS-49). Returns whether it timed the request out: false when it
+ * was answered first, or its time has not run out.
+ */
+export async function expireVanRequest(requestId: string, now: Date = new Date()): Promise<boolean> {
+  const seen = await prisma.vanServiceRequest.findUnique({ where: { id: requestId }, select: { shiftId: true } });
+  if (!seen?.shiftId) return false;
+
+  const closed = await prisma.$transaction(
+    async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${seen.shiftId}`}))`;
+      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
+      if (!request || request.status !== "pending" || !request.expiresAt || request.expiresAt > now) return null;
+      const result = await closePendingRequest(tx, request, "expired", "system");
+      return result && { patientId: request.patientId, releaseStatus: result.releaseStatus };
+    },
+    { maxWait: 10_000, timeout: 30_000 }
+  );
+  if (!closed) return false;
+
+  await notifyPendingClosed(closed.patientId, requestId, "expired", closed.releaseStatus);
+  return true;
+}
+
+// ─── The patient cancels ──────────────────────────────────────────────────
+
+const CANCELLABLE = ["pending", "accepted", "in_progress"];
+
+/**
+ * Whether a van visit may be cancelled. Pure.
+ *
+ * Allowed until treatment starts. Cancelling a visit that is already
+ * cancelled is a repeat, not an error.
+ */
+export function checkCancel(request: { status: string; phase: string | null }): DecisionCheck {
+  if (request.status === "cancelled") return { kind: "repeat" };
+  if (request.phase === "in_treatment") return { kind: "refuse", error: "Cannot cancel during treatment. Contact support." };
+  if (!CANCELLABLE.includes(request.status)) return { kind: "refuse", error: `Request is already ${request.status}` };
+  return { kind: "go" };
+}
+
+export type VanCancelOutcome = {
+  status: number;
+  body: Record<string, unknown>;
+  depositOutcome?: string | null;
+  refundId?: string | null;
+  /** The request that was cancelled, when this call cancelled it. */
+  cancelled?: { id: string; appointmentId: string | null; shiftId: string };
+};
+
+/**
+ * Cancels a van visit for the patient. One path for the tracking screen and
+ * the appointment screen, so the rules cannot drift apart (N3).
+ *
+ * Under the shift lock with a compare-and-set, so a cancel cannot race an
+ * accept. The deposit is released or kept under the cancellation policy; a
+ * release that fails undoes the cancel so the patient can try again. The
+ * queue closes up, reminders are cleared and every other patient's ETA is
+ * refreshed. Safe to repeat: a second tap returns the cancelled visit and
+ * releases, records and sends nothing again.
+ */
+export async function cancelVanRequest(requestId: string, actorRole: VanActorRole = "patient"): Promise<VanCancelOutcome> {
+  const request = await prisma.vanServiceRequest.findUnique({ where: { id: requestId } });
+  if (!request) return { status: 404, body: { error: "Request not found" } };
+
+  const repeatOf = (r: { depositReleaseStatus: string | null }): VanCancelOutcome => ({
+    status: 200,
+    body: { ...r, depositOutcome: r.depositReleaseStatus, depositRetained: r.depositReleaseStatus === "retained" },
+    depositOutcome: r.depositReleaseStatus,
+  });
+
+  const first = checkCancel(request);
+  if (first.kind === "repeat") return repeatOf(request);
+  if (first.kind === "refuse") return refusal(first);
+
+  let outcome: VanCancelOutcome;
+  try {
+    outcome = await prisma.$transaction(
+      async (tx): Promise<VanCancelOutcome> => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${request.shiftId}`}))`;
+
+        const fresh = await tx.vanServiceRequest.findUnique({ where: { id: request.id } });
+        if (!fresh) return { status: 404, body: { error: "Request not found" } };
+        const check = checkCancel(fresh);
+        if (check.kind === "repeat") return repeatOf(fresh);
+        if (check.kind === "refuse") return refusal(check);
+
+        const cancelled = await tx.vanServiceRequest.updateMany({
+          where: { id: fresh.id, status: fresh.status, appointmentId: fresh.appointmentId },
+          data: { status: "cancelled", phase: "cancelled" },
+        });
+        if (cancelled.count !== 1) {
+          return { status: 409, body: { error: "Request changed while cancelling. Please try again." } };
+        }
+
+        const keepsDeposit = vanCancellationKeepsDeposit(fresh.phase);
+        let depositOutcome: VanDepositReleaseStatus | null = null;
+        let refundId: string | null = null;
+        if (fresh.paymentIntentId) {
+          const release = await releaseVanDeposit(fresh.paymentIntentId, "patient_cancelled", {
+            retainCaptured: keepsDeposit,
+          });
+          depositOutcome = release.status;
+          refundId = release.refundId ?? null;
+          if (release.status === "failed") throw new Error("Could not release deposit");
+        }
+
+        const updated = await tx.vanServiceRequest.update({
+          where: { id: fresh.id },
+          data: {
+            depositReleaseStatus: depositOutcome,
+            depositReleasedAt: ["released", "already_released", "refunded", "retained"].includes(depositOutcome ?? "")
+              ? new Date()
+              : null,
+          },
+        });
+
+        await recordVanEvent(tx, { requestId: fresh.id, type: "cancelled", fromPhase: fresh.phase, toPhase: "cancelled", actorRole });
+        if (fresh.appointmentId) {
+          await tx.appointment.updateMany({ where: { id: fresh.appointmentId }, data: { status: "cancelled" } });
+        }
+        if (fresh.status === "accepted" || fresh.status === "in_progress") {
+          await renumberQueue(tx, fresh.shiftId, "queue_position");
+        }
+
+        return {
+          status: 200,
+          body: { ...updated, depositOutcome, depositRetained: depositOutcome === "retained" },
+          depositOutcome,
+          refundId,
+          cancelled: { id: fresh.id, appointmentId: fresh.appointmentId, shiftId: fresh.shiftId },
+        };
+      },
+      { maxWait: 10_000, timeout: 30_000 }
+    );
+  } catch (err: unknown) {
+    if (err instanceof Error && err.message === "Could not release deposit") {
+      return {
+        status: 502,
+        body: {
+          error: "Could not release deposit",
+          message: "The payment hold could not be released right now. Please try cancelling again in a moment.",
+        },
+      };
+    }
+    throw err;
+  }
+
+  if (outcome.cancelled) {
+    const { appointmentId, shiftId } = outcome.cancelled;
+    if (appointmentId) await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));
+    // A cancel shortens everyone else's wait.
+    void broadcastEtaUpdates(shiftId).catch((err) =>
+      console.error("[VAN ETA PUSH] post-cancel broadcast failed:", safeError(err))
+    );
+  }
+  return outcome;
+}
+
+// ─── End of a shift ───────────────────────────────────────────────────────
+
+type VanShiftRow = Awaited<ReturnType<typeof prisma.vanShift.update>>;
+
+export type EndVanShiftResult =
+  | { ended: true; shift: VanShiftRow; expiredRequests: number; failedReleases: string[] }
+  | { ended: false; openStops: number };
+
+/**
+ * Ends a van shift. One path for the operator ending their own shift and for
+ * staff ending one that was left running.
+ *
+ * Stops already accepted or under way block it: those patients are waiting
+ * with a deposit taken, so someone has to complete or cancel them first. That
+ * check, the closing of every pending request and the shift going offline all
+ * happen under the shift lock in one transaction, so an accept can land
+ * before the end (and block it) or after it (and be refused), never in
+ * between. A failed release is reported but never blocks the end; the
+ * background job retries it. Ending a shift that has already ended changes
+ * nothing.
+ */
+export async function endVanShift(shift: { id: string }): Promise<EndVanShiftResult> {
+  const closedRequests: { id: string; patientId: string; releaseStatus: VanDepositReleaseStatus | null }[] = [];
+
+  const result = await prisma.$transaction(
+    async (tx): Promise<{ ended: true; shift: VanShiftRow } | { ended: false; openStops: number }> => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shift.id}`}))`;
+
+      const current = await tx.vanShift.findUniqueOrThrow({ where: { id: shift.id } });
+      if (current.endedAt) return { ended: true, shift: current };
+
+      const openStops = await tx.vanServiceRequest.count({
+        where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] } },
+      });
+      if (openStops > 0) return { ended: false, openStops };
+
+      const pendingRequests = await tx.vanServiceRequest.findMany({
+        where: { shiftId: shift.id, status: "pending" },
+        select: { id: true, patientId: true, paymentIntentId: true },
+      });
+      for (const pending of pendingRequests) {
+        const closed = await closePendingRequest(tx, pending, "shift_ended", "system");
+        if (closed) closedRequests.push({ id: pending.id, patientId: pending.patientId, releaseStatus: closed.releaseStatus });
+      }
+
+      return { ended: true, shift: await tx.vanShift.update({ where: { id: shift.id }, data: { status: "offline", endedAt: new Date() } }) };
+    },
+    { maxWait: 10_000, timeout: 30_000 }
+  );
+  if (!result.ended) return result;
+
+  // After the commit, so nobody is told about an end that was rolled back.
+  for (const closed of closedRequests) {
+    await notifyPendingClosed(closed.patientId, closed.id, "shift_ended", closed.releaseStatus);
+  }
+  const failedReleases = closedRequests.filter((c) => c.releaseStatus === "failed").map((c) => c.id);
+  if (failedReleases.length > 0) {
+    console.error(`[VAN SHIFT END] Failed to release deposits for requests: ${failedReleases.join(", ")}`);
+  }
+  return { ended: true, shift: result.shift, expiredRequests: closedRequests.length, failedReleases };
 }

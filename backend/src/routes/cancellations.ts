@@ -11,7 +11,7 @@ import {
   getCancellationPolicy,
   appointmentRefundPolicy,
 } from "../lib/cancellation-policy";
-import { cancelVanRequestForPatient } from "../lib/van-cancel";
+import { cancelVanRequest } from "../lib/van-dispatch";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { pseudonymiseIp } from "../lib/audit-security";
@@ -82,7 +82,7 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
     const policy = getCancellationPolicy({ channel: "van", phase: vanRequest.phase });
     // The same code the tracking screen uses: lock, deposit rule, queue
     // renumbering, reminders and the other patients' ETAs (N3).
-    const cancelled = await cancelVanRequestForPatient(vanRequest.id);
+    const cancelled = await cancelVanRequest(vanRequest.id);
     if (cancelled.status !== 200) return res.status(cancelled.status).json(cancelled.body);
     const stripeRefundId = cancelled.refundId ?? null;
 

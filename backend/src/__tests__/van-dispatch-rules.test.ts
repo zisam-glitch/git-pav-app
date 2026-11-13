@@ -227,6 +227,58 @@ describe("van dispatch rules", () => {
     expect((await call("POST", `/api/van/requests/${request.id}/accept`, token)).status).toBe(200);
   });
 
+  it("never ends a shift with an accepted stop on it, however accept and end-shift interleave", async () => {
+    for (const round of ["a", "b", "c"]) {
+      const { token } = await makeOperator(`end${round}`);
+      const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+      const { request } = await makePendingRequest(shift, `end${round}`);
+
+      const [accept, end] = await Promise.all([
+        call("POST", `/api/van/requests/${request.id}/accept`, token),
+        call("POST", "/api/van/shift/end", token),
+      ]);
+      const shiftAfter = await prisma.vanShift.findUniqueOrThrow({ where: { id: shift.id } });
+      const requestAfter = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } });
+      if (end.status === 200) {
+        expect(accept.status).not.toBe(200);
+        expect(shiftAfter.endedAt).not.toBeNull();
+        expect(requestAfter.status).toBe("expired");
+        expect(intents.get(request.paymentIntentId!)!.status).toBe("canceled");
+        expect(await prisma.vanRequestEvent.count({ where: { requestId: request.id, type: "shift_ended" } })).toBe(1);
+      } else {
+        expect(end.status).toBe(409);
+        expect(accept.status).toBe(200);
+        expect(shiftAfter.endedAt).toBeNull();
+        expect(requestAfter.status).toBe("accepted");
+      }
+    }
+  });
+
+  it("times a request out once: one release, one history entry, and leaves one still in time alone", async () => {
+    const { processExpiredVanRequests } = require("../lib/background-jobs");
+    const { token } = await makeOperator("expiry");
+    const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+    const { request: late } = await makePendingRequest(shift, "late");
+    const { request: inTime } = await makePendingRequest(shift, "intime");
+    await prisma.vanServiceRequest.update({ where: { id: late.id }, data: { expiresAt: new Date(Date.now() - 1000) } });
+
+    await processExpiredVanRequests();
+    await processExpiredVanRequests();
+
+    const after = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: late.id } });
+    expect(after.status).toBe("expired");
+    expect(after.depositReleaseStatus).toBe("released");
+    expect(after.depositReleasedAt).not.toBeNull();
+    expect(intents.get(late.paymentIntentId!)!.status).toBe("canceled");
+    expect(await prisma.vanRequestEvent.count({ where: { requestId: late.id, type: "expired" } })).toBe(1);
+
+    expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: inTime.id } })).status).toBe("pending");
+    expect(intents.get(inTime.paymentIntentId!)!.status).toBe("requires_capture");
+
+    // Timed out is final.
+    expect((await call("POST", `/api/van/requests/${late.id}/accept`, token)).status).toBe(409);
+  });
+
   it("stamps the appointment with the real treatment times (N6)", async () => {
     const { token, stops } = await shiftWithStops("times", 1);
     const phase = (p: string) => call("POST", `/api/van/requests/${stops[0].id}/phase`, token, { phase: p });
@@ -274,6 +326,18 @@ describe("van dispatch rules", () => {
     expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "cancelled" } })).toBe(1);
     const intent = intents.get(`pi_fake_cancel0_${tag}`)!;
     expect(["canceled", "succeeded"]).toContain(intent.status);
+  });
+
+  it("cancels once however many times the patient taps: the same answer, one history entry, the appointment cancelled", async () => {
+    const { shift, stops } = await shiftWithStops("recancel", 2);
+
+    const taps = await Promise.all(Array.from({ length: 3 }, () => call("POST", `/api/van/requests/${stops[0].id}/cancel`, stops[0].patientToken)));
+    expect(taps.map((t) => t.status)).toEqual([200, 200, 200]);
+    expect(new Set(taps.map((t) => t.body.depositOutcome)).size).toBe(1);
+    expect(taps.every((t) => t.body.status === "cancelled" && t.body.depositRetained === false)).toBe(true);
+    expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "cancelled" } })).toBe(1);
+    expect((await prisma.appointment.findUniqueOrThrow({ where: { id: stops[0].appointmentId } })).status).toBe("cancelled");
+    expect(await positions(shift.id)).toEqual([{ id: stops[1].id, queuePosition: 1 }]);
   });
 
   it("shows the operator initials, not names, before a request is accepted (N16)", async () => {

@@ -35,12 +35,10 @@ import {
 } from "../lib/van-payments";
 import { sendPatientNotification, sendUserNotification } from "../lib/patient-push";
 import { judgePing } from "../lib/van-location";
-import { endVanShift } from "../lib/van-shift-end";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
-import { acceptVanRequest, changeVanPhase, declineVanRequest, recordVanEvent } from "../lib/van-dispatch";
-import { cancelVanRequestForPatient } from "../lib/van-cancel";
+import { acceptVanRequest, cancelVanRequest, changeVanPhase, declineVanRequest, endVanShift, recordVanEvent } from "../lib/van-dispatch";
 
 const router = Router();
 const isMockStripe = env.isMockStripe;
@@ -981,7 +979,7 @@ router.post("/requests/:id/cancel", requireAuth, validateParams(vanRequestIdPara
   if (request.patientId !== patientProfile.id) return res.status(403).json({ error: "Not your request" });
 
   // One cancel path for the tracking screen and the appointment screen (N3).
-  const outcome = await cancelVanRequestForPatient(request.id);
+  const outcome = await cancelVanRequest(request.id);
   return res.status(outcome.status).json(outcome.body);
 });
 

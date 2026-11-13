@@ -47,8 +47,8 @@ describe("CS-49: Payment and refund integrity", () => {
     signAccessToken = require("../lib/jwt").signAccessToken;
 
     server = http.createServer(app);
-    await new Promise<void>((resolve) => server.listen(3015, resolve));
-    baseUrl = "http://localhost:3015";
+    await new Promise<void>((resolve) => server.listen(3042, resolve));
+    baseUrl = "http://localhost:3042";
 
     const email = `pi-test-${Date.now()}@example.test`;
     const reg = await fetch(`${baseUrl}/api/auth/register`, {

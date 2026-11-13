@@ -118,8 +118,8 @@ describe("van dispatch rules", () => {
     prisma = require("../lib/prisma").prisma;
     signAccessToken = require("../lib/jwt").signAccessToken;
     server = http.createServer(app);
-    await new Promise<void>((resolve) => server.listen(3026, resolve));
-    baseUrl = "http://localhost:3026";
+    await new Promise<void>((resolve) => server.listen(3040, resolve));
+    baseUrl = "http://localhost:3040";
     serviceId = (await prisma.service.findFirstOrThrow()).id;
   });
 

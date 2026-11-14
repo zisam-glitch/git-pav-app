@@ -439,11 +439,18 @@ describe("van dispatch rules", () => {
       const ids: Record<string, string> = {};
       for (const [name, where] of [["a", near], ["b", far], ["c", between]] as const) {
         const { request } = await makePendingRequest(shift, `${label}${name}`, where);
+        expect((await call("POST", `/api/van/requests/${request.id}/accept`, token)).status).toBe(200);
         if (promisedForSeconds !== null) {
-          // What the patient last heard, as if an ETA push had gone out just now.
+          // Accepting sends the patient a first ETA in the background, which is
+          // then what they last heard. Wait for it, then stand in a promise of
+          // our own, as if a later push had gone out just now.
+          for (let tries = 0; tries < 100; tries++) {
+            const row = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id }, select: { lastEtaPushedAt: true } });
+            if (row.lastEtaPushedAt) break;
+            await new Promise((resolve) => setTimeout(resolve, 50));
+          }
           await prisma.vanServiceRequest.update({ where: { id: request.id }, data: { lastEtaSeconds: promisedForSeconds, lastEtaPushedAt: new Date() } });
         }
-        expect((await call("POST", `/api/van/requests/${request.id}/accept`, token)).status).toBe(200);
         ids[name] = request.id;
       }
       const order = (await positions(shift.id)).map((p) => p.id);

@@ -259,7 +259,11 @@ describe("van dispatch rules", () => {
         expect(accept.status).not.toBe(200);
         expect(shiftAfter.endedAt).not.toBeNull();
         expect(requestAfter.status).toBe("expired");
-        expect(intents.get(request.paymentIntentId!)!.status).toBe("canceled");
+        // The money is back with the patient either way: the hold was lifted, or the
+        // accept had already taken the deposit before the lock (N22) and it was refunded.
+        expect(["released", "refunded"]).toContain(requestAfter.depositReleaseStatus);
+        expect(requestAfter.depositReleasedAt).not.toBeNull();
+        if (requestAfter.depositReleaseStatus === "released") expect(intents.get(request.paymentIntentId!)!.status).toBe("canceled");
         expect(await prisma.vanRequestEvent.count({ where: { requestId: request.id, type: "shift_ended" } })).toBe(1);
       } else {
         expect(end.status).toBe(409);

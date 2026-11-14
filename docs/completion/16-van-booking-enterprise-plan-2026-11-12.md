@@ -387,4 +387,20 @@ suggested under decision 8 and can be set by environment variable (`VAN_PROMISE_
 (N8) still takes its promise from the last pushed ETA, not from this window; nothing reports promised against actual
 arrival yet (dashboard, N33).
 
-**Still to do in phase 2:** the Stripe-outside-the-lock change (N22), which waits for the owner's go-ahead.
+**Stripe outside the lock (N22), done; the owner gave the go-ahead on 15 Nov 2026.** No Stripe call is made while
+the shift lock is held. When the deposit is held, taken, returned or kept is unchanged.
+- *Releases* (decline, time-out, shift end, cancel): the transaction closes the request and marks its deposit
+  `pending`; after the commit `settleVanDepositRelease` (in `van-payments.ts`) calls Stripe and stores the result. It
+  works from the stored request and its history alone (the reason, and for a cancel the phase it was cancelled from,
+  which decides whether a deposit already taken is kept), so the request, a repeat of it and the retry job all do the
+  same thing. The retry job now also finishes a release left `pending` for more than two minutes (the server stopped
+  between the save and Stripe), and it no longer refunds a deposit the policy keeps.
+- *Capture* (accept): the deposit is taken before the lock, and only when a look without the lock says the accept
+  would go through. Two taps at once share one capture.
+- **Behaviour changes to know about:** a cancel whose refund Stripe cannot make now stands, with the refund retried in
+  the background (it used to be undone with "try again in a moment"). If an accept is refused under the lock after its
+  deposit was taken (the shift was paused or the queue filled in that moment), the request stays pending with the
+  deposit taken, and whatever closes it refunds it; the decline or time-out message then still says no deposit was
+  taken, which is wrong in that rare case and is on the wording list (N32).
+
+**Phase 2 is complete.**

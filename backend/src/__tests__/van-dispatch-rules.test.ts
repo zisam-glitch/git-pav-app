@@ -12,26 +12,39 @@ import crypto from "crypto";
 //   N18 an impossible position report is refused
 // Phase 2: accept and decline go through the rulebook (lib/van-dispatch.ts).
 //   N20 one stored plan per shift; the patient's ETA is read from it
+//   N22 Stripe is called outside the shift lock; a release left unfinished is retried
 
 type FakeIntent = { id: string; status: string };
 const intents = new Map<string, FakeIntent>();
+
+// Switches for the fake: how long each Stripe call takes, and whether a refund fails.
+const fakeStripe = { delayMs: 0, refundsFail: false, refundCalls: 0 };
+const stripeLag = () => new Promise((resolve) => setTimeout(resolve, fakeStripe.delayMs));
 
 jest.mock("stripe", () =>
   jest.fn().mockImplementation(() => ({
     paymentIntents: {
       retrieve: jest.fn(async (id: string) => ({ ...intents.get(id)! })),
       capture: jest.fn(async (id: string) => {
+        await stripeLag();
         const intent = intents.get(id)!;
         if (intent.status === "requires_capture") intent.status = "succeeded";
         return { ...intent };
       }),
       cancel: jest.fn(async (id: string) => {
+        await stripeLag();
         const intent = intents.get(id)!;
         intent.status = "canceled";
         return { ...intent };
       }),
     },
-    refunds: { create: jest.fn(async () => ({ id: "re_fake", amount: 0 })) },
+    refunds: {
+      create: jest.fn(async () => {
+        fakeStripe.refundCalls += 1;
+        if (fakeStripe.refundsFail) throw new Error("Stripe is unavailable");
+        return { id: "re_fake", amount: 0 };
+      }),
+    },
   }))
 );
 
@@ -280,6 +293,112 @@ describe("van dispatch rules", () => {
 
     // Timed out is final.
     expect((await call("POST", `/api/van/requests/${late.id}/accept`, token)).status).toBe(409);
+  });
+
+  describe("Stripe is called outside the shift lock (N22)", () => {
+    afterEach(() => {
+      fakeStripe.delayMs = 0;
+      fakeStripe.refundsFail = false;
+    });
+
+    it("a slow capture on one request does not hold up another request on the same shift", async () => {
+      const { token } = await makeOperator("slow");
+      const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+      const { request: slow } = await makePendingRequest(shift, "slow0");
+      const { request: other } = await makePendingRequest(shift, "slow1");
+
+      fakeStripe.delayMs = 2500;
+      const accepting = call("POST", `/api/van/requests/${slow.id}/accept`, token);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      fakeStripe.delayMs = 0;
+
+      const started = Date.now();
+      const declined = await call("POST", `/api/van/requests/${other.id}/decline`, token);
+      expect(declined.status).toBe(200);
+      expect(Date.now() - started).toBeLessThan(1500);
+
+      const accepted = await accepting;
+      expect(accepted.status).toBe(200);
+      expect(accepted.body.status).toBe("accepted");
+      expect(await prisma.appointment.count({ where: { patientId: slow.patientId } })).toBe(1);
+    });
+
+    it("an accept refused under the lock after the deposit was taken leaves it to be refunded when the request closes", async () => {
+      const { token } = await makeOperator("late");
+      const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+      const { request } = await makePendingRequest(shift, "late0");
+
+      // The shift is paused while the capture is in flight.
+      fakeStripe.delayMs = 1200;
+      const accepting = call("POST", `/api/van/requests/${request.id}/accept`, token);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      fakeStripe.delayMs = 0;
+      expect((await call("POST", "/api/van/shift/pause", token)).status).toBe(200);
+      expect((await accepting).status).toBe(409);
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } })).status).toBe("pending");
+      expect(await prisma.appointment.count({ where: { patientId: request.patientId } })).toBe(0);
+
+      // Declining it gives the money back.
+      const refundsBefore = fakeStripe.refundCalls;
+      const declined = await call("POST", `/api/van/requests/${request.id}/decline`, token);
+      expect(declined.status).toBe(200);
+      expect(declined.body.releaseStatus).toBe("refunded");
+      expect(fakeStripe.refundCalls).toBe(refundsBefore + 1);
+    });
+
+    it("a cancel still cancels when the refund cannot be made, and the refund is retried until it is", async () => {
+      const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
+      const { shift, stops } = await shiftWithStops("refundfail", 2);
+
+      fakeStripe.refundsFail = true;
+      const cancelled = await call("POST", `/api/van/requests/${stops[0].id}/cancel`, stops[0].patientToken);
+      expect(cancelled.status).toBe(200);
+      expect(cancelled.body).toMatchObject({ status: "cancelled", depositRetained: false });
+      const failed = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } });
+      expect(failed).toMatchObject({ status: "cancelled", depositReleaseStatus: "failed", depositReleasedAt: null });
+      expect((await prisma.appointment.findUniqueOrThrow({ where: { id: stops[0].appointmentId } })).status).toBe("cancelled");
+      expect(await positions(shift.id)).toEqual([{ id: stops[1].id, queuePosition: 1 }]);
+
+      fakeStripe.refundsFail = false;
+      await retryFailedVanDepositReleases();
+      const retried = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } });
+      expect(retried.depositReleaseStatus).toBe("refunded");
+      expect(retried.depositReleasedAt).not.toBeNull();
+    });
+
+    it("a release that was never finished is picked up by the retry, and a deposit kept under the policy is never refunded by it", async () => {
+      const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
+      const { token, stops } = await shiftWithStops("unfinished", 2);
+
+      // Stop 0: cancelled once the van had set off, so the policy keeps the deposit.
+      expect((await call("POST", `/api/van/requests/${stops[0].id}/phase`, token, { phase: "en_route" })).status).toBe(200);
+      const kept = await call("POST", `/api/van/requests/${stops[0].id}/cancel`, stops[0].patientToken);
+      expect(kept.body).toMatchObject({ status: "cancelled", depositRetained: true, depositOutcome: "retained" });
+      // Stop 1: cancelled while queued, so the deposit goes back.
+      expect((await call("POST", `/api/van/requests/${stops[1].id}/cancel`, stops[1].patientToken)).body.depositOutcome).toBe("refunded");
+
+      // As if the server stopped after saving each cancel and before reaching Stripe, some minutes ago.
+      await prisma.$executeRaw`UPDATE "van_service_requests" SET "deposit_release_status" = 'pending', "deposit_released_at" = NULL, "updated_at" = NOW() - INTERVAL '10 minutes' WHERE "id" IN (${stops[0].id}::uuid, ${stops[1].id}::uuid)`;
+
+      const refundsBefore = fakeStripe.refundCalls;
+      await retryFailedVanDepositReleases();
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).depositReleaseStatus).toBe("retained");
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[1].id } })).depositReleaseStatus).toBe("refunded");
+      // One refund call: for the queued cancel only.
+      expect(fakeStripe.refundCalls).toBe(refundsBefore + 1);
+    });
+
+    it("leaves a release that is only just under way to the request that started it", async () => {
+      const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
+      const { token } = await makeOperator("fresh");
+      const shift = (await call("POST", "/api/van/shift/start", token, {})).body;
+      const { request } = await makePendingRequest(shift, "fresh0");
+      await prisma.vanServiceRequest.update({ where: { id: request.id }, data: { status: "declined", depositReleaseStatus: "pending" } });
+
+      await retryFailedVanDepositReleases();
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } })).depositReleaseStatus).toBe("pending");
+      expect(intents.get(request.paymentIntentId!)!.status).toBe("requires_capture");
+    });
   });
 
   it("stamps the appointment with the real treatment times (N6)", async () => {

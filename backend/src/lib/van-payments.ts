@@ -65,7 +65,8 @@ const HOLD_STATUSES: Stripe.PaymentIntent.Status[] = [
   "requires_action",
 ];
 
-export { vanCancellationKeepsDeposit } from "./cancellation-policy";
+import { vanCancellationKeepsDeposit } from "./cancellation-policy";
+export { vanCancellationKeepsDeposit };
 
 /**
  * Release the deposit attached to a van service request.
@@ -169,7 +170,12 @@ async function auditRelease(
  * Captures a van deposit, or confirms it was already captured. Returns the
  * error response to send, or null when the deposit is captured.
  */
-export async function captureVanDeposit(requestId: string, paymentIntentId: string): Promise<{ status: number; body: Record<string, string> } | null> {
+export function captureVanDeposit(requestId: string, paymentIntentId: string): Promise<{ status: number; body: Record<string, string> } | null> {
+  // Two taps at once share one capture instead of racing each other to Stripe.
+  return singleFlight(`capture:${requestId}`, () => captureOnce(requestId, paymentIntentId));
+}
+
+async function captureOnce(requestId: string, paymentIntentId: string): Promise<{ status: number; body: Record<string, string> } | null> {
   // The intent must be authorised (the patient completed PaymentSheet). A
   // pre-capture check gives the operator an actionable message instead of a
   // raw Stripe error.
@@ -210,9 +216,89 @@ export async function captureVanDeposit(requestId: string, paymentIntentId: stri
     }
     return null;
   } catch (error) {
+    // Another server may have captured it at the same moment (Stripe refuses a
+    // second request on the same key while the first is in flight).
+    const after = await getStripe().paymentIntents.retrieve(paymentIntentId).catch(() => null);
+    if (after?.status === "succeeded") return null;
     console.error("Failed to capture payment:", safeError(error));
     return failed;
   }
+}
+
+// ─── Releasing after the database has been written (N22) ──────────────────
+
+/**
+ * Stored on a closed request, in the same transaction that closes it, when its
+ * deposit still has to be released at Stripe. The release itself happens after
+ * that transaction, outside any lock; if the server stops in between, the
+ * background job finds the row and finishes it.
+ */
+export const DEPOSIT_RELEASE_PENDING = "pending";
+
+/** Outcomes after which nothing more has to be done for the deposit. */
+const RELEASE_SETTLED: string[] = ["released", "already_released", "refunded", "retained", "mock"];
+
+const flights = new Map<string, Promise<unknown>>();
+
+/** Runs `fn` once for calls that overlap on the same key in this server. */
+function singleFlight<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const running = flights.get(key) as Promise<T> | undefined;
+  if (running) return running;
+  const started = fn().finally(() => flights.delete(key));
+  flights.set(key, started);
+  return started;
+}
+
+export type SettledRelease = { status: string | null; refundId: string | null };
+
+/**
+ * Releases the deposit of a request that has closed without the visit taking
+ * place (declined, timed out, shift ended, cancelled), and stores the result.
+ *
+ * Everything it needs comes from the stored request and its history, so the
+ * request that closed it, a repeat of that request and the retry job all do
+ * the same thing: the reason, and for a cancel whether the policy keeps a
+ * deposit already taken (decided by the phase the visit was cancelled from).
+ * Does nothing when the release is already settled, and overlapping calls
+ * share one run. Never throws for a Stripe failure: that is stored as failed
+ * and retried.
+ */
+export function settleVanDepositRelease(requestId: string): Promise<SettledRelease> {
+  return singleFlight(`release:${requestId}`, async () => {
+    const row = await prisma.vanServiceRequest.findUnique({
+      where: { id: requestId },
+      select: { status: true, paymentIntentId: true, depositReleaseStatus: true },
+    });
+    const stored = row?.depositReleaseStatus ?? null;
+    if (!row?.paymentIntentId) return { status: stored, refundId: null };
+    if (!["declined", "expired", "cancelled"].includes(row.status)) return { status: stored, refundId: null };
+    if (stored !== DEPOSIT_RELEASE_PENDING && stored !== "failed") return { status: stored, refundId: null };
+
+    const closing = await prisma.vanRequestEvent.findFirst({
+      where: { requestId, type: { in: ["declined", "expired", "shift_ended", "cancelled"] } },
+      orderBy: { at: "desc" },
+      select: { type: true, fromPhase: true },
+    });
+    const reason: VanDepositReleaseReason =
+      row.status === "declined"
+        ? "operator_declined"
+        : row.status === "cancelled"
+          ? "patient_cancelled"
+          : closing?.type === "shift_ended"
+            ? "shift_ended"
+            : "expired";
+    const retainCaptured = row.status === "cancelled" && vanCancellationKeepsDeposit(closing?.fromPhase);
+
+    const release = await releaseVanDeposit(row.paymentIntentId, reason, { retainCaptured });
+    await prisma.vanServiceRequest.updateMany({
+      where: { id: requestId, depositReleaseStatus: { in: [DEPOSIT_RELEASE_PENDING, "failed"] } },
+      data: {
+        depositReleaseStatus: release.status,
+        depositReleasedAt: RELEASE_SETTLED.includes(release.status) ? new Date() : null,
+      },
+    });
+    return { status: release.status, refundId: release.refundId ?? null };
+  });
 }
 
 /**

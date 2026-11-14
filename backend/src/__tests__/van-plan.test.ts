@@ -1,4 +1,4 @@
-import { planStops, etaSecondsFromPlan, VAN_PLAN_SETTINGS, PlanStop } from "../lib/van-plan";
+import { planStops, etaSecondsFromPlan, VAN_PLAN_SETTINGS, PlanStop, promiseWindow, lateMinutes, VAN_PROMISE_SETTINGS } from "../lib/van-plan";
 
 // The plan for a van shift (plan 16, design 2): from "where the van is, what it
 // is doing, the stops in order" to an arrival, start and finish time for every
@@ -84,5 +84,49 @@ describe("etaSecondsFromPlan", () => {
 describe("VAN_PLAN_SETTINGS", () => {
   it("keeps the figures the three old calculations used, in one place", () => {
     expect(VAN_PLAN_SETTINGS).toEqual({ defaultTreatmentMinutes: 45, gapMinutes: 10, setupMinutes: 0 });
+  });
+});
+
+// The promise (plan 16, design 3): the patient is told a window, it is kept
+// with the visit, and "late" has one meaning.
+describe("promiseWindow", () => {
+  const promise = { windowMinutes: 20, lateGraceMinutes: 10 };
+
+  it("is a window on round five minutes that holds the planned arrival", () => {
+    expect(promiseWindow(at(14), promise)).toEqual({ from: at(10), to: at(30) });
+    expect(promiseWindow(at(10), promise)).toEqual({ from: at(10), to: at(30) });
+    expect(promiseWindow(new Date(at(19).getTime() + 59_000), promise)).toEqual({ from: at(15), to: at(35) });
+  });
+
+  it("uses the window length it is given", () => {
+    expect(promiseWindow(at(62), { ...promise, windowMinutes: 120 })).toEqual({ from: at(60), to: at(180) });
+  });
+});
+
+describe("lateMinutes", () => {
+  const promise = { windowMinutes: 20, lateGraceMinutes: 10 };
+  const promised = { promisedToAt: at(30) };
+
+  it("is nothing while the plan is inside the window or within the grace after it", () => {
+    expect(lateMinutes({ ...promised, plannedArrivalAt: at(12) }, promise)).toBeNull();
+    expect(lateMinutes({ ...promised, plannedArrivalAt: at(30) }, promise)).toBeNull();
+    expect(lateMinutes({ ...promised, plannedArrivalAt: at(40) }, promise)).toBeNull();
+  });
+
+  it("is how far past the end of the window the plan now is, to the nearest five minutes", () => {
+    expect(lateMinutes({ ...promised, plannedArrivalAt: at(41) }, promise)).toBe(10);
+    expect(lateMinutes({ ...promised, plannedArrivalAt: at(44) }, promise)).toBe(15);
+    expect(lateMinutes({ ...promised, plannedArrivalAt: at(75) }, promise)).toBe(45);
+  });
+
+  it("is nothing when no promise was made or there is no plan", () => {
+    expect(lateMinutes({ promisedToAt: null, plannedArrivalAt: at(90) }, promise)).toBeNull();
+    expect(lateMinutes({ ...promised, plannedArrivalAt: null }, promise)).toBeNull();
+  });
+});
+
+describe("VAN_PROMISE_SETTINGS", () => {
+  it("defaults to the figures suggested in the plan: a 20-minute window, late 10 minutes past its end", () => {
+    expect(VAN_PROMISE_SETTINGS).toEqual({ windowMinutes: 20, lateGraceMinutes: 10 });
   });
 });

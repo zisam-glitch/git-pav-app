@@ -19,11 +19,14 @@
 // works out again and stores first, so the push, the patient's screen and the
 // operator's list all show the same times.
 //
+// When the plan moves well past the window the patient was promised, they get
+// one "running late" notice in place of that pass's ETA update.
+//
 // Best-effort by design: push/DB failures are logged and swallowed — they
 // must never break the operator's dispatch action.
 
 import { prisma } from "./prisma";
-import { etaSecondsFromPlan, recomputeShiftPlan } from "./van-plan";
+import { etaSecondsFromPlan, lateMinutes, recomputeShiftPlan } from "./van-plan";
 import { sendPatientNotification } from "./patient-push";
 import { safeError } from "./log-safety";
 
@@ -32,6 +35,7 @@ const THROTTLE_MINUTES = parseInt(process.env.ETA_PUSH_THROTTLE_MINUTES ?? "10",
 
 export type EtaPushOutcome =
   | "pushed"
+  | "late_notice"
   | "below_drift"
   | "throttled"
   | "no_fix"
@@ -91,6 +95,34 @@ export async function broadcastEtaUpdates(
     if (etaSeconds == null) {
       outcomes[stop.id] = "no_change";
       continue;
+    }
+
+    // The plan has left the window the patient was told: say so once, plainly,
+    // whatever the drift and throttle gates would do with an ordinary update.
+    const late = stop.lateNoticeSentAt ? null : lateMinutes(stop);
+    if (late != null) {
+      try {
+        // Claim it first, so two passes at once cannot both send it.
+        const claimed = await prisma.vanServiceRequest.updateMany({
+          where: { id: stop.id, lateNoticeSentAt: null },
+          data: { lateNoticeSentAt: new Date(), lastEtaSeconds: etaSeconds, lastEtaPushedAt: new Date() },
+        });
+        if (claimed.count === 1) {
+          // Draft wording: a clinician and the DPO review van notices (plan 16, decision 9).
+          await sendPatientNotification(
+            stop.patientId,
+            "Running Late",
+            `Sorry, your mobile dental van is running about ${late} minutes late. We will keep you updated.`,
+            { requestId: stop.id, etaSeconds, lateMinutes: late, type: "running_late" }
+          );
+          outcomes[stop.id] = "late_notice";
+          continue;
+        }
+      } catch (err) {
+        console.error("[VAN ETA PUSH] late notice failed:", safeError(err));
+        outcomes[stop.id] = "no_change";
+        continue;
+      }
     }
 
     const prevEta = stop.lastEtaSeconds;

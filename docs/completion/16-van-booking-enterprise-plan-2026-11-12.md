@@ -375,5 +375,16 @@ no longer re-sorts the whole queue by acceptance time, which used to undo an ope
 the last ETA pushed to the patient, else the quote they were given when they asked; the stored plan from the other
 session can replace that source later.
 
-**Still to do in phase 2:** the promise window. The Stripe-outside-the-lock change (N22) waits for the owner's
-go-ahead.
+**Promise and score (design 3), done on the server:** the first planned arrival becomes the window the patient is
+promised (`promised_from_at`, `promised_to_at`: 20 minutes, starting on the five minutes at or before the planned
+arrival) and never moves afterwards. The real arrival is stamped when the stop goes on site (`arrived_at`). When the
+plan moves more than 10 minutes past the end of the window, the patient gets one "running late" push in place of that
+pass's ETA update (`late_notice_sent_at`, claimed before sending so it cannot go twice). Migration
+`20261115100000_van_request_promise`, additive, nothing to run after deploy. The window and the grace are the figures
+suggested under decision 8 and can be set by environment variable (`VAN_PROMISE_WINDOW_MINUTES`,
+`VAN_LATE_GRACE_MINUTES`) until the owner decides; the notice wording is a draft until reviewed (decision 9).
+**Left from this item:** the accept push and the app do not show the window yet (phase 5); best-position placement
+(N8) still takes its promise from the last pushed ETA, not from this window; nothing reports promised against actual
+arrival yet (dashboard, N33).
+
+**Still to do in phase 2:** the Stripe-outside-the-lock change (N22), which waits for the owner's go-ahead.

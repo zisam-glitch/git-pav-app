@@ -794,6 +794,12 @@ model VanServiceRequest {
   plannedStartAt       DateTime?         @map("planned_start_at")
   plannedFinishAt      DateTime?         @map("planned_finish_at")
   planComputedAt       DateTime?         @map("plan_computed_at")
+  /// The arrival window the patient was told, set once from the first plan; when the
+  /// van actually arrived; and when the patient was told it was running late (once).
+  promisedFromAt       DateTime?         @map("promised_from_at")
+  promisedToAt         DateTime?         @map("promised_to_at")
+  arrivedAt            DateTime?         @map("arrived_at")
+  lateNoticeSentAt     DateTime?         @map("late_notice_sent_at")
   notes                String?
   createdAt            DateTime          @default(now()) @map("created_at")
   updatedAt            DateTime          @updatedAt @map("updated_at")

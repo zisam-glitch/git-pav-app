@@ -184,6 +184,8 @@ export async function changeVanPhase(opts: {
       }
 
       const data: Prisma.VanServiceRequestUpdateManyMutationInput = { phase: phase as never, status: statusForPhase(phase) };
+      // The real arrival, kept beside the window the patient was promised.
+      if (phase === "on_site") data.arrivedAt = now;
       if (phase === "in_treatment") data.treatmentStartedAt = now;
       if (closing) {
         data.completedAt = now;

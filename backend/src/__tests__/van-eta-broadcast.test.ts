@@ -8,6 +8,7 @@ jest.mock("../lib/prisma", () => ({
   prisma: {
     vanServiceRequest: {
       update: jest.fn().mockResolvedValue({}),
+      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
     },
   },
 }));
@@ -36,6 +37,9 @@ function makeStop(overrides: Record<string, unknown> = {}) {
     phase: "queued",
     lastEtaSeconds: null as number | null,
     lastEtaPushedAt: null as Date | null,
+    /** Seconds from now to the end of the window the patient was told; null when none was. */
+    promisedToInSeconds: 1800 as number | null,
+    lateNoticeSentAt: null as Date | null,
     etaSeconds: 600,
     ...overrides,
   };
@@ -47,8 +51,10 @@ function mockPlan(stops: ReturnType<typeof makeStop>[] | null) {
   (recomputeShiftPlan as jest.Mock).mockResolvedValue(
     stops && {
       computedAt,
-      stops: stops.map(({ etaSeconds, ...stop }) => ({
+      stops: stops.map(({ etaSeconds, promisedToInSeconds, ...stop }) => ({
         ...stop,
+        promisedFromAt: promisedToInSeconds == null ? null : new Date(computedAt.getTime() + (promisedToInSeconds - 1200) * 1000),
+        promisedToAt: promisedToInSeconds == null ? null : new Date(computedAt.getTime() + promisedToInSeconds * 1000),
         plannedArrivalAt: new Date(computedAt.getTime() + etaSeconds * 1000),
         plannedStartAt: new Date(computedAt.getTime() + etaSeconds * 1000),
         plannedFinishAt: new Date(computedAt.getTime() + (etaSeconds + 1800) * 1000),
@@ -60,6 +66,7 @@ function mockPlan(stops: ReturnType<typeof makeStop>[] | null) {
 beforeEach(() => {
   jest.clearAllMocks();
   (prisma.vanServiceRequest.update as jest.Mock).mockResolvedValue({});
+  (prisma.vanServiceRequest.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
   (sendPatientNotification as jest.Mock).mockResolvedValue(undefined);
 });
 
@@ -188,5 +195,60 @@ describe("broadcastEtaUpdates", () => {
 
     expect(outcomes).toEqual({ "req-1": "no_change", "req-2": "no_change" });
     expect(sendPatientNotification).not.toHaveBeenCalled();
+  });
+
+  describe("running late", () => {
+    test("a plan well past the promised window sends one plain notice, in place of the ETA push", async () => {
+      // Promised by 30 min from now; now planned for 46 min: 16 past, told as 15.
+      mockPlan([makeStop({ etaSeconds: 46 * 60, lastEtaSeconds: 600, lastEtaPushedAt: new Date(Date.now() - 3600_000) })]);
+
+      const outcomes = await broadcastEtaUpdates(SHIFT_ID);
+
+      expect(outcomes["req-1"]).toBe("late_notice");
+      expect(sendPatientNotification).toHaveBeenCalledTimes(1);
+      expect(sendPatientNotification).toHaveBeenCalledWith(
+        "patient-1",
+        "Running Late",
+        expect.stringContaining("about 15 minutes late"),
+        expect.objectContaining({ requestId: "req-1", type: "running_late", lateMinutes: 15 })
+      );
+      // Claimed before sending, so two passes at once cannot both send it.
+      expect(prisma.vanServiceRequest.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: "req-1", lateNoticeSentAt: null } })
+      );
+    });
+
+    test("the notice goes out even inside the ETA throttle window", async () => {
+      mockPlan([makeStop({ etaSeconds: 46 * 60, lastEtaSeconds: 600, lastEtaPushedAt: new Date() })]);
+      expect((await broadcastEtaUpdates(SHIFT_ID))["req-1"]).toBe("late_notice");
+    });
+
+    test("it is sent once: a patient already told gets ordinary ETA updates after that", async () => {
+      mockPlan([makeStop({ etaSeconds: 46 * 60, lateNoticeSentAt: new Date(), lastEtaSeconds: 600, lastEtaPushedAt: new Date(Date.now() - 3600_000) })]);
+
+      const outcomes = await broadcastEtaUpdates(SHIFT_ID);
+
+      expect(outcomes["req-1"]).toBe("pushed");
+      expect(sendPatientNotification).toHaveBeenCalledWith("patient-1", "ETA Update", expect.any(String), expect.any(Object));
+    });
+
+    test("another pass that claimed the notice first means this one sends nothing for it", async () => {
+      (prisma.vanServiceRequest.updateMany as jest.Mock).mockResolvedValue({ count: 0 });
+      mockPlan([makeStop({ etaSeconds: 46 * 60, lastEtaSeconds: 46 * 60, lastEtaPushedAt: new Date() })]);
+
+      const outcomes = await broadcastEtaUpdates(SHIFT_ID);
+
+      expect(outcomes["req-1"]).toBe("below_drift");
+      expect(sendPatientNotification).not.toHaveBeenCalled();
+    });
+
+    test("inside the window, or within the grace after it, nobody is told they are late", async () => {
+      mockPlan([makeStop({ etaSeconds: 39 * 60 }), makeStop({ id: "req-2", patientId: "p2", etaSeconds: 600, promisedToInSeconds: null })]);
+
+      const outcomes = await broadcastEtaUpdates(SHIFT_ID);
+
+      expect(outcomes).toEqual({ "req-1": "pushed", "req-2": "pushed" });
+      expect(sendPatientNotification).not.toHaveBeenCalledWith(expect.anything(), "Running Late", expect.anything(), expect.anything());
+    });
   });
 });

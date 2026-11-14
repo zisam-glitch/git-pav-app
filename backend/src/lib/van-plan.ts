@@ -4,7 +4,8 @@
 //
 // Before this, three places each recomputed an ETA their own way. Now the
 // patient's screen, the push and the operator's list read the same stored
-// times. The plan is rewritten whenever the queue changes or the van has
+// times. The first planned arrival becomes the window the patient is promised.
+// The plan is rewritten whenever the queue changes or the van has
 // moved a meaningful distance (through broadcastEtaUpdates), and a reader
 // refreshes it when it has gone stale.
 
@@ -27,6 +28,17 @@ export const VAN_PLAN_SETTINGS = {
   setupMinutes: minutesFromEnv("VAN_SETUP_MINUTES", 0),
 };
 export type VanPlanSettings = typeof VAN_PLAN_SETTINGS;
+
+/**
+ * The promise made to the patient: an arrival window this long, and "late"
+ * means the plan has moved this far past its end. The figures are the ones
+ * suggested in the plan (decision 8) until the owner sets them.
+ */
+export const VAN_PROMISE_SETTINGS = {
+  windowMinutes: minutesFromEnv("VAN_PROMISE_WINDOW_MINUTES", 20),
+  lateGraceMinutes: minutesFromEnv("VAN_LATE_GRACE_MINUTES", 10),
+};
+export type VanPromiseSettings = typeof VAN_PROMISE_SETTINGS;
 
 /** A treatment that has overrun is still planned to take this long (VE-1). */
 const MIN_REMAINING_TREATMENT_SECONDS = 300;
@@ -104,6 +116,32 @@ export function etaSecondsFromPlan(stop: { phase: string | null; plannedArrivalA
   return Math.max(0, Math.round((stop.plannedArrivalAt.getTime() - now.getTime()) / 1000));
 }
 
+const FIVE_MINUTES_MS = 5 * 60_000;
+
+/**
+ * The arrival window to tell a patient, from their first planned arrival:
+ * it starts on the five minutes at or before it. Pure.
+ */
+export function promiseWindow(plannedArrivalAt: Date, settings: VanPromiseSettings = VAN_PROMISE_SETTINGS): { from: Date; to: Date } {
+  const from = new Date(Math.floor(plannedArrivalAt.getTime() / FIVE_MINUTES_MS) * FIVE_MINUTES_MS);
+  return { from, to: new Date(from.getTime() + settings.windowMinutes * 60_000) };
+}
+
+/**
+ * How late a visit is running against what the patient was told, in minutes
+ * to the nearest five, or null when it is not late: the plan is inside the
+ * window or within the grace after it, or no promise was made. Pure.
+ */
+export function lateMinutes(
+  stop: { promisedToAt: Date | null; plannedArrivalAt: Date | null },
+  settings: VanPromiseSettings = VAN_PROMISE_SETTINGS
+): number | null {
+  if (!stop.promisedToAt || !stop.plannedArrivalAt) return null;
+  const pastMinutes = (stop.plannedArrivalAt.getTime() - stop.promisedToAt.getTime()) / 60_000;
+  if (pastMinutes <= settings.lateGraceMinutes) return null;
+  return Math.max(5, Math.round(pastMinutes / 5) * 5);
+}
+
 /** Whether a stored plan should be worked out again before it is shown. Pure. */
 export function planIsStale(stop: { phase: string | null; planComputedAt: Date | null }, now: Date): boolean {
   if (stop.phase && vanIsThere(stop.phase)) return false;
@@ -120,6 +158,10 @@ export type ShiftPlanStop = {
   plannedArrivalAt: Date | null;
   plannedStartAt: Date;
   plannedFinishAt: Date;
+  /** The window the patient was told; null until the first plan with an arrival. */
+  promisedFromAt: Date | null;
+  promisedToAt: Date | null;
+  lateNoticeSentAt: Date | null;
 };
 
 export type ShiftPlan = { computedAt: Date; stops: ShiftPlanStop[] };
@@ -156,8 +198,21 @@ export async function recomputeShiftPlan(shiftId: string, now: Date = new Date()
     legs
   );
 
-  await prisma.$transaction(
-    planned.map((p) =>
+  // The first plan with an arrival becomes the promise, and stays it.
+  const promises = new Map<string, { from: Date; to: Date }>();
+  stops.forEach((s, i) => {
+    const arrival = planned[i].plannedArrivalAt;
+    if (!s.promisedToAt && arrival) promises.set(s.id, promiseWindow(arrival));
+  });
+
+  const stored = await prisma.$transaction([
+    ...[...promises].map(([id, window]) =>
+      prisma.vanServiceRequest.updateMany({
+        where: { id, status: { in: ["accepted", "in_progress"] }, promisedToAt: null },
+        data: { promisedFromAt: window.from, promisedToAt: window.to },
+      })
+    ),
+    ...planned.map((p) =>
       prisma.vanServiceRequest.updateMany({
         where: {
           id: p.id,
@@ -171,8 +226,20 @@ export async function recomputeShiftPlan(shiftId: string, now: Date = new Date()
           planComputedAt: now,
         },
       })
-    )
-  );
+    ),
+  ]);
+  // A promise another run made first wins: read back the ones this run did not set.
+  const lost = [...promises.keys()].filter((_, i) => stored[i].count !== 1);
+  if (lost.length > 0) {
+    const rows = await prisma.vanServiceRequest.findMany({
+      where: { id: { in: lost } },
+      select: { id: true, promisedFromAt: true, promisedToAt: true },
+    });
+    for (const row of rows) {
+      if (row.promisedFromAt && row.promisedToAt) promises.set(row.id, { from: row.promisedFromAt, to: row.promisedToAt });
+      else promises.delete(row.id);
+    }
+  }
 
   return {
     computedAt: now,
@@ -186,6 +253,9 @@ export async function recomputeShiftPlan(shiftId: string, now: Date = new Date()
       plannedArrivalAt: planned[i].plannedArrivalAt ?? s.plannedArrivalAt,
       plannedStartAt: planned[i].plannedStartAt,
       plannedFinishAt: planned[i].plannedFinishAt,
+      promisedFromAt: s.promisedFromAt ?? promises.get(s.id)?.from ?? null,
+      promisedToAt: s.promisedToAt ?? promises.get(s.id)?.to ?? null,
+      lateNoticeSentAt: s.lateNoticeSentAt,
     })),
   };
 }

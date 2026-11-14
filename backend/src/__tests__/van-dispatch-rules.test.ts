@@ -377,6 +377,38 @@ describe("van dispatch rules", () => {
     expect(mine.body.etaLabel).toEqual(expect.any(String));
   });
 
+  it("keeps the window the patient was first told, and records when the van really arrived", async () => {
+    const { token } = await makeOperator("promise");
+    const shift = (await call("POST", "/api/van/shift/start", token, { lat: 51.5, lng: -0.12 })).body;
+    const { request } = await makePendingRequest(shift, "promise0");
+    expect((await call("POST", `/api/van/requests/${request.id}/accept`, token)).status).toBe(200);
+
+    const now = new Date();
+    await recomputeShiftPlan(shift.id, now);
+    const first = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } });
+    expect(first.promisedFromAt!.getTime()).toBeLessThanOrEqual(first.plannedArrivalAt!.getTime());
+    expect(first.promisedToAt!.getTime()).toBeGreaterThan(first.plannedArrivalAt!.getTime());
+    expect(first.promisedToAt!.getTime() - first.promisedFromAt!.getTime()).toBe(20 * 60_000);
+    expect(first.promisedFromAt!.getTime() % (5 * 60_000)).toBe(0);
+    expect(first.arrivedAt).toBeNull();
+
+    // The plan moves an hour on; the promise does not move with it.
+    await recomputeShiftPlan(shift.id, new Date(now.getTime() + 3_600_000));
+    const later = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } });
+    expect(later.plannedArrivalAt!.getTime()).toBeGreaterThan(first.plannedArrivalAt!.getTime());
+    expect(later.promisedFromAt).toEqual(first.promisedFromAt);
+    expect(later.promisedToAt).toEqual(first.promisedToAt);
+
+    // Arriving stamps the real time, once.
+    const before = Date.now();
+    expect((await call("POST", `/api/van/requests/${request.id}/phase`, token, { phase: "en_route" })).status).toBe(200);
+    expect((await call("POST", `/api/van/requests/${request.id}/phase`, token, { phase: "on_site" })).status).toBe(200);
+    const arrived = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } });
+    expect(Math.abs(arrived.arrivedAt!.getTime() - before)).toBeLessThan(10_000);
+    expect((await call("POST", `/api/van/requests/${request.id}/phase`, token, { phase: "on_site" })).status).toBe(200);
+    expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id } })).arrivedAt).toEqual(arrived.arrivedAt);
+  });
+
   it("gives no ETA while the van has not reported where it is, and plans nothing", async () => {
     const { token, shift, stops } = await shiftWithStops("nofix", 1);
     expect(await recomputeShiftPlan(shift.id)).toBeNull();

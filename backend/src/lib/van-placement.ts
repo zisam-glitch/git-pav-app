@@ -21,8 +21,10 @@ export const PROMISE_SLACK_SECONDS = parseInt(process.env.VAN_PROMISE_SLACK_MINU
 
 export type PlacementStop = QueueStop & {
   id: string;
-  /** The arrival time the patient last heard, when there is one. */
+  /** The arrival time the patient was promised, when there is one: the end of their window, else the last ETA they heard. */
   promisedBy: Date | null;
+  /** Allowance past `promisedBy` for this stop. The stored window already is the allowance, so it gets none; otherwise the general one applies. */
+  slackSeconds?: number;
 };
 
 /** Travel seconds between two stops, or from the van when `from` is "van". */
@@ -66,7 +68,7 @@ export function lateStops(
     const next = will.get(stop.id);
     if (due === undefined || next === undefined) continue;
     const promised = stop.promisedBy ? (stop.promisedBy.getTime() - now.getTime()) / 1000 : due;
-    const limit = Math.max(promised + slackSeconds, due);
+    const limit = Math.max(promised + (stop.slackSeconds ?? slackSeconds), due);
     if (next > limit + 0.5) late.push({ id: stop.id, lateBySeconds: Math.round(next - limit) });
   }
   return late;
@@ -135,6 +137,24 @@ export async function buildLegFn(van: Point, stops: { id: string; lat: number; l
     if (seconds != null && Number.isFinite(seconds)) return Math.round(seconds);
     return fallbackTravelSeconds(points[i], points[j]);
   };
+}
+
+/**
+ * What a stop was promised. A patient with a stored arrival window (set when
+ * the first plan was made, and never moved) is promised the end of it, with no
+ * further allowance: the window is the allowance, and lateness is announced
+ * only past it. One without a window (a visit accepted before windows existed)
+ * falls back to the last ETA they heard.
+ */
+export function promiseOf(row: {
+  promisedToAt?: Date | null;
+  lastEtaSeconds: number | null;
+  lastEtaPushedAt: Date | null;
+  etaSecondsSnapshot: number | null;
+  requestedAt: Date;
+}): { promisedBy: Date | null; slackSeconds?: number } {
+  if (row.promisedToAt) return { promisedBy: row.promisedToAt, slackSeconds: 0 };
+  return { promisedBy: promisedArrival(row) };
 }
 
 /** The arrival time a patient last heard: the last ETA pushed, else the quote they were given when they asked. */

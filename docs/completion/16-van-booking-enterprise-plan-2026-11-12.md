@@ -388,3 +388,8 @@ suggested under decision 8 and can be set by environment variable (`VAN_PROMISE_
 arrival yet (dashboard, N33).
 
 **Still to do in phase 2:** the Stripe-outside-the-lock change (N22), which waits for the owner's go-ahead.
+
+**Placement uses the stored window:** a stop with an arrival window is now held to the end of that window by
+best-position placement, with no extra allowance (the window is the allowance, and "running late" is announced only
+past it plus the grace), so placement can no longer push a patient into a late notice. A visit with no window (accepted
+before windows existed) still falls back to the last ETA it heard plus the general 20-minute allowance.

@@ -14,7 +14,7 @@ import { prisma } from "./prisma";
 import { encryptField } from "./encryption";
 import { renumberQueue } from "./van-queue";
 import { toQueueStop } from "./van-quote";
-import { buildLegFn, choosePlacement, promisedArrival, LegFn, PlacementStop } from "./van-placement";
+import { buildLegFn, choosePlacement, promiseOf, LegFn, PlacementStop } from "./van-placement";
 import { awardVisitPoints } from "./rewards";
 import { sendPatientNotification } from "./patient-push";
 import { broadcastEtaUpdates } from "./van-eta-broadcast";
@@ -397,7 +397,7 @@ export async function loadActiveStops(db: Db, shiftId: string, excludeId?: strin
   });
   return rows.map((row) => ({
     row,
-    stop: { ...toQueueStop(row), id: row.id, promisedBy: promisedArrival(row) } satisfies PlacementStop,
+    stop: { ...toQueueStop(row), id: row.id, ...promiseOf(row) } satisfies PlacementStop,
   }));
 }
 
@@ -509,7 +509,7 @@ export async function acceptVanRequest(opts: { shiftId: string; requestId: strin
         const candidate: PlacementStop = {
           ...toQueueStop({ ...request, phase: "queued", treatmentStartedAt: null, service }),
           id: request.id,
-          promisedBy: promisedArrival(request),
+          ...promiseOf(request),
         };
         orderIds = choosePlacement(active.map((a) => a.stop), candidate, prepared.leg, now).order.map((s) => s.id);
       }

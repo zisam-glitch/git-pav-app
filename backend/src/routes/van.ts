@@ -5,14 +5,13 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 import { HttpError } from "../middleware/error-handler";
-import { validateBody, validateParams, validateQuery } from "../middleware/validate";
+import { validateBody, validateParams } from "../middleware/validate";
 import {
   shiftStartSchema,
   locationPingSchema,
   phaseUpdateSchema,
   vanRequestIdParamsSchema,
   createVanRequestSchema,
-  availabilityQuerySchema,
 } from "../schemas/van-dispatch";
 import {
   etaSecondsToNewPatient,
@@ -36,6 +35,7 @@ import { judgePing } from "../lib/van-location";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
+import { etaSecondsFromPlan, planIsStale, recomputeShiftPlan } from "../lib/van-plan";
 import { acceptVanRequest, cancelVanRequest, changeVanPhase, declineVanRequest, endVanShift, recordVanEvent } from "../lib/van-dispatch";
 
 const router = Router();
@@ -195,6 +195,39 @@ async function getActiveShift(operatorId: string) {
   return prisma.vanShift.findFirst({
     where: { operatorId, status: { in: ["online", "paused"] }, endedAt: null },
   });
+}
+
+/**
+ * The ETA of an accepted stop, from the shift's stored plan: the same times
+ * the push and the operator's list use. A plan that is missing or has gone
+ * stale is worked out again first, so a van standing still does not count
+ * down to zero. Null when the van has not reported a position yet.
+ */
+async function etaFromStoredPlan(request: {
+  id: string;
+  shiftId: string;
+  phase: string;
+  plannedArrivalAt: Date | null;
+  plannedStartAt: Date | null;
+  plannedFinishAt: Date | null;
+  planComputedAt: Date | null;
+}): Promise<number | null> {
+  const now = new Date();
+  if (planIsStale(request, now)) {
+    const plan = await recomputeShiftPlan(request.shiftId, now).catch((err) => {
+      console.error("[VAN PLAN] refresh failed:", safeError(err));
+      return null;
+    });
+    const mine = plan?.stops.find((s) => s.id === request.id);
+    if (mine) {
+      // Show what was just stored, not the row read before it.
+      request.plannedArrivalAt = mine.plannedArrivalAt;
+      request.plannedStartAt = mine.plannedStartAt;
+      request.plannedFinishAt = mine.plannedFinishAt;
+      request.planComputedAt = plan!.computedAt;
+    }
+  }
+  return etaSecondsFromPlan(request, now);
 }
 
 /** True for a write refused by a unique index, such as the one-open-shift rule. */
@@ -739,21 +772,22 @@ router.get("/requests/mine/active", requireAuth, async (req: AuthRequest, res: R
     request.notes = await decryptString(request.notes);
   }
 
-  // Compute live ETA from the van's real position, then hide it below
+  // The ETA comes from the shift's plan; the van's position is hidden below
   // unless this patient is next (VR-4).
   let etaSeconds: number | null = null;
   let etaLabel: string | null = null;
-  if (request.shift && request.shift.lastLat != null && request.shift.lastLng != null) {
-    const vanPoint: Point = { lat: request.shift.lastLat, lng: request.shift.lastLng };
-    // Only stops ahead of this patient: the accepted stops before their place,
-    // or for a pending request every accepted stop and the earlier pending ones.
-    const stopsAhead = stopsAheadOf(await loadShiftQueue(prisma, request.shiftId), request);
-    etaSeconds = await etaSecondsToNewPatient(vanPoint, stopsAhead, {
-      lat: request.patientLat,
-      lng: request.patientLng,
-    });
-    etaLabel = formatEtaLabel(etaSeconds);
+  if (request.status !== "pending") {
+    etaSeconds = await etaFromStoredPlan(request);
+  } else if (request.shift && request.shift.lastLat != null && request.shift.lastLng != null) {
+    // Not in the plan until a van accepts: quoted behind every accepted stop
+    // and the pending requests made before this one (N7).
+    etaSeconds = await etaSecondsToNewPatient(
+      { lat: request.shift.lastLat, lng: request.shift.lastLng },
+      stopsAheadOf(await loadShiftQueue(prisma, request.shiftId), request),
+      { lat: request.patientLat, lng: request.patientLng }
+    );
   }
+  if (etaSeconds != null) etaLabel = formatEtaLabel(etaSeconds);
   hideVanUnlessNext(request);
 
   const depositAuthorized = await isDepositAuthorized(
@@ -811,15 +845,8 @@ router.get("/requests/:id", requireAuth, validateParams(vanRequestIdParamsSchema
   let etaSeconds: number | null = null;
   let etaLabel: string | null = null;
   if (request.status === "accepted" || request.status === "in_progress") {
-    if (request.shift?.lastLat != null && request.shift?.lastLng != null) {
-      const vanPoint: Point = { lat: request.shift.lastLat, lng: request.shift.lastLng };
-      const stopsAhead = stopsAheadOf(await loadShiftQueue(prisma, request.shiftId), request);
-      etaSeconds = await etaSecondsToNewPatient(vanPoint, stopsAhead, {
-        lat: request.patientLat,
-        lng: request.patientLng,
-      });
-      etaLabel = formatEtaLabel(etaSeconds);
-    }
+    etaSeconds = await etaFromStoredPlan(request);
+    if (etaSeconds != null) etaLabel = formatEtaLabel(etaSeconds);
   }
   if (req.user!.role !== "operator") hideVanUnlessNext(request);
 

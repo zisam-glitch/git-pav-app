@@ -346,3 +346,10 @@ the pure tests; the database-backed tests need CI.
 **Still to do in phase 2:** the stored plan with arrival times (N20, N10), pending requests counting as
 provisional stops (N7, N12), placing a new request at the cheapest position (N8), and the promise window. The
 Stripe-outside-the-lock change (N22) waits for the owner's go-ahead.
+
+**Pending requests as provisional stops (N7, N12), done:** `backend/src/lib/van-quote.ts`. A request still waiting for an
+operator's answer now counts in the next patient's quote and toward the queue limit, until it is accepted, declined,
+cancelled or past its time limit. Availability and request creation share one quote (shifts quoted together, not one
+after another). The final room check and the insert run together under the shift lock, with no Stripe call inside; if
+the van filled up meanwhile, the hold is lifted and the patient is told no van is available. A pending patient's own
+ETA counts the pending requests made before theirs.

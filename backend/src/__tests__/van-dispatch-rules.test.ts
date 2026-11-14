@@ -351,6 +351,34 @@ describe("van dispatch rules", () => {
     expect(current.body.incoming[0].patient).toEqual({ firstName: "S.", lastName: "I." });
   });
 
+  it("counts requests still waiting for an answer in the next patient's quote and in the queue limit (N7)", async () => {
+    const { token, van } = await makeOperator("pending");
+    // A box around central London, so the shift covers the point asked about.
+    await prisma.vanServicePolygon.create({
+      data: {
+        vanId: van.id,
+        sectorName: `Synthetic ${tag}`,
+        polygonGeoJson: { type: "Polygon", coordinates: [[[-0.2, 51.4], [0.0, 51.4], [0.0, 51.6], [-0.2, 51.6], [-0.2, 51.4]]] },
+      },
+    });
+    const shift = (await call("POST", "/api/van/shift/start", token, { lat: 51.5, lng: -0.12 })).body;
+    const asker = await makeUser("patient", "asker");
+    await prisma.patientProfile.create({ data: { userId: asker.user.id, firstName: "Synthetic", lastName: "Asker" } });
+    const ask = () => call("GET", "/api/van/availability?lat=51.51&lng=-0.11", asker.token);
+
+    const empty = await ask();
+    expect(empty.body).toMatchObject({ available: true, queueLength: 0 });
+
+    for (let i = 0; i < 4; i++) await makePendingRequest(shift, `wait${i}`);
+    const busy = await ask();
+    expect(busy.body).toMatchObject({ available: true, queueLength: 4 });
+    expect(busy.body.etaSeconds).toBeGreaterThan(empty.body.etaSeconds);
+
+    await makePendingRequest(shift, "wait4");
+    const full = await ask();
+    expect(full.body.available).toBe(false);
+  });
+
   it("refuses a position report no van could make, and takes an ordinary one (N18)", async () => {
     const { token } = await makeOperator("ping");
     const started = await call("POST", "/api/van/shift/start", token, { lat: 51.5, lng: -0.12 });

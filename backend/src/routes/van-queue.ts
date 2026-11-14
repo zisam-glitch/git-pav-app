@@ -23,6 +23,8 @@ import { validateBody } from "../middleware/validate";
 import { reorderQueueSchema } from "../schemas/van-dispatch";
 import { optimizeStopOrder, Point } from "../lib/van-eta";
 import { broadcastEtaUpdates } from "../lib/van-eta-broadcast";
+import { loadActiveStops } from "../lib/van-dispatch";
+import { buildLegFn, lateStops } from "../lib/van-placement";
 import { safeError } from "../lib/log-safety";
 
 const router = Router();
@@ -170,6 +172,28 @@ router.post("/optimize", requireAuth, async (req: AuthRequest, res: Response) =>
   const optimal = await optimizeStopOrder(origin, stopPoints);
   const orderedIds = optimal.map((i) => queued[i].id);
   const changed = orderedIds.some((id, i) => queued[i].id !== id);
+
+  // The shortest drive is not worth breaking a promise: if the new order would
+  // make a patient later than the time they were told, leave it as it is and
+  // say so (N8).
+  if (changed && shift?.lastLat != null && shift?.lastLng != null) {
+    const active = await loadActiveStops(prisma, ctx.shiftId);
+    const byId = new Map(active.map((a) => [a.row.id, a.stop]));
+    const pinned = active.filter((a) => a.row.status === "in_progress").map((a) => a.stop);
+    const before = [...pinned, ...queued.map((q) => byId.get(q.id)).filter((s): s is NonNullable<typeof s> => !!s)];
+    const after = [...pinned, ...orderedIds.map((id) => byId.get(id)).filter((s): s is NonNullable<typeof s> => !!s)];
+    const leg = await buildLegFn({ lat: shift.lastLat, lng: shift.lastLng }, active.map((a) => ({ id: a.row.id, lat: a.row.patientLat, lng: a.row.patientLng })));
+    const late = lateStops(before, after, leg, new Date());
+    if (late.length > 0) {
+      return res.json({
+        reordered: 0,
+        order: queued.map((q) => q.id),
+        blocked: true,
+        wouldBeLate: late.map((l) => ({ id: l.id, minutesLate: Math.ceil(l.lateBySeconds / 60) })),
+        message: `Not reordered: the shortest drive would make ${late.length} visit${late.length === 1 ? "" : "s"} later than the time the patient was told, so the order is unchanged.`,
+      });
+    }
+  }
 
   if (changed) {
     const applied = await applyQueuedOrder(ctx.shiftId, orderedIds);

@@ -22,7 +22,7 @@ export const STOP_BUFFER_MINUTES = 10;
 /** Used when a service has no length of its own. */
 export const DEFAULT_TREATMENT_MINUTES = 45;
 
-type StopRow = {
+export type StopRow = {
   patientLat: number;
   patientLng: number;
   phase: string;
@@ -30,7 +30,7 @@ type StopRow = {
   service: { durationMinutes: number | null };
 };
 
-function toQueueStop(row: StopRow): QueueStop {
+export function toQueueStop(row: StopRow): QueueStop {
   return {
     lat: row.patientLat,
     lng: row.patientLng,

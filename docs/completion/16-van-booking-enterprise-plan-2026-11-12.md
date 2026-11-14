@@ -353,3 +353,14 @@ cancelled or past its time limit. Availability and request creation share one qu
 after another). The final room check and the insert run together under the shift lock, with no Stripe call inside; if
 the van filled up meanwhile, the hold is lifted and the patient is told no van is available. A pending patient's own
 ETA counts the pending requests made before theirs.
+
+**Best-position placement (N8), done:** `backend/src/lib/van-placement.ts`. A newly accepted visit is tried at every
+place the queue allows (never ahead of a stop already under way) and goes where the whole queue waits least, as long
+as no patient is made later than the time they last heard plus 20 minutes (`VAN_PROMISE_SLACK_MINUTES`), and the new
+patient is no later than the back of the queue would have been. A stop already running late is never pushed back
+further. The back of the queue never delays anyone, so there is always a valid answer, and it is used whenever travel
+times could not be fetched or the queue changed before the lock. "Optimize" now refuses an order that would make a
+patient later than they were told and says how many visits and by how many minutes, instead of reordering. Accepting
+no longer re-sorts the whole queue by acceptance time, which used to undo an operator's manual reorder. The promise is
+the last ETA pushed to the patient, else the quote they were given when they asked; the stored plan from the other
+session can replace that source later.

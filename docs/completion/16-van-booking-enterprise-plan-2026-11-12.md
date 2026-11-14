@@ -387,6 +387,11 @@ suggested under decision 8 and can be set by environment variable (`VAN_PROMISE_
 (N8) still takes its promise from the last pushed ETA, not from this window; nothing reports promised against actual
 arrival yet (dashboard, N33).
 
+**Placement uses the stored window:** a stop with an arrival window is now held to the end of that window by
+best-position placement, with no extra allowance (the window is the allowance, and "running late" is announced only
+past it plus the grace), so placement can no longer push a patient into a late notice. A visit with no window (accepted
+before windows existed) still falls back to the last ETA it heard plus the general 20-minute allowance.
+
 **Stripe outside the lock (N22), done; the owner gave the go-ahead on 15 Nov 2026.** No Stripe call is made while
 the shift lock is held. When the deposit is held, taken, returned or kept is unchanged.
 - *Releases* (decline, time-out, shift end, cancel): the transaction closes the request and marks its deposit

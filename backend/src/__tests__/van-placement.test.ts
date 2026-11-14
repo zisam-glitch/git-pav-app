@@ -1,4 +1,4 @@
-import { arrivalSeconds, choosePlacement, lateStops, promisedArrival, PlacementStop } from "../lib/van-placement";
+import { arrivalSeconds, choosePlacement, lateStops, promiseOf, promisedArrival, PlacementStop } from "../lib/van-placement";
 
 // N8: where a newly accepted visit goes, and whether a reorder keeps the times
 // patients were told. Pure functions; the van and the stops sit on a line,
@@ -120,5 +120,25 @@ describe("promisedArrival", () => {
 
   it("is nothing when the patient was told nothing", () => {
     expect(promisedArrival({ lastEtaSeconds: null, lastEtaPushedAt: null, etaSecondsSnapshot: null, requestedAt })).toBeNull();
+  });
+});
+
+describe("promiseOf and a stored window", () => {
+  const base = { lastEtaSeconds: 600, lastEtaPushedAt: at(-60), etaSecondsSnapshot: 1800, requestedAt: at(-120) };
+
+  it("promises the end of the stored window, with no extra allowance", () => {
+    expect(promiseOf({ ...base, promisedToAt: at(900) })).toEqual({ promisedBy: at(900), slackSeconds: 0 });
+  });
+
+  it("falls back to the last ETA for a visit with no window", () => {
+    expect(promiseOf({ ...base, promisedToAt: null })).toEqual({ promisedBy: at(540) });
+  });
+
+  it("holds a stop to the end of its window, not window plus the general allowance", () => {
+    const a = stop("a", 10, { promisedBy: at(600), slackSeconds: 0 });
+    const b = stop("b", 20, { promisedBy: at(1500), slackSeconds: 0 });
+    const c = stop("c", 15);
+    // With the general 20-minute allowance b could slip to 1800; its window ends at 1500, so it cannot.
+    expect(choosePlacement([a, b], c, leg, NOW, 1200).order.map((s) => s.id)).toEqual(["a", "b", "c"]);
   });
 });

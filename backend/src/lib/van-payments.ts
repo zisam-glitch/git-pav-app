@@ -36,7 +36,8 @@ export type VanDepositReleaseReason =
   | "expired"
   | "shift_ended"
   | "external_cancel"
-  | "duplicate_request";
+  | "duplicate_request"
+  | "queue_full";
 
 export type VanDepositReleaseStatus =
   | "released" // uncaptured hold cancelled (authorisation lifted)

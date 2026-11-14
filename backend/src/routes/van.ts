@@ -17,16 +17,14 @@ import {
 import {
   etaSecondsToNewPatient,
   formatEtaLabel,
-  QueueStop,
   Point,
   MAX_QUEUE_DEPTH,
   REQUEST_TIMEOUT_MS,
-  MAX_ETA_SECONDS,
   roadRoute,
 } from "../lib/van-eta";
 import { clinicalRecordEncryptionService, decryptString } from "../lib/encryption";
 import { haversineMetres, postcodeToCoordinates } from "../lib/geo";
-import { getOnlineShiftsCoveringPoint } from "../lib/van-coverage";
+import { countOpenStops, loadShiftQueue, quoteBestVan, stopsAheadOf } from "../lib/van-quote";
 import { broadcastEtaUpdates, isMaterialDrift } from "../lib/van-eta-broadcast";
 import { env } from "../config/env";
 import {
@@ -196,37 +194,6 @@ async function getAssignedVan(operatorId: string) {
 async function getActiveShift(operatorId: string) {
   return prisma.vanShift.findFirst({
     where: { operatorId, status: { in: ["online", "paused"] }, endedAt: null },
-  });
-}
-
-/** Build queue stops for ETA calculation (accepted/in_progress only) */
-async function buildQueueStops(shiftId: string): Promise<QueueStop[]> {
-  const stops = await prisma.vanServiceRequest.findMany({
-    where: {
-      shiftId,
-      status: { in: ["accepted", "in_progress"] },
-    },
-    include: { service: { select: { durationMinutes: true } } },
-    orderBy: { queuePosition: "asc" },
-  });
-
-  return stops.map((s) => ({
-    lat: s.patientLat,
-    lng: s.patientLng,
-    phase: s.phase,
-    treatmentStartedAt: s.treatmentStartedAt,
-    treatmentMinutes: s.service.durationMinutes || 45,
-    bufferMinutes: 10,
-  }));
-}
-
-/** Get total queue count including pending requests for depth checking */
-async function getTotalQueueCount(shiftId: string): Promise<number> {
-  return prisma.vanServiceRequest.count({
-    where: {
-      shiftId,
-      status: { in: ["pending", "accepted", "in_progress"] },
-    },
   });
 }
 
@@ -495,10 +462,11 @@ router.get("/availability", requireAuth, async (req: AuthRequest, res: Response)
   }
   const patientPoint: Point = { lat: latNum, lng: lngNum };
 
-  // Find online shifts whose van covers this point (PostGIS or JS fallback)
-  const activeShifts = await getOnlineShiftsCoveringPoint(patientPoint);
+  // The best van for this address, counting requests still waiting for an
+  // answer as part of each van's queue (N7). Same quote as the request itself.
+  const quote = await quoteBestVan(patientPoint);
 
-  if (activeShifts.length === 0) {
+  if (quote.kind === "no_van") {
     return res.json({
       available: false,
       etaSeconds: null,
@@ -510,31 +478,7 @@ router.get("/availability", requireAuth, async (req: AuthRequest, res: Response)
     });
   }
 
-  // Find the best shift by ETA
-  let best: { etaSeconds: number; shift: typeof activeShifts[0]; queueLength: number } | null = null;
-
-  for (const shift of activeShifts) {
-    const queueStops = await buildQueueStops(shift.id);
-    const queueCount = await getTotalQueueCount(shift.id);
-
-    if (queueCount >= MAX_QUEUE_DEPTH) continue;
-
-    if (shift.lastLat == null || shift.lastLng == null) {
-      // VR-9: Shift has no recorded GPS fix yet; skip rather than assuming a fake London coordinate
-      continue;
-    }
-    const vanPoint: Point = { lat: shift.lastLat, lng: shift.lastLng };
-
-    const etaSeconds = await etaSecondsToNewPatient(vanPoint, queueStops, patientPoint);
-
-    if (etaSeconds > MAX_ETA_SECONDS) continue;
-
-    if (!best || etaSeconds < best.etaSeconds) {
-      best = { etaSeconds, shift, queueLength: queueCount };
-    }
-  }
-
-  if (!best) {
+  if (quote.kind === "none_available") {
     return res.json({
       available: false,
       etaSeconds: null,
@@ -546,6 +490,7 @@ router.get("/availability", requireAuth, async (req: AuthRequest, res: Response)
     });
   }
 
+  const { best } = quote;
   return res.json({
     available: true,
     etaSeconds: best.etaSeconds,
@@ -609,36 +554,16 @@ router.post("/requests", requireAuth, validateBody(createVanRequestSchema), asyn
     encryptedAccessDetails.accessNotes = encryptedNotes;
   }
 
-  // Find best shift (same logic as availability); coverage via lib/van-coverage
-  const activeShifts = await getOnlineShiftsCoveringPoint(patientPoint);
-
-  let bestShift: typeof activeShifts[0] | null = null;
-  let bestEta = Infinity;
-
-  for (const shift of activeShifts) {
-    const queueStops = await buildQueueStops(shift.id);
-    const queueCount = await getTotalQueueCount(shift.id);
-    if (queueCount >= MAX_QUEUE_DEPTH) continue;
-
-    if (shift.lastLat == null || shift.lastLng == null) {
-      // VR-9: Shift has no recorded GPS fix yet; skip rather than assuming a fake London coordinate
-      continue;
-    }
-    const vanPoint: Point = { lat: shift.lastLat, lng: shift.lastLng };
-
-    const eta = await etaSecondsToNewPatient(vanPoint, queueStops, patientPoint);
-    if (eta < bestEta && eta <= MAX_ETA_SECONDS) {
-      bestEta = eta;
-      bestShift = shift;
-    }
-  }
-
-  if (!bestShift) {
+  // Same quote as the availability check (lib/van-quote.ts).
+  const quote = await quoteBestVan(patientPoint);
+  if (quote.kind !== "best") {
     return res.status(409).json({
       error: "No van available in your area",
       message: "The van may be offline or queue is full. Try again shortly.",
     });
   }
+  const bestShift = quote.best.shift;
+  const bestEta = quote.best.etaSeconds;
 
   // Validate service exists
   const service = await prisma.service.findUnique({ where: { id: serviceId } });
@@ -697,23 +622,35 @@ router.post("/requests", requireAuth, validateBody(createVanRequestSchema), asyn
     }
   }
 
+  // The quote above was taken without a lock, so two patients can both see
+  // room for one more. The last check and the insert run together under the
+  // shift lock, with no Stripe call inside it (N7).
   let request;
   try {
-    request = await prisma.vanServiceRequest.create({
-      data: {
-        id: requestId,
-        shiftId: bestShift.id,
-        vanId: bestShift.vanId,
-        patientId: patientProfile.id,
-        serviceId,
-        patientLat: patientPoint.lat,
-        patientLng: patientPoint.lng,
-        accessDetails: encryptedAccessDetails,
-        expiresAt: new Date(Date.now() + REQUEST_TIMEOUT_MS),
-        etaSecondsSnapshot: Math.round(bestEta),
-        paymentIntentId,
+    request = await prisma.$transaction(
+      async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${bestShift.id}`}))`;
+        if ((await countOpenStops(tx, bestShift.id)) >= MAX_QUEUE_DEPTH) return null;
+        const created = await tx.vanServiceRequest.create({
+          data: {
+            id: requestId,
+            shiftId: bestShift.id,
+            vanId: bestShift.vanId,
+            patientId: patientProfile.id,
+            serviceId,
+            patientLat: patientPoint.lat,
+            patientLng: patientPoint.lng,
+            accessDetails: encryptedAccessDetails,
+            expiresAt: new Date(Date.now() + REQUEST_TIMEOUT_MS),
+            etaSecondsSnapshot: Math.round(bestEta),
+            paymentIntentId,
+          },
+        });
+        await recordVanEvent(tx, { requestId: created.id, type: "requested", actorRole: "patient" });
+        return created;
       },
-    });
+      { maxWait: 10_000, timeout: 30_000 }
+    );
   } catch (error) {
     // A second request that raced past the open-request check above: the
     // unique index refuses it. Its unconfirmed intent is cancelled.
@@ -724,9 +661,14 @@ router.post("/requests", requireAuth, validateBody(createVanRequestSchema), asyn
     throw error;
   }
 
-  await recordVanEvent(prisma, { requestId: request.id, type: "requested", actorRole: "patient" }).catch((err) =>
-    console.error("[Van] history entry failed:", safeError(err))
-  );
+  if (!request) {
+    // The van filled up while this request was being set up: lift the hold.
+    if (paymentIntentId) await releaseVanDeposit(paymentIntentId, "queue_full");
+    return res.status(409).json({
+      error: "No van available in your area",
+      message: "The van may be offline or queue is full. Try again shortly.",
+    });
+  }
 
   // Send notification to patient about request creation
   await sendPatientNotification(
@@ -803,10 +745,9 @@ router.get("/requests/mine/active", requireAuth, async (req: AuthRequest, res: R
   let etaLabel: string | null = null;
   if (request.shift && request.shift.lastLat != null && request.shift.lastLng != null) {
     const vanPoint: Point = { lat: request.shift.lastLat, lng: request.shift.lastLng };
-    const queueStops = await buildQueueStops(request.shiftId);
-    // Only stops ahead of this patient
-    const myPosition = request.queuePosition ?? 99;
-    const stopsAhead = queueStops.slice(0, myPosition - 1);
+    // Only stops ahead of this patient: the accepted stops before their place,
+    // or for a pending request every accepted stop and the earlier pending ones.
+    const stopsAhead = stopsAheadOf(await loadShiftQueue(prisma, request.shiftId), request);
     etaSeconds = await etaSecondsToNewPatient(vanPoint, stopsAhead, {
       lat: request.patientLat,
       lng: request.patientLng,
@@ -872,9 +813,7 @@ router.get("/requests/:id", requireAuth, validateParams(vanRequestIdParamsSchema
   if (request.status === "accepted" || request.status === "in_progress") {
     if (request.shift?.lastLat != null && request.shift?.lastLng != null) {
       const vanPoint: Point = { lat: request.shift.lastLat, lng: request.shift.lastLng };
-      const queueStops = await buildQueueStops(request.shiftId);
-      const myPosition = request.queuePosition ?? 99;
-      const stopsAhead = queueStops.slice(0, myPosition - 1);
+      const stopsAhead = stopsAheadOf(await loadShiftQueue(prisma, request.shiftId), request);
       etaSeconds = await etaSecondsToNewPatient(vanPoint, stopsAhead, {
         lat: request.patientLat,
         lng: request.patientLng,

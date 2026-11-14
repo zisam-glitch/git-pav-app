@@ -343,13 +343,25 @@ lock (before, an accept could land between the check and the end, leaving an acc
 the "van went offline" push is sent after that transaction commits; a second Cancel tap returns the cancelled visit
 instead of an error. When the deposit is held, taken, returned or kept is the same. Checked here: typecheck, lint and
 the pure tests; the database-backed tests need CI.
-**Still to do in phase 2:** the stored plan with arrival times (N20, N10), pending requests counting as
-provisional stops (N7, N12), placing a new request at the cheapest position (N8), and the promise window. The
-Stripe-outside-the-lock change (N22) waits for the owner's go-ahead.
-
 **Pending requests as provisional stops (N7, N12), done:** `backend/src/lib/van-quote.ts`. A request still waiting for an
 operator's answer now counts in the next patient's quote and toward the queue limit, until it is accepted, declined,
 cancelled or past its time limit. Availability and request creation share one quote (shifts quoted together, not one
 after another). The final room check and the insert run together under the shift lock, with no Stripe call inside; if
 the van filled up meanwhile, the hold is lifted and the patient is told no van is available. A pending patient's own
 ETA counts the pending requests made before theirs.
+
+**Done (fourth pull request): the stored plan (N20, part of N10).** `lib/van-plan.ts` turns the van's position and
+the stops in order into a planned arrival, start and finish for every stop (`planStops`, pure) and stores them on the
+request (`planned_arrival_at`, `planned_start_at`, `planned_finish_at`, `plan_computed_at`; migration
+`20261114100000_van_request_plan`, additive, nothing to run after deploy). The plan is rewritten whenever the queue
+changes or the van has moved a meaningful distance, and a reader refreshes it when it is more than a minute old. The
+ETA push and both patient request endpoints read the stored times; the operator's queue rows carry them too. The
+treatment default (45 minutes), the gap between visits (10) and a new setup time (0 for now) are in one place,
+`VAN_PLAN_SETTINGS`, and can be set by environment variable. Checked here: typecheck, lint and the pure tests; the
+database-backed tests need CI.
+**Left from this item:** setup and gap as settings per service and per van (needs columns and a dashboard screen);
+the appointment's start and end time still come from the estimate at accept until treatment starts; a request not yet
+accepted is quoted by `van-quote.ts` (behind the accepted stops and earlier pending requests) and gets stored times
+only once accepted; the app does not show the planned times yet (phase 5).
+**Still to do in phase 2:** placing a new request at the cheapest position (N8), and the promise window. The Stripe-outside-the-lock change (N22) waits for the owner's
+go-ahead.

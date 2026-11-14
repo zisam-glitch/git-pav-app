@@ -15,11 +15,15 @@
 //   - throttle: at most one push per patient per ETA_PUSH_THROTTLE_MINUTES
 //     (10 default); callers may force past both (e.g. right after accept)
 //
+// The ETA is read from the shift's plan (lib/van-plan.ts), which this pass
+// works out again and stores first, so the push, the patient's screen and the
+// operator's list all show the same times.
+//
 // Best-effort by design: push/DB failures are logged and swallowed — they
 // must never break the operator's dispatch action.
 
 import { prisma } from "./prisma";
-import { etaSecondsToNewPatient, Point } from "./van-eta";
+import { etaSecondsFromPlan, recomputeShiftPlan } from "./van-plan";
 import { sendPatientNotification } from "./patient-push";
 import { safeError } from "./log-safety";
 
@@ -57,8 +61,8 @@ export function isMaterialDrift(
 }
 
 /**
- * Recompute ETAs for every active stop on the shift and push material
- * changes. Returns per-request outcomes for logging/tests.
+ * Works out the shift's plan again, stores it, and pushes material changes
+ * in each patient's ETA. Returns per-request outcomes for logging/tests.
  */
 export async function broadcastEtaUpdates(
   shiftId: string,
@@ -66,54 +70,25 @@ export async function broadcastEtaUpdates(
 ): Promise<Record<string, EtaPushOutcome>> {
   const outcomes: Record<string, EtaPushOutcome> = {};
 
-  const shift = await prisma.vanShift.findUnique({
-    where: { id: shiftId },
-    select: { lastLat: true, lastLng: true },
-  });
-  if (!shift || shift.lastLat == null || shift.lastLng == null) {
-    // No fix yet — nothing to recompute from.
+  let plan: Awaited<ReturnType<typeof recomputeShiftPlan>>;
+  try {
+    plan = await recomputeShiftPlan(shiftId);
+  } catch (err) {
+    console.error("[VAN ETA PUSH] recompute failed:", safeError(err));
     return outcomes;
   }
-  const vanPoint: Point = { lat: shift.lastLat, lng: shift.lastLng };
+  // No fix yet: nothing to plan from.
+  if (!plan) return outcomes;
 
-  const stops = await prisma.vanServiceRequest.findMany({
-    where: { shiftId, status: { in: ["accepted", "in_progress"] } },
-    include: { service: { select: { durationMinutes: true } } },
-    orderBy: { queuePosition: "asc" },
-  });
-  if (stops.length === 0) return outcomes;
-
-  for (let i = 0; i < stops.length; i++) {
-    const stop = stops[i];
-
-    // EB-1: Skip stops that are on_site or in_treatment
+  for (const stop of plan.stops) {
+    // EB-1: the van is already with this patient.
     if (stop.phase === "on_site" || stop.phase === "in_treatment") {
       outcomes[stop.id] = "no_change";
       continue;
     }
 
-    const position = stop.queuePosition ?? i + 1;
-
-    // Only stops ahead of this patient affect their ETA — same math as the
-    // polling endpoint (GET /api/van/requests/mine/active).
-    const stopsAhead = stops.slice(0, Math.max(0, position - 1)).map((s) => ({
-      lat: s.patientLat,
-      lng: s.patientLng,
-      phase: s.phase,
-      treatmentStartedAt: s.treatmentStartedAt,
-      treatmentMinutes: s.service?.durationMinutes ?? 45,
-      bufferMinutes: 10,
-    }));
-
-    let etaSeconds: number;
-    try {
-      etaSeconds = await etaSecondsToNewPatient(
-        vanPoint,
-        stopsAhead,
-        { lat: stop.patientLat, lng: stop.patientLng }
-      );
-    } catch (err) {
-      console.error("[VAN ETA PUSH] recompute failed:", safeError(err));
+    const etaSeconds = etaSecondsFromPlan(stop, plan.computedAt);
+    if (etaSeconds == null) {
       outcomes[stop.id] = "no_change";
       continue;
     }

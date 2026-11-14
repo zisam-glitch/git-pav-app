@@ -13,14 +13,14 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getOnlineShiftsCoveringPoint } from "./van-coverage";
+import { VAN_PLAN_SETTINGS } from "./van-plan";
 import { etaSecondsToNewPatient, MAX_ETA_SECONDS, MAX_QUEUE_DEPTH, Point, QueueStop } from "./van-eta";
 
 type Db = Prisma.TransactionClient | typeof prisma;
 
-/** Minutes between one visit ending and the next patient's drive (parking, clearing down). */
-export const STOP_BUFFER_MINUTES = 10;
-/** Used when a service has no length of its own. */
-export const DEFAULT_TREATMENT_MINUTES = 45;
+/** The plan's figures (lib/van-plan.ts), so a quote and the plan cannot use different ones. */
+export const STOP_BUFFER_MINUTES = VAN_PLAN_SETTINGS.gapMinutes;
+export const DEFAULT_TREATMENT_MINUTES = VAN_PLAN_SETTINGS.defaultTreatmentMinutes;
 
 export type StopRow = {
   patientLat: number;

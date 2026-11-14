@@ -788,6 +788,12 @@ model VanServiceRequest {
   /// Last ETA pushed to the patient (drives material-delta gating)
   lastEtaSeconds       Int?              @map("last_eta_seconds")
   lastEtaPushedAt      DateTime?         @map("last_eta_pushed_at")
+  /// The plan: when the van is expected to arrive, start and finish (lib/van-plan.ts).
+  /// Arrival is left as it was once the van is there.
+  plannedArrivalAt     DateTime?         @map("planned_arrival_at")
+  plannedStartAt       DateTime?         @map("planned_start_at")
+  plannedFinishAt      DateTime?         @map("planned_finish_at")
+  planComputedAt       DateTime?         @map("plan_computed_at")
   notes                String?
   createdAt            DateTime          @default(now()) @map("created_at")
   updatedAt            DateTime          @updatedAt @map("updated_at")

@@ -290,6 +290,28 @@ export async function travelSeconds(from: Point, to: Point): Promise<number> {
   return Math.round((dist * ROAD_FACTOR) / URBAN_SPEED_MS);
 }
 
+/** Straight-line estimate with a road factor, when no provider gives a time. */
+function fallbackSeconds(from: Point, to: Point): number {
+  return Math.round((haversineMetres(from, to) * ROAD_FACTOR) / URBAN_SPEED_MS);
+}
+
+/**
+ * Travel seconds for each leg of a chain of points: [a, b, c] gives [a→b, b→c].
+ *
+ * One matrix request for the whole chain when a provider is configured. When
+ * it is down or gives no figure for a leg, that leg falls back to the
+ * straight-line estimate without further network calls (VE-2).
+ */
+export async function chainLegSeconds(waypoints: Point[]): Promise<number[]> {
+  if (waypoints.length < 2) return [];
+  const matrix = await getDurationMatrix(waypoints);
+  return waypoints.slice(1).map((to, i) => {
+    const seconds = matrix?.[i]?.[i + 1];
+    if (seconds != null && Number.isFinite(seconds)) return Math.round(seconds);
+    return fallbackSeconds(waypoints[i], to);
+  });
+}
+
 /**
  * How many seconds of treatment remain for this stop.
  * - queued / en_route / on_site → full block
@@ -338,35 +360,16 @@ export async function etaSecondsToNewPatient(
   // Waypoint order: [van, stop1, …, stopN, target]. All travel legs
   // (van→s1, s1→s2, …, last→target) come from ONE matrix request.
   const waypoints: Point[] = [van, ...queue.map((s) => ({ lat: s.lat, lng: s.lng })), target];
-  const matrix = await getDurationMatrix(waypoints);
-
-  // VE-2: If matrix is null (provider down/failed), compute direct haversine
-  // fallback per leg without triggering repeated pairwise network calls with timeouts.
-  const legByIndex = (fromIdx: number, toIdx: number): number => {
-    if (matrix) {
-      const seconds = matrix[fromIdx]?.[toIdx];
-      if (seconds != null && Number.isFinite(seconds)) return Math.round(seconds);
-    }
-    const dist = haversineMetres(waypoints[fromIdx], waypoints[toIdx]);
-    return Math.round((dist * ROAD_FACTOR) / URBAN_SPEED_MS);
-  };
+  const legs = await chainLegSeconds(waypoints);
 
   let t = 0;
-  let cursorIdx = 0; // van
-
-  for (let i = 0; i < queue.length; i++) {
-    const stop = queue[i];
-    const stopIdx = i + 1;
-    // Skip travel if already on_site or in_treatment (van is already there)
-    if (stop.phase !== "on_site" && stop.phase !== "in_treatment") {
-      t += legByIndex(cursorIdx, stopIdx);
-    }
+  queue.forEach((stop, i) => {
+    // No drive to a stop the van is already at.
+    if (stop.phase !== "on_site" && stop.phase !== "in_treatment") t += legs[i];
     t += remainingTreatmentSeconds(stop);
     t += stop.bufferMinutes * 60;
-    cursorIdx = stopIdx;
-  }
-
-  t += legByIndex(cursorIdx, waypoints.length - 1);
+  });
+  t += legs[queue.length];
   return Math.round(t);
 }
 

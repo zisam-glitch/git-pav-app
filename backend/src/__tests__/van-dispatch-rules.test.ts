@@ -11,6 +11,7 @@ import crypto from "crypto";
 //   N16 the operator sees initials, not names, before accepting
 //   N18 an impossible position report is refused
 // Phase 2: accept and decline go through the rulebook (lib/van-dispatch.ts).
+//   N20 one stored plan per shift; the patient's ETA is read from it
 
 type FakeIntent = { id: string; status: string };
 const intents = new Map<string, FakeIntent>();
@@ -44,6 +45,7 @@ describe("van dispatch rules", () => {
   let baseUrl: string;
   let prisma: typeof import("../lib/prisma").prisma;
   let signAccessToken: typeof import("../lib/jwt").signAccessToken;
+  let recomputeShiftPlan: typeof import("../lib/van-plan").recomputeShiftPlan;
   const tag = crypto.randomUUID().slice(0, 8);
   const userIds: string[] = [];
   const vanIds: string[] = [];
@@ -118,6 +120,7 @@ describe("van dispatch rules", () => {
     const app = serverModule.default ?? serverModule;
     prisma = require("../lib/prisma").prisma;
     signAccessToken = require("../lib/jwt").signAccessToken;
+    recomputeShiftPlan = require("../lib/van-plan").recomputeShiftPlan;
     server = http.createServer(app);
     await new Promise<void>((resolve) => server.listen(3040, resolve));
     baseUrl = "http://localhost:3040";
@@ -338,6 +341,51 @@ describe("van dispatch rules", () => {
     expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "cancelled" } })).toBe(1);
     expect((await prisma.appointment.findUniqueOrThrow({ where: { id: stops[0].appointmentId } })).status).toBe("cancelled");
     expect(await positions(shift.id)).toEqual([{ id: stops[1].id, queuePosition: 1 }]);
+  });
+
+  it("stores one plan for the shift in queue order, and the patient's ETA is read from it (N20)", async () => {
+    const { token } = await makeOperator("plan");
+    const shift = (await call("POST", "/api/van/shift/start", token, { lat: 51.5, lng: -0.12 })).body;
+    const first = await makePendingRequest(shift, "plan0");
+    const second = await makePendingRequest(shift, "plan1");
+    for (const r of [first, second]) expect((await call("POST", `/api/van/requests/${r.request.id}/accept`, token)).status).toBe(200);
+
+    const now = new Date();
+    const plan = await recomputeShiftPlan(shift.id, now);
+    expect(plan!.stops.map((s) => s.id)).toEqual([first.request.id, second.request.id]);
+
+    const rows = await prisma.vanServiceRequest.findMany({ where: { shiftId: shift.id }, orderBy: { queuePosition: "asc" } });
+    for (const row of rows) {
+      expect(row.planComputedAt).not.toBeNull();
+      expect(row.plannedStartAt!.getTime()).toBeGreaterThanOrEqual(row.plannedArrivalAt!.getTime());
+      expect(row.plannedFinishAt!.getTime()).toBeGreaterThan(row.plannedStartAt!.getTime());
+    }
+    // The second patient is reached after the first is finished and the gap has passed.
+    expect(rows[1].plannedArrivalAt!.getTime()).toBeGreaterThanOrEqual(rows[0].plannedFinishAt!.getTime() + 10 * 60_000);
+
+    // A run that started earlier never overwrites a newer plan.
+    await recomputeShiftPlan(shift.id, new Date(now.getTime() - 120_000));
+    const kept = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: second.request.id } });
+    expect(kept.planComputedAt!.getTime()).toBeGreaterThanOrEqual(now.getTime());
+
+    // The patient's screen shows the stored arrival, not a figure of its own.
+    const mine = await call("GET", "/api/van/requests/mine/active", second.patientToken);
+    expect(mine.status).toBe(200);
+    const fromPlan = (new Date(mine.body.plannedArrivalAt).getTime() - Date.now()) / 1000;
+    expect(Math.abs(mine.body.etaSeconds - fromPlan)).toBeLessThan(10);
+    expect(mine.body.etaSeconds).toBeGreaterThan(20 * 60);
+    expect(mine.body.etaLabel).toEqual(expect.any(String));
+  });
+
+  it("gives no ETA while the van has not reported where it is, and plans nothing", async () => {
+    const { token, shift, stops } = await shiftWithStops("nofix", 1);
+    expect(await recomputeShiftPlan(shift.id)).toBeNull();
+
+    const mine = await call("GET", "/api/van/requests/mine/active", stops[0].patientToken);
+    expect(mine.status).toBe(200);
+    expect(mine.body.etaSeconds).toBeNull();
+    expect(mine.body.plannedArrivalAt).toBeNull();
+    expect(token).toEqual(expect.any(String));
   });
 
   it("shows the operator initials, not names, before a request is accepted (N16)", async () => {

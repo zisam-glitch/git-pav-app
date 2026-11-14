@@ -1,16 +1,12 @@
 // Unit tests for the live ETA re-push broadcast.
-// Prisma and the ETA chain are mocked so drift gating, throttle windows,
+// Prisma and the shift's plan are mocked so drift gating, throttle windows,
 // and force semantics are exercised hermetically.
 
 process.env.PORT = process.env.PORT || "3000";
 
 jest.mock("../lib/prisma", () => ({
   prisma: {
-    vanShift: {
-      findUnique: jest.fn(),
-    },
     vanServiceRequest: {
-      findMany: jest.fn(),
       update: jest.fn().mockResolvedValue({}),
     },
   },
@@ -20,48 +16,51 @@ jest.mock("../lib/patient-push", () => ({
   sendPatientNotification: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock("../lib/van-eta", () => ({
-  // Deterministic chain: 600s per remaining leg.
-  etaSecondsToNewPatient: jest.fn().mockResolvedValue(600),
+// The plan is mocked: each stop is planned to be reached `etaSeconds` from now.
+jest.mock("../lib/van-plan", () => ({
+  ...jest.requireActual("../lib/van-plan"),
+  recomputeShiftPlan: jest.fn(),
 }));
 
 import { prisma } from "../lib/prisma";
 import { sendPatientNotification } from "../lib/patient-push";
-import { etaSecondsToNewPatient } from "../lib/van-eta";
+import { recomputeShiftPlan } from "../lib/van-plan";
 import { broadcastEtaUpdates, isMaterialDrift } from "../lib/van-eta-broadcast";
 
 const SHIFT_ID = "shift-1";
-
-function mockShift(lastLat: number | null, lastLng: number | null) {
-  (prisma.vanShift.findUnique as jest.Mock).mockResolvedValue({
-    id: SHIFT_ID,
-    lastLat,
-    lastLng,
-  });
-}
 
 function makeStop(overrides: Record<string, unknown> = {}) {
   return {
     id: "req-1",
     patientId: "patient-1",
-    queuePosition: 1,
-    patientLat: 51.51,
-    patientLng: -0.13,
     phase: "queued",
-    treatmentStartedAt: null,
-    status: "accepted",
     lastEtaSeconds: null as number | null,
     lastEtaPushedAt: null as Date | null,
-    service: { durationMinutes: 30 },
+    etaSeconds: 600,
     ...overrides,
   };
+}
+
+/** A shift whose plan reaches each stop `etaSeconds` from now; null means the van has no fix. */
+function mockPlan(stops: ReturnType<typeof makeStop>[] | null) {
+  const computedAt = new Date();
+  (recomputeShiftPlan as jest.Mock).mockResolvedValue(
+    stops && {
+      computedAt,
+      stops: stops.map(({ etaSeconds, ...stop }) => ({
+        ...stop,
+        plannedArrivalAt: new Date(computedAt.getTime() + etaSeconds * 1000),
+        plannedStartAt: new Date(computedAt.getTime() + etaSeconds * 1000),
+        plannedFinishAt: new Date(computedAt.getTime() + (etaSeconds + 1800) * 1000),
+      })),
+    }
+  );
 }
 
 beforeEach(() => {
   jest.clearAllMocks();
   (prisma.vanServiceRequest.update as jest.Mock).mockResolvedValue({});
   (sendPatientNotification as jest.Mock).mockResolvedValue(undefined);
-  (etaSecondsToNewPatient as jest.Mock).mockResolvedValue(600);
 });
 
 describe("isMaterialDrift", () => {
@@ -89,8 +88,7 @@ describe("isMaterialDrift", () => {
 
 describe("broadcastEtaUpdates", () => {
   test("no van fix → no outcomes, no pushes", async () => {
-    mockShift(null, null);
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([makeStop()]);
+    mockPlan(null);
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID);
 
@@ -99,16 +97,14 @@ describe("broadcastEtaUpdates", () => {
   });
 
   test("no active stops → no outcomes", async () => {
-    mockShift(51.5, -0.12);
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([]);
+    mockPlan([]);
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID);
     expect(Object.keys(outcomes)).toHaveLength(0);
   });
 
   test("first push for a patient always goes out (no previous ETA)", async () => {
-    mockShift(51.5, -0.12);
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([makeStop()]);
+    mockPlan([makeStop()]);
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID);
 
@@ -128,11 +124,8 @@ describe("broadcastEtaUpdates", () => {
   });
 
   test("change below drift threshold is suppressed", async () => {
-    mockShift(51.5, -0.12);
     // Last pushed 590s; new ETA 600s — 10s delta, far below 5 min gate.
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([
-      makeStop({ lastEtaSeconds: 590, lastEtaPushedAt: new Date(Date.now() - 3600_000) }),
-    ]);
+    mockPlan([makeStop({ lastEtaSeconds: 590, lastEtaPushedAt: new Date(Date.now() - 3600_000) })]);
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID);
 
@@ -141,11 +134,8 @@ describe("broadcastEtaUpdates", () => {
   });
 
   test("material change inside the throttle window is suppressed", async () => {
-    mockShift(51.5, -0.12);
-    (etaSecondsToNewPatient as jest.Mock).mockResolvedValue(1800); // 30 min vs 10 min = 20 min drift
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([
-      makeStop({ lastEtaSeconds: 600, lastEtaPushedAt: new Date(Date.now() - 60_000) }), // pushed 1 min ago
-    ]);
+    // 30 min vs 10 min = 20 min drift, pushed 1 min ago
+    mockPlan([makeStop({ etaSeconds: 1800, lastEtaSeconds: 600, lastEtaPushedAt: new Date(Date.now() - 60_000) })]);
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID);
 
@@ -154,11 +144,8 @@ describe("broadcastEtaUpdates", () => {
   });
 
   test("material change after the throttle window pushes", async () => {
-    mockShift(51.5, -0.12);
-    (etaSecondsToNewPatient as jest.Mock).mockResolvedValue(1800);
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([
-      makeStop({ lastEtaSeconds: 600, lastEtaPushedAt: new Date(Date.now() - 15 * 60_000) }), // 15 min ago
-    ]);
+    // pushed 15 min ago
+    mockPlan([makeStop({ etaSeconds: 1800, lastEtaSeconds: 600, lastEtaPushedAt: new Date(Date.now() - 15 * 60_000) })]);
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID);
 
@@ -172,10 +159,7 @@ describe("broadcastEtaUpdates", () => {
   });
 
   test("force bypasses both gates (post-accept seed)", async () => {
-    mockShift(51.5, -0.12);
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([
-      makeStop({ lastEtaSeconds: 600, lastEtaPushedAt: new Date() }), // pushed just now, no drift
-    ]);
+    mockPlan([makeStop({ lastEtaSeconds: 600, lastEtaPushedAt: new Date() })]); // pushed just now, no drift
 
     const outcomes = await broadcastEtaUpdates(SHIFT_ID, { force: true });
 
@@ -183,26 +167,26 @@ describe("broadcastEtaUpdates", () => {
     expect(sendPatientNotification).toHaveBeenCalled();
   });
 
-  test("only stops ahead of a patient feed their ETA chain", async () => {
-    mockShift(51.5, -0.12);
-    const stop1 = makeStop({ id: "req-1", patientId: "p1", queuePosition: 1 });
-    const stop2 = makeStop({ id: "req-2", patientId: "p2", queuePosition: 2 });
-    (prisma.vanServiceRequest.findMany as jest.Mock).mockResolvedValue([stop1, stop2]);
+  test("each patient is told their own planned arrival, later for the one further back", async () => {
+    // How the stops ahead feed a later stop's time is the plan's job: see van-plan.test.ts.
+    mockPlan([
+      makeStop({ id: "req-1", patientId: "p1", etaSeconds: 600 }),
+      makeStop({ id: "req-2", patientId: "p2", etaSeconds: 2400 }),
+    ]);
 
-    await broadcastEtaUpdates(SHIFT_ID);
+    const outcomes = await broadcastEtaUpdates(SHIFT_ID);
 
-    // Stop 1 is first: empty chain. Stop 2 has stop 1 ahead of it.
-    expect(etaSecondsToNewPatient).toHaveBeenNthCalledWith(
-      1,
-      expect.anything(),
-      [],
-      expect.anything()
-    );
-    expect(etaSecondsToNewPatient).toHaveBeenNthCalledWith(
-      2,
-      expect.anything(),
-      [expect.objectContaining({ lat: 51.51, lng: -0.13 })],
-      expect.anything()
-    );
+    expect(outcomes).toEqual({ "req-1": "pushed", "req-2": "pushed" });
+    expect(sendPatientNotification).toHaveBeenNthCalledWith(1, "p1", "ETA Update", expect.stringContaining("around 10 minutes"), expect.objectContaining({ etaSeconds: 600 }));
+    expect(sendPatientNotification).toHaveBeenNthCalledWith(2, "p2", "ETA Update", expect.stringContaining("around 40 minutes"), expect.objectContaining({ etaSeconds: 2400 }));
+  });
+
+  test("a stop the van is already at gets no ETA push", async () => {
+    mockPlan([makeStop({ phase: "on_site" }), makeStop({ id: "req-2", patientId: "p2", phase: "in_treatment" })]);
+
+    const outcomes = await broadcastEtaUpdates(SHIFT_ID, { force: true });
+
+    expect(outcomes).toEqual({ "req-1": "no_change", "req-2": "no_change" });
+    expect(sendPatientNotification).not.toHaveBeenCalled();
   });
 });

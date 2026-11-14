@@ -219,7 +219,7 @@ async function googleDurations(points: Point[]): Promise<number[][] | null> {
  * Fetch an n×n driving-duration matrix (seconds) for the given points.
  * Returns null when no provider is configured or the breaker is open.
  */
-async function getDurationMatrix(points: Point[]): Promise<number[][] | null> {
+export async function getDurationMatrix(points: Point[]): Promise<number[][] | null> {
   const provider = getRoutingProvider();
   if (provider === "haversine") return null;
   if (breakerIsOpen()) return null;
@@ -255,6 +255,11 @@ async function getDurationMatrix(points: Point[]): Promise<number[][] | null> {
     recordProviderFailure(err);
     return null;
   }
+}
+
+/** Straight-line travel time when no routing provider answers: distance times a road factor at urban speed. */
+export function fallbackTravelSeconds(from: Point, to: Point): number {
+  return Math.round((haversineMetres(from, to) * ROAD_FACTOR) / URBAN_SPEED_MS);
 }
 
 /** Cached pairwise duration (seconds); matrix hit or null to signal fallback. */

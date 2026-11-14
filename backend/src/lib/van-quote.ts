@@ -22,7 +22,7 @@ type Db = Prisma.TransactionClient | typeof prisma;
 export const STOP_BUFFER_MINUTES = VAN_PLAN_SETTINGS.gapMinutes;
 export const DEFAULT_TREATMENT_MINUTES = VAN_PLAN_SETTINGS.defaultTreatmentMinutes;
 
-type StopRow = {
+export type StopRow = {
   patientLat: number;
   patientLng: number;
   phase: string;
@@ -30,7 +30,7 @@ type StopRow = {
   service: { durationMinutes: number | null };
 };
 
-function toQueueStop(row: StopRow): QueueStop {
+export function toQueueStop(row: StopRow): QueueStop {
   return {
     lat: row.patientLat,
     lng: row.patientLng,

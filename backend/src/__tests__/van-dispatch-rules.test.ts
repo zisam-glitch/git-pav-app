@@ -76,7 +76,7 @@ describe("van dispatch rules", () => {
   }
 
   /** A pending request with an authorised fake hold, for a patient who gets a signed-in token. */
-  async function makePendingRequest(shift: { id: string; vanId: string }, label: string) {
+  async function makePendingRequest(shift: { id: string; vanId: string }, label: string, where = { lat: 51.5, lng: -0.12 }) {
     const { user, token } = await makeUser("patient", `pt-${label}`);
     const profile = await prisma.patientProfile.create({ data: { userId: user.id, firstName: "Synthetic", lastName: label } });
     const paymentIntentId = `pi_fake_${label}_${tag}`;
@@ -87,8 +87,8 @@ describe("van dispatch rules", () => {
         vanId: shift.vanId,
         patientId: profile.id,
         serviceId,
-        patientLat: 51.5,
-        patientLng: -0.12,
+        patientLat: where.lat,
+        patientLng: where.lng,
         accessDetails: {},
         expiresAt: new Date(Date.now() + 3_600_000),
         etaSecondsSnapshot: 600,
@@ -425,6 +425,47 @@ describe("van dispatch rules", () => {
     await makePendingRequest(shift, "wait4");
     const full = await ask();
     expect(full.body.available).toBe(false);
+  });
+
+  describe("where a newly accepted stop goes in the queue (N8)", () => {
+    // Three addresses on a line north of the van: A near, B far, C between them.
+    const near = { lat: 51.52, lng: -0.12 };
+    const far = { lat: 51.56, lng: -0.12 };
+    const between = { lat: 51.54, lng: -0.12 };
+
+    async function acceptInOrder(label: string, promisedForSeconds: number | null) {
+      const { token } = await makeOperator(label);
+      const shift = (await call("POST", "/api/van/shift/start", token, { lat: 51.5, lng: -0.12 })).body;
+      const ids: Record<string, string> = {};
+      for (const [name, where] of [["a", near], ["b", far], ["c", between]] as const) {
+        const { request } = await makePendingRequest(shift, `${label}${name}`, where);
+        expect((await call("POST", `/api/van/requests/${request.id}/accept`, token)).status).toBe(200);
+        if (promisedForSeconds !== null) {
+          // Accepting sends the patient a first ETA in the background, which is
+          // then what they last heard. Wait for it, then stand in a promise of
+          // our own, as if a later push had gone out just now.
+          for (let tries = 0; tries < 100; tries++) {
+            const row = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: request.id }, select: { lastEtaPushedAt: true } });
+            if (row.lastEtaPushedAt) break;
+            await new Promise((resolve) => setTimeout(resolve, 50));
+          }
+          await prisma.vanServiceRequest.update({ where: { id: request.id }, data: { lastEtaSeconds: promisedForSeconds, lastEtaPushedAt: new Date() } });
+        }
+        ids[name] = request.id;
+      }
+      const order = (await positions(shift.id)).map((p) => p.id);
+      return { order, ids };
+    }
+
+    it("goes between two stops when its address is on the way and nobody is made later than they were told", async () => {
+      const { order, ids } = await acceptInOrder("placeok", 36_000);
+      expect(order).toEqual([ids.a, ids.c, ids.b]);
+    });
+
+    it("goes to the back when going earlier would make a patient later than they were told", async () => {
+      const { order, ids } = await acceptInOrder("placelate", null);
+      expect(order).toEqual([ids.a, ids.b, ids.c]);
+    });
   });
 
   it("refuses a position report no van could make, and takes an ordinary one (N18)", async () => {

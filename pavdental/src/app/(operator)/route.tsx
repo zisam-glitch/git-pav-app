@@ -66,7 +66,7 @@ export default function OperatorRouteScreen() {
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
       Alert.alert(
-        result.reordered > 0 ? "Route Optimized" : "Already Optimal",
+        result.blocked ? "Order kept" : result.reordered > 0 ? "Route Optimized" : "Already Optimal",
         result.message
       );
     },

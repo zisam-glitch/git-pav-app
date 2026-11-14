@@ -13,6 +13,8 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { encryptField } from "./encryption";
 import { renumberQueue } from "./van-queue";
+import { toQueueStop } from "./van-quote";
+import { buildLegFn, choosePlacement, promisedArrival, LegFn, PlacementStop } from "./van-placement";
 import { awardVisitPoints } from "./rewards";
 import { sendPatientNotification } from "./patient-push";
 import { broadcastEtaUpdates } from "./van-eta-broadcast";
@@ -382,6 +384,41 @@ const refusal = (check: { error: string; message?: string }): DispatchResult => 
 
 type DecisionOutcome = DispatchResult | (DispatchResult & { changed: true; patientId: string });
 
+// ─── Placing a newly accepted stop ────────────────────────────────────────
+
+/** Accepted and in-progress stops in queue order, ready for placement. */
+export async function loadActiveStops(db: Db, shiftId: string, excludeId?: string) {
+  const rows = await db.vanServiceRequest.findMany({
+    where: { shiftId, status: { in: ["accepted", "in_progress"] }, ...(excludeId ? { id: { not: excludeId } } : {}) },
+    include: { service: { select: { durationMinutes: true } } },
+    orderBy: [{ queuePosition: "asc" }, { id: "asc" }],
+  });
+  return rows.map((row) => ({
+    row,
+    stop: { ...toQueueStop(row), id: row.id, promisedBy: promisedArrival(row) } satisfies PlacementStop,
+  }));
+}
+
+/** Travel times for the queue as it stands plus the request being accepted; null when there is nothing to go on. */
+async function prepareLegs(shiftId: string, requestId: string): Promise<{ ids: string[]; leg: LegFn } | null> {
+  try {
+    const [shift, candidate] = await Promise.all([
+      prisma.vanShift.findUnique({ where: { id: shiftId }, select: { lastLat: true, lastLng: true } }),
+      prisma.vanServiceRequest.findUnique({ where: { id: requestId }, select: { patientLat: true, patientLng: true } }),
+    ]);
+    if (!shift || shift.lastLat == null || shift.lastLng == null || !candidate) return null;
+    const active = await loadActiveStops(prisma, shiftId, requestId);
+    const leg = await buildLegFn({ lat: shift.lastLat, lng: shift.lastLng }, [
+      ...active.map((a) => ({ id: a.row.id, lat: a.row.patientLat, lng: a.row.patientLng })),
+      { id: requestId, lat: candidate.patientLat, lng: candidate.patientLng },
+    ]);
+    return { ids: active.map((a) => a.row.id), leg };
+  } catch (err) {
+    console.error("[VAN PLACEMENT] could not prepare travel times; the stop goes to the back:", safeError(err));
+    return null;
+  }
+}
+
 /**
  * Accepts a pending request onto a shift.
  *
@@ -395,6 +432,11 @@ type DecisionOutcome = DispatchResult | (DispatchResult & { changed: true; patie
  */
 export async function acceptVanRequest(opts: { shiftId: string; requestId: string; actorRole: VanActorRole }): Promise<DispatchResult> {
   const { shiftId, requestId, actorRole } = opts;
+
+  // Travel times for choosing the new stop's place (N8), fetched before the
+  // lock because a routing provider can take a few seconds. If anything fails
+  // or the queue changes before the lock is taken, the stop goes to the back.
+  const prepared = await prepareLegs(shiftId, requestId);
 
   const outcome: DecisionOutcome = await prisma.$transaction(
     async (tx): Promise<DecisionOutcome> => {
@@ -456,7 +498,22 @@ export async function acceptVanRequest(opts: { shiftId: string; requestId: strin
         },
       });
       await tx.vanServiceRequest.update({ where: { id: request.id }, data: { appointmentId: appointment.id } });
-      await renumberQueue(tx, shiftId, "accepted_at");
+
+      // Where in the queue: wherever the whole queue waits least without
+      // making anyone later than they were told; the back otherwise (N8).
+      const active = await loadActiveStops(tx, shiftId, request.id);
+      let orderIds = [...active.map((a) => a.row.id), request.id];
+      if (prepared && prepared.ids.join() === active.map((a) => a.row.id).join()) {
+        const candidate: PlacementStop = {
+          ...toQueueStop({ ...request, phase: "queued", treatmentStartedAt: null, service }),
+          id: request.id,
+          promisedBy: promisedArrival(request),
+        };
+        orderIds = choosePlacement(active.map((a) => a.stop), candidate, prepared.leg, now).order.map((s) => s.id);
+      }
+      for (let i = 0; i < orderIds.length; i++) {
+        await tx.vanServiceRequest.update({ where: { id: orderIds[i] }, data: { queuePosition: i + 1 } });
+      }
       await recordVanEvent(tx, { requestId: request.id, type: "accepted", fromPhase: "queued", toPhase: "queued", actorRole });
 
       return {

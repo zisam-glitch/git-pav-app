@@ -239,6 +239,8 @@ export async function optimizeRoute(): Promise<{
   reordered: number;
   order: string[];
   message: string;
+  /** True when the shortest drive would make a patient later than they were told, so nothing changed. */
+  blocked?: boolean;
 }> {
   const res = await authFetch("/api/van/shift/optimize", { method: "POST" });
   if (!res.ok) return parseErrorAndThrow(res, "Request failed");

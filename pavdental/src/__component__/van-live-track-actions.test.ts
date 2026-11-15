@@ -6,6 +6,7 @@ import {
   rebookButtonLabel,
   rebookDraftFromRequest,
   secondsUntil,
+  trackingPollIntervalMs,
   type AuthorizeDeps,
 } from "@/features/van/live-track-actions";
 import type { VanServiceRequest } from "@/features/van/van-types";
@@ -161,5 +162,24 @@ describe("rebookDraftFromRequest (N4/N30)", () => {
     expect(rebookButtonLabel("cancelled")).toBe("Book another van visit");
     expect(rebookButtonLabel("declined")).toBe("Try again");
     expect(rebookButtonLabel("expired")).toBe("Try again");
+  });
+});
+
+describe("trackingPollIntervalMs (N29)", () => {
+  it("polls every 5s only while foregrounded and en_route", () => {
+    expect(trackingPollIntervalMs({ status: "in_progress", phase: "en_route" }, true)).toBe(5000);
+  });
+
+  it("polls every 30s for non-en_route active stages", () => {
+    expect(trackingPollIntervalMs({ status: "pending", phase: "queued" }, true)).toBe(30_000);
+    expect(trackingPollIntervalMs({ status: "in_progress", phase: "on_site" }, true)).toBe(30_000);
+    expect(trackingPollIntervalMs(null, true)).toBe(30_000);
+  });
+
+  it("pauses polling in the background or when terminal", () => {
+    expect(trackingPollIntervalMs({ status: "in_progress", phase: "en_route" }, false)).toBe(false);
+    for (const status of ["declined", "expired", "completed", "cancelled"]) {
+      expect(trackingPollIntervalMs({ status, phase: "queued" }, true)).toBe(false);
+    }
   });
 });

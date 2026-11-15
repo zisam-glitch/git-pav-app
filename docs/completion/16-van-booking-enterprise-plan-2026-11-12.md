@@ -416,13 +416,14 @@ Owner decisions 1, 3 and 4 were given on 15 Nov 2026 and are in the decisions lo
 needs a 10-minute wait and two contact attempts and keeps the deposit, and a visit the van cancels is refunded in
 full.
 
-- **N4, the van cancels (backend).** The crew's "can't make this visit" (`POST /api/van/requests/:id/cant-make`),
+- **N4, the van cancels.** The crew's "can't make this visit" (`POST /api/van/requests/:id/cant-make`),
   staff cancelling on the van's behalf (`POST /api/admin/van-requests/:id/cancel`) and ending a shift with
   `cancelRemaining` all go through `cancelVanRequest` with a reason code. The deposit goes back in full whatever the
   phase, the reason is kept on the history entry (`van_request_events.reason`, codes only), the patient gets one
-  apology message (draft wording), and the queue closes up. A treatment under way is never cancelled. Not built yet:
-  the operator and dashboard screens for these, the one-tap rebook, and staff marking complete or no-show on the
-  operator's behalf.
+  apology message (draft wording), and the queue closes up. A treatment under way is never cancelled. The operator
+  route screen now offers "Can't make this visit" with reason selection, and the dashboard's Van Shifts screen offers
+  "End & cancel open" (`cancelRemaining: true`) alongside the `van-requests/:id/cancel` proxy route. Not built yet:
+  the one-tap rebook, and staff marking complete or no-show on the operator's behalf.
 - **N23, no-show (backend).** A visit can be marked a no-show only when the van arrived at least 10 minutes ago
   (`VAN_NO_SHOW_WAIT_MINUTES`) and one message and one call attempt were recorded after arriving
   (`POST /api/van/requests/:id/contact-attempt`). The message is a push sent to the patient from the server (draft

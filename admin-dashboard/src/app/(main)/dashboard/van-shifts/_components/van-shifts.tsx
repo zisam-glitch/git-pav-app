@@ -13,6 +13,7 @@ import { pageCount } from "@/lib/pav-appointments";
 import { appRequest, ukDateTime } from "@/lib/pav-schedule";
 import type { AdminVan } from "@/lib/pav-vans";
 import {
+  endShiftBody,
   endShiftQuestion,
   freshness,
   freshnessLabel,
@@ -68,18 +69,24 @@ export function VanShifts() {
     return () => clearInterval(timer);
   }, [load]);
 
-  const endShift = async (shift: VanShiftRow) => {
-    if (!confirm(endShiftQuestion(shift))) return;
+  const endShift = async (shift: VanShiftRow, cancelRemaining = false) => {
+    if (!confirm(endShiftQuestion(shift, cancelRemaining))) return;
     setEndingId(shift.id);
     try {
+      const body = endShiftBody(cancelRemaining);
       const result = await appRequest<{ expiredRequests: number; depositReleasesFailed: number }>(
         `van-shifts/${shift.id}/end`,
-        { method: "POST" },
+        {
+          method: "POST",
+          ...(body ? { body: JSON.stringify(body) } : {}),
+        },
       );
       toast.success(
         result.depositReleasesFailed > 0
           ? `Shift ended. ${result.depositReleasesFailed} deposit hold(s) couldn't be released yet and will be retried.`
-          : "Shift ended.",
+          : cancelRemaining
+            ? "Shift ended and open stops cancelled with full refunds."
+            : "Shift ended.",
       );
       await load(true);
     } catch (error) {
@@ -143,14 +150,26 @@ export function VanShifts() {
                   <TableCell className="text-right">{shift.live ? shift.openRequests : "None"}</TableCell>
                   <TableCell className="text-right">
                     {shift.live ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={endingId === shift.id}
-                        onClick={() => void endShift(shift)}
-                      >
-                        {endingId === shift.id ? "Ending..." : "End shift"}
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={endingId === shift.id}
+                          onClick={() => void endShift(shift, false)}
+                        >
+                          {endingId === shift.id ? "Ending..." : "End shift"}
+                        </Button>
+                        {shift.openRequests > 0 ? (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            disabled={endingId === shift.id}
+                            onClick={() => void endShift(shift, true)}
+                          >
+                            End &amp; cancel open
+                          </Button>
+                        ) : null}
+                      </div>
                     ) : null}
                   </TableCell>
                 </TableRow>

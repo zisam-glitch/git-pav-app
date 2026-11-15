@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, Modal, ActivityIndicator } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CardField, useStripe, CardFieldInput } from "@stripe/stripe-react-native";

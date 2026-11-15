@@ -1,5 +1,4 @@
 import { bookingStep } from "@/features/booking/booking-steps";
-import React from "react";
 import { View, StyleSheet, ScrollView, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, AppIcon, FlowHeader, QueryState } from "@/components";

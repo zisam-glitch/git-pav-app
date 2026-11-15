@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet, ScrollView, Image } from "react-native";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

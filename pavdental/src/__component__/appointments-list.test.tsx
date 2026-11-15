@@ -1,4 +1,3 @@
-import React from "react";
 import { fireEvent, screen } from "@testing-library/react-native";
 import { renderScreen } from "./test-utils";
 import PatientAppointmentsScreen from "@/app/(patient)/(tabs)/appointments";

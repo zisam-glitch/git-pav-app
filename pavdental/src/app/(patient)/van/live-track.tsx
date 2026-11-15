@@ -12,7 +12,7 @@ import {
   trackingPollIntervalMs,
 } from "@/features/van/live-track-actions";
 import { useVanStore } from "@/features/van/van-store";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ActivityIndicator, Pressable, AppState } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";

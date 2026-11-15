@@ -1,4 +1,3 @@
-import React from "react";
 import { AppState, type AppStateStatus } from "react-native";
 import { act, screen } from "@testing-library/react-native";
 import { renderScreen } from "./test-utils";

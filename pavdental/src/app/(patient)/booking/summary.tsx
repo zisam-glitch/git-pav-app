@@ -2,7 +2,7 @@ import { reportCaughtError } from "@/lib/caught-errors";
 import { runBookingPayment } from "@/features/booking/booking-payment";
 import { useStripePay } from "@/features/booking/use-stripe-pay";
 import { bookingStep } from "@/features/booking/booking-steps";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Alert, Pressable, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

@@ -1,6 +1,6 @@
 import { isPlausiblePhone } from "@/features/onboarding/validation";
 import { parseDob } from "@/features/onboarding/dob";
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";

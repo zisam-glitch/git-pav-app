@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet, ScrollView, Linking } from "react-native";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing } from "@/theme";

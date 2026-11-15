@@ -1,5 +1,5 @@
 import { formatGbp } from "@/lib/money";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { reportCaughtError } from "@/lib/caught-errors";
 import { View, StyleSheet, ScrollView, Pressable, Switch, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";

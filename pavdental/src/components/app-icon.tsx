@@ -1,4 +1,3 @@
-import React from "react";
 import { StyleProp, ViewStyle, TextStyle, View } from "react-native";
 import type { Icon as IconsaxIcon } from "iconsax-react-native";
 import { colors } from "@/theme";

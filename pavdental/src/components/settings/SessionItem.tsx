@@ -1,4 +1,3 @@
-import React from "react";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";

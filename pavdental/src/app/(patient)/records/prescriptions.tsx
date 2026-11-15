@@ -1,5 +1,4 @@
 import { buildGroupedRows } from "@/lib/list-rows";
-import React from "react";
 import { View, StyleSheet, FlatList, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Badge, EmptyState, ErrorState, AppIcon, Skeleton } from "@/components";

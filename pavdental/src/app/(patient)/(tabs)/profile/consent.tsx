@@ -1,4 +1,3 @@
-import React from "react";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { ThemedText, Card, Badge, Button, AppIcon } from "@/components";

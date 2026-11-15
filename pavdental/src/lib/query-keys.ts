@@ -52,4 +52,11 @@ export const queryKeys = {
     history: (includeWithdrawn = true) => ["consents", "history", includeWithdrawn] as const,
   },
   clinicalContext: (appointmentId?: string) => ["clinical-context", appointmentId] as const,
+  video: {
+    summary: (appointmentId?: string) => ["video", "summary", appointmentId] as const,
+    triageDraft: (appointmentId?: string) => ["video", "triage-draft", appointmentId] as const,
+    triagePhotos: (appointmentId?: string) => ["video", "triage-photos", appointmentId] as const,
+    presence: (appointmentId?: string) => ["video", "presence", appointmentId] as const,
+    appointmentMessage: (appointmentId?: string) => ["appointment-messages", appointmentId] as const,
+  },
 } as const;

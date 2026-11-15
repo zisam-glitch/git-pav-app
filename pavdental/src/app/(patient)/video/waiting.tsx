@@ -4,13 +4,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
+import { usePollWaitingRoomMutation, useLeaveWaitingRoomMutation } from "@/features/video/use-video-queries";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { isRunningLate, waitingTrouble, waitingStatusLine, type WaitingTrouble } from "@/features/video/waiting-state";
 
 export default function WaitingRoomScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
+  const pollMutation = usePollWaitingRoomMutation();
+  const leaveMutation = useLeaveWaitingRoomMutation();
   const [trouble, setTrouble] = useState<WaitingTrouble>(null);
   const [startTimeUtc, setStartTimeUtc] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
@@ -24,28 +26,26 @@ export default function WaitingRoomScreen() {
       if (!appointmentId) return;
       try {
         // Reporting in tells the dentist the patient is here (V10).
-        const res = await authFetch(`/api/video/waiting/${appointmentId}`, { method: "POST" });
+        const res = await pollMutation.mutateAsync(appointmentId);
         if (!active) return;
-        if (res.status === 409) {
-          const early = await res.json().catch(() => ({}));
-          // Not open yet is not a failure: say when it opens, and keep checking.
-          if (early?.code === "not_open_yet") {
-            setOpensAt(early.opensAt ?? null);
-            setTrouble(null);
-            return;
-          }
+        if (res.kind === "not_open_yet") {
+          setOpensAt(res.opensAt);
+          setTrouble(null);
+          return;
+        }
+        if (res.kind === "closed") {
           setTrouble("closed");
           return;
         }
         setOpensAt(null);
-        if (!res.ok) {
+        if (res.kind === "error") {
           // A 404 or 403 will not fix itself; anything else may be a passing blip.
-          failures.current += res.status === 404 || res.status === 403 ? 3 : 1;
+          failures.current += res.fatal ? 3 : 1;
           setTrouble(waitingTrouble({ failures: failures.current }));
           return;
         }
         failures.current = 0;
-        const data = await res.json();
+        const data = res.data;
         if (typeof data?.startTimeUtc === "string") setStartTimeUtc(data.startTimeUtc);
         const closed = waitingTrouble({ failures: 0, status: data?.status });
         setTrouble(closed);
@@ -165,7 +165,7 @@ export default function WaitingRoomScreen() {
             size="md"
             onPress={() => {
               // Tell the practice the patient has gone, then leave.
-              if (appointmentId) authFetch(`/api/video/waiting/${appointmentId}/leave`, { method: "POST" }).catch(() => {});
+              if (appointmentId) leaveMutation.mutateAsync(appointmentId).catch(() => {});
               router.replace("/(patient)/(tabs)/home");
             }}
           />

@@ -5,9 +5,9 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
+import { useRequestVideoRoomMutation } from "@/features/video/use-video-queries";
 import { NativeVideoCall, CallEndReason } from "@/features/video/native-call";
-import { callScreenCopy, requestVideoRoom, type Room } from "@/features/video/video-room";
+import { callScreenCopy, type Room } from "@/features/video/video-room";
 
 // The call runs natively in this screen (Daily's private room): the app asks
 // the server for this appointment's room and a meeting token, and the token is
@@ -16,6 +16,7 @@ import { callScreenCopy, requestVideoRoom, type Room } from "@/features/video/vi
 export default function VideoCallScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
+  const roomMutation = useRequestVideoRoomMutation();
   const [room, setRoom] = useState<Room | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,9 +26,7 @@ export default function VideoCallScreen() {
   const loadRoom = useCallback(async (): Promise<Room | null> => {
     setLoading(true);
     setError(null);
-    const result = await requestVideoRoom(appointmentId, (body) =>
-      authFetch("/api/video/rooms", { method: "POST", body: JSON.stringify(body) })
-    );
+    const result = await roomMutation.mutateAsync(appointmentId);
     setLoading(false);
     if (!result.ok) {
       setError(result.message);

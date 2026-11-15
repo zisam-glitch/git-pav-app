@@ -6,7 +6,7 @@ import { Image } from 'expo-image';
 import { pickTriagePhoto, uploadFileName } from '@/features/video/pick-photo';
 import { ThemedText, Card, Button, AppIcon, Toast } from '@/components';
 import { colors, spacing, radius } from '@/theme';
-import { authFetch } from '@/features/auth/auth-api';
+import { useUploadTriagePhotoMutation, useSubmitVideoTriageMutation } from '@/features/video/use-video-queries';
 
 interface ReviewSlot {
   id: string;
@@ -70,6 +70,9 @@ export default function PhotoReviewScreen() {
     setToast({ message: 'Photo updated', tone: 'success' });
   };
 
+  const uploadPhotoMutation = useUploadTriagePhotoMutation();
+  const submitTriageMutation = useSubmitVideoTriageMutation();
+
   const submit = async (withPhotos: boolean) => {
     if (!appointmentId) {
       setToast({
@@ -87,30 +90,18 @@ export default function PhotoReviewScreen() {
       for (const slot of withPhotos ? slots : []) {
         if (slot.captured && slot.uri) {
           try {
-            const formData = new FormData();
             const mimeType = slot.mimeType || 'image/jpeg';
-            formData.append('photo', {
+            const url = await uploadPhotoMutation.mutateAsync({
+              appointmentId,
+              slotLabel: slot.label,
               uri: slot.uri,
-              name: uploadFileName(slot.id, mimeType),
-              type: mimeType,
-            } as any);
-            formData.append('appointmentId', appointmentId);
-            formData.append('slotLabel', slot.label);
-
-            const uploadRes = await authFetch('/api/video/upload-triage-photo', {
-              method: 'POST',
-              body: formData,
+              fileName: uploadFileName(slot.id, mimeType),
+              mimeType,
             });
-            const uploadJson = await uploadRes.json().catch(() => ({}));
-            if (uploadRes.ok && uploadJson.url) {
-              uploadedPhotoUrls.push(uploadJson.url);
-            } else {
-              failedUploads += 1;
-              if (uploadJson.error) lastUploadError = String(uploadJson.error);
-            }
-          } catch {
+            uploadedPhotoUrls.push(url);
+          } catch (err: any) {
             failedUploads += 1;
-            lastUploadError = "Check your connection and try again.";
+            lastUploadError = err?.message || "Check your connection and try again.";
           }
         }
       }
@@ -138,15 +129,7 @@ export default function PhotoReviewScreen() {
       if (symptomsList.length > 0) triagePayload.symptoms = symptomsList;
       if (uploadedPhotoUrls.length > 0) triagePayload.photos = uploadedPhotoUrls;
 
-      const res = await authFetch('/api/video/submit-triage', {
-        method: 'POST',
-        body: JSON.stringify(triagePayload),
-      });
-
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => ({}));
-        throw new Error(errJson.error || 'Could not submit video triage data');
-      }
+      await submitTriageMutation.mutateAsync(triagePayload);
 
       setToast({ message: 'Sent to your dentist', tone: 'success' });
       router.push({

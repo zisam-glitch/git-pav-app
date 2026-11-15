@@ -102,7 +102,10 @@ assert(detail.includes('booking.channel === "video"'), "appointment page only of
   assert(schedule.includes("ukTime(new Date(a.startTimeUtc))"), "the schedule shows UK times, whatever the device time zone");
   const room = read("app/(clinician)/consult-room.tsx");
   assert(room.includes("triageSummary(appointment?.triageData"), "the consult room shows the stored triage answers");
-  assert(room.includes("/api/video/triage-photos/"), "the consult room asks for fresh photo links");
+  assert(
+    room.includes("useTriagePhotos") && read("features/video/video-api.ts").includes("/api/video/triage-photos/"),
+    "the consult room asks for fresh photo links",
+  );
 }
 
 // The call runs natively in the app (Daily's React Native SDK), not in a

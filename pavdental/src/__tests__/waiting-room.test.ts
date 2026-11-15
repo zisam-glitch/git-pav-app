@@ -42,8 +42,17 @@ assert(patientPresenceLine({ admitted: true, waiting: false }).includes("let in"
 assert(waitingStatusLine({ admitted: false, late: false, opensAt: "2026-11-10T09:50:00Z" }) === "You're early", "Before the window opens the patient is early");
 assert(waitingStatusLine({ admitted: false, late: true }) === "Running a few minutes late", "A late start says so");
 assert(waitingStatusLine({ admitted: true, late: true }) === "You're in", "Being let in wins over lateness");
-assert(screen.includes("/api/video/waiting/") && screen.includes("AppState"), "The waiting room reports in and pauses in the background");
-assert(screen.includes("/leave"), "Leaving tells the practice");
+const videoApi = readFileSync(join(__dirname, "../features/video/video-api.ts"), "utf8");
+assert(
+  screen.includes("usePollWaitingRoomMutation") &&
+    videoApi.includes("/api/video/waiting/") &&
+    screen.includes("AppState"),
+  "The waiting room reports in and pauses in the background",
+);
+assert(
+  screen.includes("useLeaveWaitingRoomMutation") && videoApi.includes("/leave"),
+  "Leaving tells the practice",
+);
 assert(!screen.includes("Consultation ready"), "The waiting room does not claim the consultation is ready");
 
 // Pre-call camera and microphone check (V18)

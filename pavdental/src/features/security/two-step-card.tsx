@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Badge, Button, Card, Input, ThemedText } from "@/components";
 import { accountApi } from "@/features/account/account-api";
 import { useAuthStore, useCurrentUser } from "@/features/auth/auth-store";
+import { isPatient } from "@/lib/domain-enums";
 import { colors, spacing } from "@/theme";
 
 type Step = "idle" | "enable-code" | "disable-code";
@@ -22,8 +23,8 @@ export function TwoStepCard() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  if (user?.role !== "patient") return null;
-  const sentTo = user.phone ? "by text to your phone" : "to your email";
+  if (!isPatient(user)) return null;
+  const sentTo = user?.phone ? "by text to your phone" : "to your email";
 
   const reset = () => {
     setStep("idle");

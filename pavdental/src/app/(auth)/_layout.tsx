@@ -2,6 +2,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { useIsAuthenticated, useCurrentUser } from "@/features/auth/auth-store";
 import { useEffect } from "react";
 import { getMobilePortalPath } from "@/features/auth/auth-routing";
+import { isAdmin } from "@/lib/domain-enums";
 
 // Redirect authenticated users dynamically to their role portal
 export default function AuthLayout() {
@@ -24,7 +25,7 @@ export default function AuthLayout() {
 
       // Admins are intentionally excluded from the mobile client. They use the
       // separate web dashboard and must not fall through to patient routes.
-      if (user.role !== "admin" || segments.join("/") !== "(auth)/access-denied") {
+      if (!isAdmin(user) || segments.join("/") !== "(auth)/access-denied") {
         router.replace(getMobilePortalPath(user.role) as never);
       }
     }

@@ -72,7 +72,7 @@ assert(
   /pathname: "\/\(patient\)\/video\/intake" as never, params: \{ appointmentId: booking\.id \}/.test(detail),
   "appointment page opens the intake for that appointment"
 );
-assert(detail.includes('booking.channel === "video"'), "appointment page only offers it for video appointments");
+assert(detail.includes("isVideoChannel(booking.channel)"), "appointment page only offers it for video appointments");
 
 // The clinician reads the patient's own triage answers, not the service name.
 {

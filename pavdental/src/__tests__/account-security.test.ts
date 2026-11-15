@@ -46,7 +46,7 @@ assert(!consent.includes('return "Recorded"'), "no 'Recorded' date for a consent
 
 // ─── Two-step sign-in ─────────────────────────────────────────────────────────
 const card = src("features/security/two-step-card.tsx");
-assert(card.includes('if (user?.role !== "patient") return null;'), "only patients see the switch (staff always use a code)");
+assert(card.includes("if (!isPatient(user)) return null;"), "only patients see the switch (staff always use a code)");
 assert(card.includes("accountApi.disableTwoStep(password, code.trim())"), "turning it off needs the password and a code");
 assert(src("app/(patient)/(tabs)/profile/security.tsx").includes("<TwoStepCard />"), "the security screen shows it");
 

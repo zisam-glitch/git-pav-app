@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useVideoSummary } from "@/features/video/use-video-queries";
+import { isCompleted } from "@/lib/domain-enums";
 
 const FOLLOW_UP_WORDS: Record<string, string> = {
   clinic: "A visit at the clinic.",
@@ -28,7 +29,7 @@ export default function VideoSummaryScreen() {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.header}>
-            {summaryData?.status === "completed" ? (
+            {isCompleted(summaryData) ? (
               <View style={styles.checkBadge}>
                 <AppIcon name="checkCircle" size={20} color={colors.success} />
                 <ThemedText variant="headline">Completed</ThemedText>
@@ -38,7 +39,7 @@ export default function VideoSummaryScreen() {
               Consultation summary
             </ThemedText>
             <ThemedText variant="subhead" style={styles.subtitle}>
-              {summaryData?.status === "completed" ? "Your video consultation has ended." : "Your clinician will add a summary here after your consultation."}
+              {isCompleted(summaryData) ? "Your video consultation has ended." : "Your clinician will add a summary here after your consultation."}
             </ThemedText>
           </View>
 

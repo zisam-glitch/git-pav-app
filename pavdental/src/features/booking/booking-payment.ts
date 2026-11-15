@@ -1,3 +1,4 @@
+import { CARE_CHANNELS, isVideoChannel } from "../../lib/domain-enums";
 import { plainBookingError, plainPaymentError, type SheetError } from "../payment/payment-errors";
 
 /**
@@ -96,11 +97,11 @@ export async function runBookingPayment(deps: PaymentDeps, input: BookingInput):
       {
         serviceId: service.id,
         // Clinic visits and video consults are booked here; van visits use the van flow.
-        channel: input.channel ?? "clinic",
+        channel: input.channel ?? CARE_CHANNELS.CLINIC,
         // "Any practitioner" leaves these empty, which the API rejects: send
         // nothing so it picks the dentist itself.
         clinicianId: input.clinician?.id || slot.clinicianId || undefined,
-        clinicId: input.channel === "video" ? undefined : input.clinic?.id || slot.clinicId || undefined,
+        clinicId: isVideoChannel(input.channel) ? undefined : input.clinic?.id || slot.clinicId || undefined,
         startTimeUtc: slot.startTimeUtc,
         endTimeUtc: slot.endTimeUtc,
         slotId: slot.id,

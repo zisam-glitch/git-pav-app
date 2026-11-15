@@ -1,3 +1,4 @@
+import { isCancelled, isConfirmed, isVideoChannel } from "../../lib/domain-enums";
 import { formatGbp } from "../../lib/money";
 
 /**
@@ -20,7 +21,7 @@ export function canCheckIn(
   },
   now: number = Date.now()
 ): boolean {
-  if (booking.status !== "confirmed" || booking.channel === "video") return false;
+  if (!isConfirmed(booking) || isVideoChannel(booking.channel)) return false;
   if (booking.accessDetails?.checkedIn) return false;
   const until = new Date(booking.startTimeUtc).getTime() - now;
   return until > 0 && until < CHECK_IN_OPENS_HOURS * 60 * 60 * 1000;
@@ -53,7 +54,7 @@ export function balanceLabel(booking: {
   depositPaidPence?: number | null;
   status: string;
 }): string | null {
-  if (booking.status === "cancelled" || typeof booking.totalPricePence !== "number") return null;
+  if (isCancelled(booking) || typeof booking.totalPricePence !== "number") return null;
   return formatGbp(Math.max(0, booking.totalPricePence - (booking.depositPaidPence ?? 0)));
 }
 

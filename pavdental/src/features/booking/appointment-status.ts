@@ -1,5 +1,10 @@
 import { formatGbp } from "../../lib/money";
 import { toLabel } from "../../lib/text";
+import {
+  APPOINTMENT_STATUS,
+  isConfirmed,
+  isInProgress,
+} from "../../lib/domain-enums";
 
 type AppointmentLike = {
   status: string;
@@ -19,8 +24,8 @@ export function nextVisit<T extends AppointmentLike>(
   const upcoming = appointments
     .filter(
       (a) =>
-        a.status === "in_progress" ||
-        (a.status === "confirmed" && new Date(a.startTimeUtc).getTime() >= now)
+        isInProgress(a) ||
+        (isConfirmed(a) && new Date(a.startTimeUtc).getTime() >= now)
     )
     .sort((a, b) => +new Date(a.startTimeUtc) - +new Date(b.startTimeUtc));
   return upcoming[0] ?? null;
@@ -35,13 +40,13 @@ export function appointmentBadge(
   now: number = Date.now()
 ): { label: string; variant: "success" | "danger" | "default" } {
   switch (appointment.status) {
-    case "cancelled":
+    case APPOINTMENT_STATUS.CANCELLED:
       return { label: "Cancelled", variant: "danger" };
-    case "completed":
+    case APPOINTMENT_STATUS.COMPLETED:
       return { label: "Completed", variant: "default" };
-    case "no_show":
+    case APPOINTMENT_STATUS.NO_SHOW:
       return { label: "Missed", variant: "default" };
-    case "in_progress":
+    case APPOINTMENT_STATUS.IN_PROGRESS:
       return { label: "In progress", variant: "success" };
   }
   const end = new Date(appointment.endTimeUtc ?? appointment.startTimeUtc).getTime();
@@ -63,6 +68,6 @@ export function isUpcomingBooking(
   appointment: AppointmentLike,
   now: number = Date.now()
 ): boolean {
-  if (appointment.status === "in_progress") return true;
-  return appointment.status === "confirmed" && new Date(appointment.startTimeUtc).getTime() >= now;
+  if (isInProgress(appointment)) return true;
+  return isConfirmed(appointment) && new Date(appointment.startTimeUtc).getTime() >= now;
 }

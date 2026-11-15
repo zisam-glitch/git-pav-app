@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { usePollWaitingRoomMutation, useLeaveWaitingRoomMutation } from "@/features/video/use-video-queries";
+import { isInProgress } from "@/lib/domain-enums";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { isRunningLate, waitingTrouble, waitingStatusLine, type WaitingTrouble } from "@/features/video/waiting-state";
 
@@ -50,7 +51,7 @@ export default function WaitingRoomScreen() {
         const closed = waitingTrouble({ failures: 0, status: data?.status });
         setTrouble(closed);
         if (closed) return;
-        if (data?.admitted || data?.status === "in_progress" || data?.status === "IN_PROGRESS") {
+        if (data?.admitted || isInProgress(data)) {
           setAdmitted(true);
           router.replace({
             pathname: "/(patient)/video/call" as any,

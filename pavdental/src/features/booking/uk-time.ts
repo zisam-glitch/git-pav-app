@@ -20,6 +20,11 @@ export function ukDateLabel(instant: Date, format: Intl.DateTimeFormatOptions): 
   return instant.toLocaleDateString("en-GB", { ...format, timeZone: PRACTICE_TIME_ZONE });
 }
 
+/** A date and time in UK time. */
+export function ukDateTimeLabel(instant: Date, format?: Intl.DateTimeFormatOptions): string {
+  return instant.toLocaleString("en-GB", { ...format, timeZone: PRACTICE_TIME_ZONE });
+}
+
 /** The UK hour (0 to 23) an instant falls in. */
 export function ukHour(instant: Date): number {
   return Number(ukTime(instant).slice(0, 2));

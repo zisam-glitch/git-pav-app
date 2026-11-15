@@ -5,7 +5,7 @@ import { Card, EmptyState, ErrorState, IconTile, ListRow, Skeleton } from "@/com
 import { colors, spacing } from "@/theme";
 import { useNotificationHistoryPages } from "@/features/notifications/notification-hooks";
 import { routeForNotification } from "@/features/notifications/notification-route";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateTimeLabel } from "@/features/booking/uk-time";
 
 // What we have sent to this phone, newest first. Tapping one opens what it is about.
 export default function NotificationsScreen() {
@@ -30,8 +30,7 @@ export default function NotificationsScreen() {
             <Card padding="none">
               <ListRow
                 title={n.title}
-                subtitle={`${n.body}\n${new Date(n.sentAt).toLocaleString("en-GB", {
-                  timeZone: PRACTICE_TIME_ZONE,
+                subtitle={`${n.body}\n${ukDateTimeLabel(new Date(n.sentAt), {
                   day: "numeric",
                   month: "short",
                   hour: "2-digit",

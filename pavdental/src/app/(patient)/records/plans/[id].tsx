@@ -1,7 +1,7 @@
 import { reportCaughtError } from "@/lib/caught-errors";
 import { declinePlan, decisionFromStatus, findPlan, planBadge, prescribedBy, signPlan } from "@/features/records/plan-actions";
 import React, { useState, useEffect } from "react";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -104,7 +104,7 @@ export default function TreatmentPlanDetailScreen() {
   const progress = items.length ? completedCount / items.length : 0;
 
   const prescribed = prescribedBy(plan.clinician);
-  const created = new Date(plan.createdAt).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
+  const created = ukDateLabel(new Date(plan.createdAt), {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -123,9 +123,9 @@ export default function TreatmentPlanDetailScreen() {
   };
 
   const formatSignedAt = (when: Date) =>
-    when.toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE, hour: "2-digit", minute: "2-digit" }) +
+    ukTime(when) +
     ", " +
-    when.toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE, day: "numeric", month: "short", year: "numeric" });
+    ukDateLabel(when, { day: "numeric", month: "short", year: "numeric" });
 
   const handleSignPlan = async () => {
     const outcome = await signPlan(

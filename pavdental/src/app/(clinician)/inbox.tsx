@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateLabel, ukDateTimeLabel } from "@/features/booking/uk-time";
 import {
   View,
   StyleSheet,
@@ -237,8 +237,7 @@ export default function ClinicianInboxScreen() {
                     />
                   ))}
                   <ThemedText variant="caption" style={[styles.bubbleTime, isClinician && styles.bubbleMetaOnInk]}>
-                    {new Date(m.sentAtIso).toLocaleString("en-GB", {
-                      timeZone: PRACTICE_TIME_ZONE,
+                    {ukDateTimeLabel(new Date(m.sentAtIso), {
                       day: "numeric",
                       month: "short",
                       hour: "2-digit",
@@ -349,8 +348,7 @@ export default function ClinicianInboxScreen() {
                       {t.from}
                     </ThemedText>
                     <ThemedText variant="caption" style={styles.threadTime}>
-                      {new Date(t.sentAtIso).toLocaleDateString("en-GB", {
-                        timeZone: PRACTICE_TIME_ZONE,
+                      {ukDateLabel(new Date(t.sentAtIso), {
                         day: "numeric",
                         month: "short",
                         hour: "2-digit",

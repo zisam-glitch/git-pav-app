@@ -30,19 +30,7 @@ export function getCancellationPolicy(params: {
   if (params.channel === "van") {
     // Decision #6: Before en route (e.g. queued, accepted): 100% refund;
     // once en route or on site: deposit kept to cover dispatch call-out.
-    const keepsDeposit = params.phase === "en_route" || params.phase === "on_site";
-    if (keepsDeposit) {
-      return {
-        refundPercentage: 0,
-        policyNotice: "Deposit retained to cover dispatch call-out (van is en route or on site).",
-        keepsDeposit: true,
-      };
-    }
-    return {
-      refundPercentage: 100,
-      policyNotice: "Full deposit refund issued (cancelled before van was en route).",
-      keepsDeposit: false,
-    };
+    return vanCancellationPolicy(vanCancellationKeepsDeposit(params.phase));
   }
 
   // Clinic and Video visits (notice-based tiers)
@@ -69,6 +57,28 @@ export function getCancellationPolicy(params: {
 }
 
 /**
+ * The van policy once it is known whether the deposit is kept. A cancel that
+ * has happened passes what was decided under the shift lock, and whether the
+ * refund has reached Stripe yet, so the notice never claims more than is true.
+ */
+export function vanCancellationPolicy(keepsDeposit: boolean, refundPending = false): CancellationPolicyResult {
+  if (keepsDeposit) {
+    return {
+      refundPercentage: 0,
+      policyNotice: "Deposit retained to cover dispatch call-out (van is en route or on site).",
+      keepsDeposit: true,
+    };
+  }
+  return {
+    refundPercentage: 100,
+    policyNotice: refundPending
+      ? "Full deposit refund is on its way (cancelled before van was en route)."
+      : "Full deposit refund issued (cancelled before van was en route).",
+    keepsDeposit: false,
+  };
+}
+
+/**
  * Backward-compatible helper for clinic and video visits.
  */
 export function appointmentRefundPolicy(hoursUntilVisit: number): { refundPercentage: number; policyNotice: string } {
@@ -83,5 +93,7 @@ export function appointmentRefundPolicy(hoursUntilVisit: number): { refundPercen
  * Backward-compatible helper for van cancellation deposit retention.
  */
 export function vanCancellationKeepsDeposit(phase: string | null | undefined): boolean {
-  return getCancellationPolicy({ channel: "van", phase }).keepsDeposit;
+  // Decision #6: before en route the deposit is refunded in full; once en
+  // route or on site it is kept to cover the dispatch call-out.
+  return phase === "en_route" || phase === "on_site";
 }

@@ -323,11 +323,22 @@ const PENDING_CLOSES: Record<
   },
 };
 
+const NO_DEPOSIT_TAKEN = "No deposit was taken — please try again later.";
+/**
+ * What is said about the deposit, by how its release ended. A deposit that was
+ * taken just before the request closed comes back as a refund, so the patient
+ * sees a charge and must not be told nothing was taken.
+ */
+const PENDING_CLOSE_DEPOSIT_LINE: Record<string, string> = {
+  failed: "We are releasing your deposit hold.",
+  [DEPOSIT_RELEASE_PENDING]: "We are releasing your deposit hold.",
+  refunded: "Your deposit has been refunded in full. Banks usually take 5 to 10 working days to show it.",
+};
+
 /** What the patient is told when their request ends without an accept. Pure. */
 export function pendingCloseMessage(how: PendingClose, releaseStatus: string | null): { title: string; body: string } {
   const { title, lead } = PENDING_CLOSES[how];
-  const deposit = releaseStatus === "failed" ? "We are releasing your deposit hold." : "No deposit was taken — please try again later.";
-  return { title, body: `${lead} ${deposit}` };
+  return { title, body: `${lead} ${PENDING_CLOSE_DEPOSIT_LINE[releaseStatus ?? ""] ?? NO_DEPOSIT_TAKEN}` };
 }
 
 /** What the patient is told when a van cannot take their request. Pure. */
@@ -667,6 +678,10 @@ export type VanCancelOutcome = {
   status: number;
   body: Record<string, unknown>;
   depositOutcome?: string | null;
+  /** The deposit is kept under the cancellation policy, decided from the phase read under the lock. */
+  depositRetained?: boolean;
+  /** Stripe could not return the deposit yet; the background job is retrying. */
+  refundPending?: boolean;
   refundId?: string | null;
   /** The request that was cancelled, when this call cancelled it. */
   cancelled?: { id: string; appointmentId: string | null; shiftId: string };
@@ -760,6 +775,8 @@ export async function cancelVanRequest(requestId: string, actorRole: VanActorRol
     status: 200,
     body: { ...row, depositOutcome, depositRetained },
     depositOutcome,
+    depositRetained,
+    refundPending: !depositRetained && (depositOutcome === "failed" || depositOutcome === DEPOSIT_RELEASE_PENDING),
     refundId: settled.refundId,
     cancelled: committed.cancelled,
   };

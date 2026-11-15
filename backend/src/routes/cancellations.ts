@@ -9,6 +9,7 @@ import { appointmentIdParamsSchema } from "../schemas/booking";
 import {
   CancellationChannel,
   getCancellationPolicy,
+  vanCancellationPolicy,
   appointmentRefundPolicy,
 } from "../lib/cancellation-policy";
 import { cancelVanRequest } from "../lib/van-dispatch";
@@ -79,13 +80,17 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
       return res.status(409).json({ error: "Cannot cancel during treatment. Contact support." });
     }
 
-    const policy = getCancellationPolicy({ channel: "van", phase: vanRequest.phase });
     // The same code the tracking screen uses: lock, deposit rule, queue
     // renumbering, reminders and the other patients' ETAs (N3).
     const cancelled = await cancelVanRequest(vanRequest.id);
     if (cancelled.status !== 200) return res.status(cancelled.status).json(cancelled.body);
     const stripeRefundId = cancelled.refundId ?? null;
 
+    // The policy as it was applied: the phase read under the lock decides
+    // whether the deposit is kept, and a refund Stripe has not made yet is
+    // reported as on its way, not as issued.
+    const refundPending = cancelled.refundPending === true;
+    const policy = vanCancellationPolicy(cancelled.depositRetained === true, refundPending);
     const refundAmountPence = policy.keepsDeposit ? 0 : appointment.depositPaidPence;
 
     await createAuditLogWithIntegrity({
@@ -99,11 +104,16 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
         refundPercentage: policy.refundPercentage,
         refundAmountPence,
         stripeRefundId,
+        depositOutcome: cancelled.depositOutcome ?? null,
+        refundPending,
       },
     }).catch(logFailure("audit write appointment.cancelled.van"));
 
     void notifyAppointmentChange("cancelled", appointment.id, { refundPence: refundAmountPence });
-    return res.json(summary(refundAmountPence, policy.refundPercentage, stripeRefundId, policy.policyNotice));
+    return res.json({
+      ...summary(refundAmountPence, policy.refundPercentage, stripeRefundId, policy.policyNotice),
+      refundPending,
+    });
   }
 
   // Clinic & Video visit cancellation

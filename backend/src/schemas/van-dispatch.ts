@@ -33,6 +33,9 @@ export const vanSideCancelSchema = z.object({ reason: vanCancelReason }).strict(
 /** Ending a shift; `cancelRemaining` cancels the stops still open, with a full refund each. */
 export const shiftEndSchema = z.object({ cancelRemaining: z.boolean().optional(), reason: vanCancelReason.optional() }).strict();
 
+/** The crew tried to reach a patient they are parked outside. */
+export const contactAttemptSchema = z.object({ kind: z.enum(["message", "call"]) }).strict();
+
 export const vanRequestIdParamsSchema = z.object({ id: uuid }).strict();
 
 // Operator manual reorder: full desired order of the operator's queued stops.

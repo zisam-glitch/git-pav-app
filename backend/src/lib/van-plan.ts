@@ -40,6 +40,14 @@ export const VAN_PROMISE_SETTINGS = {
 };
 export type VanPromiseSettings = typeof VAN_PROMISE_SETTINGS;
 
+/**
+ * Before a visit can be marked a no-show: how long the crew waits after
+ * arriving (owner decision, 15 Nov 2026). Tunable from the environment.
+ */
+export const VAN_NO_SHOW_SETTINGS = {
+  waitMinutes: minutesFromEnv("VAN_NO_SHOW_WAIT_MINUTES", 10),
+};
+
 /** A treatment that has overrun is still planned to take this long (VE-1). */
 const MIN_REMAINING_TREATMENT_SECONDS = 300;
 

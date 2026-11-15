@@ -260,6 +260,27 @@ export async function reorderQueue(order: string[]): Promise<{ success: true; or
   return res.json();
 }
 
+export type ContactAttemptResult = {
+  requestId: string;
+  recorded: ("message" | "call")[];
+  noShowAllowed: boolean;
+  waitMinutesLeft: number;
+};
+
+/**
+ * Record that the crew tried to reach a patient they are parked outside.
+ * "message" sends the patient a notification; "call" records that they rang.
+ * Both are needed, with a wait, before a no-show can be marked.
+ */
+export async function recordContactAttempt(id: string, kind: "message" | "call"): Promise<ContactAttemptResult> {
+  const res = await authFetch(`/api/van/requests/${id}/contact-attempt`, {
+    method: "POST",
+    body: JSON.stringify({ kind }),
+  });
+  if (!res.ok) return parseErrorAndThrow(res, "Request failed");
+  return res.json();
+}
+
 /** Advance stop phase */
 export async function updatePhase(
   id: string,

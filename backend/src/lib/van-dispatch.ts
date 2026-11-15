@@ -287,7 +287,8 @@ export async function changeVanPhase(opts: {
         if (!noShow.ok) {
           return {
             status: 409,
-            body: { error: "Too early for a no-show", message: noShow.message, missing: noShow.missing ?? [], waitMinutesLeft: noShow.waitMinutesLeft ?? 0 },
+            // The crew's screen shows `error` as it is, so the steps go in it.
+            body: { error: noShow.message, code: "no_show_too_early", missing: noShow.missing ?? [], waitMinutesLeft: noShow.waitMinutesLeft ?? 0 },
           };
         }
       }

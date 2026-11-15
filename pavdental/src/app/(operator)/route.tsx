@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThemedText, Card, Badge, Button, ErrorState, Skeleton, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { fetchCurrentShift, updatePhase, optimizeRoute, reorderQueue } from "@/features/van/van-api";
+import { fetchCurrentShift, updatePhase, optimizeRoute, reorderQueue, recordContactAttempt } from "@/features/van/van-api";
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { openDrivingDirections } from "@/features/van/nav-links";
 import { useOperatorLocation } from "@/features/van/use-operator-location";
@@ -56,6 +56,25 @@ export default function OperatorRouteScreen() {
     },
     onError: (err: any) => {
       Alert.alert("Phase Update Failed", err.message || "Could not update stop phase");
+    },
+  });
+
+  // Before a no-show: one message and one call attempt, and a wait on site.
+  const contactMutation = useMutation({
+    mutationFn: ({ id, kind }: { id: string; kind: "message" | "call" }) => recordContactAttempt(id, kind),
+    onSuccess: (result, { kind }) => {
+      const done = kind === "message" ? "The patient has been sent a message." : "Call attempt recorded.";
+      const left: string[] = [];
+      if (!result.recorded.includes("message")) left.push("message the patient");
+      if (!result.recorded.includes("call")) left.push("try to call the patient");
+      if (result.waitMinutesLeft > 0) left.push(`wait ${result.waitMinutesLeft} more minute${result.waitMinutesLeft === 1 ? "" : "s"}`);
+      Alert.alert(
+        "Recorded",
+        result.noShowAllowed ? `${done} You can now mark a no-show.` : `${done} Before marking a no-show: ${left.join(", ")}.`
+      );
+    },
+    onError: (err: any) => {
+      Alert.alert("Not Recorded", err.message || "Could not record the contact attempt");
     },
   });
 
@@ -326,6 +345,24 @@ export default function OperatorRouteScreen() {
                             })
                           }
                         />
+                      )}
+                      {s.phase === "on_site" && (
+                        <>
+                          <Button
+                            title="Patient not here: send a message"
+                            size="sm"
+                            variant="ghost"
+                            loading={contactMutation.isPending}
+                            onPress={() => contactMutation.mutate({ id: s.id, kind: "message" })}
+                          />
+                          <Button
+                            title="I tried calling the patient"
+                            size="sm"
+                            variant="ghost"
+                            loading={contactMutation.isPending}
+                            onPress={() => contactMutation.mutate({ id: s.id, kind: "call" })}
+                          />
+                        </>
                       )}
                       <Button
                         title="Mark no-show"

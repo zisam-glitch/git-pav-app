@@ -428,5 +428,6 @@ full.
   (`POST /api/van/requests/:id/contact-attempt`). The message is a push sent to the patient from the server (draft
   wording); the call is the crew's own record that they rang. Earlier than that the phase change is refused with what
   is still to do. The deposit taken at accept is kept, as before. **Open:** the crew is shown no phone number today, so
-  how they place the call depends on decision 7. The operator screen still offers "no-show" on arrival and will now be
-  refused until phase 5 gives it the two buttons and the countdown.
+  how they place the call depends on decision 7. The operator's route screen has the two buttons ("send a message",
+  "I tried calling") on a stop that is on site, and shows the server's reason when a no-show is refused; a live
+  countdown is left for phase 5. Not tried on a phone.

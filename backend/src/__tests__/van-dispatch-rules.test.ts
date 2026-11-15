@@ -494,7 +494,8 @@ describe("van dispatch rules", () => {
       // On arrival: refused, with what is still to do.
       const tooEarly = await call("POST", `/api/van/requests/${id}/phase`, token, { phase: "no_show" });
       expect(tooEarly.status).toBe(409);
-      expect(tooEarly.body).toMatchObject({ error: "Too early for a no-show", missing: ["message", "call"], waitMinutesLeft: 10 });
+      expect(tooEarly.body).toMatchObject({ code: "no_show_too_early", missing: ["message", "call"], waitMinutesLeft: 10 });
+      expect(tooEarly.body.error).toContain("message the patient");
 
       expect((await call("POST", `/api/van/requests/${id}/contact-attempt`, token, { kind: "text" })).status).toBe(400);
       const [m1, m2] = await Promise.all([

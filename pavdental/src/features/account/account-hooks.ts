@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { accountApi, PaymentMethodItem, NewDependant } from "./account-api";
 import { useAuthStore } from "../auth/auth-store";
 import { tokenStore } from "@/lib/token-store";
+import { queryKeys } from "@/lib/query-keys";
+import { type ConsentHistoryEntry, sortHistory } from "./consents";
+import { requestDataAccessExport } from "../records/records-api";
 
 export function useChangePasswordMutation() {
   return useMutation({
@@ -111,6 +114,67 @@ export function useRemoveDependantMutation() {
     mutationFn: (id: string) => accountApi.removeDependant(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patient-dependants"] });
+    },
+  });
+}
+
+export function useCurrentConsents() {
+  return useQuery({
+    queryKey: queryKeys.consents.current(),
+    queryFn: accountApi.getCurrentConsents,
+  });
+}
+
+export function useConsentHistory(includeWithdrawn = true) {
+  return useQuery({
+    queryKey: queryKeys.consents.history(includeWithdrawn),
+    queryFn: async (): Promise<ConsentHistoryEntry[]> => {
+      const data = await accountApi.getConsentHistory(includeWithdrawn);
+      return sortHistory(data);
+    },
+  });
+}
+
+export function useToggleMarketingConsentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (grant: boolean) =>
+      grant
+        ? accountApi.grantConsent({ consentType: "marketing", lawfulBasis: "consent" })
+        : accountApi.withdrawConsent({ consentType: "marketing" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.consents.all() });
+    },
+  });
+}
+
+export function useExportDataAccessMutation() {
+  return useMutation({
+    mutationFn: (params: { reason?: string; format?: "json" | "csv" }) =>
+      requestDataAccessExport(params),
+  });
+}
+
+export function useCompleteOnboardingMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      profileId,
+      profile,
+      grants,
+    }: {
+      profileId: string;
+      profile: Record<string, unknown>;
+      grants: Array<{ consentType: string; lawfulBasis: string }>;
+    }) => {
+      await accountApi.updateOnboardingProfile(profileId, profile);
+      for (const grant of grants) {
+        await accountApi.grantConsent(grant);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patient-profile"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.consents.all() });
     },
   });
 }

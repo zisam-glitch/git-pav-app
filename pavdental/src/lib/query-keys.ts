@@ -46,4 +46,10 @@ export const queryKeys = {
     liveRequest: (requestId?: string) => ["van-request-live", requestId] as const,
     operatorShift: () => ["operator-shift"] as const,
   },
+  consents: {
+    all: () => ["consents"] as const,
+    current: () => ["consents", "current"] as const,
+    history: (includeWithdrawn = true) => ["consents", "history", includeWithdrawn] as const,
+  },
+  clinicalContext: (appointmentId?: string) => ["clinical-context", appointmentId] as const,
 } as const;

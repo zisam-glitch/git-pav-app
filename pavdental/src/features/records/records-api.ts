@@ -1,4 +1,4 @@
-import { authFetch } from "../auth/auth-api";
+import { apiUrl, authFetch } from "../auth/auth-api";
 
 // ─── Odontogram ───────────────────────────────────────────────────────────────
 export async function fetchOdontogram(userId: string) {
@@ -330,4 +330,41 @@ export async function uploadMessagePhoto(threadId: string, photo: { uri: string;
   const data = await res.json().catch(() => ({}));
   if (!res.ok || typeof data?.key !== "string") throw new Error(data?.error || "The photo did not upload");
   return data.key;
+}
+
+export interface ClinicalContext {
+  appointmentId: string;
+  patient: { id: string; firstName: string; lastName: string; dob: string | null; address: string | null };
+  guardian?: { id: string; firstName: string; lastName: string } | null;
+  medicalHistory: Record<string, unknown> | null;
+}
+
+export async function fetchClinicalContext(appointmentId: string): Promise<ClinicalContext> {
+  const res = await authFetch(`/api/booking/appointments/${encodeURIComponent(appointmentId)}/clinical-context`);
+  if (!res.ok) throw new Error(res.status === 404 ? "not_found" : "failed");
+  return res.json();
+}
+
+export async function issuePrescription(payload: {
+  appointmentId: string;
+  medicationName: string;
+  dosageInstructions: string;
+  dispensingPharmacy: string;
+}): Promise<{ id: string; reference?: string }> {
+  const res = await authFetch("/api/prescriptions", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error || "The prescription wasn't saved");
+  }
+  return res.json().catch(() => ({}));
+}
+
+export async function requestPrescriptionPdfLink(prescriptionId: string): Promise<{ path: string; url: string }> {
+  const res = await authFetch(`/api/prescriptions/${prescriptionId}/pdf-link`, { method: "POST" });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((body as { error?: string }).error || "Couldn't open the prescription");
+  return { path: body.path, url: apiUrl(body.path) };
 }

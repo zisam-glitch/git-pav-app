@@ -39,6 +39,9 @@ import {
   redeemReward,
   fetchOralHealthInsights,
   logBrushingSession,
+  fetchClinicalContext,
+  issuePrescription,
+  requestPrescriptionPdfLink,
 } from "../records/records-api";
 
 // ─── Dental Catalogue Hooks ──────────────────────────────────────────────────
@@ -360,5 +363,25 @@ export function useLogBrushingMutation() {
       queryClient.invalidateQueries({ queryKey: queryKeys.oralHealthInsights() });
       queryClient.invalidateQueries({ queryKey: queryKeys.rewards() });
     },
+  });
+}
+
+export function useClinicalContext(appointmentId?: string) {
+  return useQuery({
+    queryKey: queryKeys.clinicalContext(appointmentId),
+    queryFn: () => fetchClinicalContext(appointmentId!),
+    enabled: !!appointmentId,
+  });
+}
+
+export function useIssuePrescriptionMutation() {
+  return useMutation({
+    mutationFn: issuePrescription,
+  });
+}
+
+export function usePrescriptionPdfLinkMutation() {
+  return useMutation({
+    mutationFn: (prescriptionId: string) => requestPrescriptionPdfLink(prescriptionId),
   });
 }

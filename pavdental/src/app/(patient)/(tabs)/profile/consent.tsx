@@ -1,46 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { ThemedText, Card, Badge, Button, AppIcon } from "@/components";
-import { requestDataAccessExport } from "@/features/records/records-api";
-import { authFetch } from "@/features/auth/auth-api";
-import { type ConsentHistoryEntry, consentLabel, sortHistory } from "@/features/account/consents";
+import {
+  useCurrentConsents,
+  useConsentHistory,
+  useToggleMarketingConsentMutation,
+  useExportDataAccessMutation,
+} from "@/features/account/account-hooks";
+import { consentLabel } from "@/features/account/consents";
 import { colors, spacing, type, radius } from "@/theme";
 
 export default function ConsentScreen() {
-  const [isExporting, setIsExporting] = useState(false);
-  const [isUpdatingMarketing, setIsUpdatingMarketing] = useState(false);
-  const [activeConsents, setActiveConsents] = useState<any[]>([]);
+  const currentConsentsQuery = useCurrentConsents();
+  const historyQuery = useConsentHistory(true);
+  const toggleMarketingMutation = useToggleMarketingConsentMutation();
+  const exportMutation = useExportDataAccessMutation();
+
+  const activeConsents = currentConsentsQuery.data ?? [];
   // Every grant and withdrawal, newest first, so the patient can see what they
   // agreed to and when (UK GDPR Article 7).
-  const [history, setHistory] = useState<ConsentHistoryEntry[] | null>(null);
-  const [, setIsLoadingConsents] = useState(true);
-
-  const fetchConsents = async () => {
-    try {
-      setIsLoadingConsents(true);
-      const [res, historyRes] = await Promise.all([
-        authFetch("/api/consents/current"),
-        authFetch("/api/consents/history?includeWithdrawn=true"),
-      ]);
-      if (res.ok) {
-        const data = await res.json();
-        setActiveConsents(Array.isArray(data) ? data : []);
-      }
-      if (historyRes.ok) {
-        const data = await historyRes.json();
-        setHistory(sortHistory(Array.isArray(data) ? data : []));
-      }
-    } catch {
-      // Offline fallback
-    } finally {
-      setIsLoadingConsents(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchConsents();
-  }, []);
+  const history = historyQuery.data ?? null;
+  const isUpdatingMarketing = toggleMarketingMutation.isPending;
+  const isExporting = exportMutation.isPending;
 
   const healthDataConsent = activeConsents.find(
     (c) => c.consentType === "data_processing" || c.consentType === "treatment_data_processing"
@@ -56,35 +38,19 @@ export default function ConsentScreen() {
 
   const handleToggleMarketingConsent = async () => {
     const nextState = !marketingOptedIn;
-    setIsUpdatingMarketing(true);
     try {
-      const endpoint = nextState ? "/api/consents/grant" : "/api/consents/withdraw";
-      const payload = nextState
-        ? { consentType: "marketing", lawfulBasis: "consent" }
-        : { consentType: "marketing" };
-      const res = await authFetch(endpoint, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok && res.status !== 409) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error((err as any).error || "Could not update marketing consent");
-      }
-      await fetchConsents();
+      await toggleMarketingMutation.mutateAsync(nextState);
     } catch (err: any) {
       Alert.alert(
         "Consent Update Error",
         err?.message || "Could not update your marketing consent preference."
       );
-    } finally {
-      setIsUpdatingMarketing(false);
     }
   };
 
   const handleExportData = async () => {
-    setIsExporting(true);
     try {
-      const res = await requestDataAccessExport({
+      const res = await exportMutation.mutateAsync({
         reason: "Patient Subject Access Request via Mobile App",
         format: "json",
       });
@@ -97,8 +63,6 @@ export default function ConsentScreen() {
       );
     } catch (err: any) {
       Alert.alert("Export Error", err?.message || "Could not generate GDPR export bundle.");
-    } finally {
-      setIsExporting(false);
     }
   };
 

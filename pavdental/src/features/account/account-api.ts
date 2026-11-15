@@ -213,4 +213,53 @@ export const accountApi = {
       throw new Error(err.error ?? "Failed to remove dependant");
     }
   },
+
+  getCurrentConsents: async (): Promise<
+    Array<{ consentType: string; isGranted?: boolean; grantedAt?: string; version?: string | number }>
+  > => {
+    const res = await authFetch("/api/consents/current");
+    if (!res.ok) throw new Error("Failed to load current consents");
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  },
+
+  getConsentHistory: async (includeWithdrawn = true): Promise<any[]> => {
+    const res = await authFetch(`/api/consents/history?includeWithdrawn=${includeWithdrawn ? "true" : "false"}`);
+    if (!res.ok) throw new Error("Failed to load consent history");
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  },
+
+  grantConsent: async (payload: { consentType: string; lawfulBasis: string }): Promise<void> => {
+    const res = await authFetch("/api/consents/grant", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok && res.status !== 409) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "Could not grant consent");
+    }
+  },
+
+  withdrawConsent: async (payload: { consentType: string }): Promise<void> => {
+    const res = await authFetch("/api/consents/withdraw", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok && res.status !== 409) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "Could not withdraw consent");
+    }
+  },
+
+  updateOnboardingProfile: async (profileId: string, payload: Record<string, unknown>): Promise<void> => {
+    const res = await authFetch(`/api/patients/${profileId}/profile`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err: { error?: string } = await res.json().catch(() => ({}));
+      throw new Error(err.error ?? "Failed to save patient profile");
+    }
+  },
 };

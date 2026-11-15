@@ -36,7 +36,11 @@ assert(history.map((h) => h.id).join() === "b,c,a", "history is newest first, co
 assert(consentLabel("marketing") === "Recall & preventive reminders", "consents have the names the screen uses");
 assert(consentLabel("some_new_type") === "some new type", "an unknown type is still readable");
 const consent = src("app/(patient)/(tabs)/profile/consent.tsx");
-assert(consent.includes("/api/consents/history?includeWithdrawn=true"), "consent screen loads the full history, withdrawals included");
+const accountApiSrc = src("features/account/account-api.ts");
+assert(
+  consent.includes("useConsentHistory(true)") && accountApiSrc.includes("/api/consents/history?includeWithdrawn="),
+  "consent screen loads the full history, withdrawals included",
+);
 assert(!/: "v1"\}/.test(consent), "no made-up 'v1' for a consent that was never given");
 assert(!consent.includes('return "Recorded"'), "no 'Recorded' date for a consent that was never given");
 

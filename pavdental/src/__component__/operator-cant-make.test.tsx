@@ -98,4 +98,29 @@ describe("OperatorRouteScreen — Can't make this visit (N4)", () => {
     renderRoute();
     expect(screen.queryByRole("button", { name: "Can't make this visit" })).toBeNull();
   });
+
+  it("shows the 10-minute on-site no-show countdown while waiting on site (N23)", () => {
+    jest.useFakeTimers();
+    const now = Date.parse("2026-11-15T10:04:00Z");
+    jest.setSystemTime(now);
+    mockShiftData.mockReturnValue({
+      shift: { id: "sh1" },
+      van: { name: "Van 1" },
+      queue: [
+        {
+          id: "req-3",
+          phase: "on_site",
+          arrivedAt: "2026-11-15T10:00:00Z",
+          service: { name: "Check-up" },
+          patient: { firstName: "Pat", lastName: "Example" },
+          accessDetails: { addressLine1: "10 High St", postcode: "BD3 9TY" },
+        },
+      ],
+    });
+
+    const view = renderRoute();
+    expect(screen.getByText(/On-site wait: 6:00 left before no-show is allowed/)).toBeTruthy();
+    view.unmount();
+    jest.useRealTimers();
+  });
 });

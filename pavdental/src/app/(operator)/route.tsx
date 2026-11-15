@@ -18,6 +18,7 @@ import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { openDrivingDirections } from "@/features/van/nav-links";
 import { useOperatorLocation } from "@/features/van/use-operator-location";
 import { useAuthStore } from "@/features/auth/auth-store";
+import { onSiteWaitLabel } from "@/features/van/live-track-actions";
 import { toLabel } from "@/lib/text";
 
 export default function OperatorRouteScreen() {
@@ -33,6 +34,15 @@ export default function OperatorRouteScreen() {
   const shift = data?.shift;
   const van = data?.van;
   const queue: VanServiceRequest[] = data?.queue ?? [];
+  const hasOnSiteTimer = queue.some((s) => s.phase === "on_site" && Boolean(s.arrivedAt));
+  const [nowMs, setNowMs] = React.useState(() => Date.now());
+
+  React.useEffect(() => {
+    if (!hasOnSiteTimer) return undefined;
+    setNowMs(Date.now());
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [hasOnSiteTimer]);
 
   // Real device GPS: keeps the backend's live position current (patient ETAs)
   // and origin-anchors turn-by-turn links. Falls back to the van's last
@@ -367,24 +377,35 @@ export default function OperatorRouteScreen() {
                           }
                         />
                       )}
-                      {s.phase === "on_site" && (
-                        <>
-                          <Button
-                            title="Patient not here: send a message"
-                            size="sm"
-                            variant="ghost"
-                            loading={contactMutation.isPending}
-                            onPress={() => contactMutation.mutate({ id: s.id, kind: "message" })}
-                          />
-                          <Button
-                            title="I tried calling the patient"
-                            size="sm"
-                            variant="ghost"
-                            loading={contactMutation.isPending}
-                            onPress={() => contactMutation.mutate({ id: s.id, kind: "call" })}
-                          />
-                        </>
-                      )}
+                      {s.phase === "on_site" && (() => {
+                        const wait = onSiteWaitLabel(s.arrivedAt, nowMs);
+                        return (
+                          <>
+                            {wait ? (
+                              <ThemedText
+                                variant="caption"
+                                style={wait.ready ? styles.procedure : styles.gpsWarningText}
+                              >
+                                {wait.label}
+                              </ThemedText>
+                            ) : null}
+                            <Button
+                              title="Patient not here: send a message"
+                              size="sm"
+                              variant="ghost"
+                              loading={contactMutation.isPending}
+                              onPress={() => contactMutation.mutate({ id: s.id, kind: "message" })}
+                            />
+                            <Button
+                              title="I tried calling the patient"
+                              size="sm"
+                              variant="ghost"
+                              loading={contactMutation.isPending}
+                              onPress={() => contactMutation.mutate({ id: s.id, kind: "call" })}
+                            />
+                          </>
+                        );
+                      })()}
                       <Button
                         title="Mark no-show"
                         size="sm"

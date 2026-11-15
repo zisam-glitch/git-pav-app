@@ -39,6 +39,30 @@ export function formatCountdown(seconds: number): string {
   return `${m}:${s < 10 ? "0" : ""}${s}`;
 }
 
+export const NO_SHOW_WAIT_MINUTES = 10;
+
+/** Live 10-minute on-site wait label before a no-show can be marked (N23). */
+export function onSiteWaitLabel(
+  arrivedAt: string | null | undefined,
+  now: number = Date.now(),
+): { ready: boolean; label: string } | null {
+  if (!arrivedAt) return null;
+  const arrivedMs = new Date(arrivedAt).getTime();
+  if (Number.isNaN(arrivedMs)) return null;
+  const deadlineMs = arrivedMs + NO_SHOW_WAIT_MINUTES * 60_000;
+  const remainingSeconds = Math.max(0, Math.ceil((deadlineMs - now) / 1000));
+  if (remainingSeconds === 0) {
+    return {
+      ready: true,
+      label: "10-minute wait complete — no-show allowed once message & call are logged.",
+    };
+  }
+  return {
+    ready: false,
+    label: `On-site wait: ${formatCountdown(remainingSeconds)} left before no-show is allowed`,
+  };
+}
+
 export type AuthorizeOutcome =
   /** The server already has the hold; just refresh the request. */
   | { kind: "already" }

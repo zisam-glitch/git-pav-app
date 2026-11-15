@@ -10,8 +10,8 @@ import { awardVisitPoints } from "../lib/rewards";
 import { londonDate, londonTimeToUtc } from "../lib/availability";
 import { getCoverageBackend } from "../lib/van-coverage";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
-import { cancelVanRequest, endVanShift } from "../lib/van-dispatch";
-import { shiftEndSchema, vanSideCancelSchema } from "../schemas/van-dispatch";
+import { cancelVanRequest, changeVanPhase, endVanShift } from "../lib/van-dispatch";
+import { adminVanPhaseSchema, shiftEndSchema, vanSideCancelSchema } from "../schemas/van-dispatch";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { passwordResetService } from "../lib/otp-service";
 import { communicationService } from "../lib/communication-service";
@@ -1272,7 +1272,120 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
   });
 });
 
-// ─── POST /api/admin/van-shifts/:id/end ───────────────────────────────────────
+// ─── GET /api/admin/van-shifts/:id ────────────────────────────────────────────
+// Shift detail, stop list, and event timeline for staff intervention (N33).
+// Never returns clinical notes or full street addresses.
+router.get("/van-shifts/:id", requireAuth, requireRole("admin"), validateParams(idParamsSchema), async (req: AuthRequest, res: Response) => {
+  const shiftId = String(req.params.id);
+  const shift = await prisma.vanShift.findUnique({
+    where: { id: shiftId },
+    select: {
+      id: true,
+      status: true,
+      startedAt: true,
+      endedAt: true,
+      lastLocationAt: true,
+      van: { select: { id: true, name: true, registrationPlate: true } },
+      operator: { select: { id: true, fullName: true } },
+      requests: {
+        orderBy: [{ queuePosition: "asc" }, { requestedAt: "asc" }],
+        select: {
+          id: true,
+          status: true,
+          phase: true,
+          queuePosition: true,
+          requestedAt: true,
+          acceptedAt: true,
+          arrivedAt: true,
+          treatmentStartedAt: true,
+          completedAt: true,
+          service: { select: { id: true, name: true } },
+          patient: { select: { id: true, firstName: true, lastName: true } },
+          events: {
+            orderBy: { at: "asc" },
+            select: {
+              id: true,
+              type: true,
+              fromPhase: true,
+              toPhase: true,
+              reason: true,
+              actorRole: true,
+              at: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!shift) return res.status(404).json({ error: "Shift not found" });
+
+  return res.json({
+    id: shift.id,
+    status: shift.status,
+    live: !shift.endedAt,
+    startedAt: shift.startedAt.toISOString(),
+    endedAt: shift.endedAt?.toISOString() ?? null,
+    lastLocationAt: shift.lastLocationAt?.toISOString() ?? null,
+    vanName: shift.van.name,
+    vanPlate: shift.van.registrationPlate,
+    operatorName: shift.operator.fullName,
+    stops: shift.requests.map((r) => ({
+      id: r.id,
+      status: r.status,
+      phase: r.phase,
+      queuePosition: r.queuePosition,
+      serviceName: r.service.name,
+      patientName: `${r.patient.firstName} ${r.patient.lastName}`.trim(),
+      requestedAt: r.requestedAt.toISOString(),
+      acceptedAt: r.acceptedAt?.toISOString() ?? null,
+      arrivedAt: r.arrivedAt?.toISOString() ?? null,
+      treatmentStartedAt: r.treatmentStartedAt?.toISOString() ?? null,
+      completedAt: r.completedAt?.toISOString() ?? null,
+      events: r.events.map((e) => ({
+        id: e.id,
+        type: e.type,
+        fromPhase: e.fromPhase,
+        toPhase: e.toPhase,
+        reason: e.reason,
+        actorRole: e.actorRole,
+        at: e.at.toISOString(),
+      })),
+    })),
+  });
+});
+
+// ─── POST /api/admin/van-requests/:id/phase ───────────────────────────────────
+// Marks a stop completed or no_show on the operator's behalf when their device
+// died or the office needs to unblock ending a shift (N4).
+router.post("/van-requests/:id/phase", requireAuth, requireRole("admin"), validateParams(idParamsSchema), validateBody(adminVanPhaseSchema), async (req: AuthRequest, res: Response) => {
+  const requestId = String(req.params.id);
+  const existing = await prisma.vanServiceRequest.findUnique({
+    where: { id: requestId },
+    select: { id: true, shiftId: true },
+  });
+  if (!existing) return res.status(404).json({ error: "Request not found" });
+
+  const outcome = await changeVanPhase({
+    shiftId: existing.shiftId,
+    requestId,
+    phase: req.body.phase,
+    actorRole: "staff",
+  });
+  if (outcome.status !== 200) return res.status(outcome.status).json(outcome.body);
+
+  await createAuditLogWithIntegrity({
+    action: "admin.van_request.phase_updated",
+    actorId: req.user!.sub,
+    resourceId: requestId,
+    sessionId: req.user?.sessionId ?? null,
+    ipHash: pseudonymiseIp(req.ip || ""),
+    metadata: { phase: req.body.phase, shiftId: existing.shiftId },
+  });
+
+  return res.json(outcome.body);
+});
+
+// ─── POST /api/admin/van-requests/:id/cancel ──────────────────────────────────
 // Cancels a van visit on the van's behalf (the crew cannot reach the app, or
 // the office has decided the van cannot go). The same path as the crew's own
 // "can't make this visit": a reason, a full refund, a message to the patient,

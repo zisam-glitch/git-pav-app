@@ -28,6 +28,7 @@ const ALLOWED: Record<string, RegExp[]> = {
     /^consents$/,
     /^sar-exports$/,
     /^van-shifts$/,
+    new RegExp(`^van-shifts/${SEG}$`),
     /^attention$/,
   ],
   PATCH: [
@@ -55,6 +56,7 @@ const ALLOWED: Record<string, RegExp[]> = {
     new RegExp(`^vans/${SEG}/assignments/${SEG}/end$`),
     /^services$/,
     new RegExp(`^van-shifts/${SEG}/end$`),
+    new RegExp(`^van-requests/${SEG}/phase$`),
     new RegExp(`^van-requests/${SEG}/cancel$`),
     new RegExp(`^erasure-requests/${SEG}/complete$`),
     new RegExp(`^erasure-requests/${SEG}/reject$`),

@@ -4,7 +4,16 @@ import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThemedText, Card, Badge, Button, ErrorState, Skeleton, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { fetchCurrentShift, updatePhase, optimizeRoute, reorderQueue, recordContactAttempt } from "@/features/van/van-api";
+import {
+  fetchCurrentShift,
+  updatePhase,
+  optimizeRoute,
+  reorderQueue,
+  recordContactAttempt,
+  cantMakeVisit,
+  VAN_CANCEL_REASONS,
+  type VanCancelReason,
+} from "@/features/van/van-api";
 import { VanServiceRequest, VanStopPhase } from "@/features/van/van-types";
 import { openDrivingDirections } from "@/features/van/nav-links";
 import { useOperatorLocation } from "@/features/van/use-operator-location";
@@ -56,6 +65,18 @@ export default function OperatorRouteScreen() {
     },
     onError: (err: any) => {
       Alert.alert("Phase Update Failed", err.message || "Could not update stop phase");
+    },
+  });
+
+  // Crew cannot make a visit: cancels with a full refund and notifies the patient (N4).
+  const cantMakeMutation = useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: VanCancelReason }) => cantMakeVisit(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      Alert.alert("Visit Cancelled", "The patient has been notified and their deposit will be refunded in full.");
+    },
+    onError: (err: any) => {
+      Alert.alert("Could Not Cancel", err.message || "Could not cancel this visit");
     },
   });
 
@@ -384,6 +405,27 @@ export default function OperatorRouteScreen() {
                           );
                         }}
                       />
+                      {s.phase !== "in_treatment" && (
+                        <Button
+                          title="Can't make this visit"
+                          size="sm"
+                          variant="ghost"
+                          loading={cantMakeMutation.isPending}
+                          onPress={() => {
+                            Alert.alert(
+                              "Can't make this visit",
+                              `Cancel ${patientName}'s visit? They will be notified and refunded in full.`,
+                              [
+                                ...VAN_CANCEL_REASONS.map((r) => ({
+                                  text: r.label,
+                                  onPress: () => cantMakeMutation.mutate({ id: s.id, reason: r.value }),
+                                })),
+                                { text: "Keep visit", style: "cancel" as const },
+                              ]
+                            );
+                          }}
+                        />
+                      )}
                     </View>
                   )}
                 </Card>

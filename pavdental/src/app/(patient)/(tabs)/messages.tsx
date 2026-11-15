@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, FlatList, Pressable, Modal, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { safeHaptics } from "@/lib/haptics";
@@ -193,7 +193,7 @@ export default function MessagesScreen() {
               {msg.from}
             </ThemedText>
             <ThemedText variant="caption" style={styles.threadTime}>
-              {new Date(msg.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
+              {ukDateLabel(new Date(msg.sentAtIso), {
                 day: "numeric",
                 month: "short",
               })}

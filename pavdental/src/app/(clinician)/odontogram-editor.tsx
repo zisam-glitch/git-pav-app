@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateTimeLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, IconButton, AppIcon, ErrorState } from "@/components";
@@ -240,7 +240,7 @@ export default function OdontogramEditorScreen() {
                       </ThemedText>
                     ) : null}
                     <ThemedText variant="caption" style={styles.historyTime}>
-                      {new Date(h.createdAt).toLocaleString("en-GB", { timeZone: PRACTICE_TIME_ZONE })}
+                      {ukDateTimeLabel(new Date(h.createdAt))}
                     </ThemedText>
                   </View>
                 ))}

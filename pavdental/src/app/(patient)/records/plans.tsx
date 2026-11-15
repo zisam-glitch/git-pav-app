@@ -1,5 +1,5 @@
 import React from "react";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Button, Badge, EmptyState, ErrorState, Skeleton, AppIcon } from "@/components";
@@ -77,7 +77,7 @@ export default function TreatmentPlansScreen() {
           const clinicianName = plan.clinician?.fullName
             ? `${plan.clinician.fullName} (${plan.clinician.roleTitle || ""})`
             : "Your Clinician";
-          const createdAt = new Date(plan.createdAt).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
+          const createdAt = ukDateLabel(new Date(plan.createdAt), {
             day: "numeric",
             month: "short",
             year: "numeric",

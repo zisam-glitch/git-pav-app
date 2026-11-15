@@ -13,7 +13,7 @@ import {
   useMarkMessageThreadReadMutation,
 } from "@/features/hooks/use-dental-api";
 import { threadMessages } from "@/features/messages/thread";
-import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
+import { ukDateTimeLabel } from "@/features/booking/uk-time";
 
 // One conversation: the newest messages, oldest first, with earlier ones a tap away and a reply box underneath.
 export default function MessageThreadScreen() {
@@ -136,8 +136,7 @@ export default function MessageThreadScreen() {
           <View key={m.id} style={[styles.bubble, m.mine ? styles.mine : styles.theirs]}>
             <ThemedText variant="caption" style={m.mine ? styles.metaMine : styles.meta}>
               {m.sender} ·{" "}
-              {new Date(m.sentAtIso).toLocaleString("en-GB", {
-                timeZone: PRACTICE_TIME_ZONE,
+              {ukDateTimeLabel(new Date(m.sentAtIso), {
                 day: "numeric",
                 month: "short",
                 hour: "2-digit",

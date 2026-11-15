@@ -11,6 +11,7 @@ import {
   freshnessLabel,
   shiftLength,
   shiftsPath,
+  stopStaffActions,
 } from "./pav-van-shifts.ts";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -133,5 +134,30 @@ describe("endShiftQuestion", () => {
     assert.match(q, /full refund/);
     assert.deepEqual(endShiftBody(true), { cancelRemaining: true, reason: "shift_ending" });
     assert.equal(endShiftBody(false), undefined);
+  });
+});
+
+describe("stopStaffActions", () => {
+  it("allows completing only during in_treatment, no_show only during on_site, and cancel before treatment", () => {
+    assert.deepEqual(stopStaffActions({ status: "accepted", phase: "queued" }), {
+      canComplete: false,
+      canNoShow: false,
+      canCancel: true,
+    });
+    assert.deepEqual(stopStaffActions({ status: "in_progress", phase: "on_site" }), {
+      canComplete: false,
+      canNoShow: true,
+      canCancel: true,
+    });
+    assert.deepEqual(stopStaffActions({ status: "in_progress", phase: "in_treatment" }), {
+      canComplete: true,
+      canNoShow: false,
+      canCancel: false,
+    });
+    assert.deepEqual(stopStaffActions({ status: "completed", phase: "completed" }), {
+      canComplete: false,
+      canNoShow: false,
+      canCancel: false,
+    });
   });
 });

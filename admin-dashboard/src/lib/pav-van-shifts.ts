@@ -111,3 +111,55 @@ export function endShiftQuestion(
 export function endShiftBody(cancelRemaining: boolean): { cancelRemaining: true; reason: "shift_ending" } | undefined {
   return cancelRemaining ? { cancelRemaining: true, reason: "shift_ending" } : undefined;
 }
+
+export interface VanStopEvent {
+  id: string;
+  type: string;
+  fromPhase: string | null;
+  toPhase: string | null;
+  reason: string | null;
+  actorRole: string | null;
+  at: string;
+}
+
+export interface VanShiftStop {
+  id: string;
+  status: string;
+  phase: string;
+  queuePosition: number | null;
+  serviceName: string;
+  patientName: string;
+  requestedAt: string;
+  acceptedAt: string | null;
+  arrivedAt: string | null;
+  treatmentStartedAt: string | null;
+  completedAt: string | null;
+  events: VanStopEvent[];
+}
+
+export interface VanShiftDetail {
+  id: string;
+  status: string;
+  live: boolean;
+  startedAt: string;
+  endedAt: string | null;
+  lastLocationAt: string | null;
+  vanName: string;
+  vanPlate: string;
+  operatorName: string;
+  stops: VanShiftStop[];
+}
+
+/** Which staff intervention actions are available for a stop on the shift detail panel (N4). */
+export function stopStaffActions(stop: Pick<VanShiftStop, "status" | "phase">): {
+  canComplete: boolean;
+  canNoShow: boolean;
+  canCancel: boolean;
+} {
+  const open = stop.status === "pending" || stop.status === "accepted" || stop.status === "in_progress";
+  return {
+    canComplete: open && stop.phase === "in_treatment",
+    canNoShow: open && stop.phase === "on_site",
+    canCancel: open && stop.phase !== "in_treatment",
+  };
+}

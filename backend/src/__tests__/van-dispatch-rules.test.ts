@@ -380,6 +380,10 @@ describe("van dispatch rules", () => {
       expect(cancelled.body).toMatchObject({ appointmentStatus: "cancelled", refundPending: true, refundPercentage: 100, stripeRefundId: null });
       expect(cancelled.body.policyNotice).toContain("on its way");
       expect(cancelled.body.policyNotice).not.toContain("issued");
+      // The retry then makes the refund, so nothing is left for a later run.
+      const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
+      await retryFailedVanDepositReleases();
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).depositReleaseStatus).toBe("refunded");
 
       // One that goes through says so.
       const { stops: others } = await shiftWithStops("refundnow", 1);

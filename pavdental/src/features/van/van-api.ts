@@ -295,3 +295,30 @@ export async function updatePhase(
   return res.json();
 }
 
+export type VanCancelReason =
+  | "vehicle_problem"
+  | "crew_unavailable"
+  | "running_too_late"
+  | "cannot_reach_address"
+  | "shift_ending"
+  | "other";
+
+export const VAN_CANCEL_REASONS: Array<{ value: VanCancelReason; label: string }> = [
+  { value: "vehicle_problem", label: "Vehicle problem" },
+  { value: "crew_unavailable", label: "Crew unavailable" },
+  { value: "running_too_late", label: "Running too late" },
+  { value: "cannot_reach_address", label: "Cannot reach address" },
+  { value: "shift_ending", label: "Shift ending" },
+  { value: "other", label: "Other reason" },
+];
+
+/** Crew cannot make a queued/en-route/on-site visit; cancels with a full refund (N4). */
+export async function cantMakeVisit(id: string, reason: VanCancelReason): Promise<VanServiceRequest> {
+  const res = await authFetch(`/api/van/requests/${id}/cant-make`, {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  });
+  if (!res.ok) return parseErrorAndThrow(res, "Could not cancel visit");
+  return res.json();
+}
+

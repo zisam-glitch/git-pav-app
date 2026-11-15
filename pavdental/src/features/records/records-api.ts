@@ -106,9 +106,16 @@ export async function fetchDocuments(userId: string) {
 }
 
 // ─── Clinical Care Messaging ──────────────────────────────────────────────────
-/** "summary" returns each conversation with its last message only; "full" returns every message. */
-export async function fetchMessageThreads(view: "full" | "summary" = "full") {
-  const res = await authFetch(view === "summary" ? "/api/messages?view=summary" : "/api/messages");
+export const MESSAGE_PAGE_SIZE = 50;
+
+/** One page of conversations, newest first. "summary" returns each conversation with its last message only; "full" returns every message. */
+export async function fetchMessageThreads(
+  view: "full" | "summary" = "full",
+  offset = 0,
+  limit = MESSAGE_PAGE_SIZE,
+) {
+  const qs = `limit=${limit}&offset=${offset}${view === "summary" ? "&view=summary" : ""}`;
+  const res = await authFetch(`/api/messages?${qs}`);
   if (!res.ok) throw new Error("Could not load message threads");
   return res.json();
 }

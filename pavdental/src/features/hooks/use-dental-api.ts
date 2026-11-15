@@ -1,5 +1,6 @@
 import { findInCachedLists } from "../booking/appointment-cache";
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { nextOffset, flattenPages, uniqueById } from "@/lib/paging";
 import { rewardsQueryOptions } from "../records/rewards-query";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { resolvePracticeHours } from "../booking/uk-time";
@@ -28,6 +29,7 @@ import {
   fetchDocuments,
   fetchMessageThreads,
   fetchMessageThreadPage,
+  MESSAGE_PAGE_SIZE,
   createMessageThread,
   replyToMessageThread,
   markMessageThreadRead,
@@ -260,13 +262,22 @@ export function useDocumentVault(userId: string) {
 }
 
 // ─── Messages, Financing, Rewards & Insights Hooks ────────────────────────────
-/** The conversation list. "summary" (the default) loads only each last message; "full" loads every message. */
+/**
+ * The conversations loaded so far, newest first, as one list. "summary" (the default) loads only
+ * each last message; "full" loads every message. The first page comes at once; `fetchNextPage` adds
+ * the next when the list is scrolled to its end. Polling refreshes only what has been loaded.
+ */
 export function useMessageThreads(view: "full" | "summary" = "summary") {
-  return useQuery({
+  const query = useInfiniteQuery({
     queryKey: ["message-threads", view],
-    queryFn: () => fetchMessageThreads(view),
+    queryFn: ({ pageParam }) => fetchMessageThreads(view, pageParam, MESSAGE_PAGE_SIZE),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      nextOffset(lastPage, pages.reduce((n, p) => n + (Array.isArray(p) ? p.length : 0), 0), MESSAGE_PAGE_SIZE),
+    select: (d) => uniqueById(flattenPages<{ id: string }>(d.pages)),
     refetchInterval: 30 * 1000, // a reply from the practice shows without a restart
   });
+  return query;
 }
 
 /** One open conversation, a page of messages at a time; fetchNextPage loads older ones. */

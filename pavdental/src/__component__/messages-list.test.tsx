@@ -1,4 +1,5 @@
 import React from "react";
+import { FlatList } from "react-native";
 import { fireEvent, screen } from "@testing-library/react-native";
 import { renderScreen } from "./test-utils";
 import MessagesScreen from "@/app/(patient)/(tabs)/messages";
@@ -74,5 +75,38 @@ describe("Messages list", () => {
     renderScreen(<MessagesScreen />);
     expect(screen.getByLabelText("Search messages")).toBeTruthy();
     expect(screen.queryByText("Subject t299")).toBeNull();
+  });
+
+  it("loads the next page of conversations when the end of the list is reached", () => {
+    const fetchNextPage = jest.fn();
+    mockThreads.mockReturnValue({
+      data: [thread("a")], isLoading: false, isError: false, refetch: jest.fn(),
+      hasNextPage: true, isFetchingNextPage: false, fetchNextPage,
+    });
+    renderScreen(<MessagesScreen />);
+    fireEvent(screen.UNSAFE_getByType(FlatList), "endReached");
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not ask for more when there is no more", () => {
+    const fetchNextPage = jest.fn();
+    mockThreads.mockReturnValue({
+      data: [thread("a")], isLoading: false, isError: false, refetch: jest.fn(),
+      hasNextPage: false, isFetchingNextPage: false, fetchNextPage,
+    });
+    renderScreen(<MessagesScreen />);
+    fireEvent(screen.UNSAFE_getByType(FlatList), "endReached");
+    expect(fetchNextPage).not.toHaveBeenCalled();
+  });
+
+  it("does not ask again while a page is already coming", () => {
+    const fetchNextPage = jest.fn();
+    mockThreads.mockReturnValue({
+      data: [thread("a")], isLoading: false, isError: false, refetch: jest.fn(),
+      hasNextPage: true, isFetchingNextPage: true, fetchNextPage,
+    });
+    renderScreen(<MessagesScreen />);
+    fireEvent(screen.UNSAFE_getByType(FlatList), "endReached");
+    expect(fetchNextPage).not.toHaveBeenCalled();
   });
 });

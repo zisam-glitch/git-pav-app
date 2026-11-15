@@ -35,6 +35,12 @@ export default function MessageThreadScreen() {
   const messages = threadMessages({ messages: data ? [...data.pages].reverse().flatMap((p) => p.messages) : [] });
   const newestId = messages[messages.length - 1]?.id;
 
+  // Opened from a notification for a conversation older than the first page:
+  // load further pages until it turns up.
+  useEffect(() => {
+    if (!thread && id && hasNextPage && !isFetchingNextPage) fetchNextPage();
+  }, [thread, id, hasNextPage, isFetchingNextPage]);
+
   const unread = thread ? !thread.isRead : false;
   useEffect(() => {
     if (unread && id) markRead.mutate(id);
@@ -74,7 +80,7 @@ export default function MessageThreadScreen() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || (!thread && (hasNextPage || isFetchingNextPage))) {
     return (
       <View style={styles.container}>
         <View style={styles.content}>

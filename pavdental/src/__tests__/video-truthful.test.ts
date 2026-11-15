@@ -39,7 +39,7 @@ assert(/painLevels = \[0, 1/.test(intake), "Pain can be 0 (R19)");
 assert(intake.includes("DURATIONS") && tdDurations.includes("3 to 7 days"), "There is an option between 2 days and a week (R19)");
 assert(!photos.includes("|| '5'"), "A missing pain score is not turned into 5 on the photos screen");
 assert(!/: 5;/.test(review), "A missing pain score is not turned into 5 on the review screen");
-assert(/summaryData\?\.status === "completed"/.test(summary), "'Completed' is shown only when the visit is completed (R13)");
+assert(/isCompleted\(summaryData\)/.test(summary), "'Completed' is shown only when the visit is completed (R13)");
 assert(detail.includes("waitingRoomOpen(booking)"), "The appointment screen offers the waiting room only when it is open (R12)");
 
 // The dentist can write to the patient from the consult room (V49)

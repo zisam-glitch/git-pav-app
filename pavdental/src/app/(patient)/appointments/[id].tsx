@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { isActiveAppointment, isCancelled as isCancelledStatus, isVideoChannel } from "@/lib/domain-enums";
 import { View, StyleSheet, ScrollView, Pressable, Linking } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -116,7 +117,7 @@ export default function AppointmentDetailScreen() {
   const clinicianName = appointmentClinician(booking);
 
   const isPast = start.getTime() < Date.now();
-  const isCancelled = booking.status === "cancelled";
+  const isCancelled = isCancelledStatus(booking);
   // A booked video consult is joined from here until its slot ends: answer the
   // triage questions, then wait for the clinician to let the patient in.
   const end = new Date(booking.endTimeUtc ?? booking.startTimeUtc);
@@ -125,8 +126,8 @@ export default function AppointmentDetailScreen() {
   // visit with 48 hours' notice or more. The server checks again.
   const rescheduleOffer = rescheduleState(booking);
   const canJoinVideo =
-    booking.channel === "video" &&
-    (booking.status === "confirmed" || booking.status === "in_progress") &&
+    isVideoChannel(booking.channel) &&
+    isActiveAppointment(booking) &&
     end.getTime() > Date.now();
 
   const doCancel = () => {

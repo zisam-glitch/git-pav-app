@@ -3,6 +3,7 @@
 // patient cancels and books again. The server enforces this and has the last
 // word; this only decides what to offer, so nobody is sent down a path that
 // ends in a refusal. Keep the number in step with backend/src/lib/reschedule-policy.ts.
+import { isConfirmed, isVanChannel } from "../../lib/domain-enums";
 import { ukDateLabel, ukTime } from "./uk-time";
 
 export const RESCHEDULE_MIN_NOTICE_HOURS = 48;
@@ -23,7 +24,7 @@ export interface Reschedulable {
 export type RescheduleState = "allowed" | "too_late" | "not_movable";
 
 export function rescheduleState(booking: Reschedulable, now: Date = new Date()): RescheduleState {
-  if (booking.channel === "van" || booking.status !== "confirmed") return "not_movable";
+  if (isVanChannel(booking.channel) || !isConfirmed(booking)) return "not_movable";
   const hours = (new Date(booking.startTimeUtc).getTime() - now.getTime()) / 3_600_000;
   if (hours <= 0) return "not_movable";
   return hours >= RESCHEDULE_MIN_NOTICE_HOURS ? "allowed" : "too_late";

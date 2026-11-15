@@ -2,6 +2,8 @@
 // clinical field comes from the record; anything missing reads "Not recorded"
 // instead of a plausible-looking default drug, dose or prescriber (MC-4).
 
+import { PRESCRIPTION_STATUS } from "../../lib/domain-enums";
+
 export const NOT_RECORDED = "Not recorded";
 
 export interface NormalizedPrescription {
@@ -51,7 +53,12 @@ export function normalizePrescription(raw: any): NormalizedPrescription {
     pharmacy: text(raw.dispensingPharmacy, raw.pharmacy) ?? NOT_RECORDED,
     prescriber,
     issuedIso,
-    status: raw.status === "completed" || raw.status === "active" ? raw.status : isCompleted ? "completed" : "active",
+    status:
+      raw.status === PRESCRIPTION_STATUS.COMPLETED || raw.status === PRESCRIPTION_STATUS.ACTIVE
+        ? raw.status
+        : isCompleted
+          ? PRESCRIPTION_STATUS.COMPLETED
+          : PRESCRIPTION_STATUS.ACTIVE,
     refillsRemaining: typeof raw.refillsRemaining === "number" ? raw.refillsRemaining : 0,
     // Older records carry an invented "NHS-EPS" reference, which isn't shown.
     reference: text(raw.reference),

@@ -5,6 +5,8 @@
  * and stops asking as soon as it is confirmed or the time runs out.
  */
 
+import { isConfirmed } from "../../lib/domain-enums";
+
 export type ConfirmationOutcome = "confirmed" | "timeout" | "missing";
 
 export interface WatchOptions {
@@ -46,7 +48,7 @@ export function watchConfirmation(
     inFlight = true;
     try {
       const appointment = await fetchStatus(appointmentId);
-      if (appointment?.status === "confirmed") finish("confirmed");
+      if (isConfirmed(appointment)) finish("confirmed");
     } catch {
       // A failed check is retried on the next tick.
     } finally {

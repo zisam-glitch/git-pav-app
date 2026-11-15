@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Redirect, Stack } from "expo-router";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { getMobilePortalPath, isAllowedInPortal } from "@/features/auth/auth-routing";
+import { isOperator } from "@/lib/domain-enums";
 import { stackScreenOptions } from "@/components";
 import { stopShiftBackgroundLocation } from "@/features/van/background-location";
 import { useOfflineNotesSync } from "@/features/van/offline-notes";
@@ -16,7 +17,7 @@ export default function OperatorLayout() {
 
   // D-21: signing out ends background location sharing.
   useEffect(() => {
-    if (user?.role !== "operator") void stopShiftBackgroundLocation();
+    if (!isOperator(user)) void stopShiftBackgroundLocation();
   }, [user?.role]);
 
   if (!isAllowedInPortal(user?.role, "operator")) {

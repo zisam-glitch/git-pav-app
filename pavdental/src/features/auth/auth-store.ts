@@ -2,8 +2,9 @@
 // Access token lives ONLY in memory (this store) — never in SecureStore.
 // Refresh token lives in SecureStore (see lib/token-store.ts).
 import { create } from "zustand";
+import type { UserRole } from "../../lib/domain-enums";
 
-export type UserRole = "patient" | "clinician" | "operator" | "admin";
+export type { UserRole };
 
 export interface AuthUser {
   id: string;

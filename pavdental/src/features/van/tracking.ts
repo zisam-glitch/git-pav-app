@@ -1,4 +1,5 @@
 import type { VanServiceRequest } from "./van-types";
+import { VAN_REQUEST_STATUS } from "../../lib/domain-enums";
 
 export type LatLng = { latitude: number; longitude: number };
 
@@ -61,7 +62,7 @@ export function trackingView(request: Pick<VanServiceRequest, "status" | "phase"
   const lat = request.shift?.lastLat;
   const lng = request.shift?.lastLng;
   const coming =
-    (request.status === "accepted" || request.status === "in_progress") &&
+    (request.status === VAN_REQUEST_STATUS.ACCEPTED || request.status === VAN_REQUEST_STATUS.IN_PROGRESS) &&
     (request.phase === "en_route" || request.phase === "on_site");
   const van = coming && lat != null && lng != null ? { latitude: lat, longitude: lng } : null;
 

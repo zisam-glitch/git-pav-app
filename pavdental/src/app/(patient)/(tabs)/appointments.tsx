@@ -9,6 +9,7 @@ import { colors, spacing } from "@/theme";
 import { useMyAppointments, useCancelAppointmentMutation } from "@/features/hooks/use-dental-api";
 import { toLabel } from "@/lib/text";
 import { appointmentBadge, isUpcomingBooking } from "@/features/booking/appointment-status";
+import { isCancelled, isDraftHold } from "@/lib/domain-enums";
 import { cancellationSheetMessage } from "@/features/booking/policies";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
@@ -45,7 +46,7 @@ function BookingRow({
   const start = new Date(booking.startTimeUtc);
   const date = ukDateLabel(start, { weekday: "short", day: "numeric", month: "short" });
   const time = ukTime(start);
-  const cancelled = booking.status === "cancelled";
+  const cancelled = isCancelled(booking);
   const who = booking.dependant
     ? `For ${booking.dependant.firstName} ${booking.dependant.lastName}`
     : appointmentClinician(booking);
@@ -99,7 +100,7 @@ export default function PatientAppointmentsScreen() {
       .filter((b) => isUpcomingBooking(b, now))
       .sort((a, b) => +new Date(a.startTimeUtc) - +new Date(b.startTimeUtc));
     const past = bookings
-      .filter((b) => b.status !== "draft_hold" && !upcoming.includes(b))
+      .filter((b) => !isDraftHold(b) && !upcoming.includes(b))
       .sort((a, b) => +new Date(b.startTimeUtc) - +new Date(a.startTimeUtc));
     return { upcoming, past };
   }, [apiAppointments]);

@@ -380,10 +380,15 @@ describe("van dispatch rules", () => {
       expect(cancelled.body).toMatchObject({ appointmentStatus: "cancelled", refundPending: true, refundPercentage: 100, stripeRefundId: null });
       expect(cancelled.body.policyNotice).toContain("on its way");
       expect(cancelled.body.policyNotice).not.toContain("issued");
-      // The retry then makes the refund, so nothing is left for a later run.
+      // The retry then finishes the release, so nothing is left for a later
+      // run. Other suites run the same job on this database with their own
+      // fake Stripe and may get to the row first, so only "finished" is
+      // checked here; that the retry refunds is the test above.
       const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
       await retryFailedVanDepositReleases();
-      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).depositReleaseStatus).toBe("refunded");
+      const finished = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } });
+      expect(["failed", "pending"]).not.toContain(finished.depositReleaseStatus);
+      expect(finished.depositReleasedAt).not.toBeNull();
 
       // One that goes through says so.
       const { stops: others } = await shiftWithStops("refundnow", 1);

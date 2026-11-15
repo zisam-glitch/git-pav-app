@@ -380,10 +380,15 @@ describe("van dispatch rules", () => {
       expect(cancelled.body).toMatchObject({ appointmentStatus: "cancelled", refundPending: true, refundPercentage: 100, stripeRefundId: null });
       expect(cancelled.body.policyNotice).toContain("on its way");
       expect(cancelled.body.policyNotice).not.toContain("issued");
-      // The retry then makes the refund, so nothing is left for a later run.
+      // The retry then finishes the release, so nothing is left for a later
+      // run. Other suites run the same job on this database with their own
+      // fake Stripe and may get to the row first, so only "finished" is
+      // checked here; that the retry refunds is the test above.
       const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
       await retryFailedVanDepositReleases();
-      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } })).depositReleaseStatus).toBe("refunded");
+      const finished = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } });
+      expect(["failed", "pending"]).not.toContain(finished.depositReleaseStatus);
+      expect(finished.depositReleasedAt).not.toBeNull();
 
       // One that goes through says so.
       const { stops: others } = await shiftWithStops("refundnow", 1);
@@ -475,6 +480,68 @@ describe("van dispatch rules", () => {
     expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "cancelled" } })).toBe(1);
     const intent = intents.get(`pi_fake_cancel0_${tag}`)!;
     expect(["canceled", "succeeded"]).toContain(intent.status);
+  });
+
+  describe("no-show (N23)", () => {
+    const attempts = (requestId: string) =>
+      prisma.vanRequestEvent.findMany({ where: { requestId, type: "contact_attempt" }, orderBy: { at: "asc" }, select: { reason: true, actorRole: true } });
+
+    it("needs the wait, one message and one call attempt, and then keeps the deposit", async () => {
+      const { token, stops } = await shiftWithStops("noshow", 1);
+      const id = stops[0].id;
+
+      // Not before the van has arrived.
+      expect((await call("POST", `/api/van/requests/${id}/contact-attempt`, token, { kind: "message" })).status).toBe(409);
+      for (const phase of ["en_route", "on_site"]) {
+        expect((await call("POST", `/api/van/requests/${id}/phase`, token, { phase })).status).toBe(200);
+      }
+
+      // On arrival: refused, with what is still to do.
+      const tooEarly = await call("POST", `/api/van/requests/${id}/phase`, token, { phase: "no_show" });
+      expect(tooEarly.status).toBe(409);
+      expect(tooEarly.body).toMatchObject({ code: "no_show_too_early", missing: ["message", "call"], waitMinutesLeft: 10 });
+      expect(tooEarly.body.error).toContain("message the patient");
+
+      expect((await call("POST", `/api/van/requests/${id}/contact-attempt`, token, { kind: "text" })).status).toBe(400);
+      const [m1, m2] = await Promise.all([
+        call("POST", `/api/van/requests/${id}/contact-attempt`, token, { kind: "message" }),
+        call("POST", `/api/van/requests/${id}/contact-attempt`, token, { kind: "message" }),
+      ]);
+      expect([m1.status, m2.status]).toEqual([200, 200]);
+      expect(m1.body).toMatchObject({ recorded: ["message"], noShowAllowed: false });
+      const called = await call("POST", `/api/van/requests/${id}/contact-attempt`, token, { kind: "call" });
+      expect(called.body).toMatchObject({ recorded: ["call", "message"], noShowAllowed: false, waitMinutesLeft: 10 });
+      expect(await attempts(id)).toEqual([
+        { reason: "message", actorRole: "operator" },
+        { reason: "call", actorRole: "operator" },
+      ]);
+
+      // Both attempts made, the wait not over.
+      const waiting = await call("POST", `/api/van/requests/${id}/phase`, token, { phase: "no_show" });
+      expect(waiting.status).toBe(409);
+      expect(waiting.body).toMatchObject({ missing: [], waitMinutesLeft: 10 });
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id } })).status).toBe("in_progress");
+
+      // The van arrived eleven minutes ago, and the attempts came after that.
+      const arrivedAt = new Date(Date.now() - 11 * 60_000);
+      await prisma.vanServiceRequest.update({ where: { id }, data: { arrivedAt } });
+      await prisma.vanRequestEvent.updateMany({ where: { requestId: id, type: "contact_attempt" }, data: { at: new Date(arrivedAt.getTime() + 60_000) } });
+
+      const refundsBefore = fakeStripe.refundCalls;
+      const marked = await call("POST", `/api/van/requests/${id}/phase`, token, { phase: "no_show" });
+      expect(marked.status).toBe(200);
+      expect(marked.body).toMatchObject({ status: "no_show", phase: "no_show" });
+      expect((await prisma.appointment.findUniqueOrThrow({ where: { id: stops[0].appointmentId } })).status).toBe("no_show");
+      // The deposit taken at accept stays taken.
+      expect(fakeStripe.refundCalls).toBe(refundsBefore);
+      expect(intents.get(`pi_fake_noshow0_${tag}`)!.status).toBe("succeeded");
+    });
+
+    it("another crew cannot record an attempt on a stop that is not theirs", async () => {
+      const mine = await shiftWithStops("nsown", 1);
+      const other = await shiftWithStops("nsother", 1);
+      expect((await call("POST", `/api/van/requests/${other.stops[0].id}/contact-attempt`, mine.token, { kind: "call" })).status).toBe(404);
+    });
   });
 
   describe("when the van cancels (N4)", () => {

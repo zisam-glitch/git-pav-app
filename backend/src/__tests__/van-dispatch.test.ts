@@ -1,5 +1,5 @@
 import { getCancellationPolicy, vanCancellationPolicy } from "../lib/cancellation-policy";
-import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage, pendingCloseMessage, checkCancel, checkVanSideCancel, vanCancelledMessage, VAN_CANCEL_REASONS } from "../lib/van-dispatch";
+import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage, pendingCloseMessage, checkCancel, checkVanSideCancel, vanCancelledMessage, VAN_CANCEL_REASONS, checkNoShow } from "../lib/van-dispatch";
 
 // The rulebook for a van stop's phase, as pure functions (plan 16, phase 2).
 describe("checkPhaseChange", () => {
@@ -179,5 +179,37 @@ describe("vanCancelledMessage", () => {
     const { vanSideCancelSchema } = require("../schemas/van-dispatch");
     for (const reason of VAN_CANCEL_REASONS) expect(vanSideCancelSchema.safeParse({ reason }).success).toBe(true);
     expect(vanSideCancelSchema.shape.reason.options).toEqual([...VAN_CANCEL_REASONS]);
+  });
+});
+
+describe("checkNoShow", () => {
+  const arrivedAt = new Date("2026-11-15T10:00:00Z");
+  const at = (minutes: number) => new Date(arrivedAt.getTime() + minutes * 60_000);
+  const both = [{ kind: "message", at: at(1) }, { kind: "call", at: at(2) }];
+
+  it("allows a no-show after the wait with one message and one call attempt", () => {
+    expect(checkNoShow({ arrivedAt, attempts: both }, at(10))).toEqual({ ok: true });
+    expect(checkNoShow({ arrivedAt, attempts: both }, at(45))).toEqual({ ok: true });
+  });
+
+  it("refuses before the wait is over and says how long is left", () => {
+    expect(checkNoShow({ arrivedAt, attempts: both }, at(4))).toMatchObject({ ok: false, waitMinutesLeft: 6, missing: [], message: expect.stringContaining("wait 6 more minutes") });
+    expect(checkNoShow({ arrivedAt, attempts: both }, at(9.5))).toMatchObject({ ok: false, waitMinutesLeft: 1, message: expect.stringContaining("wait 1 more minute.") });
+  });
+
+  it("refuses without each kind of attempt, however long the crew has waited", () => {
+    expect(checkNoShow({ arrivedAt, attempts: [] }, at(30))).toMatchObject({ ok: false, missing: ["message", "call"], waitMinutesLeft: 0 });
+    expect(checkNoShow({ arrivedAt, attempts: [both[0]] }, at(30))).toMatchObject({ ok: false, missing: ["call"], message: "Before marking a no-show: try to call the patient." });
+    expect(checkNoShow({ arrivedAt, attempts: [both[1], both[1]] }, at(30))).toMatchObject({ ok: false, missing: ["message"] });
+  });
+
+  it("does not count an attempt made before the van arrived, or a visit with no arrival", () => {
+    const early = [{ kind: "message", at: at(-5) }, { kind: "call", at: at(-1) }];
+    expect(checkNoShow({ arrivedAt, attempts: early }, at(30))).toMatchObject({ ok: false, missing: ["message", "call"] });
+    expect(checkNoShow({ arrivedAt: null, attempts: both }, at(30)).ok).toBe(false);
+  });
+
+  it("uses the wait it is given", () => {
+    expect(checkNoShow({ arrivedAt, attempts: both }, at(10), 15)).toMatchObject({ ok: false, waitMinutesLeft: 5 });
   });
 });

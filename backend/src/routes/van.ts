@@ -11,6 +11,7 @@ import {
   locationPingSchema,
   phaseUpdateSchema,
   shiftEndSchema,
+  contactAttemptSchema,
   vanSideCancelSchema,
   vanRequestIdParamsSchema,
   createVanRequestSchema,
@@ -38,7 +39,7 @@ import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-custom
 import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
 import { etaSecondsFromPlan, planIsStale, recomputeShiftPlan } from "../lib/van-plan";
-import { acceptVanRequest, cancelVanRequest, changeVanPhase, declineVanRequest, endVanShift, recordVanEvent } from "../lib/van-dispatch";
+import { acceptVanRequest, cancelVanRequest, changeVanPhase, declineVanRequest, endVanShift, recordContactAttempt, recordVanEvent } from "../lib/van-dispatch";
 
 const router = Router();
 const isMockStripe = env.isMockStripe;
@@ -492,6 +493,20 @@ router.post("/requests/:id/phase", requireAuth, requireRole("operator"), validat
     notes,
     actorRole: "operator",
   });
+  return res.status(result.status).json(result.body);
+});
+
+// POST /api/van/requests/:id/contact-attempt
+// The crew has arrived and cannot find the patient: one message (sent to the
+// patient from here) and one call attempt are recorded before a no-show can
+// be marked (N23). Safe to repeat.
+router.post("/requests/:id/contact-attempt", requireAuth, requireRole("operator"), validateParams(vanRequestIdParamsSchema), validateBody(contactAttemptSchema), async (req: AuthRequest, res: Response) => {
+  const opProfile = await getOperatorProfile(req.user!.sub);
+
+  const shift = await getActiveShift(opProfile.id);
+  if (!shift) return res.status(404).json({ error: "No active shift" });
+
+  const result = await recordContactAttempt({ shiftId: shift.id, requestId: String(req.params.id), kind: req.body.kind, actorRole: "operator" });
   return res.status(result.status).json(result.body);
 });
 

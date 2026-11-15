@@ -423,3 +423,11 @@ full.
   apology message (draft wording), and the queue closes up. A treatment under way is never cancelled. Not built yet:
   the operator and dashboard screens for these, the one-tap rebook, and staff marking complete or no-show on the
   operator's behalf.
+- **N23, no-show (backend).** A visit can be marked a no-show only when the van arrived at least 10 minutes ago
+  (`VAN_NO_SHOW_WAIT_MINUTES`) and one message and one call attempt were recorded after arriving
+  (`POST /api/van/requests/:id/contact-attempt`). The message is a push sent to the patient from the server (draft
+  wording); the call is the crew's own record that they rang. Earlier than that the phase change is refused with what
+  is still to do. The deposit taken at accept is kept, as before. **Open:** the crew is shown no phone number today, so
+  how they place the call depends on decision 7. The operator's route screen has the two buttons ("send a message",
+  "I tried calling") on a stop that is on site, and shows the server's reason when a no-show is refused; a live
+  countdown is left for phase 5. Not tried on a phone.

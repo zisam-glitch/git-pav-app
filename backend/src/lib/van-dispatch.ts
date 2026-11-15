@@ -31,6 +31,7 @@ import {
 } from "./van-payments";
 import { cancelAppointmentReminders } from "./background-jobs";
 import { logFailure } from "./best-effort";
+import { VAN_NO_SHOW_SETTINGS } from "./van-plan";
 
 // ─── History ──────────────────────────────────────────────────────────────
 
@@ -41,6 +42,7 @@ export type VanEventType =
   | "expired"
   | "cancelled"
   | "van_cancelled"
+  | "contact_attempt"
   | "phase_changed"
   | "checked_in"
   | "shift_ended";
@@ -127,6 +129,103 @@ export const PHASE_MESSAGES: Record<string, { title: string; body: string }> = {
   },
 };
 
+// ─── No-show ──────────────────────────────────────────────────────────────
+
+/** How the crew tried to reach a patient who has not come to the van. */
+export const CONTACT_ATTEMPT_KINDS = ["message", "call"] as const;
+export type ContactAttemptKind = (typeof CONTACT_ATTEMPT_KINDS)[number];
+
+/** What the patient is sent when the crew taps "message the patient". Draft wording. */
+export const ARRIVED_NUDGE = {
+  title: "Your Dental Van is Waiting",
+  body: "The dental van is outside and the crew cannot find you. Please come to the van now, or your visit may be marked as missed.",
+};
+
+/**
+ * Whether a visit may be marked a no-show (N23; owner decision, 15 Nov 2026).
+ * Pure.
+ *
+ * The crew must have waited on site, and tried the patient once by message
+ * and once by phone, both after arriving. Only then is the visit missed and
+ * the deposit kept.
+ */
+export function checkNoShow(
+  visit: { arrivedAt: Date | null; attempts: { kind: string; at: Date }[] },
+  now: Date,
+  waitMinutes: number = VAN_NO_SHOW_SETTINGS.waitMinutes
+): PhaseCheck & { missing?: string[]; waitMinutesLeft?: number } {
+  if (!visit.arrivedAt) return { ok: false, message: "Mark the van as arrived before marking a no-show." };
+  const arrivedAt = visit.arrivedAt;
+  const missing = CONTACT_ATTEMPT_KINDS.filter((kind) => !visit.attempts.some((a) => a.kind === kind && a.at >= arrivedAt));
+  const waitMinutesLeft = Math.max(0, Math.ceil((arrivedAt.getTime() + waitMinutes * 60_000 - now.getTime()) / 60_000));
+  if (missing.length === 0 && waitMinutesLeft === 0) return { ok: true };
+
+  const steps: string[] = [];
+  if (missing.includes("message")) steps.push("message the patient");
+  if (missing.includes("call")) steps.push("try to call the patient");
+  if (waitMinutesLeft > 0) steps.push(`wait ${waitMinutesLeft} more minute${waitMinutesLeft === 1 ? "" : "s"}`);
+  return {
+    ok: false,
+    message: `Before marking a no-show: ${steps.join(", ")}.`,
+    missing,
+    waitMinutesLeft,
+  };
+}
+
+/**
+ * Records that the crew tried to reach a patient they are parked outside.
+ *
+ * Under the shift lock, once per kind: a second tap records and sends nothing.
+ * A "message" sends the patient one push; a "call" records that the crew
+ * rang. Only while the stop is on site.
+ */
+export async function recordContactAttempt(opts: {
+  shiftId: string;
+  requestId: string;
+  kind: ContactAttemptKind;
+  actorRole: VanActorRole;
+}): Promise<DispatchResult> {
+  const { shiftId, requestId, kind, actorRole } = opts;
+  const outcome = await prisma.$transaction(
+    async (tx): Promise<DispatchResult & { send?: string }> => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`van-accept:${shiftId}`}))`;
+
+      const request = await tx.vanServiceRequest.findUnique({ where: { id: requestId } });
+      if (!request || request.shiftId !== shiftId) return { status: 404, body: { error: "Request not found" } };
+      if (request.status !== "in_progress" || request.phase !== "on_site" || !request.arrivedAt) {
+        return { status: 409, body: { error: "Contact attempts are recorded once the van has arrived and before treatment starts." } };
+      }
+
+      const earlier = await tx.vanRequestEvent.findMany({
+        where: { requestId, type: "contact_attempt", at: { gte: request.arrivedAt } },
+        select: { reason: true, at: true },
+      });
+      const already = earlier.some((e) => e.reason === kind);
+      if (!already) {
+        await recordVanEvent(tx, { requestId, type: "contact_attempt", fromPhase: "on_site", toPhase: "on_site", actorRole, reason: kind });
+      }
+      const attempts = [...earlier.map((e) => ({ kind: e.reason ?? "", at: e.at })), ...(already ? [] : [{ kind, at: new Date() }])];
+      const check = checkNoShow({ arrivedAt: request.arrivedAt, attempts }, new Date());
+      return {
+        status: 200,
+        body: {
+          requestId,
+          recorded: attempts.map((a) => a.kind).filter((k, i, all) => all.indexOf(k) === i).sort(),
+          noShowAllowed: check.ok,
+          waitMinutesLeft: check.ok ? 0 : (check.waitMinutesLeft ?? 0),
+        },
+        send: !already && kind === "message" ? request.patientId : undefined,
+      };
+    },
+    { maxWait: 10_000, timeout: 30_000 }
+  );
+
+  if (outcome.send) {
+    await sendPatientNotification(outcome.send, ARRIVED_NUDGE.title, ARRIVED_NUDGE.body, { requestId, phase: "on_site" }).catch(() => {});
+  }
+  return { status: outcome.status, body: outcome.body };
+}
+
 // ─── The phase change ─────────────────────────────────────────────────────
 
 export type DispatchResult = { status: number; body: Record<string, unknown> };
@@ -176,6 +275,23 @@ export async function changeVanPhase(opts: {
 
       const check = checkPhaseChange(request.phase, phase, { viaCheckIn: opts.viaCheckIn });
       if (!check.ok) return { status: 409, body: { error: "Illegal phase transition", message: check.message } };
+
+      // A no-show keeps the deposit, so it needs the wait and the attempts to
+      // reach the patient first (N23).
+      if (phase === "no_show") {
+        const attempts = await tx.vanRequestEvent.findMany({
+          where: { requestId: request.id, type: "contact_attempt" },
+          select: { reason: true, at: true },
+        });
+        const noShow = checkNoShow({ arrivedAt: request.arrivedAt, attempts: attempts.map((a) => ({ kind: a.reason ?? "", at: a.at })) }, now);
+        if (!noShow.ok) {
+          return {
+            status: 409,
+            // The crew's screen shows `error` as it is, so the steps go in it.
+            body: { error: noShow.message, code: "no_show_too_early", missing: noShow.missing ?? [], waitMinutesLeft: noShow.waitMinutesLeft ?? 0 },
+          };
+        }
+      }
 
       // The van drives to one patient at a time, in queue order.
       if (phase === "en_route" && request.queuePosition != null) {

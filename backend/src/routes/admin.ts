@@ -1200,6 +1200,9 @@ router.get("/van-shifts", requireAuth, requireRole("admin"), validateQuery(admin
   });
 });
 
+/** A deposit release still unfinished after this long is stuck: the retry job picks one up after two minutes. */
+const RELEASE_STUCK_MS = 10 * 60 * 1000;
+
 // ─── GET /api/admin/attention ─────────────────────────────────────────────────
 // What needs a person today, as counts only: today's visits (UK day), threads
 // waiting for staff, erasure requests (and which are past their month), failed
@@ -1236,7 +1239,16 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
     prisma.auditLog.count({
       where: { action: { startsWith: "stripe.payment_intent.payment_failed" }, timestampUtc: { gte: weekAgo } },
     }),
-    prisma.vanServiceRequest.count({ where: { depositReleaseStatus: "failed" } }),
+    // Failed, or still unfinished long after the retry job should have
+    // finished it: either way the patient's money is not back yet.
+    prisma.vanServiceRequest.count({
+      where: {
+        OR: [
+          { depositReleaseStatus: "failed" },
+          { depositReleaseStatus: "pending", updatedAt: { lt: new Date(now.getTime() - RELEASE_STUCK_MS) } },
+        ],
+      },
+    }),
     prisma.vanShift.count({ where: { endedAt: null, status: { in: ["online", "paused"] } } }),
     // Online but no position report for a while: patients are no longer offered
     // this van, and the crew may not know (N14).

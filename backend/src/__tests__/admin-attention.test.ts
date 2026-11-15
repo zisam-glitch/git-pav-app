@@ -245,9 +245,31 @@ describe("admin attention counts", () => {
       },
     });
     requestIds.push(request.id);
+    // A release left unfinished for a long time counts too; one only just
+    // started is still the request's own to finish.
+    for (const updatedAt of [new Date(Date.now() - 3600_000), new Date()]) {
+      const unfinished = await prisma.vanServiceRequest.create({
+        data: {
+          shiftId: shiftIds[0],
+          vanId: vanIds[0],
+          patientId: profileId,
+          serviceId,
+          status: "cancelled",
+          depositReleaseStatus: "pending",
+          updatedAt,
+          patientLat: 51.5,
+          patientLng: -0.12,
+          accessDetails: {},
+          expiresAt: new Date(Date.now() + 3600_000),
+        },
+      });
+      requestIds.push(unfinished.id);
+    }
+    const mine = await prisma.vanServiceRequest.findMany({ where: { id: { in: requestIds }, depositReleaseStatus: { not: null } } });
+    expect(mine.filter((r) => r.depositReleaseStatus === "pending")).toHaveLength(2);
     const after = (await read()).body;
     expect(after.cardFailuresLastWeek).toBeGreaterThanOrEqual(before.cardFailuresLastWeek + 1);
-    expect(after.depositReleaseFailures).toBeGreaterThanOrEqual(before.depositReleaseFailures + 1);
+    expect(after.depositReleaseFailures).toBeGreaterThanOrEqual(before.depositReleaseFailures + 2);
     // The shift made in beforeAll is live, so it was already in the first reading.
     expect(after.vansOut).toBeGreaterThanOrEqual(1);
   });

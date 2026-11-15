@@ -1,3 +1,4 @@
+import { getCancellationPolicy, vanCancellationPolicy } from "../lib/cancellation-policy";
 import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage, pendingCloseMessage, checkCancel } from "../lib/van-dispatch";
 
 // The rulebook for a van stop's phase, as pure functions (plan 16, phase 2).
@@ -98,6 +99,15 @@ describe("pendingCloseMessage", () => {
       expect(pendingCloseMessage(how, "released").body).toContain("No deposit was taken");
     }
   });
+
+  it("says the deposit was refunded when it had been taken before the request closed", () => {
+    for (const how of ["declined", "expired", "shift_ended"] as const) {
+      const body = pendingCloseMessage(how, "refunded").body;
+      expect(body).toContain("Your deposit has been refunded in full");
+      expect(body).not.toContain("No deposit was taken");
+      expect(pendingCloseMessage(how, "pending").body).not.toContain("No deposit was taken");
+    }
+  });
 });
 
 // A patient cancelling: allowed until treatment starts, and safe to repeat.
@@ -117,5 +127,22 @@ describe("checkCancel", () => {
     for (const status of ["completed", "no_show", "declined", "expired"]) {
       expect(checkCancel({ status, phase: null })).toMatchObject({ kind: "refuse", error: `Request is already ${status}` });
     }
+  });
+});
+
+describe("vanCancellationPolicy", () => {
+  it("matches the policy by phase", () => {
+    expect(vanCancellationPolicy(false)).toEqual(getCancellationPolicy({ channel: "van", phase: "queued" }));
+    expect(vanCancellationPolicy(true)).toEqual(getCancellationPolicy({ channel: "van", phase: "en_route" }));
+    expect(vanCancellationPolicy(true)).toEqual(getCancellationPolicy({ channel: "van", phase: "on_site" }));
+  });
+
+  it("does not say a refund was issued while it is still to be made", () => {
+    const pending = vanCancellationPolicy(false, true);
+    expect(pending).toMatchObject({ refundPercentage: 100, keepsDeposit: false });
+    expect(pending.policyNotice).toContain("on its way");
+    expect(pending.policyNotice).not.toContain("issued");
+    // A kept deposit has no refund to wait for.
+    expect(vanCancellationPolicy(true, true)).toEqual(vanCancellationPolicy(true));
   });
 });

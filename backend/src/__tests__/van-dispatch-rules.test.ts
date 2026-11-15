@@ -370,6 +370,25 @@ describe("van dispatch rules", () => {
       expect(retried.depositReleasedAt).not.toBeNull();
     });
 
+    it("a cancel from the appointment screen says the refund is on its way, not issued, while Stripe cannot make it", async () => {
+      const { stops } = await shiftWithStops("refundsoon", 1);
+
+      fakeStripe.refundsFail = true;
+      const cancelled = await call("POST", `/api/booking/appointments/${stops[0].appointmentId}/cancel`, stops[0].patientToken);
+      fakeStripe.refundsFail = false;
+      expect(cancelled.status).toBe(200);
+      expect(cancelled.body).toMatchObject({ appointmentStatus: "cancelled", refundPending: true, refundPercentage: 100, stripeRefundId: null });
+      expect(cancelled.body.policyNotice).toContain("on its way");
+      expect(cancelled.body.policyNotice).not.toContain("issued");
+
+      // One that goes through says so.
+      const { stops: others } = await shiftWithStops("refundnow", 1);
+      const done = await call("POST", `/api/booking/appointments/${others[0].appointmentId}/cancel`, others[0].patientToken);
+      expect(done.status).toBe(200);
+      expect(done.body.refundPending).toBe(false);
+      expect(done.body.policyNotice).toContain("issued");
+    });
+
     it("a release that was never finished is picked up by the retry, and a deposit kept under the policy is never refunded by it", async () => {
       const { retryFailedVanDepositReleases } = jest.requireActual("../lib/background-jobs");
       const { token, stops } = await shiftWithStops("unfinished", 2);

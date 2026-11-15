@@ -5,11 +5,14 @@ import { getMobilePortalPath, isAllowedInPortal } from "@/features/auth/auth-rou
 import { stackScreenOptions } from "@/components";
 import { stopShiftBackgroundLocation } from "@/features/van/background-location";
 import { useOfflineNotesSync } from "@/features/van/offline-notes";
+import { useOfflinePhasesSync } from "@/features/van/offline-phases";
 
 export default function OperatorLayout() {
   const user = useCurrentUser();
   // MF-05: send visit notes saved offline as soon as the phone is back online.
   useOfflineNotesSync();
+  // N17: send queued stop phase changes in order as soon as signal returns.
+  useOfflinePhasesSync();
 
   // D-21: signing out ends background location sharing.
   useEffect(() => {

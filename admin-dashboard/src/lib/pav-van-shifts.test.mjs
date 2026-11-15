@@ -5,6 +5,7 @@ import {
   SHIFT_STATUS_LABEL,
   STALE_AFTER_MINUTES,
   agoLabel,
+  endShiftBody,
   endShiftQuestion,
   freshness,
   freshnessLabel,
@@ -124,5 +125,13 @@ describe("endShiftQuestion", () => {
 
   it("says accepted visits are not affected and block the end", () => {
     assert.match(endShiftQuestion(shift), /already accepted are not affected/);
+  });
+
+  it("explains full refunds when cancelling remaining stops", () => {
+    const q = endShiftQuestion(shift, true);
+    assert.match(q, /cancel any open stops/);
+    assert.match(q, /full refund/);
+    assert.deepEqual(endShiftBody(true), { cancelRemaining: true, reason: "shift_ending" });
+    assert.equal(endShiftBody(false), undefined);
   });
 });

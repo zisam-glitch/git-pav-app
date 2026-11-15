@@ -94,10 +94,20 @@ export function shiftLength(shift: Pick<VanShiftRow, "startedAt" | "endedAt">, n
 }
 
 /** What staff confirm before ending someone else's shift. Says what happens and what doesn't. */
-export function endShiftQuestion(shift: Pick<VanShiftRow, "vanName" | "operatorName" | "openRequests">): string {
+export function endShiftQuestion(
+  shift: Pick<VanShiftRow, "vanName" | "operatorName" | "openRequests">,
+  cancelRemaining = false,
+): string {
+  if (cancelRemaining) {
+    return `End ${shift.operatorName}'s shift on ${shift.vanName} and cancel any open stops? Every accepted or waiting stop not yet in treatment will be cancelled with a full refund and the patient notified. Visits already in treatment still block ending the shift. This can't be undone.`;
+  }
   const waiting =
     shift.openRequests > 0
       ? ` ${shift.openRequests} open request${shift.openRequests === 1 ? "" : "s"} will be expired and any deposit hold released, and the patient${shift.openRequests === 1 ? " is" : "s are"} told the van went offline.`
       : "";
   return `End ${shift.operatorName}'s shift on ${shift.vanName}?${waiting} Visits already accepted are not affected, and the shift can't end while any are open. The operator will have to start a new shift. This can't be undone.`;
+}
+
+export function endShiftBody(cancelRemaining: boolean): { cancelRemaining: true; reason: "shift_ending" } | undefined {
+  return cancelRemaining ? { cancelRemaining: true, reason: "shift_ending" } : undefined;
 }

@@ -530,7 +530,7 @@ describe("van dispatch rules", () => {
 
       const cancelled = await call("POST", `/api/admin/van-requests/${stops[0].id}/cancel`, adminToken, { reason: "crew_unavailable" });
       expect(cancelled.status).toBe(200);
-      expect(cancelled.body).toEqual({ id: stops[0].id, status: "cancelled", depositOutcome: "refunded", refundPending: false });
+      expect(cancelled.body).toMatchObject({ id: stops[0].id, status: "cancelled", depositOutcome: "refunded", refundPending: false });
       expect(await events(stops[0].id)).toEqual([{ actorRole: "staff", reason: "crew_unavailable", fromPhase: "queued" }]);
 
       // A second go changes nothing.

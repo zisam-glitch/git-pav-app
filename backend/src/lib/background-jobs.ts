@@ -11,6 +11,7 @@ import { checkPushReceipts } from "./push-receipts";
 import { issueMissedReferralVouchers } from "./referrals";
 import { runRetentionSweep } from "./retention";
 import { safeError } from "./log-safety";
+import { retryFailedAppointmentEmails } from "./patient-email";
 
 // Interval settings
 const SLOT_EXPIRY_INTERVAL_MS = 60 * 1000; // 1 minute
@@ -36,6 +37,7 @@ export const JOB_LOCK_IDS = {
   PUSH_RECEIPTS: 21006,
   VISIT_POINTS: 21007,
   REFERRAL_VOUCHERS: 21008,
+  EMAIL_RETRY: 21009,
 } as const;
 
 export type JobLockId = (typeof JOB_LOCK_IDS)[keyof typeof JOB_LOCK_IDS];
@@ -114,6 +116,9 @@ export const processDueScheduledNotificationsWithLock = () =>
 
 export const processExpiredVanRequestsWithLock = () =>
   withJobLease(JOB_LOCK_IDS.VAN_REQUEST_EXPIRY, () => processExpiredVanRequests());
+
+export const retryFailedAppointmentEmailsWithLock = () =>
+  withJobLease(JOB_LOCK_IDS.EMAIL_RETRY, () => retryFailedAppointmentEmails());
 
 export const retryFailedVanDepositReleasesWithLock = () =>
   withJobLease(JOB_LOCK_IDS.VAN_DEPOSIT_RETRY, () => retryFailedVanDepositReleases());
@@ -730,6 +735,7 @@ export function startBackgroundJobs(): void {
   vanRequestExpiryTimer = setInterval(() => {
     processExpiredVanRequestsWithLock().catch(logFailure("van request expiry job"));
     retryFailedVanDepositReleasesWithLock().catch(logFailure("van deposit retry job"));
+    retryFailedAppointmentEmailsWithLock().catch(logFailure("appointment email retry job"));
   }, VAN_REQUEST_EXPIRY_INTERVAL_MS);
 
   retentionSweepTimer = setInterval(() => {

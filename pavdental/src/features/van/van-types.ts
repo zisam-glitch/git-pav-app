@@ -91,6 +91,7 @@ export type VanServiceRequest = {
     name: string;
     durationMinutes: number;
     pricePence?: number;
+    depositPence?: number | null;
   };
   patient?: {
     firstName: string;

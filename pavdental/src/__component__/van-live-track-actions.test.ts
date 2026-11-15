@@ -3,9 +3,12 @@ import {
   cancelDoneMessage,
   cancelPrompt,
   formatCountdown,
+  rebookButtonLabel,
+  rebookDraftFromRequest,
   secondsUntil,
   type AuthorizeDeps,
 } from "@/features/van/live-track-actions";
+import type { VanServiceRequest } from "@/features/van/van-types";
 
 describe("cancelPrompt", () => {
   it("promises the deposit back while the van has not set off", () => {
@@ -90,5 +93,73 @@ describe("authorizeDeposit", () => {
       expect(out.message).toBe("We couldn't authorize the deposit. You have not been charged.");
       expect(out.error).toBe(raw);
     }
+  });
+});
+
+describe("rebookDraftFromRequest (N4/N30)", () => {
+  const baseRequest: VanServiceRequest = {
+    id: "req-1",
+    shiftId: "shift-1",
+    vanId: "van-1",
+    patientId: "pat-1",
+    serviceId: "svc-checkup",
+    status: "declined",
+    phase: "queued",
+    patientLat: 53.7997,
+    patientLng: -1.5492,
+    accessDetails: {
+      addressLine1: "14 Briggate",
+      addressLine2: "Flat 2",
+      city: "Leeds",
+      postcode: "LS1 6HD",
+      lat: 53.7997,
+      lng: -1.5492,
+      parkingType: "permit_bay",
+      gateCode: "1234",
+      accessNotes: "Call on arrival",
+    },
+    requestedAt: "2026-11-15T10:00:00Z",
+    expiresAt: "2026-11-15T10:04:00Z",
+    service: {
+      name: "Emergency Dental Check",
+      durationMinutes: 30,
+      pricePence: 9500,
+      depositPence: 2500,
+    },
+  };
+
+  it("preserves treatment and access details and routes straight to confirm", () => {
+    const draft = rebookDraftFromRequest(baseRequest);
+    expect(draft.pathname).toBe("/(patient)/van/confirm");
+    expect(draft.service).toEqual({
+      serviceId: "svc-checkup",
+      serviceName: "Emergency Dental Check",
+      servicePricePence: 9500,
+      serviceDurationMinutes: 30,
+      serviceDepositPence: 2500,
+    });
+    expect(draft.accessDetails).toEqual({
+      postcode: "LS1 6HD",
+      addressLine1: "14 Briggate",
+      addressLine2: "Flat 2",
+      city: "Leeds",
+      parkingType: "permit_bay",
+      gateCode: "1234",
+      accessNotes: "Call on arrival",
+    });
+  });
+
+  it("falls back to service-area if address is incomplete", () => {
+    const draft = rebookDraftFromRequest({
+      ...baseRequest,
+      accessDetails: { ...baseRequest.accessDetails, addressLine1: " " },
+    });
+    expect(draft.pathname).toBe("/(patient)/van/service-area");
+  });
+
+  it("uses clear rebook wording for cancelled vs declined/expired requests", () => {
+    expect(rebookButtonLabel("cancelled")).toBe("Book another van visit");
+    expect(rebookButtonLabel("declined")).toBe("Try again");
+    expect(rebookButtonLabel("expired")).toBe("Try again");
   });
 });

@@ -26,6 +26,7 @@ import { cancelAppointmentReminders, scheduleAppointmentReminderLadder } from ".
 import { depositDuePence } from "../lib/rewards";
 import { ageInYears, DEPENDANT_MAX_AGE, parseIsoDate } from "../lib/age";
 import { AvailabilityError, bookableClinician, londonDate, slotsForDay, SlotChannel, startOfLondonDay } from "../lib/availability";
+import { toPatientListItem } from "../lib/appointment-list";
 import { encryptField, decryptField, decryptString, encryptAccessDetails, encryptClientAccessDetails, decryptAccessDetails } from "../lib/encryption";
 import { safeError } from "../lib/log-safety";
 import { logFailure } from "../lib/best-effort";
@@ -552,15 +553,9 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
     skip,
   });
 
-  return res.json(
-    await Promise.all(
-      appointments.map(async (a) => ({
-        ...a,
-        triageData: await decryptField(a.triageData),
-        accessDetails: await decryptAccessDetails(a.accessDetails),
-      }))
-    )
-  );
+  // The list leaves out the encrypted triage answers and access details (I4): decrypting them
+  // for up to 200 visits on every call is wasted work, and the detail endpoint returns them.
+  return res.json(appointments.map((a) => toPatientListItem(a)));
 });
 
 // ─── GET /api/booking/appointments/:id ───────────────────────────────────────

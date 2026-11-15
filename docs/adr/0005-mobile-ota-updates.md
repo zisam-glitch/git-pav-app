@@ -1,7 +1,12 @@
 # ADR-0005: Add EAS Update before the first store build
 
 ## Status
-Proposed (needs the owner's go-ahead because it adds an Expo service used in production; EAS Update has a free tier).
+Accepted on 15 Nov 2026 (the owner asked for it). EAS Update has a free tier.
+
+Built: `expo-updates` is installed and `app.config.js` turns updates on only once `extra.eas.projectId` exists in `app.json`
+(that is, after `npx eas init`); until then updates are off, so no build points at an invented address. When on, the app checks
+as it opens and never holds the first screen for an update (a fix is used from the next launch). Left: run `eas init`, then
+`eas update --channel preview` on a preview build to prove an update lands, and write the rollback steps into the release checklist.
 
 ## Context
 `pavdental/eas.json` defines `development`, `preview` and `production` channels, but `expo-updates` is not installed, so the channels do nothing. A bad release can only be fixed by a new store build and review. The previous release checklist promised an "EAS Update rollback" that was not possible.

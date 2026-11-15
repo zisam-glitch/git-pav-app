@@ -153,7 +153,7 @@ Full steps are in [`../PRODUCTION-CHECKLIST.md`](../PRODUCTION-CHECKLIST.md).
   for push. `10-reaudit-findings.md` says it's configured, which is wrong. **[Code]**
 - [ ] Add `google-services.json` (missing) and an APNs key. **[Code]**
 - [ ] Set the EAS build variables: Stripe publishable key, Sentry DSN, Google Maps keys.
-- [ ] Decide on over-the-air fixes: `expo-updates` isn't installed, so the only app rollback is a new store build. **[Code]**
+- [~] Over-the-air fixes: `expo-updates` is now installed and switches on by itself once `npx eas init` adds the project ID (ADR-0005); still to prove with a preview build and `eas update`. Until then the only app rollback is a new store build. **[Code]**
 
 **Deep links and domains:**
 

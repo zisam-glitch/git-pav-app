@@ -158,8 +158,10 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       set from `__DEV__`; left out means no), and the van request stops on a mock-payment server outside development. The mock
       code itself still ships, because removing it would break local development; it just cannot run in a release build. The
       saved-card screen's "not available in test mode" message does not skip any payment and is unchanged.*
-- [ ] **D7 (P3, M) Graceful degradation** when Redis, Daily, Stripe or Postmark is down: what does the patient see
+- [x] **D7 (P3, M) Graceful degradation** when Redis, Daily, Stripe or Postmark is down: what does the patient see
       for each? Write it down and test it.
+      *Done: [`16-dependency-failures.md`](16-dependency-failures.md) says what the patient sees for each; idempotency now works
+      without Redis and provider outages answer with a plain 503. Not tried against a real outage.*
 
 ## E. Security and privacy (app side)
 

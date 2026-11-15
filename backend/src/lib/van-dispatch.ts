@@ -40,6 +40,7 @@ export type VanEventType =
   | "declined"
   | "expired"
   | "cancelled"
+  | "van_cancelled"
   | "phase_changed"
   | "checked_in"
   | "shift_ended";
@@ -61,6 +62,8 @@ export async function recordVanEvent(
     fromPhase?: string | null;
     toPhase?: string | null;
     actorRole: VanActorRole;
+    /** A reason code from a fixed list, never free text. */
+    reason?: string | null;
   }
 ): Promise<void> {
   await db.vanRequestEvent.create({
@@ -70,6 +73,7 @@ export async function recordVanEvent(
       fromPhase: event.fromPhase ?? null,
       toPhase: event.toPhase ?? null,
       actorRole: event.actorRole,
+      reason: event.reason ?? null,
     },
   });
 }
@@ -674,6 +678,53 @@ export function checkCancel(request: { status: string; phase: string | null }): 
   return { kind: "go" };
 }
 
+/** Why the van, not the patient, called a visit off. Codes only: the history never holds free text. */
+export const VAN_CANCEL_REASONS = [
+  "vehicle_problem",
+  "crew_unavailable",
+  "running_too_late",
+  "cannot_reach_address",
+  "shift_ending",
+  "other",
+] as const;
+export type VanCancelReason = (typeof VAN_CANCEL_REASONS)[number];
+
+/** The crew or staff cancelling on the van's side. */
+export type VanSideCancel = { role: "operator" | "staff"; reason: VanCancelReason };
+
+/**
+ * Whether the van's side may cancel a visit. Pure.
+ *
+ * The crew cancels a stop they accepted; a request still waiting for an
+ * answer is declined instead. Staff may close either. Nobody cancels a
+ * treatment that is under way.
+ */
+export function checkVanSideCancel(request: { status: string; phase: string | null }, role: VanSideCancel["role"]): DecisionCheck {
+  const check = checkCancel(request);
+  if (check.kind !== "go") return check;
+  if (role === "operator" && request.status === "pending") {
+    return { kind: "refuse", error: "This request has not been accepted. Decline it instead." };
+  }
+  return check;
+}
+
+/**
+ * What the patient is told when the van cancels (owner decision, 15 Nov 2026:
+ * the deposit always comes back in full). Draft wording. Pure.
+ */
+export function vanCancelledMessage(depositOutcome: string | null): { title: string; body: string } {
+  const money =
+    depositOutcome === "refunded"
+      ? "Your deposit has been refunded in full. Banks usually take 5 to 10 working days to show it."
+      : depositOutcome === "failed" || depositOutcome === DEPOSIT_RELEASE_PENDING
+        ? "Your deposit is being returned to you in full."
+        : "You have not been charged.";
+  return {
+    title: "Van Visit Cancelled",
+    body: `We are sorry: the dental van can no longer make your visit. ${money} You can request another visit in the app.`,
+  };
+}
+
 export type VanCancelOutcome = {
   status: number;
   body: Record<string, unknown>;
@@ -699,14 +750,20 @@ export type VanCancelOutcome = {
  * refreshed. Safe to repeat: a second tap returns the cancelled visit and
  * releases, records and sends nothing again.
  */
-export async function cancelVanRequest(requestId: string, actorRole: VanActorRole = "patient"): Promise<VanCancelOutcome> {
+export async function cancelVanRequest(
+  requestId: string,
+  actorRole: VanActorRole = "patient",
+  opts: { byVan?: VanSideCancel } = {}
+): Promise<VanCancelOutcome> {
+  const byVan = opts.byVan;
+  const check = (row: { status: string; phase: string | null }) => (byVan ? checkVanSideCancel(row, byVan.role) : checkCancel(row));
   const request = await prisma.vanServiceRequest.findUnique({ where: { id: requestId } });
   if (!request) return { status: 404, body: { error: "Request not found" } };
 
-  const first = checkCancel(request);
+  const first = check(request);
   if (first.kind === "refuse") return refusal(first);
 
-  type Committed = { status: number; body: Record<string, unknown>; cancelled?: VanCancelOutcome["cancelled"]; keepsDeposit?: boolean };
+  type Committed = { status: number; body: Record<string, unknown>; cancelled?: VanCancelOutcome["cancelled"]; keepsDeposit?: boolean; patientId?: string };
   const committed: Committed =
     first.kind === "repeat"
       ? { status: 200, body: {} }
@@ -716,9 +773,9 @@ export async function cancelVanRequest(requestId: string, actorRole: VanActorRol
 
             const fresh = await tx.vanServiceRequest.findUnique({ where: { id: request.id } });
             if (!fresh) return { status: 404, body: { error: "Request not found" } };
-            const check = checkCancel(fresh);
-            if (check.kind === "repeat") return { status: 200, body: {} };
-            if (check.kind === "refuse") return refusal(check);
+            const again = check(fresh);
+            if (again.kind === "repeat") return { status: 200, body: {} };
+            if (again.kind === "refuse") return refusal(again);
 
             const cancelled = await tx.vanServiceRequest.updateMany({
               where: { id: fresh.id, status: fresh.status, appointmentId: fresh.appointmentId },
@@ -734,8 +791,16 @@ export async function cancelVanRequest(requestId: string, actorRole: VanActorRol
               return { status: 409, body: { error: "Request changed while cancelling. Please try again." } };
             }
 
-            // The phase it was cancelled from is what decides whether the deposit is kept.
-            await recordVanEvent(tx, { requestId: fresh.id, type: "cancelled", fromPhase: fresh.phase, toPhase: "cancelled", actorRole });
+            // For a patient's cancel the phase it was cancelled from decides
+            // whether the deposit is kept. When the van cancels it never is.
+            await recordVanEvent(tx, {
+              requestId: fresh.id,
+              type: byVan ? "van_cancelled" : "cancelled",
+              fromPhase: fresh.phase,
+              toPhase: "cancelled",
+              actorRole: byVan ? byVan.role : actorRole,
+              reason: byVan?.reason,
+            });
             if (fresh.appointmentId) {
               await tx.appointment.updateMany({ where: { id: fresh.appointmentId }, data: { status: "cancelled" } });
             }
@@ -747,7 +812,8 @@ export async function cancelVanRequest(requestId: string, actorRole: VanActorRol
               status: 200,
               body: {},
               cancelled: { id: fresh.id, appointmentId: fresh.appointmentId, shiftId: fresh.shiftId },
-              keepsDeposit: vanCancellationKeepsDeposit(fresh.phase),
+              keepsDeposit: byVan ? false : vanCancellationKeepsDeposit(fresh.phase),
+              patientId: fresh.patientId,
             };
           },
           { maxWait: 10_000, timeout: 30_000 }
@@ -764,6 +830,11 @@ export async function cancelVanRequest(requestId: string, actorRole: VanActorRol
   if (committed.cancelled) {
     const { appointmentId, shiftId } = committed.cancelled;
     if (appointmentId) await cancelAppointmentReminders(appointmentId).catch(logFailure("reminder cancellation"));
+    // The patient did not ask for this, so they are told, once.
+    if (byVan && committed.patientId) {
+      const { title, body } = vanCancelledMessage(depositOutcome);
+      await sendPatientNotification(committed.patientId, title, body, { requestId: request.id, status: "cancelled", cancelledBy: "van" }).catch(() => {});
+    }
     // A cancel shortens everyone else's wait.
     void broadcastEtaUpdates(shiftId).catch((err) =>
       console.error("[VAN ETA PUSH] post-cancel broadcast failed:", safeError(err))
@@ -795,7 +866,8 @@ export type EndVanShiftResult =
  * staff ending one that was left running.
  *
  * Stops already accepted or under way block it: those patients are waiting
- * with a deposit taken, so someone has to complete or cancel them first. That
+ * with a deposit taken, so someone has to complete or cancel them first, or
+ * the caller asks for what is left to be cancelled with a reason. That
  * check, the closing of every pending request and the shift going offline all
  * happen under the shift lock in one transaction, so an accept can land
  * before the end (and block it) or after it (and be refused), never in
@@ -803,7 +875,18 @@ export type EndVanShiftResult =
  * background job retries it. Ending a shift that has already ended changes
  * nothing.
  */
-export async function endVanShift(shift: { id: string }): Promise<EndVanShiftResult> {
+export async function endVanShift(shift: { id: string }, opts: { cancelOpen?: VanSideCancel } = {}): Promise<EndVanShiftResult> {
+  // Asked to cancel what is left: each stop is cancelled by the van, with a
+  // full refund and a message, through the one cancel path. A treatment under
+  // way is not cancelled, and still blocks the end below.
+  if (opts.cancelOpen) {
+    const open = await prisma.vanServiceRequest.findMany({
+      where: { shiftId: shift.id, status: { in: ["accepted", "in_progress"] } },
+      select: { id: true },
+    });
+    for (const stop of open) await cancelVanRequest(stop.id, opts.cancelOpen.role, { byVan: opts.cancelOpen });
+  }
+
   const closedRequests: { id: string; patientId: string }[] = [];
 
   const result = await prisma.$transaction(

@@ -72,7 +72,7 @@ describe("van dispatch rules", () => {
       body: body === undefined ? undefined : JSON.stringify(body),
     }).then(async (r) => ({ status: r.status, body: (await r.json().catch(() => null)) as any }));
 
-  async function makeUser(role: "patient" | "operator", label: string) {
+  async function makeUser(role: "patient" | "operator" | "admin", label: string) {
     const user = await prisma.user.create({ data: { email: `rules-${label}-${tag}@example.test`, passwordHash: "x", role } });
     userIds.push(user.id);
     return { user, token: signAccessToken({ sub: user.id, role, sessionId: crypto.randomUUID() }) };
@@ -475,6 +475,93 @@ describe("van dispatch rules", () => {
     expect(await prisma.vanRequestEvent.count({ where: { requestId: stops[0].id, type: "cancelled" } })).toBe(1);
     const intent = intents.get(`pi_fake_cancel0_${tag}`)!;
     expect(["canceled", "succeeded"]).toContain(intent.status);
+  });
+
+  describe("when the van cancels (N4)", () => {
+    const events = (requestId: string) =>
+      prisma.vanRequestEvent.findMany({ where: { requestId, type: "van_cancelled" }, select: { actorRole: true, reason: true, fromPhase: true } });
+
+    it("the crew cancels a stop with a reason: full refund even once en route, one history entry, the queue closed up", async () => {
+      const { token, shift, stops } = await shiftWithStops("cantmake", 2);
+      // En route: a patient's own cancel would keep the deposit here.
+      expect((await call("POST", `/api/van/requests/${stops[0].id}/phase`, token, { phase: "en_route" })).status).toBe(200);
+
+      expect((await call("POST", `/api/van/requests/${stops[0].id}/cant-make`, token, {})).status).toBe(400);
+      expect((await call("POST", `/api/van/requests/${stops[0].id}/cant-make`, token, { reason: "because" })).status).toBe(400);
+
+      const refundsBefore = fakeStripe.refundCalls;
+      const [first, second] = await Promise.all([
+        call("POST", `/api/van/requests/${stops[0].id}/cant-make`, token, { reason: "vehicle_problem" }),
+        call("POST", `/api/van/requests/${stops[0].id}/cant-make`, token, { reason: "vehicle_problem" }),
+      ]);
+      expect([first.status, second.status]).toEqual([200, 200]);
+
+      const row = await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stops[0].id } });
+      expect(row).toMatchObject({ status: "cancelled", phase: "cancelled", depositReleaseStatus: "refunded" });
+      expect(fakeStripe.refundCalls).toBe(refundsBefore + 1);
+      expect(await events(stops[0].id)).toEqual([{ actorRole: "operator", reason: "vehicle_problem", fromPhase: "en_route" }]);
+      expect((await prisma.appointment.findUniqueOrThrow({ where: { id: stops[0].appointmentId } })).status).toBe("cancelled");
+      expect(await positions(shift.id)).toEqual([{ id: stops[1].id, queuePosition: 1 }]);
+    });
+
+    it("the crew cannot cancel another van's stop, a request not yet accepted, or a treatment under way", async () => {
+      const mine = await shiftWithStops("cmown", 1);
+      const other = await shiftWithStops("cmother", 1);
+      expect((await call("POST", `/api/van/requests/${other.stops[0].id}/cant-make`, mine.token, { reason: "other" })).status).toBe(404);
+
+      const { request } = await makePendingRequest(mine.shift, "cmpending");
+      const pending = await call("POST", `/api/van/requests/${request.id}/cant-make`, mine.token, { reason: "other" });
+      expect(pending.status).toBe(409);
+      expect(pending.body.error).toContain("Decline it instead");
+
+      for (const phase of ["en_route", "on_site", "in_treatment"]) {
+        expect((await call("POST", `/api/van/requests/${mine.stops[0].id}/phase`, mine.token, { phase })).status).toBe(200);
+      }
+      expect((await call("POST", `/api/van/requests/${mine.stops[0].id}/cant-make`, mine.token, { reason: "other" })).status).toBe(409);
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: mine.stops[0].id } })).status).toBe("in_progress");
+    });
+
+    it("staff cancel on the van's behalf with the same refund and history, and only staff may", async () => {
+      const { token, stops } = await shiftWithStops("staffcx", 1);
+      const { token: adminToken } = await makeUser("admin", "staffcx-admin");
+
+      expect((await call("POST", `/api/admin/van-requests/${stops[0].id}/cancel`, token, { reason: "crew_unavailable" })).status).toBe(403);
+      expect((await call("POST", `/api/admin/van-requests/${stops[0].id}/cancel`, stops[0].patientToken, { reason: "crew_unavailable" })).status).toBe(403);
+
+      const cancelled = await call("POST", `/api/admin/van-requests/${stops[0].id}/cancel`, adminToken, { reason: "crew_unavailable" });
+      expect(cancelled.status).toBe(200);
+      expect(cancelled.body).toMatchObject({ id: stops[0].id, status: "cancelled", depositOutcome: "refunded", refundPending: false });
+      expect(await events(stops[0].id)).toEqual([{ actorRole: "staff", reason: "crew_unavailable", fromPhase: "queued" }]);
+
+      // A second go changes nothing.
+      expect((await call("POST", `/api/admin/van-requests/${stops[0].id}/cancel`, adminToken, { reason: "other" })).status).toBe(200);
+      expect(await events(stops[0].id)).toHaveLength(1);
+    });
+
+    it("ending a shift can cancel what is left, each with a full refund, but never a treatment under way", async () => {
+      const { token, shift, stops } = await shiftWithStops("endcx", 2);
+
+      // Without asking, open stops still block the end.
+      expect((await call("POST", "/api/van/shift/end", token)).status).toBe(409);
+
+      const ended = await call("POST", "/api/van/shift/end", token, { cancelRemaining: true });
+      expect(ended.status).toBe(200);
+      expect((await prisma.vanShift.findUniqueOrThrow({ where: { id: shift.id } })).endedAt).not.toBeNull();
+      for (const stop of stops) {
+        expect(await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: stop.id } })).toMatchObject({ status: "cancelled", depositReleaseStatus: "refunded" });
+        expect(await events(stop.id)).toEqual([{ actorRole: "operator", reason: "shift_ending", fromPhase: "queued" }]);
+      }
+
+      const busy = await shiftWithStops("endbusy", 2);
+      for (const phase of ["en_route", "on_site", "in_treatment"]) {
+        expect((await call("POST", `/api/van/requests/${busy.stops[0].id}/phase`, busy.token, { phase })).status).toBe(200);
+      }
+      const refused = await call("POST", "/api/van/shift/end", busy.token, { cancelRemaining: true });
+      expect(refused.status).toBe(409);
+      expect(refused.body.openStops).toBe(1);
+      expect((await prisma.vanServiceRequest.findUniqueOrThrow({ where: { id: busy.stops[0].id } })).status).toBe("in_progress");
+      expect((await prisma.vanShift.findUniqueOrThrow({ where: { id: busy.shift.id } })).endedAt).toBeNull();
+    });
   });
 
   it("cancels once however many times the patient taps: the same answer, one history entry, the appointment cancelled", async () => {

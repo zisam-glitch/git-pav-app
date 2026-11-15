@@ -10,7 +10,8 @@ import { awardVisitPoints } from "../lib/rewards";
 import { londonDate, londonTimeToUtc } from "../lib/availability";
 import { getCoverageBackend } from "../lib/van-coverage";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
-import { endVanShift } from "../lib/van-dispatch";
+import { cancelVanRequest, endVanShift } from "../lib/van-dispatch";
+import { shiftEndSchema, vanSideCancelSchema } from "../schemas/van-dispatch";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { passwordResetService } from "../lib/otp-service";
 import { communicationService } from "../lib/communication-service";
@@ -1272,6 +1273,33 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
 });
 
 // ─── POST /api/admin/van-shifts/:id/end ───────────────────────────────────────
+// Cancels a van visit on the van's behalf (the crew cannot reach the app, or
+// the office has decided the van cannot go). The same path as the crew's own
+// "can't make this visit": a reason, a full refund, a message to the patient,
+// the queue closed up. Safe to repeat. Recorded in the audit log.
+router.post("/van-requests/:id/cancel", requireAuth, requireRole("admin"), validateParams(idParamsSchema), validateBody(vanSideCancelSchema), async (req: AuthRequest, res: Response) => {
+  const requestId = String(req.params.id);
+  const outcome = await cancelVanRequest(requestId, "staff", { byVan: { role: "staff", reason: req.body.reason } });
+  if (outcome.status !== 200) return res.status(outcome.status).json(outcome.body);
+
+  if (outcome.cancelled) {
+    await createAuditLogWithIntegrity({
+      action: "admin.van_request.cancelled",
+      actorId: req.user!.sub,
+      resourceId: requestId,
+      sessionId: req.user?.sessionId ?? null,
+      ipHash: pseudonymiseIp(req.ip || ""),
+      metadata: { reason: req.body.reason, depositOutcome: outcome.depositOutcome ?? null, shiftId: outcome.cancelled.shiftId },
+    });
+  }
+  return res.json({
+    id: requestId,
+    status: "cancelled",
+    depositOutcome: outcome.depositOutcome ?? null,
+    refundPending: outcome.refundPending === true,
+  });
+});
+
 // Ends a shift that was left running (the operator's phone died, they forgot),
 // which would otherwise block that van and that operator from starting
 // another. Same rules as the operator ending their own shift: stops already
@@ -1287,11 +1315,21 @@ router.post("/van-shifts/:id/end", requireAuth, requireRole("admin"), validatePa
   if (!shift) return res.status(404).json({ error: "Shift not found" });
   if (shift.endedAt) return res.status(409).json({ error: "That shift has already ended" });
 
-  const result = await endVanShift(shift);
+  // The body is optional. `cancelRemaining` cancels the stops still open on
+  // the van's behalf, each with a full refund and a message to the patient.
+  const body = shiftEndSchema.safeParse(req.body ?? {});
+  if (!body.success) return res.status(400).json({ error: "Invalid request" });
+  const cancelOpen = body.data.cancelRemaining
+    ? { role: "staff" as const, reason: body.data.reason ?? ("shift_ending" as const) }
+    : undefined;
+
+  const result = await endVanShift(shift, { cancelOpen });
   if (!result.ended) {
     // The dashboard shows `error` as it is, so the instructions go in it.
     return res.status(409).json({
-      error: `Can't end this shift yet: ${result.openStops} accepted or in-progress stop(s) are still open. Cancel or complete those visits first, then end the shift.`,
+      error: cancelOpen
+        ? `Can't end this shift yet: ${result.openStops} stop(s) could not be cancelled because a treatment is under way. Complete it first, then end the shift.`
+        : `Can't end this shift yet: ${result.openStops} accepted or in-progress stop(s) are still open. Cancel or complete those visits first, then end the shift.`,
       openStops: result.openStops,
     });
   }
@@ -1307,6 +1345,7 @@ router.post("/van-shifts/:id/end", requireAuth, requireRole("admin"), validatePa
       operatorId: shift.operatorId,
       expiredRequests: result.expiredRequests,
       depositReleasesFailed: result.failedReleases.length,
+      cancelledRemaining: Boolean(cancelOpen),
     },
   }).catch(logFailure("audit write admin.van_shift.ended"));
 

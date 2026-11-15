@@ -35,6 +35,7 @@ export type VanDepositReleaseReason =
   | "operator_declined"
   | "expired"
   | "shift_ended"
+  | "van_cancelled"
   | "external_cancel"
   | "duplicate_request"
   | "queue_full";
@@ -275,7 +276,7 @@ export function settleVanDepositRelease(requestId: string): Promise<SettledRelea
     if (stored !== DEPOSIT_RELEASE_PENDING && stored !== "failed") return { status: stored, refundId: null };
 
     const closing = await prisma.vanRequestEvent.findFirst({
-      where: { requestId, type: { in: ["declined", "expired", "shift_ended", "cancelled"] } },
+      where: { requestId, type: { in: ["declined", "expired", "shift_ended", "cancelled", "van_cancelled"] } },
       orderBy: { at: "desc" },
       select: { type: true, fromPhase: true },
     });
@@ -283,11 +284,15 @@ export function settleVanDepositRelease(requestId: string): Promise<SettledRelea
       row.status === "declined"
         ? "operator_declined"
         : row.status === "cancelled"
-          ? "patient_cancelled"
+          ? closing?.type === "van_cancelled"
+            ? "van_cancelled"
+            : "patient_cancelled"
           : closing?.type === "shift_ended"
             ? "shift_ended"
             : "expired";
-    const retainCaptured = row.status === "cancelled" && vanCancellationKeepsDeposit(closing?.fromPhase);
+    // Only a patient's own cancel can leave the deposit with us. When the
+    // van cancels it always goes back in full (owner decision, 15 Nov 2026).
+    const retainCaptured = row.status === "cancelled" && closing?.type === "cancelled" && vanCancellationKeepsDeposit(closing.fromPhase);
 
     const release = await releaseVanDeposit(row.paymentIntentId, reason, { retainCaptured });
     await prisma.vanServiceRequest.updateMany({

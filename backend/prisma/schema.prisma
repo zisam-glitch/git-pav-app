@@ -1048,6 +1048,8 @@ model VanRequestEvent {
   fromPhase String?           @map("from_phase") @db.VarChar(20)
   toPhase   String?           @map("to_phase") @db.VarChar(20)
   actorRole String?           @map("actor_role") @db.VarChar(20)
+  /// A reason code from a fixed list (why the van cancelled). Never free text.
+  reason    String?           @db.VarChar(40)
   at        DateTime          @default(now())
   request   VanServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 

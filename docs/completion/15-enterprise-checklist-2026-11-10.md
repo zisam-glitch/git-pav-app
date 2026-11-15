@@ -62,9 +62,9 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       screens use `any` (171 non-test uses). Generate types for every endpoint and replace `any`.
 - [ ] **A4 (P1, S) Shared enums, not string literals.** `status`, `channel` and `role` are compared as raw strings in 71
       places. Use one union type and small helpers (`isConfirmed(b)`), so a new status cannot be missed in one screen.
-- [ ] **A5 (P1, XS) Delete dead code:** `lib/react-query-persistence.ts`, `features/payment/payment-hooks.ts`,
-      `components/better-icons-registry.ts`, the unused illustrations (`designer-keynote`, `designer-working`, `keynote`,
-      `color-palette`, `graph-collapse`), and `backend/src/lib/structured-logging.ts` or start using it (see I3).
+- [x] **A5 (P1, XS) Delete dead code.** *Done.* The cache-persistence module, the payment-hooks file and the icon registry are gone
+      (a test keeps them gone), and the five unused illustration sources are deleted, so the build script cannot bring their art back.
+      `backend/src/lib/structured-logging.ts` is kept on purpose: it is the start of the one logger in I3.
 - [ ] **A6 (P2, L) Split the 19 screens over 400 lines** into a screen plus small components and hooks
       (`records/plans/[id].tsx` 880, `consult-room.tsx` 701, `odontogram.tsx` 686, `live-track.tsx` 642, `home.tsx` 604).
 - [ ] **A7 (P2, M) Typed routes.** 146 casts (`as never`) hide wrong paths until a patient taps. Turn on Expo Router

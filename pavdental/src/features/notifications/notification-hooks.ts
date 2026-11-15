@@ -1,6 +1,7 @@
 import React from "react";
 import { reportCaughtError } from "@/lib/caught-errors";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
 import { nextOffset, flattenPages, uniqueById } from "@/lib/paging";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
@@ -135,7 +136,7 @@ export function useNotificationPreferences() {
   const isAuthenticated = useIsAuthenticated();
 
   return useQuery({
-    queryKey: ["notification-preferences"],
+    queryKey: queryKeys.notifications.preferences(),
     queryFn: async () => {
       const response = await authFetch("/api/notifications/preferences");
 
@@ -167,8 +168,22 @@ export function useUpdateNotificationPreferences() {
 
       return response.json() as Promise<NotificationPreferences>;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notification-preferences"] });
+    onMutate: async (updates) => {
+      const key = queryKeys.notifications.preferences();
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<NotificationPreferences>(key);
+      if (previous) {
+        queryClient.setQueryData<NotificationPreferences>(key, { ...previous, ...updates });
+      }
+      return { previous };
+    },
+    onError: (_err, _updates, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(queryKeys.notifications.preferences(), context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.preferences() });
     },
   });
 }

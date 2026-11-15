@@ -1,3 +1,4 @@
+import type { AppointmentDetail, AppointmentListItem } from "../booking/booking-types";
 import { findInCachedLists } from "../booking/appointment-cache";
 import { APPOINTMENT_STATUS } from "@/lib/domain-enums";
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -117,7 +118,7 @@ export function useHoldSlotMutation() {
 export function useAppointment(id: string | undefined) {
   const queryClient = useQueryClient();
   const cached = () =>
-    findInCachedLists(
+    findInCachedLists<AppointmentDetail>(
       queryClient.getQueriesData({ queryKey: queryKeys.appointments.all() }) as Array<[unknown, unknown]>,
       (key) => queryClient.getQueryState(key as readonly unknown[])?.dataUpdatedAt,
       id
@@ -163,7 +164,7 @@ export function useCancelAppointmentMutation() {
       const previous = queryClient.getQueriesData({ queryKey: queryKeys.appointments.all() });
       queryClient.setQueriesData({ queryKey: queryKeys.appointments.all() }, (old: unknown) => {
         if (Array.isArray(old)) {
-          return old.map((row: any) =>
+          return (old as AppointmentListItem[]).map((row) =>
             row?.id === appointmentId ? { ...row, status: APPOINTMENT_STATUS.CANCELLED } : row
           );
         }

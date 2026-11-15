@@ -72,3 +72,89 @@ export type ApiHoldSlotResponse = {
   holdDurationSeconds: number;
   message: string;
 };
+
+export type ApiAppointmentStatus = "draft_hold" | "confirmed" | "in_progress" | "completed" | "cancelled" | "no_show";
+
+export type ApiAppointmentListItem = {
+  id: string;
+  patientId: string;
+  clinicianId: string | null;
+  serviceId: string;
+  channel: ApiCareChannel;
+  clinicId: string | null;
+  vanId: string | null;
+  startTimeUtc: string;
+  endTimeUtc: string;
+  status: ApiAppointmentStatus;
+  holdExpiresAt: string | null;
+  patientWaitingSince: string | null;
+  patientLastSeenAt: string | null;
+  intraoralPhotos: string[];
+  totalPricePence: number;
+  depositPaidPence: number;
+  depositDiscountPence: number;
+  stripePaymentId: string | null;
+  dependantId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  service: {
+    name: string;
+    durationMinutes: number;
+  };
+  clinician: {
+    fullName: string;
+    photoUrl: string | null;
+  } | null;
+  clinic: {
+    name: string;
+    address: string;
+  } | null;
+  dependant: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
+
+export type ApiAppointmentDetail = {
+  id: string;
+  patientId: string;
+  clinicianId: string | null;
+  serviceId: string;
+  channel: ApiCareChannel;
+  clinicId: string | null;
+  vanId: string | null;
+  startTimeUtc: string;
+  endTimeUtc: string;
+  status: ApiAppointmentStatus;
+  holdExpiresAt: string | null;
+  patientWaitingSince: string | null;
+  patientLastSeenAt: string | null;
+  intraoralPhotos: string[];
+  totalPricePence: number;
+  depositPaidPence: number;
+  depositDiscountPence: number;
+  stripePaymentId: string | null;
+  dependantId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  service: {
+    name: string;
+    durationMinutes: number;
+  };
+  clinician: {
+    fullName: string;
+    photoUrl: string | null;
+  } | null;
+  clinic: {
+    name: string;
+    address: string;
+  } | null;
+  dependant: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+  triageData: Record<string, unknown> | null;
+  accessDetails: Record<string, unknown> | null;
+};

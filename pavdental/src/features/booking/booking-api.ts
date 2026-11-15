@@ -1,7 +1,15 @@
 import { authFetch, publicFetch } from "../auth/auth-api";
 import { attemptKey, finishAttempt } from "../../lib/attempt-key";
 import type { ApiHoldSlotResponse, ApiSlot } from "../api-contract.gen";
-import { DentalService, ClinicLocation, Clinician, TimeSlot } from "./booking-types";
+import {
+  AppointmentDetail,
+  AppointmentListItem,
+  CareChannel,
+  DentalService,
+  ClinicLocation,
+  Clinician,
+  TimeSlot,
+} from "./booking-types";
 import { ukDayLabel, ukDate, ukTime } from "./uk-time";
 
 // ─── Services ─────────────────────────────────────────────────────────────────
@@ -50,7 +58,7 @@ export async function fetchSlots(params: {
     endTimeUtc: s.endTimeUtc,
     displayTime: ukTime(new Date(s.startTimeUtc)),
     dateFormatted: ukDayLabel(ukDate(new Date(s.startTimeUtc))),
-    channel: params.channel as any ?? "clinic",
+    channel: (params.channel as CareChannel | undefined) ?? "clinic",
     isAvailable: s.available,
   }));
 }
@@ -98,7 +106,7 @@ export async function createAppointment(data: {
   slotId?: string;
   accessDetails?: Record<string, unknown>;
   triageData?: Record<string, unknown>;
-}, idempotencyKey?: string) {
+}, idempotencyKey?: string): Promise<AppointmentDetail> {
   const res = await authFetch("/api/booking/appointments", {
     method: "POST",
     headers: {
@@ -122,7 +130,7 @@ export function newBookingAttemptKey(): string {
 }
 
 // ─── List Appointments ────────────────────────────────────────────────────────
-export async function fetchMyAppointments(params?: { scope?: string; date?: string }) {
+export async function fetchMyAppointments(params?: { scope?: string; date?: string }): Promise<AppointmentListItem[]> {
   const query = new URLSearchParams();
   if (params?.scope) query.set("scope", params.scope);
   if (params?.date) query.set("date", params.date);
@@ -133,7 +141,7 @@ export async function fetchMyAppointments(params?: { scope?: string; date?: stri
 }
 
 /** One of the patient's own appointments in full, or null if the server doesn't know it. */
-export async function fetchAppointment(appointmentId: string): Promise<Record<string, unknown> | null> {
+export async function fetchAppointment(appointmentId: string): Promise<AppointmentDetail | null> {
   const res = await authFetch(`/api/booking/appointments/${encodeURIComponent(appointmentId)}`);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("Could not load the appointment");

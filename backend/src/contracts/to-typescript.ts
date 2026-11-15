@@ -19,11 +19,19 @@ function print(schema: z.ZodType, named: Named, indent: string, top = false): st
   if (schema instanceof z.ZodBoolean) {
     return "boolean";
   }
+  if (schema instanceof z.ZodUnknown) {
+    return "unknown";
+  }
   if (schema instanceof z.ZodLiteral) {
     return JSON.stringify(schema.value);
   }
   if (schema instanceof z.ZodEnum) {
     return (schema.options as string[]).map((o) => JSON.stringify(o)).join(" | ");
+  }
+  if (schema instanceof z.ZodRecord) {
+    const key = print(schema.keyType as z.ZodType, named, indent);
+    const val = print(schema.valueType as z.ZodType, named, indent);
+    return `Record<${key}, ${val}>`;
   }
   if (schema instanceof z.ZodNullable) {
     return `${print(schema.unwrap() as z.ZodType, named, indent)} | null`;

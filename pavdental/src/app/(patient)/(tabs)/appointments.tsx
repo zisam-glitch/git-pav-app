@@ -11,21 +11,12 @@ import { toLabel } from "@/lib/text";
 import { appointmentBadge, isUpcomingBooking } from "@/features/booking/appointment-status";
 import { isCancelled, isDraftHold } from "@/lib/domain-enums";
 import { cancellationSheetMessage } from "@/features/booking/policies";
+import type { AppointmentListItem } from "@/features/booking/booking-types";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 
 // ─── Bookings — upcoming/past grouping with clear status per card ─────────────
 
-interface Booking {
-  id: string;
-  status: string;
-  channel: string;
-  startTimeUtc: string;
-  service?: { name?: string };
-  clinician?: { fullName?: string };
-  clinic?: { name?: string };
-  van?: { name?: string };
-  dependant?: { firstName: string; lastName: string } | null;
-}
+type Booking = AppointmentListItem;
 
 const CHANNEL_ICON: Record<string, AppIconName> = { video: "video", van: "truck", clinic: "mapPin" };
 
@@ -92,7 +83,7 @@ export default function PatientAppointmentsScreen() {
 
   const { upcoming, past } = useMemo(() => {
     const now = Date.now();
-    const bookings: Booking[] = (apiAppointments ?? []) as Booking[];
+    const bookings = apiAppointments ?? [];
     // Only a visit still to happen is "Upcoming" (and can be cancelled here).
     // Completed, missed and cancelled ones are history whatever their date, and
     // an unpaid hold is not a booking yet, so it is not listed at all.

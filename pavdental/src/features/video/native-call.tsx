@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Pressable, ActivityIndicator, StyleProp, ViewStyle } from "react-native";
+import { View, StyleSheet, Pressable, ActivityIndicator, StyleProp, ViewStyle, AppState } from "react-native";
 import { useKeepAwake } from "expo-keep-awake";
 import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/react-native-daily-js";
 import { ThemedText, AppIcon } from "@/components";
@@ -66,8 +66,12 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
   const [audioOnly, setAudioOnly] = useState(false);
   const audioOnlyDone = useRef(false);
   const camOnRef = useRef(true);
+  const micOnRef = useRef(true);
+  const phaseRef = useRef<Phase>("joining");
+  const pausedCamForBackgroundRef = useRef(false);
   // The call starts on the loudspeaker; the person can hold it to their ear instead (V19).
   const [route, setRoute] = useState<AudioRoute>("speaker");
+  const routeRef = useRef<AudioRoute>("speaker");
 
   useEffect(() => {
     unmountingRef.current = false;
@@ -78,6 +82,7 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
 
     call
       .on("joined-meeting", () => {
+        phaseRef.current = "joined";
         setPhase("joined");
         refresh();
         reportCallEvent("call.joined", { join_time: joinTimeBucket(Date.now() - joinStarted) });
@@ -116,6 +121,7 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
       .on("error", (event) => {
         const message = callErrorMessage(event?.errorMsg);
         setError(message);
+        phaseRef.current = "error";
         setPhase("error");
         if (message === "This consultation has ended." && !unmountingRef.current) onLeftRef.current("ended");
       })
@@ -126,11 +132,37 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
     call.join({ url, token }).catch((err: unknown) => {
       const message = callErrorMessage(err instanceof Error ? err.message : String(err));
       setError(message);
+      phaseRef.current = "error";
       setPhase("error");
       reportCallEvent("call.join_failed", { reason: message === "This consultation has ended." ? "ended" : "other" });
     });
 
+    // Pause local camera when backgrounded (V22) and re-apply audio route & mic
+    // state when returning to foreground (e.g. after a phone call interruption, V19).
+    const appStateSub = AppState.addEventListener("change", (nextState) => {
+      const activeCall = callRef.current;
+      if (!activeCall || phaseRef.current !== "joined") return;
+      if (nextState === "background") {
+        if (camOnRef.current) {
+          pausedCamForBackgroundRef.current = true;
+          activeCall.setLocalVideo(false);
+          camOnRef.current = false;
+          setCamOn(false);
+        }
+      } else if (nextState === "active") {
+        activeCall.setLocalAudio(micOnRef.current);
+        activeCall.setNativeInCallAudioMode(dailyAudioMode(routeRef.current));
+        if (pausedCamForBackgroundRef.current) {
+          pausedCamForBackgroundRef.current = false;
+          activeCall.setLocalVideo(true);
+          camOnRef.current = true;
+          setCamOn(true);
+        }
+      }
+    });
+
     return () => {
+      appStateSub.remove();
       unmountingRef.current = true;
       callRef.current = null;
       call
@@ -154,11 +186,13 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
 
   const toggleMic = () => {
     const next = !micOn;
+    micOnRef.current = next;
     callRef.current?.setLocalAudio(next);
     setMicOn(next);
   };
   const toggleCam = () => {
     const next = !camOn;
+    pausedCamForBackgroundRef.current = false;
     callRef.current?.setLocalVideo(next);
     camOnRef.current = next;
     setCamOn(next);
@@ -166,6 +200,7 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
   };
   const switchRoute = () => {
     const next = nextAudioRoute(route);
+    routeRef.current = next;
     callRef.current?.setNativeInCallAudioMode(dailyAudioMode(next));
     setRoute(next);
   };
@@ -215,7 +250,11 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
       )}
 
       {phase === "joined" && (
-        <View style={styles.selfView}>
+        <View
+          style={styles.selfView}
+          accessible
+          accessibilityLabel={localVideo ? "Your camera preview" : "Your camera is off"}
+        >
           {localVideo ? (
             <DailyMediaView videoTrack={localVideo} audioTrack={null} mirror objectFit="cover" zOrder={1} style={styles.selfVideo} />
           ) : (
@@ -356,10 +395,12 @@ const styles = StyleSheet.create({
   controls: {
     bottom: spacing.lg,
     flexDirection: "row",
-    // Five 52pt buttons and four gaps: 308pt, which fits a 320pt phone.
+    flexWrap: "wrap",
+    // Five 52pt buttons and four gaps: 308pt, which fits a 320pt phone; wraps safely if needed.
     gap: spacing.sm,
     justifyContent: "center",
     left: 0,
+    paddingHorizontal: spacing.sm,
     position: "absolute",
     right: 0,
   },

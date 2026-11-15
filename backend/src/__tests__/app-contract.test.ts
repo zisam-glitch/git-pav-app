@@ -2,7 +2,14 @@ import http from "http";
 import crypto from "crypto";
 import { readFileSync } from "fs";
 import { z } from "zod";
-import { clinicSchema, clinicianSchema, holdSlotResponseSchema, serviceSchema, slotSchema } from "../contracts/app-api";
+import {
+  appointmentListItemSchema,
+  clinicSchema,
+  clinicianSchema,
+  holdSlotResponseSchema,
+  serviceSchema,
+  slotSchema,
+} from "../contracts/app-api";
 import { APP_CONTRACT_PATH, renderAppContract } from "../contracts/app-contract-file";
 import { londonDate, weekdayOf } from "../lib/availability";
 import { signAccessToken } from "../lib/jwt";
@@ -101,5 +108,8 @@ describe("app API contract", () => {
     });
     expect(hold.status).toBe(200);
     expectShape(holdSlotResponseSchema, await hold.json());
+
+    const appointments = await get("/api/booking/appointments");
+    expectShape(z.array(appointmentListItemSchema), appointments);
   });
 });

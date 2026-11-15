@@ -32,27 +32,12 @@ import { appointmentBadge, depositPaidLabel } from "@/features/booking/appointme
 import { cancellationSheetMessage } from "@/features/booking/policies";
 import { TOO_LATE_MESSAGE, rescheduleState } from "@/features/booking/reschedule";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
+import type { AppointmentDetail } from "@/features/booking/booking-types";
 import { WAITING_ROOM_OPENS_MINUTES, waitingRoomOpen } from "@/features/video/waiting-room-window";
 
 // ─── Appointment detail — full context + lifecycle actions ────────────────────
 // Reference pattern: Mobbin Zocdoc appointment detail (map, cancel)
 // plus MyChart pre-visit check-in entry and post-visit rating.
-
-interface Booking {
-  id: string;
-  status: string;
-  channel: string;
-  startTimeUtc: string;
-  endTimeUtc?: string;
-  depositPaidPence?: number;
-  totalPricePence?: number;
-  dependant?: { firstName?: string; lastName?: string } | null;
-  service?: { name?: string };
-  clinician?: { fullName?: string };
-  clinic?: { name?: string; address?: string; postcode?: string };
-  van?: { name?: string };
-  accessDetails?: { checkedIn?: boolean } | null;
-}
 
 export default function AppointmentDetailScreen() {
   const router = useRouter();
@@ -64,10 +49,10 @@ export default function AppointmentDetailScreen() {
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
-  const booking = (apiBooking ?? undefined) as Booking | undefined;
+  const booking: AppointmentDetail | undefined = apiBooking ?? undefined;
   // Once the answers are in, the button stops asking for them again (V36).
   const triageAnswered = Boolean(
-    (booking as { triageData?: { submittedAt?: string } | null } | undefined)?.triageData?.submittedAt
+    (booking?.triageData as { submittedAt?: string } | null | undefined)?.submittedAt
   );
 
   if (isLoading) {

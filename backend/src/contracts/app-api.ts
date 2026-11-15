@@ -72,6 +72,48 @@ export const holdSlotResponseSchema = z.object({
   message: z.string(),
 });
 
+export const appointmentStatusSchema = z.enum([
+  "draft_hold",
+  "confirmed",
+  "in_progress",
+  "completed",
+  "cancelled",
+  "no_show",
+]);
+
+export const appointmentListItemSchema = z.object({
+  id: z.string().guid(),
+  patientId: z.string().guid(),
+  clinicianId: z.string().guid().nullable(),
+  serviceId: z.string(),
+  channel: careChannelSchema,
+  clinicId: z.string().guid().nullable(),
+  vanId: z.string().guid().nullable(),
+  startTimeUtc: isoDateTime,
+  endTimeUtc: isoDateTime,
+  status: appointmentStatusSchema,
+  holdExpiresAt: isoDateTime.nullable(),
+  patientWaitingSince: isoDateTime.nullable(),
+  patientLastSeenAt: isoDateTime.nullable(),
+  intraoralPhotos: z.array(z.string()),
+  totalPricePence: z.number().int(),
+  depositPaidPence: z.number().int(),
+  depositDiscountPence: z.number().int(),
+  stripePaymentId: z.string().nullable(),
+  dependantId: z.string().guid().nullable(),
+  createdAt: isoDateTime,
+  updatedAt: isoDateTime,
+  service: z.object({ name: z.string(), durationMinutes: z.number().int() }),
+  clinician: z.object({ fullName: z.string(), photoUrl: z.string().nullable() }).nullable(),
+  clinic: z.object({ name: z.string(), address: z.string() }).nullable(),
+  dependant: z.object({ id: z.string().guid(), firstName: z.string(), lastName: z.string() }).nullable(),
+});
+
+export const appointmentDetailSchema = appointmentListItemSchema.extend({
+  triageData: z.record(z.string(), z.unknown()).nullable(),
+  accessDetails: z.record(z.string(), z.unknown()).nullable(),
+});
+
 /** Name in the generated file → schema. Order is the order in the file. */
 export const appContract = {
   ApiCareChannel: careChannelSchema,
@@ -80,4 +122,7 @@ export const appContract = {
   ApiClinician: clinicianSchema,
   ApiSlot: slotSchema,
   ApiHoldSlotResponse: holdSlotResponseSchema,
+  ApiAppointmentStatus: appointmentStatusSchema,
+  ApiAppointmentListItem: appointmentListItemSchema,
+  ApiAppointmentDetail: appointmentDetailSchema,
 } as const;

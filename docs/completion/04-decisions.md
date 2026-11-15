@@ -101,3 +101,12 @@ C-01 to C-11 (Apple, Google Play, Expo, Stripe live, Daily, Postmark, Twilio, Se
 | Dashboard template demo pages | Delete | `admin-dashboard/` |
 | `neo-financial-ios/` screenshots | Remove from the current files | Repo |
 | Website and shop work | Stays on hold until the app is done | `website/`, shop screens in `admin-dashboard/` |
+
+## Owner decisions, 15 Nov 2026 (van plan 16)
+
+| Topic | Answer | Affects |
+|---|---|---|
+| Stripe calls outside the shift lock (plan 16 decision 5) | Yes. A cancel whose refund Stripe cannot make stands, and the refund is retried in the background | `backend/src/lib/van-dispatch.ts`, `van-payments.ts` |
+| When the van cancels a visit (decision 4) | Full refund always, whatever the phase, with an apology message and a one-tap rebook | `cancelVanRequest` with `byVan`; the rebook button is an app screen, not built yet |
+| No-show rule (decision 3) | The crew waits 10 minutes on site and the app records one message and one call attempt; then no-show can be marked and the deposit is kept | Not built yet (N23) |
+| Who accepts a request (decision 1) | Manual accept stays for now; automatic acceptance can be added later on its own | Phase 3 item 6 is not built |

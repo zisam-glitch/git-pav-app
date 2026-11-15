@@ -409,3 +409,17 @@ the shift lock is held. When the deposit is held, taken, returned or kept is unc
   taken, which is wrong in that rare case and is on the wording list (N32).
 
 **Phase 2 is complete.**
+
+## Phase 3 status
+
+Owner decisions 1, 3 and 4 were given on 15 Nov 2026 and are in the decisions log: manual accept stays, no-show
+needs a 10-minute wait and two contact attempts and keeps the deposit, and a visit the van cancels is refunded in
+full.
+
+- **N4, the van cancels (backend).** The crew's "can't make this visit" (`POST /api/van/requests/:id/cant-make`),
+  staff cancelling on the van's behalf (`POST /api/admin/van-requests/:id/cancel`) and ending a shift with
+  `cancelRemaining` all go through `cancelVanRequest` with a reason code. The deposit goes back in full whatever the
+  phase, the reason is kept on the history entry (`van_request_events.reason`, codes only), the patient gets one
+  apology message (draft wording), and the queue closes up. A treatment under way is never cancelled. Not built yet:
+  the operator and dashboard screens for these, the one-tap rebook, and staff marking complete or no-show on the
+  operator's behalf.

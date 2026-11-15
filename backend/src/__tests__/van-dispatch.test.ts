@@ -1,5 +1,5 @@
 import { getCancellationPolicy, vanCancellationPolicy } from "../lib/cancellation-policy";
-import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage, pendingCloseMessage, checkCancel } from "../lib/van-dispatch";
+import { checkPhaseChange, statusForPhase, PHASE_MESSAGES, checkDecision, declineMessage, pendingCloseMessage, checkCancel, checkVanSideCancel, vanCancelledMessage, VAN_CANCEL_REASONS } from "../lib/van-dispatch";
 
 // The rulebook for a van stop's phase, as pure functions (plan 16, phase 2).
 describe("checkPhaseChange", () => {
@@ -144,5 +144,40 @@ describe("vanCancellationPolicy", () => {
     expect(pending.policyNotice).not.toContain("issued");
     // A kept deposit has no refund to wait for.
     expect(vanCancellationPolicy(true, true)).toEqual(vanCancellationPolicy(true));
+  });
+});
+
+describe("checkVanSideCancel", () => {
+  it("lets the crew cancel a stop they accepted, and tells them to decline one they have not", () => {
+    expect(checkVanSideCancel({ status: "accepted", phase: "queued" }, "operator")).toEqual({ kind: "go" });
+    expect(checkVanSideCancel({ status: "in_progress", phase: "on_site" }, "operator")).toEqual({ kind: "go" });
+    expect(checkVanSideCancel({ status: "pending", phase: null }, "operator")).toMatchObject({ kind: "refuse", error: expect.stringContaining("Decline") });
+    expect(checkVanSideCancel({ status: "pending", phase: null }, "staff")).toEqual({ kind: "go" });
+  });
+
+  it("never cancels a treatment under way or a visit that is over, and treats a repeat as a repeat", () => {
+    for (const role of ["operator", "staff"] as const) {
+      expect(checkVanSideCancel({ status: "in_progress", phase: "in_treatment" }, role).kind).toBe("refuse");
+      expect(checkVanSideCancel({ status: "completed", phase: "completed" }, role).kind).toBe("refuse");
+      expect(checkVanSideCancel({ status: "cancelled", phase: "cancelled" }, role)).toEqual({ kind: "repeat" });
+    }
+  });
+});
+
+describe("vanCancelledMessage", () => {
+  it("apologises and says what happened to the money, never that it was kept", () => {
+    expect(vanCancelledMessage("refunded").body).toContain("refunded in full");
+    expect(vanCancelledMessage("released").body).toContain("not been charged");
+    expect(vanCancelledMessage("failed").body).toContain("being returned to you in full");
+    expect(vanCancelledMessage("pending").body).toContain("being returned to you in full");
+    for (const outcome of ["refunded", "released", "failed", null]) {
+      expect(vanCancelledMessage(outcome).body).toContain("sorry");
+    }
+  });
+
+  it("has the same reason codes as the request schema", () => {
+    const { vanSideCancelSchema } = require("../schemas/van-dispatch");
+    for (const reason of VAN_CANCEL_REASONS) expect(vanSideCancelSchema.safeParse({ reason }).success).toBe(true);
+    expect(vanSideCancelSchema.shape.reason.options).toEqual([...VAN_CANCEL_REASONS]);
   });
 });

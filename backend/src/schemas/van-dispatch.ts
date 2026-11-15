@@ -25,6 +25,14 @@ export const phaseUpdateSchema = z.object({
   notes: z.string().trim().max(2000).optional(),
 }).strict();
 
+/** Why the van's side is calling a visit off. The same list as `VAN_CANCEL_REASONS` in lib/van-dispatch.ts. */
+const vanCancelReason = z.enum(["vehicle_problem", "crew_unavailable", "running_too_late", "cannot_reach_address", "shift_ending", "other"]);
+
+export const vanSideCancelSchema = z.object({ reason: vanCancelReason }).strict();
+
+/** Ending a shift; `cancelRemaining` cancels the stops still open, with a full refund each. */
+export const shiftEndSchema = z.object({ cancelRemaining: z.boolean().optional(), reason: vanCancelReason.optional() }).strict();
+
 export const vanRequestIdParamsSchema = z.object({ id: uuid }).strict();
 
 // Operator manual reorder: full desired order of the operator's queued stops.

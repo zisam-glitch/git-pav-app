@@ -10,6 +10,8 @@ import {
   shiftStartSchema,
   locationPingSchema,
   phaseUpdateSchema,
+  shiftEndSchema,
+  vanSideCancelSchema,
   vanRequestIdParamsSchema,
   createVanRequestSchema,
 } from "../schemas/van-dispatch";
@@ -337,11 +339,20 @@ router.post("/shift/end", requireAuth, requireRole("operator"), async (req: Auth
   const shift = await getActiveShift(opProfile.id);
   if (!shift) return res.status(404).json({ error: "No active shift" });
 
-  const result = await endVanShift(shift);
+  // The body is optional: older apps send none.
+  const body = shiftEndSchema.safeParse(req.body ?? {});
+  if (!body.success) return res.status(400).json({ error: "Invalid request" });
+  const cancelOpen = body.data.cancelRemaining
+    ? { role: "operator" as const, reason: body.data.reason ?? ("shift_ending" as const) }
+    : undefined;
+
+  const result = await endVanShift(shift, { cancelOpen });
   if (!result.ended) {
     return res.status(409).json({
       error: "Cannot end shift with open stops",
-      message: `Complete or cancel all ${result.openStops} active stop(s) before ending your shift.`,
+      message: cancelOpen
+        ? `${result.openStops} stop(s) could not be cancelled. Complete the treatment under way before ending your shift.`
+        : `Complete or cancel all ${result.openStops} active stop(s) before ending your shift.`,
       openStops: result.openStops,
     });
   }
@@ -482,6 +493,23 @@ router.post("/requests/:id/phase", requireAuth, requireRole("operator"), validat
     actorRole: "operator",
   });
   return res.status(result.status).json(result.body);
+});
+
+// POST /api/van/requests/:id/cant-make
+// The crew cannot make a visit they accepted. It is cancelled with a reason,
+// the deposit goes back in full and the patient is told (N4). Safe to repeat.
+router.post("/requests/:id/cant-make", requireAuth, requireRole("operator"), validateParams(vanRequestIdParamsSchema), validateBody(vanSideCancelSchema), async (req: AuthRequest, res: Response) => {
+  const opProfile = await getOperatorProfile(req.user!.sub);
+
+  const shift = await getActiveShift(opProfile.id);
+  if (!shift) return res.status(404).json({ error: "No active shift" });
+
+  const requestId = String(req.params.id);
+  const request = await prisma.vanServiceRequest.findUnique({ where: { id: requestId }, select: { shiftId: true } });
+  if (!request || request.shiftId !== shift.id) return res.status(404).json({ error: "Request not found" });
+
+  const outcome = await cancelVanRequest(requestId, "operator", { byVan: { role: "operator", reason: req.body.reason } });
+  return res.status(outcome.status).json(outcome.body);
 });
 
 // ─── PATIENT — Availability & Requests ────────────────────────────────────────

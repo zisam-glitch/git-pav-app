@@ -1,4 +1,5 @@
 import { reportCaughtError } from "@/lib/caught-errors";
+import { queryKeys } from "@/lib/query-keys";
 import { plainBookingError } from "@/features/payment/payment-errors";
 import {
   authorizeDeposit,
@@ -37,7 +38,7 @@ export default function VanLiveTrackScreen() {
 
   // Smart polling (N29): 5s while van is en_route, 30s otherwise, paused in background/terminal.
   const { data: apiRequest, isLoading, isError, refetch } = useQuery<VanServiceRequest | null>({
-    queryKey: ["van-request-live", params.requestId],
+    queryKey: queryKeys.van.liveRequest(params.requestId),
     queryFn: () =>
       params.requestId
         ? fetchVanRequest(params.requestId)
@@ -71,7 +72,7 @@ export default function VanLiveTrackScreen() {
   const cancelMutation = useMutation({
     mutationFn: (id: string) => cancelVanRequest(id),
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["van-request-live"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.van.liveRequestAll() });
       Alert.alert("Request cancelled", cancelDoneMessage(result), [
         { text: "OK", onPress: () => router.replace("/(patient)/(tabs)/home") },
       ]);
@@ -134,7 +135,7 @@ export default function VanLiveTrackScreen() {
       return;
     }
     // "already" and "authorized": the next poll shows the stamped request.
-    if (outcome.kind !== "closed") queryClient.invalidateQueries({ queryKey: ["van-request-live"] });
+    if (outcome.kind !== "closed") queryClient.invalidateQueries({ queryKey: queryKeys.van.liveRequestAll() });
   };
 
   if (isLoading && !request) {

@@ -3,6 +3,7 @@ import { AppState, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import NetInfo from "@react-native-community/netinfo";
 import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
 import { authFetch } from "../auth/auth-api";
 import { useAuthStore } from "../auth/auth-store";
 import type { KeyValueStore } from "./offline-notes-queue";
@@ -60,7 +61,7 @@ export function useOfflinePhasesSync(): void {
   useEffect(() => {
     const sync = () => {
       void flushOfflinePhases().then(() => {
-        queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
       });
     };
     sync();

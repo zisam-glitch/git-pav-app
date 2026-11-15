@@ -1,6 +1,7 @@
 import { findInCachedLists } from "../booking/appointment-cache";
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { nextOffset, flattenPages, uniqueById } from "@/lib/paging";
+import { queryKeys } from "@/lib/query-keys";
 import { rewardsQueryOptions } from "../records/rewards-query";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { resolvePracticeHours } from "../booking/uk-time";
@@ -43,7 +44,7 @@ import {
 // ─── Dental Catalogue Hooks ──────────────────────────────────────────────────
 export function useServices() {
   return useQuery({
-    queryKey: ["services"],
+    queryKey: queryKeys.services(),
     queryFn: fetchServices,
     staleTime: 5 * 60 * 1000,
   });
@@ -51,7 +52,7 @@ export function useServices() {
 
 export function useClinics() {
   return useQuery({
-    queryKey: ["clinics"],
+    queryKey: queryKeys.clinics(),
     queryFn: fetchClinics,
     staleTime: 10 * 60 * 1000,
   });
@@ -69,7 +70,7 @@ export function usePracticeHours(): { hoursText: string; isLoading: boolean } {
 
 export function useClinicians(channel?: string) {
   return useQuery({
-    queryKey: ["clinicians", channel],
+    queryKey: queryKeys.clinicians(channel),
     queryFn: () => fetchClinicians(channel),
     staleTime: 5 * 60 * 1000,
   });
@@ -84,7 +85,7 @@ export function useSlots(params: {
   channel?: string;
 }) {
   return useQuery({
-    queryKey: ["slots", params],
+    queryKey: queryKeys.slots.list(params),
     queryFn: () => fetchSlots(params),
     enabled: !!params.date,
     refetchInterval: 30 * 1000, // refresh availability every 30s
@@ -93,7 +94,7 @@ export function useSlots(params: {
 
 export function useMyAppointments(params?: { scope?: string; date?: string }) {
   return useQuery({
-    queryKey: ["my-appointments", params],
+    queryKey: queryKeys.appointments.list(params),
     queryFn: () => fetchMyAppointments(params),
   });
 }
@@ -113,12 +114,12 @@ export function useAppointment(id: string | undefined) {
   const queryClient = useQueryClient();
   const cached = () =>
     findInCachedLists(
-      queryClient.getQueriesData({ queryKey: ["my-appointments"] }) as Array<[unknown, unknown]>,
+      queryClient.getQueriesData({ queryKey: queryKeys.appointments.all() }) as Array<[unknown, unknown]>,
       (key) => queryClient.getQueryState(key as readonly unknown[])?.dataUpdatedAt,
       id
     );
   return useQuery({
-    queryKey: ["my-appointments", "detail", id],
+    queryKey: queryKeys.appointments.detail(id),
     queryFn: () => fetchAppointment(id as string),
     enabled: !!id,
     initialData: () => cached()?.row ?? undefined,
@@ -131,8 +132,8 @@ export function useCreateAppointmentMutation() {
   return useMutation({
     mutationFn: (data: Parameters<typeof createAppointment>[0]) => createAppointment(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["slots"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.appointments.all() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.slots.all() });
     },
   });
 }
@@ -143,8 +144,8 @@ export function useRescheduleAppointmentMutation() {
     mutationFn: ({ appointmentId, startTimeUtc }: { appointmentId: string; startTimeUtc: string }) =>
       rescheduleAppointment(appointmentId, startTimeUtc),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["slots"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.appointments.all() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.slots.all() });
     },
   });
 }
@@ -154,8 +155,8 @@ export function useCancelAppointmentMutation() {
   return useMutation({
     mutationFn: (appointmentId: string) => cancelAppointment(appointmentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["slots"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.appointments.all() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.slots.all() });
     },
   });
 }
@@ -163,7 +164,7 @@ export function useCancelAppointmentMutation() {
 // ─── Patient Profile & Clinical Records Hooks ─────────────────────────────────
 export function usePatientProfile(userId: string) {
   return useQuery({
-    queryKey: ["patient-profile", userId],
+    queryKey: queryKeys.patientProfile(userId),
     queryFn: () => fetchPatientProfile(userId),
     enabled: !!userId,
   });
@@ -174,14 +175,14 @@ export function useUpdateProfileMutation(userId: string) {
   return useMutation({
     mutationFn: (data: Record<string, unknown>) => updatePatientProfile(userId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["patient-profile", userId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.patientProfile(userId) });
     },
   });
 }
 
 export function useOdontogram(userId: string) {
   return useQuery({
-    queryKey: ["odontogram", userId],
+    queryKey: queryKeys.odontogram(userId),
     queryFn: () => fetchOdontogram(userId),
     enabled: !!userId,
   });
@@ -192,14 +193,14 @@ export function useUpdateOdontogramMutation(userId: string) {
   return useMutation({
     mutationFn: (teeth: any[]) => updateOdontogram(userId, teeth),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["odontogram", userId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.odontogram(userId) });
     },
   });
 }
 
 export function useTreatmentPlans(userId: string) {
   return useQuery({
-    queryKey: ["treatment-plans", userId],
+    queryKey: queryKeys.treatmentPlans(userId),
     queryFn: () => fetchTreatmentPlans(userId),
     enabled: !!userId,
   });
@@ -211,7 +212,7 @@ export function useCreateTreatmentPlanMutation(userId: string) {
     mutationFn: (plan: { title: string; items: any[] }) =>
       createTreatmentPlan(userId, plan),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["treatment-plans", userId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.treatmentPlans(userId) });
     },
   });
 }
@@ -229,8 +230,8 @@ export function useSignTreatmentPlanMutation(userId: string) {
       signatureData?: string;
     }) => signTreatmentPlan(userId, planId, { signerName, consentConfirmed: true, signatureData }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["treatment-plans", userId] });
-      queryClient.invalidateQueries({ queryKey: ["document-vault", userId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.treatmentPlans(userId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.documentVault(userId) });
     },
   });
 }
@@ -240,14 +241,14 @@ export function useDeclineTreatmentPlanMutation(userId: string) {
   return useMutation({
     mutationFn: (planId: string) => declineTreatmentPlan(userId, planId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["treatment-plans", userId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.treatmentPlans(userId) });
     },
   });
 }
 
 export function usePatientPrescriptions(userId: string) {
   return useQuery({
-    queryKey: ["patient-prescriptions", userId],
+    queryKey: queryKeys.prescriptions(userId),
     queryFn: () => fetchPatientPrescriptions(userId),
     enabled: !!userId,
   });
@@ -255,7 +256,7 @@ export function usePatientPrescriptions(userId: string) {
 
 export function useDocumentVault(userId: string) {
   return useQuery({
-    queryKey: ["document-vault", userId],
+    queryKey: queryKeys.documentVault(userId),
     queryFn: () => fetchDocuments(userId),
     enabled: !!userId,
   });
@@ -269,7 +270,7 @@ export function useDocumentVault(userId: string) {
  */
 export function useMessageThreads(view: "full" | "summary" = "summary") {
   const query = useInfiniteQuery({
-    queryKey: ["message-threads", view],
+    queryKey: queryKeys.messages.threads(view),
     queryFn: ({ pageParam }) => fetchMessageThreads(view, pageParam, MESSAGE_PAGE_SIZE),
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) =>
@@ -283,7 +284,7 @@ export function useMessageThreads(view: "full" | "summary" = "summary") {
 /** One open conversation, a page of messages at a time; fetchNextPage loads older ones. */
 export function useMessageThread(threadId: string | undefined) {
   return useInfiniteQuery({
-    queryKey: ["message-threads", "thread", threadId],
+    queryKey: queryKeys.messages.thread(threadId),
     queryFn: ({ pageParam }) => fetchMessageThreadPage(threadId as string, pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextBefore ?? undefined,
@@ -297,7 +298,7 @@ export function useCreateMessageThreadMutation() {
   return useMutation({
     mutationFn: createMessageThread,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["message-threads"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.messages.all() });
     },
   });
 }
@@ -308,7 +309,7 @@ export function useReplyMessageThreadMutation() {
     mutationFn: ({ threadId, body, attachmentKeys }: { threadId: string; body: string; attachmentKeys?: string[] }) =>
       replyToMessageThread(threadId, body, attachmentKeys),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["message-threads"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.messages.all() });
     },
   });
 }
@@ -318,14 +319,14 @@ export function useMarkMessageThreadReadMutation() {
   return useMutation({
     mutationFn: (threadId: string) => markMessageThreadRead(threadId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["message-threads"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.messages.all() });
     },
   });
 }
 
 export function useFinancing() {
   return useQuery({
-    queryKey: ["financing"],
+    queryKey: queryKeys.financing(),
     queryFn: fetchFinancing,
   });
 }
@@ -339,14 +340,14 @@ export function useRedeemRewardMutation() {
   return useMutation({
     mutationFn: redeemReward,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["rewards"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rewards() });
     },
   });
 }
 
 export function useOralHealthInsights() {
   return useQuery({
-    queryKey: ["oral-health-insights"],
+    queryKey: queryKeys.oralHealthInsights(),
     queryFn: fetchOralHealthInsights,
   });
 }
@@ -356,8 +357,8 @@ export function useLogBrushingMutation() {
   return useMutation({
     mutationFn: logBrushingSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["oral-health-insights"] });
-      queryClient.invalidateQueries({ queryKey: ["rewards"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.oralHealthInsights() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rewards() });
     },
   });
 }

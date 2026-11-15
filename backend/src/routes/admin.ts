@@ -11,7 +11,7 @@ import { londonDate, londonTimeToUtc } from "../lib/availability";
 import { getCoverageBackend } from "../lib/van-coverage";
 import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { cancelVanRequest, changeVanPhase, endVanShift } from "../lib/van-dispatch";
-import { shiftEndSchema, vanSideCancelSchema } from "../schemas/van-dispatch";
+import { adminVanPhaseSchema, shiftEndSchema, vanSideCancelSchema } from "../schemas/van-dispatch";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { passwordResetService } from "../lib/otp-service";
 import { communicationService } from "../lib/communication-service";
@@ -1272,10 +1272,6 @@ router.get("/attention", requireAuth, requireRole("admin"), async (_req: AuthReq
   });
 });
 
-const adminVanPhaseSchema = z.object({
-  phase: z.enum(["completed", "no_show"]),
-});
-
 // ─── GET /api/admin/van-shifts/:id ────────────────────────────────────────────
 // Shift detail, stop list, and event timeline for staff intervention (N33).
 // Never returns clinical notes or full street addresses.
@@ -1290,7 +1286,7 @@ router.get("/van-shifts/:id", requireAuth, requireRole("admin"), validateParams(
       endedAt: true,
       lastLocationAt: true,
       van: { select: { id: true, name: true, registrationPlate: true } },
-      operator: { select: { id: true, firstName: true, lastName: true } },
+      operator: { select: { id: true, fullName: true } },
       requests: {
         orderBy: [{ queuePosition: "asc" }, { requestedAt: "asc" }],
         select: {
@@ -1332,7 +1328,7 @@ router.get("/van-shifts/:id", requireAuth, requireRole("admin"), validateParams(
     lastLocationAt: shift.lastLocationAt?.toISOString() ?? null,
     vanName: shift.van.name,
     vanPlate: shift.van.registrationPlate,
-    operatorName: `${shift.operator.firstName} ${shift.operator.lastName}`.trim(),
+    operatorName: shift.operator.fullName,
     stops: shift.requests.map((r) => ({
       id: r.id,
       status: r.status,

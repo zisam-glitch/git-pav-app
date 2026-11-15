@@ -82,3 +82,7 @@ export const availabilityQuerySchema = z.object({
   lng: z.union([z.number(), z.string().regex(/^-?\d+(\.\d+)?$/).transform(Number)]),
 });
 
+export const adminVanPhaseSchema = z.object({
+  phase: z.enum(["completed", "no_show"]),
+});
+

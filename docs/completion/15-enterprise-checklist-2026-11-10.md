@@ -238,7 +238,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **I1 (P1, L) A service layer.** Route files are 800 to 1,345 lines (`van` 1,345, `booking` 1,255, `admin` 1,245,
       `payments` 845, `video` 842, `auth` 810) with business rules inside the request handler. Move rules into
       `services/` functions with their own tests; keep routes to parse, call, respond.
-- [ ] **I2 (P1, S) Bound every list.** About 64 `findMany` calls have no `take` (*heuristic*; examples in `messages.ts`,
+- [~] **I2 (P1, S) Bound every list.** *Started: a patient's reward history, documents, treatment plans and prescriptions are capped (`lib/list-caps.ts`, newest first). Left: consents (`/consents/current` needs every row to find the latest per type, so it needs a query change, not a cap), and the van, queue, message and staff lists.* About 64 `findMany` calls have no `take` (*heuristic*; examples in `messages.ts`,
       `van.ts`, `van-queue.ts`, `consents.ts`, `rewards.ts`). Add a limit and pagination to each.
 - [ ] **I3 (P1, M) One logger.** 201 `console.*` calls while `structured-logging.ts` is used by no file. Use one JSON
       logger with request IDs and the existing scrubber; ship to a log service.

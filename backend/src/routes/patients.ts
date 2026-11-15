@@ -22,6 +22,7 @@ import { pseudonymiseIp } from "../lib/audit-security";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { encryptField, decryptField, decryptString, isEncryptedEnvelope } from "../lib/encryption";
 import { logFailure } from "../lib/best-effort";
+import { LIST_CAPS } from "../lib/list-caps";
 
 const router = Router();
 
@@ -392,6 +393,7 @@ router.get("/:id/plans", requireAuth, validateParams(patientIdParamsSchema), asy
       clinician: { select: { fullName: true, roleTitle: true, gdcNumber: true } },
     },
     orderBy: { createdAt: "desc" },
+    take: LIST_CAPS.treatmentPlans,
   });
 
   return res.json(plans);
@@ -623,6 +625,7 @@ router.get("/:id/documents", requireAuth, validateParams(patientIdParamsSchema),
   const docs = await prisma.documentVault.findMany({
     where: { patientId: profile.id, ...visibleDocTypes(req) },
     orderBy: { createdAt: "desc" },
+    take: LIST_CAPS.documents,
   });
 
   const result = await Promise.all(

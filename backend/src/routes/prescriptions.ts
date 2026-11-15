@@ -9,6 +9,7 @@ import { pseudonymiseIp } from "../lib/audit-security";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { hasCareRelationship } from "../middleware/patient-access";
 import { ageInYears, parseIsoDate } from "../lib/age";
+import { LIST_CAPS } from "../lib/list-caps";
 import {
   newPrescriptionReference,
   prescriptionDownloadToken,
@@ -238,6 +239,7 @@ router.get("/patient/:userId", requireAuth, validateParams(userIdParamsSchema), 
       clinician: { select: { fullName: true, gdcNumber: true } },
     },
     orderBy: { createdAt: "desc" },
+    take: LIST_CAPS.prescriptions,
   });
 
   // The signature and frozen content stay server-side; the app gets the PDF.

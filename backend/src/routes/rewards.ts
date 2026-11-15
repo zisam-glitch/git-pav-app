@@ -7,6 +7,7 @@ import { validateBody } from "../middleware/validate";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { availableVoucherWhere, POINTS_PER_COMPLETED_VISIT, REWARDS_CATALOG } from "../lib/rewards";
+import { LIST_CAPS } from "../lib/list-caps";
 
 const router = Router();
 
@@ -44,6 +45,7 @@ router.get("/", requireAuth, async (req: AuthRequest, res: Response) => {
     prisma.rewardRedemption.findMany({
       where: { userId },
       orderBy: { redeemedAt: "desc" },
+      take: LIST_CAPS.rewardHistory,
     }),
     prisma.rewardRedemption.findMany({
       where: availableVoucherWhere(userId),

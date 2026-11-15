@@ -1,6 +1,15 @@
 import { reportCaughtError } from "@/lib/caught-errors";
 import { plainBookingError } from "@/features/payment/payment-errors";
-import { authorizeDeposit, cancelDoneMessage, cancelPrompt, formatCountdown, secondsUntil } from "@/features/van/live-track-actions";
+import {
+  authorizeDeposit,
+  cancelDoneMessage,
+  cancelPrompt,
+  formatCountdown,
+  rebookButtonLabel,
+  rebookDraftFromRequest,
+  secondsUntil,
+} from "@/features/van/live-track-actions";
+import { useVanStore } from "@/features/van/van-store";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ActivityIndicator, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -77,6 +86,17 @@ export default function VanLiveTrackScreen() {
         },
       ]
     );
+  };
+
+  const handleRebook = () => {
+    if (!request) return;
+    const draft = rebookDraftFromRequest(request);
+    const store = useVanStore.getState();
+    store.setActiveRequestId(null);
+    store.setLocationCoverage(draft.locationCoverage);
+    store.setService(draft.service);
+    store.setAccessDetails(draft.accessDetails);
+    router.replace(draft.pathname as never);
   };
 
   /**
@@ -357,11 +377,18 @@ export default function VanLiveTrackScreen() {
           )}
 
           {isTerminal && status !== "completed" && (
-            <Button
-              title="Return to home screen"
-              variant="primary"
-              onPress={() => router.replace("/(patient)/(tabs)/home")}
-            />
+            <>
+              <Button
+                title={rebookButtonLabel(status)}
+                variant="primary"
+                onPress={handleRebook}
+              />
+              <Button
+                title="Return to home screen"
+                variant="secondary"
+                onPress={() => router.replace("/(patient)/(tabs)/home")}
+              />
+            </>
           )}
 
           {canCancel && (

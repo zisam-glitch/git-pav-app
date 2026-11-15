@@ -3,6 +3,52 @@
  * is tested without a phone or Stripe. The screen only shows the results.
  */
 
+import type { VanServiceRequest } from "./van-types";
+
+/**
+ * Build the van booking draft from a finished or cancelled request so the
+ * patient can retry or rebook in one tap without re-typing their address.
+ */
+export function rebookDraftFromRequest(request: VanServiceRequest) {
+  const access = request.accessDetails;
+  const hasConfirmData = Boolean(
+    request.serviceId && access?.addressLine1?.trim() && access?.postcode?.trim(),
+  );
+  return {
+    pathname: (hasConfirmData ? "/(patient)/van/confirm" : "/(patient)/van/service-area") as
+      | "/(patient)/van/confirm"
+      | "/(patient)/van/service-area",
+    locationCoverage: {
+      postcode: access?.postcode ?? "",
+      lat: access?.lat ?? request.patientLat,
+      lng: access?.lng ?? request.patientLng,
+      isCovered: true,
+      availability: null,
+    },
+    service: {
+      serviceId: request.serviceId,
+      serviceName: request.service?.name ?? "Dental visit",
+      servicePricePence: request.service?.pricePence ?? 0,
+      serviceDurationMinutes: request.service?.durationMinutes ?? 30,
+      serviceDepositPence: request.service?.depositPence ?? null,
+    },
+    accessDetails: {
+      postcode: access?.postcode ?? "",
+      addressLine1: access?.addressLine1 ?? "",
+      addressLine2: access?.addressLine2 ?? "",
+      city: access?.city ?? "",
+      parkingType: access?.parkingType ?? ("private_driveway" as const),
+      gateCode: access?.gateCode ?? "",
+      accessNotes: access?.accessNotes ?? "",
+    },
+  };
+}
+
+/** Label for the one-tap rebook button when a van visit ends before completion. */
+export function rebookButtonLabel(status: string): string {
+  return status === "cancelled" ? "Book another van visit" : "Try again";
+}
+
 type RequestLike = { phase?: string | null };
 
 /** The question asked before cancelling. The wording depends on whether the van is already moving. */

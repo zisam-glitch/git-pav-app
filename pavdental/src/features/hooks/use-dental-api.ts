@@ -1,4 +1,5 @@
 import { findInCachedLists } from "../booking/appointment-cache";
+import { APPOINTMENT_STATUS } from "@/lib/domain-enums";
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { nextOffset, flattenPages, uniqueById } from "@/lib/paging";
 import { queryKeys } from "@/lib/query-keys";
@@ -157,7 +158,28 @@ export function useCancelAppointmentMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (appointmentId: string) => cancelAppointment(appointmentId),
-    onSuccess: () => {
+    onMutate: async (appointmentId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.appointments.all() });
+      const previous = queryClient.getQueriesData({ queryKey: queryKeys.appointments.all() });
+      queryClient.setQueriesData({ queryKey: queryKeys.appointments.all() }, (old: unknown) => {
+        if (Array.isArray(old)) {
+          return old.map((row: any) =>
+            row?.id === appointmentId ? { ...row, status: APPOINTMENT_STATUS.CANCELLED } : row
+          );
+        }
+        if (old && typeof old === "object" && (old as { id?: string }).id === appointmentId) {
+          return { ...(old as Record<string, unknown>), status: APPOINTMENT_STATUS.CANCELLED };
+        }
+        return old;
+      });
+      return { previous };
+    },
+    onError: (_err, _appointmentId, context) => {
+      for (const [key, data] of context?.previous ?? []) {
+        queryClient.setQueryData(key, data);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.appointments.all() });
       queryClient.invalidateQueries({ queryKey: queryKeys.slots.all() });
     },
@@ -321,7 +343,28 @@ export function useMarkMessageThreadReadMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (threadId: string) => markMessageThreadRead(threadId),
-    onSuccess: () => {
+    onMutate: async (threadId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.messages.all() });
+      const previous = queryClient.getQueriesData({ queryKey: queryKeys.messages.all() });
+      queryClient.setQueriesData({ queryKey: queryKeys.messages.all() }, (old: unknown) => {
+        if (Array.isArray(old)) {
+          return old.map((thread: any) =>
+            thread?.id === threadId ? { ...thread, unreadCount: 0 } : thread
+          );
+        }
+        if (old && typeof old === "object" && (old as { id?: string }).id === threadId) {
+          return { ...(old as Record<string, unknown>), unreadCount: 0 };
+        }
+        return old;
+      });
+      return { previous };
+    },
+    onError: (_err, _threadId, context) => {
+      for (const [key, data] of context?.previous ?? []) {
+        queryClient.setQueryData(key, data);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.messages.all() });
     },
   });

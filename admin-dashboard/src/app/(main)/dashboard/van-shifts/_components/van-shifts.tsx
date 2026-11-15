@@ -81,13 +81,13 @@ export function VanShifts() {
           ...(body ? { body: JSON.stringify(body) } : {}),
         },
       );
-      toast.success(
-        result.depositReleasesFailed > 0
-          ? `Shift ended. ${result.depositReleasesFailed} deposit hold(s) couldn't be released yet and will be retried.`
-          : cancelRemaining
-            ? "Shift ended and open stops cancelled with full refunds."
-            : "Shift ended.",
-      );
+      let successMessage = "Shift ended.";
+      if (result.depositReleasesFailed > 0) {
+        successMessage = `Shift ended. ${result.depositReleasesFailed} deposit hold(s) couldn't be released yet and will be retried.`;
+      } else if (cancelRemaining) {
+        successMessage = "Shift ended and open stops cancelled with full refunds.";
+      }
+      toast.success(successMessage);
       await load(true);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Couldn't end the shift");

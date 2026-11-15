@@ -49,6 +49,22 @@ export function rebookButtonLabel(status: string): string {
   return status === "cancelled" ? "Book another van visit" : "Try again";
 }
 
+const TERMINAL_VAN_STATUSES = new Set(["declined", "expired", "completed", "cancelled"]);
+
+/**
+ * Smart polling interval for patient van tracking (N29):
+ * 5s only while the van is driving to this patient, 30s otherwise, and paused
+ * in the background or once the visit reaches a terminal state.
+ */
+export function trackingPollIntervalMs(
+  request: { status?: string | null; phase?: string | null } | null | undefined,
+  isForeground: boolean,
+): number | false {
+  if (!isForeground) return false;
+  if (request?.status && TERMINAL_VAN_STATUSES.has(request.status)) return false;
+  return request?.phase === "en_route" ? 5000 : 30_000;
+}
+
 type RequestLike = { phase?: string | null };
 
 /** The question asked before cancelling. The wording depends on whether the van is already moving. */

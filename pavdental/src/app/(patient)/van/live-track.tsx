@@ -8,10 +8,11 @@ import {
   rebookButtonLabel,
   rebookDraftFromRequest,
   secondsUntil,
+  trackingPollIntervalMs,
 } from "@/features/van/live-track-actions";
 import { useVanStore } from "@/features/van/van-store";
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert, ActivityIndicator, Pressable } from "react-native";
+import { View, StyleSheet, Alert, ActivityIndicator, Pressable, AppState } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,16 +33,26 @@ export default function VanLiveTrackScreen() {
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [sheetHeight, setSheetHeight] = useState(0);
+  const [isForeground, setIsForeground] = useState(() => AppState.currentState === "active");
 
-  // Poll request status every 5s
+  // Smart polling (N29): 5s while van is en_route, 30s otherwise, paused in background/terminal.
   const { data: apiRequest, isLoading, isError, refetch } = useQuery<VanServiceRequest | null>({
     queryKey: ["van-request-live", params.requestId],
     queryFn: () =>
       params.requestId
         ? fetchVanRequest(params.requestId)
         : fetchActiveVanRequest(),
-    refetchInterval: 5000,
+    refetchInterval: (query) => trackingPollIntervalMs(query.state.data ?? null, isForeground),
   });
+
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (nextState) => {
+      const active = nextState === "active";
+      setIsForeground(active);
+      if (active) void refetch();
+    });
+    return () => sub.remove();
+  }, [refetch]);
 
   const request = apiRequest ?? null;
 

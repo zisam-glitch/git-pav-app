@@ -21,6 +21,7 @@ import { useAuthStore } from "@/features/auth/auth-store";
 import { onSiteWaitLabel } from "@/features/van/live-track-actions";
 import { isOfflinePhaseError } from "@/features/van/offline-phase-queue";
 import { queueOfflinePhaseChange } from "@/features/van/offline-phases";
+import { queryKeys } from "@/lib/query-keys";
 import { toLabel } from "@/lib/text";
 
 export default function OperatorRouteScreen() {
@@ -28,7 +29,7 @@ export default function OperatorRouteScreen() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["operator-shift"],
+    queryKey: queryKeys.van.operatorShift(),
     queryFn: fetchCurrentShift,
     refetchInterval: 10000,
   });
@@ -89,7 +90,7 @@ export default function OperatorRouteScreen() {
       }
     },
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
       if (result.queued) {
         Alert.alert(
           "Saved offline",
@@ -106,7 +107,7 @@ export default function OperatorRouteScreen() {
   const cantMakeMutation = useMutation({
     mutationFn: ({ id, reason }: { id: string; reason: VanCancelReason }) => cantMakeVisit(id, reason),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
       Alert.alert("Visit Cancelled", "The patient has been notified and their deposit will be refunded in full.");
     },
     onError: (err: any) => {
@@ -138,7 +139,7 @@ export default function OperatorRouteScreen() {
   const optimizeMutation = useMutation({
     mutationFn: optimizeRoute,
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
       Alert.alert(
         result.blocked ? "Order kept" : result.reordered > 0 ? "Route Optimized" : "Already Optimal",
         result.message
@@ -154,11 +155,11 @@ export default function OperatorRouteScreen() {
   const reorderMutation = useMutation({
     mutationFn: reorderQueue,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
     },
     onError: (err: any) => {
       Alert.alert("Reorder Failed", err.message || "Could not reorder the queue");
-      queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
     },
   });
 

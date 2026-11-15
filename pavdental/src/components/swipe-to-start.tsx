@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, LayoutChangeEvent, Pressable } from "react-native";
 import Animated, {
   useSharedValue,

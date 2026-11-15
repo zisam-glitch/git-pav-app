@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { ThemedText, Card, Button, ConfirmSheet, DetailRow } from "@/components";
 import { colors, spacing } from "@/theme";

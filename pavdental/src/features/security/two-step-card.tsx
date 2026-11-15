@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Badge, Button, Card, Input, ThemedText } from "@/components";
 import { accountApi } from "@/features/account/account-api";

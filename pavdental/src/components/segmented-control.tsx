@@ -1,4 +1,3 @@
-import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { colors, radius, spacing } from "@/theme";
 import { safeHaptics } from "@/lib/haptics";

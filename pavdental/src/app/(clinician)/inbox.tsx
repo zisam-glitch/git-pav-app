@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ukDateLabel, ukDateTimeLabel } from "@/features/booking/uk-time";
 import {
   View,

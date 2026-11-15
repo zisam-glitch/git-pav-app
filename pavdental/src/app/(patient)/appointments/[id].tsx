@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { isActiveAppointment, isCancelled as isCancelledStatus, isVideoChannel } from "@/lib/domain-enums";
 import { View, StyleSheet, ScrollView, Pressable, Linking } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";

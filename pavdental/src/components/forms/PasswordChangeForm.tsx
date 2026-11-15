@@ -1,5 +1,5 @@
 import { MIN_PASSWORD_LENGTH } from "@/features/auth/password-rules";
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

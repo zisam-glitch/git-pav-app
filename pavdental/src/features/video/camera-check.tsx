@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, Linking, ViewStyle } from "react-native";
 import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/react-native-daily-js";
 import { ThemedText, Button } from "@/components";

@@ -1,4 +1,3 @@
-import React from "react";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Linking, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";

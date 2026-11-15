@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";

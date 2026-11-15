@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 import { ThemedText, Card, Badge, Button, Input, EmptyState, CheckboxMark, AppIcon } from "@/components";

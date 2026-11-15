@@ -1,4 +1,3 @@
-import React from "react";
 import { act, fireEvent, screen, waitFor } from "@testing-library/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Alert } from "react-native";

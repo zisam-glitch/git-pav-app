@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, Badge, ErrorState, Skeleton } from "@/components";

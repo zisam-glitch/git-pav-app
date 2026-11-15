@@ -1,6 +1,6 @@
 import { reportCaughtError } from "@/lib/caught-errors";
 import { declinePlan, decisionFromStatus, findPlan, planBadge, prescribedBy, signPlan } from "@/features/records/plan-actions";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ukDateLabel, ukTime } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";

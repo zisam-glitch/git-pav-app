@@ -1,5 +1,5 @@
 import { formatGbp } from "@/lib/money";
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

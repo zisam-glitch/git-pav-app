@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { Card, EmptyState, ErrorState, IconTile, ListRow, Skeleton } from "@/components";

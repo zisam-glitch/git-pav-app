@@ -1,5 +1,5 @@
 import { formatGbp } from "@/lib/money";
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Button, EmptyState, IconButton, AppIcon } from "@/components";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, Modal } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { View, StyleSheet, ViewStyle } from "react-native";
 import { CardSkeleton, RowSkeleton, Skeleton } from "./loading-skeleton";
 import { ErrorState } from "./error-state";

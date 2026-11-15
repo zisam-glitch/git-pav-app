@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator, Alert } from "react-native";
 import * as Haptics from "expo-haptics";
 import { ThemedText, Button } from "@/components";

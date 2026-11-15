@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, FlatList, Pressable, Modal, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";

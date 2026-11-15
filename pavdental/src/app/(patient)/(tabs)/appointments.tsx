@@ -1,5 +1,5 @@
 import { buildAppointmentRows } from "@/features/booking/appointment-rows";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { useRouter } from "expo-router";

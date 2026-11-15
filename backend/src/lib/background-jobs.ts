@@ -4,7 +4,7 @@ import { logFailure } from "./best-effort";
 import { communicationService } from "./communication-service";
 import { pseudonymiseIp } from "./audit-security";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
-import { releaseVanDeposit } from "./van-payments";
+import { DEPOSIT_RELEASE_PENDING, settleVanDepositRelease } from "./van-payments";
 import { expireVanRequest } from "./van-dispatch";
 import { awardMissedVisitPoints } from "./rewards";
 import { checkPushReceipts } from "./push-receipts";
@@ -654,57 +654,46 @@ export async function processExpiredVanRequests(): Promise<{ expiredCount: numbe
 }
 
 /**
- * Retries failed deposit releases for terminal van requests (expired, declined, cancelled).
+ * Finishes van deposit releases that are still owed on closed requests
+ * (expired, declined, cancelled): ones Stripe could not make, and ones left
+ * unfinished because the server stopped between saving the close and reaching
+ * Stripe (N22). A release only just started is left to the request doing it.
  * Closes VP-2.
  */
 export async function retryFailedVanDepositReleases(): Promise<{ retriedCount: number; succeededCount: number }> {
   try {
-    const failed = await prisma.vanServiceRequest.findMany({
+    const owed = await prisma.vanServiceRequest.findMany({
       where: {
         status: { in: ["expired", "declined", "cancelled"] },
-        depositReleaseStatus: "failed",
         paymentIntentId: { not: null },
+        OR: [
+          { depositReleaseStatus: "failed" },
+          { depositReleaseStatus: DEPOSIT_RELEASE_PENDING, updatedAt: { lt: new Date(Date.now() - UNFINISHED_RELEASE_AFTER_MS) } },
+        ],
       },
-      select: {
-        id: true,
-        status: true,
-        paymentIntentId: true,
-      },
+      select: { id: true },
       take: 50,
     });
 
     let succeededCount = 0;
-    for (const req of failed) {
-      if (!req.paymentIntentId) continue;
-      const reason =
-        req.status === "declined"
-          ? "operator_declined"
-          : req.status === "cancelled"
-            ? "patient_cancelled"
-            : "expired";
-
-      const release = await releaseVanDeposit(req.paymentIntentId, reason);
-      if (release.status !== "failed") {
-        succeededCount++;
-        await prisma.vanServiceRequest.update({
-          where: { id: req.id },
-          data: {
-            depositReleaseStatus: release.status,
-            depositReleasedAt: new Date(),
-          },
-        });
-      }
+    for (const req of owed) {
+      // The reason, and whether a cancel keeps the deposit, come from the request's own history.
+      const settled = await settleVanDepositRelease(req.id);
+      if (settled.status !== "failed" && settled.status !== DEPOSIT_RELEASE_PENDING) succeededCount++;
     }
 
-    if (failed.length > 0) {
-      console.log(`[BACKGROUND JOBS] Retried ${failed.length} failed van deposit release(s), ${succeededCount} succeeded`);
+    if (owed.length > 0) {
+      console.log(`[BACKGROUND JOBS] Retried ${owed.length} van deposit release(s), ${succeededCount} succeeded`);
     }
-    return { retriedCount: failed.length, succeededCount };
+    return { retriedCount: owed.length, succeededCount };
   } catch (error) {
     console.error("[BACKGROUND JOBS] Error retrying failed van deposit releases:", safeError(error));
     return { retriedCount: 0, succeededCount: 0 };
   }
 }
+
+/** How long a release may sit unfinished before the job takes it over. */
+const UNFINISHED_RELEASE_AFTER_MS = 2 * 60 * 1000;
 
 /**
  * Starts all background job workers.

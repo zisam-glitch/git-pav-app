@@ -135,9 +135,13 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 
 ## D. Reliability and offline
 
-- [ ] **D1 (P1, M) An outbox for messages that must arrive.** Emails and pushes are sent "fire and forget" from the
+- [~] **D1 (P1, M) An outbox for messages that must arrive.** Emails and pushes are sent "fire and forget" from the
       request (added in this work). If Postmark is down the email is lost. Write a row (`pending`), send from the job
       runner with retries and back-off, record the result.
+      *Done for appointment emails (booked, cancelled, moved): the history row of each email is the outbox. A job tries a
+      failed one again after 2, 10 and 30 minutes (four attempts, inside 6 hours), stops once it is sent, and skips it
+      if the patient switched emails off or the visit was cancelled meanwhile. No migration. Left: other emails
+      (message-reply alerts, codes) and pushes, and the durable queue (I6).*
 - [ ] **D2 (P1, M) Offline behaviour.** Only the van operator's notes queue offline. For patients: show cached
       appointments read-only, queue message replies, and say plainly what needs a connection.
 - [~] **D3 (P1, S) Idempotency on every money or booking action** from the app (a key per attempt exists for create;
@@ -276,7 +280,7 @@ Being honest about what I added that you should not copy:
 - [ ] **K1** `appointment-detail.ts` added a sixth money formatter (`pounds`). Replace with `formatGbp` (B3).
 - [ ] **K2** Several new tests I wrote read source text (for example `cancel-wording`, `home-truthful`, `plain-wording`).
       They guard against regressions in wording but are exactly the kind of test G1 should replace.
-- [ ] **K3** Booking and cancellation emails send "fire and forget" with no retry (D1).
+- [x] **K3** Booking and cancellation emails send "fire and forget" with no retry (D1). Now retried by a job.
 - [ ] **K4** `cancellation-policy.ts` duplicates the server's policy as text (A1).
 - [ ] **K5** The min-version gate shows a fixed message and has no store link until `APP_STORE_URL` is set.
 

@@ -11,6 +11,7 @@ import { communicationService } from "./communication-service";
 import { safeError } from "./log-safety";
 import { buildAppointmentEmail, buildAppointmentPush, type AppointmentEmailKind } from "./patient-email-content";
 import { sendPatientNotification } from "./patient-push";
+import { EMAIL_RETRY_WINDOW_MS, pickEmailsToRetry } from "./patient-email-retry";
 
 /**
  * The record kept of an appointment email (V6): that it was sent and whether it was delivered,
@@ -22,14 +23,22 @@ export function appointmentEmailRecord(input: {
   kind: AppointmentEmailKind;
   subject: string;
   delivered: boolean;
+  /** "skipped" settles an email that is no longer wanted, so it is not tried again. */
+  skipped?: boolean;
+  /** Kept so a retry of a cancellation email can still say what was refunded. */
+  refundPence?: number;
 }) {
   return {
     userId: input.userId,
     type: "email",
     title: input.subject,
     body: "",
-    data: { type: `appointment_${input.kind}`, appointmentId: input.appointmentId },
-    status: input.delivered ? "sent" : "failed",
+    data: {
+      type: `appointment_${input.kind}`,
+      appointmentId: input.appointmentId,
+      ...(input.refundPence !== undefined ? { refundPence: input.refundPence } : {}),
+    },
+    status: input.skipped ? "skipped" : input.delivered ? "sent" : "failed",
   };
 }
 
@@ -37,6 +46,15 @@ export async function sendAppointmentEmail(
   kind: AppointmentEmailKind,
   appointmentId: string,
   extra: { refundPence?: number } = {}
+): Promise<void> {
+  await deliverAppointmentEmail(kind, appointmentId, extra, false);
+}
+
+async function deliverAppointmentEmail(
+  kind: AppointmentEmailKind,
+  appointmentId: string,
+  extra: { refundPence?: number },
+  isRetry: boolean
 ): Promise<void> {
   try {
     const appointment = await prisma.appointment.findUnique({
@@ -53,10 +71,21 @@ export async function sendAppointmentEmail(
     const user = appointment?.patient?.user;
     if (!appointment || !user?.email) return;
 
+    // On a retry, the email may no longer be wanted: record that, so it is not tried again.
+    const skipRetry = async (reason: string) => {
+      if (isRetry) {
+        await prisma.notificationHistory.create({
+          data: appointmentEmailRecord({ userId: user.id, appointmentId, kind, subject: reason, delivered: false, skipped: true }),
+        });
+      }
+    };
+
     const prefs = user.notificationPreferences;
     const emailOn = prefs ? prefs.emailEnabled : true;
     const confirmationsOn = prefs ? prefs.appointmentConfirmations : true;
-    if (!emailOn || !confirmationsOn) return;
+    if (!emailOn || !confirmationsOn) return skipRetry("Switched off");
+    // A "booked" or "moved" email must not arrive after the visit was cancelled.
+    if (isRetry && kind !== "cancelled" && appointment.status === "cancelled") return skipRetry("Visit cancelled");
 
     const clinic = appointment.clinic;
     const placeLine = clinic ? [clinic.name, clinic.address, clinic.postcode].filter(Boolean).join(", ") : null;
@@ -69,10 +98,41 @@ export async function sendAppointmentEmail(
     });
     const result = await communicationService.sendEmail({ to: user.email, ...email });
     await prisma.notificationHistory.create({
-      data: appointmentEmailRecord({ userId: user.id, appointmentId, kind, subject: email.subject, delivered: result.success }),
+      data: appointmentEmailRecord({
+        userId: user.id,
+        appointmentId,
+        kind,
+        subject: email.subject,
+        delivered: result.success,
+        refundPence: extra.refundPence,
+      }),
     });
   } catch (err) {
     console.error("[PatientEmail] Failed to send appointment email:", safeError(err));
+  }
+}
+
+/**
+ * Tries again the appointment emails that failed (D1), so a Postmark outage does not lose them.
+ * Which ones, and how often, is decided in `patient-email-retry.ts`.
+ */
+export async function retryFailedAppointmentEmails(now: Date = new Date()): Promise<{ retriedCount: number }> {
+  try {
+    const rows = await prisma.notificationHistory.findMany({
+      where: { type: "email", sentAt: { gte: new Date(now.getTime() - EMAIL_RETRY_WINDOW_MS) } },
+      select: { userId: true, status: true, sentAt: true, data: true },
+      orderBy: { sentAt: "asc" },
+      take: 2000,
+    });
+    const due = pickEmailsToRetry(rows, now).slice(0, 50);
+    for (const email of due) {
+      await deliverAppointmentEmail(email.kind, email.appointmentId, { refundPence: email.refundPence }, true);
+    }
+    if (due.length > 0) console.log(`[BACKGROUND JOBS] Retried ${due.length} appointment email(s)`);
+    return { retriedCount: due.length };
+  } catch (err) {
+    console.error("[BACKGROUND JOBS] Error retrying appointment emails:", safeError(err));
+    return { retriedCount: 0 };
   }
 }
 

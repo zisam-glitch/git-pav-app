@@ -19,6 +19,8 @@ import { openDrivingDirections } from "@/features/van/nav-links";
 import { useOperatorLocation } from "@/features/van/use-operator-location";
 import { useAuthStore } from "@/features/auth/auth-store";
 import { onSiteWaitLabel } from "@/features/van/live-track-actions";
+import { isOfflinePhaseError } from "@/features/van/offline-phase-queue";
+import { queueOfflinePhaseChange } from "@/features/van/offline-phases";
 import { toLabel } from "@/lib/text";
 
 export default function OperatorRouteScreen() {
@@ -68,10 +70,32 @@ export default function OperatorRouteScreen() {
   };
 
   const phaseMutation = useMutation({
-    mutationFn: ({ id, phase }: { id: string; phase: VanStopPhase | "no_show" }) =>
-      updatePhase(id, phase),
-    onSuccess: () => {
+    mutationFn: async ({ id, phase }: { id: string; phase: VanStopPhase | "no_show" }) => {
+      try {
+        await updatePhase(id, phase);
+        return { queued: false };
+      } catch (err) {
+        const userId = useAuthStore.getState().user?.id;
+        if (userId && isOfflinePhaseError(err)) {
+          await queueOfflinePhaseChange({
+            stopId: id,
+            phase,
+            queuedAt: new Date().toISOString(),
+            userId,
+          });
+          return { queued: true };
+        }
+        throw err;
+      }
+    },
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
+      if (result.queued) {
+        Alert.alert(
+          "Saved offline",
+          "No signal right now — this step is queued and will send automatically when you're back online.",
+        );
+      }
     },
     onError: (err: any) => {
       Alert.alert("Phase Update Failed", err.message || "Could not update stop phase");

@@ -13,7 +13,11 @@ const check = (name: string, ok: boolean) => {
 };
 
 const screen = read("app/(patient)/video/message.tsx");
-check("the message screen looks up the visit's conversation", screen.includes("/api/appointment-messages/"));
+const videoApi = read("features/video/video-api.ts");
+check(
+  "the message screen looks up the visit's conversation",
+  screen.includes("useAppointmentMessageThread") && videoApi.includes("/api/appointment-messages/"),
+);
 check("it opens an existing conversation instead of starting another", screen.includes("openThread(data.threadId)"));
 check("a failed send is shown as an error", screen.includes('tone="error"'));
 check("the box grows and is limited to 4,000 characters", screen.includes("multiline") && screen.includes("maxLength={4000}"));

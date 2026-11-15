@@ -4,11 +4,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, Input, SegmentedControl } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
 import { useMyAppointments } from "@/features/hooks/use-dental-api";
 import { triageSummary } from "@/features/video/triage-summary";
 import { FOLLOW_UP_OPTIONS, canSaveConsult, consultPayload, type FollowUp } from "@/features/video/consult-form";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useAdmitVideoPatientMutation,
+  useClinicianVideoRoomMutation,
+  useEndVideoConsultMutation,
+  useSendAppointmentMessageMutation,
+  useTriagePhotos,
+  useVideoPresence,
+} from "@/features/video/use-video-queries";
+import { queryKeys } from "@/lib/query-keys";
+import { useQuery } from "@tanstack/react-query";
 import { fetchOdontogram } from "@/features/records/records-api";
 import { toothFinding } from "@/features/records/tooth-finding";
 import { Image } from "expo-image";
@@ -34,27 +42,20 @@ export default function ClinicianConsultRoomScreen() {
   const triage = triageSummary(appointment?.triageData, appointment?.intraoralPhotos);
   const chiefComplaint = triage.complaint || params.chiefComplaint?.trim() || null;
   // Links to the photos expire, so ask for fresh ones when the room opens.
-  const { data: triagePhotos, isError: photosFailed } = useQuery({
-    queryKey: ["triage-photos", appointmentId],
-    enabled: !!appointmentId,
-    staleTime: 10 * 60 * 1000,
-    queryFn: async () => {
-      const res = await authFetch(`/api/video/triage-photos/${appointmentId}`);
-      if (!res.ok) throw new Error("photos");
-      const body = await res.json().catch(() => ({ photos: [] }));
-      return (body.photos ?? []) as { url: string }[];
-    },
-  });
+  const { data: triagePhotos, isError: photosFailed } = useTriagePhotos(appointmentId);
 
-  const queryClient = useQueryClient();
   // The patient's chart, read for the tooth detail. A failed read is said, never shown as "no findings".
   const patientId: string | undefined = appointment?.patientId || appointment?.patient?.id;
   const chart = useQuery({
-    queryKey: ["consult-chart", patientId],
+    queryKey: queryKeys.odontogram(patientId),
     enabled: !!patientId,
     staleTime: 60 * 1000,
     queryFn: () => fetchOdontogram(patientId as string),
   });
+  const roomMutation = useClinicianVideoRoomMutation();
+  const admitMutation = useAdmitVideoPatientMutation();
+  const sendMessageMutation = useSendAppointmentMessageMutation();
+  const endConsultMutation = useEndVideoConsultMutation();
   const [roomAttempt, setRoomAttempt] = useState(0);
 
   const [activeTab, setActiveTab] = useState<"video" | "triage" | "chart">("video");
@@ -70,45 +71,33 @@ export default function ClinicianConsultRoomScreen() {
   const [now, setNow] = useState(() => Date.now());
   const [roomError, setRoomError] = useState<string | null>(null);
   const [admitted, setAdmitted] = useState(false);
-  const [admitting, setAdmitting] = useState(false);
+  const admitting = admitMutation.isPending;
   const [showSummaryModal, setShowSummaryModal] = useState(false);
   // A message to the patient, in this visit's conversation (V49).
   const [showMessage, setShowMessage] = useState(false);
   const [messageText, setMessageText] = useState("");
-  const [sendingMessage, setSendingMessage] = useState(false);
+  const sendingMessage = sendMessageMutation.isPending;
   const [messageNote, setMessageNote] = useState<{ text: string; failed: boolean } | null>(null);
   const [concludeNotes, setConcludeNotes] = useState("");
   const [concludeDiagnosis, setConcludeDiagnosis] = useState("");
   const [concludePlan, setConcludePlan] = useState("");
   const [concludeFollowUp, setConcludeFollowUp] = useState<FollowUp>("none");
-  const [isEnding, setIsEnding] = useState(false);
+  const isEnding = endConsultMutation.isPending;
 
   const handleEndConsultation = async () => {
     if (!appointmentId) return;
-    setIsEnding(true);
     try {
-      const res = await authFetch("/api/video/end-consult", {
-        method: "POST",
-        body: JSON.stringify(
-          consultPayload(appointmentId, {
-            diagnosis: concludeDiagnosis,
-            notes: concludeNotes,
-            plan: concludePlan,
-            followUp: concludeFollowUp,
-          })
-        ),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Could not complete consultation");
-      }
-      // The schedule shows the visit as done.
-      queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+      await endConsultMutation.mutateAsync(
+        consultPayload(appointmentId, {
+          diagnosis: concludeDiagnosis,
+          notes: concludeNotes,
+          plan: concludePlan,
+          followUp: concludeFollowUp,
+        }) as unknown as Record<string, unknown>,
+      );
       router.replace("/(clinician)/schedule");
     } catch (err: any) {
       setRoomError(err?.message || "Failed to end consultation");
-    } finally {
-      setIsEnding(false);
     }
   };
 
@@ -117,18 +106,10 @@ export default function ClinicianConsultRoomScreen() {
       if (!appointmentId) return;
       setRoomError(null);
       try {
-        const res = await authFetch("/api/video/rooms", {
-          method: "POST",
-          body: JSON.stringify({ appointmentId }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok && data?.url && data?.token) {
-          setRoom({ url: data.url, token: data.token });
-        } else {
-          setRoomError(data?.error || "Could not open the video room. Try again from your schedule.");
-        }
-      } catch {
-        setRoomError("Could not open the video room. Check your connection and try again.");
+        const nextRoom = await roomMutation.mutateAsync(appointmentId);
+        setRoom(nextRoom);
+      } catch (err: any) {
+        setRoomError(err?.message || "Could not open the video room. Check your connection and try again.");
       }
     }
     initRoom();
@@ -137,60 +118,30 @@ export default function ClinicianConsultRoomScreen() {
   const sendMessage = async () => {
     const body = messageText.trim();
     if (!body || !appointmentId || sendingMessage) return;
-    setSendingMessage(true);
     setMessageNote(null);
     try {
-      const res = await authFetch(`/api/appointment-messages/${appointmentId}`, {
-        method: "POST",
-        body: JSON.stringify({ body }),
-      });
-      if (res.ok) {
-        setMessageText("");
-        setMessageNote({ text: "Message sent to the patient.", failed: false });
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setMessageNote({ text: data?.error || "Your message did not send. Please try again.", failed: true });
-      }
-    } catch {
-      setMessageNote({ text: "Your message did not send. Check your connection and try again.", failed: true });
-    } finally {
-      setSendingMessage(false);
+      await sendMessageMutation.mutateAsync({ appointmentId, body });
+      setMessageText("");
+      setMessageNote({ text: "Message sent to the patient.", failed: false });
+    } catch (err: any) {
+      setMessageNote({ text: err?.message || "Your message did not send. Please try again.", failed: true });
     }
   };
 
   // The server knows whether the patient is waiting and whether they were let in,
   // so this reads it, rather than remembering admission on the phone only (V10).
-  const { data: presence } = useQuery({
-    queryKey: ["video-presence", appointmentId],
-    enabled: !!appointmentId,
-    refetchInterval: 5000,
-    queryFn: async () => {
-      const res = await authFetch(`/api/video/status/${appointmentId}`);
-      if (!res.ok) return null;
-      return (await res.json()) as { admitted?: boolean; patientWaiting?: boolean };
-    },
-  });
+  const { data: presence } = useVideoPresence(appointmentId);
   useEffect(() => {
     if (presence?.admitted) setAdmitted(true);
   }, [presence?.admitted]);
 
   const admitPatient = async () => {
     if (!appointmentId) return;
-    setAdmitting(true);
     try {
-      const res = await authFetch("/api/video/admit-patient", {
-        method: "POST",
-        body: JSON.stringify({ appointmentId }),
-      });
-      if (res.ok) setAdmitted(true);
-      else {
-        const data = await res.json().catch(() => ({}));
-        setRoomError(data?.error || "Could not let the patient in. Please try again.");
-      }
-    } catch {
-      setRoomError("Could not let the patient in. Check your connection and try again.");
-    } finally {
-      setAdmitting(false);
+      await admitMutation.mutateAsync(appointmentId);
+      setAdmitted(true);
+    } catch (err: any) {
+      setRoomError(err?.message || "Could not let the patient in. Please try again.");
     }
   };
 

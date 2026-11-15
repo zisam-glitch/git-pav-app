@@ -44,7 +44,13 @@ assert(detail.includes("waitingRoomOpen(booking)"), "The appointment screen offe
 
 // The dentist can write to the patient from the consult room (V49)
 const consultRoom = readFileSync(join(__dirname, "../app/(clinician)/consult-room.tsx"), "utf8");
-assert(consultRoom.includes("/api/appointment-messages/") && consultRoom.includes("Message patient"), "The dentist can message the patient from the consult room");
+const videoApiSrc = readFileSync(join(__dirname, "../features/video/video-api.ts"), "utf8");
+assert(
+  consultRoom.includes("useSendAppointmentMessageMutation") &&
+    videoApiSrc.includes("/api/appointment-messages/") &&
+    consultRoom.includes("Message patient"),
+  "The dentist can message the patient from the consult room",
+);
 assert(consultRoom.includes("did not send"), "A failed message to the patient is shown as a failure");
 
 // Recording: the visit is not recorded, so the intake says so and asks for no consent (decision 4, V32)
@@ -72,6 +78,11 @@ assert(tdBack.symptomText === "Ache" && tdBack.painLevel === 3 && tdBack.hasSwel
 const tdBad = tdFromDraft({ symptomText: 5, painLevel: 11, hasSwelling: "yes", duration: "Soon" });
 assert(Object.keys(tdBad).length === 0 && Object.keys(tdFromDraft(null)).length === 0, "A malformed draft is ignored, not trusted");
 const tdIntake = readFileSync(join(__dirname, "../app/(patient)/video/intake.tsx"), "utf8");
-assert(tdIntake.includes("/api/video/triage-draft/") && tdIntake.includes("draftLoaded"), "The intake saves and restores its answers, and does not save before the draft has loaded");
+assert(
+  tdIntake.includes("useVideoTriageDraft") &&
+    videoApiSrc.includes("/api/video/triage-draft/") &&
+    tdIntake.includes("draftLoaded"),
+  "The intake saves and restores its answers, and does not save before the draft has loaded",
+);
 
 console.log("\n🎉 ALL VIDEO TESTS PASSED!\n");

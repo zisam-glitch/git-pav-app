@@ -1,5 +1,6 @@
 import React from "react";
 import { act, fireEvent, screen } from "@testing-library/react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderScreen } from "./test-utils";
 import VideoCallScreen from "@/app/(patient)/video/call";
 
@@ -40,7 +41,14 @@ beforeEach(() => {
 });
 
 const open = async () => {
-  renderScreen(<VideoCallScreen />);
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+  renderScreen(
+    <QueryClientProvider client={client}>
+      <VideoCallScreen />
+    </QueryClientProvider>,
+  );
   await act(async () => {});
 };
 

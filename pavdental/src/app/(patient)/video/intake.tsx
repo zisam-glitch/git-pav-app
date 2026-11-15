@@ -9,7 +9,7 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Input, Button, Card } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
+import { useVideoTriageDraft, useSaveVideoTriageDraftMutation } from "@/features/video/use-video-queries";
 import { DURATIONS, answersFromDraft, draftBody, hasAnswers } from "@/features/video/triage-draft";
 
 export default function VideoIntakeScreen() {
@@ -25,31 +25,25 @@ export default function VideoIntakeScreen() {
   const [draftLoaded, setDraftLoaded] = useState(false);
   const touched = useRef(false);
 
+  const draftQuery = useVideoTriageDraft(appointmentId);
+  const saveDraftMutation = useSaveVideoTriageDraftMutation();
+
   useEffect(() => {
-    let active = true;
-    async function loadDraft() {
-      if (!appointmentId) return setDraftLoaded(true);
-      try {
-        const res = await authFetch(`/api/video/triage-draft/${appointmentId}`);
-        const data = res.ok ? await res.json().catch(() => null) : null;
-        // Only fill the form if the patient has not started typing in the meantime.
-        if (active && !touched.current && data?.draft) {
-          const saved = answersFromDraft(data.draft);
-          if (saved.symptomText !== undefined) setSymptomText(saved.symptomText);
-          if (saved.painLevel !== undefined) setPainLevel(saved.painLevel);
-          if (saved.hasSwelling !== undefined) setHasSwelling(saved.hasSwelling);
-          if (saved.duration !== undefined) setDuration(saved.duration);
-        }
-      } catch {
-        // No draft to bring back; the form still works.
-      }
-      if (active) setDraftLoaded(true);
+    if (!appointmentId) {
+      setDraftLoaded(true);
+      return;
     }
-    loadDraft();
-    return () => {
-      active = false;
-    };
-  }, [appointmentId]);
+    if (draftQuery.isFetched) {
+      if (!touched.current && draftQuery.data?.draft) {
+        const saved = answersFromDraft(draftQuery.data.draft);
+        if (saved.symptomText !== undefined) setSymptomText(saved.symptomText);
+        if (saved.painLevel !== undefined) setPainLevel(saved.painLevel);
+        if (saved.hasSwelling !== undefined) setHasSwelling(saved.hasSwelling);
+        if (saved.duration !== undefined) setDuration(saved.duration);
+      }
+      setDraftLoaded(true);
+    }
+  }, [appointmentId, draftQuery.isFetched, draftQuery.data]);
 
   useEffect(() => {
     if (!draftLoaded || !appointmentId) return;
@@ -57,7 +51,7 @@ export default function VideoIntakeScreen() {
     if (!hasAnswers(answers)) return;
     const timer = setTimeout(() => {
       // Best effort: a failed save must never get in the patient's way.
-      authFetch(`/api/video/triage-draft/${appointmentId}`, { method: "PUT", body: JSON.stringify(draftBody(answers)) }).catch(() => {});
+      saveDraftMutation.mutateAsync({ appointmentId, body: draftBody(answers) }).catch(() => {});
     }, 800);
     return () => clearTimeout(timer);
   }, [draftLoaded, appointmentId, symptomText, painLevel, hasSwelling, duration]);

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { reportCaughtError } from "@/lib/caught-errors";
+import React from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
+import { useVideoSummary } from "@/features/video/use-video-queries";
 
 const FOLLOW_UP_WORDS: Record<string, string> = {
   clinic: "A visit at the clinic.",
@@ -16,38 +15,11 @@ const FOLLOW_UP_WORDS: Record<string, string> = {
 export default function VideoSummaryScreen() {
   const router = useRouter();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
-  const [summaryData, setSummaryData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadFailed, setLoadFailed] = useState(false);
-  const [attempt, setAttempt] = useState(0);
+  const summaryQuery = useVideoSummary(appointmentId);
 
-  useEffect(() => {
-    async function fetchSummary() {
-      if (!appointmentId) {
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      setLoadFailed(false);
-      try {
-        const res = await authFetch(`/api/video/summary/${appointmentId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setSummaryData(data);
-        } else {
-          // Say so, instead of leaving a summary that looks empty (V33).
-          setLoadFailed(true);
-        }
-      } catch (err) {
-        reportCaughtError(err, "failed to fetch consult summary");
-        setLoadFailed(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchSummary();
-  }, [appointmentId, attempt]);
-
+  const summaryData = summaryQuery.data;
+  const loading = Boolean(appointmentId) && summaryQuery.isLoading;
+  const loadFailed = summaryQuery.isError;
   const summary = summaryData?.summary;
   const hasNotesOrDiagnosis = !!(summary?.diagnosis || summary?.notes || summary?.treatmentPlan);
 
@@ -82,7 +54,7 @@ export default function VideoSummaryScreen() {
                 <ThemedText variant="body" style={styles.findingText}>
                   We couldn't load your summary. Check your connection and try again.
                 </ThemedText>
-                <Button title="Try again" variant="secondary" size="md" onPress={() => setAttempt((n) => n + 1)} />
+                <Button title="Try again" variant="secondary" size="md" onPress={() => summaryQuery.refetch()} />
               </View>
             ) : hasNotesOrDiagnosis ? (
               <View style={styles.summaryDetails}>

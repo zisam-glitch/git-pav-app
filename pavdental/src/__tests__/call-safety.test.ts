@@ -22,7 +22,7 @@ const screen = read("app/(patient)/video/call.tsx");
 check("rejoining asks for a fresh token", /opened \? await loadRoom\(\)/.test(screen));
 
 const summary = read("app/(patient)/video/summary.tsx");
-check("the summary shows a retry when it cannot load", summary.includes("setLoadFailed(true)") && summary.includes("Try again"));
+check("the summary shows a retry when it cannot load", summary.includes("summaryQuery.isError") && summary.includes("Try again"));
 check("the summary shows the follow-up the dentist advised", summary.includes("Follow-up advised"));
 
 const appt = read("app/(patient)/appointments/[id].tsx");

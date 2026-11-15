@@ -238,7 +238,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       `van.ts`, `van-queue.ts`, `consents.ts`, `rewards.ts`). Add a limit and pagination to each.
 - [ ] **I3 (P1, M) One logger.** 201 `console.*` calls while `structured-logging.ts` is used by no file. Use one JSON
       logger with request IDs and the existing scrubber; ship to a log service.
-- [ ] **I4 (P1, S) Do not decrypt what the screen does not need.** The patient appointment list decrypts triage data and
+- [x] **I4 (P1, S) Do not decrypt what the screen does not need.** *Done: the patient list leaves out `triageData` and `accessDetails`; no screen read them from the list, and `GET /appointments/:id` still returns them for one visit. The clinician schedule still decrypts them (it shows the chief complaint).* The patient appointment list decrypts triage data and
       access details for every row (up to 200) on every call. Return them only from the detail endpoint.
 - [ ] **I5 (P1, S) Read configuration in one place.** 45 `process.env` reads sit outside `config/` (`NODE_ENV` 6,
       `APP_URL` 3, `DAILY_API_KEY` 2 ...). Validate all of it once at start-up.
@@ -262,7 +262,7 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **J3** A mock-payment path inside the shipped app (D6).
 - [ ] **J4** A dental practice app with a 15-character password and no passkey or social sign-in (E5).
 - [ ] **J5** Light mode and portrait only, with dynamic type handled in 4 places (F3, F6).
-- [ ] **J6** Appointment list endpoint decrypts clinical fields for every row (I4).
+- [x] **J6** Appointment list endpoint decrypts clinical fields for every row (I4). Fixed for the patient list.
 - [ ] **J7** The balance is paid in person and the app takes deposits only: say so everywhere and show the balance
       (done on the appointment screen; check the receipt and email wording).
 - [ ] **J8** Reminders and emails depend on a 1-minute in-process timer (I6, D1).

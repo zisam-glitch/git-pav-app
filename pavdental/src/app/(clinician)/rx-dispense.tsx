@@ -1,26 +1,15 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, ActivityIndicator, Linking } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
 import { ThemedText, Input, Button, Card, ErrorState, ToggleSwitch } from "@/components";
 import { colors, spacing } from "@/theme";
 import { useCurrentUser } from "@/features/auth/auth-store";
-import { apiUrl, authFetch } from "@/features/auth/auth-api";
+import {
+  useClinicalContext,
+  useIssuePrescriptionMutation,
+  usePrescriptionPdfLinkMutation,
+} from "@/features/hooks/use-dental-api";
 import { summariseMedicalHistory, describeList } from "@/features/clinical/medical-summary";
-
-interface ClinicalContext {
-  appointmentId: string;
-  patient: { id: string; firstName: string; lastName: string; dob: string | null; address: string | null };
-  // Set when a parent or guardian booked this visit for their child.
-  guardian?: { id: string; firstName: string; lastName: string } | null;
-  medicalHistory: Record<string, unknown> | null;
-}
-
-async function fetchClinicalContext(appointmentId: string): Promise<ClinicalContext> {
-  const res = await authFetch(`/api/booking/appointments/${encodeURIComponent(appointmentId)}/clinical-context`);
-  if (!res.ok) throw new Error(res.status === 404 ? "not_found" : "failed");
-  return res.json();
-}
 
 // Prescribing is only possible against a real appointment: the patient, their
 // address and their recorded allergies all come from the API. Nothing is
@@ -30,17 +19,15 @@ export default function ClinicianRxDispenseScreen() {
   const currentUser = useCurrentUser();
   const { appointmentId } = useLocalSearchParams<{ appointmentId?: string }>();
 
-  const context = useQuery({
-    queryKey: ["clinical-context", appointmentId],
-    queryFn: () => fetchClinicalContext(appointmentId!),
-    enabled: !!appointmentId,
-  });
+  const context = useClinicalContext(appointmentId);
+  const issueMutation = useIssuePrescriptionMutation();
+  const pdfLinkMutation = usePrescriptionPdfLinkMutation();
 
   const [medication, setMedication] = useState("");
   const [dosageInstructions, setDosageInstructions] = useState("");
   const [pharmacyName, setPharmacyName] = useState("");
   const [allergiesChecked, setAllergiesChecked] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmitting = issueMutation.isPending;
 
   const clinicianName = currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : null;
 
@@ -83,23 +70,14 @@ export default function ClinicianRxDispenseScreen() {
   };
 
   const handleSignAndSend = async () => {
-    if (!canSubmit || isSubmitting) return;
-    setIsSubmitting(true);
+    if (!canSubmit || isSubmitting || !appointmentId) return;
     try {
-      const res = await authFetch("/api/prescriptions", {
-        method: "POST",
-        body: JSON.stringify({
-          appointmentId,
-          medicationName: medication.trim(),
-          dosageInstructions: dosageInstructions.trim(),
-          dispensingPharmacy: pharmacyName.trim(),
-        }),
+      const issued = await issueMutation.mutateAsync({
+        appointmentId,
+        medicationName: medication.trim(),
+        dosageInstructions: dosageInstructions.trim(),
+        dispensingPharmacy: pharmacyName.trim(),
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "The prescription wasn't saved");
-      }
-      const issued = await res.json().catch(() => ({}));
 
       // The visit is not ended here. Ending a video consult saves the summary the
       // patient reads, and that is the dentist's to write: an automatic one would
@@ -114,10 +92,8 @@ export default function ClinicianRxDispenseScreen() {
           text: "Open PDF to print",
           onPress: async () => {
             try {
-              const link = await authFetch(`/api/prescriptions/${issued.id}/pdf-link`, { method: "POST" });
-              const body = await link.json().catch(() => ({}));
-              if (!link.ok) throw new Error(body.error || "Couldn't open the prescription");
-              await Linking.openURL(apiUrl(body.path));
+              const { url } = await pdfLinkMutation.mutateAsync(issued.id);
+              await Linking.openURL(url);
             } catch (err: any) {
               Alert.alert("Couldn't open the prescription", err?.message || "Open it from the patient's prescriptions instead.");
             } finally {
@@ -128,8 +104,6 @@ export default function ClinicianRxDispenseScreen() {
       ]);
     } catch (err: any) {
       Alert.alert("Prescription not saved", err?.message || "The prescription wasn't saved");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

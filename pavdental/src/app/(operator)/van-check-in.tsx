@@ -4,8 +4,9 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { ThemedText, Card, Button, ErrorState } from "@/components";
 import { colors, spacing } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
+import { queryKeys } from "@/lib/query-keys";
 import { fetchCurrentShift } from "@/features/van/van-api";
+import { useCheckInVanStopMutation } from "@/features/van/van-hooks";
 import { VanServiceRequest } from "@/features/van/van-types";
 
 // The stop (patient, address, procedure) comes from the operator's live shift
@@ -16,14 +17,15 @@ export default function OperatorCheckInScreen() {
   const { stopId } = useLocalSearchParams<{ stopId?: string }>();
 
   const shiftQuery = useQuery({
-    queryKey: ["operator-shift"],
+    queryKey: queryKeys.van.operatorShift(),
     queryFn: fetchCurrentShift,
     enabled: !!stopId,
   });
 
   const [vanParked, setVanParked] = useState(false);
   const [patientBoarded, setPatientBoarded] = useState(false);
-  const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const checkInMutation = useCheckInVanStopMutation();
+  const isCheckingIn = checkInMutation.isPending;
 
   if (!stopId) {
     return (
@@ -57,21 +59,14 @@ export default function OperatorCheckInScreen() {
   const procedure = stop.service?.name ?? "Procedure not recorded";
 
   const handleStartTreatment = async () => {
-    setIsCheckingIn(true);
     try {
-      const res = await authFetch(`/api/van/stops/${encodeURIComponent(stop.id)}/check-in`, { method: "POST" });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Check-in failed");
-      }
+      await checkInMutation.mutateAsync(stop.id);
       router.push({
         pathname: "/(operator)/offline-capture" as any,
         params: { stopId: stop.id, patientName, procedure },
       });
     } catch (err: any) {
       Alert.alert("Check-in failed", err?.message || "Check-in failed");
-    } finally {
-      setIsCheckingIn(false);
     }
   };
 

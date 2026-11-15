@@ -4,8 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { ThemedText, Button, FlowHeader, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { authFetch } from "@/features/auth/auth-api";
-import { queryClient } from "@/lib/query-client";
+import { useCompleteOnboardingMutation } from "@/features/account/account-hooks";
 import { onboardingSaveError } from "@/features/onboarding/validation";
 import { useAuthStore } from "@/features/auth/auth-store";
 import {
@@ -29,7 +28,8 @@ export default function OnboardingConsentsScreen() {
   const [treatmentConsent, setTreatmentConsent] = useState(false);
   const [directMarketing, setDirectMarketing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const completeMutation = useCompleteOnboardingMutation();
+  const isSubmitting = completeMutation.isPending;
   const setConsents = useOnboardingStore((s) => s.setConsents);
   const draft = useOnboardingStore();
   const { user } = useAuthStore();
@@ -45,16 +45,22 @@ export default function OnboardingConsentsScreen() {
     }
 
     setError(null);
-    setIsSubmitting(true);
     try {
       setConsents({ dataProcessing, treatmentConsent, directMarketing });
 
       const history: OnboardingMedicalHistory = draft.medicalHistory;
 
-      // 1. Profile + medical history → patients API (server-authoritative)
-      const profileRes = await authFetch(`/api/patients/${user.profileId}/profile`, {
-        method: "PUT",
-        body: JSON.stringify({
+      const grants: Array<{ consentType: string; lawfulBasis: string }> = [
+        { consentType: "data_processing", lawfulBasis: "consent" },
+        { consentType: "clinical_records", lawfulBasis: "consent" },
+        ...(directMarketing
+          ? [{ consentType: "marketing", lawfulBasis: "consent" }]
+          : []),
+      ];
+
+      await completeMutation.mutateAsync({
+        profileId: user.profileId,
+        profile: {
           dob: draft.dob || undefined,
           gender: mapGender(draft.gender),
           addressLine1: draft.addressLine1 || undefined,
@@ -71,40 +77,14 @@ export default function OnboardingConsentsScreen() {
             isBleedingRisk: history.isBleedingRisk,
             gpSurgery: history.gpSurgery || undefined,
           },
-        }),
+        },
+        grants,
       });
-      if (!profileRes.ok) {
-        const err = (await profileRes.json().catch(() => ({}))) as { error?: string };
-        throw new Error(onboardingSaveError(err.error));
-      }
 
-      // 2. Consents → consent records (versioned and audited)
-      const grants: Array<{ consentType: string; lawfulBasis: string }> = [
-        { consentType: "data_processing", lawfulBasis: "consent" },
-        { consentType: "clinical_records", lawfulBasis: "consent" },
-        ...(directMarketing
-          ? [{ consentType: "marketing", lawfulBasis: "consent" }]
-          : []),
-      ];
-      for (const grant of grants) {
-        const res = await authFetch("/api/consents/grant", {
-          method: "POST",
-          body: JSON.stringify(grant),
-        });
-        if (!res.ok && res.status !== 409) {
-          const err = (await res.json().catch(() => ({}))) as { error?: string };
-          throw new Error(onboardingSaveError(err.error));
-        }
-      }
-
-      // The Home card and the booking check both read the saved profile.
-      await queryClient.invalidateQueries({ queryKey: ["patient-profile"] });
       router.push("/onboarding/complete");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Could not finish setup. Please try again.";
+      const msg = err instanceof Error ? onboardingSaveError(err.message) : "Could not finish setup. Please try again.";
       setError(msg);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

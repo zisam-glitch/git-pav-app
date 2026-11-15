@@ -322,3 +322,11 @@ export async function cantMakeVisit(id: string, reason: VanCancelReason): Promis
   return res.json();
 }
 
+/** Check in a patient at a van stop. */
+export async function checkInVanStop(stopId: string): Promise<void> {
+  const res = await authFetch(`/api/van/stops/${encodeURIComponent(stopId)}/check-in`, {
+    method: "POST",
+  });
+  if (!res.ok) return parseErrorAndThrow(res, "Check-in failed");
+}
+

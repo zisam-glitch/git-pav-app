@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { ukDateLabel } from "@/features/booking/uk-time";
 import { View, StyleSheet, ScrollView, Linking, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Badge, Button, AppIcon, EmptyState, ErrorState, Skeleton } from "@/components";
 import { colors, spacing, radius } from "@/theme";
-import { usePatientPrescriptions } from "@/features/hooks/use-dental-api";
+import { usePatientPrescriptions, usePrescriptionPdfLinkMutation } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
-import { apiUrl, authFetch } from "@/features/auth/auth-api";
 import { normalizePrescription } from "../prescriptions";
 import { PRACTICE_CONFIG } from "@/config/practice";
 
@@ -16,21 +15,17 @@ export default function PrescriptionDetailScreen() {
   const user = useCurrentUser();
   const userId = user?.id || "";
   const { data: rawList, isLoading, isError, refetch } = usePatientPrescriptions(userId);
-  const [openingPdf, setOpeningPdf] = useState(false);
+  const pdfLinkMutation = usePrescriptionPdfLinkMutation();
+  const openingPdf = pdfLinkMutation.isPending;
 
   // The PDF opens in the phone's browser through a link that works for five
   // minutes, so it can be printed or shared with a pharmacy.
   const openPdf = async (prescriptionId: string) => {
-    setOpeningPdf(true);
     try {
-      const res = await authFetch(`/api/prescriptions/${prescriptionId}/pdf-link`, { method: "POST" });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || "Couldn't open the prescription");
-      await Linking.openURL(apiUrl(body.path));
+      const { url } = await pdfLinkMutation.mutateAsync(prescriptionId);
+      await Linking.openURL(url);
     } catch (err: any) {
       Alert.alert("Couldn't open the prescription", err?.message || "Please try again.");
-    } finally {
-      setOpeningPdf(false);
     }
   };
 

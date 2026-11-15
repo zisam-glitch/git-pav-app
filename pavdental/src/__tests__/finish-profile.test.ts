@@ -30,6 +30,10 @@ assert(describeMissing(["personal details", "medical history", "consent"]) === "
 const read = (p: string) => readFileSync(join(__dirname, "..", p), "utf8");
 assert(read("app/(patient)/booking/service-catalog.tsx").includes("Finish your profile first"), "Choosing a treatment offers to finish the profile");
 assert(read("app/(patient)/(tabs)/home.tsx").includes("Finish your profile"), "Home shows a finish-your-profile card");
-assert(read("app/onboarding/consents.tsx").includes('queryKey: ["patient-profile"]'), "Finishing onboarding refreshes the saved profile");
+assert(
+  read("app/onboarding/consents.tsx").includes("useCompleteOnboardingMutation") &&
+    read("features/account/account-hooks.ts").includes('queryKey: ["patient-profile"]'),
+  "Finishing onboarding refreshes the saved profile",
+);
 
 console.log("\n🎉 ALL FINISH PROFILE TESTS PASSED!\n");

@@ -63,6 +63,8 @@ router.get("/:id/profile", requireAuth, validateParams(patientIdParamsSchema), a
   // PT-4: Single source of truth for consent — read from ConsentRecord
   const consentRecords = await prisma.consentRecord.findMany({
     where: { patientProfileId: profile.id, isGranted: true },
+    // One row per type is all that is read below, so the query stops there (I2).
+    distinct: ["consentType"],
     select: {
       consentType: true,
       version: true,

@@ -19,6 +19,9 @@ import {
   safeJsonStringify,
 } from "../lib/sar-registry";
 
+/** Most consent rows the history list returns, newest version first within each type (I2). */
+const CONSENT_HISTORY_CAP = 500;
+
 function htmlEscape(str: unknown): string {
   if (str === null || str === undefined) return "";
   return String(str)
@@ -207,6 +210,7 @@ router.get("/history", requireAuth, validateQuery(consentHistoryQuerySchema), as
   const consents = await prisma.consentRecord.findMany({
     where: whereClause,
     orderBy: [{ consentType: "asc" }, { version: "desc" }],
+    take: CONSENT_HISTORY_CAP,
   });
 
   return res.json(consents);
@@ -224,22 +228,18 @@ router.get("/current", requireAuth, async (req: AuthRequest, res: Response) => {
     return res.status(404).json({ error: "Patient profile not found" });
   }
 
+  // The newest granted version of each type: sorted newest first within a type, and the database
+  // keeps the first row of each type, so the result is bounded by the number of types (I2).
   const consents = await prisma.consentRecord.findMany({
     where: {
       patientProfileId: profile.id,
       isGranted: true,
     },
     orderBy: [{ consentType: "asc" }, { version: "desc" }],
+    distinct: ["consentType"],
   });
 
-  const latestConsents = new Map<string, any>();
-  for (const consent of consents) {
-    if (!latestConsents.has(consent.consentType) || consent.version > latestConsents.get(consent.consentType).version) {
-      latestConsents.set(consent.consentType, consent);
-    }
-  }
-
-  return res.json(Array.from(latestConsents.values()));
+  return res.json(consents);
 });
 
 // ─── POST /api/consents/data-access-request ────────────────────────────────

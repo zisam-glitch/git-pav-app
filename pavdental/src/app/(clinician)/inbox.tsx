@@ -1,8 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PRACTICE_TIME_ZONE } from "@/features/booking/uk-time";
-import { View, StyleSheet, ScrollView, FlatList, Pressable, RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   ThemedText,
   SegmentedControl,
@@ -18,6 +28,7 @@ import {
 import { colors, spacing, radius } from "@/theme";
 import {
   useMessageThreads,
+  useMessageThread,
   usePracticeHours,
   useReplyMessageThreadMutation,
   useMarkMessageThreadReadMutation,
@@ -33,26 +44,68 @@ export interface ThreadItem {
   hasAttachment: boolean;
   recipientType?: string;
   patientName?: string;
-  messages: Array<{
-    id: string;
-    senderRole: string;
-    senderName: string;
-    body: string;
-    sentAtIso: string;
-    /** Links to photos the patient sent. */
-    photos: string[];
-  }>;
+}
+
+interface RawThreadMessage {
+  id?: unknown;
+  senderRole?: string;
+  senderName?: string;
+  body?: unknown;
+  sentAtIso?: unknown;
+  attachments?: unknown;
+}
+
+interface ThreadMessageItem {
+  id: string;
+  senderRole: string;
+  senderName: string;
+  body: string;
+  sentAtIso: string;
+  photos: string[];
+}
+
+function parseThreadMessages(pages: Array<{ messages?: unknown[] }> | undefined): ThreadMessageItem[] {
+  if (!pages) return [];
+  const raw = [...pages].reverse().flatMap((p) => (Array.isArray(p.messages) ? p.messages : []));
+  return raw
+    .map((item) => {
+      const m = item as RawThreadMessage;
+      return {
+        id: String(m.id ?? ""),
+        senderRole: String(m.senderRole ?? "patient"),
+        senderName: m.senderName || (m.senderRole === "patient" ? "Patient" : "Pav Dental care team"),
+        body: String(m.body ?? ""),
+        sentAtIso: String(m.sentAtIso ?? ""),
+        photos: Array.isArray(m.attachments)
+          ? m.attachments.map((a) => (a as { url?: unknown })?.url).filter((u): u is string => typeof u === "string")
+          : [],
+      };
+    })
+    .sort((a, b) => a.sentAtIso.localeCompare(b.sentAtIso));
 }
 
 export default function ClinicianInboxScreen() {
+  const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState<"all" | "unread">("all");
   const [search, setSearch] = useState("");
   const [activeThread, setActiveThread] = useState<ThreadItem | null>(null);
   const [replyText, setReplyText] = useState("");
   const [toast, setToast] = useState<{ message: string; tone: "success" | "error" } | null>(null);
+  const scroller = useRef<ScrollView>(null);
 
   const { hoursText } = usePracticeHours();
-  const { data: rawThreads, isLoading, isError, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } = useMessageThreads("full");
+  const {
+    data: rawThreads,
+    isLoading,
+    isError,
+    refetch,
+    isRefetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMessageThreads("summary");
+
+  const threadQuery = useMessageThread(activeThread?.id);
   const replyMutation = useReplyMessageThreadMutation();
   const markReadMutation = useMarkMessageThreadReadMutation();
 
@@ -67,18 +120,6 @@ export default function ClinicianInboxScreen() {
         hasAttachment: Boolean(t.hasAttachment),
         recipientType: t.recipientType || "practice",
         patientName: t.patientName || t.from || "Patient",
-        messages: Array.isArray(t.messages)
-          ? t.messages.map((m: any) => ({
-              id: m.id,
-              senderRole: m.senderRole,
-              senderName: m.senderName,
-              body: m.body || "",
-              sentAtIso: m.sentAtIso || new Date().toISOString(),
-              photos: Array.isArray(m.attachments)
-                ? m.attachments.map((a: { url?: unknown }) => a?.url).filter((u: unknown): u is string => typeof u === "string")
-                : [],
-            }))
-          : [],
       }))
     : [];
 
@@ -103,6 +144,15 @@ export default function ClinicianInboxScreen() {
     setReplyText("");
   };
 
+  const activeMessages = parseThreadMessages(threadQuery.data?.pages);
+  const newestId = activeMessages[activeMessages.length - 1]?.id;
+
+  useEffect(() => {
+    if (activeThread && newestId) {
+      scroller.current?.scrollToEnd({ animated: false });
+    }
+  }, [activeThread?.id, newestId]);
+
   const handleSendReply = async () => {
     if (!activeThread || !replyText.trim()) return;
     const body = replyText.trim();
@@ -111,32 +161,127 @@ export default function ClinicianInboxScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       setToast({ message: "Reply sent to patient", tone: "success" });
       setReplyText("");
-      // Refresh thread list
-      await refetch();
-      // Update active thread locally
-      setActiveThread((prev) =>
-        prev
-          ? {
-              ...prev,
-              isRead: true,
-              messages: [
-                ...prev.messages,
-                {
-                  id: `local-${Date.now()}`,
-                  senderRole: "clinician",
-                  senderName: "You (Clinician)",
-                  body,
-                  photos: [],
-                  sentAtIso: new Date().toISOString(),
-                },
-              ],
-            }
-          : null
-      );
+      await threadQuery.refetch();
     } catch (err: any) {
       setToast({ message: err?.message || "Your reply did not send. Please try again.", tone: "error" });
     }
   };
+
+  if (activeThread) {
+    const pageMeta = threadQuery.data?.pages[0];
+    return (
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      >
+        {toast ? <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} /> : null}
+
+        <View style={styles.conversationHeader}>
+          <Button title="Back" variant="ghost" size="sm" onPress={() => setActiveThread(null)} />
+          <View style={styles.drawerHeaderLeft}>
+            <ThemedText variant="subhead" numberOfLines={1}>
+              {activeThread.from}
+            </ThemedText>
+            <ThemedText variant="caption" style={styles.drawerSubject} numberOfLines={1}>
+              {pageMeta?.subject || activeThread.subject}
+            </ThemedText>
+          </View>
+        </View>
+
+        {threadQuery.isLoading ? (
+          <View style={[styles.scrollContent, styles.stack]}>
+            <Skeleton height={64} />
+            <Skeleton height={64} />
+          </View>
+        ) : threadQuery.isError && threadQuery.data === undefined ? (
+          <View style={styles.scrollContent}>
+            <ErrorState
+              message="We couldn't load this conversation. Check your connection and try again."
+              onRetry={() => threadQuery.refetch()}
+            />
+          </View>
+        ) : (
+          <ScrollView ref={scroller} style={styles.messagesList} contentContainerStyle={styles.messagesListContent}>
+            {threadQuery.hasNextPage ? (
+              <Button
+                title={threadQuery.isFetchingNextPage ? "Loading…" : "Show earlier messages"}
+                variant="ghost"
+                size="sm"
+                loading={threadQuery.isFetchingNextPage}
+                onPress={() => threadQuery.fetchNextPage()}
+              />
+            ) : null}
+            {activeMessages.map((m) => {
+              const isClinician = m.senderRole === "clinician" || m.senderRole === "admin";
+              return (
+                <View
+                  key={m.id}
+                  style={[styles.bubbleContainer, isClinician ? styles.bubbleClinician : styles.bubblePatient]}
+                >
+                  <ThemedText variant="caption" style={[styles.bubbleSender, isClinician && styles.bubbleMetaOnInk]}>
+                    {m.senderName}
+                  </ThemedText>
+                  {m.body ? (
+                    <ThemedText variant="body" style={isClinician ? styles.bubbleTextClinician : styles.bubbleTextPatient}>
+                      {m.body}
+                    </ThemedText>
+                  ) : null}
+                  {m.photos.map((url) => (
+                    <Image
+                      key={url}
+                      source={{ uri: url }}
+                      style={styles.photo}
+                      contentFit="cover"
+                      accessibilityLabel="Photo from the patient"
+                    />
+                  ))}
+                  <ThemedText variant="caption" style={[styles.bubbleTime, isClinician && styles.bubbleMetaOnInk]}>
+                    {new Date(m.sentAtIso).toLocaleString("en-GB", {
+                      timeZone: PRACTICE_TIME_ZONE,
+                      day: "numeric",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </ThemedText>
+                </View>
+              );
+            })}
+          </ScrollView>
+        )}
+
+        <View style={[styles.replyComposer, { paddingBottom: Math.max(spacing.sm, insets.bottom) }]}>
+          <View style={styles.composerRow}>
+            <View style={styles.composerInput}>
+              <Input
+                label=""
+                placeholder="Write a reply to the patient…"
+                accessibilityLabel="Reply to the patient"
+                value={replyText}
+                onChangeText={setReplyText}
+                multiline
+                maxLength={4000}
+              />
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Send reply"
+              onPress={handleSendReply}
+              disabled={!replyText.trim() || replyMutation.isPending}
+              style={({ pressed }) => [
+                styles.sendBtn,
+                pressed && { opacity: 0.8 },
+                (!replyText.trim() || replyMutation.isPending) && styles.sendBtnDisabled,
+              ]}
+            >
+              <AppIcon name="arrowRight" size={18} color={colors.onInk} />
+            </Pressable>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -177,7 +322,6 @@ export default function ClinicianInboxScreen() {
       <FlatList
         data={!isLoading && !(isError && rawThreads === undefined) ? filteredThreads : []}
         keyExtractor={(t) => t.id}
-        extraData={activeThread?.id}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
@@ -186,55 +330,48 @@ export default function ClinicianInboxScreen() {
         }}
         onEndReachedThreshold={0.5}
         renderItem={({ item: t }) => {
-      const unread = !t.isRead;
-      const isSelected = activeThread?.id === t.id;
-      return (
-        <Pressable
-          key={t.id}
-          accessibilityRole="button"
-          accessibilityLabel={`Message from ${t.from}: ${t.subject}`}
-          onPress={() => openThread(t)}
-          style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
-        >
-          <Card
-           
-            style={[
-              styles.threadCard,
-              unread && styles.threadCardUnread,
-              isSelected && styles.threadCardSelected,
-            ]}
-          >
-            <View style={styles.avatarTile}>
-              <AppIcon name="message" size={18} color={unread ? colors.onInk : colors.ink} />
-            </View>
-            <View style={styles.threadInfo}>
-              <View style={styles.threadTop}>
-                <ThemedText variant="subhead" style={styles.threadPatient} numberOfLines={1}>
-                  {t.from}
-                </ThemedText>
-                <ThemedText variant="caption" style={styles.threadTime}>
-                  {new Date(t.sentAtIso).toLocaleDateString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </ThemedText>
-              </View>
-              <ThemedText
-                variant="body"
-                style={unread ? styles.threadSubjectUnread : styles.threadSubject}
-                numberOfLines={1}
-              >
-                {t.subject}
-              </ThemedText>
-              <ThemedText variant="caption" style={styles.threadPreview} numberOfLines={2}>
-                {t.preview}
-              </ThemedText>
-            </View>
-            {unread ? <View style={styles.unreadDot} /> : null}
-          </Card>
-        </Pressable>
+          const unread = !t.isRead;
+          return (
+            <Pressable
+              key={t.id}
+              accessibilityRole="button"
+              accessibilityLabel={`Message from ${t.from}: ${t.subject}`}
+              onPress={() => openThread(t)}
+              style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
+            >
+              <Card style={[styles.threadCard, unread && styles.threadCardUnread]}>
+                <View style={styles.avatarTile}>
+                  <AppIcon name="message" size={18} color={unread ? colors.onInk : colors.ink} />
+                </View>
+                <View style={styles.threadInfo}>
+                  <View style={styles.threadTop}>
+                    <ThemedText variant="subhead" style={styles.threadPatient} numberOfLines={1}>
+                      {t.from}
+                    </ThemedText>
+                    <ThemedText variant="caption" style={styles.threadTime}>
+                      {new Date(t.sentAtIso).toLocaleDateString("en-GB", {
+                        timeZone: PRACTICE_TIME_ZONE,
+                        day: "numeric",
+                        month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </ThemedText>
+                  </View>
+                  <ThemedText
+                    variant="body"
+                    style={unread ? styles.threadSubjectUnread : styles.threadSubject}
+                    numberOfLines={1}
+                  >
+                    {t.subject}
+                  </ThemedText>
+                  <ThemedText variant="caption" style={styles.threadPreview} numberOfLines={2}>
+                    {t.preview}
+                  </ThemedText>
+                </View>
+                {unread ? <View style={styles.unreadDot} /> : null}
+              </Card>
+            </Pressable>
           );
         }}
         ListEmptyComponent={
@@ -259,84 +396,6 @@ export default function ClinicianInboxScreen() {
           )
         }
       />
-
-      {/* Conversation / Reply Modal or Bottom Sheet */}
-      {activeThread ? (
-        <View style={styles.conversationDrawer}>
-          <View style={styles.drawerHeader}>
-            <View style={styles.drawerHeaderLeft}>
-              <ThemedText variant="subhead" numberOfLines={1}>
-                {activeThread.from}
-              </ThemedText>
-              <ThemedText variant="caption" style={styles.drawerSubject} numberOfLines={1}>
-                {activeThread.subject}
-              </ThemedText>
-            </View>
-            <Button title="Close" variant="ghost" size="sm" onPress={() => setActiveThread(null)} />
-          </View>
-
-          {/* Messages list */}
-          <ScrollView style={styles.messagesList} contentContainerStyle={styles.messagesListContent}>
-            {activeThread.messages.map((m) => {
-              const isClinician = m.senderRole === "clinician" || m.senderRole === "admin";
-              return (
-                <View
-                  key={m.id}
-                  style={[styles.bubbleContainer, isClinician ? styles.bubbleClinician : styles.bubblePatient]}
-                >
-                  <ThemedText variant="caption" style={[styles.bubbleSender, isClinician && styles.bubbleMetaOnInk]}>
-                    {m.senderName}
-                  </ThemedText>
-                  {m.body ? (
-                    <ThemedText variant="body" style={isClinician ? styles.bubbleTextClinician : styles.bubbleTextPatient}>
-                      {m.body}
-                    </ThemedText>
-                  ) : null}
-                  {m.photos.map((url) => (
-                    <Image key={url} source={{ uri: url }} style={{ borderRadius: radius.md, height: 200, width: 240 }} contentFit="cover" accessibilityLabel="Photo from the patient" />
-                  ))}
-                  <ThemedText variant="caption" style={[styles.bubbleTime, isClinician && styles.bubbleMetaOnInk]}>
-                    {new Date(m.sentAtIso).toLocaleTimeString("en-GB", { timeZone: PRACTICE_TIME_ZONE,
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </ThemedText>
-                </View>
-              );
-            })}
-          </ScrollView>
-
-          {/* Reply Input */}
-          <View style={styles.replyComposer}>
-            <View style={styles.composerRow}>
-              <View style={styles.composerInput}>
-                <Input
-                  label=""
-                  placeholder="Write a reply to the patient…"
-                  accessibilityLabel="Reply to the patient"
-                  value={replyText}
-                  onChangeText={setReplyText}
-                  multiline
-                  maxLength={4000}
-                />
-              </View>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Send reply"
-                onPress={handleSendReply}
-                disabled={!replyText.trim() || replyMutation.isPending}
-                style={({ pressed }) => [
-                  styles.sendBtn,
-                  pressed && { opacity: 0.8 },
-                  (!replyText.trim() || replyMutation.isPending) && styles.sendBtnDisabled,
-                ]}
-              >
-                <AppIcon name="arrowRight" size={18} color={colors.onInk} />
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -397,9 +456,6 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     borderWidth: 1.5,
   },
-  threadCardSelected: {
-    backgroundColor: colors.inkSubtle,
-  },
   avatarTile: {
     alignItems: "center",
     backgroundColor: colors.inkSubtle,
@@ -443,20 +499,15 @@ const styles = StyleSheet.create({
     height: 8,
     width: 8,
   },
-  conversationDrawer: {
-    backgroundColor: colors.systemBackground,
-    borderTopColor: colors.separator,
-    borderTopWidth: 1,
-    maxHeight: "55%",
-    padding: spacing.md,
-  },
-  drawerHeader: {
+  conversationHeader: {
     alignItems: "center",
+    backgroundColor: colors.systemBackground,
     borderBottomColor: colors.separator,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingBottom: spacing.sm,
+    gap: spacing.sm,
+    paddingHorizontal: spacing.gutter,
+    paddingVertical: spacing.sm,
   },
   drawerHeaderLeft: {
     flex: 1,
@@ -465,11 +516,12 @@ const styles = StyleSheet.create({
     color: colors.secondaryLabel,
   },
   messagesList: {
-    maxHeight: 200,
-    marginVertical: spacing.sm,
+    flex: 1,
   },
   messagesListContent: {
     gap: spacing.sm,
+    paddingHorizontal: spacing.gutter,
+    paddingVertical: spacing.md,
   },
   bubbleContainer: {
     borderRadius: radius.md,
@@ -495,6 +547,12 @@ const styles = StyleSheet.create({
   bubbleTextClinician: {
     color: colors.onInk,
   },
+  photo: {
+    borderRadius: radius.md,
+    height: 200,
+    marginTop: spacing.xxs,
+    width: 240,
+  },
   bubbleTime: {
     alignSelf: "flex-end",
     color: colors.tertiaryLabel,
@@ -502,8 +560,10 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   replyComposer: {
+    backgroundColor: colors.background,
     borderTopColor: colors.separator,
     borderTopWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: spacing.gutter,
     paddingTop: spacing.xs,
   },
   composerRow: {

@@ -287,20 +287,17 @@ website. Booking for a child (plan 13) is assumed to land separately and before 
 Checked against the code on `main` (e527fb9) by search, not by running the app. A "done" below means the code for it
 exists; none of it has been proved on a real phone (phase 6 is still open).
 
-**Done (code present):** V1, V2, V3, V4, V5, V7, V8, V10, V11, V12, V13, V15, V16, V17, V18, V20, V21, V23, V24 to V30,
-V31, V32, V33, V34, V36, V38, V39, V43, V44, V45 (message list refetches every 30 seconds and on app focus), V46, V47,
-V48, V49, V51, V53 to V58, V60.
+**Done (code present):** V1, V2, V3, V4, V5, V6, V7, V8, V10, V11, V12, V13, V15, V16, V17, V18, V20, V21, V23, V24 to V30,
+V31, V32, V33, V34, V36, V38, V39, V40, V41, V43, V44, V45 (message list refetches every 30 seconds and on app focus), V46, V47,
+V48, V49, V50, V51, V52, V53 to V58, V60.
 
 **Not built, can start now (no decision needed):**
 
 | ID | What is missing |
 |---|---|
-| V50 | Mostly done. Server: `?view=summary` and `GET /api/messages/:id` (paged). App: the patient list and tab badge use the summary list; the patient conversation screen loads one paged conversation with "Show earlier messages". Left: the dentist's Inbox still loads the full list; it moves over with its rebuild (V52). |
 | V19 | Half done. A speaker / earpiece button on the call screen (the call library's video and voice modes); a connected Bluetooth headset is taken by the OS, not chosen in the app. Not built or tested: what happens when a phone call arrives mid-consult. Needs a real phone. |
 | V22 | Backgrounding mid-call on iOS is not handled or tested. |
 | V37 | No "next available" in the slot picker; step counter and hold-expiry handling unchecked. |
-| V40 | No week view of video bookings for dentists. |
-| V41 | Mostly done. `GET /api/admin/appointments/:id/video-activity` and a "Call and notices" panel on each video row of the dashboard's App appointments screen: whether the call took place, when the patient reported in, was let in and the call ended, the pushes and reminders recorded for the visit with their delivery status, and the size of the conversation (never its text). Emails are now recorded too (V6), so they appear from then on. Left: call times come from the existing visit record, not from Daily (phase 2 presence). |
 | V42 | Colours done (theme tokens `callStage`, `callControl`, `callControlSubtle`). The wider design pass on the call screen (screen-reader walk-through, largest font size) is still open. |
 
 **Blocked on the owner:** V14 (no-show rule and refunds, decision 5), V35 (clinician wording), V59 (clinician wording),

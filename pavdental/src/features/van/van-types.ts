@@ -79,6 +79,7 @@ export type VanServiceRequest = {
   requestedAt: string;
   expiresAt: string;
   acceptedAt?: string | null;
+  arrivedAt?: string | null;
   treatmentStartedAt?: string | null;
   completedAt?: string | null;
   etaSecondsSnapshot?: number | null;

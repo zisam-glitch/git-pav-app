@@ -16,7 +16,7 @@ import { postToAppointmentThread, consultSummaryText } from "../lib/appointment-
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
 import { logger } from "../lib/structured-logging";
-import { isPlaceholderCredential } from "../config/placeholder";
+import { env } from "../config/env";
 import { logFailure } from "../lib/best-effort";
 import {
   withLockedAppointment,
@@ -31,12 +31,6 @@ import { sendPatientNotification } from "../lib/patient-push";
 const router = Router();
 
 export const VIDEO_QUEUE_LIMIT = 50;
-
-// A missing or template key (`replace_with_daily_api_key`) means video is
-// not set up, so rooms are refused rather than requested with a junk key.
-const DAILY_API_KEY = isPlaceholderCredential(process.env.DAILY_API_KEY)
-  ? "daily_dev_placeholder"
-  : process.env.DAILY_API_KEY!.trim();
 
 const ALLOWED_IMAGE_MIMES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
@@ -66,7 +60,7 @@ const ROOM_LATE_LIMIT_MS = 2 * 60 * 60 * 1000;
 const roomNameFor = (appointmentId: string) => `pav-${appointmentId}`;
 
 async function getOrCreatePrivateRoom(name: string, expSeconds: number) {
-  const headers = { Authorization: `Bearer ${DAILY_API_KEY}` };
+  const headers = { Authorization: `Bearer ${env.dailyApiKey}` };
   try {
     return await dailyApiClient.get<{ name: string; url: string; privacy?: string }>(`/rooms/${name}`, { headers });
   } catch (err: any) {
@@ -124,7 +118,7 @@ router.post("/rooms", requireAuth, validateBody(createVideoRoomSchema), async (r
     return res.status(409).json({ error: "Your clinician hasn't let you in yet. Please wait in the waiting room." });
   }
 
-  if (DAILY_API_KEY === "daily_dev_placeholder" || !DAILY_API_KEY) {
+  if (env.dailyApiKey === "daily_dev_placeholder" || !env.dailyApiKey) {
     return res.status(503).json({ error: "Video consultations aren't set up yet. Please contact the practice." });
   }
 
@@ -144,7 +138,7 @@ router.post("/rooms", requireAuth, validateBody(createVideoRoomSchema), async (r
           eject_at_token_exp: true,
         },
       },
-      { headers: { Authorization: `Bearer ${DAILY_API_KEY}` } }
+      { headers: { Authorization: `Bearer ${env.dailyApiKey}` } }
     );
 
     await prisma.appointment.update({
@@ -754,7 +748,7 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
 
   // Close the Daily room so the other person is not left in an open call (V27).
   await dailyApiClient
-    .delete(`/rooms/${roomNameFor(appointmentId)}`, { headers: { Authorization: `Bearer ${DAILY_API_KEY}` } })
+    .delete(`/rooms/${roomNameFor(appointmentId)}`, { headers: { Authorization: `Bearer ${env.dailyApiKey}` } })
     .catch((err: { statusCode?: number }) => {
       if (err?.statusCode !== 404) logFailure("close daily room")(err);
     });

@@ -50,10 +50,7 @@ const stripe = new Stripe(env.stripeSecretKey, {
 
 // Max metres between the patient's GPS fix and the postcode centroid before
 // the request is rejected as inconsistent (see create-request flow).
-const POSTCODE_DISTANCE_TOLERANCE_M = parseInt(
-  process.env.VAN_POSTCODE_TOLERANCE_M ?? "1000",
-  10
-);
+const POSTCODE_DISTANCE_TOLERANCE_M = env.vanPostcodeToleranceM;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

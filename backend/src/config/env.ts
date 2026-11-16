@@ -465,6 +465,13 @@ export const env = Object.freeze({
     return readOptional("TWILIO_VERIFY_SERVICE_SID");
   },
   dailyDomain: readOptional("DAILY_DOMAIN") ?? "https://api.daily.co/v1",
+  // A missing or template key (`replace_with_daily_api_key`) means video is
+  // not set up, so rooms are refused rather than requested with a junk key.
+  // Runtime getter so tests that set DAILY_API_KEY after import are respected.
+  get dailyApiKey(): string {
+    const raw = readOptional("DAILY_API_KEY");
+    return isPlaceholderCredential(raw) ? "daily_dev_placeholder" : raw!;
+  },
   // Routing & van fleet settings
   googleRoutesApiKey: readOptional("GOOGLE_ROUTES_API_KEY") ?? readOptional("GOOGLE_MAP_API") ?? "",
   mapboxToken: readOptional("MAPBOX_TOKEN") ?? "",
@@ -485,6 +492,7 @@ export const env = Object.freeze({
   vanNoShowWaitMinutes: readNonNegativeInt("VAN_NO_SHOW_WAIT_MINUTES", 10),
   etaPushDriftMinutes: readInt("ETA_PUSH_DRIFT_MINUTES", 5),
   etaPushThrottleMinutes: readInt("ETA_PUSH_THROTTLE_MINUTES", 10),
+  vanPostcodeToleranceM: readInt("VAN_POSTCODE_TOLERANCE_M", 1000),
   minAppVersion: readOptional("MIN_APP_VERSION"),
   appStoreUrl: readOptional("APP_STORE_URL"),
   // Where patients read about payment plans. Credit decisions are made by the

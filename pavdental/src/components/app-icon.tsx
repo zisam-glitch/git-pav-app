@@ -10,7 +10,7 @@ import { colors } from "@/theme";
 
 // One require per glyph: the package index loads all ~1,000 icons, and Metro
 // doesn't tree-shake, so importing from it would bundle every one.
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires -- reason: per-glyph CJS require avoids bundling all ~1,000 icons in Metro (which does not tree-shake) */
 const ICONS = {
   ChemicalGlass: require("iconsax-react-native/dist/cjs/ChemicalGlass.js"),
   Hospital: require("iconsax-react-native/dist/cjs/Hospital.js"),

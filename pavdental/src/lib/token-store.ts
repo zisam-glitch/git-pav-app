@@ -1,5 +1,4 @@
-// Native modules are loaded lazily so this file also runs in the Node tests.
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires -- reason: native modules are loaded lazily in try/catch so this file also runs in Node tests */
 let Platform: any = { OS: "web" };
 try {
   Platform = require("react-native").Platform ?? require("react-native-web").Platform;
@@ -17,6 +16,7 @@ try {
 } catch {
   // Not available on this platform.
 }
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 // ─── SecureStore key constants ────────────────────────────────────────────────
 // NEVER store access tokens here — they live in memory only.

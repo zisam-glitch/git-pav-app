@@ -1,5 +1,4 @@
-// Native modules are loaded lazily so this file also runs in the Node tests.
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires -- reason: native modules are loaded lazily in try/catch so this file also runs in Node tests */
 import { onlineManager } from "@tanstack/react-query";
 import { create } from "zustand";
 import { API_URL } from "../config/api";
@@ -21,6 +20,7 @@ try {
   // Not available on this platform.
 }
 }
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 interface NetworkState {
   isConnected: boolean;

@@ -30,7 +30,7 @@ const entries = [...registry.matchAll(/^\s+(\w+): \(\) => require\("\.\/art\/([\
 assert(entries.length >= 10, `registry lists the illustrations (${entries.length})`);
 
 for (const { name, file } of entries) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires -- reason: dynamic path to each illustration art module in Node test
   const xml: string = require(join(dir, "art", file)).default;
   assert(xml.startsWith("<svg") && xml.endsWith("</svg>"), `${name}: ${file} is one SVG`);
   const tokens = [...new Set([...xml.matchAll(/\{(\w+)\}/g)].map((m) => m[1]))];

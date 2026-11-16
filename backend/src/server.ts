@@ -55,7 +55,7 @@ import { describeRoutingProvider } from "./lib/van-eta";
 const app = express();
 const PORT = env.port;
 // Behind a load balancer req.ip is the balancer unless the hop count is set.
-app.set("trust proxy", parseTrustProxy(process.env.TRUST_PROXY));
+app.set("trust proxy", parseTrustProxy(env.trustProxy));
 
 // ─── Security & parsing ───────────────────────────────────────────────────────
 app.use(helmet());

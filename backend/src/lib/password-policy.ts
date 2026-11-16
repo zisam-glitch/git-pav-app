@@ -18,6 +18,7 @@
  * Set PASSWORD_BREACH_CHECK=off to turn the network check off.
  */
 import { createHash } from "crypto";
+import { env } from "../config/env";
 
 export const MIN_PASSWORD_LENGTH = 15;
 export const MAX_PASSWORD_LENGTH = 128;
@@ -103,7 +104,7 @@ export async function isBreachedPassword(
   fetchImpl: typeof fetch = fetch,
   timeoutMs = 2000
 ): Promise<boolean> {
-  if (process.env.PASSWORD_BREACH_CHECK === "off" || process.env.NODE_ENV === "test") return false;
+  if (!env.passwordBreachCheckEnabled) return false;
   try {
     const sha1 = createHash("sha1").update(password).digest("hex").toUpperCase();
     const res = await fetchImpl(`https://api.pwnedpasswords.com/range/${sha1.slice(0, 5)}`, {

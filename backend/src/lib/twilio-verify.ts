@@ -14,6 +14,7 @@
  * the code (CS-1).
  */
 import { maskPhone } from "./log-safety";
+import { env as appEnv } from "../config/env";
 
 const VERIFY_BASE = "https://verify.twilio.com/v2/Services";
 const TIMEOUT_MS = 6000;
@@ -25,10 +26,10 @@ export interface VerifyConfig {
 }
 
 /** The three settings, or null when phone codes should not go through Verify. */
-export function verifyConfigFromEnv(env: NodeJS.ProcessEnv = process.env): VerifyConfig | null {
-  const accountSid = env.TWILIO_ACCOUNT_SID?.trim();
-  const authToken = env.TWILIO_AUTH_TOKEN?.trim();
-  const serviceSid = env.TWILIO_VERIFY_SERVICE_SID?.trim();
+export function verifyConfigFromEnv(env?: NodeJS.ProcessEnv): VerifyConfig | null {
+  const accountSid = env ? env.TWILIO_ACCOUNT_SID?.trim() : appEnv.twilioAccountSid;
+  const authToken = env ? env.TWILIO_AUTH_TOKEN?.trim() : appEnv.twilioAuthToken;
+  const serviceSid = env ? env.TWILIO_VERIFY_SERVICE_SID?.trim() : appEnv.twilioVerifyServiceSid;
   if (!accountSid || !authToken || !serviceSid) return null;
   // A Verify service ID is "VA" and 32 hex characters; anything else is a placeholder.
   if (!/^VA[0-9a-fA-F]{32}$/.test(serviceSid)) return null;

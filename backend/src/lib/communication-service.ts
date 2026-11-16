@@ -32,11 +32,11 @@ export class CommunicationService {
   private twilioFrom?: string;
 
   constructor() {
-    this.postmarkToken = process.env.POSTMARK_SERVER_TOKEN?.trim();
-    this.fromEmail = process.env.FROM_EMAIL?.trim() || "noreply@pavdental.com";
-    this.twilioSid = process.env.TWILIO_ACCOUNT_SID?.trim();
-    this.twilioToken = process.env.TWILIO_AUTH_TOKEN?.trim();
-    this.twilioFrom = process.env.TWILIO_FROM_PHONE?.trim();
+    this.postmarkToken = env.postmarkServerToken;
+    this.fromEmail = env.fromEmail;
+    this.twilioSid = env.twilioAccountSid;
+    this.twilioToken = env.twilioAuthToken;
+    this.twilioFrom = env.twilioFromPhone;
   }
 
   async sendEmail(options: SendEmailOptions): Promise<{ success: boolean; messageId?: string }> {
@@ -153,7 +153,7 @@ export class CommunicationService {
   async sendVerificationEmail(email: string, token: string, code?: string): Promise<boolean> {
     // With a short code, people type that; the long token only rides in the link.
     const shownCode = code ? formatEmailCode(code) : token;
-    const appUrl = process.env.APP_URL || "http://localhost:8081";
+    const appUrl = env.appUrl;
     const verificationUrl = `${appUrl}/verify-email?token=${encodeURIComponent(token)}`;
 
     const html = `
@@ -185,7 +185,7 @@ export class CommunicationService {
   }
 
   async sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
-    const appUrl = process.env.APP_URL || "http://localhost:8081";
+    const appUrl = env.appUrl;
     const resetUrl = `${appUrl}/reset-password?token=${encodeURIComponent(token)}`;
 
     const html = `
@@ -216,7 +216,7 @@ export class CommunicationService {
 
   /** A new staff member sets their own password from this link. */
   async sendStaffInviteEmail(email: string, token: string, roleLabel: string): Promise<boolean> {
-    const appUrl = process.env.APP_URL || "http://localhost:8081";
+    const appUrl = env.appUrl;
     const setUrl = `${appUrl}/reset-password?token=${encodeURIComponent(token)}`;
 
     const html = `

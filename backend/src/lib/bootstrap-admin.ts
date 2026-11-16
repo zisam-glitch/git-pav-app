@@ -20,6 +20,7 @@ import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
 import { maskEmail } from "./log-safety";
+import { env as appEnv } from "../config/env";
 
 const INVITE_TTL_MS = 72 * 60 * 60 * 1000;
 
@@ -72,8 +73,8 @@ export async function createFirstAdmin(rawEmail: string | undefined, source: str
 }
 
 /** Server startup: act on BOOTSTRAP_ADMIN_EMAIL, never throw, log only a masked address. */
-export async function bootstrapAdminFromEnv(env: NodeJS.ProcessEnv = process.env): Promise<void> {
-  const email = env.BOOTSTRAP_ADMIN_EMAIL?.trim();
+export async function bootstrapAdminFromEnv(env?: NodeJS.ProcessEnv): Promise<void> {
+  const email = env ? env.BOOTSTRAP_ADMIN_EMAIL?.trim() : appEnv.bootstrapAdminEmail;
   if (!email) return;
   try {
     const result = await createFirstAdmin(email, "BOOTSTRAP_ADMIN_EMAIL");

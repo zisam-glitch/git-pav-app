@@ -11,11 +11,7 @@
 
 import { prisma } from "./prisma";
 import { chainLegSeconds, Point } from "./van-eta";
-
-const minutesFromEnv = (name: string, fallback: number) => {
-  const parsed = parseInt(process.env[name] ?? "", 10);
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
-};
+import { env } from "../config/env";
 
 /**
  * The figures the plan is built from (N10). One place, not three files.
@@ -23,9 +19,9 @@ const minutesFromEnv = (name: string, fallback: number) => {
  * time between finishing one visit and setting off for the next.
  */
 export const VAN_PLAN_SETTINGS = {
-  defaultTreatmentMinutes: minutesFromEnv("VAN_DEFAULT_TREATMENT_MINUTES", 45),
-  gapMinutes: minutesFromEnv("VAN_GAP_MINUTES", 10),
-  setupMinutes: minutesFromEnv("VAN_SETUP_MINUTES", 0),
+  defaultTreatmentMinutes: env.vanDefaultTreatmentMinutes,
+  gapMinutes: env.vanGapMinutes,
+  setupMinutes: env.vanSetupMinutes,
 };
 export type VanPlanSettings = typeof VAN_PLAN_SETTINGS;
 

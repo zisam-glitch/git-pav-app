@@ -58,9 +58,9 @@ export default function VanConfirmScreen() {
         // Mock-Stripe backend (or no deposit configured) — straight to tracking.
         store.setActiveRequestId(request.id);
         router.replace({
-          pathname: "/(patient)/van/live-track" as any,
+          pathname: "/(patient)/van/live-track",
           params: { requestId: request.id },
-        });
+        } as never);
         return;
       }
 
@@ -72,10 +72,10 @@ export default function VanConfirmScreen() {
       // Authorized. The webhook stamps the request server-side.
       store.setActiveRequestId(request.id);
       router.replace({
-        pathname: "/(patient)/van/live-track" as any,
+        pathname: "/(patient)/van/live-track",
         params: { requestId: request.id },
-      });
-    } catch (err: any) {
+      } as never);
+    } catch (err: unknown) {
       if (err instanceof DepositCanceledError) {
         // Patient dismissed the sheet — offer retry or release the hold.
         Alert.alert(
@@ -101,7 +101,7 @@ export default function VanConfirmScreen() {
 
       Alert.alert(
         "Request Failed",
-        err?.message || "Could not dispatch van. Check that a van is online in your area."
+        err instanceof Error ? err.message : "Could not dispatch van. Check that a van is online in your area."
       );
     } finally {
       setIsSubmitting(false);
@@ -118,9 +118,9 @@ export default function VanConfirmScreen() {
       if (retry.alreadyAuthorized || !retry.clientSecret) {
         store.setActiveRequestId(requestId);
         router.replace({
-          pathname: "/(patient)/van/live-track" as any,
+          pathname: "/(patient)/van/live-track",
           params: { requestId },
-        });
+        } as never);
         return;
       }
       await presentVanDepositSheet(retry.clientSecret, {
@@ -129,16 +129,16 @@ export default function VanConfirmScreen() {
       }, retry);
       store.setActiveRequestId(requestId);
       router.replace({
-        pathname: "/(patient)/van/live-track" as any,
+        pathname: "/(patient)/van/live-track",
         params: { requestId },
-      });
+      } as never);
     } catch {
       // Still not authorized — the live-track banner offers another retry.
       store.setActiveRequestId(requestId);
       router.replace({
-        pathname: "/(patient)/van/live-track" as any,
+        pathname: "/(patient)/van/live-track",
         params: { requestId },
-      });
+      } as never);
     } finally {
       setIsSubmitting(false);
     }

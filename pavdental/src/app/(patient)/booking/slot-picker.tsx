@@ -34,7 +34,7 @@ export default function SlotPickerScreen() {
   }, [navigation]);
   useEffect(() => {
     if (!service && isFocused) {
-      router.replace("/(patient)/booking/service-catalog" as any);
+      router.replace("/(patient)/booking/service-catalog" as never);
     }
   }, [service, isFocused]);
 
@@ -90,14 +90,12 @@ export default function SlotPickerScreen() {
     if (clinic && slot.clinicId && slot.clinicId !== clinic.id) return false;
     if (!slot.isAvailable) return false;
     // MB-3: defense-in-depth hide slots that have already passed in device time
-    const startIso = slot.startTimeUtc || (slot as any).start_time_utc;
-    if (startIso && new Date(startIso).getTime() <= Date.now()) return false;
+    if (slot.startTimeUtc && new Date(slot.startTimeUtc).getTime() <= Date.now()) return false;
     return true;
   });
 
   const hourOf = (slot: TimeSlot) => {
-    const iso = (slot as any).startTimeUtc || (slot as any).start_time_utc;
-    if (iso) return ukHour(new Date(iso));
+    if (slot.startTimeUtc) return ukHour(new Date(slot.startTimeUtc));
     const [h] = String(slot.displayTime || "").split(":");
     return Number(h) || 0;
   };
@@ -125,9 +123,9 @@ export default function SlotPickerScreen() {
     try {
       const res = await holdMutation.mutateAsync(selectedSlot.id);
       setHoldExpiry(holdExpiryOnThisPhone(res));
-      router.push("/(patient)/booking/summary" as any);
-    } catch (err: any) {
-      setHoldError(err?.message || "Could not reserve this slot. Please try another time.");
+      router.push("/(patient)/booking/summary" as never);
+    } catch (err: unknown) {
+      setHoldError(err instanceof Error ? err.message : "Could not reserve this slot. Please try another time.");
     }
   };
 

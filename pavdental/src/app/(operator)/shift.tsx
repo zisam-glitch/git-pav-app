@@ -55,7 +55,7 @@ export default function OperatorShiftScreen() {
       queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
       Alert.alert("Shift Started", "Your van is now online and accepting requests.");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Could Not Start Shift", err.message || "Failed to start shift");
     },
   });
@@ -66,7 +66,7 @@ export default function OperatorShiftScreen() {
       queryClient.invalidateQueries({ queryKey: ["operator-shift"] });
       Alert.alert("Shift Ended", "Your van is now offline.");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Cannot End Shift", err.message || "Failed to end shift");
     },
   });
@@ -213,7 +213,7 @@ export default function OperatorShiftScreen() {
                 title="Review"
               arrow
                 size="sm"
-                onPress={() => router.push("/(operator)/incoming" as any)}
+                onPress={() => router.push("/(operator)/incoming" as never)}
               />
             </View>
           </Card>
@@ -230,7 +230,7 @@ export default function OperatorShiftScreen() {
               arrow
               variant="ghost"
               size="sm"
-              onPress={() => router.push("/(operator)/route" as any)}
+              onPress={() => router.push("/(operator)/route" as never)}
             />
           )}
         </View>
@@ -274,13 +274,13 @@ export default function OperatorShiftScreen() {
             title="View live queue route"
               arrow
             variant="secondary"
-            onPress={() => router.push("/(operator)/route" as any)}
+            onPress={() => router.push("/(operator)/route" as never)}
           />
           {incoming.length > 0 && (
             <Button
               title={`View ${incoming.length} incoming request${incoming.length === 1 ? "" : "s"}`}
               arrow
-              onPress={() => router.push("/(operator)/incoming" as any)}
+              onPress={() => router.push("/(operator)/incoming" as never)}
             />
           )}
         </View>

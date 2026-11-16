@@ -65,8 +65,8 @@ export default function OperatorRouteScreen() {
         ? { lat: shift.lastLat, lng: shift.lastLng }
         : undefined);
 
-    openDrivingDirections(destination, label, origin).catch((err: any) => {
-      Alert.alert("Navigation Failed", err?.message || "Could not open maps.");
+    openDrivingDirections(destination, label, origin).catch((err: unknown) => {
+      Alert.alert("Navigation Failed", err instanceof Error ? err.message : "Could not open maps.");
     });
   };
 
@@ -98,7 +98,7 @@ export default function OperatorRouteScreen() {
         );
       }
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Phase Update Failed", err.message || "Could not update stop phase");
     },
   });
@@ -110,7 +110,7 @@ export default function OperatorRouteScreen() {
       queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
       Alert.alert("Visit Cancelled", "The patient has been notified and their deposit will be refunded in full.");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Could Not Cancel", err.message || "Could not cancel this visit");
     },
   });
@@ -129,7 +129,7 @@ export default function OperatorRouteScreen() {
         result.noShowAllowed ? `${done} You can now mark a no-show.` : `${done} Before marking a no-show: ${left.join(", ")}.`
       );
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Not Recorded", err.message || "Could not record the contact attempt");
     },
   });
@@ -145,7 +145,7 @@ export default function OperatorRouteScreen() {
         result.message
       );
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Optimization Failed", err.message || "Could not optimize the route");
     },
   });
@@ -157,7 +157,7 @@ export default function OperatorRouteScreen() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       Alert.alert("Reorder Failed", err.message || "Could not reorder the queue");
       queryClient.invalidateQueries({ queryKey: queryKeys.van.operatorShift() });
     },
@@ -271,7 +271,7 @@ export default function OperatorRouteScreen() {
             <Button
               title="Go to shift console"
               variant="secondary"
-              onPress={() => router.push("/(operator)/shift" as any)}
+              onPress={() => router.push("/(operator)/shift" as never)}
             />
           </Card>
         ) : (
@@ -392,13 +392,13 @@ export default function OperatorRouteScreen() {
                           size="md"
                           onPress={() =>
                             router.push({
-                              pathname: "/(operator)/offline-capture" as any,
+                              pathname: "/(operator)/offline-capture",
                               params: {
                                 stopId: s.id,
                                 patientName,
                                 procedure: s.service?.name,
                               },
-                            })
+                            } as never)
                           }
                         />
                       )}
@@ -499,7 +499,7 @@ export default function OperatorRouteScreen() {
                     firstName: "Test",
                     lastName: "Patient",
                   });
-                  router.replace("/(patient)/(tabs)/home" as any);
+                  router.replace("/(patient)/(tabs)/home" as never);
                 }}
               />
               <Button
@@ -514,7 +514,7 @@ export default function OperatorRouteScreen() {
                     firstName: "Demo",
                     lastName: "Clinician",
                   });
-                  router.replace("/(clinician)/schedule" as any);
+                  router.replace("/(clinician)/schedule" as never);
                 }}
               />
             </View>

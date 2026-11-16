@@ -8,7 +8,7 @@ import { useCurrentUser } from "@/features/auth/auth-store";
 export default function DocumentVaultScreen() {
   const user = useCurrentUser();
   const userId = user?.id || "";
-  const { data: apiDocs, isLoading, isError, refetch } = useDocumentVault(userId);
+  const { data: apiDocs, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useDocumentVault(userId);
 
   const documents = apiDocs ?? [];
 
@@ -41,6 +41,11 @@ export default function DocumentVaultScreen() {
         data={showDocs ? documents : []}
         keyExtractor={(doc: { id: string }) => doc.id}
         contentContainerStyle={styles.content}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) fetchNextPage?.();
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isFetchingNextPage ? <Skeleton height={72} borderRadius={16} /> : null}
         ListHeaderComponent={
           <View style={styles.headerStack}>
         <View style={styles.header}>

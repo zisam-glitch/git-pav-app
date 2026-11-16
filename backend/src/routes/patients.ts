@@ -4,10 +4,11 @@ import { prisma } from "../lib/prisma";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 import { requirePatientRecordAccess, requireActiveAppointmentContext } from "../middleware/patient-access";
 import { ageInYears, DEPENDANT_MAX_AGE, parseIsoDate } from "../lib/age";
-import { validateParams, validateBody } from "../middleware/validate";
+import { validateParams, validateBody, validateQuery } from "../middleware/validate";
 import {
   patientIdParamsSchema,
   patientDocParamsSchema,
+  patientDocumentsQuerySchema,
   updatePatientProfileSchema,
   updateOdontogramSchema,
   createTreatmentPlanSchema,
@@ -618,15 +619,23 @@ router.post(
 );
 
 // ─── GET /api/patients/:id/documents ─────────────────────────────────────────
-router.get("/:id/documents", requireAuth, validateParams(patientIdParamsSchema), async (req: AuthRequest, res: Response) => {
-  const profile = await requirePatientRecordAccess(req, res);
-  if (!profile) return;
+router.get(
+  "/:id/documents",
+  requireAuth,
+  validateParams(patientIdParamsSchema),
+  validateQuery(patientDocumentsQuerySchema),
+  async (req: AuthRequest, res: Response) => {
+    const profile = await requirePatientRecordAccess(req, res);
+    if (!profile) return;
 
-  const docs = await prisma.documentVault.findMany({
-    where: { patientId: profile.id, ...visibleDocTypes(req) },
-    orderBy: { createdAt: "desc" },
-    take: LIST_CAPS.documents,
-  });
+    const { limit, offset } = req.query as unknown as { limit: number; offset: number };
+
+    const docs = await prisma.documentVault.findMany({
+      where: { patientId: profile.id, ...visibleDocTypes(req) },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: limit,
+      skip: offset,
+    });
 
   const result = await Promise.all(
     docs.map(async (d) => {

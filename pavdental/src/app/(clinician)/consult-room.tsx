@@ -38,7 +38,7 @@ export default function ClinicianConsultRoomScreen() {
   // The schedule has already loaded today's appointments with their triage
   // answers; read this one from there rather than from a single text param.
   const { data: todays } = useMyAppointments({ scope: "today" });
-  const appointment = (todays as any[] | undefined)?.find((a) => a.id === appointmentId);
+  const appointment = todays?.find((a) => a.id === appointmentId);
   const triage = triageSummary(appointment?.triageData, appointment?.intraoralPhotos);
   const chiefComplaint = triage.complaint || params.chiefComplaint?.trim() || null;
   // Links to the photos expire, so ask for fresh ones when the room opens.
@@ -96,8 +96,8 @@ export default function ClinicianConsultRoomScreen() {
         }) as unknown as Record<string, unknown>,
       );
       router.replace("/(clinician)/schedule");
-    } catch (err: any) {
-      setRoomError(err?.message || "Failed to end consultation");
+    } catch (err: unknown) {
+      setRoomError(err instanceof Error ? err.message : "Failed to end consultation");
     }
   };
 
@@ -108,8 +108,10 @@ export default function ClinicianConsultRoomScreen() {
       try {
         const nextRoom = await roomMutation.mutateAsync(appointmentId);
         setRoom(nextRoom);
-      } catch (err: any) {
-        setRoomError(err?.message || "Could not open the video room. Check your connection and try again.");
+      } catch (err: unknown) {
+        setRoomError(
+          err instanceof Error ? err.message : "Could not open the video room. Check your connection and try again."
+        );
       }
     }
     initRoom();
@@ -123,8 +125,11 @@ export default function ClinicianConsultRoomScreen() {
       await sendMessageMutation.mutateAsync({ appointmentId, body });
       setMessageText("");
       setMessageNote({ text: "Message sent to the patient.", failed: false });
-    } catch (err: any) {
-      setMessageNote({ text: err?.message || "Your message did not send. Please try again.", failed: true });
+    } catch (err: unknown) {
+      setMessageNote({
+        text: err instanceof Error ? err.message : "Your message did not send. Please try again.",
+        failed: true,
+      });
     }
   };
 
@@ -140,8 +145,8 @@ export default function ClinicianConsultRoomScreen() {
     try {
       await admitMutation.mutateAsync(appointmentId);
       setAdmitted(true);
-    } catch (err: any) {
-      setRoomError(err?.message || "Could not let the patient in. Please try again.");
+    } catch (err: unknown) {
+      setRoomError(err instanceof Error ? err.message : "Could not let the patient in. Please try again.");
     }
   };
 
@@ -181,12 +186,12 @@ export default function ClinicianConsultRoomScreen() {
 
   const handleEndAndPrescribe = () => {
     router.push({
-      pathname: "/(clinician)/rx-dispense" as any,
+      pathname: "/(clinician)/rx-dispense",
       params: {
         patientName,
         appointmentId,
       },
-    });
+    } as never);
   };
 
   if (!appointmentId) {

@@ -17,6 +17,13 @@ import {
 } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
 import { fdiText } from "@/features/records/tooth-number";
+import type { ApiToothRecord, ApiTreatmentPlan } from "@/features/api-contract.gen";
+
+interface AppointmentNote {
+  diagnosis?: string | null;
+  notes?: string | null;
+  treatmentPlan?: string | null;
+}
 
 export default function ClinicianPatientRecordScreen() {
   const router = useRouter();
@@ -30,10 +37,10 @@ export default function ClinicianPatientRecordScreen() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [, setProfile] = useState<any>(null);
-  const [teeth, setTeeth] = useState<any[]>([]);
-  const [plans, setPlans] = useState<any[]>([]);
-  const [notes, setNotes] = useState<any>(null);
+  const [, setProfile] = useState<unknown>(null);
+  const [teeth, setTeeth] = useState<ApiToothRecord[]>([]);
+  const [plans, setPlans] = useState<ApiTreatmentPlan[]>([]);
+  const [notes, setNotes] = useState<AppointmentNote | null>(null);
   const [actionInProgress, setActionInProgress] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   // Parts of the record that did not load: shown as a warning, never as "empty".
@@ -64,8 +71,8 @@ export default function ClinicianPatientRecordScreen() {
       const [profData, odontData, planData, noteData] = await Promise.all([
         // A refused or failed profile load is shown as an error, not as an empty record.
         fetchPatientProfile(patientId),
-        soft("dental chart", fetchOdontogram(patientId), [] as any[]),
-        soft("treatment plans", fetchTreatmentPlans(patientId), [] as any[]),
+        soft("dental chart", fetchOdontogram(patientId), [] as ApiToothRecord[]),
+        soft("treatment plans", fetchTreatmentPlans(patientId), [] as ApiTreatmentPlan[]),
         appointmentId ? soft("examination notes", fetchAppointmentNotes(appointmentId), null) : null,
       ]);
       setProfile(profData);
@@ -74,8 +81,8 @@ export default function ClinicianPatientRecordScreen() {
       setNotes(noteData);
       setFailed(missed);
       loadedOnce.current = true;
-    } catch (err: any) {
-      setError(err?.message || "Failed to load clinical record");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to load clinical record");
     } finally {
       setLoading(false);
     }
@@ -193,9 +200,9 @@ export default function ClinicianPatientRecordScreen() {
                   chevron
                   onPress={() =>
                     router.push({
-                      pathname: "/(clinician)/odontogram-editor" as any,
+                      pathname: "/(clinician)/odontogram-editor",
                       params: { patientId, appointmentId, patientName },
-                    })
+                    } as never)
                   }
                 />
                 <ListRow
@@ -205,9 +212,9 @@ export default function ClinicianPatientRecordScreen() {
                   chevron
                   onPress={() =>
                     router.push({
-                      pathname: "/(clinician)/treatment-plan-builder" as any,
+                      pathname: "/(clinician)/treatment-plan-builder",
                       params: { patientId, appointmentId, patientName },
-                    })
+                    } as never)
                   }
                 />
                 <ListRow
@@ -217,9 +224,9 @@ export default function ClinicianPatientRecordScreen() {
                   chevron
                   onPress={() =>
                     router.push({
-                      pathname: "/(clinician)/appointment-notes" as any,
+                      pathname: "/(clinician)/appointment-notes",
                       params: { patientId, appointmentId, patientName },
-                    })
+                    } as never)
                   }
                 />
               </View>
@@ -255,9 +262,9 @@ export default function ClinicianPatientRecordScreen() {
                   variant="ghost"
                   onPress={() =>
                     router.push({
-                      pathname: "/(clinician)/appointment-notes" as any,
+                      pathname: "/(clinician)/appointment-notes",
                       params: { patientId, appointmentId, patientName },
-                    })
+                    } as never)
                   }
                 />
               </View>
@@ -313,9 +320,9 @@ export default function ClinicianPatientRecordScreen() {
                   variant="ghost"
                   onPress={() =>
                     router.push({
-                      pathname: "/(clinician)/odontogram-editor" as any,
+                      pathname: "/(clinician)/odontogram-editor",
                       params: { patientId, appointmentId, patientName },
-                    })
+                    } as never)
                   }
                 />
               </View>
@@ -329,7 +336,7 @@ export default function ClinicianPatientRecordScreen() {
                 </ThemedText>
               ) : (
                 <View style={styles.teethSummaryList}>
-                  {teeth.map((t: any) => (
+                  {teeth.map((t) => (
                     <View key={t.id || t.toothNumber} style={styles.toothChip}>
                       <ThemedText variant="headline" style={styles.toothNum}>
                         {fdiText(t.toothNumber)}
@@ -364,9 +371,9 @@ export default function ClinicianPatientRecordScreen() {
                   variant="ghost"
                   onPress={() =>
                     router.push({
-                      pathname: "/(clinician)/treatment-plan-builder" as any,
+                      pathname: "/(clinician)/treatment-plan-builder",
                       params: { patientId, appointmentId, patientName },
-                    })
+                    } as never)
                   }
                 />
               </View>
@@ -380,7 +387,7 @@ export default function ClinicianPatientRecordScreen() {
                 </ThemedText>
               ) : (
                 <View style={styles.planList}>
-                  {plans.map((p: any) => (
+                  {plans.map((p) => (
                     <View key={p.id} style={styles.planItem}>
                       <View style={styles.planHeader}>
                         <ThemedText variant="headline" style={styles.planTitle}>

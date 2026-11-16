@@ -26,6 +26,7 @@
 // must never break the operator's dispatch action.
 
 import { prisma } from "./prisma";
+import { logger } from "./structured-logging";
 import { etaSecondsFromPlan, lateMinutes, recomputeShiftPlan } from "./van-plan";
 import { sendPatientNotification } from "./patient-push";
 import { safeError } from "./log-safety";
@@ -79,7 +80,7 @@ export async function broadcastEtaUpdates(
   try {
     plan = await recomputeShiftPlan(shiftId);
   } catch (err) {
-    console.error("[VAN ETA PUSH] recompute failed:", safeError(err));
+    logger.error("[VAN ETA PUSH] recompute failed", undefined, safeError(err));
     return outcomes;
   }
   // No fix yet: nothing to plan from.
@@ -120,7 +121,7 @@ export async function broadcastEtaUpdates(
           continue;
         }
       } catch (err) {
-        console.error("[VAN ETA PUSH] late notice failed:", safeError(err));
+        logger.error("[VAN ETA PUSH] late notice failed", undefined, safeError(err));
         outcomes[stop.id] = "no_change";
         continue;
       }
@@ -165,7 +166,7 @@ export async function broadcastEtaUpdates(
 
       outcomes[stop.id] = "pushed";
     } catch (err) {
-      console.error("[VAN ETA PUSH] push/persist failed:", safeError(err));
+      logger.error("[VAN ETA PUSH] push/persist failed", undefined, safeError(err));
       outcomes[stop.id] = "no_change";
     }
   }

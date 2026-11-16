@@ -18,6 +18,8 @@
 
 import { haversineMetres } from "./geo";
 import { env } from "../config/env";
+import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 
 // Shared point type re-exported from lib/geo (single source of truth)
 export type { Point } from "./geo";
@@ -78,9 +80,10 @@ function recordProviderFailure(err: unknown): void {
   if (consecutiveFailures >= FAILURE_THRESHOLD) {
     breakerOpenUntil = Date.now() + BREAKER_COOLDOWN_MS;
     consecutiveFailures = 0;
-    console.error(
-      `[VAN ETA] Routing provider failed ${FAILURE_THRESHOLD}× — opening circuit breaker for ${BREAKER_COOLDOWN_MS / 1000}s:`,
-      err instanceof Error ? err.message : err
+    logger.error(
+      `[VAN ETA] Routing provider failed ${FAILURE_THRESHOLD}× — opening circuit breaker for ${BREAKER_COOLDOWN_MS / 1000}s`,
+      undefined,
+      safeError(err)
     );
   }
 }

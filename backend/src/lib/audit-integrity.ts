@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { env } from "../config/env";
+import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 
 let auditWriteQueue: Promise<unknown> = Promise.resolve();
 
@@ -370,7 +372,7 @@ export async function applyAuditRetentionPolicy(retentionDays: number = 365) {
     },
   });
 
-  console.log(`[AUDIT ARCHIVE] Archived ${result.count} audit logs older than ${retentionDays} days`);
+  logger.info(`[AUDIT ARCHIVE] Archived ${result.count} audit logs older than ${retentionDays} days`);
 
   return {
     archived: result.count,
@@ -408,7 +410,7 @@ export function isCriticalAuditEvent(action: string, statusCode?: number): boole
 
 // Send alert for critical audit events (AU-6: uses configured opsAlertEmail)
 export async function sendCriticalAuditAlert(log: any) {
-  console.error(`[CRITICAL AUDIT ALERT] ${log.action}`, {
+  logger.error(`[CRITICAL AUDIT ALERT] ${log.action}`, undefined, {
     actorId: log.actorId,
     resourceId: log.resourceId,
     timestamp: log.timestampUtc,
@@ -430,7 +432,7 @@ export async function sendCriticalAuditAlert(log: any) {
       2
     )}</pre>`,
     text: `Critical security audit event: ${log.action} (actorId: ${log.actorId}, resourceId: ${log.resourceId})`,
-  }).catch((err) => console.error("[AUDIT ALERT] Failed to send email alert:", err));
+  }).catch((err) => logger.error("[AUDIT ALERT] Failed to send email alert", undefined, safeError(err)));
 }
 
 // Audit failure detection and alerting (AU-6: uses configured opsAlertEmail)
@@ -447,13 +449,13 @@ export async function checkAuditFailures() {
 
   if (recentFailures.length > 10) {
     // High failure rate - send alert
-    console.error(`[AUDIT FAILURE ALERT] High failure rate: ${recentFailures.length} failures in 24h`);
+    logger.error(`[AUDIT FAILURE ALERT] High failure rate: ${recentFailures.length} failures in 24h`);
     await communicationService.sendEmail({
       to: env.opsAlertEmail,
       subject: `[AUDIT FAILURE ALERT] ${recentFailures.length} failures in 24h`,
       html: `<p>High failure rate detected in the last 24 hours (${recentFailures.length} events).</p>`,
       text: `High failure rate detected in the last 24 hours (${recentFailures.length} events).`,
-    }).catch((err) => console.error("[AUDIT FAILURE ALERT] Failed to send email:", err));
+    }).catch((err) => logger.error("[AUDIT FAILURE ALERT] Failed to send email", undefined, safeError(err)));
   }
 
   return {

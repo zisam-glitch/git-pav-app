@@ -13,6 +13,7 @@ import { env } from "../config/env";
 import { logFailure } from "./best-effort";
 import { prisma } from "./prisma";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
+import { logger } from "./structured-logging";
 import { safeError } from "./log-safety";
 
 export const isMockStripe = env.isMockStripe;
@@ -134,9 +135,10 @@ export async function releaseVanDeposit(
       error?.type === "StripeCardError" || error?.type === "StripeInvalidRequestError"
         ? error.message
         : String(error?.message ?? error);
-    console.error(
-      `[VAN PAYMENTS] Failed to release deposit ${paymentIntentId} (reason=${reason}):`,
-      message
+    logger.error(
+      `[VAN PAYMENTS] Failed to release deposit ${paymentIntentId} (reason=${reason})`,
+      undefined,
+      safeError(error)
     );
     const result: VanDepositReleaseResult = { status: "failed", error: message };
     await auditRelease(paymentIntentId, reason, result).catch(logFailure("audit write van deposit release"));
@@ -164,7 +166,7 @@ async function auditRelease(
         : {}),
       ...(result.error ? { error: result.error } : {}),
     },
-  }).catch((err) => console.error("[VAN PAYMENTS] Audit log write failed:", safeError(err)));
+  }).catch((err) => logger.error("[VAN PAYMENTS] Audit log write failed", undefined, safeError(err)));
 }
 
 /**
@@ -184,7 +186,7 @@ async function captureOnce(requestId: string, paymentIntentId: string): Promise<
   try {
     intent = await getStripe().paymentIntents.retrieve(paymentIntentId);
   } catch (error) {
-    console.error("Failed to retrieve PaymentIntent for capture:", safeError(error));
+    logger.error("Failed to retrieve PaymentIntent for capture", undefined, safeError(error));
     return { status: 502, body: { error: "Payment service unavailable", message: "Could not verify the deposit before acceptance. Please try again." } };
   }
 
@@ -212,7 +214,7 @@ async function captureOnce(requestId: string, paymentIntentId: string): Promise<
       idempotencyKey: `van-deposit-capture:${requestId}`,
     });
     if (captured.status !== "succeeded") {
-      console.error(`Payment capture failed for intent ${paymentIntentId}: ${captured.status}`);
+      logger.error(`Payment capture failed for intent ${paymentIntentId}: ${captured.status}`);
       return failed;
     }
     return null;
@@ -221,7 +223,7 @@ async function captureOnce(requestId: string, paymentIntentId: string): Promise<
     // second request on the same key while the first is in flight).
     const after = await getStripe().paymentIntents.retrieve(paymentIntentId).catch(() => null);
     if (after?.status === "succeeded") return null;
-    console.error("Failed to capture payment:", safeError(error));
+    logger.error("Failed to capture payment", undefined, safeError(error));
     return failed;
   }
 }

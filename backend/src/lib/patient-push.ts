@@ -10,6 +10,7 @@
 import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 
 export async function sendPatientNotification(
   patientId: string,
@@ -25,7 +26,7 @@ export async function sendPatientNotification(
     if (!patient) return;
     await sendUserNotification(patient.userId, title, body, data);
   } catch (error) {
-    console.error("Failed to send patient notification:", safeError(error));
+    logger.error("Failed to send patient notification", undefined, safeError(error));
   }
 }
 
@@ -77,6 +78,6 @@ export async function sendUserNotification(
       },
     });
   } catch (error) {
-    console.error("Failed to send notification:", safeError(error));
+    logger.error("Failed to send notification", undefined, safeError(error));
   }
 }

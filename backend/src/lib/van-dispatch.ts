@@ -19,6 +19,7 @@ import { awardVisitPoints } from "./rewards";
 import { sendPatientNotification } from "./patient-push";
 import { broadcastEtaUpdates } from "./van-eta-broadcast";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 import { MAX_QUEUE_DEPTH } from "./van-eta";
 import {
   captureVanDeposit,
@@ -367,14 +368,16 @@ export async function changeVanPhase(opts: {
   // the background sweep), the patient's push, and everyone's ETA.
   if (phase === "completed" && outcome.appointmentId) {
     await awardVisitPoints(outcome.appointmentId).catch((err) => {
-      console.error("[Van] Visit points award failed:", err instanceof Error ? err.name : "unknown error");
+      logger.error("[Van] Visit points award failed", undefined, {
+        errorName: err instanceof Error ? err.name : "unknown error",
+      });
     });
   }
   const message = PHASE_MESSAGES[phase];
   if (message) await sendPatientNotification(outcome.patientId, message.title, message.body, { requestId, phase });
 
   void broadcastEtaUpdates(shiftId).catch((err) =>
-    console.error("[VAN ETA PUSH] post-phase broadcast failed:", safeError(err))
+    logger.error("[VAN ETA PUSH] post-phase broadcast failed", undefined, safeError(err))
   );
 
   return { status: outcome.status, body: outcome.body };
@@ -535,7 +538,7 @@ async function prepareLegs(shiftId: string, requestId: string): Promise<{ ids: s
     ]);
     return { ids: active.map((a) => a.row.id), leg };
   } catch (err) {
-    console.error("[VAN PLACEMENT] could not prepare travel times; the stop goes to the back:", safeError(err));
+    logger.error("[VAN PLACEMENT] could not prepare travel times; the stop goes to the back", undefined, safeError(err));
     return null;
   }
 }
@@ -659,7 +662,7 @@ export async function acceptVanRequest(opts: { shiftId: string; requestId: strin
     // Taken, then refused under the lock (the shift was paused, the queue
     // filled, the request closed). Whatever closes the request gives it back;
     // a later accept finds it already taken.
-    console.warn(`[VAN] Deposit taken but accept refused for request ${requestId} (${outcome.status})`);
+    logger.warn(`[VAN] Deposit taken but accept refused for request ${requestId} (${outcome.status})`);
   }
 
   if (!("changed" in outcome)) return outcome;
@@ -674,7 +677,7 @@ export async function acceptVanRequest(opts: { shiftId: string; requestId: strin
   // Seed the patient's first live ETA at once (past the drift and throttle
   // gates), for the newly accepted request only (EB-1).
   void broadcastEtaUpdates(shiftId, { forceRequestId: requestId }).catch((err) =>
-    console.error("[VAN ETA PUSH] post-accept broadcast failed:", safeError(err))
+    logger.error("[VAN ETA PUSH] post-accept broadcast failed", undefined, safeError(err))
   );
 
   return { status: outcome.status, body: outcome.body };
@@ -953,7 +956,7 @@ export async function cancelVanRequest(
     }
     // A cancel shortens everyone else's wait.
     void broadcastEtaUpdates(shiftId).catch((err) =>
-      console.error("[VAN ETA PUSH] post-cancel broadcast failed:", safeError(err))
+      logger.error("[VAN ETA PUSH] post-cancel broadcast failed", undefined, safeError(err))
     );
   }
 
@@ -1040,7 +1043,7 @@ export async function endVanShift(shift: { id: string }, opts: { cancelOpen?: Va
     await notifyPendingClosed(closed.patientId, closed.id, "shift_ended", releaseStatus);
   }
   if (failedReleases.length > 0) {
-    console.error(`[VAN SHIFT END] Failed to release deposits for requests: ${failedReleases.join(", ")}`);
+    logger.error(`[VAN SHIFT END] Failed to release deposits for requests: ${failedReleases.join(", ")}`);
   }
   return { ended: true, shift: result.shift, expiredRequests: closedRequests.length, failedReleases };
 }

@@ -20,6 +20,7 @@ import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
 import { maskEmail } from "./log-safety";
+import { logger } from "./structured-logging";
 import { env as appEnv } from "../config/env";
 
 const INVITE_TTL_MS = 72 * 60 * 60 * 1000;
@@ -79,16 +80,18 @@ export async function bootstrapAdminFromEnv(env?: NodeJS.ProcessEnv): Promise<vo
   try {
     const result = await createFirstAdmin(email, "BOOTSTRAP_ADMIN_EMAIL");
     if (result.status === "created") {
-      console.log(
-        `[Bootstrap] First admin created for ${maskEmail(email)}.`,
-        result.emailSent
+      logger.info(`[Bootstrap] First admin created for ${maskEmail(email)}.`, {
+        emailSent: result.emailSent,
+        detail: result.emailSent
           ? "An invitation email is on its way (valid 72 hours)."
-          : "The invitation email could NOT be sent: check POSTMARK_SERVER_TOKEN and FROM_EMAIL, then use 'Forgot password' with this address."
-      );
+          : "The invitation email could NOT be sent: check POSTMARK_SERVER_TOKEN and FROM_EMAIL, then use 'Forgot password' with this address.",
+      });
     } else if (result.status === "skipped" && result.reason !== "admin_exists") {
-      console.warn(`[Bootstrap] Not created (${result.reason}). Remove BOOTSTRAP_ADMIN_EMAIL once the admin exists.`);
+      logger.warn(`[Bootstrap] Not created (${result.reason}). Remove BOOTSTRAP_ADMIN_EMAIL once the admin exists.`);
     }
   } catch (err) {
-    console.error("[Bootstrap] Could not create the first admin:", err instanceof Error ? err.name : "error");
+    logger.error("[Bootstrap] Could not create the first admin", undefined, {
+      errorName: err instanceof Error ? err.name : "error",
+    });
   }
 }

@@ -49,6 +49,7 @@ import { startBackgroundJobs, stopBackgroundJobs } from "./lib/background-jobs";
 import { bootstrapAdminFromEnv } from "./lib/bootstrap-admin";
 import { flushErrorTracking, initErrorTracking, reportError } from "./lib/error-tracking";
 import { safeError } from "./lib/log-safety";
+import { logger } from "./lib/structured-logging";
 import { getCoverageBackend } from "./lib/van-coverage";
 import { describeRoutingProvider } from "./lib/van-eta";
 
@@ -238,13 +239,13 @@ app.use(errorHandler);
 // ─── Process-level error handlers ─────────────────────────────────────────────
 // Logged with safeError: a raw Prisma error can quote patient data.
 process.on('unhandledRejection', (reason) => {
-  console.error('Unhandled Rejection:', safeError(reason));
+  logger.error('Unhandled Rejection', undefined, safeError(reason));
   reportError(reason, { source: "unhandledRejection" });
   // Logged and reported, but the process keeps running.
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', safeError(error));
+  logger.error('Uncaught Exception', undefined, safeError(error));
   reportError(error, { source: "uncaughtException" });
   // Uncaught exceptions can leave the application in an undefined state, so
   // exit (after sending the report) and let the process manager restart.
@@ -261,30 +262,30 @@ export async function gracefulShutdown(
 ): Promise<void> {
   if (isShuttingDown) return;
   isShuttingDown = true;
-  console.log(`[SHUTDOWN] Received ${signal}. Draining in-flight requests and stopping services...`);
+  logger.info(`[SHUTDOWN] Received ${signal}. Draining in-flight requests and stopping services...`);
 
   // 1. Stop background jobs and monitoring timers
   try {
     stopBackgroundJobs();
     stopAuditMonitoring();
   } catch (err) {
-    console.warn("[SHUTDOWN] Error stopping background jobs:", safeError(err));
+    logger.warn("[SHUTDOWN] Error stopping background jobs", safeError(err));
   }
 
   // 2. Stop accepting new HTTP connections and drain in-flight requests
   if (server) {
     await new Promise<void>((resolve) => {
       const timer = setTimeout(() => {
-        console.warn("[SHUTDOWN] Drain timeout reached. Forcing socket closure.");
+        logger.warn("[SHUTDOWN] Drain timeout reached. Forcing socket closure.");
         resolve();
       }, timeoutMs);
 
       server.close((err) => {
         clearTimeout(timer);
         if (err) {
-          console.warn("[SHUTDOWN] Error while closing HTTP server:", safeError(err));
+          logger.warn("[SHUTDOWN] Error while closing HTTP server", safeError(err));
         } else {
-          console.log("[SHUTDOWN] HTTP server closed cleanly.");
+          logger.info("[SHUTDOWN] HTTP server closed cleanly.");
         }
         resolve();
       });
@@ -294,16 +295,16 @@ export async function gracefulShutdown(
   // 3. Disconnect Redis and Prisma
   try {
     await redis.quit();
-    console.log("[SHUTDOWN] Redis connection closed.");
+    logger.info("[SHUTDOWN] Redis connection closed.");
   } catch (err) {
-    console.warn("[SHUTDOWN] Error closing Redis:", safeError(err));
+    logger.warn("[SHUTDOWN] Error closing Redis", safeError(err));
   }
 
   try {
     await prisma.$disconnect();
-    console.log("[SHUTDOWN] Prisma client disconnected.");
+    logger.info("[SHUTDOWN] Prisma client disconnected.");
   } catch (err) {
-    console.warn("[SHUTDOWN] Error disconnecting Prisma:", safeError(err));
+    logger.warn("[SHUTDOWN] Error disconnecting Prisma", safeError(err));
   }
 
   // 4. Flush Sentry error tracking
@@ -311,7 +312,7 @@ export async function gracefulShutdown(
     await flushErrorTracking();
   } catch {}
 
-  console.log("[SHUTDOWN] Graceful shutdown completed.");
+  logger.info("[SHUTDOWN] Graceful shutdown completed.");
 }
 
 let activeHttpServer: Server | null = null;
@@ -321,7 +322,7 @@ const onShutdownSignal = (signal: string) => async () => {
     await gracefulShutdown(activeHttpServer, signal);
     process.exit(0);
   } catch (err) {
-    console.error(`[SHUTDOWN] Fatal error during ${signal}:`, safeError(err));
+    logger.error(`[SHUTDOWN] Fatal error during ${signal}`, undefined, safeError(err));
     process.exit(1);
   }
 };
@@ -333,12 +334,12 @@ process.on("SIGINT", onShutdownSignal("SIGINT"));
 if (require.main === module) {
   initErrorTracking();
   activeHttpServer = app.listen(PORT, async () => {
-    console.log(`🏥 Pav Dental API running on port ${PORT}`);
-    console.log(`[VAN ETA] Routing: ${describeRoutingProvider()}`);
+    logger.info(`🏥 Pav Dental API running on port ${PORT}`);
+    logger.info(`[VAN ETA] Routing: ${describeRoutingProvider()}`);
     try {
       await redis.connect();
     } catch {
-      console.warn("[Redis] Could not connect on startup — will retry lazily");
+      logger.warn("[Redis] Could not connect on startup — will retry lazily");
     }
 
     // Start audit monitoring services
@@ -355,7 +356,7 @@ if (require.main === module) {
     // polygon geometry when PostGIS is available, and defuse the derived-
     // geometry trigger when it is not.
     getCoverageBackend().catch((err) =>
-      console.warn("[VAN COVERAGE] Startup probe failed:", safeError(err))
+      logger.warn("[VAN COVERAGE] Startup probe failed", safeError(err))
     );
   });
 }

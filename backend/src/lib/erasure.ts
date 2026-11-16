@@ -5,6 +5,7 @@ import { prisma } from "./prisma";
 import { createAuditLogWithIntegrity } from "./audit-integrity";
 import { denySessions } from "./session-revocation";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 
 // Erasure (UK GDPR Art. 17, CS-23). The clinical record is kept for the
 // statutory period (decisions log #9, draft pending legal review): 11 years
@@ -143,7 +144,7 @@ export async function erasePatient(userId: string, opts: { handledById: string; 
       await stripe.customers.del(profile.stripeCustomerId);
     } catch (error) {
       if ((error as { code?: string }).code !== "resource_missing") {
-        console.error("[Erasure] Failed to delete Stripe customer:", safeError(error));
+        logger.error("[Erasure] Failed to delete Stripe customer", undefined, safeError(error));
       }
     }
   }

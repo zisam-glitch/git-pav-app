@@ -10,6 +10,7 @@
  */
 
 import { randomBytes, randomInt, createHash, timingSafeEqual } from 'crypto';
+import { logger } from './structured-logging';
 
 export interface OTPConfig {
   expirySeconds: number;
@@ -348,7 +349,7 @@ export const otpService = {
         : params.email || params.phone || "";
     const delivered = recipient
       ? await communicationService.sendMfaCode(recipient, code).catch((err) => {
-          console.error("[OTP Service] Failed to dispatch a code:", safeError(err));
+          logger.error("[OTP Service] Failed to dispatch a code", undefined, safeError(err));
           return false;
         })
       : false;

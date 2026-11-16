@@ -1,5 +1,6 @@
 import { env } from "../config/env";
 import { communicationService } from "./communication-service";
+import { logger } from "./structured-logging";
 
 // A card dispute (chargeback) has a deadline: if nobody sends Stripe evidence
 // in time, the practice loses the dispute and the money automatically. So when
@@ -106,10 +107,10 @@ export async function alertStaffOfDispute(alert: DisputeAlert): Promise<boolean>
   const { subject, html, text } = buildDisputeAlert(alert);
   try {
     const result = await communicationService.sendEmail({ to: env.opsAlertEmail, subject, html, text });
-    if (!result.success) console.error("[Dispute alert] Email to staff was not sent for", alert.disputeId);
+    if (!result.success) logger.error("[Dispute alert] Email to staff was not sent", undefined, { disputeId: alert.disputeId });
     return result.success;
   } catch {
-    console.error("[Dispute alert] Email to staff failed for", alert.disputeId);
+    logger.error("[Dispute alert] Email to staff failed", undefined, { disputeId: alert.disputeId });
     return false;
   }
 }

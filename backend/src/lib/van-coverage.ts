@@ -25,6 +25,7 @@
 //   authoritative source of truth in that mode.
 
 import { prisma } from "./prisma";
+import { logger } from "./structured-logging";
 import {
   Point,
   Polygon,
@@ -81,11 +82,11 @@ export async function getCoverageBackend(force = false): Promise<CoverageBackend
       if (Number(colRows[0]?.cnt ?? 0) === 0) throw new Error("geometry column missing");
 
       backendCache = { mode: "postgis" };
-      console.log("[VAN COVERAGE] Using PostGIS spatial queries (indexed geometry column)");
+      logger.info("[VAN COVERAGE] Using PostGIS spatial queries (indexed geometry column)");
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
       backendCache = { mode: "js", reason, failedAt: Date.now() };
-      console.warn(`[VAN COVERAGE] PostGIS unavailable (${reason}) — using JS ray-casting fallback`);
+      logger.warn(`[VAN COVERAGE] PostGIS unavailable (${reason}) — using JS ray-casting fallback`);
     }
     return backendCache!;
   })();
@@ -118,7 +119,7 @@ export async function findCoveringVans(point: Point): Promise<VanCoverageMatch[]
     try {
       return await findCoveringVansPostgis(point);
     } catch (err) {
-      console.warn("[VAN COVERAGE] PostGIS query failed — falling back to JS:", safeError(err));
+      logger.warn("[VAN COVERAGE] PostGIS query failed — falling back to JS", safeError(err));
       backendCache = { mode: "js", reason: "postgis query failed", failedAt: Date.now() };
     }
   }
@@ -202,7 +203,7 @@ export async function getOnlineShiftsCoveringPoint(point: Point) {
       const coveringVanIds = new Set((await findCoveringVansPostgis(point)).map((m) => m.vanId));
       return shifts.filter((s) => coveringVanIds.has(s.vanId));
     } catch (err) {
-      console.warn("[VAN COVERAGE] PostGIS shift query failed — falling back to JS:", safeError(err));
+      logger.warn("[VAN COVERAGE] PostGIS shift query failed — falling back to JS", safeError(err));
       backendCache = { mode: "js", reason: "postgis query failed", failedAt: Date.now() };
     }
   }

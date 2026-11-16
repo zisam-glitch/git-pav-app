@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { ThemedText, Input, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -19,8 +20,9 @@ export default function ForgotPasswordScreen() {
       setLoading(true);
       await authApi.forgotPassword(email.trim());
       setSubmitted(true);
-    } catch {
+    } catch (err) {
       // Intentionally treat all as success to prevent email enumeration
+      reportCaughtError(err, "forgot-password");
       setSubmitted(true);
     } finally {
       setLoading(false);

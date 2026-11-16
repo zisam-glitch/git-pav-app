@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist, type StateStorage } from "zustand/middleware";
 import { CareChannel, DentalService, ClinicLocation, Clinician, TimeSlot } from "./booking-types";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 export const BOOKING_DRAFT_STORAGE_KEY = "pav_booking_draft";
 
@@ -34,21 +35,24 @@ function getAsyncStorage(): StateStorage {
     getItem: async (name) => {
       try {
         return await AsyncStorage.getItem(name);
-      } catch {
+      } catch (err) {
+        reportCaughtError(err, "booking-store storage getItem");
         return memoryFallback.get(name) ?? null;
       }
     },
     setItem: async (name, value) => {
       try {
         await AsyncStorage.setItem(name, value);
-      } catch {
+      } catch (err) {
+        reportCaughtError(err, "booking-store storage setItem");
         memoryFallback.set(name, value);
       }
     },
     removeItem: async (name) => {
       try {
         await AsyncStorage.removeItem(name);
-      } catch {
+      } catch (err) {
+        reportCaughtError(err, "booking-store storage removeItem");
         memoryFallback.delete(name);
       }
     },

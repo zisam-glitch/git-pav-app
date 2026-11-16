@@ -6,6 +6,8 @@
 // Keystore). SecureStore values over about 2 KB can be rejected on iOS, so the
 // queue is split across several entries.
 
+import { reportCaughtError } from "../../lib/caught-errors";
+
 export interface KeyValueStore {
   get(key: string): Promise<string | null>;
   set(key: string, value: string): Promise<void>;
@@ -41,7 +43,8 @@ export async function readQueue(store: KeyValueStore): Promise<QueuedVanNote[]> 
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  } catch (err) {
+    reportCaughtError(err, "offline-notes-queue readQueue");
     return [];
   }
 }
@@ -89,8 +92,9 @@ export async function flushQueue(
     let result: SendResult = "retry";
     try {
       result = await send(note);
-    } catch {
+    } catch (err) {
       // Network failure: keep it.
+      reportCaughtError(err, "offline-notes-queue flushQueue");
     }
     if (result !== "sent") remaining.push(note);
   }

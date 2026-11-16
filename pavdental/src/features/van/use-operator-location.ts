@@ -21,6 +21,7 @@ import * as Location from "expo-location";
 import { sendLocationPing } from "./van-api";
 import { startShiftBackgroundLocation, stopShiftBackgroundLocation } from "./background-location";
 import { PRACTICE_CONFIG } from "@/config/practice";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 export type OperatorFix = { lat: number; lng: number; accuracyM?: number; at?: number };
 
@@ -73,8 +74,9 @@ export function useOperatorLocation(options: { enabled: boolean }) {
             const req = await Location.requestForegroundPermissionsAsync();
             status = req.status;
           }
-        } catch {
+        } catch (err) {
           // fallback in simulator
+          reportCaughtError(err, "operator-location permissions");
         }
 
         if (status !== "granted") {
@@ -108,8 +110,9 @@ export function useOperatorLocation(options: { enabled: boolean }) {
         let background = false;
         try {
           background = await startShiftBackgroundLocation();
-        } catch {
+        } catch (err) {
           // Not available (for example Expo Go): foreground pings only.
+          reportCaughtError(err, "operator-location background-start");
         }
         if (cancelled || background) return;
 
@@ -125,8 +128,9 @@ export function useOperatorLocation(options: { enabled: boolean }) {
               accuracyM: current.accuracyM,
               recordedAt: current.at ? new Date(current.at).toISOString() : undefined,
             });
-          } catch {
+          } catch (err) {
             // Location ping errors are non-fatal
+            reportCaughtError(err, "operator-location ping");
           }
         }, PING_INTERVAL_MS);
       } catch (err: any) {

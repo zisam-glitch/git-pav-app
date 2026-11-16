@@ -250,7 +250,9 @@ export function listenForNotificationTaps(onTap: (data: unknown) => void): () =>
     .then((response: NotificationResponseLike | null) => {
       if (response && !handledLaunch) onTap(dataOf(response));
     })
-    .catch(() => {});
+    .catch((error) => {
+      reportCaughtError(error, "getLastNotificationResponseAsync");
+    });
   const subscription = Notifications.addNotificationResponseReceivedListener((response: NotificationResponseLike) => {
     handledLaunch = true;
     onTap(dataOf(response));

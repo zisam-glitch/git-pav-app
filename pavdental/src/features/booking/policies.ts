@@ -1,5 +1,6 @@
 import { publicFetch } from "../auth/auth-api";
 import { CANCELLATION_SHEET_MESSAGE } from "./cancellation-policy";
+import { reportCaughtError } from "../../lib/caught-errors";
 
 /**
  * The booking rules, as the server sends them (checklist A1). The server is the one place these numbers
@@ -55,8 +56,9 @@ export async function loadBookingPolicies(): Promise<void> {
     if (!res.ok) return;
     const parsed = parsePolicies(await res.json());
     if (parsed) current = parsed;
-  } catch {
+  } catch (err) {
     // Offline or a blip: keep the built-in text.
+    reportCaughtError(err, "booking-policies load");
   }
 }
 

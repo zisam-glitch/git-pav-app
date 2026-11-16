@@ -5,6 +5,7 @@ import { visitOutcomeCopy, recordVisitOutcome, type VisitOutcome } from "@/featu
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText, Card, Button, IconButton, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { reportCaughtError } from "@/lib/caught-errors";
 import {
   fetchAppointmentNotes,
   saveAppointmentNotes,
@@ -54,8 +55,9 @@ export default function AppointmentNotesScreen() {
           setDiagnosis(data.diagnosis || "");
           setTreatmentPlan(data.treatmentPlan || "");
         }
-      } catch {
+      } catch (err) {
         // "No note yet" comes back as an empty answer, not an error, so this is a real failure.
+        reportCaughtError(err, "appointment-notes load");
         setLoadFailed(true);
       } finally {
         setLoading(false);

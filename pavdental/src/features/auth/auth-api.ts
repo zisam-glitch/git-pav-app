@@ -6,6 +6,7 @@ import { useVanStore } from "../van/van-store";
 import { useOnboardingStore } from "../onboarding/onboarding-store";
 import { API_URL, apiUrl } from "@/config/api";
 import { readAuthError } from "./auth-errors";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 export { API_URL, apiUrl };
 
@@ -243,8 +244,9 @@ export const authApi = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pushToken ? { pushToken } : {}),
       });
-    } catch {
+    } catch (err) {
       // Network failure on logout shouldn't prevent clearing local state
+      reportCaughtError(err, "auth signOut");
     } finally {
       registeredPushToken = null;
       await clearSessionState();

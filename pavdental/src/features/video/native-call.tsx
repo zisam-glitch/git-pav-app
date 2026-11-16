@@ -5,6 +5,7 @@ import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/re
 import { ThemedText, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { reportCallEvent } from "@/lib/call-events";
+import { reportCaughtError } from "@/lib/caught-errors";
 import {
   callErrorMessage,
   linkStatus,
@@ -167,8 +168,8 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
       callRef.current = null;
       call
         .leave()
-        .catch(() => {})
-        .finally(() => call.destroy().catch(() => {}));
+        .catch((err) => reportCaughtError(err, "native-call unmount leave"))
+        .finally(() => call.destroy().catch((err) => reportCaughtError(err, "native-call unmount destroy")));
     };
   }, [url, token]);
 
@@ -205,13 +206,16 @@ export function NativeVideoCall({ url, token, otherLabel, onLeft, style }: Props
     setRoute(next);
   };
   const flip = () => {
-    callRef.current?.cycleCamera().catch(() => {});
+    callRef.current?.cycleCamera().catch((err) => reportCaughtError(err, "native-call cycleCamera"));
   };
   const leave = () => {
     setLeaving(true);
     const call = callRef.current;
     if (!call) return onLeftRef.current("left");
-    call.leave().catch(() => onLeftRef.current("left"));
+    call.leave().catch((err) => {
+      reportCaughtError(err, "native-call leave");
+      onLeftRef.current("left");
+    });
   };
 
   return (

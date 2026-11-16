@@ -139,7 +139,9 @@ export async function runBookingPayment(deps: PaymentDeps, input: BookingInput):
     // 4. Money is collected. Ask the server to confirm; the webhook will too,
     // so if this call fails the confirmed screen still waits for it.
     deps.onPaid();
-    await deps.confirmAppointment(appointment.id, intent.paymentIntentId).catch(() => {});
+    await deps.confirmAppointment(appointment.id, intent.paymentIntentId).catch((err) => {
+      deps.report(err, "booking confirmAppointment");
+    });
     return { kind: "confirmed", appointmentId: appointment.id };
   } catch (err) {
     deps.report(err, "booking payment failed");

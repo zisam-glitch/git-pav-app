@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { useAuthStore } from "../auth/auth-store";
 import { sendLocationPing } from "./van-api";
+import { reportCaughtError } from "../../lib/caught-errors";
 
 export const SHIFT_LOCATION_TASK = "pav-van-shift-location";
 const INTERVAL_MS = 20_000; // same cadence as the foreground pings
@@ -39,8 +40,9 @@ if (Platform.OS !== "web") {
         accuracyM: last.coords.accuracy ?? undefined,
         recordedAt: new Date(last.timestamp).toISOString(),
       });
-    } catch {
+    } catch (err) {
       // Non-fatal: the next update tries again.
+      reportCaughtError(err, "background-location ping");
     }
   });
 }

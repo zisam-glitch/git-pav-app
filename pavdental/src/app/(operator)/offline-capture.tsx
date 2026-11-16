@@ -5,6 +5,7 @@ import { ThemedText, Input, Button, Badge, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { flushOfflineNotes, queueOfflineNote, sendVisitNote } from "@/features/van/offline-notes";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 export default function OfflineCaptureScreen() {
   const router = useRouter();
@@ -49,8 +50,9 @@ export default function OfflineCaptureScreen() {
     let res: Response | null = null;
     try {
       res = await sendVisitNote({ stopId: params.stopId, notes });
-    } catch {
+    } catch (err) {
       // No connection: queued below.
+      reportCaughtError(err, "offline-capture sendVisitNote");
     }
     try {
       if (res?.ok) {

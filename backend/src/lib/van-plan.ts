@@ -31,8 +31,8 @@ export type VanPlanSettings = typeof VAN_PLAN_SETTINGS;
  * suggested in the plan (decision 8) until the owner sets them.
  */
 export const VAN_PROMISE_SETTINGS = {
-  windowMinutes: minutesFromEnv("VAN_PROMISE_WINDOW_MINUTES", 20),
-  lateGraceMinutes: minutesFromEnv("VAN_LATE_GRACE_MINUTES", 10),
+  windowMinutes: env.vanPromiseWindowMinutes,
+  lateGraceMinutes: env.vanLateGraceMinutes,
 };
 export type VanPromiseSettings = typeof VAN_PROMISE_SETTINGS;
 
@@ -41,7 +41,7 @@ export type VanPromiseSettings = typeof VAN_PROMISE_SETTINGS;
  * arriving (owner decision, 15 Nov 2026). Tunable from the environment.
  */
 export const VAN_NO_SHOW_SETTINGS = {
-  waitMinutes: minutesFromEnv("VAN_NO_SHOW_WAIT_MINUTES", 10),
+  waitMinutes: env.vanNoShowWaitMinutes,
 };
 
 /** A treatment that has overrun is still planned to take this long (VE-1). */

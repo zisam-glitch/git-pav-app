@@ -1,5 +1,6 @@
 import { communicationService } from "./communication-service";
 import { prisma } from "./prisma";
+import { logger } from "./structured-logging";
 
 // BE-09: Expo's send call only says it accepted a message. Its receipt, ready
 // a few minutes later, says whether Apple or Google took it, and a
@@ -32,7 +33,7 @@ export async function checkPushReceipts(now = new Date()): Promise<{ checked: nu
   }
   if (result.errorCount > 0) {
     // Codes only (for example InvalidCredentials, which stops every push).
-    console.error("[Push] Receipt errors:", JSON.stringify(result.errorsByCode));
+    logger.error("[Push] Receipt errors", undefined, { errorsByCode: result.errorsByCode });
   }
   return { checked: due.length, settled: result.settledTicketIds.length, deactivated: result.deactivatedTokens.length };
 }

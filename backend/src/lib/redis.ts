@@ -1,6 +1,7 @@
 import Redis from "ioredis";
 import { env } from "../config/env";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 
 const REDIS_URL = env.redisUrl ?? "redis://localhost:6379";
 
@@ -11,9 +12,9 @@ export const redis = new Redis(REDIS_URL, {
 });
 
 redis.on("error", (err) => {
-  console.error("[Redis] Connection error:", safeError(err));
+  logger.error("[Redis] Connection error", undefined, safeError(err));
 });
 
 redis.on("connect", () => {
-  console.log("[Redis] Connected");
+  logger.info("[Redis] Connected");
 });

@@ -9,6 +9,7 @@
 import { prisma } from "./prisma";
 import { communicationService } from "./communication-service";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 import { buildAppointmentEmail, buildAppointmentPush, type AppointmentEmailKind } from "./patient-email-content";
 import { sendPatientNotification } from "./patient-push";
 import { EMAIL_RETRY_WINDOW_MS, pickEmailsToRetry } from "./patient-email-retry";
@@ -108,7 +109,7 @@ async function deliverAppointmentEmail(
       }),
     });
   } catch (err) {
-    console.error("[PatientEmail] Failed to send appointment email:", safeError(err));
+    logger.error("[PatientEmail] Failed to send appointment email", undefined, safeError(err));
   }
 }
 
@@ -128,10 +129,10 @@ export async function retryFailedAppointmentEmails(now: Date = new Date()): Prom
     for (const email of due) {
       await deliverAppointmentEmail(email.kind, email.appointmentId, { refundPence: email.refundPence }, true);
     }
-    if (due.length > 0) console.log(`[BACKGROUND JOBS] Retried ${due.length} appointment email(s)`);
+    if (due.length > 0) logger.info(`[BACKGROUND JOBS] Retried ${due.length} appointment email(s)`);
     return { retriedCount: due.length };
   } catch (err) {
-    console.error("[BACKGROUND JOBS] Error retrying appointment emails:", safeError(err));
+    logger.error("[BACKGROUND JOBS] Error retrying appointment emails", undefined, safeError(err));
     return { retriedCount: 0 };
   }
 }
@@ -174,6 +175,6 @@ async function sendAppointmentPush(kind: AppointmentEmailKind, appointmentId: st
       appointmentId,
     });
   } catch (err) {
-    console.error("[PatientEmail] Failed to send appointment push:", safeError(err));
+    logger.error("[PatientEmail] Failed to send appointment push", undefined, safeError(err));
   }
 }

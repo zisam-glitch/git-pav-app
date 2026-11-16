@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { reportError } from "../lib/error-tracking";
 import { env } from "../config/env";
 
@@ -118,12 +119,12 @@ export function errorHandler(
 
   // 4xx errors are client errors and must not be logged as server errors or reported to Sentry.
   if (status >= 500) {
-    console.error(`[${requestId}] ${timestamp} ERROR:`, logMeta);
+    logger.error(`[${requestId}] ${timestamp} ERROR`, undefined, logMeta);
     // The route pattern (":id"), never the URL with its ids and query.
     const route = req.route?.path ? `${req.baseUrl}${req.route.path}` : req.baseUrl || "unmatched";
     reportError(err, { requestId, method: req.method, route });
   } else {
-    console.warn(`[${requestId}] ${timestamp} WARN:`, logMeta);
+    logger.warn(`[${requestId}] ${timestamp} WARN`, logMeta);
   }
 
   const isDevelopment = env.isRuntimeDevelopment;

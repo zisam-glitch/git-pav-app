@@ -1,5 +1,6 @@
 import { env } from "../config/env";
 import { prisma } from "./prisma";
+import { logger } from "./structured-logging";
 
 // Retention sweeps (CS-23, decisions log #9, draft pending legal review).
 // Van location history is kept 30 days. Clinical records and audit logs are
@@ -73,7 +74,7 @@ export async function applyVanLocationRetention(opts: { enforce?: boolean; now?:
 export async function runRetentionSweep() {
   const van = await applyVanLocationRetention();
   const report = await retentionReport();
-  console.log(
+  logger.info(
     `[RETENTION] van pings deleted=${van.pingsDeleted} pending=${report.vanLocationPings} (enforced=${van.enforced}); ` +
       `clinical records past retention=${report.clinicalRecordsPastRetention}; audit logs past retention=${report.auditLogsPastRetention}`
   );

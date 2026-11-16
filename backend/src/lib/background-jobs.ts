@@ -11,6 +11,7 @@ import { checkPushReceipts } from "./push-receipts";
 import { issueMissedReferralVouchers } from "./referrals";
 import { runRetentionSweep } from "./retention";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 import { retryFailedAppointmentEmails } from "./patient-email";
 
 // Interval settings
@@ -253,10 +254,10 @@ export async function processExpiredSlotHolds(): Promise<{ expiredCount: number 
       await cancelAppointmentReminders(appt.id).catch(logFailure("reminder cancellation"));
     }
 
-    console.log(`[BACKGROUND JOBS] Expired ${expiredRows.length} draft holds`);
+    logger.info(`[BACKGROUND JOBS] Expired ${expiredRows.length} draft holds`);
     return { expiredCount: expiredRows.length };
   } catch (error) {
-    console.error("[BACKGROUND JOBS] Error processing expired slot holds:", safeError(error));
+    logger.error("[BACKGROUND JOBS] Error processing expired slot holds", undefined, safeError(error));
     return { expiredCount: 0 };
   }
 }
@@ -392,7 +393,7 @@ export async function processDueScheduledNotifications(): Promise<{ dispatchedCo
               text: `Pav Dental\n\n${notification.body}`,
               html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h2 style="color: #0D9488;">Pav Dental</h2><p>${escapeEmailHtml(notification.body)}</p></div>`,
             })
-            .catch((err) => console.error("[BACKGROUND JOBS] Reminder email failed:", safeError(err)));
+            .catch((err) => logger.error("[BACKGROUND JOBS] Reminder email failed", undefined, safeError(err)));
         }
 
         // Record in notification history
@@ -433,12 +434,12 @@ export async function processDueScheduledNotifications(): Promise<{ dispatchedCo
     }
 
     if (dispatchedCount > 0) {
-      console.log(`[BACKGROUND JOBS] Dispatched ${dispatchedCount} scheduled notifications`);
+      logger.info(`[BACKGROUND JOBS] Dispatched ${dispatchedCount} scheduled notifications`);
     }
 
     return { dispatchedCount };
   } catch (error) {
-    console.error("[BACKGROUND JOBS] Error processing scheduled notifications:", safeError(error));
+    logger.error("[BACKGROUND JOBS] Error processing scheduled notifications", undefined, safeError(error));
     return { dispatchedCount: 0 };
   }
 }
@@ -593,9 +594,12 @@ export async function scheduleAppointmentReminderLadder(appointmentId: string): 
       }
     }
 
-    console.log(`[BACKGROUND JOBS] Scheduled reminder ladder for appointment ${appointmentId}`);
+    logger.info(`[BACKGROUND JOBS] Scheduled reminder ladder for appointment ${appointmentId}`);
   } catch (error) {
-    console.error("[BACKGROUND JOBS] Failed to schedule reminder ladder for appointment:", appointmentId, safeError(error));
+    logger.error("[BACKGROUND JOBS] Failed to schedule reminder ladder for appointment", undefined, {
+      appointmentId,
+      ...safeError(error),
+    });
   }
 }
 
@@ -616,7 +620,10 @@ export async function cancelAppointmentReminders(appointmentId: string): Promise
     });
     return deleted.count;
   } catch (error) {
-    console.error("[BACKGROUND JOBS] Failed to cancel reminders for appointment:", appointmentId, safeError(error));
+    logger.error("[BACKGROUND JOBS] Failed to cancel reminders for appointment", undefined, {
+      appointmentId,
+      ...safeError(error),
+    });
     return 0;
   }
 }
@@ -649,11 +656,11 @@ export async function processExpiredVanRequests(): Promise<{ expiredCount: numbe
     }
 
     if (expiredCount > 0) {
-      console.log(`[BACKGROUND JOBS] Expired ${expiredCount} van request(s) with deposit release`);
+      logger.info(`[BACKGROUND JOBS] Expired ${expiredCount} van request(s) with deposit release`);
     }
     return { expiredCount };
   } catch (error) {
-    console.error("[BACKGROUND JOBS] Error expiring van requests:", safeError(error));
+    logger.error("[BACKGROUND JOBS] Error expiring van requests", undefined, safeError(error));
     return { expiredCount: 0 };
   }
 }
@@ -688,11 +695,11 @@ export async function retryFailedVanDepositReleases(): Promise<{ retriedCount: n
     }
 
     if (owed.length > 0) {
-      console.log(`[BACKGROUND JOBS] Retried ${owed.length} van deposit release(s), ${succeededCount} succeeded`);
+      logger.info(`[BACKGROUND JOBS] Retried ${owed.length} van deposit release(s), ${succeededCount} succeeded`);
     }
     return { retriedCount: owed.length, succeededCount };
   } catch (error) {
-    console.error("[BACKGROUND JOBS] Error retrying failed van deposit releases:", safeError(error));
+    logger.error("[BACKGROUND JOBS] Error retrying failed van deposit releases", undefined, safeError(error));
     return { retriedCount: 0, succeededCount: 0 };
   }
 }
@@ -709,7 +716,7 @@ const PUSH_RECEIPT_INTERVAL_MS = 15 * 60 * 1000;
 let pushReceiptTimer: NodeJS.Timeout | null = null;
 
 export function startBackgroundJobs(): void {
-  console.log("[BACKGROUND JOBS] Starting background workers with lease coordination");
+  logger.info("[BACKGROUND JOBS] Starting background workers with lease coordination");
 
   // Run immediately on boot
   processExpiredSlotHoldsWithLock().catch(logFailure("slot hold expiry job"));
@@ -721,10 +728,14 @@ export function startBackgroundJobs(): void {
   slotExpiryTimer = setInterval(() => {
     processExpiredSlotHoldsWithLock().catch(logFailure("slot hold expiry job"));
     awardMissedVisitPointsWithLock().catch((err) => {
-      console.error("[BACKGROUND JOBS] Visit points catch-up failed:", err instanceof Error ? err.name : "unknown error");
+      logger.error("[BACKGROUND JOBS] Visit points catch-up failed", undefined, {
+        errorName: err instanceof Error ? err.name : "unknown error",
+      });
     });
     issueMissedReferralVouchersWithLock().catch((err) => {
-      console.error("[BACKGROUND JOBS] Referral voucher catch-up failed:", err instanceof Error ? err.name : "unknown error");
+      logger.error("[BACKGROUND JOBS] Referral voucher catch-up failed", undefined, {
+        errorName: err instanceof Error ? err.name : "unknown error",
+      });
     });
   }, SLOT_EXPIRY_INTERVAL_MS);
 
@@ -740,13 +751,17 @@ export function startBackgroundJobs(): void {
 
   retentionSweepTimer = setInterval(() => {
     runRetentionSweepWithLock().catch((err) => {
-      console.error("[BACKGROUND JOBS] Retention sweep failed:", err instanceof Error ? err.name : "unknown error");
+      logger.error("[BACKGROUND JOBS] Retention sweep failed", undefined, {
+        errorName: err instanceof Error ? err.name : "unknown error",
+      });
     });
   }, RETENTION_SWEEP_INTERVAL_MS);
 
   pushReceiptTimer = setInterval(() => {
     checkPushReceiptsWithLock().catch((err) => {
-      console.error("[BACKGROUND JOBS] Push receipt check failed:", err instanceof Error ? err.name : "unknown error");
+      logger.error("[BACKGROUND JOBS] Push receipt check failed", undefined, {
+        errorName: err instanceof Error ? err.name : "unknown error",
+      });
     });
   }, PUSH_RECEIPT_INTERVAL_MS);
 }
@@ -775,6 +790,6 @@ export function stopBackgroundJobs(): void {
     clearInterval(pushReceiptTimer);
     pushReceiptTimer = null;
   }
-  console.log("[BACKGROUND JOBS] Stopped background workers");
+  logger.info("[BACKGROUND JOBS] Stopped background workers");
 }
 

@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { redis } from "./redis";
 import { safeError } from "./log-safety";
+import { logger } from "./structured-logging";
 
 // CS-08 (AM-1): an access token is a 15-minute JWT, so without this it kept
 // working after logout, a password change, a revoked session or a closed
@@ -24,7 +25,7 @@ export async function denySessions(sessionIds: string[]): Promise<void> {
     for (const id of sessionIds) pipeline.set(key(id), "1", "EX", DENYLIST_SECONDS);
     await pipeline.exec();
   } catch (err) {
-    console.error("[Sessions] Could not record revoked sessions:", safeError(err));
+    logger.error("[Sessions] Could not record revoked sessions", undefined, safeError(err));
   }
 }
 

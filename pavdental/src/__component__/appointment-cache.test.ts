@@ -21,4 +21,11 @@ describe("findInCachedLists", () => {
   it("ignores cached entries that are not lists, such as another appointment's detail", () => {
     expect(findInCachedLists(entries, at, "z")).toBeUndefined();
   });
+
+  it("finds rows inside paged InfiniteData entries", () => {
+    const pagedEntries: Array<[unknown, unknown]> = [
+      [["my-appointments", undefined], { pages: [[{ id: "p1" }], [{ id: "p2", status: "confirmed" }]], pageParams: [0, 30] }],
+    ];
+    expect(findInCachedLists(pagedEntries, at, "p2")).toEqual({ row: { id: "p2", status: "confirmed" }, updatedAt: 1000 });
+  });
 });

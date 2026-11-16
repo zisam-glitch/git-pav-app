@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LIST_CAPS } from "../lib/list-caps";
 
 const uuid = z.string().guid();
 const name = z.string().trim().min(1).max(100);
@@ -60,6 +61,11 @@ export const planActionParamsSchema = z.object({
 export const patientDocParamsSchema = z.object({
   id: uuid,
   docId: uuid,
+}).strict();
+
+export const patientDocumentsQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(LIST_CAPS.documents).default(LIST_CAPS.documents),
+  offset: z.coerce.number().int().min(0).default(0),
 }).strict();
 
 export const signTreatmentPlanSchema = z.object({

@@ -1,4 +1,5 @@
 import type { AppointmentDetail, AppointmentListItem } from "../booking/booking-types";
+import type { ApiVaultDocument } from "../api-contract.gen";
 import { findInCachedLists } from "../booking/appointment-cache";
 import { APPOINTMENT_STATUS } from "@/lib/domain-enums";
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import {
   fetchClinicians,
   fetchSlots,
   fetchMyAppointments,
+  APPOINTMENT_PAGE_SIZE,
   fetchAppointment,
   holdSlot,
   createAppointment,
@@ -30,6 +32,7 @@ import {
   declineTreatmentPlan,
   fetchPatientPrescriptions,
   fetchDocuments,
+  DOCUMENT_PAGE_SIZE,
   fetchMessageThreads,
   fetchMessageThreadPage,
   MESSAGE_PAGE_SIZE,
@@ -98,9 +101,18 @@ export function useSlots(params: {
 }
 
 export function useMyAppointments(params?: { scope?: string; date?: string }) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: queryKeys.appointments.list(params),
-    queryFn: () => fetchMyAppointments(params),
+    queryFn: ({ pageParam }) =>
+      fetchMyAppointments({ ...params, limit: APPOINTMENT_PAGE_SIZE, offset: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      nextOffset(
+        lastPage,
+        pages.reduce((n, p) => n + (Array.isArray(p) ? p.length : 0), 0),
+        APPOINTMENT_PAGE_SIZE,
+      ),
+    select: (d) => uniqueById(flattenPages<AppointmentListItem>(d.pages)),
   });
 }
 
@@ -162,11 +174,20 @@ export function useCancelAppointmentMutation() {
     onMutate: async (appointmentId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.appointments.all() });
       const previous = queryClient.getQueriesData({ queryKey: queryKeys.appointments.all() });
+      const markCancelled = (list: AppointmentListItem[]) =>
+        list.map((row) =>
+          row?.id === appointmentId ? { ...row, status: APPOINTMENT_STATUS.CANCELLED } : row
+        );
       queryClient.setQueriesData({ queryKey: queryKeys.appointments.all() }, (old: unknown) => {
         if (Array.isArray(old)) {
-          return (old as AppointmentListItem[]).map((row) =>
-            row?.id === appointmentId ? { ...row, status: APPOINTMENT_STATUS.CANCELLED } : row
-          );
+          return markCancelled(old as AppointmentListItem[]);
+        }
+        if (old && typeof old === "object" && "pages" in old && Array.isArray((old as { pages?: unknown }).pages)) {
+          const paged = old as { pages: unknown[]; pageParams?: unknown[] };
+          return {
+            ...paged,
+            pages: paged.pages.map((p) => (Array.isArray(p) ? markCancelled(p as AppointmentListItem[]) : p)),
+          };
         }
         if (old && typeof old === "object" && (old as { id?: string }).id === appointmentId) {
           return { ...(old as Record<string, unknown>), status: APPOINTMENT_STATUS.CANCELLED };
@@ -281,9 +302,17 @@ export function usePatientPrescriptions(userId: string) {
 }
 
 export function useDocumentVault(userId: string) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: queryKeys.documentVault(userId),
-    queryFn: () => fetchDocuments(userId),
+    queryFn: ({ pageParam }) => fetchDocuments(userId, pageParam, DOCUMENT_PAGE_SIZE),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      nextOffset(
+        lastPage,
+        pages.reduce((n, p) => n + (Array.isArray(p) ? p.length : 0), 0),
+        DOCUMENT_PAGE_SIZE,
+      ),
+    select: (d) => uniqueById(flattenPages<ApiVaultDocument>(d.pages)),
     enabled: !!userId,
   });
 }

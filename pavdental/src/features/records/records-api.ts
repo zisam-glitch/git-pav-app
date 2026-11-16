@@ -105,8 +105,14 @@ export async function updatePatientProfile(userId: string, data: Record<string, 
 }
 
 // ─── Document Vault ───────────────────────────────────────────────────────────
-export async function fetchDocuments(userId: string): Promise<ApiVaultDocument[]> {
-  const res = await authFetch(`/api/patients/${userId}/documents`);
+export const DOCUMENT_PAGE_SIZE = 30;
+
+export async function fetchDocuments(
+  userId: string,
+  offset = 0,
+  limit = DOCUMENT_PAGE_SIZE,
+): Promise<ApiVaultDocument[]> {
+  const res = await authFetch(`/api/patients/${userId}/documents?limit=${limit}&offset=${offset}`);
   if (!res.ok) throw new Error("Could not load documents");
   return res.json();
 }

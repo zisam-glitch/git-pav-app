@@ -75,7 +75,7 @@ function BookingRow({
 
 export default function PatientAppointmentsScreen() {
   const router = useRouter();
-  const { data: apiAppointments, isLoading, isError, refetch } = useMyAppointments();
+  const { data: apiAppointments, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } = useMyAppointments();
   const cancelMutation = useCancelAppointmentMutation();
   const refresh = usePullToRefresh();
   const [pendingCancel, setPendingCancel] = useState<string | null>(null);
@@ -122,6 +122,10 @@ export default function PatientAppointmentsScreen() {
         keyExtractor={(row) => row.key}
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={refresh.onRefresh} />}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) fetchNextPage?.();
+        }}
+        onEndReachedThreshold={0.5}
         renderItem={({ item }) => {
           if (item.kind === "heading") {
             return (
@@ -165,14 +169,17 @@ export default function PatientAppointmentsScreen() {
           )
         }
         ListFooterComponent={
-          showRows ? (
-            <Button
-              title="Book another appointment"
-              size="lg"
-              onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
-              style={styles.bookAgain}
-            />
-          ) : null
+          <>
+            {isFetchingNextPage ? <Skeleton height={110} borderRadius={16} /> : null}
+            {showRows ? (
+              <Button
+                title="Book another appointment"
+                size="lg"
+                onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
+                style={styles.bookAgain}
+              />
+            ) : null}
+          </>
         }
       />
 

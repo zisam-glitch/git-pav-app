@@ -86,6 +86,50 @@ describe("B6 optimistic updates", () => {
     );
   });
 
+  it("optimistically marks a cancelled appointment inside paged InfiniteData and rolls back on failure", async () => {
+    const client = makeClient();
+    client.setQueryData(queryKeys.appointments.list(), {
+      pages: [
+        [{ id: "a1", status: APPOINTMENT_STATUS.CONFIRMED }],
+        [{ id: "a2", status: APPOINTMENT_STATUS.CONFIRMED }],
+      ],
+      pageParams: [0, 30],
+    });
+
+    let rejectReq!: (err: Error) => void;
+    mockAuthFetch.mockImplementationOnce(
+      () =>
+        new Promise((_res, rej) => {
+          rejectReq = rej;
+        }),
+    );
+
+    const { result } = renderHook(() => useCancelAppointmentMutation(), {
+      wrapper: wrapperFor(client),
+    });
+
+    let mutationPromise: Promise<unknown>;
+    await act(async () => {
+      mutationPromise = result.current.mutateAsync("a2").catch(() => {});
+    });
+
+    const optimistic = client.getQueryData<{ pages: Array<Array<{ id: string; status: string }>> }>(
+      queryKeys.appointments.list(),
+    );
+    expect(optimistic?.pages[0][0].status).toBe(APPOINTMENT_STATUS.CONFIRMED);
+    expect(optimistic?.pages[1][0].status).toBe(APPOINTMENT_STATUS.CANCELLED);
+
+    await act(async () => {
+      rejectReq(new Error("Server error"));
+      await mutationPromise;
+    });
+
+    const rolledBack = client.getQueryData<{ pages: Array<Array<{ id: string; status: string }>> }>(
+      queryKeys.appointments.list(),
+    );
+    expect(rolledBack?.pages[1][0].status).toBe(APPOINTMENT_STATUS.CONFIRMED);
+  });
+
   it("optimistically clears unreadCount when marking a thread read and rolls back on failure", async () => {
     const client = makeClient();
     client.setQueryData(queryKeys.messages.threads("full"), [

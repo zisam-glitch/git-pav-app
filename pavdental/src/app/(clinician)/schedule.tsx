@@ -35,10 +35,10 @@ export default function ClinicianScheduleScreen() {
     : currentUser?.roleTitle || "Dental Practitioner";
 
   const sessions = (liveAppointments && liveAppointments.length > 0)
-    ? liveAppointments.map((a: any) => ({
+    ? liveAppointments.map((a) => ({
         id: a.id,
-        startTimeUtc: a.startTimeUtc as string,
-        channel: a.channel as string,
+        startTimeUtc: a.startTimeUtc,
+        channel: a.channel,
         patientId: a.patientId || a.patient?.id,
         // The practice's day and times are UK time, whatever the device is set to.
         time: ukTime(new Date(a.startTimeUtc)),
@@ -49,7 +49,7 @@ export default function ClinicianScheduleScreen() {
           : a.patient
           ? `${a.patient.firstName} ${a.patient.lastName}${a.patient.age ? ` (${a.patient.age}y)` : ""}`
           : (a.patientName || "Patient"),
-        serviceName: a.service?.name || a.serviceName || "",
+        serviceName: a.service?.name || "",
         // The patient's own triage answer; the service name is not a symptom.
         chiefComplaint: triageSummary(a.triageData, a.intraoralPhotos).complaint || "",
         photosAttached: triageSummary(a.triageData, a.intraoralPhotos).photoCount,
@@ -57,7 +57,9 @@ export default function ClinicianScheduleScreen() {
       }))
     : [];
 
-  const renderSession = (s: any) => {
+  type ScheduleSession = (typeof sessions)[number];
+
+  const renderSession = (s: ScheduleSession) => {
                 const isVideo = s.type === "video";
                 // A consult already under way (the patient was let in, or the
                 // visit started) still needs its room and record.
@@ -109,13 +111,13 @@ export default function ClinicianScheduleScreen() {
                             size="md"
                             onPress={() =>
                               router.push({
-                                pathname: "/(clinician)/consult-room" as any,
+                                pathname: "/(clinician)/consult-room",
                                 params: {
                                   appointmentId: s.id,
                                   patientName: s.patientName,
                                   chiefComplaint: s.chiefComplaint,
                                 },
-                              })
+                              } as never)
                             }
                           />
                         ) : (
@@ -126,7 +128,7 @@ export default function ClinicianScheduleScreen() {
                             variant="secondary"
                             onPress={() =>
                               router.push({
-                                pathname: "/(clinician)/patient-record" as any,
+                                pathname: "/(clinician)/patient-record",
                                 params: {
                                   appointmentId: s.id,
                                   patientId: s.patientId,
@@ -134,7 +136,7 @@ export default function ClinicianScheduleScreen() {
                                   chiefComplaint: s.chiefComplaint,
                                   channel: s.type,
                                 },
-                              })
+                              } as never)
                             }
                           />
                         )}
@@ -183,7 +185,7 @@ export default function ClinicianScheduleScreen() {
               arrow
               variant="secondary"
               size="sm"
-              onPress={() => router.push("/(clinician)/inbox" as any)}
+              onPress={() => router.push("/(clinician)/inbox" as never)}
             />
           </View>
         </View>
@@ -288,7 +290,7 @@ export default function ClinicianScheduleScreen() {
                     firstName: "Test",
                     lastName: "Patient",
                   });
-                  router.replace("/(patient)/(tabs)/home" as any);
+                  router.replace("/(patient)/(tabs)/home" as never);
                 }}
               />
               <Button
@@ -303,7 +305,7 @@ export default function ClinicianScheduleScreen() {
                     firstName: "Test",
                     lastName: "Operator",
                   });
-                  router.replace("/(operator)/route" as any);
+                  router.replace("/(operator)/route" as never);
                 }}
               />
             </View>

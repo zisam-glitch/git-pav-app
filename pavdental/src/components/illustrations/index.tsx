@@ -10,7 +10,7 @@ import { illustrationColors } from "@/theme";
 //
 // One require per piece, read only when first drawn: Metro doesn't tree-shake,
 // and each piece is 25–70 KB of path data.
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires -- reason: lazy synchronous require per illustration avoids loading all 25-70 KB SVG strings upfront */
 const ART = {
   bookingConfirmed: () => require("./art/being-creative").default,
   accountCreated: () => require("./art/business-card").default,

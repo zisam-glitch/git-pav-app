@@ -20,6 +20,16 @@ const TOOTH_CONDITIONS = [
 
 type ToothCondition = typeof TOOTH_CONDITIONS[number];
 
+interface OdontogramHistoryEntry {
+  id?: string;
+  toothNumber: number;
+  arch: string;
+  quadrant: string;
+  condition: string;
+  notes?: string | null;
+  createdAt: string;
+}
+
 export default function OdontogramEditorScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{
@@ -38,7 +48,7 @@ export default function OdontogramEditorScreen() {
   const [teethState, setTeethState] = useState<Record<number, { condition: ToothCondition; notes?: string }>>({});
   const [selectedTooth, setSelectedTooth] = useState<number>(1);
   const [toothNote, setToothNote] = useState<string>("");
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<OdontogramHistoryEntry[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
   // A chart that failed to load must never look like 32 healthy teeth: saving
@@ -74,9 +84,9 @@ export default function OdontogramEditorScreen() {
         }
         setTeethState(initial);
         setHistory(hist || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setLoadFailed(true);
-        setError(err?.message || "Failed to load odontogram");
+        setError(err instanceof Error ? err.message : "Failed to load odontogram");
       } finally {
         setLoading(false);
       }
@@ -145,8 +155,8 @@ export default function OdontogramEditorScreen() {
       // Refresh history
       const updatedHist = await fetchOdontogramHistory(patientId).catch(() => []);
       setHistory(updatedHist);
-    } catch (err: any) {
-      setError(err?.message || "Failed to save odontogram");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to save odontogram");
     } finally {
       setSaving(false);
     }
@@ -217,7 +227,7 @@ export default function OdontogramEditorScreen() {
               </ThemedText>
             ) : (
               <View style={styles.historyList}>
-                {history.map((h: any, idx: number) => (
+                {history.map((h, idx) => (
                   <View key={h.id || idx} style={styles.historyItem}>
                     <View style={styles.historyHeader}>
                       <ThemedText variant="headline" style={styles.historyTooth}>

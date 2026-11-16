@@ -3,14 +3,24 @@ import { onlineManager } from "@tanstack/react-query";
 import { create } from "zustand";
 import { API_URL } from "../config/api";
 
-let NetInfo: any = null;
+type NetInfoStateLike = {
+  isConnected: boolean | null;
+  isInternetReachable: boolean | null;
+};
+
+type NetInfoLike = {
+  addEventListener?: (listener: (state: NetInfoStateLike) => void) => () => void;
+  configure?: (config: typeof REACHABILITY_CONFIG) => void;
+};
+
+let NetInfo: NetInfoLike | null = null;
 try {
   NetInfo = require("@react-native-community/netinfo").default ?? require("@react-native-community/netinfo");
 } catch {
   // Not available on this platform.
 }
 
-let Platform: any = { OS: "web" };
+let Platform: { OS: string } = { OS: "web" };
 try {
   Platform = require("react-native").Platform ?? require("react-native-web").Platform;
 } catch {
@@ -56,7 +66,7 @@ export function setupNetworkMonitoring(): () => void {
   if (Platform.OS !== "web" && NetInfo?.addEventListener) {
     NetInfo.configure?.(REACHABILITY_CONFIG);
     onlineManager.setEventListener((setOnline) => {
-      unsubscribeNetInfo = NetInfo.addEventListener((state: any) => {
+      unsubscribeNetInfo = NetInfo?.addEventListener?.((state: NetInfoStateLike) => {
         const isOnline = Boolean(state.isConnected && state.isInternetReachable !== false);
         setOnline(isOnline);
         useNetworkStore.getState().setNetworkState({

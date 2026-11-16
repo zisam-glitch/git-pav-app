@@ -56,16 +56,17 @@ export default function OfflineCaptureScreen() {
       if (res?.ok) {
         void refreshQueued();
         setIsSavedOffline(true);
-        router.replace("/(operator)/route" as any);
+        router.replace("/(operator)/route" as never);
         return;
       }
       // The server answered but refused (for example the visit was already
       // completed or cancelled): say so instead of queueing it.
       if (res && res.status >= 400 && res.status < 500 && res.status !== 401 && res.status !== 408 && res.status !== 429) {
-        const err = await res.json().catch(() => ({}));
+        const err: unknown = await res.json().catch(() => ({}));
+        const errObj = err && typeof err === "object" ? (err as { message?: string; error?: string }) : {};
         Alert.alert(
           "Couldn't complete the visit",
-          (err as any).message || (err as any).error || "The visit couldn't be completed. Check the stop and try again."
+          errObj.message || errObj.error || "The visit couldn't be completed. Check the stop and try again."
         );
         return;
       }
@@ -81,7 +82,7 @@ export default function OfflineCaptureScreen() {
       Alert.alert(
         "Saved on this phone",
         "We couldn't reach the server. Your note is stored securely on this phone and will be sent automatically when you're back online.",
-        [{ text: "OK", onPress: () => router.replace("/(operator)/route" as any) }]
+        [{ text: "OK", onPress: () => router.replace("/(operator)/route" as never) }]
       );
     } finally {
       setIsSyncing(false);

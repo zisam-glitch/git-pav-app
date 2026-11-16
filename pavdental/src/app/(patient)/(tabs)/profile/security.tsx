@@ -56,13 +56,13 @@ export default function SecurityScreen() {
           onPress: () => setPasswordModalVisible(false),
         },
       ]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       try {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       } catch {
         // Haptics optional
       }
-      Alert.alert("Failed to Update Password", err?.message || "Please check your current password.");
+      Alert.alert("Failed to Update Password", err instanceof Error ? err.message : "Please check your current password.");
     }
   };
 
@@ -118,7 +118,7 @@ export default function SecurityScreen() {
             subtitle="View devices and sign out other sessions"
             left={<IconTile icon="smartphone" />}
             right={<AppIcon name="chevronRight" size={16} color={colors.tertiaryLabel} />}
-            onPress={() => router.push("/(patient)/(tabs)/profile/sessions" as any)}
+            onPress={() => router.push("/(patient)/(tabs)/profile/sessions" as never)}
           />
         </View>
       </View>
@@ -170,7 +170,7 @@ export default function SecurityScreen() {
             subtitle="Signed GDPR records & retention disclosures"
             left={<IconTile icon="fileText" />}
             right={<AppIcon name="chevronRight" size={16} color={colors.tertiaryLabel} />}
-            onPress={() => router.push("/(patient)/(tabs)/profile/consent" as any)}
+            onPress={() => router.push("/(patient)/(tabs)/profile/consent" as never)}
           />
         </View>
       </View>

@@ -36,7 +36,7 @@ export default function PhotoReviewScreen() {
         Object.entries(raw).flatMap(([id, v]) =>
           typeof v === 'string'
             ? [[id, { uri: v }]]
-            : v && typeof v === 'object' && typeof (v as any).uri === 'string'
+            : v && typeof v === 'object' && 'uri' in v && typeof (v as { uri: unknown }).uri === 'string'
               ? [[id, v as { uri: string; mimeType?: string }]]
               : []
         )
@@ -99,9 +99,9 @@ export default function PhotoReviewScreen() {
               mimeType,
             });
             uploadedPhotoUrls.push(url);
-          } catch (err: any) {
+          } catch (err: unknown) {
             failedUploads += 1;
-            lastUploadError = err?.message || "Check your connection and try again.";
+            lastUploadError = err instanceof Error ? err.message : "Check your connection and try again.";
           }
         }
       }
@@ -133,11 +133,11 @@ export default function PhotoReviewScreen() {
 
       setToast({ message: 'Sent to your dentist', tone: 'success' });
       router.push({
-        pathname: '/(patient)/video/device-check' as any,
+        pathname: '/(patient)/video/device-check' as never,
         params: { appointmentId: appointmentId || '' },
       });
-    } catch (err: any) {
-      setToast({ message: err?.message || 'Failed to submit triage', tone: 'error' });
+    } catch (err: unknown) {
+      setToast({ message: err instanceof Error ? err.message : 'Failed to submit triage', tone: 'error' });
     } finally {
       setIsSubmitting(false);
     }

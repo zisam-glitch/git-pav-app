@@ -149,9 +149,10 @@ export async function cancelVanRequest(id: string): Promise<VanServiceRequest & 
 // ─── Operator endpoints ───────────────────────────────────────────────────────
 
 async function parseErrorAndThrow(res: Response, fallbackMsg: string): Promise<never> {
-  const body = await res.json().catch(() => ({}));
+  const body: unknown = await res.json().catch(() => ({}));
+  const errBody = body && typeof body === "object" ? (body as { error?: string; message?: string }) : {};
   throw new Error(
-    (body as any).error || (body as any).message || `${fallbackMsg} (${res.status})`
+    errBody.error || errBody.message || `${fallbackMsg} (${res.status})`
   );
 }
 

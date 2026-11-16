@@ -52,7 +52,7 @@ export default function BookingSummaryScreen() {
   useEffect(() => {
     if (paidRef.current) return;
     if (!service || !slot) {
-      router.replace("/(patient)/booking/service-catalog" as any);
+      router.replace("/(patient)/booking/service-catalog" as never);
     }
   }, [service, slot]);
 
@@ -74,7 +74,7 @@ export default function BookingSummaryScreen() {
             text: "Select Slot",
             onPress: () => {
               releaseSlot();
-              router.replace("/(patient)/booking/slot-picker" as any);
+              router.replace("/(patient)/booking/slot-picker" as never);
             },
           },
         ]
@@ -100,7 +100,7 @@ export default function BookingSummaryScreen() {
               text: "OK",
               onPress: () => {
                 releaseSlot();
-                router.replace("/(patient)/booking/slot-picker" as any);
+                router.replace("/(patient)/booking/slot-picker" as never);
               },
             },
           ]
@@ -334,7 +334,7 @@ export default function BookingSummaryScreen() {
           disabled={secondsRemaining === 0}
           onPress={secondsRemaining === 0 ? () => {
             releaseSlot();
-            router.replace("/(patient)/booking/slot-picker" as any);
+            router.replace("/(patient)/booking/slot-picker" as never);
           } : () => handlePayDeposit("card")}
         />
       </View>

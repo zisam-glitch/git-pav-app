@@ -6,6 +6,7 @@ import { ThemedText, Card, Badge, AppIcon, Button } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { toothLabel } from "@/features/records/tooth-number";
 import { ToothRecord, ToothCondition } from "@/features/records/records-types";
+import type { ApiToothRecord } from "@/features/api-contract.gen";
 import { useOdontogram } from "@/features/hooks/use-dental-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { toLabel } from "@/lib/text";
@@ -112,14 +113,20 @@ export default function OdontogramScreen() {
   const userId = user?.id || "";
   const { data: apiTeeth } = useOdontogram(userId);
   const teeth: (ToothRecord & { recorded: boolean })[] = React.useMemo(() => {
-    const rawList = Array.isArray(apiTeeth)
+    type RawTooth = Omit<ApiToothRecord, "condition"> & {
+      condition: ApiToothRecord["condition"] | "filling";
+      number?: number;
+      surfaces?: ToothRecord["surfaces"];
+    };
+    const apiRecord = apiTeeth as { teeth?: RawTooth[] } | undefined;
+    const rawList: RawTooth[] = Array.isArray(apiTeeth)
       ? apiTeeth
-      : Array.isArray((apiTeeth as any)?.teeth)
-        ? (apiTeeth as any).teeth
+      : Array.isArray(apiRecord?.teeth)
+        ? apiRecord.teeth
         : [];
     return STANDARD_TEETH.map((base) => {
       const match = rawList.find(
-        (t: any) => Number(t.toothNumber ?? t.number) === base.toothNumber
+        (t) => Number(t.toothNumber ?? t.number) === base.toothNumber
       );
       if (!match) return { ...base, recorded: false };
       const mappedCond: ToothCondition =

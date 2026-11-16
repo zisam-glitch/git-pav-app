@@ -9,7 +9,7 @@ import { useIsAuthenticated } from "../auth/auth-store";
 import { authFetch, rememberPushToken } from "../auth/auth-api";
 
 // Conditionally import expo-notifications to prevent crash in Expo Go
-let Notifications: any;
+let Notifications: typeof import("expo-notifications") | null;
 try {
   Notifications = require("expo-notifications");
 } catch (error) {
@@ -35,7 +35,7 @@ interface NotificationHistory {
   type: string;
   title: string;
   body: string;
-  data: any;
+  data: Record<string, unknown>;
   sentAt: Date;
   status: string;
 }
@@ -282,7 +282,7 @@ export function useNotificationManager() {
     // Get push token with configured EAS projectId (CG-1)
     const projectId =
       Constants?.expoConfig?.extra?.eas?.projectId ??
-      (Constants as any)?.easConfig?.projectId ??
+      (Constants as { easConfig?: { projectId?: string } })?.easConfig?.projectId ??
       process.env.EXPO_PUBLIC_EAS_PROJECT_ID;
     const token = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
     if (token) {

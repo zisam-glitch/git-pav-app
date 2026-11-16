@@ -7,6 +7,7 @@
 // Maps on Android (universal link opens the app when installed).
 
 import { Linking, Platform } from "react-native";
+import { reportCaughtError } from "../../lib/caught-errors";
 
 export type LatLng = { lat: number; lng: number };
 
@@ -48,7 +49,8 @@ export async function openDrivingDirections(
     ? `https://maps.apple.com/?daddr=${dLat},${dLng}&dirflg=d`
     : url;
 
-  await Linking.openURL(fallback).catch(() => {
+  await Linking.openURL(fallback).catch((err) => {
+    reportCaughtError(err, "nav-links openURL");
     throw new Error("Could not open the maps app");
   });
 }

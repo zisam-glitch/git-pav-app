@@ -1,5 +1,6 @@
 import type { KeyValueStore } from "./offline-notes-queue";
 import type { VanStopPhase } from "./van-types";
+import { reportCaughtError } from "../../lib/caught-errors";
 
 export type QueueablePhase = VanStopPhase | "no_show";
 
@@ -18,7 +19,8 @@ export async function readPhaseQueue(store: KeyValueStore): Promise<QueuedPhaseC
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  } catch (err) {
+    reportCaughtError(err, "offline-phase-queue readPhaseQueue");
     return [];
   }
 }
@@ -73,7 +75,8 @@ export async function flushPhaseQueue(
     let result: PhaseSendResult = "retry";
     try {
       result = await send(item);
-    } catch {
+    } catch (err) {
+      reportCaughtError(err, "offline-phase-queue flushPhaseQueue");
       result = "retry";
     }
     if (result === "retry") {

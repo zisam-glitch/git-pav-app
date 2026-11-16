@@ -1,4 +1,5 @@
 import { plainBookingError } from "../payment/payment-errors";
+import { reportCaughtError } from "../../lib/caught-errors";
 
 /**
  * What happens when a patient answers a treatment plan, as plain functions with
@@ -55,7 +56,10 @@ export async function signPlan(
   planId: string,
   user: Parameters<typeof signerNameFor>[0]
 ): Promise<SignOutcome> {
-  const identity = await deps.verifyIdentity().catch(() => "unavailable" as const);
+  const identity = await deps.verifyIdentity().catch((err) => {
+    reportCaughtError(err, "plan-actions verifyIdentity");
+    return "unavailable" as const;
+  });
   if (identity === "cancelled") return { kind: "not-verified" };
 
   const signerName = signerNameFor(user);

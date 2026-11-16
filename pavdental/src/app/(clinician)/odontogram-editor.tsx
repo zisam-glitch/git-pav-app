@@ -6,6 +6,7 @@ import { ThemedText, Card, Badge, Button, IconButton, AppIcon, ErrorState } from
 import { colors, spacing, radius } from "@/theme";
 import { fetchOdontogram, updateOdontogram, fetchOdontogramHistory } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { toothLabel, fdiText, UPPER_CHART_ROW, LOWER_CHART_ROW } from "@/features/records/tooth-number";
 
 const TOOTH_CONDITIONS = [
@@ -69,7 +70,10 @@ export default function OdontogramEditorScreen() {
       try {
         const [records, hist] = await Promise.all([
           fetchOdontogram(patientId),
-          fetchOdontogramHistory(patientId).catch(() => []),
+          fetchOdontogramHistory(patientId).catch((err) => {
+            reportCaughtError(err, "odontogram-history load");
+            return [];
+          }),
         ]);
 
         const initial: Record<number, { condition: ToothCondition; notes?: string }> = {};
@@ -153,7 +157,10 @@ export default function OdontogramEditorScreen() {
       await updateOdontogram(patientId, payload);
       setSuccessMessage("Dental chart saved with append-only audit trail.");
       // Refresh history
-      const updatedHist = await fetchOdontogramHistory(patientId).catch(() => []);
+      const updatedHist = await fetchOdontogramHistory(patientId).catch((err) => {
+        reportCaughtError(err, "odontogram-history refresh");
+        return [];
+      });
       setHistory(updatedHist);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to save odontogram");

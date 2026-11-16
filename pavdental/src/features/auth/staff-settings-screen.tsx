@@ -5,6 +5,7 @@ import { colors, spacing } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
 import { useCurrentUser } from "@/features/auth/auth-store";
 import { toLabel } from "@/lib/text";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 /**
  * Settings for clinicians and van operators: who is signed in, and Sign out.
@@ -20,8 +21,9 @@ export function StaffSettingsScreen() {
     setBusy(true);
     try {
       await authApi.signOut();
-    } catch {
+    } catch (err) {
       // The session is cleared on this phone whatever the network says.
+      reportCaughtError(err, "staff-settings signOut");
     }
     setBusy(false);
   };

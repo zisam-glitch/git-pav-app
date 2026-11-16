@@ -1,5 +1,6 @@
 import { Alert, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 // Intraoral photos for a video consult. iPhones store photos as HEIC, which
 // the upload could not send (the request failed inside the app, so the patient
@@ -61,11 +62,30 @@ async function launch(source: "camera" | "library"): Promise<PickedPhoto | null>
 
 /** Lets the patient take a photo or choose one from their library. */
 export function pickTriagePhoto(): Promise<PickedPhoto | null> {
-  if (Platform.OS === "web") return launch("library").catch(() => null);
+  if (Platform.OS === "web") {
+    return launch("library").catch((err) => {
+      reportCaughtError(err, "pick-photo web");
+      return null;
+    });
+  }
   return new Promise((resolve) => {
     Alert.alert("Add a photo", undefined, [
-      { text: "Take photo", onPress: () => launch("camera").then(resolve, () => resolve(null)) },
-      { text: "Choose from library", onPress: () => launch("library").then(resolve, () => resolve(null)) },
+      {
+        text: "Take photo",
+        onPress: () =>
+          launch("camera").then(resolve, (err) => {
+            reportCaughtError(err, "pick-photo camera");
+            resolve(null);
+          }),
+      },
+      {
+        text: "Choose from library",
+        onPress: () =>
+          launch("library").then(resolve, (err) => {
+            reportCaughtError(err, "pick-photo library");
+            resolve(null);
+          }),
+      },
       { text: "Cancel", style: "cancel", onPress: () => resolve(null) },
     ]);
   });

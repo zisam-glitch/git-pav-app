@@ -16,6 +16,7 @@ import {
   markAppointmentNoShow,
 } from "@/features/records/records-api";
 import { toLabel } from "@/lib/text";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { fdiText } from "@/features/records/tooth-number";
 import type { ApiToothRecord, ApiTreatmentPlan } from "@/features/api-contract.gen";
 
@@ -63,7 +64,8 @@ export default function ClinicianPatientRecordScreen() {
     setError(null);
     const missed: string[] = [];
     const soft = <T,>(part: string, p: Promise<T>, fallback: T) =>
-      p.catch(() => {
+      p.catch((err) => {
+        reportCaughtError(err, `patient-record ${part}`);
         missed.push(part);
         return fallback;
       });

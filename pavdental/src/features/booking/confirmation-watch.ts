@@ -6,6 +6,7 @@
  */
 
 import { isConfirmed } from "../../lib/domain-enums";
+import { reportCaughtError } from "../../lib/caught-errors";
 
 export type ConfirmationOutcome = "confirmed" | "timeout" | "missing";
 
@@ -49,8 +50,9 @@ export function watchConfirmation(
     try {
       const appointment = await fetchStatus(appointmentId);
       if (isConfirmed(appointment)) finish("confirmed");
-    } catch {
+    } catch (err) {
       // A failed check is retried on the next tick.
+      reportCaughtError(err, "confirmation-watch check");
     } finally {
       inFlight = false;
     }

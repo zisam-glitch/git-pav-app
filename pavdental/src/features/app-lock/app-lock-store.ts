@@ -62,7 +62,8 @@ export const useAppLockStore = create<AppLockState>((set, get) => ({
       } else {
         useAuthStore.getState().setBiometricUnlocked(true);
       }
-    } catch {
+    } catch (error) {
+      reportCaughtError(error, "app-lock hydrateBiometricPreference");
       set({ requiresBiometric: false, isLocked: false });
     }
   },
@@ -121,4 +122,6 @@ export const useAppLockStore = create<AppLockState>((set, get) => ({
 }));
 
 // Hydrate stored biometric preference on module load
-useAppLockStore.getState().hydrateBiometricPreference().catch(() => {});
+useAppLockStore.getState().hydrateBiometricPreference().catch((error) => {
+  reportCaughtError(error, "app-lock initial hydrate");
+});

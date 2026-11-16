@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import * as LocalAuthentication from "expo-local-authentication";
 import { safeHaptics } from "@/lib/haptics";
+import { reportCaughtError } from "@/lib/caught-errors";
 import { ThemedText, Button, AppIcon, Card } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
@@ -43,7 +44,8 @@ export default function BiometricUnlockScreen() {
         safeHaptics.notificationAsync("warning").catch(() => {});
         setError("Authentication was canceled or not recognized.");
       }
-    } catch {
+    } catch (err) {
+      reportCaughtError(err, "biometric-unlock authenticate");
       setError("Biometric authentication encountered an error.");
     }
   };
@@ -51,8 +53,9 @@ export default function BiometricUnlockScreen() {
   const handleSignOut = async () => {
     try {
       await authApi.signOut();
-    } catch {
+    } catch (err) {
       // Signed out locally either way.
+      reportCaughtError(err, "biometric-unlock sign-out");
     }
     router.replace("/(auth)/welcome");
   };

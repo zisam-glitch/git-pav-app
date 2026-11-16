@@ -4,6 +4,7 @@ import Daily, { DailyCall, DailyMediaView, DailyParticipant } from "@daily-co/re
 import { ThemedText, Button } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { cameraProblem, cameraProblemMessage, needsSettings, levelBars, type CameraProblem } from "./camera-check-state";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 type Phase = "idle" | "starting" | "ready" | "problem";
 
@@ -23,7 +24,7 @@ export function CameraCheck() {
   const stop = () => {
     const call = callRef.current;
     callRef.current = null;
-    if (call) call.destroy().catch(() => {});
+    if (call) call.destroy().catch((err) => reportCaughtError(err, "camera-check destroy"));
   };
   useEffect(() => stop, []);
 
@@ -45,8 +46,9 @@ export function CameraCheck() {
       await call.startCamera();
       setLocal({ ...call.participants().local });
       setPhase("ready");
-      call.startLocalAudioLevelObserver(200).catch(() => {});
-    } catch {
+      call.startLocalAudioLevelObserver(200).catch((err) => reportCaughtError(err, "camera-check audioLevelObserver"));
+    } catch (err) {
+      reportCaughtError(err, "camera-check startCamera");
       setProblem((p) => p ?? "other");
       setPhase("problem");
     }
@@ -94,7 +96,14 @@ export function CameraCheck() {
             {cameraProblemMessage(problem)}
           </ThemedText>
           {needsSettings(problem) ? (
-            <Button title="Open Settings" variant="secondary" size="md" onPress={() => Linking.openSettings().catch(() => {})} />
+            <Button
+              title="Open Settings"
+              variant="secondary"
+              size="md"
+              onPress={() =>
+                Linking.openSettings().catch((err) => reportCaughtError(err, "camera-check openSettings"))
+              }
+            />
           ) : null}
           <Button title="Check again" variant="ghost" size="sm" onPress={start} />
         </>

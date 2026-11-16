@@ -6,6 +6,7 @@ import { colors, spacing } from "@/theme";
 import { publicFetch } from "@/features/auth/auth-api";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { isOlderVersion } from "@/lib/app-version";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 interface AppConfig {
   minimumAppVersion?: string;
@@ -43,7 +44,15 @@ export function UpdateGate({ children }: { children: React.ReactNode }) {
           This version of the Pav Dental app is out of date. Please update it from the app store to carry on.
         </ThemedText>
         {config.storeUrl ? (
-          <Button title="Open the app store" size="lg" onPress={() => Linking.openURL(config.storeUrl as string).catch(() => {})} />
+          <Button
+            title="Open the app store"
+            size="lg"
+            onPress={() =>
+              Linking.openURL(config.storeUrl as string).catch((err) =>
+                reportCaughtError(err, "update-gate open store"),
+              )
+            }
+          />
         ) : null}
         <ThemedText variant="caption" style={styles.body}>
           Need help? Call us on {PRACTICE_CONFIG.phone}.

@@ -3,6 +3,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { Alert } from "react-native";
 import { tokenStore, BIOMETRIC_LOCK_KEY } from "@/lib/token-store";
 import { useAppLockStore } from "@/features/app-lock/app-lock-store";
+import { reportCaughtError } from "@/lib/caught-errors";
 
 export { BIOMETRIC_LOCK_KEY };
 
@@ -40,8 +41,9 @@ export function useBiometrics() {
       const enabled = await tokenStore.getBiometricEnabled();
       setIsBiometricLockEnabled(enabled);
       useAppLockStore.getState().setRequiresBiometric(enabled);
-    } catch {
+    } catch (err) {
       // Fallback
+      reportCaughtError(err, "biometric-hooks checkStatus");
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +84,8 @@ export function useBiometrics() {
       setIsBiometricLockEnabled(enable);
       useAppLockStore.getState().setRequiresBiometric(enable);
       return true;
-    } catch {
+    } catch (err) {
+      reportCaughtError(err, "biometric-hooks toggleBiometricLock");
       Alert.alert("Error", "Could not save biometric preference.");
       return false;
     }
@@ -97,7 +100,8 @@ export function useBiometrics() {
         disableDeviceFallback: false,
       });
       return auth.success;
-    } catch {
+    } catch (err) {
+      reportCaughtError(err, "biometric-hooks authenticate");
       return false;
     }
   };

@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, Card, Button, AppIcon, DetailRow, Illustration } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { useShallow } from "zustand/react/shallow";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { fetchAppointmentStatus } from "@/features/booking/booking-api";
 import { watchConfirmation } from "@/features/booking/confirmation-watch";
@@ -11,7 +12,15 @@ import { watchConfirmation } from "@/features/booking/confirmation-watch";
 export default function BookingConfirmedScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ appointmentId?: string }>();
-  const { service, clinic, slot, resetDraft, channel } = useBookingStore();
+  const { service, clinic, slot, resetDraft, channel } = useBookingStore(
+    useShallow((s) => ({
+      service: s.service,
+      clinic: s.clinic,
+      slot: s.slot,
+      resetDraft: s.resetDraft,
+      channel: s.channel,
+    })),
+  );
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
   const appointmentId = params.appointmentId;

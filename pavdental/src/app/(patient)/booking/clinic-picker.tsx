@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { ThemedText, EmptyState, ErrorState, Skeleton, FlowHeader, ListRow, IconTile } from "@/components";
 import { colors, spacing } from "@/theme";
 import { useClinics } from "@/features/hooks/use-dental-api";
+import { useShallow } from "zustand/react/shallow";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { ClinicLocation } from "@/features/booking/booking-types";
 import { formatOpeningHours } from "@/features/booking/uk-time";
@@ -11,7 +12,9 @@ import { resolveQueryState } from "@/lib/query-state-resolver";
 
 export default function ClinicPickerScreen() {
   const router = useRouter();
-  const { setClinic, service } = useBookingStore();
+  const { setClinic, service } = useBookingStore(
+    useShallow((s) => ({ setClinic: s.setClinic, service: s.service })),
+  );
   const { data: apiClinics, isLoading, isError, refetch } = useClinics();
 
   const isOnline = useIsOnline();

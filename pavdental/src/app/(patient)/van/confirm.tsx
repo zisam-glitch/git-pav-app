@@ -14,17 +14,40 @@ import {
   presentVanDepositSheet,
   DepositCanceledError,
 } from "@/features/van/van-api";
+import { useShallow } from "zustand/react/shallow";
 import { useVanStore } from "@/features/van/van-store";
 
 export default function VanConfirmScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const store = useVanStore();
+  const {
+    availability,
+    serviceId,
+    serviceName,
+    servicePricePence,
+    serviceDurationMinutes,
+    serviceDepositPence,
+    getAccessDetailsPayload,
+    setActiveRequestId,
+    resetDraft,
+  } = useVanStore(
+    useShallow((s) => ({
+      availability: s.availability,
+      serviceId: s.serviceId,
+      serviceName: s.serviceName,
+      servicePricePence: s.servicePricePence,
+      serviceDurationMinutes: s.serviceDurationMinutes,
+      serviceDepositPence: s.serviceDepositPence,
+      getAccessDetailsPayload: s.getAccessDetailsPayload,
+      setActiveRequestId: s.setActiveRequestId,
+      resetDraft: s.resetDraft,
+    })),
+  );
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const accessPayload = store.getAccessDetailsPayload();
-  const etaLabel = store.availability?.etaLabel || null;
+  const accessPayload = getAccessDetailsPayload();
+  const etaLabel = availability?.etaLabel || null;
 
   /**
    * Create the request, then — when the backend is in real-Stripe mode —
@@ -33,8 +56,8 @@ export default function VanConfirmScreen() {
    * accepts; if the request is declined or times out the backend releases
    * the hold automatically.
    */
-  const hasService = Boolean(store.serviceId);
-  const depositPence = store.serviceDepositPence ?? 0;
+  const hasService = Boolean(serviceId);
+  const depositPence = serviceDepositPence ?? 0;
 
   const submitRequest = async () => {
     if (!hasService) {
@@ -45,7 +68,7 @@ export default function VanConfirmScreen() {
     let requestId: string | null = null;
     try {
       const request = await createVanRequest({
-        serviceId: store.serviceId,
+        serviceId,
         accessDetails: accessPayload,
       });
       requestId = request.id;
@@ -56,7 +79,7 @@ export default function VanConfirmScreen() {
       }
       if (request.isMockPayment || !request.clientSecret) {
         // Mock-Stripe backend (or no deposit configured) — straight to tracking.
-        store.setActiveRequestId(request.id);
+        setActiveRequestId(request.id);
         router.replace({
           pathname: "/(patient)/van/live-track",
           params: { requestId: request.id },
@@ -70,7 +93,7 @@ export default function VanConfirmScreen() {
       }, request);
 
       // Authorized. The webhook stamps the request server-side.
-      store.setActiveRequestId(request.id);
+      setActiveRequestId(request.id);
       router.replace({
         pathname: "/(patient)/van/live-track",
         params: { requestId: request.id },
@@ -88,7 +111,7 @@ export default function VanConfirmScreen() {
               onPress: () => {
                 if (requestId) {
                   cancelVanRequest(requestId)
-                    .then(() => store.resetDraft())
+                    .then(() => resetDraft())
                     .catch(() => {});
                 }
               },
@@ -116,7 +139,7 @@ export default function VanConfirmScreen() {
       // Re-fetch the intent secret server-side rather than reusing the stale one.
       const retry = await retryDepositAuthorization(requestId);
       if (retry.alreadyAuthorized || !retry.clientSecret) {
-        store.setActiveRequestId(requestId);
+        setActiveRequestId(requestId);
         router.replace({
           pathname: "/(patient)/van/live-track",
           params: { requestId },
@@ -127,14 +150,14 @@ export default function VanConfirmScreen() {
         initPaymentSheet,
         presentPaymentSheet,
       }, retry);
-      store.setActiveRequestId(requestId);
+      setActiveRequestId(requestId);
       router.replace({
         pathname: "/(patient)/van/live-track",
         params: { requestId },
       } as never);
     } catch {
       // Still not authorized — the live-track banner offers another retry.
-      store.setActiveRequestId(requestId);
+      setActiveRequestId(requestId);
       router.replace({
         pathname: "/(patient)/van/live-track",
         params: { requestId },
@@ -190,7 +213,7 @@ export default function VanConfirmScreen() {
             label="Treatment"
             value={
               hasService
-                ? `${store.serviceName} (${store.serviceDurationMinutes} min)`
+                ? `${serviceName} (${serviceDurationMinutes} min)`
                 : "No service selected"
             }
           />
@@ -204,7 +227,7 @@ export default function VanConfirmScreen() {
 
           <DetailRow
             label="Treatment and call-out"
-            value={hasService ? formatGbp(store.servicePricePence) : "–"}
+            value={hasService ? formatGbp(servicePricePence) : "–"}
           />
 
           <View style={styles.rowBetween}>

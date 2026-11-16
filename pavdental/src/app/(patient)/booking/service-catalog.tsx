@@ -44,7 +44,8 @@ const CATEGORIES: { label: string; value: CategoryFilter }[] = [
 
 export default function ServiceCatalogScreen() {
   const router = useRouter();
-  const { setService, setChannel } = useBookingStore();
+  const setService = useBookingStore((s) => s.setService);
+  const setChannel = useBookingStore((s) => s.setChannel);
   // ?channel=video lists only the services that can be booked as a video consult.
   const params = useLocalSearchParams<{ channel?: string }>();
   const onlyChannel = channelParam(params.channel);

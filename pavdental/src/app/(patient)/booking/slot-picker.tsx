@@ -5,6 +5,7 @@ import { useRouter, useNavigation } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Button, FlowHeader, ChipPill, Toast, QueryState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { useShallow } from "zustand/react/shallow";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { TimeSlot } from "@/features/booking/booking-types";
 import { useSlots, useHoldSlotMutation } from "@/features/hooks/use-dental-api";
@@ -17,7 +18,16 @@ import { useQueries } from "@tanstack/react-query";
 export default function SlotPickerScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { setSlot, setHoldExpiry, clinician, clinic, service, channel } = useBookingStore();
+  const { setSlot, setHoldExpiry, clinician, clinic, service, channel } = useBookingStore(
+    useShallow((s) => ({
+      setSlot: s.setSlot,
+      setHoldExpiry: s.setHoldExpiry,
+      clinician: s.clinician,
+      clinic: s.clinic,
+      service: s.service,
+      channel: s.channel,
+    })),
+  );
 
   // Only while this is the screen being looked at: after payment the confirmed
   // screen clears the draft while this one is still in the stack beneath it, and

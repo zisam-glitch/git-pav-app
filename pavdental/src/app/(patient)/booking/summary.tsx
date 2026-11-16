@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStripe } from "@stripe/stripe-react-native";
 import { ThemedText, Card, Button, AppIcon, FlowHeader, DetailRow, CheckboxMark } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { useShallow } from "zustand/react/shallow";
 import { useBookingStore } from "@/features/booking/booking-store";
 import {
   formatGbp,
@@ -31,7 +32,17 @@ export default function BookingSummaryScreen() {
     isPlatformPaySupported(Platform.OS === "android" ? { googlePay: { testEnv: process.env.EXPO_PUBLIC_APP_ENV !== "production" } } : undefined)
       .then(setWalletReady, () => setWalletReady(false));
   }, []);
-  const { service, clinic, clinician, slot, holdExpiresAt, releaseSlot, channel } = useBookingStore();
+  const { service, clinic, clinician, slot, holdExpiresAt, releaseSlot, channel } = useBookingStore(
+    useShallow((s) => ({
+      service: s.service,
+      clinic: s.clinic,
+      clinician: s.clinician,
+      slot: s.slot,
+      holdExpiresAt: s.holdExpiresAt,
+      releaseSlot: s.releaseSlot,
+      channel: s.channel,
+    })),
+  );
   const [secondsRemaining, setSecondsRemaining] = useState<number>(() => {
     if (!holdExpiresAt) return 0;
     return Math.max(0, Math.floor((holdExpiresAt - Date.now()) / 1000));

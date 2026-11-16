@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText, Input, Button, Card, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
+import { useShallow } from "zustand/react/shallow";
 import { useVanStore } from "@/features/van/van-store";
 import { useBookingStore } from "@/features/booking/booking-store";
 import { fetchServices } from "@/features/van/van-api";
@@ -19,7 +20,20 @@ const UK_POSTCODE = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
 export default function VanAccessDetailsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const store = useVanStore();
+  const store = useVanStore(
+    useShallow((s) => ({
+      addressLine1: s.addressLine1,
+      addressLine2: s.addressLine2,
+      city: s.city,
+      postcode: s.postcode,
+      parkingType: s.parkingType,
+      gateCode: s.gateCode,
+      accessNotes: s.accessNotes,
+      serviceId: s.serviceId,
+      setService: s.setService,
+      setAccessDetails: s.setAccessDetails,
+    })),
+  );
   // The treatment picked in the catalogue is saved to the booking draft.
   const pickedServiceId = useBookingStore((s) => s.service?.id);
 

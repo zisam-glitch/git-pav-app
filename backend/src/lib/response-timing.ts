@@ -12,6 +12,7 @@
  * it is ready, never delayed further. Off in tests, which would only wait.
  */
 import type { NextFunction, Request, Response } from "express";
+import { env } from "../config/env";
 
 /** Milliseconds still to wait so the reply goes out no earlier than `floorMs` after `startMs`. */
 export function remainingDelay(startMs: number, floorMs: number, nowMs: number): number {
@@ -23,7 +24,7 @@ export const RESPONSE_FLOOR_MS = 1500;
 /** Express middleware: holds the JSON reply until the floor has passed. */
 export function minResponseTime(floorMs: number = RESPONSE_FLOOR_MS) {
   return (_req: Request, res: Response, next: NextFunction) => {
-    if (process.env.NODE_ENV === "test" || floorMs <= 0) return next();
+    if (env.isRuntimeTest || floorMs <= 0) return next();
     const start = Date.now();
     const send = res.json.bind(res);
     res.json = ((body?: unknown) => {

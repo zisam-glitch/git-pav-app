@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { safeError } from "../lib/log-safety";
 import { reportError } from "../lib/error-tracking";
+import { env } from "../config/env";
 
 /**
  * Error carrying an intended HTTP status. Thrown by helpers (e.g. missing
@@ -125,7 +126,7 @@ export function errorHandler(
     console.warn(`[${requestId}] ${timestamp} WARN:`, logMeta);
   }
 
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = env.isRuntimeDevelopment;
   const isClientError = status < 500;
   // A dependency outage is still reported to us as a server error, but the patient gets the plain message.
   const showMessage = isClientError || status === 503;

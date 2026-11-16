@@ -8,10 +8,10 @@
 // Pure functions: the route and the availability search call them.
 
 import { haversineMetres } from "./geo";
+import { env } from "../config/env";
 
 /** A van that has not reported for this long is not offered to new patients (N14). */
-export const POSITION_STALE_MS =
-  parseInt(process.env.VAN_POSITION_STALE_SECONDS ?? "180", 10) * 1000;
+export const POSITION_STALE_MS = env.vanPositionStaleSeconds * 1000;
 
 /** A report older than this when it arrives is ignored. */
 const MAX_REPORT_AGE_MS = 5 * 60 * 1000;

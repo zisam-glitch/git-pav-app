@@ -8,6 +8,8 @@
  * - Context preservation
  */
 
+import { env } from "../config/env";
+
 export interface LogContext {
   correlationId?: string;
   userId?: string;
@@ -154,7 +156,7 @@ class StructuredLogger {
    * Write log entry
    */
   private write(entry: LogEntry): void {
-    const logLevel = process.env.LOG_LEVEL || 'info';
+    const logLevel = env.logLevel;
     const levels = ['debug', 'info', 'warn', 'error'];
     
     if (levels.indexOf(entry.level) >= levels.indexOf(logLevel)) {

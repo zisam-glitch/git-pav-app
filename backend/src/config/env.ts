@@ -34,6 +34,20 @@ function readOptional(name: string): string | undefined {
   return value || undefined;
 }
 
+function readInt(name: string, fallback: number): number {
+  const raw = readOptional(name);
+  if (!raw) return fallback;
+  const parsed = parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function readNonNegativeInt(name: string, fallback: number): number {
+  const raw = readOptional(name);
+  if (!raw) return fallback;
+  const parsed = parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
 function parsePort(value: string | undefined): number {
   if (!value) return 3000;
   const port = Number(value);
@@ -375,27 +389,58 @@ if (stripeSecretKey.startsWith("sk_test_mock") && nodeEnv !== "test") {
   }
 }
 
+const fallbackEncryptionKey = isPlaceholderCredential(values.encryptionKey)
+  ? "dev_clinical_envelope_kek_32_bytes_minimum_key"
+  : values.encryptionKey!;
+
 export const env = Object.freeze({
   nodeEnv,
   isProduction,
   isStaging,
   isDevelopment,
   isTest,
+  // Runtime getters for modules whose tests mutate NODE_ENV / secrets after import.
+  get isRuntimeTest(): boolean {
+    return (process.env.NODE_ENV?.trim() || nodeEnv) === "test";
+  },
+  get isRuntimeDevelopment(): boolean {
+    return (process.env.NODE_ENV?.trim() || nodeEnv) === "development";
+  },
+  get isDeployedRuntime(): boolean {
+    const current = process.env.NODE_ENV?.trim() || nodeEnv;
+    return current === "staging" || current === "production";
+  },
   allowDevDefaults,
   port: parsePort(readOptional("PORT")),
+  trustProxy: readOptional("TRUST_PROXY"),
+  apiBaseUrl: readOptional("API_BASE_URL") ?? readOptional("API_PUBLIC_URL"),
+  appUrl: readOptional("APP_URL") ?? "http://localhost:8081",
   databaseUrl: values.databaseUrl,
   redisUrl: values.redisUrl,
+  logLevel: readOptional("LOG_LEVEL") ?? "info",
+  logPrismaQueries: readOptional("LOG_PRISMA_QUERIES") === "true",
   jwtAccessSecret: values.jwtAccessSecret ?? "dev_access_secret_change_me",
   jwtRefreshSecret: values.jwtRefreshSecret ?? "dev_refresh_secret_change_me",
   auditIpHmacSecret: values.auditIpHmacSecret ?? "dev_audit_hmac_secret_change_me",
   auditHmacSecret: readOptional("AUDIT_HMAC_SECRET") ?? values.auditIpHmacSecret ?? "dev_audit_hmac_secret_change_me",
   opsAlertEmail: readOptional("OPS_ALERT_EMAIL") ?? "ops@pavdental.com",
+  bootstrapAdminEmail: readOptional("BOOTSTRAP_ADMIN_EMAIL"),
+  get passwordBreachCheckEnabled(): boolean {
+    return readOptional("PASSWORD_BREACH_CHECK") !== "off" && process.env.NODE_ENV?.trim() !== "test";
+  },
   // Deployed environments reject a missing or template key above, so this
   // fallback only ever applies in development and test.
-  encryptionKey: isPlaceholderCredential(values.encryptionKey)
-    ? "dev_clinical_envelope_kek_32_bytes_minimum_key"
-    : values.encryptionKey!,
+  encryptionKey: fallbackEncryptionKey,
+  get runtimeEncryptionKey(): string {
+    const fromProcess = readOptional("ENCRYPTION_KEY");
+    return (isPlaceholderCredential(fromProcess) ? undefined : fromProcess) ?? fallbackEncryptionKey;
+  },
   kmsKeyId: values.kmsKeyId ?? "arn:aws:kms:eu-west-2:000000000000:key/pavdental-clinical-cmk",
+  awsRegion: readOptional("AWS_REGION") ?? "eu-west-2",
+  awsAccessKeyId: readOptional("AWS_ACCESS_KEY_ID"),
+  awsSecretAccessKey: readOptional("AWS_SECRET_ACCESS_KEY"),
+  s3Endpoint: readOptional("S3_ENDPOINT"),
+  s3BucketName: values.s3BucketName,
   stripeSecretKey,
   // Mock Stripe is only reachable in development and test: validateDeployedConfig
   // rejects mock keys in staging and production.
@@ -403,6 +448,45 @@ export const env = Object.freeze({
   stripeWebhookSecret: values.stripeWebhookSecret,
   stripePublishableKey: values.stripePublishableKey ?? "pk_test_placeholder",
   allowedOrigins,
+  get postmarkServerToken(): string | undefined {
+    return readOptional("POSTMARK_SERVER_TOKEN");
+  },
+  fromEmail: readOptional("FROM_EMAIL") ?? "noreply@pavdental.com",
+  get twilioAccountSid(): string | undefined {
+    return readOptional("TWILIO_ACCOUNT_SID");
+  },
+  get twilioAuthToken(): string | undefined {
+    return readOptional("TWILIO_AUTH_TOKEN");
+  },
+  get twilioFromPhone(): string | undefined {
+    return readOptional("TWILIO_FROM_PHONE");
+  },
+  get twilioVerifyServiceSid(): string | undefined {
+    return readOptional("TWILIO_VERIFY_SERVICE_SID");
+  },
+  dailyDomain: readOptional("DAILY_DOMAIN") ?? "https://api.daily.co/v1",
+  // Routing & van fleet settings
+  googleRoutesApiKey: readOptional("GOOGLE_ROUTES_API_KEY") ?? readOptional("GOOGLE_MAP_API") ?? "",
+  mapboxToken: readOptional("MAPBOX_TOKEN") ?? "",
+  osrmBaseUrl: (readOptional("OSRM_BASE_URL") ?? "").replace(/\/$/, ""),
+  vanRoutingFailureThreshold: readInt("VAN_ROUTING_FAILURE_THRESHOLD", 3),
+  vanRoutingBreakerCooldownMs: readInt("VAN_ROUTING_BREAKER_COOLDOWN_MS", 60_000),
+  vanRoutingCacheTtlMs: readInt("VAN_ROUTING_CACHE_TTL_MS", 60_000),
+  vanRoutingTimeoutMs: readInt("VAN_ROUTING_TIMEOUT_MS", 4000),
+  vanMaxQueueDepth: readInt("VAN_MAX_QUEUE_DEPTH", 5),
+  vanRequestTimeoutMinutes: readInt("VAN_REQUEST_TIMEOUT_MINUTES", 4),
+  vanPromiseSlackMinutes: readInt("VAN_PROMISE_SLACK_MINUTES", 20),
+  vanPositionStaleSeconds: readInt("VAN_POSITION_STALE_SECONDS", 180),
+  vanDefaultTreatmentMinutes: readNonNegativeInt("VAN_DEFAULT_TREATMENT_MINUTES", 45),
+  vanGapMinutes: readNonNegativeInt("VAN_GAP_MINUTES", 10),
+  vanSetupMinutes: readNonNegativeInt("VAN_SETUP_MINUTES", 0),
+  vanPromiseWindowMinutes: readNonNegativeInt("VAN_PROMISE_WINDOW_MINUTES", 20),
+  vanLateGraceMinutes: readNonNegativeInt("VAN_LATE_GRACE_MINUTES", 10),
+  vanNoShowWaitMinutes: readNonNegativeInt("VAN_NO_SHOW_WAIT_MINUTES", 10),
+  etaPushDriftMinutes: readInt("ETA_PUSH_DRIFT_MINUTES", 5),
+  etaPushThrottleMinutes: readInt("ETA_PUSH_THROTTLE_MINUTES", 10),
+  minAppVersion: readOptional("MIN_APP_VERSION"),
+  appStoreUrl: readOptional("APP_STORE_URL"),
   // Where patients read about payment plans. Credit decisions are made by the
   // practice's finance provider, never in the app (decisions log #5).
   financeInfoUrl: readOptional("FINANCE_INFO_URL") ?? "https://www.pavdental.com/services/finance",

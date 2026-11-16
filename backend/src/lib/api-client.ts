@@ -5,6 +5,8 @@
  * with standardized timeouts, retry logic, error mapping, and cancellation support.
  */
 
+import { env } from "../config/env";
+
 interface ApiClientConfig {
   baseUrl: string;
   timeout: number; // milliseconds
@@ -242,7 +244,7 @@ export function createApiClient(config: Partial<ApiClientConfig> = {}): ApiClien
  * Daily.co API client configuration
  */
 export const dailyApiClient = createApiClient({
-  baseUrl: process.env.DAILY_DOMAIN || 'https://api.daily.co/v1',
+  baseUrl: env.dailyDomain,
   timeout: 30000,
   retries: 3,
 });

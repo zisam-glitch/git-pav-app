@@ -14,10 +14,11 @@
 // unless the van is already there, then the treatment still to do, then a gap
 // before the next drive. The rules are pure, with travel times passed in.
 
+import { env } from "../config/env";
 import { Point, QueueStop, remainingTreatmentSeconds, getDurationMatrix, fallbackTravelSeconds } from "./van-eta";
 
 /** How much later than the time a patient was last told is still keeping the promise. */
-export const PROMISE_SLACK_SECONDS = parseInt(process.env.VAN_PROMISE_SLACK_MINUTES ?? "20", 10) * 60;
+export const PROMISE_SLACK_SECONDS = env.vanPromiseSlackMinutes * 60;
 
 export type PlacementStop = QueueStop & {
   id: string;

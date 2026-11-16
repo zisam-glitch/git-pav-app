@@ -29,9 +29,10 @@ import { prisma } from "./prisma";
 import { etaSecondsFromPlan, lateMinutes, recomputeShiftPlan } from "./van-plan";
 import { sendPatientNotification } from "./patient-push";
 import { safeError } from "./log-safety";
+import { env } from "../config/env";
 
-const DRIFT_MINUTES = parseInt(process.env.ETA_PUSH_DRIFT_MINUTES ?? "5", 10);
-const THROTTLE_MINUTES = parseInt(process.env.ETA_PUSH_THROTTLE_MINUTES ?? "10", 10);
+const DRIFT_MINUTES = env.etaPushDriftMinutes;
+const THROTTLE_MINUTES = env.etaPushThrottleMinutes;
 
 export type EtaPushOutcome =
   | "pushed"

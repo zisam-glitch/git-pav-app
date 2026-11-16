@@ -11,11 +11,7 @@
 
 import { prisma } from "./prisma";
 import { chainLegSeconds, Point } from "./van-eta";
-
-const minutesFromEnv = (name: string, fallback: number) => {
-  const parsed = parseInt(process.env[name] ?? "", 10);
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
-};
+import { env } from "../config/env";
 
 /**
  * The figures the plan is built from (N10). One place, not three files.
@@ -23,9 +19,9 @@ const minutesFromEnv = (name: string, fallback: number) => {
  * time between finishing one visit and setting off for the next.
  */
 export const VAN_PLAN_SETTINGS = {
-  defaultTreatmentMinutes: minutesFromEnv("VAN_DEFAULT_TREATMENT_MINUTES", 45),
-  gapMinutes: minutesFromEnv("VAN_GAP_MINUTES", 10),
-  setupMinutes: minutesFromEnv("VAN_SETUP_MINUTES", 0),
+  defaultTreatmentMinutes: env.vanDefaultTreatmentMinutes,
+  gapMinutes: env.vanGapMinutes,
+  setupMinutes: env.vanSetupMinutes,
 };
 export type VanPlanSettings = typeof VAN_PLAN_SETTINGS;
 
@@ -35,8 +31,8 @@ export type VanPlanSettings = typeof VAN_PLAN_SETTINGS;
  * suggested in the plan (decision 8) until the owner sets them.
  */
 export const VAN_PROMISE_SETTINGS = {
-  windowMinutes: minutesFromEnv("VAN_PROMISE_WINDOW_MINUTES", 20),
-  lateGraceMinutes: minutesFromEnv("VAN_LATE_GRACE_MINUTES", 10),
+  windowMinutes: env.vanPromiseWindowMinutes,
+  lateGraceMinutes: env.vanLateGraceMinutes,
 };
 export type VanPromiseSettings = typeof VAN_PROMISE_SETTINGS;
 
@@ -45,7 +41,7 @@ export type VanPromiseSettings = typeof VAN_PROMISE_SETTINGS;
  * arriving (owner decision, 15 Nov 2026). Tunable from the environment.
  */
 export const VAN_NO_SHOW_SETTINGS = {
-  waitMinutes: minutesFromEnv("VAN_NO_SHOW_WAIT_MINUTES", 10),
+  waitMinutes: env.vanNoShowWaitMinutes,
 };
 
 /** A treatment that has overrun is still planned to take this long (VE-1). */

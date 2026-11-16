@@ -17,6 +17,7 @@
 // matrix API is billed per element.
 
 import { haversineMetres } from "./geo";
+import { env } from "../config/env";
 
 // Shared point type re-exported from lib/geo (single source of truth)
 export type { Point } from "./geo";
@@ -32,10 +33,9 @@ export type RoutingProvider = "google" | "mapbox" | "osrm" | "haversine";
 // Server-side key, restricted to the Routes API. GOOGLE_MAP_API is accepted as
 // the name the owner first used. An empty GOOGLE_ROUTES_API_KEY= line still
 // falls back to GOOGLE_MAP_API.
-const GOOGLE_ROUTES_API_KEY =
-  process.env.GOOGLE_ROUTES_API_KEY?.trim() || process.env.GOOGLE_MAP_API?.trim() || "";
-const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN?.trim() || "";
-const OSRM_BASE_URL = process.env.OSRM_BASE_URL?.trim()?.replace(/\/$/, "") || "";
+const GOOGLE_ROUTES_API_KEY = env.googleRoutesApiKey;
+const MAPBOX_TOKEN = env.mapboxToken;
+const OSRM_BASE_URL = env.osrmBaseUrl;
 
 export function getRoutingProvider(): RoutingProvider {
   if (GOOGLE_ROUTES_API_KEY) return "google";
@@ -61,8 +61,8 @@ export function describeRoutingProvider(): string {
 let consecutiveFailures = 0;
 let breakerOpenUntil = 0;
 
-const FAILURE_THRESHOLD = parseInt(process.env.VAN_ROUTING_FAILURE_THRESHOLD ?? "3", 10);
-const BREAKER_COOLDOWN_MS = parseInt(process.env.VAN_ROUTING_BREAKER_COOLDOWN_MS ?? "60000", 10);
+const FAILURE_THRESHOLD = env.vanRoutingFailureThreshold;
+const BREAKER_COOLDOWN_MS = env.vanRoutingBreakerCooldownMs;
 
 function breakerIsOpen(): boolean {
   return Date.now() < breakerOpenUntil;
@@ -89,7 +89,7 @@ function recordProviderFailure(err: unknown): void {
 // Key: rounded lat/lng pair (~110 m grid). Short TTL keeps results fresh
 // enough for a moving van without hammering the provider.
 
-const CACHE_TTL_MS = parseInt(process.env.VAN_ROUTING_CACHE_TTL_MS ?? "60000", 10); // 60s
+const CACHE_TTL_MS = env.vanRoutingCacheTtlMs; // 60s
 const CACHE_MAX_ENTRIES = 500;
 
 const durationCache = new Map<string, { seconds: number; expiresAt: number }>();
@@ -126,7 +126,7 @@ function setCached(a: Point, b: Point, seconds: number): void {
 
 // ─── Provider clients ──────────────────────────────────────────────────────
 
-const HTTP_TIMEOUT_MS = parseInt(process.env.VAN_ROUTING_TIMEOUT_MS ?? "4000", 10);
+const HTTP_TIMEOUT_MS = env.vanRoutingTimeoutMs;
 
 async function fetchJson(url: string): Promise<any> {
   const controller = new AbortController();
@@ -474,11 +474,10 @@ export async function optimizeStopOrder(van: Point, stops: Point[]): Promise<num
 }
 
 /** Max accepted queue depth (patients) */
-export const MAX_QUEUE_DEPTH = parseInt(process.env.VAN_MAX_QUEUE_DEPTH ?? "5", 10);
+export const MAX_QUEUE_DEPTH = env.vanMaxQueueDepth;
 
 /** Request timeout in milliseconds */
-export const REQUEST_TIMEOUT_MS =
-  parseInt(process.env.VAN_REQUEST_TIMEOUT_MINUTES ?? "4", 10) * 60 * 1000;
+export const REQUEST_TIMEOUT_MS = env.vanRequestTimeoutMinutes * 60 * 1000;
 
 /** Max ETA in seconds to show to new patients (beyond this: "Queue full / try later") */
 export const MAX_ETA_SECONDS = 4 * 60 * 60; // 4 hours

@@ -61,11 +61,7 @@ export class ObjectStorage {
     this.uploadDir = path.resolve(process.cwd(), config.uploadPath || "./uploads");
 
     // OS-1: In staging and production, refuse to boot without real storage config. Never silently write to local disk.
-    const isProdOrStaging =
-      env.isProduction ||
-      env.nodeEnv === "staging" ||
-      process.env.NODE_ENV === "staging" ||
-      process.env.NODE_ENV === "production";
+    const isProdOrStaging = env.isProduction || env.isStaging || env.isDeployedRuntime;
 
     if (isProdOrStaging && config.provider === "local") {
       throw new Error(
@@ -238,8 +234,7 @@ export class ObjectStorage {
       .digest("hex");
 
     const baseUrl = (
-      process.env.API_BASE_URL ||
-      process.env.API_PUBLIC_URL ||
+      env.apiBaseUrl ||
       `http://localhost:${env.port || 3000}`
     ).replace(/\/+$/, "");
 
@@ -296,12 +291,12 @@ export function createStorageClient(config: StorageConfig): ObjectStorage {
 }
 
 export const objectStorage = createStorageClient({
-  provider: process.env.S3_BUCKET_NAME ? "s3" : "local",
-  endpoint: process.env.S3_ENDPOINT,
-  bucket: process.env.S3_BUCKET_NAME,
-  region: process.env.AWS_REGION || "eu-west-2",
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  provider: env.s3BucketName ? "s3" : "local",
+  endpoint: env.s3Endpoint,
+  bucket: env.s3BucketName,
+  region: env.awsRegion,
+  accessKeyId: env.awsAccessKeyId,
+  secretAccessKey: env.awsSecretAccessKey,
   uploadPath: "./uploads",
 });
 

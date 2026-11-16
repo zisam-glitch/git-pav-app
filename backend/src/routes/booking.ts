@@ -29,6 +29,7 @@ import { AvailabilityError, bookableClinician, londonDate, slotsForDay, SlotChan
 import { toPatientListItem } from "../lib/appointment-list";
 import { encryptField, decryptField, decryptString, encryptAccessDetails, encryptClientAccessDetails, decryptAccessDetails } from "../lib/encryption";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { logFailure } from "../lib/best-effort";
 import { checkReschedulable } from "../lib/reschedule-policy";
 import { CHECK_IN_OPENS_HOURS, CHECK_IN_CLOSES_HOURS } from "../lib/booking-policies";
@@ -806,7 +807,7 @@ router.patch("/appointments/:id/confirm", requireAuth, validateParams(appointmen
     });
     if (result.count === 1) {
       await scheduleAppointmentReminderLadder(apptId).catch((err) => {
-        console.error("[Booking] Failed to schedule reminders:", safeError(err));
+        logger.error("[Booking] Failed to schedule reminders", undefined, { error: safeError(err) });
       });
       void notifyAppointmentChange("booked", apptId);
     }
@@ -918,7 +919,7 @@ router.post("/appointments/:id/reschedule", requireAuth, validateParams(appointm
   // Reminders were set for the old time.
   await cancelAppointmentReminders(appointment.id).catch(logFailure("reminder cancellation"));
   await scheduleAppointmentReminderLadder(appointment.id).catch((err) => {
-    console.error("[Booking] Failed to schedule reminders after reschedule:", safeError(err));
+    logger.error("[Booking] Failed to schedule reminders after reschedule", undefined, { error: safeError(err) });
   });
 
   await createAuditLogWithIntegrity({

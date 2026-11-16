@@ -16,6 +16,7 @@ import { applyDepositVoucher, depositDuePence } from "../lib/rewards";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { releaseVanDeposit } from "../lib/van-payments";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { logFailure } from "../lib/best-effort";
 import { depositPaymentDetails } from "../lib/payment-details";
 import { alertStaffOfDispute } from "../lib/payment-alerts";
@@ -374,7 +375,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
 
         if (result.count === 1) {
           await scheduleAppointmentReminderLadder(appointmentId).catch((err) => {
-            console.error("[Stripe Webhook] Failed to schedule reminders:", safeError(err));
+            logger.error("[Stripe Webhook] Failed to schedule reminders", undefined, { error: safeError(err) });
           });
           void notifyAppointmentChange("booked", appointmentId);
         } else {
@@ -400,7 +401,9 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
                 amountPence: intent.amount_received,
               });
             } catch (err) {
-              console.error("[Stripe Webhook] Late deposit refund failed:", err instanceof Error ? err.name : "unknown error");
+              logger.error("[Stripe Webhook] Late deposit refund failed", undefined, {
+                errorName: err instanceof Error ? err.name : "unknown error",
+              });
               // A non-2xx makes Stripe retry the event, and with it the refund.
               // Release the claimed event row so Stripe can retry successfully
               await prisma.processedStripeEvent.delete({ where: { id: event.id } }).catch(() => {});
@@ -439,7 +442,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
                 data: { depositPaidPence: intent.amount_received },
               })
               .catch((err) =>
-                console.error("[Stripe Webhook] Van deposit sync failed:", safeError(err))
+                logger.error("[Stripe Webhook] Van deposit sync failed", undefined, { error: safeError(err) })
               );
           }
 
@@ -495,7 +498,9 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
                 },
               })
               .catch((err) =>
-                console.error("[Stripe Webhook] Failed to update terminal van request release status:", safeError(err))
+                logger.error("[Stripe Webhook] Failed to update terminal van request release status", undefined, {
+                  error: safeError(err),
+                })
               );
           }
         }
@@ -840,7 +845,9 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
       }).catch(logFailure("audit write stripe.charge.dispute.closed"));
     }
   } catch (err) {
-    console.error("[Stripe Webhook] Handling failed, releasing the event for retry:", safeError(err));
+    logger.error("[Stripe Webhook] Handling failed, releasing the event for retry", undefined, {
+      error: safeError(err),
+    });
     await prisma.processedStripeEvent.delete({ where: { id: event.id } }).catch(() => {});
     return res.status(500).json({ error: "Webhook handling failed" });
   }

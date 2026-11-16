@@ -38,6 +38,7 @@ import { judgePing } from "../lib/van-location";
 import { customerEphemeralKey, ensureStripeCustomer } from "../lib/stripe-customer";
 import { depositPaymentDetails } from "../lib/payment-details";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { etaSecondsFromPlan, planIsStale, recomputeShiftPlan } from "../lib/van-plan";
 import { acceptVanRequest, cancelVanRequest, changeVanPhase, declineVanRequest, endVanShift, recordContactAttempt, recordVanEvent } from "../lib/van-dispatch";
 
@@ -145,7 +146,7 @@ async function decryptAccessDetails(accessDetails: any): Promise<any> {
     try {
       decrypted.gateCode = await clinicalRecordEncryptionService.decryptField(accessDetails.gateCode);
     } catch (error) {
-      console.error('Failed to decrypt gateCode:', safeError(error));
+      logger.error("Failed to decrypt gateCode", undefined, { error: safeError(error) });
       decrypted.gateCode = '[ENCRYPTED]';
     }
   }
@@ -154,7 +155,7 @@ async function decryptAccessDetails(accessDetails: any): Promise<any> {
     try {
       decrypted.accessNotes = await clinicalRecordEncryptionService.decryptField(accessDetails.accessNotes);
     } catch (error) {
-      console.error('Failed to decrypt accessNotes:', safeError(error));
+      logger.error("Failed to decrypt accessNotes", undefined, { error: safeError(error) });
       decrypted.accessNotes = '[ENCRYPTED]';
     }
   }
@@ -218,7 +219,7 @@ async function etaFromStoredPlan(request: {
   const now = new Date();
   if (planIsStale(request, now)) {
     const plan = await recomputeShiftPlan(request.shiftId, now).catch((err) => {
-      console.error("[VAN PLAN] refresh failed:", safeError(err));
+      logger.error("[VAN PLAN] refresh failed", undefined, { error: safeError(err) });
       return null;
     });
     const mine = plan?.stops.find((s) => s.id === request.id);
@@ -402,7 +403,7 @@ router.post("/shift/location", requireAuth, requireRole("operator"), validateBod
   });
   if (isMaterialDrift(previousLat, previousLng, lat, lng, activeStopCount)) {
     void broadcastEtaUpdates(shift.id).catch((err) =>
-      console.error("[VAN ETA PUSH] broadcast failed:", safeError(err))
+      logger.error("[VAN ETA PUSH] broadcast failed", undefined, { error: safeError(err) })
     );
   }
 
@@ -693,7 +694,7 @@ router.post("/requests", requireAuth, validateBody(createVanRequestSchema), asyn
       paymentIntentId = paymentIntent.id;
       clientSecret = paymentIntent.client_secret;
     } catch (error) {
-      console.error("Failed to create Stripe PaymentIntent:", safeError(error));
+      logger.error("Failed to create Stripe PaymentIntent", undefined, { error: safeError(error) });
       return res.status(500).json({ error: "Failed to initialize payment" });
     }
   }
@@ -940,7 +941,7 @@ router.post("/requests/:id/payment-retry", requireAuth, validateParams(vanReques
   try {
     intent = await stripe.paymentIntents.retrieve(request.paymentIntentId);
   } catch (error) {
-    console.error("payment-retry: failed to retrieve PaymentIntent:", safeError(error));
+    logger.error("payment-retry: failed to retrieve PaymentIntent", undefined, { error: safeError(error) });
     return res.status(502).json({ error: "Payment service unavailable. Please try again." });
   }
 

@@ -26,6 +26,7 @@ import { broadcastEtaUpdates } from "../lib/van-eta-broadcast";
 import { loadActiveStops } from "../lib/van-dispatch";
 import { buildLegFn, lateStops } from "../lib/van-placement";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 
 const router = Router();
 
@@ -117,7 +118,7 @@ async function applyQueuedOrder(
 function refreshEtas(shiftId: string): void {
   // The order changed, so every patient's ETA may have too.
   void broadcastEtaUpdates(shiftId).catch((err) =>
-    console.error("[VAN ETA PUSH] post-reorder broadcast failed:", safeError(err))
+    logger.error("[VAN ETA PUSH] post-reorder broadcast failed", undefined, { error: safeError(err) })
   );
 }
 

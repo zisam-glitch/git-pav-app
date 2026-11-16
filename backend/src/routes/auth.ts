@@ -13,6 +13,7 @@ import { revokeSessions } from "../lib/session-revocation";
 import { redis } from "../lib/redis";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { validateNewPassword } from "../lib/password-policy";
 import { minResponseTime } from "../lib/response-timing";
 import {
@@ -147,7 +148,7 @@ router.post("/register", authLimiterMiddleware, validateBody(registerSchema), as
     const sent = await communicationService.sendVerificationEmail(user.email, token, code);
     verificationEmail = sent ? "sent" : "failed";
   } catch (err) {
-    console.error("[Auth] Failed to send the registration verification email:", safeError(err));
+    logger.error("[Auth] Failed to send the registration verification email", undefined, { error: safeError(err) });
   }
 
   const authResponse = {

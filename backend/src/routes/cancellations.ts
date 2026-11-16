@@ -17,6 +17,7 @@ import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { logFailure } from "../lib/best-effort";
 import { runIdempotent } from "../lib/idempotent-handler";
 
@@ -153,7 +154,7 @@ export async function handleAppointmentCancel(req: AuthRequest, res: Response) {
         );
         stripeRefundId = refund.id;
       } catch (refundErr) {
-        console.error("[Cancellations] Stripe refund failed:", safeError(refundErr));
+        logger.error("[Cancellations] Stripe refund failed", undefined, { error: safeError(refundErr) });
         // Never tell a patient they are cancelled and refunded when no refund
         // was made. Put the booking back as it was so they can try again (the
         // same idempotency key makes a retry safe), and leave a record.

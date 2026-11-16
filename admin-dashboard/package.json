@@ -10,6 +10,7 @@
     "lint": "biome lint",
     "lint:ci": "node scripts/lint-budget.mjs",
     "typecheck": "tsc --noEmit",
+    "verify": "npm run typecheck && npm run lint:ci && npm test",
     "format": "biome format --write",
     "check": "biome check",
     "check:fix": "biome check --write",

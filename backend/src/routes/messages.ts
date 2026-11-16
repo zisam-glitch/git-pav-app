@@ -11,6 +11,7 @@ import { encryptField, decryptString } from "../lib/encryption";
 import { communicationService } from "../lib/communication-service";
 import { env } from "../config/env";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { withIdempotency, idempotencyKeyFrom } from "../lib/idempotency";
 
 type Outcome = { status: number; body?: unknown; error?: string };
@@ -389,7 +390,7 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
         text: "You have a new patient message.\n\nOpen the clinician portal to read and reply.",
         html: "<p>You have a new patient message.</p><p>Open the clinician portal to read and reply.</p>",
       })
-      .catch((err) => console.error("[Messages] Failed to dispatch clinician notification:", safeError(err)));
+      .catch((err) => logger.error("[Messages] Failed to dispatch clinician notification", undefined, { error: safeError(err) }));
   } else {
     // Notify practice inbox
     const practiceEmail = env.opsAlertEmail || "practice@pavdental.com";
@@ -400,7 +401,7 @@ router.post("/", requireAuth, validateBody(createThreadSchema), async (req: Auth
         text: "There is a new patient message in the practice inbox.\n\nOpen the staff dashboard to read and reply.",
         html: "<p>There is a new patient message in the practice inbox.</p><p>Open the staff dashboard to read and reply.</p>",
       })
-      .catch((err) => console.error("[Messages] Failed to dispatch practice notification:", safeError(err)));
+      .catch((err) => logger.error("[Messages] Failed to dispatch practice notification", undefined, { error: safeError(err) }));
   }
 
   await createAuditLogWithIntegrity({
@@ -531,7 +532,7 @@ router.post(
             text: `${senderDisplayName} has replied to your conversation.\n\nPlease open the Pav Dental app to read it.`,
             html: `<p><strong>${safeSender}</strong> has replied to your conversation.</p><p>Please open the Pav Dental app to read and reply.</p>`,
           })
-          .catch((err) => console.error("[Messages] Failed to notify patient of staff reply:", safeError(err)));
+          .catch((err) => logger.error("[Messages] Failed to notify patient of staff reply", undefined, { error: safeError(err) }));
       }
     } else {
       // Patient replied -> notify care team / clinician or practice inbox

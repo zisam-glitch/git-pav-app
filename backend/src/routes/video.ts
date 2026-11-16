@@ -15,6 +15,7 @@ import { cancelAppointmentReminders } from "../lib/background-jobs";
 import { postToAppointmentThread, consultSummaryText } from "../lib/appointment-thread";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { isPlaceholderCredential } from "../config/placeholder";
 import { logFailure } from "../lib/best-effort";
 import {
@@ -166,7 +167,7 @@ router.post("/rooms", requireAuth, validateBody(createVideoRoomSchema), async (r
       isMock: false,
     });
   } catch (err: any) {
-    console.error("[VIDEO ROOM ERROR]", { status: err?.statusCode ?? "network" });
+    logger.error("[VIDEO ROOM ERROR]", undefined, { status: err?.statusCode ?? "network" });
     return res.status(502).json({ error: "The video service didn't respond. Please try again." });
   }
 });
@@ -254,7 +255,7 @@ router.post("/upload-triage-photo", requireAuth, upload.single("photo"), async (
       sha256: uploaded.sha256,
     });
   } catch (error) {
-    console.error("[TRIAGE PHOTO UPLOAD ERROR]", safeError(error));
+    logger.error("[TRIAGE PHOTO UPLOAD ERROR]", undefined, { error: safeError(error) });
     return res.status(500).json({ error: "Failed to upload triage photo" });
   }
 });

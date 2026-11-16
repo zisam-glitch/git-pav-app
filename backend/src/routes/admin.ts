@@ -16,6 +16,7 @@ import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
 import { passwordResetService } from "../lib/otp-service";
 import { communicationService } from "../lib/communication-service";
 import { safeError } from "../lib/log-safety";
+import { logger } from "../lib/structured-logging";
 import { decryptField } from "../lib/encryption";
 import { buildVideoActivity } from "../lib/video-activity";
 import { pseudonymiseIp } from "../lib/audit-security";
@@ -347,9 +348,10 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
       } catch (refundErr) {
         // Don't cancel without the refund (decisions log #22): the booking
         // stays as it was and staff can try again.
-        console.error(
-          "[Admin Status] Refund failed during admin cancellation:",
-          refundErr instanceof Error ? refundErr.name : "unknown error"
+        logger.error(
+          "[Admin Status] Refund failed during admin cancellation",
+          undefined,
+          { errorName: refundErr instanceof Error ? refundErr.name : "unknown error" }
         );
         return res.status(502).json({ error: "The deposit couldn't be refunded, so the appointment wasn't cancelled. Try again." });
       }
@@ -506,7 +508,7 @@ router.post("/vans/:id/polygons", requireAuth, requireRole("admin"), validatePar
   } catch (err) {
     // The database turns the GeoJSON into a PostGIS polygon and refuses shapes
     // it can't use (for example a ring that crosses itself).
-    console.warn("[ADMIN] Van service area refused:", safeError(err));
+    logger.warn("[ADMIN] Van service area refused", { error: safeError(err) });
     return res.status(400).json({ error: "That shape isn't a valid area. Check the ring doesn't cross itself." });
   }
 
@@ -738,7 +740,7 @@ async function sendStaffInvite(userId: string, email: string, roleLabel: string)
     });
     return await communicationService.sendStaffInviteEmail(email, token, roleLabel);
   } catch (err) {
-    console.error("[ADMIN] Staff invite failed:", safeError(err));
+    logger.error("[ADMIN] Staff invite failed", undefined, { error: safeError(err) });
     return false;
   }
 }

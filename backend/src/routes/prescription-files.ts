@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { pseudonymiseIp } from "../lib/audit-security";
 import { createAuditLogWithIntegrity } from "../lib/audit-integrity";
+import { logger } from "../lib/structured-logging";
 import {
   checkPrescriptionDownloadToken,
   PrescriptionContent,
@@ -29,7 +30,7 @@ router.get("/:file", async (req: Request, res: Response) => {
   const content = rx.content as unknown as PrescriptionContent;
   // Never hand out a document whose record no longer matches its seal.
   if (!verifyPrescription(content, rx.signature)) {
-    console.error("[Prescriptions] Seal check failed for a stored prescription");
+    logger.error("[Prescriptions] Seal check failed for a stored prescription");
     return res.status(409).json({ error: "This prescription can't be shown. Please contact the practice." });
   }
 

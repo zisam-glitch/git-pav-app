@@ -77,6 +77,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
+    "verify": "npm run typecheck && npm run lint && npm run test:all",
     "test": "npx tsx run-tests.ts",
     "test:account": "npx tsx src/__tests__/account.test.ts",
     "test:pricing": "npx tsx src/__tests__/booking.test.ts",

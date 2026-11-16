@@ -403,6 +403,9 @@ export const env = Object.freeze({
   get isRuntimeTest(): boolean {
     return (process.env.NODE_ENV?.trim() || nodeEnv) === "test";
   },
+  get isRuntimeDevelopment(): boolean {
+    return (process.env.NODE_ENV?.trim() || nodeEnv) === "development";
+  },
   get isDeployedRuntime(): boolean {
     const current = process.env.NODE_ENV?.trim() || nodeEnv;
     return current === "staging" || current === "production";

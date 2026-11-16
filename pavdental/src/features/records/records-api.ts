@@ -1,7 +1,13 @@
 import { apiUrl, authFetch } from "../auth/auth-api";
+import type {
+  ApiPrescription,
+  ApiToothRecord,
+  ApiTreatmentPlan,
+  ApiVaultDocument,
+} from "../api-contract.gen";
 
 // ─── Odontogram ───────────────────────────────────────────────────────────────
-export async function fetchOdontogram(userId: string) {
+export async function fetchOdontogram(userId: string): Promise<ApiToothRecord[]> {
   const res = await authFetch(`/api/patients/${userId}/odontogram`);
   if (!res.ok) throw new Error("Could not load odontogram");
   return res.json();
@@ -26,7 +32,7 @@ export async function updateOdontogram(
 }
 
 // ─── Treatment Plans ──────────────────────────────────────────────────────────
-export async function fetchTreatmentPlans(userId: string) {
+export async function fetchTreatmentPlans(userId: string): Promise<ApiTreatmentPlan[]> {
   const res = await authFetch(`/api/patients/${userId}/plans`);
   if (!res.ok) throw new Error("Could not load treatment plans");
   return res.json();
@@ -75,7 +81,7 @@ export async function declineTreatmentPlan(userId: string, planId: string) {
 }
 
 // ─── Prescriptions ────────────────────────────────────────────────────────────
-export async function fetchPatientPrescriptions(userId: string) {
+export async function fetchPatientPrescriptions(userId: string): Promise<ApiPrescription[]> {
   const res = await authFetch(`/api/prescriptions/patient/${userId}`);
   if (!res.ok) throw new Error("Could not load prescriptions");
   return res.json();
@@ -99,7 +105,7 @@ export async function updatePatientProfile(userId: string, data: Record<string, 
 }
 
 // ─── Document Vault ───────────────────────────────────────────────────────────
-export async function fetchDocuments(userId: string) {
+export async function fetchDocuments(userId: string): Promise<ApiVaultDocument[]> {
   const res = await authFetch(`/api/patients/${userId}/documents`);
   if (!res.ok) throw new Error("Could not load documents");
   return res.json();

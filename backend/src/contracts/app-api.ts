@@ -114,6 +114,83 @@ export const appointmentDetailSchema = appointmentListItemSchema.extend({
   accessDetails: z.record(z.string(), z.unknown()).nullable(),
 });
 
+export const toothConditionSchema = z.enum([
+  "healthy",
+  "decay",
+  "filled",
+  "missing",
+  "crown",
+  "implant",
+  "root_canal",
+]);
+
+export const toothRecordSchema = z.object({
+  id: z.string().guid(),
+  patientId: z.string().guid(),
+  toothNumber: z.number().int(),
+  arch: z.string(),
+  quadrant: z.string(),
+  condition: toothConditionSchema,
+  notes: z.string().nullable(),
+  updatedAt: isoDateTime,
+});
+
+export const treatmentPlanItemSchema = z.object({
+  id: z.string().guid(),
+  treatmentPlanId: z.string().guid(),
+  code: z.string(),
+  description: z.string(),
+  toothNumber: z.number().int().nullable(),
+  costPence: z.number().int(),
+  isAccepted: z.boolean(),
+});
+
+export const treatmentPlanSchema = z.object({
+  id: z.string().guid(),
+  patientId: z.string().guid(),
+  clinicianId: z.string().guid(),
+  title: z.string(),
+  status: z.string(),
+  totalCostPence: z.number().int(),
+  patientSignature: z.string().nullable(),
+  patientSignedAt: isoDateTime.nullable(),
+  createdAt: isoDateTime,
+  items: z.array(treatmentPlanItemSchema),
+  clinician: z.object({
+    fullName: z.string(),
+    roleTitle: z.string(),
+    gdcNumber: z.string(),
+  }),
+});
+
+export const prescriptionSchema = z.object({
+  id: z.string().guid(),
+  appointmentId: z.string().guid().nullable(),
+  clinicianId: z.string().guid(),
+  medicationName: z.string(),
+  dosageInstructions: z.string(),
+  dispensingPharmacy: z.string(),
+  epsTransactionRef: z.string().nullable(),
+  dispatchedAt: isoDateTime.nullable(),
+  createdAt: isoDateTime,
+  reference: z.string().nullable(),
+  clinician: z.object({
+    fullName: z.string(),
+    gdcNumber: z.string(),
+  }),
+  hasPdf: z.boolean(),
+});
+
+export const vaultDocumentSchema = z.object({
+  id: z.string().guid(),
+  docType: z.string(),
+  title: z.string(),
+  fileSizeBytes: z.string(),
+  createdAt: isoDateTime,
+  downloadUrl: z.string(),
+  expiresAt: isoDateTime,
+});
+
 /** Name in the generated file → schema. Order is the order in the file. */
 export const appContract = {
   ApiCareChannel: careChannelSchema,
@@ -125,4 +202,10 @@ export const appContract = {
   ApiAppointmentStatus: appointmentStatusSchema,
   ApiAppointmentListItem: appointmentListItemSchema,
   ApiAppointmentDetail: appointmentDetailSchema,
+  ApiToothCondition: toothConditionSchema,
+  ApiToothRecord: toothRecordSchema,
+  ApiTreatmentPlanItem: treatmentPlanItemSchema,
+  ApiTreatmentPlan: treatmentPlanSchema,
+  ApiPrescription: prescriptionSchema,
+  ApiVaultDocument: vaultDocumentSchema,
 } as const;

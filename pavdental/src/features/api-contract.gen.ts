@@ -158,3 +158,72 @@ export type ApiAppointmentDetail = {
   triageData: Record<string, unknown> | null;
   accessDetails: Record<string, unknown> | null;
 };
+
+export type ApiToothCondition = "healthy" | "decay" | "filled" | "missing" | "crown" | "implant" | "root_canal";
+
+export type ApiToothRecord = {
+  id: string;
+  patientId: string;
+  toothNumber: number;
+  arch: string;
+  quadrant: string;
+  condition: ApiToothCondition;
+  notes: string | null;
+  updatedAt: string;
+};
+
+export type ApiTreatmentPlanItem = {
+  id: string;
+  treatmentPlanId: string;
+  code: string;
+  description: string;
+  toothNumber: number | null;
+  costPence: number;
+  isAccepted: boolean;
+};
+
+export type ApiTreatmentPlan = {
+  id: string;
+  patientId: string;
+  clinicianId: string;
+  title: string;
+  status: string;
+  totalCostPence: number;
+  patientSignature: string | null;
+  patientSignedAt: string | null;
+  createdAt: string;
+  items: ApiTreatmentPlanItem[];
+  clinician: {
+    fullName: string;
+    roleTitle: string;
+    gdcNumber: string;
+  };
+};
+
+export type ApiPrescription = {
+  id: string;
+  appointmentId: string | null;
+  clinicianId: string;
+  medicationName: string;
+  dosageInstructions: string;
+  dispensingPharmacy: string;
+  epsTransactionRef: string | null;
+  dispatchedAt: string | null;
+  createdAt: string;
+  reference: string | null;
+  clinician: {
+    fullName: string;
+    gdcNumber: string;
+  };
+  hasPdf: boolean;
+};
+
+export type ApiVaultDocument = {
+  id: string;
+  docType: string;
+  title: string;
+  fileSizeBytes: string;
+  createdAt: string;
+  downloadUrl: string;
+  expiresAt: string;
+};

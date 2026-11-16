@@ -217,7 +217,7 @@ export function useOdontogram(userId: string) {
 export function useUpdateOdontogramMutation(userId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (teeth: any[]) => updateOdontogram(userId, teeth),
+    mutationFn: (teeth: Parameters<typeof updateOdontogram>[1]) => updateOdontogram(userId, teeth),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.odontogram(userId) });
     },
@@ -235,7 +235,7 @@ export function useTreatmentPlans(userId: string) {
 export function useCreateTreatmentPlanMutation(userId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (plan: { title: string; items: any[] }) =>
+    mutationFn: (plan: Parameters<typeof createTreatmentPlan>[1]) =>
       createTreatmentPlan(userId, plan),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.treatmentPlans(userId) });

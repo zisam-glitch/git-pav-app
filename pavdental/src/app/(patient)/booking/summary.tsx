@@ -1,4 +1,5 @@
 import { reportCaughtError } from "@/lib/caught-errors";
+import { useScreenIsActive } from "@/lib/app-focus";
 import { runBookingPayment } from "@/features/booking/booking-payment";
 import { useStripePay } from "@/features/booking/use-stripe-pay";
 import { bookingStep } from "@/features/booking/booking-steps";
@@ -59,6 +60,8 @@ export default function BookingSummaryScreen() {
   const voucherFits = !!voucher && voucher.discountPence < depositPence;
   const depositDuePence = useVoucher && voucherFits ? depositPence - voucher!.discountPence : depositPence;
 
+  const isScreenActive = useScreenIsActive();
+
   useEffect(() => {
     if (paidRef.current) return;
     if (!holdExpiresAt || holdExpiresAt <= Date.now()) {
@@ -80,6 +83,7 @@ export default function BookingSummaryScreen() {
     }
 
     setSecondsRemaining(Math.max(0, Math.floor((holdExpiresAt - Date.now()) / 1000)));
+    if (!isScreenActive) return;
 
     const interval = setInterval(() => {
       const remaining = Math.max(0, Math.floor((holdExpiresAt - Date.now()) / 1000));
@@ -104,7 +108,7 @@ export default function BookingSummaryScreen() {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [holdExpiresAt]);
+  }, [holdExpiresAt, isScreenActive]);
 
   const formatTimer = (sec: number) => {
     const m = Math.floor(sec / 60);

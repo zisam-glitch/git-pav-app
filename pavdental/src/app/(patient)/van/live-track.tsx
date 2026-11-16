@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ActivityIndicator, Pressable, AppState } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useScreenFocused } from "@/lib/app-focus";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThemedText, Button, AppIcon, ErrorState } from "@/components";
 import { colors, spacing, radius } from "@/theme";
@@ -35,15 +36,16 @@ export default function VanLiveTrackScreen() {
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [sheetHeight, setSheetHeight] = useState(0);
   const [isForeground, setIsForeground] = useState(() => AppState.currentState === "active");
+  const isFocused = useScreenFocused();
 
-  // Smart polling (N29): 5s while van is en_route, 30s otherwise, paused in background/terminal.
+  // Smart polling (N29): 5s while van is en_route, 30s otherwise, paused when hidden/background/terminal.
   const { data: apiRequest, isLoading, isError, refetch } = useQuery<VanServiceRequest | null>({
     queryKey: queryKeys.van.liveRequest(params.requestId),
     queryFn: () =>
       params.requestId
         ? fetchVanRequest(params.requestId)
         : fetchActiveVanRequest(),
-    refetchInterval: (query) => trackingPollIntervalMs(query.state.data ?? null, isForeground),
+    refetchInterval: (query) => trackingPollIntervalMs(query.state.data ?? null, isForeground && isFocused),
   });
 
   useEffect(() => {
@@ -62,12 +64,13 @@ export default function VanLiveTrackScreen() {
     if (request?.status === "pending" && request.expiresAt) {
       const updateTimer = () => setSecondsRemaining(secondsUntil(request.expiresAt));
       updateTimer();
+      if (!isFocused || !isForeground) return undefined;
       const interval = setInterval(updateTimer, 1000);
       return () => clearInterval(interval);
     }
     setSecondsRemaining(null);
     return undefined;
-  }, [request?.status, request?.expiresAt]);
+  }, [request?.status, request?.expiresAt, isFocused, isForeground]);
 
   const cancelMutation = useMutation({
     mutationFn: (id: string) => cancelVanRequest(id),

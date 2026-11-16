@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { View, StyleSheet, ScrollView, Pressable, RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
+import { useScreenPollInterval } from "@/lib/app-focus";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { safeHaptics } from "@/lib/haptics";
@@ -82,10 +83,12 @@ export default function PatientHomeScreen() {
     }
   }, [params.triageModal]);
 
+  const vanPollInterval = useScreenPollInterval(10000);
+
   const { data: activeVanRequest } = useQuery({
     queryKey: ["active-van-request"],
     queryFn: fetchActiveVanRequest,
-    refetchInterval: 10000,
+    refetchInterval: vanPollInterval,
   });
 
   const userName = user?.firstName || "Patient";

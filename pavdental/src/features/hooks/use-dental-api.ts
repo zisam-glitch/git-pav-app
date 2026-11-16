@@ -4,6 +4,7 @@ import { APPOINTMENT_STATUS } from "@/lib/domain-enums";
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { nextOffset, flattenPages, uniqueById } from "@/lib/paging";
 import { queryKeys } from "@/lib/query-keys";
+import { useScreenPollInterval } from "@/lib/app-focus";
 import { rewardsQueryOptions } from "../records/rewards-query";
 import { PRACTICE_CONFIG } from "@/config/practice";
 import { resolvePracticeHours } from "../booking/uk-time";
@@ -89,11 +90,12 @@ export function useSlots(params: {
   date: string;
   channel?: string;
 }) {
+  const pollInterval = useScreenPollInterval(30 * 1000);
   return useQuery({
     queryKey: queryKeys.slots.list(params),
     queryFn: () => fetchSlots(params),
     enabled: !!params.date,
-    refetchInterval: 30 * 1000, // refresh availability every 30s
+    refetchInterval: pollInterval, // refresh availability every 30s while active
   });
 }
 
@@ -309,13 +311,14 @@ export function useMessageThreads(view: "full" | "summary" = "summary") {
 
 /** One open conversation, a page of messages at a time; fetchNextPage loads older ones. */
 export function useMessageThread(threadId: string | undefined) {
+  const pollInterval = useScreenPollInterval(10 * 1000);
   return useInfiniteQuery({
     queryKey: queryKeys.messages.thread(threadId),
     queryFn: ({ pageParam }) => fetchMessageThreadPage(threadId as string, pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextBefore ?? undefined,
     enabled: !!threadId,
-    refetchInterval: 10 * 1000, // a reply shows while the conversation is open
+    refetchInterval: pollInterval, // a reply shows while the conversation is open
   });
 }
 

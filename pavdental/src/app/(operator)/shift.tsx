@@ -12,17 +12,19 @@ import {
   resumeShift,
 } from "@/features/van/van-api";
 import { useOperatorLocation } from "@/features/van/use-operator-location";
+import { useScreenPollInterval } from "@/lib/app-focus";
 import { toLabel } from "@/lib/text";
 
 export default function OperatorShiftScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [gpsActive, setGpsActive] = useState(false);
+  const pollInterval = useScreenPollInterval(10000);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["operator-shift"],
     queryFn: fetchCurrentShift,
-    refetchInterval: 10000,
+    refetchInterval: pollInterval,
   });
 
   const shift = data?.shift;

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
+import { useScreenPollInterval } from "@/lib/app-focus";
 import { authFetch } from "../auth/auth-api";
 import { requestVideoRoom } from "./video-room";
 import {
@@ -106,11 +107,12 @@ export function useTriagePhotos(appointmentId?: string) {
 }
 
 export function useVideoPresence(appointmentId?: string) {
+  const pollInterval = useScreenPollInterval(5000);
   return useQuery({
     queryKey: queryKeys.video.presence(appointmentId),
     queryFn: () => fetchVideoPresence(appointmentId!),
     enabled: !!appointmentId,
-    refetchInterval: 5000,
+    refetchInterval: pollInterval,
   });
 }
 

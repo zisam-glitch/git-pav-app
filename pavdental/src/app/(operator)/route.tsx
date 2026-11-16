@@ -22,16 +22,18 @@ import { onSiteWaitLabel } from "@/features/van/live-track-actions";
 import { isOfflinePhaseError } from "@/features/van/offline-phase-queue";
 import { queueOfflinePhaseChange } from "@/features/van/offline-phases";
 import { queryKeys } from "@/lib/query-keys";
+import { activePollInterval, useScreenIsActive } from "@/lib/app-focus";
 import { toLabel } from "@/lib/text";
 
 export default function OperatorRouteScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const isScreenActive = useScreenIsActive();
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: queryKeys.van.operatorShift(),
     queryFn: fetchCurrentShift,
-    refetchInterval: 10000,
+    refetchInterval: activePollInterval(isScreenActive, true, 10000),
   });
 
   const shift = data?.shift;
@@ -43,9 +45,10 @@ export default function OperatorRouteScreen() {
   React.useEffect(() => {
     if (!hasOnSiteTimer) return undefined;
     setNowMs(Date.now());
+    if (!isScreenActive) return undefined;
     const id = setInterval(() => setNowMs(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [hasOnSiteTimer]);
+  }, [hasOnSiteTimer, isScreenActive]);
 
   // Real device GPS: keeps the backend's live position current (patient ETAs)
   // and origin-anchors turn-by-turn links. Falls back to the van's last

@@ -16,6 +16,7 @@ import {
   useVideoPresence,
 } from "@/features/video/use-video-queries";
 import { queryKeys } from "@/lib/query-keys";
+import { useScreenIsActive } from "@/lib/app-focus";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOdontogram } from "@/features/records/records-api";
 import { toothFinding } from "@/features/records/tooth-finding";
@@ -151,12 +152,14 @@ export default function ClinicianConsultRoomScreen() {
   };
 
   // Live call timer
+  const isScreenActive = useScreenIsActive();
   useEffect(() => {
     if (!callStartedAt) return;
     setNow(Date.now());
+    if (!isScreenActive) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
-  }, [callStartedAt]);
+  }, [callStartedAt, isScreenActive]);
   const seconds = callStartedAt ? Math.max(0, Math.floor((now - callStartedAt) / 1000)) : 0;
 
   const joinCall = () => {

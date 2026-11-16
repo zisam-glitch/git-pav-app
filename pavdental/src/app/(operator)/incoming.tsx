@@ -5,15 +5,17 @@ import { ThemedText, Card, Badge, Button, ErrorState, Skeleton } from "@/compone
 import { requestAreaLabel } from "@/features/van/request-area";
 import { colors, spacing } from "@/theme";
 import { fetchCurrentShift, acceptRequest, declineRequest } from "@/features/van/van-api";
+import { useScreenPollInterval } from "@/lib/app-focus";
 
 export default function OperatorIncomingScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const pollInterval = useScreenPollInterval(5000);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["operator-shift"],
     queryFn: fetchCurrentShift,
-    refetchInterval: 5000, // Poll every 5s for new requests
+    refetchInterval: pollInterval, // Poll every 5s for new requests while active
   });
 
   const incoming = data?.incoming ?? [];

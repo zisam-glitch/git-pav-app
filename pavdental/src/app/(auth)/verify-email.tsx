@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText, OtpInput, Button, IconButton, AppIcon } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { authApi } from "@/features/auth/auth-api";
+import { useScreenIsActive } from "@/lib/app-focus";
 import {
   authErrorCode,
   friendlyAuthMessage,
@@ -40,11 +41,15 @@ export default function VerifyEmailScreen() {
   const [now, setNow] = useState(Date.now());
   const cooldown = secondsLeft(resendReadyAt, now);
 
+  const isScreenActive = useScreenIsActive();
+
   useEffect(() => {
     if (resendReadyAt <= Date.now()) return;
+    setNow(Date.now());
+    if (!isScreenActive) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
-  }, [resendReadyAt]);
+  }, [resendReadyAt, isScreenActive]);
 
   // Auto-verify if opened from email deep link containing token
   useEffect(() => {

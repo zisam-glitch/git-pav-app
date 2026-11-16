@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, ActivityIndicator, AppState } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useScreenFocused } from "@/lib/app-focus";
 import { ThemedText, Card, Button, AppIcon, Badge } from "@/components";
 import { colors, spacing, radius } from "@/theme";
 import { usePollWaitingRoomMutation, useLeaveWaitingRoomMutation } from "@/features/video/use-video-queries";
@@ -20,6 +21,7 @@ export default function WaitingRoomScreen() {
   const [opensAt, setOpensAt] = useState<string | null>(null);
   const [admitted, setAdmitted] = useState(false);
   const failures = useRef(0);
+  const isFocused = useScreenFocused();
 
   useEffect(() => {
     let active = true;
@@ -64,11 +66,11 @@ export default function WaitingRoomScreen() {
         setTrouble(waitingTrouble({ failures: failures.current }));
       }
     }
-    // Check on an interval only while the app is in front, and check at once
-    // when it comes back (V13).
+    // Check on an interval only while the screen is focused and the app is in
+    // front, and check at once when it comes back (V13).
     let interval: ReturnType<typeof setInterval> | null = null;
     const start = () => {
-      if (interval) return;
+      if (interval || !isFocused) return;
       pollRoomStatus();
       interval = setInterval(() => {
         setNow(Date.now());
@@ -79,14 +81,14 @@ export default function WaitingRoomScreen() {
       if (interval) clearInterval(interval);
       interval = null;
     };
-    if (AppState.currentState === "active") start();
-    const sub = AppState.addEventListener("change", (state) => (state === "active" ? start() : stop()));
+    if (isFocused && AppState.currentState === "active") start();
+    const sub = AppState.addEventListener("change", (state) => (isFocused && state === "active" ? start() : stop()));
     return () => {
       active = false;
       stop();
       sub.remove();
     };
-  }, [appointmentId, router]);
+  }, [appointmentId, router, isFocused]);
 
   return (
     <SafeAreaView style={styles.safe}>

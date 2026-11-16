@@ -16,7 +16,7 @@ export default function VanServiceAreaScreen() {
 
   const [postcode, setPostcode] = useState("");
   const [checked, setChecked] = useState(false);
-  const [coverageResult, setCoverageResult] = useState<any>(null);
+  const [coverageResult, setCoverageResult] = useState<{ isCovered?: boolean; message?: string; assignedVan?: string | null } | null>(null);
   const [availability, setAvailability] = useState<VanAvailability | null>(null);
   const [loading, setLoading] = useState(false);
   const [locationPermission, setLocationPermission] = useState<string | null>(null);
@@ -174,7 +174,7 @@ export default function VanServiceAreaScreen() {
   };
 
   const handleProceed = () => {
-    router.push("/(patient)/van/access-details" as any);
+    router.push("/(patient)/van/access-details" as never);
   };
 
   const isCovered = coverageResult?.isCovered ?? false;
@@ -276,13 +276,13 @@ export default function VanServiceAreaScreen() {
                       title="Book central practice clinic"
                       variant="primary"
                       size="sm"
-                      onPress={() => router.push("/(patient)/booking/service-catalog" as any)}
+                      onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
                     />
                     <Button
                       title="Book a video consult"
                       variant="secondary"
                       size="sm"
-                      onPress={() => router.push("/(patient)/booking/service-catalog?channel=video" as any)}
+                      onPress={() => router.push("/(patient)/booking/service-catalog?channel=video" as never)}
                     />
                   </View>
                 </View>
@@ -320,7 +320,7 @@ export default function VanServiceAreaScreen() {
                   title="See why & alternatives"
                   variant="secondary"
                   size="sm"
-                  onPress={() => router.push("/(patient)/van/not-covered" as any)}
+                  onPress={() => router.push("/(patient)/van/not-covered" as never)}
                 />
                 <Button
                   title="Try different postcode"
@@ -332,7 +332,7 @@ export default function VanServiceAreaScreen() {
                   title="View clinics instead"
                   variant="ghost"
                   size="sm"
-                  onPress={() => router.push("/(patient)/booking/service-catalog" as any)}
+                  onPress={() => router.push("/(patient)/booking/service-catalog" as never)}
                 />
               </View>
             </Card>

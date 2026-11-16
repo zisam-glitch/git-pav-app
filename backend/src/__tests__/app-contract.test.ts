@@ -7,8 +7,12 @@ import {
   clinicSchema,
   clinicianSchema,
   holdSlotResponseSchema,
+  prescriptionSchema,
   serviceSchema,
   slotSchema,
+  toothRecordSchema,
+  treatmentPlanSchema,
+  vaultDocumentSchema,
 } from "../contracts/app-api";
 import { APP_CONTRACT_PATH, renderAppContract } from "../contracts/app-contract-file";
 import { londonDate, weekdayOf } from "../lib/availability";
@@ -24,6 +28,7 @@ describe("app API contract", () => {
   let server: http.Server;
   let baseUrl: string;
   let token = "";
+  let patientUserId = "";
   const tag = crypto.randomUUID().slice(0, 8);
   const userIds: string[] = [];
   let clinicId = "";
@@ -46,6 +51,7 @@ describe("app API contract", () => {
     baseUrl = "http://localhost:3029";
 
     const patient = await prisma.user.create({ data: { email: `contract-patient-${tag}@example.test`, passwordHash: "x", role: "patient" } });
+    patientUserId = patient.id;
     userIds.push(patient.id);
     await prisma.patientProfile.create({ data: { userId: patient.id, firstName: "Synthetic", lastName: "Patient" } });
     token = signAccessToken({ sub: patient.id, role: "patient", sessionId: crypto.randomUUID() });
@@ -111,5 +117,19 @@ describe("app API contract", () => {
 
     const appointments = await get("/api/booking/appointments");
     expectShape(z.array(appointmentListItemSchema), appointments);
+  });
+
+  it("matches the patient records responses", async () => {
+    const odontogram = await get(`/api/patients/${patientUserId}/odontogram`);
+    expectShape(z.array(toothRecordSchema), odontogram);
+
+    const plans = await get(`/api/patients/${patientUserId}/plans`);
+    expectShape(z.array(treatmentPlanSchema), plans);
+
+    const documents = await get(`/api/patients/${patientUserId}/documents`);
+    expectShape(z.array(vaultDocumentSchema), documents);
+
+    const prescriptions = await get(`/api/prescriptions/patient/${patientUserId}`);
+    expectShape(z.array(prescriptionSchema), prescriptions);
   });
 });

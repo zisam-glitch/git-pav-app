@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/react-native";
-import { scrubEvent } from "./error-scrub";
+import { scrubEvent, scrubText } from "./error-scrub";
 import { setCaughtErrorReporter } from "./caught-errors";
 import { setCallEventReporter, type CallEventName } from "./call-events";
 
@@ -36,7 +36,7 @@ export function initErrorTracking(): void {
 export function reportError(error: unknown, source: string): void {
   if (!enabled) return;
   Sentry.withScope((scope) => {
-    scope.setTag("source", source);
+    scope.setTag("source", scrubText(source));
     Sentry.captureException(error instanceof Error ? error : new Error(`Non-error thrown: ${typeof error}`));
   });
 }

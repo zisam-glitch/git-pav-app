@@ -1,5 +1,6 @@
 // The bookkeeping behind screenshot blocking (D-14), kept free of React
 // Native so it can be tested on its own. See screen-security.ts.
+import { scrubText } from "../../lib/error-scrub";
 
 export interface ScreenCaptureApi {
   preventScreenCaptureAsync(key: string): Promise<void>;
@@ -10,7 +11,7 @@ export interface ScreenCaptureApi {
 
 const report = (err: unknown) => {
   // Not being able to block a screenshot shouldn't stop the screen opening.
-  console.warn("[screen-security]", err instanceof Error ? err.message : "unavailable");
+  console.warn("[screen-security]", err instanceof Error ? scrubText(err.message) : "unavailable");
 };
 
 /**

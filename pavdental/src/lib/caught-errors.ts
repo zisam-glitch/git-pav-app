@@ -14,11 +14,13 @@ export function setCaughtErrorReporter(next: Reporter | null): void {
 }
 
 export function reportCaughtError(error: unknown, source: string): void {
+  const safeSource = scrubText(source);
   if (typeof __DEV__ !== "undefined" && __DEV__) {
-    const message = error instanceof Error ? scrubText(error.message) : typeof error;
-    console.warn(`[${source}]`, message);
+    const message =
+      error instanceof Error ? scrubText(error.message) : typeof error === "string" ? scrubText(error) : typeof error;
+    console.warn(`[${safeSource}]`, message);
   }
   // A lost connection or a timed-out request is the network, not a bug.
   if (isConnectivityError(error)) return;
-  reporter?.(error, source);
+  reporter?.(error, safeSource);
 }

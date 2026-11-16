@@ -66,7 +66,7 @@ export default function IntraoralPhotosScreen() {
 
   const handleContinue = () => {
     router.push({
-      pathname: '/(patient)/video/photo-review' as any,
+      pathname: '/(patient)/video/photo-review' as never,
       params: {
         appointmentId: params.appointmentId || '',
         symptomText: params.symptomText || '',
@@ -157,7 +157,7 @@ export default function IntraoralPhotosScreen() {
               prev.map((slot) => ({ ...slot, isCaptured: false, uri: undefined }))
             );
             router.push({
-              pathname: '/(patient)/video/photo-review' as any,
+              pathname: '/(patient)/video/photo-review' as never,
               params: { ...params, photos: '{}' },
             });
           }}

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires -- reason: native modules are loaded lazily in try/catch so this file also runs in Node tests */
-let Platform: any = { OS: "web" };
+let Platform: { OS: string } = { OS: "web" };
 try {
   Platform = require("react-native").Platform ?? require("react-native-web").Platform;
 } catch {
@@ -10,7 +10,14 @@ try {
 }
 }
 
-let SecureStore: any = null;
+type SecureStoreLike = {
+  getItemAsync?: (key: string) => Promise<string | null>;
+  setItemAsync?: (key: string, value: string, options?: Record<string, unknown>) => Promise<void>;
+  deleteItemAsync?: (key: string) => Promise<void>;
+  WHEN_UNLOCKED_THIS_DEVICE_ONLY?: number;
+};
+
+let SecureStore: SecureStoreLike | null = null;
 try {
   SecureStore = require("expo-secure-store");
 } catch {
@@ -48,7 +55,7 @@ async function getItem(key: string): Promise<string | null> {
   return SecureStore.getItemAsync(key);
 }
 
-async function setItem(key: string, value: string, options?: any): Promise<void> {
+async function setItem(key: string, value: string, options?: Record<string, unknown>): Promise<void> {
   memoryStore.set(key, value);
   if (isWeb) {
     try {

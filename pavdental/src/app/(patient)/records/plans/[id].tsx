@@ -56,7 +56,7 @@ export default function TreatmentPlanDetailScreen() {
     }
   }, [signSheet]);
 
-  const plan = findPlan(apiPlans as any[] | undefined, id) as any;
+  const plan = findPlan(apiPlans, id);
 
   // A plan answered on an earlier visit shows that answer, not the buttons again.
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function TreatmentPlanDetailScreen() {
     );
   }
 
-  const items: any[] = plan.items || [];
+  const items = plan.items || [];
   const totalCostPence: number = plan.totalCostPence || 0;
   const completedCount = decision === "accepted" ? items.length : 0;
   const progress = items.length ? completedCount / items.length : 0;

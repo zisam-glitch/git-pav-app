@@ -108,7 +108,7 @@ export default function VideoSummaryScreen() {
               title="View prescriptions"
               variant="secondary"
               size="md"
-              onPress={() => router.push("/(patient)/records/prescriptions" as any)}
+              onPress={() => router.push("/(patient)/records/prescriptions" as never)}
             />
           </Card>
 
@@ -123,13 +123,13 @@ export default function VideoSummaryScreen() {
               <Button
                 title="Book van to my home"
                 size="md"
-                onPress={() => router.replace("/(patient)/booking/service-catalog?channel=van" as any)}
+                onPress={() => router.replace("/(patient)/booking/service-catalog?channel=van" as never)}
               />
               <Button
                 title="Book clinic visit"
                 variant="secondary"
                 size="md"
-                onPress={() => router.replace("/(patient)/booking/service-catalog" as any)}
+                onPress={() => router.replace("/(patient)/booking/service-catalog" as never)}
               />
             </View>
           </Card>

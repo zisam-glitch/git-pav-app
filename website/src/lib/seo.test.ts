@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   blogPostHead,
+  MOVED_PATHS,
   noindexHead,
   PAGES,
   type PageSeo,
@@ -21,12 +22,14 @@ const livePages: Array<{ path: string; title: string; description: string | null
 const pages: Record<string, PageSeo | undefined> = PAGES;
 
 describe("titles and descriptions follow the live site", () => {
-  it("has an entry for every live page and no others", () => {
-    assert.deepEqual(Object.keys(PAGES).sort(), livePages.map((p) => p.path).sort());
+  it("serves or permanently redirects every live page, and has no other entries", () => {
+    const served = livePages.map((p) => p.path).filter((path) => !(path in MOVED_PATHS));
+    assert.deepEqual(Object.keys(PAGES).sort(), served.sort());
+    for (const path of Object.keys(MOVED_PATHS)) assert.equal(path in PAGES, false, `${path} redirects, so it has no page`);
   });
 
   it("copies every live title and description word for word", () => {
-    for (const live of livePages.filter((p) => p.title)) {
+    for (const live of livePages.filter((p) => p.title && !(p.path in MOVED_PATHS))) {
       const ours = pages[live.path];
       assert.equal(ours?.title, live.title, live.path);
       assert.equal(ours?.description, live.description, live.path);
@@ -109,6 +112,10 @@ describe("redirectTarget", () => {
     assert.equal(redirectTarget("/terms"), "/terms-and-condition");
     assert.equal(redirectTarget("/cookies"), "/cookie-policy");
     assert.equal(redirectTarget("/complaints"), "/complaints-policy");
+  });
+
+  it("sends the live GDPR page, another practice's template, to the privacy notice", () => {
+    assert.equal(redirectTarget("/gdpr"), "/privacy-policy");
   });
 
   it("drops a trailing slash so each page has one URL", () => {

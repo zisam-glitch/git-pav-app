@@ -86,10 +86,6 @@ export const PAGES = {
     description: "Answers to common questions from Pav Dental in Bradford: bleeding gums, sensitive teeth, how often to have a check-up, and help if you are nervous about the dentist.",
     written: true,
   },
-  "/gdpr": {
-    title: "Your Data, Your Rights — Understanding Our GDPR Protection Policy",
-    description: "Your data matters. Learn how our GDPR protection policy keeps your personal information secure, confidential, and handled with full transparency.",
-  },
   "/petition": {
     title: "Demand Better Dental Care – Support the NHS Funding Petition",
     description: "Join the NHS dental funding petition and push for better, affordable dental care across the UK. Every signature brings real change closer.",
@@ -324,6 +320,10 @@ export const MOVED_PATHS: Record<string, string> = {
   "/terms": "/terms-and-condition",
   "/cookies": "/cookie-policy",
   "/complaints": "/complaints-policy",
+  // The live /gdpr page is another practice's template ("Parish Dental",
+  // another jurisdiction's data protection law), so it is not ported; its
+  // visitors go to the practice's reviewed privacy notice instead.
+  "/gdpr": "/privacy-policy",
 };
 
 /**

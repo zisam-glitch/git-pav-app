@@ -1,0 +1,93 @@
+{
+  "path": "/services",
+  "title": "Emergency Private Dental Clinic in Bradford | Book Your Appointment Now",
+  "h1": [
+    "Our Services"
+  ],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "h1",
+      "text": "Our Services"
+    },
+    {
+      "tag": "a",
+      "text": "Emergency Dental\nWe offer same day emergency dental care 24-hours a day, seven days a week.",
+      "href": "https://www.pavdental.com/services/emergency-dental"
+    },
+    {
+      "tag": "a",
+      "text": "Tooth Extraction\nPain free tooth removal at pav dental care",
+      "href": "https://www.pavdental.com/services/tooth-extraction"
+    },
+    {
+      "tag": "a",
+      "text": "Root Canal\nRoot canal treatment at pav dental care",
+      "href": "https://www.pavdental.com/services/root-canal"
+    },
+    {
+      "tag": "a",
+      "text": "Oral Hygiene\nOral hygiene treatment at pav dental care",
+      "href": "https://www.pavdental.com/services/oral-hygiene"
+    },
+    {
+      "tag": "a",
+      "text": "General Dentistry\nWe offer a large range of treatment options and procedures which are fundam...",
+      "href": "https://www.pavdental.com/services/general-dentistry"
+    },
+    {
+      "tag": "a",
+      "text": "Dentures\nDentures at pav dental care",
+      "href": "https://www.pavdental.com/services/dentures"
+    },
+    {
+      "tag": "a",
+      "text": "Whitening\nTry our simple, safe and effective teeth whitening and see a significant impro...",
+      "href": "https://www.pavdental.com/services/whitening"
+    },
+    {
+      "tag": "a",
+      "text": "Cosmetic\nTop Cosmetic Dentistry Clinic in Leeds Pav Dental",
+      "href": "https://www.pavdental.com/services/cosmetic"
+    },
+    {
+      "tag": "a",
+      "text": "Aesthetics\nEnhance your natural beauty with our personalised facial aesthetic treatments.",
+      "href": "https://www.pavdental.com/services/aesthetics"
+    },
+    {
+      "tag": "a",
+      "text": "Custom Grillz\nAt Pav Dental, we believe in a personalized approach to dental aesthetics. Our cu...",
+      "href": "https://www.pavdental.com/services/custom-grillz"
+    },
+    {
+      "tag": "a",
+      "text": "Mouthguards\nDesigned for comfort, accuracy and full protection",
+      "href": "https://www.pavdental.com/services/mouthguards"
+    },
+    {
+      "tag": "a",
+      "text": "Coming Soon\nMobile Dentistry\nEnabling our patients to access treatment in the comfort of their own home.",
+      "href": "https://www.pavdental.com/services/mobile-dentistry"
+    },
+    {
+      "tag": "a",
+      "text": "Coming Soon\nVirtual Dentistry\nVirtual dental consultations from the comfort of your home.",
+      "href": "https://www.pavdental.com/services/virtual-dentistry"
+    },
+    {
+      "tag": "a",
+      "text": "Finance\n0% Finance Available On Private Treatments...",
+      "href": "https://www.pavdental.com/services/finance"
+    },
+    {
+      "tag": "a",
+      "text": "Registration\nRegister with Pav Dental to access our full range of services",
+      "href": "https://www.pavdental.com/services/regestration"
+    }
+  ]
+}

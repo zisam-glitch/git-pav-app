@@ -14,7 +14,8 @@ This folder contains the public-facing marketing website and online shop for Pav
 
 - `src/routes/`: File-based routes at the live site's URLs (`/`, `/about`, `/services/whitening` and the other `/services/*` pages, `/contact-us`, `/blog`, `/privacy-policy`, `/terms-and-condition`, `/shop`, etc.).
 - `src/lib/seo.ts`: every page's title, description and head tags, the practice's structured data, and the permanent redirects.
-- `seo/`: the recorded live site (`live-baseline.json`, `live-text/`); see `seo/README.md`.
+- `seo/`: the recorded live site (`live-baseline.json`, `live-text/`, `live-content/`); see `seo/README.md`.
+- `src/content/live-pages.ts`: text pages ported word for word from the live site (FAQ, CCTV policy, practice documents, services index), shown by `LiveContentPage`.
 - `src/components/`: Reusable UI components grouped by feature (`home/`, `about/`, `shop/`, `team/`, etc.).
 - `src/lib/`: Utilities, analytics, the account-link helpers (`app-account.ts`), query provider.
 - `public/`: Static assets (favicons, images, logos).

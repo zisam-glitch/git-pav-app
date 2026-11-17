@@ -14,11 +14,14 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as CctvPolicyRouteImport } from './routes/cctv-policy'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ComplaintsPolicyRouteImport } from './routes/complaints-policy'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PetitionRouteImport } from './routes/petition'
+import { Route as PracticePolicyRouteImport } from './routes/practice-policy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -30,6 +33,7 @@ import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesAestheticsRouteImport } from './routes/services.aesthetics'
 import { Route as ServicesCosmeticRouteImport } from './routes/services.cosmetic'
 import { Route as ServicesCustomGrillzRouteImport } from './routes/services.custom-grillz'
@@ -70,6 +74,11 @@ const CartRoute = CartRouteImport.update({
   path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CctvPolicyRoute = CctvPolicyRouteImport.update({
+  id: '/cctv-policy',
+  path: '/cctv-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -90,9 +99,19 @@ const CookiePolicyRoute = CookiePolicyRouteImport.update({
   path: '/cookie-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PetitionRoute = PetitionRouteImport.update({
   id: '/petition',
   path: '/petition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PracticePolicyRoute = PracticePolicyRouteImport.update({
+  id: '/practice-policy',
+  path: '/practice-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -148,6 +167,11 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
 const OrderIdRoute = OrderIdRouteImport.update({
   id: '/order/$id',
   path: '/order/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesAestheticsRoute = ServicesAestheticsRouteImport.update({
@@ -229,11 +253,14 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRoute
   '/booking': typeof BookingRoute
   '/cart': typeof CartRoute
+  '/cctv-policy': typeof CctvPolicyRoute
   '/checkout': typeof CheckoutRoute
   '/complaints-policy': typeof ComplaintsPolicyRoute
   '/contact-us': typeof ContactUsRoute
   '/cookie-policy': typeof CookiePolicyRoute
+  '/faq': typeof FaqRoute
   '/petition': typeof PetitionRoute
+  '/practice-policy': typeof PracticePolicyRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -259,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
   '/services/whitening': typeof ServicesWhiteningRoute
   '/shop/$productSlug': typeof ShopProductSlugRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -266,11 +294,14 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRoute
   '/booking': typeof BookingRoute
   '/cart': typeof CartRoute
+  '/cctv-policy': typeof CctvPolicyRoute
   '/checkout': typeof CheckoutRoute
   '/complaints-policy': typeof ComplaintsPolicyRoute
   '/contact-us': typeof ContactUsRoute
   '/cookie-policy': typeof CookiePolicyRoute
+  '/faq': typeof FaqRoute
   '/petition': typeof PetitionRoute
+  '/practice-policy': typeof PracticePolicyRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -296,6 +327,7 @@ export interface FileRoutesByTo {
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
   '/services/whitening': typeof ServicesWhiteningRoute
   '/shop/$productSlug': typeof ShopProductSlugRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -304,11 +336,14 @@ export interface FileRoutesById {
   '/blog': typeof BlogRoute
   '/booking': typeof BookingRoute
   '/cart': typeof CartRoute
+  '/cctv-policy': typeof CctvPolicyRoute
   '/checkout': typeof CheckoutRoute
   '/complaints-policy': typeof ComplaintsPolicyRoute
   '/contact-us': typeof ContactUsRoute
   '/cookie-policy': typeof CookiePolicyRoute
+  '/faq': typeof FaqRoute
   '/petition': typeof PetitionRoute
+  '/practice-policy': typeof PracticePolicyRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -334,6 +369,7 @@ export interface FileRoutesById {
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
   '/services/whitening': typeof ServicesWhiteningRoute
   '/shop_/$productSlug': typeof ShopProductSlugRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -343,11 +379,14 @@ export interface FileRouteTypes {
     | '/blog'
     | '/booking'
     | '/cart'
+    | '/cctv-policy'
     | '/checkout'
     | '/complaints-policy'
     | '/contact-us'
     | '/cookie-policy'
+    | '/faq'
     | '/petition'
+    | '/practice-policy'
     | '/pricing'
     | '/privacy-policy'
     | '/reset-password'
@@ -373,6 +412,7 @@ export interface FileRouteTypes {
     | '/services/virtual-dentistry'
     | '/services/whitening'
     | '/shop/$productSlug'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -380,11 +420,14 @@ export interface FileRouteTypes {
     | '/blog'
     | '/booking'
     | '/cart'
+    | '/cctv-policy'
     | '/checkout'
     | '/complaints-policy'
     | '/contact-us'
     | '/cookie-policy'
+    | '/faq'
     | '/petition'
+    | '/practice-policy'
     | '/pricing'
     | '/privacy-policy'
     | '/reset-password'
@@ -410,6 +453,7 @@ export interface FileRouteTypes {
     | '/services/virtual-dentistry'
     | '/services/whitening'
     | '/shop/$productSlug'
+    | '/services'
   id:
     | '__root__'
     | '/'
@@ -417,11 +461,14 @@ export interface FileRouteTypes {
     | '/blog'
     | '/booking'
     | '/cart'
+    | '/cctv-policy'
     | '/checkout'
     | '/complaints-policy'
     | '/contact-us'
     | '/cookie-policy'
+    | '/faq'
     | '/petition'
+    | '/practice-policy'
     | '/pricing'
     | '/privacy-policy'
     | '/reset-password'
@@ -447,6 +494,7 @@ export interface FileRouteTypes {
     | '/services/virtual-dentistry'
     | '/services/whitening'
     | '/shop_/$productSlug'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -455,11 +503,14 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   BookingRoute: typeof BookingRoute
   CartRoute: typeof CartRoute
+  CctvPolicyRoute: typeof CctvPolicyRoute
   CheckoutRoute: typeof CheckoutRoute
   ComplaintsPolicyRoute: typeof ComplaintsPolicyRoute
   ContactUsRoute: typeof ContactUsRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
+  FaqRoute: typeof FaqRoute
   PetitionRoute: typeof PetitionRoute
+  PracticePolicyRoute: typeof PracticePolicyRoute
   PricingRoute: typeof PricingRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -485,6 +536,7 @@ export interface RootRouteChildren {
   ServicesVirtualDentistryRoute: typeof ServicesVirtualDentistryRoute
   ServicesWhiteningRoute: typeof ServicesWhiteningRoute
   ShopProductSlugRoute: typeof ShopProductSlugRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -524,6 +576,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cctv-policy': {
+      id: '/cctv-policy'
+      path: '/cctv-policy'
+      fullPath: '/cctv-policy'
+      preLoaderRoute: typeof CctvPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
@@ -552,11 +611,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CookiePolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/petition': {
       id: '/petition'
       path: '/petition'
       fullPath: '/petition'
       preLoaderRoute: typeof PetitionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/practice-policy': {
+      id: '/practice-policy'
+      path: '/practice-policy'
+      fullPath: '/practice-policy'
+      preLoaderRoute: typeof PracticePolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -634,6 +707,13 @@ declare module '@tanstack/react-router' {
       path: '/order/$id'
       fullPath: '/order/$id'
       preLoaderRoute: typeof OrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/aesthetics': {
@@ -743,11 +823,14 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   BookingRoute: BookingRoute,
   CartRoute: CartRoute,
+  CctvPolicyRoute: CctvPolicyRoute,
   CheckoutRoute: CheckoutRoute,
   ComplaintsPolicyRoute: ComplaintsPolicyRoute,
   ContactUsRoute: ContactUsRoute,
   CookiePolicyRoute: CookiePolicyRoute,
+  FaqRoute: FaqRoute,
   PetitionRoute: PetitionRoute,
+  PracticePolicyRoute: PracticePolicyRoute,
   PricingRoute: PricingRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
@@ -773,6 +856,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesVirtualDentistryRoute: ServicesVirtualDentistryRoute,
   ServicesWhiteningRoute: ServicesWhiteningRoute,
   ShopProductSlugRoute: ShopProductSlugRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

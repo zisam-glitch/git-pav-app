@@ -1,4 +1,5 @@
 import { Router, Response } from "express";
+import type { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "../lib/prisma";
 import { requireAuth, AuthRequest } from "../middleware/auth";
@@ -81,7 +82,7 @@ router.post("/grant", requireAuth, validateBody(grantConsentSchema), async (req:
         lawfulBasis,
         isGranted: true,
         ipAddress: serverIpHash,
-        metadata: (metadata as any) || {},
+        metadata: (metadata as Prisma.InputJsonValue | undefined) ?? {},
       },
     });
   });
@@ -195,7 +196,7 @@ router.get("/history", requireAuth, validateQuery(consentHistoryQuerySchema), as
     return res.status(404).json({ error: "Patient profile not found" });
   }
 
-  const whereClause: any = {
+  const whereClause: Prisma.ConsentRecordWhereInput = {
     patientProfileId: profile.id,
   };
 

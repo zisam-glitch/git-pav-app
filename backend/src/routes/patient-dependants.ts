@@ -11,6 +11,7 @@
 // ConsentRecord exists for this dependant.
 
 import { Router, Response } from "express";
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { requireAuth, AuthRequest } from "../middleware/auth";
@@ -187,7 +188,7 @@ router.patch("/:id", requireAuth, validateParams(dependantIdParamsSchema), valid
   }
 
   const { firstName, lastName, dob, relationship } = req.body;
-  const dataToUpdate: any = {};
+  const dataToUpdate: Prisma.DependantUpdateInput = {};
 
   if (firstName !== undefined) dataToUpdate.firstName = firstName;
   if (lastName !== undefined) dataToUpdate.lastName = lastName;

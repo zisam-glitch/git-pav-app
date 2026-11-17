@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import argon2 from "argon2";
 import crypto from "crypto";
 import { prisma } from "../lib/prisma";
@@ -60,7 +60,7 @@ async function issueEmailVerification(userId: string): Promise<{ token: string; 
   return { token, code };
 }
 
-const authLimiterMiddleware = (req: Request, res: Response, next: any) => {
+const authLimiterMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const limiter = req.app.get("authLimiter");
   if (typeof limiter === "function") return limiter(req, res, next);
   return next();

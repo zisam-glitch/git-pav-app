@@ -62,8 +62,8 @@ router.post("/register-token", requireAuth, validateBody(registerPushTokenSchema
     });
 
     return { id: pushToken.id, status: "registered", platform: pushToken.platform, httpStatus: 201 };
-  })().then((result: any) => {
-    if (result.error) {
+  })().then((result) => {
+    if ("error" in result) {
       return res.status(result.httpStatus).json({ error: result.error });
     }
     const { httpStatus, ...responseData } = result;

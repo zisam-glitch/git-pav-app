@@ -2,7 +2,7 @@ import { POSITION_STALE_MS } from "../lib/van-location";
 import crypto from "crypto";
 import argon2 from "argon2";
 import Stripe from "stripe";
-import { AppointmentStatus, CareChannel, Prisma } from "@prisma/client";
+import { AppointmentStatus, CareChannel, Prisma, UserRole } from "@prisma/client";
 import { Router, Response } from "express";
 import { env } from "../config/env";
 import { prisma } from "../lib/prisma";
@@ -107,10 +107,10 @@ router.get("/overview", requireAuth, requireRole("admin"), async (_req: AuthRequ
 // ─── GET /api/admin/users ─────────────────────────────────────────────────────
 // List all users with optional role filtering and search
 router.get("/users", requireAuth, requireRole("admin"), validateQuery(adminUsersQuerySchema), async (req: AuthRequest, res: Response) => {
-  const { role, search, page, limit } = req.query as unknown as { role?: string; search?: string; page: number; limit: number };
+  const { role, search, page, limit } = req.query as unknown as { role?: UserRole; search?: string; page: number; limit: number };
   const skip = (page - 1) * limit;
 
-  const whereClause: any = {};
+  const whereClause: Prisma.UserWhereInput = {};
   if (role) whereClause.role = role;
   if (search) {
     whereClause.OR = [
@@ -360,7 +360,7 @@ router.patch("/appointments/:id/status", requireAuth, requireRole("admin"), vali
 
   const updated = await prisma.appointment.update({
     where: { id: appointmentId },
-    data: { status: status as any },
+    data: { status: status as AppointmentStatus },
   });
 
   // Points for a completed visit (decisions log #14); a repeat is a no-op.

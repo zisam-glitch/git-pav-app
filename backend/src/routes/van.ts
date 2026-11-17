@@ -24,7 +24,7 @@ import {
   REQUEST_TIMEOUT_MS,
   roadRoute,
 } from "../lib/van-eta";
-import { clinicalRecordEncryptionService, decryptString } from "../lib/encryption";
+import { clinicalRecordEncryptionService, decryptString, type EncryptedData } from "../lib/encryption";
 import { haversineMetres, postcodeToCoordinates } from "../lib/geo";
 import { countOpenStops, loadShiftQueue, quoteBestVan, stopsAheadOf } from "../lib/van-quote";
 import { broadcastEtaUpdates, isMaterialDrift } from "../lib/van-eta-broadcast";
@@ -80,24 +80,39 @@ const roundCoordinate = (value: unknown) => (typeof value === "number" ? Math.ro
  * postcode cut to its sector; parking type stays because it decides
  * whether the van can take the job. Gate codes and notes are left out.
  */
-export function sanitizeIncomingRequest(request: any) {
+interface IncomingRequestInput {
+  patientLat: number;
+  patientLng: number;
+  patient?: { firstName: unknown; lastName: unknown } | null;
+  accessDetails?: Prisma.JsonValue | Record<string, unknown> | null;
+}
+
+export function sanitizeIncomingRequest<T extends IncomingRequestInput>(request: T) {
   const { accessDetails, ...sanitized } = request;
+  const details =
+    accessDetails && typeof accessDetails === "object" && !Array.isArray(accessDetails)
+      ? (accessDetails as Record<string, unknown>)
+      : null;
   // Initials only: the name is not needed to decide whether the van can take
   // the job, and the operator gets it once they accept (N16).
-  if (sanitized.patient) {
-    const initial = (name: unknown) => (typeof name === "string" && name.trim() ? `${name.trim()[0].toUpperCase()}.` : "");
-    sanitized.patient = { firstName: initial(sanitized.patient.firstName), lastName: initial(sanitized.patient.lastName) };
-  }
-  sanitized.patientLat = roundCoordinate(sanitized.patientLat);
-  sanitized.patientLng = roundCoordinate(sanitized.patientLng);
-  if (accessDetails) {
-    sanitized.accessDetails = {
-      parkingType: accessDetails.parkingType,
-      city: accessDetails.city,
-      postcode: postcodeSector(accessDetails.postcode),
-    };
-  }
-  return sanitized;
+  const initial = (name: unknown) => (typeof name === "string" && name.trim() ? `${name.trim()[0].toUpperCase()}.` : "");
+  return {
+    ...sanitized,
+    ...(sanitized.patient
+      ? { patient: { firstName: initial(sanitized.patient.firstName), lastName: initial(sanitized.patient.lastName) } }
+      : {}),
+    patientLat: roundCoordinate(sanitized.patientLat),
+    patientLng: roundCoordinate(sanitized.patientLng),
+    ...(details
+      ? {
+          accessDetails: {
+            parkingType: details.parkingType,
+            city: details.city,
+            postcode: postcodeSector(details.postcode),
+          },
+        }
+      : {}),
+  };
 }
 
 /**
@@ -134,29 +149,35 @@ function hideVanUnlessNext(request: { queuePosition: number | null; shift: { las
 /**
  * Decrypt sensitive fields in access details for authorized users
  */
-async function decryptAccessDetails(accessDetails: any): Promise<any> {
-  if (!accessDetails) return accessDetails;
-  
-  const decrypted = { ...accessDetails };
-  
-  if (accessDetails.gateCode && typeof accessDetails.gateCode === 'object') {
+async function decryptAccessDetails(accessDetails: Prisma.JsonValue | null): Promise<Prisma.JsonValue | null> {
+  if (!accessDetails || typeof accessDetails !== "object" || Array.isArray(accessDetails)) {
+    return accessDetails;
+  }
+
+  const decrypted: Prisma.JsonObject = { ...accessDetails };
+
+  if (accessDetails.gateCode && typeof accessDetails.gateCode === "object") {
     try {
-      decrypted.gateCode = await clinicalRecordEncryptionService.decryptField(accessDetails.gateCode);
+      decrypted.gateCode = await clinicalRecordEncryptionService.decryptField(
+        accessDetails.gateCode as unknown as EncryptedData
+      );
     } catch (error) {
       logger.error("Failed to decrypt gateCode", undefined, { error: safeError(error) });
-      decrypted.gateCode = '[ENCRYPTED]';
+      decrypted.gateCode = "[ENCRYPTED]";
     }
   }
-  
-  if (accessDetails.accessNotes && typeof accessDetails.accessNotes === 'object') {
+
+  if (accessDetails.accessNotes && typeof accessDetails.accessNotes === "object") {
     try {
-      decrypted.accessNotes = await clinicalRecordEncryptionService.decryptField(accessDetails.accessNotes);
+      decrypted.accessNotes = await clinicalRecordEncryptionService.decryptField(
+        accessDetails.accessNotes as unknown as EncryptedData
+      );
     } catch (error) {
       logger.error("Failed to decrypt accessNotes", undefined, { error: safeError(error) });
-      decrypted.accessNotes = '[ENCRYPTED]';
+      decrypted.accessNotes = "[ENCRYPTED]";
     }
   }
-  
+
   return decrypted;
 }
 

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { Router, Response } from "express";
+import { Prisma, ToothCondition } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 import { requirePatientRecordAccess, requireActiveAppointmentContext } from "../middleware/patient-access";
@@ -141,11 +142,11 @@ router.put("/:id/profile", requireAuth, validateParams(patientIdParamsSchema), v
   }
 
   // DB-3: Encrypt medicalHistory at rest
-  let storedMedicalHistory: any = undefined;
+  let storedMedicalHistory: Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput | undefined = undefined;
   if (medicalHistory !== undefined) {
     storedMedicalHistory = medicalHistory !== null
-      ? (isEncryptedEnvelope(medicalHistory) ? medicalHistory : await encryptField(medicalHistory))
-      : null;
+      ? ((isEncryptedEnvelope(medicalHistory) ? medicalHistory : await encryptField(medicalHistory)) as unknown as Prisma.InputJsonValue)
+      : Prisma.DbNull;
   }
 
   // CS-54 (CS-08): Check phone change verification
@@ -328,7 +329,7 @@ router.put("/:id/odontogram", requireAuth, validateParams(patientIdParamsSchema)
   });
 
   const encryptedTeeth = await Promise.all(
-    teeth.map(async (t: { toothNumber: number; arch: string; quadrant: string; condition: string; notes?: string }) => {
+    teeth.map(async (t: { toothNumber: number; arch: string; quadrant: string; condition: ToothCondition; notes?: string }) => {
       const encryptedNotes = t.notes ? JSON.stringify(await encryptField(t.notes)) : null;
       return { ...t, encryptedNotes };
     })
@@ -337,13 +338,13 @@ router.put("/:id/odontogram", requireAuth, validateParams(patientIdParamsSchema)
   const upserts = encryptedTeeth.map((t) =>
     prisma.toothRecord.upsert({
       where: { patientId_toothNumber: { patientId: profile.id, toothNumber: t.toothNumber } },
-      update: { condition: t.condition as any, notes: t.encryptedNotes },
+      update: { condition: t.condition, notes: t.encryptedNotes },
       create: {
         patientId: profile.id,
         toothNumber: t.toothNumber,
         arch: t.arch,
         quadrant: t.quadrant,
-        condition: t.condition as any,
+        condition: t.condition,
         notes: t.encryptedNotes,
       },
     })
@@ -357,7 +358,7 @@ router.put("/:id/odontogram", requireAuth, validateParams(patientIdParamsSchema)
         toothNumber: t.toothNumber,
         arch: t.arch,
         quadrant: t.quadrant,
-        condition: t.condition as any,
+        condition: t.condition,
         notes: t.encryptedNotes,
         appointmentId: appointmentId || null,
         recordedBy: clinician?.id || null,
@@ -375,7 +376,7 @@ router.put("/:id/odontogram", requireAuth, validateParams(patientIdParamsSchema)
     metadata: {
       patientId: profile.id,
       appointmentId: appointmentId || null,
-      teethUpdated: teeth.map((t: any) => ({ toothNumber: t.toothNumber, condition: t.condition })),
+      teethUpdated: encryptedTeeth.map((t) => ({ toothNumber: t.toothNumber, condition: t.condition })),
     },
   }).catch(logFailure("audit write patient.odontogram.updated"));
 

@@ -1,0 +1,290 @@
+Book Now
+Privacy Policy
+
+PRIVACY POLICY
+
+1. Introduction
+
+At Pav Dental, healthcare personnel, together with technical personnel, work jointly to develop and provide healthcare. For us at Pav Dental, you as an individual and as a patient always come first and this privacy notice (the "Privacy Notice") explains how we handle your personal data when you sign up to and use our App and when you seek healthcare or similar services from us (the "Services").
+
+We explain in more detail in this Privacy Notice how Pav Dental works for you as a "user" and "patient" and who is responsible for the processing of personal data, which is carried out in connection with your use of the Services. We also describe which personal data about you is processed when you use the Services, how we process the personal data, and why. We also describe the legal basis for our processing and external parties which may handle personal data about you in order for us to provide you with the Services. You also receive information about your rights in relation to the processing of your personal data and what you can do to exercise these rights.
+
+2. Who is responsible for the processing of personal data?
+
+Mars Purifier Ltd, company reg. no.12802623, is a British company that owns and makes available the "Pav Dental" technical platform and application (the "App") and is the data controller for the processing of the personal data, which you register in the App, up until the time at which you commence contact with a healthcare provider for medical advice and follow-up. When you seek healthcare from Pav Dental, it is solely established healthcare providers who are responsible for providing the healthcare, including the processing of personal data which is carried out in connection with providing you with healthcare. Healthcare Services typically starts when you give us information about your health status via a self assessment or pre-meeting questionnaire and include other activities such as the consultation, record keeping and necessary administration of your matter as further described below on this Privacy Notice.
+
+In the UK. it is Mars Purifier Ltd company reg. no.12802623, which provides healthcare within the Services (the "Healthcare Provider"), unless the identity of another healthcare provider is communicated to you in connection with your use of the Services. Therefore, when you start a consultation in the App, and for all subsequent processing of personal data related to provisioning of healthcare to you, Mars Purifier Ltd (or such other healthcare provider as is communicated to you, "Third Party Healthcare Provider" below) is the data controller. Where a Third Party Healthcare Provider provides you with healthcare, its privacy policy and not this Privacy Notice applies to their processing of your personal data which is carried out in the context of providing you with healthcare.
+
+When the Healthcare Provider or a Third Party Healthcare Provider is providing healthcare to you, Mars Purifier Ltd acts as a data processor for the processing of personal data necessary to provide the technical platform and related services. This means that data related directly to your consultation is only processed according to the instructions of the Healthcare Provider or Third Party Healthcare Provider or Third Party Healthcare provider. In the event another healthcare provider joins the Pav Dental platform and processes your personal data in connection to your use of the Services, we will inform you when you use the Services so that you always know which healthcare provider is the controller of your personal data.
+
+Contacts
+
+If you have any questions or comments regarding the processing of your personal data in connection with your use of the Services, you are always welcome to contact us and/or our data protection officer via our website at www.pavdental.com, or by sending an email to hello@pavdental.com.
+
+Data controller contact details:
+
+Pav Dental
+
+786 Leeds Road
+
+Bradford, England
+
+BD3 9TY
+
+Third Party Healthcare Providers
+
+The contact details of Third Party Healthcare Providers will be communicated to you before a consultation with such a provider.
+
+3. Where do we collect your personal data which is processed when you use the Services?
+
+3.1. Personal data which is registered via your user account in the App
+
+Mars Purifier Ltd and the Healthcare Provider process personal data about you, which you register via your account such as your name, gender, address, email address and picture (used for verification of identity) when you open your Pav Dental user account and, subsequently, any information you register when you use the App. If you add a child to your profile, we will collect such information about your child as well, including verification of your legal guardianship. In addition, Mars Purifier Ltd may collect and process the following information: (i) technical information, including IP address, login information, type and version of operating system and unit, time settings, language settings, cookies, etc.; and (ji). information about the Services we provide to you, such as how often you use the App, and which functionality you use within the App.
+
+Such information may also be collected through so-called cookies if you choose to accept them. You can find more information regarding our use of cookies in Pav Dental's Cookie Policy.
+
+These categories of personal data, which are provided when you download, sign up to and use the App, are referred to as "User Data" below.
+
+3.2. Personal data about your health
+
+When you seek healthcare from us, you are asked to share data linked to your physical and/or mental health. You do this primarily by filling in the relevant symptoms form in the App. This information may include, but is not limited to, information that you are suffering from an illness, your medical history, or your physiological or medical condition. We refer to this information as
+
+"Health Data".
+
+If you are using the NHS Service or the Boots NHS Service (as defined in the Terms and Terms and Conditions), Healthcare provider will use such Health Data to schedule a consultation for you with relevant healthcare staff (or Third Party Healthcare Providers) and to inform such staff ahead of your consultation, and to otherwise direct you to an appropriate form of care.
+
+3.3. Personal data processed by the Healthcare Provider
+
+The Healthcare Provider will collect and process information about you when you try to book an appointment in order to ensure secure identification and verification of parental responsibility before providing you or your child with healthcare services, such personal data is referred to below as "Identification Data". This may include e.g. collecting photographs or copies of identification documents.
+
+The Healthcare Provider may also collect other information about you, such as information about you in the context of consulting and treating you as a patient. This may for example include data about your health status, symptoms, treatments, consultations and sessions, medications and procedures. Personal data related to your health or to you as a patient which is used by the Healthcare Provider to provide you with healthcare services is referred to below as "Patient Data".
+
+The Healthcare Provider may disclose Patient Data in the context of providing healthcare and/or relevant medical treatment, for example when referring you to another healthcare provider or to pharmacies for the purpose of your treatment or administering prescriptions.
+
+3.4. Personal data from third parties including other healthcare providers
+
+The Healthcare Provider may also receive Patient Data relating to the healthcare you have received from other healthcare providers who are not associated with the Healthcare Provider or from your insurance company (see section 7.4 below). In the event this data is considered relevant to the provision of healthcare within the scope of the Services, it may be saved and processed by the Healthcare Provider and entered in your medical records by the clinician who is treating you.
+
+4. Where is your personal data stored?
+
+User Data, Identification Data and Health Data
+
+This personal data is stored by Mars Purifier Ltd, in infrastructure provided by one of Mars Purifier Ltd’s subcontracted processors. User Data is handled and stored primarily within the UKand EU/EEA. Health Data is always handled and stored within the Ukand EU/EEA.
+
+Patient Data
+
+The Healthcare Provider is obligated to maintain medical records when performing the Services. It stores relevant Patient Data in a medical record system (specifically developed in order to fulfil the requirements of the applicable legislation) which is operated on its behalf by a third party service provider. Your Patient Data is handled and stored within the Ukand EU/EEA.\
+
+5. Why personal data is processed when you use Pav Dental
+
+5.1. Mars Purifier Ltd's processing of your User Data
+
+Mars Purifier Ltd processes your User Data (as described above in section 3.1) for the following purposes:
+
+i) to process your application or terminate your user account in the App;
+
+(i) to provide you with authorization to login and use your user account;
+
+(iii) to verify your identity, age and guardianship;
+
+(iv) to maintain correct and up-to-date information about you;
+
+(v) for you to be able to monitor and administer ongoing care matters;
+
+(vi) to measure and analyse use of the App, and to improve the App and the Services;
+
+(vii) to handle your choice of settings and information about payment; and
+
+(viii) to otherwise be able to provide the Services to you according to our General Terms and Conditions.
+
+The legal basis for processing your User Data is that it is necessary for us to be able to provide you with the Services, and for the Healthcare Provider's provision of good care in connection with your use of the Services. We need to process your User Data for the performance of the contract between us, which constitutes our General Terms and Conditions. The processing for the purposes of (vi) above is based on our legitimate interest to measure and analyse use of the App, and to improve the App and the Services we provide to you.
+
+5.2. The Healthcare Provider’s processing of your Patient Data to provide healthcare services
+
+The Healthcare Provider processes Identification Data (as described above in section 3.3) for the purpose of secure identification and validation of parental responsibility before providing the Services to you.
+
+The Healthcare Provider processes Patient
+
+Data (as described above in section 3.3) for the purpose of providing the Services to you in the form of healthcare and other necessary treatment, advice or administration, such as support for the clinicians within the scope of providing the healthcare itself.
+
+The Healthcare Provider needs to process your Identification Data and Patient Data for the performance of its contract with you. The legal basis for the Healthcare Provider's processing of your Patient Data is that it is necessary for the purposes of preventive or occupational medicine, for medical diagnosis and the provision of health or social care. This may include sending you emails and other electronic communications, such as appointment reminders.
+
+In addition, where you are a patient registered in England, you may have an NHS Summary Care Record (SCR). An SCR is an electronic record of important patient information, created from DENTIST medical records. In addition to containing demographic information such as your name and address, your SCR will also contain key information about the medicines you are taking, allergies you suffer from and any adverse reactions to medicines you have had in the past. If the Healthcare Provider seeks access to your SCR for clinical safety reasons, it will ask for your permission.
+
+The Healthcare Provider's business operations are governed by national legislation. It therefore also sometimes processes your personal data in accordance with applicable law and as necessary to fulfil the legal obligations of the Healthcare Provider. This includes that the Healthcare Provider's clinicians keep medical records, which the Healthcare Provider is obligated to save for a particular period of time. The Healthcare Provider also stores your medical information, such as notes from consultations, and your interactions with it for safety, regulatory, and compliance purposes. For example, it may need to review your information and, where necessary, make disclosures in compliance with reasonable requests by regulatory bodies including the Care Quality Commission, or as otherwise required by law or regulation.
+
+The Healthcare Provider, as the data controller of your Patient Data, may use Mars Purifier Ltd as a data processor to process Patient Data on its behalf to ensure that high standards of healthcare are maintained. For example, Mars Purifier Ltd may process your Patient Data to analyse the efficiency of the Services, to ensure that applicable clinical and other guidelines are followed and to follow up on any issues identified with our Services.
+
+5.3. Provision of support services related to your use of the Services
+
+Mars Purifier Ltd and the Healthcare Provider provide support as set forth above as a part of the Services (i.e. necessary to perform the contract with you and Mars Purifier Ltd), which may involve responding to inquiries and investigating complaints and support matters (including technical support) through our support service by telephone or via our digital channels. To the extent the support services are related to care or processing of Patient Data (or sensitive personal data about you), the processing is carried out by the Healthcare Provider and takes place in order to provide you with healthcare as part of the Services and ensure high standards of quality of healthcare.
+
+5.4. To market products and services and improve your user experience
+
+Mars Purifier Ltd processes some of your User Data (as described above in section 3.1) for the purposes of providing you with news, updates and promotional content by email and text messages and other electronic communications channels, such as push notifications and in-App messages. Such communications may be based on what Mars Purifier Ltd knows about you as a user and its understanding of how you use the App and the Services, for example which features you tend to use, and which prior communications you have showed an interest in, searches you have made, your various contacts with the Healthcare Provider, as well as basic demographic and geographic data about you, such as your age, gender and the region in which you reside. However, Health Data is not used for such communication unless you have provided explicit consent to receive communication related to your health.
+
+When Mars Purifier Ltd contacts you for marketing-related purposes, any processing of your personal data is based on it being in its legitimate interests to do so. KRY
+
+International's legitimate interests include. communication related to your health.
+
+When Mars Purifier Ltd contacts you for marketing-related purposes, any processing of your personal data is based on it being in its legitimate interests to do so. KRY
+
+International's legitimate interests include the provision of an online service enabling easy access to healthcare professionals for therapeutic purposes. Moreover, it sends marketing-related emails and text messages on the basis of the so-called 'soft opt-in'; that is, that Mars Purifier Ltd obtained your contact details when you first registered with the App, that it is only sending emails and texts regarding the same or similar services, and that you were offered an opportunity to opt-out of such emails at the time. In addition, you may opt out of receiving marketing-related communications from Mars Purifier Ltd at any time by updating your preferences in your account settings. As described above, any communication related to your health will only be sent based on your explicit consent.
+
+5.5. To perform legal obligations
+
+Mars Purifier Ltd and the Healthcare Provider may also process your User Data, Health Data and Patient Data (as described above in sections 3.1 - 3.3) to the extent necessary to fulfil their legal obligations in the field of healthcare and as otherwise set forth in statutes, court judgments, or decisions by public authorities.
+
+5.6. To be able to evaluate, develop and improve the quality of Services
+
+Mars Purifier Ltd and the Healthcare Provider may process your User Data for the purpose of developing and improving the Services and the IT systems used to provide the Services. This is done on the basis of our legitimate interests in continually improving the security and our handling of personal data, to make the App more user-friendly, for example by changing and personalising the user interface in order to simplify the user journey, or to highlight and improve functions which we deem relevant to our users. All other development of our Services takes place using anonymised data.
+
+The Healthcare Provider will only process your Patient Data for the purpose of providing the Services, to be able to ensure high standards of quality in healthcare, and to provide healthcare in accordance with applicable legislation and as described in section 5.2 above.
+
+6. How long do we keep your personal data?
+
+Mars Purifier Ltd and the Healthcare Provider only process your personal data as long as is necessary for the purposes for which the information in question is processed according to section 5 above. This means we keep it as long as it is necessary in order for the Healthcare Provider to be able to provide good care or otherwise for Mars Purifier Ltd and/or the Healthcare Provider to be able to provide the Services, or in order to fulfil our legal obligations. Your NHS summary care records is only viewed temporarily during your consultation and is not retained following the completion of your consultation by the Healthcare Provider or
+
+Mars Purifier Ltd.
+
+Patient Data
+
+The Healthcare Provider has legal obligations to save medical records connected to healthcare meetings with you for a specific period of time. It retains your Patient Data no longer than necessary for the purposes described in this Notice and has processes in place for how it stores or anonymises personal data.
+
+User Data and Health Data
+
+Your User Data is erased or anonymised not later than six (6) months from the time at which you close your Pav Dental user account, provided it is not necessary to save the personal data in order for us to fulfil our legal obligations or where the information is otherwise necessary in order to establish, exercise or defend legal claims.
+
+In addition, where your User Data is processed by us on the basis of your consent we will delete or anonymise your data if you withdraw your consent. Further details are set out in section 9.
+
+After the purpose of the information has been fulfilled, all information is anonymised or erased automatically.
+
+7. Third parties with whom your personal data may be shared when you use the Services
+
+7.1. Subcontractors of Mars Purifier Ltd
+
+In order for Mars Purifier Ltd to be able to offer you the Services, it uses external suppliers that process personal data in certain cases, for example, IT service providers, such as operating and hosting providers. These service providers process personal data in the capacity of data processors on behalf of Mars Purifier Ltd, for the sole purpose of providing the services requested by Mars Purifier Ltd, and only according to Mars Purifier Ltd's instructions.
+
+Mars Purifier Ltd also retains the services of suppliers who work independently and who, in this way, are independently responsible for the processing of your personal data, such as providers of payment solutions. Where applicable, you will be requested to enter into separate agreements directly with such suppliers. We ask you to please note that this Privacy Notice does not apply to the processing of personal data which takes place through these suppliers. For information regarding how other suppliers process your personal data, please contact these suppliers.
+
+7.2. Subcontractors of Healthcare Provider
+
+The Healthcare Provider keeps medical records in accordance with applicable legislation in conjunction with the provision of healthcare within the scope of the Services. The medical records are saved in a medical record system (EMR) outside of the App which is provided by a third party services provider based in the EU/EEA. The service provider is not allowed to access your information except as strictly necessary to provide the EMR to the Healthcare Provider and only in accordance with Healthcare Providers written instructions. The Healthcare Provider is responsible for any personal data Patient Data) which is stored in such medical records systems.
+
+The Healthcare Provider uses a third party service provider to provide secure identification of patients when providing healthcare services. The third party service provider will not process any Health data or Patient data.
+
+7.3. Other healthcare providers
+
+The Healthcare Provider may disclose Patient Data in the context of providing healthcare and/or relevant medical treatment, for example when referring you to another healthcare provider or to pharmacies for the purpose of your treatment or administering prescriptions. The Healthcare Provider will also share a discharge summary (a summary of the care you received from the Healthcare Provider) with your registered Dentist following completion of a consultation. If you are using the Pay-as-you-go Service (as described in the Terms and Conditions), you can request that a discharge summary is not sent, however, in certain circumstances the Dentist may insist upon this. You will always be informed of sharing described in this section 7.3 in connection with your consultation with the Healthcare Provider.
+
+7.4. Employers and insurance companies
+
+You may receive healthcare services from the Healthcare Provider as a benefit under an insurance contract with your insurer. This may include digital Dental or Dental consultations and/or telephone advice line services.
+
+Digital Dental consultations is a healthcare service, where a Dentist will examine your symptoms and medical condition and provide you with medical advice, treatment plan, prescription, etc. As part of receiving digital Dentist consultations healthcare services, your insurer may provide the Healthcare Provider with certain personal information about you (and, if applicable, your child), including insurer membership and personal information, including details of your insurance. In the course of providing healthcare services to you as part of such arrangement, the Healthcare Provider will also collect relevant User Data and Patient Data such as date, time and duration of consultation, your SCR (see description in section 5.2 above), and, information about your or your child's health, wellness, medical condition, medication, treatment, therapies, complaints and investigations, as well as outcomes of consultations such as diagnosis, medical advice, referrals and prescriptions.Such information may be used for direct care purposes, including
+
+⁃ ﻿﻿to provide you or your child with digital healthcare consultations,
+
+⁃ ﻿﻿to give you medical advice and recommend treatment to you or your child, including prescription, referral, sick note or medical investigations, and
+
+⁃ ﻿﻿to conduct other healthcare related tasks, including clinical audit, quality assurance and incident management.
+
+⁃
+
+Telephone advice line is a way to get in touch with medical staff at the Healthcare Provider, primarily for the purpose of getting quick healthcare advice and to refer you to the right level of care. If you get in touch via an advice line, we will make notes about your conditions and the medical advice we provide to you. We may also record the call, but if we do so you will always be notified in advance. Additionally, we will collect some basic personal data about you, including your name and date of birth, and your SCR (if we get vour prior permission) Your information will be used for the purposes set forth above in this paragraph and to enable us to handle incidents, conduct clinical audits and follow-ups and for similar care related tasks. We will also generate aggregated statistics about how the advice line is used and by which categories of patients.The Healthcare Provider's legal basis for collecting and processing your personal information as described above in this section 7.4 is to perform the contract with you and to comply with legal obligations (GDPR, article 6.1 b and c) and because it is necessary for preventive or occupational medicine purposes (GDPR, article 9.2 h).
+
+Healthcare Provider as data processor Where required and for the purpose of enabling your insurer to administer referrals, prescriptions, your membership or for your insurer to help you access your membership benefits, the Healthcare Provider will receive some of your information from your insurer. This includes membership details such as membership plan and policy details, previous claims, and personal details, including name, address and contact details. Following a consultation, such information will be shared back to your insurer along with information on your consultation, including date and time of consultation and medical notes from the consultation, which may include information about you or your child's health, wellness, medical condition, medication, treatment, therapies, complaints and investigations. We may also share statistics on advice line calls, including outcome of calls (advice, referral, etc), length of call and waiting time. The Healthcare Provider will collect and share such information in the capacity of data processor for your insurer. This means that it is the responsibility of your insurer (not the Healthcare Provider) to make sure there is a legal basis for such processing, such as obtaining your prior explicit consent. Prior to booking a consultation with the Healthcare Provider you will always be informed that sharing with your insurer may take place.
+
+Note that this Privacy Notice does not apply to the processing of personal data which is carried out by your insurer following receipt of such information from the Healthcare Provider. For more information about how your insurer processes your personal data, please contact your insurer.
+
+If you have been referred to us by your employer as part of an employee health program or similar, we will act as the data controller of any data we receive. We do not disclose any personal data regarding potential use of the PAV DENTALApp or your consultations with your employer other than in anonymous and aggregate format.
+
+8. Transfers to third countries
+
+Mars Purifier Ltd and the Healthcare Provider primarily use IT suppliers for operating services within the UK and the EU/EEA. However, Mars Purifier Ltd and the
+
+Healthcare Provider will occasionally transfer your User Data outside the UK and EU/EEA,.
+
+Transfers of personal data take place to countries outside the UKand EU/EEA only if the transfer is lawful according to the applicable data protection legislation regarding the protection of your privacy in the recipient country with reference to: (i) the
+
+EU Commission's decision regarding adequate levels of protection; (ii) application of the EU Commission's standard contract clauses for transfers to third parties and abbrobriate subblementarv measures where necessary; or (iii) other applicable safeguards in order to fulfil applicable data protection legislation.
+
+9. How do we protect your personal data?
+
+You should always be able to feel safe when you trust us with your personal data. We have therefore taken appropriate security measures to protect your personal data against unauthorised access, alteration and deletion. If there are security incidents that may affect you or your personal data in a more significant way, e.g. when there is a risk of fraud or identity theft, we will contact you to inform you about what has happened, the actions we have taken and what you can do to reduce the risk.
+
+10. Your rights as a data subject in the App and user of the Services
+
+You have a number of rights related to personal data we have about you. We are obliged to respond to your request to exercise your rights within one month of submission. If your request is complicated or if a large number of requests have been received, we have the right to extend the period by two further months. If we believe that we cannot fulfil your request, we will notify you within one month of receiving your request about our reasoning.
+
+All information, communication and all measures we carry out are free of charge for you. If, on the other hand, what you request due to your rights is manifestly unfounded or excessive, we have the right to charge an administrative fee to provide you with the information or carry out the requested action, or refuse to act on your request.
+
+You may at any time contact us in order to:
+
+- request access to, and information about, the personal data which is being processed in conjunction with your use of the App and/or the Services;
+
+- ask us to correct an incorrect or incomplete information about you;
+
+- request that your personal data be erased (however, we ask you here to note that this right is limited and Healthcare Providers have certain obligations by law to save certain personal data, particularly related to Patient Data, including keeping medical records in connection to use of the Services). At your request, all Patient Data which we do not have a legal obligation to retain will be erased;
+
+- ask us to restrict the processing of your personal data temporarily or temporarily where you believe such data to be inaccurate; our processing is unlawful; or we no longer need to process such data for a particular purpose unless we are not able to delete the data due to a legal or other obligation or because you do not wish for us to delete it;
+
+- object to the processing of your personal data where the legal justification for our processing of your personal data is our legitimate interest. We will abide by your request unless we have compelling legitimate grounds for the processing which override your interests and rights, or if we need to continue to process the data for the establishment, exercise or defence of a legal claim;
+
+- If we use your personal data on the basis of your consent, you have the right to withdraw your consent at any time, free of charge. This includes where you wish to opt out from marketing messages. Withdrawal of consent does not affect the Healthcare Provider's obligation to keep medical records, or to process your personal data in accordance with applicable law; or
+
+- request that your personal data be moved to another controller of personal data by receiving your personal data, to the extent it has been provided by you, in an electronic format which is generally used in order to be able to transfer it to another party (the right of data portability).
+
+- request to not be subject to a decision based solely on automated decision making, including profiling, where the decision would have a legal effect on you or produce a similarly significant effect.
+
+Should you wish to contact us regarding any of the rights above, we encourage you to contact us via our website, or by sending an email to hello@pavdental.com. If you have a request related to the processing of your personal data by a Third Party Healthcare Provider, please contact it directly.
+
+11. Your rights as a patient
+
+As well as your rights as a data subject under data protection law in the UK, you may also have certain rights as a patient.
+
+This includes your right to object to the sharing of your confidential medical data with others who are providing your care. If you exercise this right, our healthcare professionals can explain the potential impact of your objection on your care including, for example, not being able to refer you to a specialist or arrange further treatment.
+
+12. Right to file a complaint with the Data Protection Authority
+
+With this Privacy Notice we truly hope that we have made it clear to you how we handle your personal data. However, should you still have any questions, please feel free to contact us via the contact details provided in Section 9 above. We would also like to inform you that, should you believe that the processing of your personal data is incorrect or does not comply with legal requirements, you have the right to file a complaint with (a) the Information Commissioner's Office if you are based in, or the issue relates to, the UK, or (b) the relevant Data Protection Authority if you are based in, or the issue you would like to complain about took place, elsewhere in the European Economic Area (EEA).
+
+The Information Commissioner's Office can be contacted as follows:
+
+Telephone: +44 0303 123 1113
+
+Email: casework@ico.org.uk
+
+Website: www.ico.org.uk
+
+Web-form:www.ico.org.uk/make-a-complaint/.
+
+Address: Water Lane, Wycliffe House, Wilmslow, Cheshire, SK9 5AF
+
+If you are based in, or the issue you would like to complain about took place elsewhere in the European Economic Area (EEA), a list of local data protection authorities in the other EEA countries is available here.
+
+Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine check-ups, and advanced technologies like digital imaging and laser dentistry.
+Quick Links
+Home
+About
+Services
+Pricing
+Contact
+Team
+Vacancies
+Blogs
+Contacts
+786 Leeds Road, Bradford,
+BD3 9TY
+hello@pavdental.com
+0800 1938 786
+44 7311 871456
+Copyright 2026. Design by
+Privacy Policy
+Terms & Conditions
+Cookie Policy
+CCTV Policy
+GDPR
+Sitemap
+Practice Policy
+Complaints Policy

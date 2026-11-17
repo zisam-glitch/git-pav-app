@@ -1,0 +1,199 @@
+// Helpers for scripts/seo-snapshot.mjs, which records what search engines see
+// on a site so a new build can be checked against it before the domain moves.
+// Everything here is a pure function except extractPageSeo, which runs inside
+// the page and so must not reference anything outside its own body.
+import { createHash } from "node:crypto";
+
+/** Paths with these endings are files, not pages: kept as links, never rendered. */
+const FILE_PATH =
+  /\.(?:pdf|jpe?g|png|gif|webp|avif|svg|ico|mp4|webm|mov|mp3|zip|docx?|xlsx?|pptx?|csv|txt|xml|json|js|css|woff2?)$/i;
+
+/**
+ * Hosts a snapshot never contacts: analytics and ad beacons, so a crawl is not
+ * counted as visits to the practice, and video embeds, which are slow and add
+ * nothing a search engine reads from the page itself.
+ */
+const BLOCKED_HOSTS = [
+  "google-analytics.com",
+  "googletagmanager.com",
+  "doubleclick.net",
+  "facebook.net",
+  "facebook.com",
+  "analytics.tiktok.com",
+  "clarity.ms",
+  "hotjar.com",
+  "youtube.com",
+  "youtube-nocookie.com",
+  "ytimg.com",
+  "googlevideo.com",
+];
+
+/** Images, video and fonts are skipped too: their URLs and alt text stay in the page. */
+const BLOCKED_TYPES = new Set(["image", "media", "font"]);
+
+export function shouldBlockRequest(url, resourceType) {
+  if (BLOCKED_TYPES.has(resourceType)) return true;
+  let host;
+  try {
+    host = new URL(url).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  return BLOCKED_HOSTS.some((blocked) => host === blocked || host.endsWith(`.${blocked}`));
+}
+
+/** "www.pavdental.com" and "pavdental.com" are the same site. */
+export function bareHost(hostname) {
+  return String(hostname).toLowerCase().replace(/^www\./, "");
+}
+
+/** One spelling per page: no repeated slashes and no trailing slash (except "/"). */
+export function normalizePath(pathname) {
+  let path = String(pathname || "/");
+  if (!path.startsWith("/")) path = `/${path}`;
+  path = path.replace(/\/{2,}/g, "/");
+  if (path.length > 1) path = path.replace(/\/+$/, "");
+  return path || "/";
+}
+
+/**
+ * The page path a link points to on `origin`'s site, or null when the link
+ * leaves the site, is not http(s) (mailto:, tel:) or points at a file. The
+ * query string and #fragment are dropped: the live site does not use them for
+ * separate pages.
+ */
+export function internalPath(href, origin) {
+  let url;
+  try {
+    url = new URL(href, origin);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+  if (bareHost(url.hostname) !== bareHost(new URL(origin).hostname)) return null;
+  if (FILE_PATH.test(url.pathname)) return null;
+  return normalizePath(url.pathname);
+}
+
+/** A file name for a path: "/" is "home", "/services/whitening" is "services--whitening". */
+export function slugForPath(path) {
+  const normalized = normalizePath(path);
+  if (normalized === "/") return "home";
+  return normalized
+    .slice(1)
+    .replace(/\//g, "--")
+    .replace(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+/** Page text with spaces collapsed and blank lines squeezed, so diffs show real changes only. */
+export function normalizeText(text) {
+  const lines = String(text ?? "")
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((line) => line.replace(/[ \t\u00a0]+/g, " ").trim());
+  return lines
+    .filter((line, i) => line !== "" || (i > 0 && lines[i - 1] !== ""))
+    .join("\n")
+    .trim();
+}
+
+export function wordCount(text) {
+  const words = normalizeText(text).match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu);
+  return words ? words.length : 0;
+}
+
+export function textHash(text) {
+  return createHash("sha256").update(normalizeText(text)).digest("hex").slice(0, 16);
+}
+
+/** The <loc> URLs of a sitemap, in document order. */
+export function sitemapLocs(xml) {
+  return Array.from(String(xml ?? "").matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g), (m) => m[1]);
+}
+
+/**
+ * Proxy settings for Playwright from the usual environment variables. A
+ * sandbox or corporate network may only allow traffic through a proxy; CI
+ * sets none, and this returns undefined there.
+ */
+export function proxyFromEnv(env = process.env) {
+  const raw =
+    env.HTTPS_PROXY || env.https_proxy || env.HTTP_PROXY || env.http_proxy || env.ALL_PROXY || env.all_proxy;
+  if (!raw) return undefined;
+  let url;
+  try {
+    url = new URL(raw);
+  } catch {
+    return undefined;
+  }
+  const proxy = { server: `${url.protocol}//${url.host}` };
+  if (url.username) proxy.username = decodeURIComponent(url.username);
+  if (url.password) proxy.password = decodeURIComponent(url.password);
+  const bypass = env.NO_PROXY || env.no_proxy;
+  if (bypass) proxy.bypass = bypass;
+  return proxy;
+}
+
+/**
+ * Runs inside the page, after JavaScript (the live site sets its tags with
+ * react-helmet, so the raw HTML has none of them). Collects everything a
+ * search engine reads: tags, structured data, headings, links, images, text.
+ * Every tag is listed, not just the first, so duplicates show up.
+ */
+export function extractPageSeo() {
+  const clean = (value) =>
+    String(value ?? "")
+      .replace(/\s+/g, " ")
+      .trim();
+  const contents = (selector) =>
+    Array.from(document.querySelectorAll(selector), (el) => el.getAttribute("content")).filter(
+      (value) => value !== null,
+    );
+  const firstByKey = (selector, keyAttr) => {
+    const out = {};
+    for (const el of document.querySelectorAll(selector)) {
+      const key = el.getAttribute(keyAttr);
+      if (key && !(key in out)) out[key] = el.getAttribute("content");
+    }
+    return out;
+  };
+  const absolute = (value) => {
+    if (!value) return null;
+    try {
+      return new URL(value, location.href).href;
+    } catch {
+      return value;
+    }
+  };
+  return {
+    title: document.title,
+    // Only the head's <title>: icons drawn as inline SVG carry <title> elements too.
+    titles: Array.from(document.head.querySelectorAll("title"), (t) => clean(t.textContent)),
+    descriptions: contents('meta[name="description"]'),
+    canonicals: Array.from(document.querySelectorAll('link[rel="canonical"]'), (link) =>
+      absolute(link.getAttribute("href")),
+    ),
+    robots: contents('meta[name="robots"]'),
+    lang: document.documentElement.getAttribute("lang"),
+    og: firstByKey('meta[property^="og:"]', "property"),
+    twitter: firstByKey('meta[name^="twitter:"]', "name"),
+    jsonLd: Array.from(document.querySelectorAll('script[type="application/ld+json"]'), (script) => {
+      try {
+        return JSON.parse(script.textContent || "");
+      } catch {
+        return { unparsable: clean(script.textContent).slice(0, 200) };
+      }
+    }),
+    h1: Array.from(document.querySelectorAll("h1"), (h) => clean(h.textContent)).filter(Boolean),
+    h2: Array.from(document.querySelectorAll("h2"), (h) => clean(h.textContent)).filter(Boolean),
+    links: Array.from(document.querySelectorAll("a[href]"), (a) => ({
+      href: absolute(a.getAttribute("href")),
+      text: clean(a.textContent).slice(0, 120),
+    })),
+    images: Array.from(document.querySelectorAll("img"), (img) => ({
+      src: absolute(img.getAttribute("src")),
+      alt: img.getAttribute("alt"),
+    })),
+    bodyText: document.body ? document.body.innerText : "",
+  };
+}

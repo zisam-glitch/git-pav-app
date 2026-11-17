@@ -1,0 +1,22 @@
+Personal info
+
+Please provide your name, email address, and other information.
+
+Title
+Full Name
+Date of Birth (DD MM YYYY)
+What is your sex as recorded on your NHS record?
+Select
+Female
+Male
+Intersex
+Not specified or known
+NHS Number (if you have it)
+Name of UK GP surgery you registered with
+Home phone number
+Mobile phone number
+Email Address
+Name of emergency contact
+Phone number of emergency contact
+Their relationship to you
+Next Step

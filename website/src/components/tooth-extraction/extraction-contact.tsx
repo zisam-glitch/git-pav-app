@@ -1,17 +1,13 @@
-import React, { useState } from "react";
 import { Send, CheckCircle2, Phone, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { PRACTICE_HOURS } from "@/lib/enquiry";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function ExtractionContact() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+  const enquiry = useEnquiry("Tooth extraction");
 
   return (
     <section className="py-20 sm:py-28 bg-[#faf6f0] border-t border-[#e2d4c0]">
@@ -31,7 +27,7 @@ export function ExtractionContact() {
               {[
                 { icon: Phone, label: "0800 1938 786", sub: "24h emergency line" },
                 { icon: MapPin, label: "786 Leeds Road, Bradford, BD3 9TY", sub: "Clinic address" },
-                { icon: Clock, label: "Mon–Sat 8am – 7pm · Sun 10am – 4pm", sub: "Opening hours" },
+                { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex items-start gap-4">
                   <div className="size-10 rounded-lg bg-white border border-[#e2d4c0] flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -48,7 +44,7 @@ export function ExtractionContact() {
 
           {/* Right — form */}
           <div className="bg-white rounded-xl border border-[#e2d4c0] shadow-sm p-8">
-            {submitted ? (
+            {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
                 <CheckCircle2 className="size-12 text-emerald-500" />
                 <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
@@ -59,14 +55,14 @@ export function ExtractionContact() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={enquiry.reset}
                   className="text-xs text-[#925a27] underline mt-2"
                 >
                   Send another message
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={enquiry.submit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="te-name" className="text-sm font-semibold text-[#2a1c12]">
@@ -74,6 +70,7 @@ export function ExtractionContact() {
                     </Label>
                     <Input
                       id="te-name"
+                      name="name"
                       placeholder="e.g. John Doe"
                       required
                       className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
@@ -85,6 +82,7 @@ export function ExtractionContact() {
                     </Label>
                     <Input
                       id="te-email"
+                      name="email"
                       type="email"
                       placeholder="john@example.com"
                       required
@@ -100,6 +98,7 @@ export function ExtractionContact() {
                     </Label>
                     <Input
                       id="te-subject"
+                      name="subject"
                       placeholder="Emergency Extraction Query"
                       className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
                     />
@@ -110,6 +109,7 @@ export function ExtractionContact() {
                     </Label>
                     <Input
                       id="te-phone"
+                      name="phone"
                       type="tel"
                       placeholder="+44 7700 900077"
                       className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
@@ -123,18 +123,25 @@ export function ExtractionContact() {
                   </Label>
                   <Textarea
                     id="te-message"
+                    name="message"
                     placeholder="Tell us about the tooth causing discomfort, swelling, or pain level..."
                     className="min-h-28 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                     required
                   />
                 </div>
 
+                {enquiry.error && (
+                  <p role="alert" className="text-sm text-red-700">
+                    {enquiry.error}
+                  </p>
+                )}
                 <Button
                   type="submit"
+                  disabled={enquiry.sending}
                   className="accent-gradient rounded-full px-8 h-11 text-white font-bold shadow-sm hover:opacity-95 transition-opacity"
                 >
                   <Send className="mr-2 size-4" />
-                  Send Message
+                  {enquiry.sending ? "Sending…" : "Send Message"}
                 </Button>
               </form>
             )}

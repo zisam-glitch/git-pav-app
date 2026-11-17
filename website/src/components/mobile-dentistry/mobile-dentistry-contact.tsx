@@ -1,7 +1,9 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function MobileDentistryContact() {
+  const enquiry = useEnquiry("Mobile dentistry");
+
   return (
     <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -15,7 +17,18 @@ export function MobileDentistryContact() {
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <form className="space-y-6">
+          {enquiry.sent ? (
+            <div role="status" className="text-center py-10">
+              <h3 className="font-display text-2xl font-bold text-[#2a1c12]">Message received</h3>
+              <p className="mt-3 text-sm text-[#6b5848]">
+                Thank you. Your message has reached the practice, and the team will get back to you.
+              </p>
+              <button type="button" onClick={enquiry.reset} className="text-xs text-[#925a27] underline mt-4">
+                Send another message
+              </button>
+            </div>
+          ) : (
+          <form onSubmit={enquiry.submit} className="space-y-6">
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-[#2a1c12] mb-2">
@@ -87,13 +100,20 @@ export function MobileDentistryContact() {
               />
             </div>
 
+            {enquiry.error && (
+              <p role="alert" className="text-sm text-red-700">
+                {enquiry.error}
+              </p>
+            )}
             <Button
               type="submit"
+              disabled={enquiry.sending}
               className="w-full accent-gradient text-white rounded-full px-8 py-4 font-bold shadow hover:opacity-95"
             >
-              Send Message
+              {enquiry.sending ? "Sending…" : "Send Message"}
             </Button>
           </form>
+          )}
         </div>
       </div>
     </section>

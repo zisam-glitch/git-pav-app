@@ -1,17 +1,13 @@
-import React, { useState } from "react";
 import { Send, CheckCircle2, Phone, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { PRACTICE_HOURS } from "@/lib/enquiry";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function CosmeticContact() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+  const enquiry = useEnquiry("Cosmetic dentistry");
 
   return (
     <section id="contact" className="py-20 sm:py-28 bg-[#faf6f0] border-t border-[#e2d4c0]">
@@ -30,7 +26,7 @@ export function CosmeticContact() {
               {[
                 { icon: Phone, label: "0800 1938 786", sub: "Clinic consultation line" },
                 { icon: MapPin, label: "786 Leeds Road, Bradford, BD3 9TY", sub: "Practice address" },
-                { icon: Clock, label: "Mon–Sat 8am – 7pm · Sun 10am – 4pm", sub: "Opening hours" },
+                { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex items-start gap-4">
                   <div className="size-10 rounded-lg bg-white border border-[#e2d4c0] flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -47,7 +43,7 @@ export function CosmeticContact() {
 
           {/* Right: Solid white form card */}
           <div className="bg-white rounded-xl border border-[#e2d4c0] shadow-sm p-8">
-            {submitted ? (
+            {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
                 <CheckCircle2 className="size-12 text-emerald-500" />
                 <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
@@ -58,14 +54,14 @@ export function CosmeticContact() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={enquiry.reset}
                   className="text-xs text-[#925a27] underline mt-2"
                 >
                   Send another message
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={enquiry.submit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="cos-name" className="text-sm font-semibold text-[#2a1c12]">
@@ -73,6 +69,7 @@ export function CosmeticContact() {
                     </Label>
                     <Input
                       id="cos-name"
+                      name="name"
                       placeholder="e.g. Jessica Smith"
                       required
                       className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
@@ -84,6 +81,7 @@ export function CosmeticContact() {
                     </Label>
                     <Input
                       id="cos-email"
+                      name="email"
                       type="email"
                       placeholder="jessica@example.com"
                       required
@@ -99,6 +97,7 @@ export function CosmeticContact() {
                     </Label>
                     <select
                       id="cos-service"
+                      name="interest"
                       className="w-full h-11 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
                     >
                       <option value="">Select a procedure…</option>
@@ -115,6 +114,7 @@ export function CosmeticContact() {
                     </Label>
                     <Input
                       id="cos-phone"
+                      name="phone"
                       type="tel"
                       placeholder="+44 7700 900456"
                       required
@@ -129,18 +129,25 @@ export function CosmeticContact() {
                   </Label>
                   <Textarea
                     id="cos-message"
+                    name="message"
                     placeholder="Tell us what you would love to improve about your smile (e.g. gaps, shade, chipped edges)..."
                     className="min-h-28 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                     required
                   />
                 </div>
 
+                {enquiry.error && (
+                  <p role="alert" className="text-sm text-red-700">
+                    {enquiry.error}
+                  </p>
+                )}
                 <Button
                   type="submit"
+                  disabled={enquiry.sending}
                   className="accent-gradient rounded-full px-8 h-11 text-white font-bold shadow-sm hover:opacity-95 transition-opacity"
                 >
                   <Send className="mr-2 size-4" />
-                  Send Consultation Request
+                  {enquiry.sending ? "Sending…" : "Send Consultation Request"}
                 </Button>
               </form>
             )}

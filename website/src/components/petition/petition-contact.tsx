@@ -1,10 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { Send, CheckCircle2, Phone, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function PetitionContact() {
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const enquiry = useEnquiry("Petition");
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -12,15 +12,6 @@ export function PetitionContact() {
     phone: "",
     message: "",
   });
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 500);
-  };
 
   return (
     <section className="py-16 sm:py-24 bg-white border-t border-border/40">
@@ -35,7 +26,7 @@ export function PetitionContact() {
           </p>
         </div>
 
-        {submitted ? (
+        {enquiry.sent ? (
           <div className="rounded-2xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs">
             <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-green-100 text-green-700 mb-3">
               <CheckCircle2 className="size-6" />
@@ -48,7 +39,7 @@ export function PetitionContact() {
             </p>
             <Button
               onClick={() => {
-                setSubmitted(false);
+                enquiry.reset();
                 setFormData({ fullName: "", email: "", subject: "", phone: "", message: "" });
               }}
               className="mt-6 accent-gradient text-white text-xs h-10 px-6"
@@ -57,7 +48,7 @@ export function PetitionContact() {
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+          <form onSubmit={enquiry.submit} className="space-y-4 sm:space-y-5">
             {/* Row 1: Full Name & Email Address */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -66,6 +57,7 @@ export function PetitionContact() {
                 </label>
                 <input
                   id="touch-name"
+                  name="fullName"
                   required
                   type="text"
                   placeholder="Your Name"
@@ -81,6 +73,7 @@ export function PetitionContact() {
                 </label>
                 <input
                   id="touch-email"
+                  name="email"
                   required
                   type="email"
                   placeholder="example@gmail.com"
@@ -99,6 +92,7 @@ export function PetitionContact() {
                 </label>
                 <input
                   id="touch-subject"
+                  name="subject"
                   required
                   type="text"
                   placeholder="Inquiry / Petition Support"
@@ -114,6 +108,7 @@ export function PetitionContact() {
                 </label>
                 <input
                   id="touch-phone"
+                  name="phone"
                   type="tel"
                   placeholder="+44 7311 871456"
                   value={formData.phone}
@@ -130,6 +125,7 @@ export function PetitionContact() {
               </label>
               <textarea
                 id="touch-message"
+                name="message"
                 required
                 rows={5}
                 placeholder="Share your experience or ask a question..."
@@ -140,13 +136,18 @@ export function PetitionContact() {
             </div>
 
             {/* Submit Button matching screenshot */}
-            <div className="pt-2">
+            <div className="pt-2 space-y-3">
+              {enquiry.error && (
+                <p role="alert" className="text-sm text-red-700">
+                  {enquiry.error}
+                </p>
+              )}
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={enquiry.sending}
                 className="accent-gradient text-white font-semibold text-xs sm:text-sm h-11 px-8 rounded-lg shadow-xs hover:opacity-95 transition-all gap-2"
               >
-                {loading ? "Sending..." : "Send Message"}
+                {enquiry.sending ? "Sending…" : "Send Message"}
                 <Send className="size-3.5" />
               </Button>
             </div>

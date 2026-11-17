@@ -1,17 +1,12 @@
-import { useState } from "react";
 import { Send, CheckCircle2, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function GrillzContact() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+  const enquiry = useEnquiry("Custom grillz");
 
   return (
     <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
@@ -26,7 +21,7 @@ export function GrillzContact() {
         </div>
 
         <div className="rounded-xl bg-white border border-[#e2d4c0] p-8 sm:p-12 shadow-sm">
-          {submitted ? (
+          {enquiry.sent ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-500" />
               <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
@@ -37,14 +32,14 @@ export function GrillzContact() {
               </p>
               <button
                 type="button"
-                onClick={() => setSubmitted(false)}
+                onClick={enquiry.reset}
                 className="text-xs text-[#925a27] underline mt-2"
               >
                 Send another inquiry
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={enquiry.submit} className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="gz-name" className="text-sm font-semibold text-[#2a1c12]">
@@ -52,6 +47,7 @@ export function GrillzContact() {
                   </Label>
                   <Input
                     id="gz-name"
+                    name="name"
                     placeholder="e.g. Marcus Vance"
                     required
                     className="h-12 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
@@ -63,6 +59,7 @@ export function GrillzContact() {
                   </Label>
                   <Input
                     id="gz-email"
+                    name="email"
                     type="email"
                     placeholder="marcus@example.com"
                     required
@@ -78,6 +75,7 @@ export function GrillzContact() {
                   </Label>
                   <select
                     id="gz-style"
+                    name="interest"
                     className="w-full h-12 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30 appearance-none"
                   >
                     <option value="">Select style / placement…</option>
@@ -98,6 +96,7 @@ export function GrillzContact() {
                   </Label>
                   <select
                     id="gz-metal"
+                    name="interest2"
                     className="w-full h-12 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30 appearance-none"
                   >
                     <option value="">Select gold purity…</option>
@@ -119,6 +118,7 @@ export function GrillzContact() {
                 </Label>
                 <Input
                   id="gz-phone"
+                  name="phone"
                   type="tel"
                   placeholder="+44 7700 900890"
                   required
@@ -132,19 +132,26 @@ export function GrillzContact() {
                 </Label>
                 <Textarea
                   id="gz-message"
+                  name="message"
                   placeholder="Tell us about specific engravings, diamond placement, perm-cut grooves, or upcoming events/deadlines..."
                   className="min-h-32 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                   required
                 />
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-3">
+                {enquiry.error && (
+                  <p role="alert" className="text-sm text-red-700">
+                    {enquiry.error}
+                  </p>
+                )}
                 <Button
                   type="submit"
+                  disabled={enquiry.sending}
                   className="w-full accent-gradient rounded-full px-9 h-12 text-white font-bold shadow-sm hover:opacity-95"
                 >
                   <Send className="mr-2 size-4" />
-                  Send Design Request
+                  {enquiry.sending ? "Sending…" : "Send Design Request"}
                 </Button>
               </div>
             </form>

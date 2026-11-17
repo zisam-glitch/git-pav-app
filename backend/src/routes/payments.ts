@@ -342,8 +342,10 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         type: event.type,
       },
     });
-  } catch (err: any) {
-    if (err?.code === "P2002" || err?.message?.includes("Unique constraint")) {
+  } catch (err: unknown) {
+    const code = typeof err === "object" && err !== null && "code" in err ? (err as { code?: unknown }).code : undefined;
+    const message = err instanceof Error ? err.message : "";
+    if (code === "P2002" || message.includes("Unique constraint")) {
       return res.status(200).json({ received: true, duplicate: true });
     }
     throw err;

@@ -32,7 +32,7 @@ const FAQS = [
   },
   {
     q: "How do I book a whitening consultation?",
-    a: "You can book directly via our online consultation form below or call our clinic on 01274 123456. Our clinical team will assess your enamel health, verify suitability, and provide custom impression trays.",
+    a: "You can book directly via our online consultation form below or call our clinic on 0800 1938 786. Our clinical team will assess your enamel health, verify suitability, and provide custom impression trays.",
   },
 ];
 

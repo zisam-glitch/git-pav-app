@@ -1,17 +1,13 @@
-import React, { useState } from "react";
 import { Send, CheckCircle2, Phone, Clock, MapPin, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { PRACTICE_HOURS } from "@/lib/enquiry";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function AestheticsSafety() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+  const enquiry = useEnquiry("Facial aesthetics");
 
   return (
     <section id="safety" className="py-20 sm:py-28 bg-[#fffdf9]">
@@ -30,7 +26,7 @@ export function AestheticsSafety() {
               {[
                 { icon: Phone, label: "0800 1938 786", sub: "Aesthetics consultation line" },
                 { icon: MapPin, label: "786 Leeds Road, Bradford, BD3 9TY", sub: "Clinic location" },
-                { icon: Clock, label: "Mon–Sat 8am – 7pm · Sun 10am – 4pm", sub: "Opening hours" },
+                { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex items-start gap-3.5">
                   <Icon className="size-5 text-[#925a27] flex-shrink-0 mt-0.5" />
@@ -54,7 +50,7 @@ export function AestheticsSafety() {
 
           {/* Right: Solid Consultation Form Card */}
           <div className="bg-white rounded-xl border border-[#e2d4c0] shadow-sm p-8">
-            {submitted ? (
+            {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
                 <CheckCircle2 className="size-12 text-emerald-500" />
                 <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
@@ -65,14 +61,14 @@ export function AestheticsSafety() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={enquiry.reset}
                   className="text-xs text-[#925a27] underline mt-2"
                 >
                   Send another request
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={enquiry.submit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="aes-name" className="text-sm font-semibold text-[#2a1c12]">
@@ -80,6 +76,7 @@ export function AestheticsSafety() {
                     </Label>
                     <Input
                       id="aes-name"
+                      name="name"
                       placeholder="e.g. Sarah Jenkins"
                       required
                       className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
@@ -91,6 +88,7 @@ export function AestheticsSafety() {
                     </Label>
                     <Input
                       id="aes-email"
+                      name="email"
                       type="email"
                       placeholder="sarah@example.com"
                       required
@@ -106,6 +104,7 @@ export function AestheticsSafety() {
                     </Label>
                     <select
                       id="aes-service"
+                      name="interest"
                       className="w-full h-11 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
                     >
                       <option value="">Select a treatment…</option>
@@ -122,6 +121,7 @@ export function AestheticsSafety() {
                     </Label>
                     <Input
                       id="aes-phone"
+                      name="phone"
                       type="tel"
                       placeholder="+44 7700 900555"
                       required
@@ -136,18 +136,25 @@ export function AestheticsSafety() {
                   </Label>
                   <Textarea
                     id="aes-message"
+                    name="message"
                     placeholder="Tell us what areas you would like to enhance, refresh, or discuss with the doctor..."
                     className="min-h-28 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                     required
                   />
                 </div>
 
+                {enquiry.error && (
+                  <p role="alert" className="text-sm text-red-700">
+                    {enquiry.error}
+                  </p>
+                )}
                 <Button
                   type="submit"
+                  disabled={enquiry.sending}
                   className="accent-gradient rounded-full px-8 h-11 text-white font-bold shadow-sm hover:opacity-95 transition-opacity"
                 >
                   <Send className="mr-2 size-4" />
-                  Request Doctor Consultation
+                  {enquiry.sending ? "Sending…" : "Request Doctor Consultation"}
                 </Button>
               </form>
             )}

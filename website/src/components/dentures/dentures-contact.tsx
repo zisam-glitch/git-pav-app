@@ -1,17 +1,12 @@
-import React from "react";
 import { Send, CheckCircle2, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function DenturesContact() {
-  const [submitted, setSubmitted] = React.useState(false);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+  const enquiry = useEnquiry("Dentures");
 
   return (
     <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9]">
@@ -26,7 +21,7 @@ export function DenturesContact() {
         </div>
 
         <div className="rounded-xl bg-white border border-[#e2d4c0] p-8 sm:p-12 shadow-sm">
-          {submitted ? (
+          {enquiry.sent ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-500" />
               <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
@@ -37,14 +32,14 @@ export function DenturesContact() {
               </p>
               <button
                 type="button"
-                onClick={() => setSubmitted(false)}
+                onClick={enquiry.reset}
                 className="text-xs text-[#925a27] underline mt-2"
               >
                 Send another message
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={enquiry.submit} className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="den-name" className="text-sm font-semibold text-[#2a1c12]">
@@ -52,6 +47,7 @@ export function DenturesContact() {
                   </Label>
                   <Input
                     id="den-name"
+                    name="name"
                     placeholder="e.g. William Bennett"
                     required
                     className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-[#cf9448]/30"
@@ -63,6 +59,7 @@ export function DenturesContact() {
                   </Label>
                   <Input
                     id="den-email"
+                    name="email"
                     type="email"
                     placeholder="william@example.com"
                     required
@@ -78,6 +75,7 @@ export function DenturesContact() {
                   </Label>
                   <select
                     id="den-service"
+                    name="interest"
                     className="w-full h-12 rounded-xl border border-[#e2d4c0] bg-white/70 px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
                   >
                     <option value="">Select a denture service…</option>
@@ -96,6 +94,7 @@ export function DenturesContact() {
                   </Label>
                   <Input
                     id="den-phone"
+                    name="phone"
                     type="tel"
                     placeholder="+44 7700 900567"
                     required
@@ -110,6 +109,7 @@ export function DenturesContact() {
                 </Label>
                 <Textarea
                   id="den-message"
+                  name="message"
                   placeholder="Tell us about your current dentures, loose fit, missing teeth, or if you need an emergency repair..."
                   className="min-h-32 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-[#cf9448]/30 resize-none"
                   required
@@ -117,12 +117,18 @@ export function DenturesContact() {
               </div>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+                {enquiry.error && (
+                  <p role="alert" className="text-sm text-red-700">
+                    {enquiry.error}
+                  </p>
+                )}
                 <Button
                   type="submit"
+                  disabled={enquiry.sending}
                   className="w-full sm:w-auto accent-gradient rounded-full px-9 h-12 text-white font-bold shadow-md hover:opacity-95"
                 >
                   <Send className="mr-2 size-4" />
-                  Send Message
+                  {enquiry.sending ? "Sending…" : "Send Message"}
                 </Button>
                 <a
                   href="tel:08001938786"

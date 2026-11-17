@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { CalendarDays, CheckCircle2, Phone, Mail, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { PRACTICE_EMAIL, PRACTICE_HOURS, PRACTICE_PHONE } from "@/lib/enquiry";
+import { useEnquiry } from "@/lib/use-enquiry";
 
 export function WhiteningContact() {
-  const [submitted, setSubmitted] = useState(false);
+  const enquiry = useEnquiry("Teeth whitening");
   const [selectedSystem, setSelectedSystem] = useState("Custom Home Suite (£295)");
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
 
   return (
     <section id="contact-booking" className="py-20 sm:py-28 bg-[#faf6f0] border-t border-[#e2d4c0]">
@@ -38,7 +35,7 @@ export function WhiteningContact() {
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase text-[#6b5848]">Direct Telephone</p>
-                  <p className="text-sm font-bold text-[#2a1c12]">01274 123 456</p>
+                  <p className="text-sm font-bold text-[#2a1c12]">{PRACTICE_PHONE}</p>
                 </div>
               </div>
 
@@ -48,7 +45,7 @@ export function WhiteningContact() {
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase text-[#6b5848]">Clinical Enquiries</p>
-                  <p className="text-sm font-bold text-[#2a1c12]">whitening@pavdental.com</p>
+                  <p className="text-sm font-bold text-[#2a1c12]">{PRACTICE_EMAIL}</p>
                 </div>
               </div>
 
@@ -58,7 +55,7 @@ export function WhiteningContact() {
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase text-[#6b5848]">Practice Hours</p>
-                  <p className="text-sm font-bold text-[#2a1c12]">Mon–Fri 8:30am – 6:00pm &bull; Sat by Appt</p>
+                  <p className="text-sm font-bold text-[#2a1c12]">{PRACTICE_HOURS}</p>
                 </div>
               </div>
             </div>
@@ -83,7 +80,7 @@ export function WhiteningContact() {
 
           {/* Right: Solid Form Card (Crisp rounded-xl, No Glass) */}
           <div className="bg-white rounded-xl p-8 sm:p-10 shadow-sm border border-[#e2d4c0]">
-            {submitted ? (
+            {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
                 <div className="size-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
                   <CheckCircle2 className="size-10" />
@@ -97,7 +94,7 @@ export function WhiteningContact() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setSubmitted(false)}
+                  onClick={enquiry.reset}
                   className="rounded-full border-[#925a27] text-[#925a27] font-semibold text-xs mt-2"
                 >
                   Send another enquiry
@@ -114,7 +111,7 @@ export function WhiteningContact() {
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={(event) => enquiry.submit(event, selectedSystem)} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <Label htmlFor="wc-name" className="text-xs font-bold text-[#2a1c12]">
@@ -122,6 +119,7 @@ export function WhiteningContact() {
                       </Label>
                       <Input
                         id="wc-name"
+                        name="name"
                         required
                         placeholder="e.g. Eleanor Vance"
                         className="rounded-lg border-[#e2d4c0] bg-[#faf6f0] focus:bg-white text-sm"
@@ -133,6 +131,7 @@ export function WhiteningContact() {
                       </Label>
                       <Input
                         id="wc-phone"
+                        name="phone"
                         type="tel"
                         required
                         placeholder="07123 456 789"
@@ -147,6 +146,7 @@ export function WhiteningContact() {
                     </Label>
                     <Input
                       id="wc-email"
+                      name="email"
                       type="email"
                       required
                       placeholder="eleanor@example.co.uk"
@@ -186,17 +186,25 @@ export function WhiteningContact() {
                     </Label>
                     <Textarea
                       id="wc-notes"
+                      name="message"
                       rows={3}
                       placeholder="Let us know if you have veneers, crowns, sensitive teeth, or an event date..."
                       className="rounded-lg border-[#e2d4c0] bg-[#faf6f0] focus:bg-white text-sm resize-none"
                     />
                   </div>
 
+                  {enquiry.error && (
+                    <p role="alert" className="text-sm text-red-700">
+                      {enquiry.error}
+                    </p>
+                  )}
                   <Button
                     type="submit"
+                    disabled={enquiry.sending}
                     className="w-full accent-gradient text-white rounded-full h-12 text-sm font-bold shadow-sm hover:opacity-95 mt-2"
                   >
-                    Submit Whitening Consultation Request <ArrowRight className="ml-2 size-4" />
+                    {enquiry.sending ? "Sending…" : "Submit Whitening Consultation Request"}{" "}
+                    <ArrowRight className="ml-2 size-4" />
                   </Button>
 
                   <p className="text-[11px] text-[#6b5848] text-center mt-2">

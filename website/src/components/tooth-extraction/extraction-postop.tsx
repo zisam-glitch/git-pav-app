@@ -121,7 +121,7 @@ export function ExtractionPostOp() {
               <p className="font-display text-xl font-bold text-white">0800 1938 786</p>
             </div>
             <a
-              href="/contact"
+              href="/contact-us"
               className="ml-auto inline-flex items-center gap-2 rounded-full accent-gradient px-6 h-10 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
             >
               Contact the Clinic

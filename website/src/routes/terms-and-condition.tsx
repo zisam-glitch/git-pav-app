@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 
-export const Route = createFileRoute("/terms")({ component: TermsPage });
+export const Route = createFileRoute("/terms-and-condition")({
+  head: () => seoHead("/terms-and-condition"),
+  component: TermsPage,
+});
 
 function TermsPage() {
   return (
@@ -93,7 +97,7 @@ function TermsPage() {
               <h2 className="font-serif text-xl font-semibold text-slate-900">5. Contact & Complaints</h2>
               <p className="mt-3 text-sm">
                 We take patient satisfaction seriously. For enquiries, feedback, or complaints regarding our services, please view our{" "}
-                <a href="/complaints" className="text-emerald-700 underline font-semibold">Complaints Procedure</a> or email us at{" "}
+                <a href="/complaints-policy" className="text-emerald-700 underline font-semibold">Complaints Procedure</a> or email us at{" "}
                 <a href="mailto:hello@pavdental.com" className="text-emerald-700 underline">hello@pavdental.com</a>.
               </p>
             </section>

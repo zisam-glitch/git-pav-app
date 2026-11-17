@@ -164,7 +164,7 @@ export function BlogDetail({ slug }: BlogDetailProps) {
             The guide or article you are looking for may have been moved or updated.
           </p>
           <Button asChild className="mt-6 accent-gradient text-white">
-            <a href="/blogs" className="inline-flex items-center gap-2">
+            <a href="/blog" className="inline-flex items-center gap-2">
               <ArrowLeft className="size-4" />
               <span>Back to All Articles</span>
             </a>
@@ -213,7 +213,7 @@ export function BlogDetail({ slug }: BlogDetailProps) {
       <div className="bg-[#faf6f0] border-b border-[#e2d4c0]">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <a
-            href="/blogs"
+            href="/blog"
             className="inline-flex items-center gap-2 text-xs font-medium text-muted hover:text-primary transition-colors"
           >
             <ArrowLeft className="size-4" />
@@ -221,7 +221,7 @@ export function BlogDetail({ slug }: BlogDetailProps) {
           </a>
 
           <div className="hidden sm:flex items-center gap-2 text-xs text-muted">
-            <a href="/blogs" className="hover:underline">Blogs</a>
+            <a href="/blog" className="hover:underline">Blogs</a>
             <span>/</span>
             <span className="text-fg font-medium truncate max-w-[200px]">{article.categoryLabel}</span>
           </div>
@@ -392,7 +392,7 @@ export function BlogDetail({ slug }: BlogDetailProps) {
               </p>
             </div>
             <a
-              href="/blogs"
+              href="/blog"
               className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
             >
               <span>View all guides</span>
@@ -404,7 +404,7 @@ export function BlogDetail({ slug }: BlogDetailProps) {
             {relatedArticles.map((rel) => (
               <a
                 key={rel.id}
-                href={`/blogs/${rel.slug}`}
+                href={`/blog/${rel.slug}`}
                 className="group flex flex-col justify-between overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-md"
               >
                 <div>

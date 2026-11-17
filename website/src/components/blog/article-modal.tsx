@@ -131,7 +131,7 @@ export function ArticleModal({ article, isOpen, onClose }: ArticleModalProps) {
             <p className="text-xs text-white/90 mt-1">Book a comprehensive smile consultation with our clinicians at 786 Leeds Road, Bradford.</p>
           </div>
           <Button asChild size="lg" className="bg-white text-[#cf9448] hover:bg-white/90 font-bold text-xs sm:text-sm shadow-sm shrink-0">
-            <a href="/contact">
+            <a href="/contact-us">
               <CalendarPlus className="w-4 h-4 mr-1.5" />
               <span>Book Consultation</span>
             </a>

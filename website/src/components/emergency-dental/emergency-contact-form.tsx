@@ -177,7 +177,7 @@ export function EmergencyContactForm() {
             asChild
             className="accent-gradient rounded-full px-12 h-14 text-base text-white font-bold shadow-xl hover:opacity-95 transition-all"
           >
-            <a href="/contact">
+            <a href="/contact-us">
               <CalendarDays className="mr-2.5 size-5" />
               Book Appointment
             </a>

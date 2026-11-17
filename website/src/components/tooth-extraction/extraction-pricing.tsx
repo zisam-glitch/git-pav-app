@@ -127,13 +127,13 @@ export function ExtractionPricing() {
                   <td key={t.id} className={`py-5 px-6 ${t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""}`}>
                     {t.highlight ? (
                       <Button asChild className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95">
-                        <a href="/contact" className="flex items-center gap-2">
+                        <a href="/contact-us" className="flex items-center gap-2">
                           Book Now <ArrowRight className="size-3.5" />
                         </a>
                       </Button>
                     ) : (
                       <Button asChild variant="outline" className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]">
-                        <a href="/contact">Book Now</a>
+                        <a href="/contact-us">Book Now</a>
                       </Button>
                     )}
                   </td>

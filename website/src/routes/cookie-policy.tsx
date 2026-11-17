@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 
-export const Route = createFileRoute("/cookies")({ component: CookiePolicyPage });
+export const Route = createFileRoute("/cookie-policy")({
+  head: () => seoHead("/cookie-policy"),
+  component: CookiePolicyPage,
+});
 
 function CookiePolicyPage() {
   return (

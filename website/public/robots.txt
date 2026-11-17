@@ -1,0 +1,41 @@
+User-agent: *
+Allow: /
+
+# Block admin or backend folders (optional)
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login/
+
+# Block sensitive files
+Disallow: /config/
+Disallow: /tmp/
+Disallow: /private/
+
+# Allow important assets (CSS, JS, images)
+Allow: /*.css$
+Allow: /*.js$
+Allow: /images/
+Allow: /assets/
+
+# Bing / Microsoft Copilot
+User-agent: Bingbot
+Disallow:
+
+# OpenAI GPTBot (ChatGPT Search)
+User-agent: GPTBot
+Disallow:
+
+# ChatGPT User Crawler
+User-agent: ChatGPT-User
+Disallow:
+
+# Perplexity AI Crawler
+User-agent: PerplexityBot
+Disallow:
+
+# Claude AI Crawler
+User-agent: ClaudeBot
+Disallow:
+
+# Sitemap 
+Sitemap: https://www.pavdental.com/sitemap.xml

@@ -11,38 +11,38 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AestheticsRouteImport } from './routes/aesthetics'
-import { Route as BlogsRouteImport } from './routes/blogs'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
-import { Route as ComplaintsRouteImport } from './routes/complaints'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as CookiesRouteImport } from './routes/cookies'
-import { Route as CosmeticRouteImport } from './routes/cosmetic'
-import { Route as CustomGrillzRouteImport } from './routes/custom-grillz'
-import { Route as DenturesRouteImport } from './routes/dentures'
-import { Route as EmergencyDentalRouteImport } from './routes/emergency-dental'
-import { Route as GeneralDentistryRouteImport } from './routes/general-dentistry'
-import { Route as MobileDentistryRouteImport } from './routes/mobile-dentistry'
-import { Route as MouthguardsRouteImport } from './routes/mouthguards'
-import { Route as OralHygieneRouteImport } from './routes/oral-hygiene'
+import { Route as ComplaintsPolicyRouteImport } from './routes/complaints-policy'
+import { Route as ContactUsRouteImport } from './routes/contact-us'
+import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as PetitionRouteImport } from './routes/petition'
 import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as RootCanalRouteImport } from './routes/root-canal'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as TeamRouteImport } from './routes/team'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as ToothExtractionRouteImport } from './routes/tooth-extraction'
+import { Route as TermsAndConditionRouteImport } from './routes/terms-and-condition'
 import { Route as VacanciesRouteImport } from './routes/vacancies'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
-import { Route as VirtualDentistryRouteImport } from './routes/virtual-dentistry'
-import { Route as WhiteningRouteImport } from './routes/whitening'
-import { Route as BlogsSlugRouteImport } from './routes/blogs_.$slug'
+import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
+import { Route as ServicesAestheticsRouteImport } from './routes/services.aesthetics'
+import { Route as ServicesCosmeticRouteImport } from './routes/services.cosmetic'
+import { Route as ServicesCustomGrillzRouteImport } from './routes/services.custom-grillz'
+import { Route as ServicesDenturesRouteImport } from './routes/services.dentures'
+import { Route as ServicesEmergencyDentalRouteImport } from './routes/services.emergency-dental'
+import { Route as ServicesGeneralDentistryRouteImport } from './routes/services.general-dentistry'
+import { Route as ServicesMobileDentistryRouteImport } from './routes/services.mobile-dentistry'
+import { Route as ServicesMouthguardsRouteImport } from './routes/services.mouthguards'
+import { Route as ServicesOralHygieneRouteImport } from './routes/services.oral-hygiene'
+import { Route as ServicesRootCanalRouteImport } from './routes/services.root-canal'
+import { Route as ServicesToothExtractionRouteImport } from './routes/services.tooth-extraction'
+import { Route as ServicesVirtualDentistryRouteImport } from './routes/services.virtual-dentistry'
+import { Route as ServicesWhiteningRouteImport } from './routes/services.whitening'
 import { Route as ShopProductSlugRouteImport } from './routes/shop_.$productSlug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -55,14 +55,9 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AestheticsRoute = AestheticsRouteImport.update({
-  id: '/aesthetics',
-  path: '/aesthetics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogsRoute = BlogsRouteImport.update({
-  id: '/blogs',
-  path: '/blogs',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookingRoute = BookingRouteImport.update({
@@ -80,59 +75,19 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComplaintsRoute = ComplaintsRouteImport.update({
-  id: '/complaints',
-  path: '/complaints',
+const ComplaintsPolicyRoute = ComplaintsPolicyRouteImport.update({
+  id: '/complaints-policy',
+  path: '/complaints-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const ContactUsRoute = ContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CookiesRoute = CookiesRouteImport.update({
-  id: '/cookies',
-  path: '/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CosmeticRoute = CosmeticRouteImport.update({
-  id: '/cosmetic',
-  path: '/cosmetic',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CustomGrillzRoute = CustomGrillzRouteImport.update({
-  id: '/custom-grillz',
-  path: '/custom-grillz',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DenturesRoute = DenturesRouteImport.update({
-  id: '/dentures',
-  path: '/dentures',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmergencyDentalRoute = EmergencyDentalRouteImport.update({
-  id: '/emergency-dental',
-  path: '/emergency-dental',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GeneralDentistryRoute = GeneralDentistryRouteImport.update({
-  id: '/general-dentistry',
-  path: '/general-dentistry',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MobileDentistryRoute = MobileDentistryRouteImport.update({
-  id: '/mobile-dentistry',
-  path: '/mobile-dentistry',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MouthguardsRoute = MouthguardsRouteImport.update({
-  id: '/mouthguards',
-  path: '/mouthguards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OralHygieneRoute = OralHygieneRouteImport.update({
-  id: '/oral-hygiene',
-  path: '/oral-hygiene',
+const CookiePolicyRoute = CookiePolicyRouteImport.update({
+  id: '/cookie-policy',
+  path: '/cookie-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PetitionRoute = PetitionRouteImport.update({
@@ -145,19 +100,14 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RootCanalRoute = RootCanalRouteImport.update({
-  id: '/root-canal',
-  path: '/root-canal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -170,14 +120,9 @@ const TeamRoute = TeamRouteImport.update({
   path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToothExtractionRoute = ToothExtractionRouteImport.update({
-  id: '/tooth-extraction',
-  path: '/tooth-extraction',
+const TermsAndConditionRoute = TermsAndConditionRouteImport.update({
+  id: '/terms-and-condition',
+  path: '/terms-and-condition',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VacanciesRoute = VacanciesRouteImport.update({
@@ -190,19 +135,9 @@ const VerifyEmailRoute = VerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VirtualDentistryRoute = VirtualDentistryRouteImport.update({
-  id: '/virtual-dentistry',
-  path: '/virtual-dentistry',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WhiteningRoute = WhiteningRouteImport.update({
-  id: '/whitening',
-  path: '/whitening',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogsSlugRoute = BlogsSlugRouteImport.update({
-  id: '/blogs_/$slug',
-  path: '/blogs/$slug',
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog_/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
@@ -215,6 +150,73 @@ const OrderIdRoute = OrderIdRouteImport.update({
   path: '/order/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesAestheticsRoute = ServicesAestheticsRouteImport.update({
+  id: '/services/aesthetics',
+  path: '/services/aesthetics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesCosmeticRoute = ServicesCosmeticRouteImport.update({
+  id: '/services/cosmetic',
+  path: '/services/cosmetic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesCustomGrillzRoute = ServicesCustomGrillzRouteImport.update({
+  id: '/services/custom-grillz',
+  path: '/services/custom-grillz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesDenturesRoute = ServicesDenturesRouteImport.update({
+  id: '/services/dentures',
+  path: '/services/dentures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesEmergencyDentalRoute = ServicesEmergencyDentalRouteImport.update({
+  id: '/services/emergency-dental',
+  path: '/services/emergency-dental',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesGeneralDentistryRoute =
+  ServicesGeneralDentistryRouteImport.update({
+    id: '/services/general-dentistry',
+    path: '/services/general-dentistry',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesMobileDentistryRoute = ServicesMobileDentistryRouteImport.update({
+  id: '/services/mobile-dentistry',
+  path: '/services/mobile-dentistry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesMouthguardsRoute = ServicesMouthguardsRouteImport.update({
+  id: '/services/mouthguards',
+  path: '/services/mouthguards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesOralHygieneRoute = ServicesOralHygieneRouteImport.update({
+  id: '/services/oral-hygiene',
+  path: '/services/oral-hygiene',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRootCanalRoute = ServicesRootCanalRouteImport.update({
+  id: '/services/root-canal',
+  path: '/services/root-canal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesToothExtractionRoute = ServicesToothExtractionRouteImport.update({
+  id: '/services/tooth-extraction',
+  path: '/services/tooth-extraction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesVirtualDentistryRoute =
+  ServicesVirtualDentistryRouteImport.update({
+    id: '/services/virtual-dentistry',
+    path: '/services/virtual-dentistry',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesWhiteningRoute = ServicesWhiteningRouteImport.update({
+  id: '/services/whitening',
+  path: '/services/whitening',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopProductSlugRoute = ShopProductSlugRouteImport.update({
   id: '/shop_/$productSlug',
   path: '/shop/$productSlug',
@@ -224,113 +226,113 @@ const ShopProductSlugRoute = ShopProductSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/aesthetics': typeof AestheticsRoute
-  '/blogs': typeof BlogsRoute
+  '/blog': typeof BlogRoute
   '/booking': typeof BookingRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/complaints': typeof ComplaintsRoute
-  '/contact': typeof ContactRoute
-  '/cookies': typeof CookiesRoute
-  '/cosmetic': typeof CosmeticRoute
-  '/custom-grillz': typeof CustomGrillzRoute
-  '/dentures': typeof DenturesRoute
-  '/emergency-dental': typeof EmergencyDentalRoute
-  '/general-dentistry': typeof GeneralDentistryRoute
-  '/mobile-dentistry': typeof MobileDentistryRoute
-  '/mouthguards': typeof MouthguardsRoute
-  '/oral-hygiene': typeof OralHygieneRoute
+  '/complaints-policy': typeof ComplaintsPolicyRoute
+  '/contact-us': typeof ContactUsRoute
+  '/cookie-policy': typeof CookiePolicyRoute
   '/petition': typeof PetitionRoute
   '/pricing': typeof PricingRoute
-  '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
   '/team': typeof TeamRoute
-  '/terms': typeof TermsRoute
-  '/tooth-extraction': typeof ToothExtractionRoute
+  '/terms-and-condition': typeof TermsAndConditionRoute
   '/vacancies': typeof VacanciesRoute
   '/verify-email': typeof VerifyEmailRoute
-  '/virtual-dentistry': typeof VirtualDentistryRoute
-  '/whitening': typeof WhiteningRoute
-  '/blogs/$slug': typeof BlogsSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$id': typeof OrderIdRoute
+  '/services/aesthetics': typeof ServicesAestheticsRoute
+  '/services/cosmetic': typeof ServicesCosmeticRoute
+  '/services/custom-grillz': typeof ServicesCustomGrillzRoute
+  '/services/dentures': typeof ServicesDenturesRoute
+  '/services/emergency-dental': typeof ServicesEmergencyDentalRoute
+  '/services/general-dentistry': typeof ServicesGeneralDentistryRoute
+  '/services/mobile-dentistry': typeof ServicesMobileDentistryRoute
+  '/services/mouthguards': typeof ServicesMouthguardsRoute
+  '/services/oral-hygiene': typeof ServicesOralHygieneRoute
+  '/services/root-canal': typeof ServicesRootCanalRoute
+  '/services/tooth-extraction': typeof ServicesToothExtractionRoute
+  '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
+  '/services/whitening': typeof ServicesWhiteningRoute
   '/shop/$productSlug': typeof ShopProductSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/aesthetics': typeof AestheticsRoute
-  '/blogs': typeof BlogsRoute
+  '/blog': typeof BlogRoute
   '/booking': typeof BookingRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/complaints': typeof ComplaintsRoute
-  '/contact': typeof ContactRoute
-  '/cookies': typeof CookiesRoute
-  '/cosmetic': typeof CosmeticRoute
-  '/custom-grillz': typeof CustomGrillzRoute
-  '/dentures': typeof DenturesRoute
-  '/emergency-dental': typeof EmergencyDentalRoute
-  '/general-dentistry': typeof GeneralDentistryRoute
-  '/mobile-dentistry': typeof MobileDentistryRoute
-  '/mouthguards': typeof MouthguardsRoute
-  '/oral-hygiene': typeof OralHygieneRoute
+  '/complaints-policy': typeof ComplaintsPolicyRoute
+  '/contact-us': typeof ContactUsRoute
+  '/cookie-policy': typeof CookiePolicyRoute
   '/petition': typeof PetitionRoute
   '/pricing': typeof PricingRoute
-  '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
   '/team': typeof TeamRoute
-  '/terms': typeof TermsRoute
-  '/tooth-extraction': typeof ToothExtractionRoute
+  '/terms-and-condition': typeof TermsAndConditionRoute
   '/vacancies': typeof VacanciesRoute
   '/verify-email': typeof VerifyEmailRoute
-  '/virtual-dentistry': typeof VirtualDentistryRoute
-  '/whitening': typeof WhiteningRoute
-  '/blogs/$slug': typeof BlogsSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$id': typeof OrderIdRoute
+  '/services/aesthetics': typeof ServicesAestheticsRoute
+  '/services/cosmetic': typeof ServicesCosmeticRoute
+  '/services/custom-grillz': typeof ServicesCustomGrillzRoute
+  '/services/dentures': typeof ServicesDenturesRoute
+  '/services/emergency-dental': typeof ServicesEmergencyDentalRoute
+  '/services/general-dentistry': typeof ServicesGeneralDentistryRoute
+  '/services/mobile-dentistry': typeof ServicesMobileDentistryRoute
+  '/services/mouthguards': typeof ServicesMouthguardsRoute
+  '/services/oral-hygiene': typeof ServicesOralHygieneRoute
+  '/services/root-canal': typeof ServicesRootCanalRoute
+  '/services/tooth-extraction': typeof ServicesToothExtractionRoute
+  '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
+  '/services/whitening': typeof ServicesWhiteningRoute
   '/shop/$productSlug': typeof ShopProductSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/aesthetics': typeof AestheticsRoute
-  '/blogs': typeof BlogsRoute
+  '/blog': typeof BlogRoute
   '/booking': typeof BookingRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/complaints': typeof ComplaintsRoute
-  '/contact': typeof ContactRoute
-  '/cookies': typeof CookiesRoute
-  '/cosmetic': typeof CosmeticRoute
-  '/custom-grillz': typeof CustomGrillzRoute
-  '/dentures': typeof DenturesRoute
-  '/emergency-dental': typeof EmergencyDentalRoute
-  '/general-dentistry': typeof GeneralDentistryRoute
-  '/mobile-dentistry': typeof MobileDentistryRoute
-  '/mouthguards': typeof MouthguardsRoute
-  '/oral-hygiene': typeof OralHygieneRoute
+  '/complaints-policy': typeof ComplaintsPolicyRoute
+  '/contact-us': typeof ContactUsRoute
+  '/cookie-policy': typeof CookiePolicyRoute
   '/petition': typeof PetitionRoute
   '/pricing': typeof PricingRoute
-  '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/root-canal': typeof RootCanalRoute
   '/shop': typeof ShopRoute
   '/team': typeof TeamRoute
-  '/terms': typeof TermsRoute
-  '/tooth-extraction': typeof ToothExtractionRoute
+  '/terms-and-condition': typeof TermsAndConditionRoute
   '/vacancies': typeof VacanciesRoute
   '/verify-email': typeof VerifyEmailRoute
-  '/virtual-dentistry': typeof VirtualDentistryRoute
-  '/whitening': typeof WhiteningRoute
-  '/blogs_/$slug': typeof BlogsSlugRoute
+  '/blog_/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$id': typeof OrderIdRoute
+  '/services/aesthetics': typeof ServicesAestheticsRoute
+  '/services/cosmetic': typeof ServicesCosmeticRoute
+  '/services/custom-grillz': typeof ServicesCustomGrillzRoute
+  '/services/dentures': typeof ServicesDenturesRoute
+  '/services/emergency-dental': typeof ServicesEmergencyDentalRoute
+  '/services/general-dentistry': typeof ServicesGeneralDentistryRoute
+  '/services/mobile-dentistry': typeof ServicesMobileDentistryRoute
+  '/services/mouthguards': typeof ServicesMouthguardsRoute
+  '/services/oral-hygiene': typeof ServicesOralHygieneRoute
+  '/services/root-canal': typeof ServicesRootCanalRoute
+  '/services/tooth-extraction': typeof ServicesToothExtractionRoute
+  '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
+  '/services/whitening': typeof ServicesWhiteningRoute
   '/shop_/$productSlug': typeof ShopProductSlugRoute
 }
 export interface FileRouteTypes {
@@ -338,150 +340,150 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/aesthetics'
-    | '/blogs'
+    | '/blog'
     | '/booking'
     | '/cart'
     | '/checkout'
-    | '/complaints'
-    | '/contact'
-    | '/cookies'
-    | '/cosmetic'
-    | '/custom-grillz'
-    | '/dentures'
-    | '/emergency-dental'
-    | '/general-dentistry'
-    | '/mobile-dentistry'
-    | '/mouthguards'
-    | '/oral-hygiene'
+    | '/complaints-policy'
+    | '/contact-us'
+    | '/cookie-policy'
     | '/petition'
     | '/pricing'
-    | '/privacy'
+    | '/privacy-policy'
     | '/reset-password'
-    | '/root-canal'
     | '/shop'
     | '/team'
-    | '/terms'
-    | '/tooth-extraction'
+    | '/terms-and-condition'
     | '/vacancies'
     | '/verify-email'
-    | '/virtual-dentistry'
-    | '/whitening'
-    | '/blogs/$slug'
+    | '/blog/$slug'
     | '/category/$slug'
     | '/order/$id'
+    | '/services/aesthetics'
+    | '/services/cosmetic'
+    | '/services/custom-grillz'
+    | '/services/dentures'
+    | '/services/emergency-dental'
+    | '/services/general-dentistry'
+    | '/services/mobile-dentistry'
+    | '/services/mouthguards'
+    | '/services/oral-hygiene'
+    | '/services/root-canal'
+    | '/services/tooth-extraction'
+    | '/services/virtual-dentistry'
+    | '/services/whitening'
     | '/shop/$productSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/aesthetics'
-    | '/blogs'
+    | '/blog'
     | '/booking'
     | '/cart'
     | '/checkout'
-    | '/complaints'
-    | '/contact'
-    | '/cookies'
-    | '/cosmetic'
-    | '/custom-grillz'
-    | '/dentures'
-    | '/emergency-dental'
-    | '/general-dentistry'
-    | '/mobile-dentistry'
-    | '/mouthguards'
-    | '/oral-hygiene'
+    | '/complaints-policy'
+    | '/contact-us'
+    | '/cookie-policy'
     | '/petition'
     | '/pricing'
-    | '/privacy'
+    | '/privacy-policy'
     | '/reset-password'
-    | '/root-canal'
     | '/shop'
     | '/team'
-    | '/terms'
-    | '/tooth-extraction'
+    | '/terms-and-condition'
     | '/vacancies'
     | '/verify-email'
-    | '/virtual-dentistry'
-    | '/whitening'
-    | '/blogs/$slug'
+    | '/blog/$slug'
     | '/category/$slug'
     | '/order/$id'
+    | '/services/aesthetics'
+    | '/services/cosmetic'
+    | '/services/custom-grillz'
+    | '/services/dentures'
+    | '/services/emergency-dental'
+    | '/services/general-dentistry'
+    | '/services/mobile-dentistry'
+    | '/services/mouthguards'
+    | '/services/oral-hygiene'
+    | '/services/root-canal'
+    | '/services/tooth-extraction'
+    | '/services/virtual-dentistry'
+    | '/services/whitening'
     | '/shop/$productSlug'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/aesthetics'
-    | '/blogs'
+    | '/blog'
     | '/booking'
     | '/cart'
     | '/checkout'
-    | '/complaints'
-    | '/contact'
-    | '/cookies'
-    | '/cosmetic'
-    | '/custom-grillz'
-    | '/dentures'
-    | '/emergency-dental'
-    | '/general-dentistry'
-    | '/mobile-dentistry'
-    | '/mouthguards'
-    | '/oral-hygiene'
+    | '/complaints-policy'
+    | '/contact-us'
+    | '/cookie-policy'
     | '/petition'
     | '/pricing'
-    | '/privacy'
+    | '/privacy-policy'
     | '/reset-password'
-    | '/root-canal'
     | '/shop'
     | '/team'
-    | '/terms'
-    | '/tooth-extraction'
+    | '/terms-and-condition'
     | '/vacancies'
     | '/verify-email'
-    | '/virtual-dentistry'
-    | '/whitening'
-    | '/blogs_/$slug'
+    | '/blog_/$slug'
     | '/category/$slug'
     | '/order/$id'
+    | '/services/aesthetics'
+    | '/services/cosmetic'
+    | '/services/custom-grillz'
+    | '/services/dentures'
+    | '/services/emergency-dental'
+    | '/services/general-dentistry'
+    | '/services/mobile-dentistry'
+    | '/services/mouthguards'
+    | '/services/oral-hygiene'
+    | '/services/root-canal'
+    | '/services/tooth-extraction'
+    | '/services/virtual-dentistry'
+    | '/services/whitening'
     | '/shop_/$productSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AestheticsRoute: typeof AestheticsRoute
-  BlogsRoute: typeof BlogsRoute
+  BlogRoute: typeof BlogRoute
   BookingRoute: typeof BookingRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
-  ComplaintsRoute: typeof ComplaintsRoute
-  ContactRoute: typeof ContactRoute
-  CookiesRoute: typeof CookiesRoute
-  CosmeticRoute: typeof CosmeticRoute
-  CustomGrillzRoute: typeof CustomGrillzRoute
-  DenturesRoute: typeof DenturesRoute
-  EmergencyDentalRoute: typeof EmergencyDentalRoute
-  GeneralDentistryRoute: typeof GeneralDentistryRoute
-  MobileDentistryRoute: typeof MobileDentistryRoute
-  MouthguardsRoute: typeof MouthguardsRoute
-  OralHygieneRoute: typeof OralHygieneRoute
+  ComplaintsPolicyRoute: typeof ComplaintsPolicyRoute
+  ContactUsRoute: typeof ContactUsRoute
+  CookiePolicyRoute: typeof CookiePolicyRoute
   PetitionRoute: typeof PetitionRoute
   PricingRoute: typeof PricingRoute
-  PrivacyRoute: typeof PrivacyRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  RootCanalRoute: typeof RootCanalRoute
   ShopRoute: typeof ShopRoute
   TeamRoute: typeof TeamRoute
-  TermsRoute: typeof TermsRoute
-  ToothExtractionRoute: typeof ToothExtractionRoute
+  TermsAndConditionRoute: typeof TermsAndConditionRoute
   VacanciesRoute: typeof VacanciesRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
-  VirtualDentistryRoute: typeof VirtualDentistryRoute
-  WhiteningRoute: typeof WhiteningRoute
-  BlogsSlugRoute: typeof BlogsSlugRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrderIdRoute: typeof OrderIdRoute
+  ServicesAestheticsRoute: typeof ServicesAestheticsRoute
+  ServicesCosmeticRoute: typeof ServicesCosmeticRoute
+  ServicesCustomGrillzRoute: typeof ServicesCustomGrillzRoute
+  ServicesDenturesRoute: typeof ServicesDenturesRoute
+  ServicesEmergencyDentalRoute: typeof ServicesEmergencyDentalRoute
+  ServicesGeneralDentistryRoute: typeof ServicesGeneralDentistryRoute
+  ServicesMobileDentistryRoute: typeof ServicesMobileDentistryRoute
+  ServicesMouthguardsRoute: typeof ServicesMouthguardsRoute
+  ServicesOralHygieneRoute: typeof ServicesOralHygieneRoute
+  ServicesRootCanalRoute: typeof ServicesRootCanalRoute
+  ServicesToothExtractionRoute: typeof ServicesToothExtractionRoute
+  ServicesVirtualDentistryRoute: typeof ServicesVirtualDentistryRoute
+  ServicesWhiteningRoute: typeof ServicesWhiteningRoute
   ShopProductSlugRoute: typeof ShopProductSlugRoute
 }
 
@@ -501,18 +503,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aesthetics': {
-      id: '/aesthetics'
-      path: '/aesthetics'
-      fullPath: '/aesthetics'
-      preLoaderRoute: typeof AestheticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blogs': {
-      id: '/blogs'
-      path: '/blogs'
-      fullPath: '/blogs'
-      preLoaderRoute: typeof BlogsRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/booking': {
@@ -536,81 +531,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/complaints': {
-      id: '/complaints'
-      path: '/complaints'
-      fullPath: '/complaints'
-      preLoaderRoute: typeof ComplaintsRouteImport
+    '/complaints-policy': {
+      id: '/complaints-policy'
+      path: '/complaints-policy'
+      fullPath: '/complaints-policy'
+      preLoaderRoute: typeof ComplaintsPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cookies': {
-      id: '/cookies'
-      path: '/cookies'
-      fullPath: '/cookies'
-      preLoaderRoute: typeof CookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cosmetic': {
-      id: '/cosmetic'
-      path: '/cosmetic'
-      fullPath: '/cosmetic'
-      preLoaderRoute: typeof CosmeticRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/custom-grillz': {
-      id: '/custom-grillz'
-      path: '/custom-grillz'
-      fullPath: '/custom-grillz'
-      preLoaderRoute: typeof CustomGrillzRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dentures': {
-      id: '/dentures'
-      path: '/dentures'
-      fullPath: '/dentures'
-      preLoaderRoute: typeof DenturesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/emergency-dental': {
-      id: '/emergency-dental'
-      path: '/emergency-dental'
-      fullPath: '/emergency-dental'
-      preLoaderRoute: typeof EmergencyDentalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/general-dentistry': {
-      id: '/general-dentistry'
-      path: '/general-dentistry'
-      fullPath: '/general-dentistry'
-      preLoaderRoute: typeof GeneralDentistryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mobile-dentistry': {
-      id: '/mobile-dentistry'
-      path: '/mobile-dentistry'
-      fullPath: '/mobile-dentistry'
-      preLoaderRoute: typeof MobileDentistryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mouthguards': {
-      id: '/mouthguards'
-      path: '/mouthguards'
-      fullPath: '/mouthguards'
-      preLoaderRoute: typeof MouthguardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/oral-hygiene': {
-      id: '/oral-hygiene'
-      path: '/oral-hygiene'
-      fullPath: '/oral-hygiene'
-      preLoaderRoute: typeof OralHygieneRouteImport
+    '/cookie-policy': {
+      id: '/cookie-policy'
+      path: '/cookie-policy'
+      fullPath: '/cookie-policy'
+      preLoaderRoute: typeof CookiePolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/petition': {
@@ -627,11 +566,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -639,13 +578,6 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/root-canal': {
-      id: '/root-canal'
-      path: '/root-canal'
-      fullPath: '/root-canal'
-      preLoaderRoute: typeof RootCanalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -662,18 +594,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tooth-extraction': {
-      id: '/tooth-extraction'
-      path: '/tooth-extraction'
-      fullPath: '/tooth-extraction'
-      preLoaderRoute: typeof ToothExtractionRouteImport
+    '/terms-and-condition': {
+      id: '/terms-and-condition'
+      path: '/terms-and-condition'
+      fullPath: '/terms-and-condition'
+      preLoaderRoute: typeof TermsAndConditionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vacancies': {
@@ -690,25 +615,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/virtual-dentistry': {
-      id: '/virtual-dentistry'
-      path: '/virtual-dentistry'
-      fullPath: '/virtual-dentistry'
-      preLoaderRoute: typeof VirtualDentistryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/whitening': {
-      id: '/whitening'
-      path: '/whitening'
-      fullPath: '/whitening'
-      preLoaderRoute: typeof WhiteningRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blogs_/$slug': {
-      id: '/blogs_/$slug'
-      path: '/blogs/$slug'
-      fullPath: '/blogs/$slug'
-      preLoaderRoute: typeof BlogsSlugRouteImport
+    '/blog_/$slug': {
+      id: '/blog_/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/category/$slug': {
@@ -725,6 +636,97 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/aesthetics': {
+      id: '/services/aesthetics'
+      path: '/services/aesthetics'
+      fullPath: '/services/aesthetics'
+      preLoaderRoute: typeof ServicesAestheticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/cosmetic': {
+      id: '/services/cosmetic'
+      path: '/services/cosmetic'
+      fullPath: '/services/cosmetic'
+      preLoaderRoute: typeof ServicesCosmeticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/custom-grillz': {
+      id: '/services/custom-grillz'
+      path: '/services/custom-grillz'
+      fullPath: '/services/custom-grillz'
+      preLoaderRoute: typeof ServicesCustomGrillzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/dentures': {
+      id: '/services/dentures'
+      path: '/services/dentures'
+      fullPath: '/services/dentures'
+      preLoaderRoute: typeof ServicesDenturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/emergency-dental': {
+      id: '/services/emergency-dental'
+      path: '/services/emergency-dental'
+      fullPath: '/services/emergency-dental'
+      preLoaderRoute: typeof ServicesEmergencyDentalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/general-dentistry': {
+      id: '/services/general-dentistry'
+      path: '/services/general-dentistry'
+      fullPath: '/services/general-dentistry'
+      preLoaderRoute: typeof ServicesGeneralDentistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/mobile-dentistry': {
+      id: '/services/mobile-dentistry'
+      path: '/services/mobile-dentistry'
+      fullPath: '/services/mobile-dentistry'
+      preLoaderRoute: typeof ServicesMobileDentistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/mouthguards': {
+      id: '/services/mouthguards'
+      path: '/services/mouthguards'
+      fullPath: '/services/mouthguards'
+      preLoaderRoute: typeof ServicesMouthguardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/oral-hygiene': {
+      id: '/services/oral-hygiene'
+      path: '/services/oral-hygiene'
+      fullPath: '/services/oral-hygiene'
+      preLoaderRoute: typeof ServicesOralHygieneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/root-canal': {
+      id: '/services/root-canal'
+      path: '/services/root-canal'
+      fullPath: '/services/root-canal'
+      preLoaderRoute: typeof ServicesRootCanalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/tooth-extraction': {
+      id: '/services/tooth-extraction'
+      path: '/services/tooth-extraction'
+      fullPath: '/services/tooth-extraction'
+      preLoaderRoute: typeof ServicesToothExtractionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/virtual-dentistry': {
+      id: '/services/virtual-dentistry'
+      path: '/services/virtual-dentistry'
+      fullPath: '/services/virtual-dentistry'
+      preLoaderRoute: typeof ServicesVirtualDentistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/whitening': {
+      id: '/services/whitening'
+      path: '/services/whitening'
+      fullPath: '/services/whitening'
+      preLoaderRoute: typeof ServicesWhiteningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop_/$productSlug': {
       id: '/shop_/$productSlug'
       path: '/shop/$productSlug'
@@ -738,38 +740,38 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AestheticsRoute: AestheticsRoute,
-  BlogsRoute: BlogsRoute,
+  BlogRoute: BlogRoute,
   BookingRoute: BookingRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
-  ComplaintsRoute: ComplaintsRoute,
-  ContactRoute: ContactRoute,
-  CookiesRoute: CookiesRoute,
-  CosmeticRoute: CosmeticRoute,
-  CustomGrillzRoute: CustomGrillzRoute,
-  DenturesRoute: DenturesRoute,
-  EmergencyDentalRoute: EmergencyDentalRoute,
-  GeneralDentistryRoute: GeneralDentistryRoute,
-  MobileDentistryRoute: MobileDentistryRoute,
-  MouthguardsRoute: MouthguardsRoute,
-  OralHygieneRoute: OralHygieneRoute,
+  ComplaintsPolicyRoute: ComplaintsPolicyRoute,
+  ContactUsRoute: ContactUsRoute,
+  CookiePolicyRoute: CookiePolicyRoute,
   PetitionRoute: PetitionRoute,
   PricingRoute: PricingRoute,
-  PrivacyRoute: PrivacyRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  RootCanalRoute: RootCanalRoute,
   ShopRoute: ShopRoute,
   TeamRoute: TeamRoute,
-  TermsRoute: TermsRoute,
-  ToothExtractionRoute: ToothExtractionRoute,
+  TermsAndConditionRoute: TermsAndConditionRoute,
   VacanciesRoute: VacanciesRoute,
   VerifyEmailRoute: VerifyEmailRoute,
-  VirtualDentistryRoute: VirtualDentistryRoute,
-  WhiteningRoute: WhiteningRoute,
-  BlogsSlugRoute: BlogsSlugRoute,
+  BlogSlugRoute: BlogSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrderIdRoute: OrderIdRoute,
+  ServicesAestheticsRoute: ServicesAestheticsRoute,
+  ServicesCosmeticRoute: ServicesCosmeticRoute,
+  ServicesCustomGrillzRoute: ServicesCustomGrillzRoute,
+  ServicesDenturesRoute: ServicesDenturesRoute,
+  ServicesEmergencyDentalRoute: ServicesEmergencyDentalRoute,
+  ServicesGeneralDentistryRoute: ServicesGeneralDentistryRoute,
+  ServicesMobileDentistryRoute: ServicesMobileDentistryRoute,
+  ServicesMouthguardsRoute: ServicesMouthguardsRoute,
+  ServicesOralHygieneRoute: ServicesOralHygieneRoute,
+  ServicesRootCanalRoute: ServicesRootCanalRoute,
+  ServicesToothExtractionRoute: ServicesToothExtractionRoute,
+  ServicesVirtualDentistryRoute: ServicesVirtualDentistryRoute,
+  ServicesWhiteningRoute: ServicesWhiteningRoute,
   ShopProductSlugRoute: ShopProductSlugRoute,
 }
 export const routeTree = rootRouteImport

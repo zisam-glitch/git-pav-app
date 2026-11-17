@@ -101,7 +101,7 @@ export function WhiteningComparison() {
                 </td>
                 <td className="py-5 px-6 bg-[#faf6f0] border-x border-[#e2d4c0]">
                   <Button asChild className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95">
-                    <a href="/contact">Book Custom Suite</a>
+                    <a href="/contact-us">Book Custom Suite</a>
                   </Button>
                 </td>
                 <td className="py-5 px-6">

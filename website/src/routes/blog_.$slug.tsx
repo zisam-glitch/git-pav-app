@@ -1,23 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { blogPostHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
-import { ContactSection } from "@/components/contact/contact-section";
+import { BlogDetail } from "@/components/blog/blog-detail";
 
-export const Route = createFileRoute("/contact")({ component: ContactPage });
+export const Route = createFileRoute("/blog_/$slug")({
+  head: ({ params }) => blogPostHead(params.slug),
+  component: BlogDetailRoute,
+});
 
-function ContactPage() {
+function BlogDetailRoute() {
+  const { slug } = Route.useParams();
+
   return (
     <main className="min-h-screen bg-[#fffdf9] text-fg">
       <ScrollProgress />
       <Header />
-
-      {/* Spacer for fixed header */}
       <div className="pt-16">
-        <ContactSection />
+        <BlogDetail slug={slug} />
       </div>
-
       <Footer />
     </main>
   );
 }
+

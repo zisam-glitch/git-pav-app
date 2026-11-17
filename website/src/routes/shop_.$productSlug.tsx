@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { productHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
@@ -9,6 +10,7 @@ import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 
 export const Route = createFileRoute("/shop_/$productSlug")({
+  head: ({ params }) => productHead(params.productSlug),
   component: ProductDetailRoute,
 });
 

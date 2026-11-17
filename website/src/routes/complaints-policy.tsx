@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 
-export const Route = createFileRoute("/complaints")({ component: ComplaintsPage });
+export const Route = createFileRoute("/complaints-policy")({
+  head: () => seoHead("/complaints-policy"),
+  component: ComplaintsPage,
+});
 
 function ComplaintsPage() {
   return (

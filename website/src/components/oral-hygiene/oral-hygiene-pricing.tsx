@@ -159,7 +159,7 @@ export function OralHygienePricing() {
                         asChild
                         className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95"
                       >
-                        <a href="/contact" className="flex items-center justify-center gap-2">
+                        <a href="/contact-us" className="flex items-center justify-center gap-2">
                           Book Appointment <ArrowRight className="size-3.5" />
                         </a>
                       </Button>
@@ -169,7 +169,7 @@ export function OralHygienePricing() {
                         variant="outline"
                         className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
                       >
-                        <a href="/contact">Book Appointment</a>
+                        <a href="/contact-us">Book Appointment</a>
                       </Button>
                     )}
                   </td>

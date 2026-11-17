@@ -76,7 +76,7 @@ export function WhiteningContact() {
                 asChild
                 className="accent-gradient rounded-full px-7 h-11 text-white font-bold hover:opacity-95 shadow-sm text-xs sm:text-sm w-full"
               >
-                <a href="/contact">Book Clinic Appointment Online</a>
+                <a href="/contact-us">Book Clinic Appointment Online</a>
               </Button>
             </div>
           </div>

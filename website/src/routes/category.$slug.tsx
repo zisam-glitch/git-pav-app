@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { shopCategoryHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
@@ -12,6 +13,7 @@ import { ShoppingBag, ArrowLeft } from "lucide-react";
 import type { Product } from "@/components/shop/shop-data";
 
 export const Route = createFileRoute("/category/$slug")({
+  head: ({ params }) => shopCategoryHead(params.slug),
   component: CategoryRoute,
 });
 

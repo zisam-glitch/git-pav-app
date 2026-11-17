@@ -16,7 +16,7 @@ export function OpenApplication() {
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="/contact"
+            href="/contact-us"
             className="h-12 px-8 rounded-xl accent-gradient text-white text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-md"
           >
             <Send className="size-4" />

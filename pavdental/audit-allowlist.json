@@ -10,5 +10,11 @@
     "package": "decode-uri-component 0.2.2 (via expo-router > query-string 7)",
     "reason": "In the app bundle: Expo Router parses route and deep-link query strings with it. The risk is slow decoding (denial of service) of a crafted percent-encoded URL on the patient's own phone, not data exposure. The fix (0.5.1) is a new major version that query-string 7 doesn't support, so forcing it could break routing. Clears when Expo Router moves to a fixed query-string; recheck on each Expo SDK update.",
     "reviewBy": "2027-01-31"
+  },
+  {
+    "advisory": "GHSA-fc5q-39xc-vjpf",
+    "package": "picomatch 2.3.2 and 4.0.7 (via @expo/cli, @expo/metro-config, micromatch, anymatch, jest-util, tinyglobby, fdir)",
+    "reason": "Build and test tools only (Expo CLI, Metro, Jest): they match globs from our own config with it, and none of the app's runtime libraries use it. ReDoS needs an attacker-written glob. No fixed version is published yet (4.0.7 is the newest release); update picomatch when one ships.",
+    "reviewBy": "2026-12-15"
   }
 ]

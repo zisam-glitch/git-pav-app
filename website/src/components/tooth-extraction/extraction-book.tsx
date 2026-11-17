@@ -74,7 +74,7 @@ export function ExtractionBook() {
               asChild
               className="accent-gradient rounded-full px-10 h-12 text-white font-bold hover:opacity-90 transition-opacity shadow-sm"
             >
-              <a href="/contact" className="flex items-center gap-2">
+              <a href="/contact-us" className="flex items-center gap-2">
                 <CalendarDays className="size-4" />
                 Book Appointment Now
                 <ArrowRight className="size-4" />

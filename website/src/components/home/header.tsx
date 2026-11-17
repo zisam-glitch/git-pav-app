@@ -39,12 +39,12 @@ const NAV_LINKS = [
   { href: "#top", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact-us", label: "Contact" },
   { href: "/team", label: "Team" },
   { href: "/shop", label: "Shop" },
   { href: "/petition", label: "Petition" },
   { href: "/vacancies", label: "Vacancies" },
-  { href: "/blogs", label: "Blogs" },
+  { href: "/blog", label: "Blogs" },
 ];
 
 const SERVICE_CATEGORIES: ServiceCategory[] = [
@@ -53,25 +53,25 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     items: [
       {
         title: "Whitening",
-        href: "/whitening",
+        href: "/services/whitening",
         description: "Brighten your smile safely",
         icon: Sparkles,
       },
       {
         title: "Cosmetic",
-        href: "/cosmetic",
+        href: "/services/cosmetic",
         description: "Enhance your natural beauty",
         icon: Paintbrush,
       },
       {
         title: "Aesthetics",
-        href: "/aesthetics",
+        href: "/services/aesthetics",
         description: "Doctor-led facial aesthetics",
         icon: Crown,
       },
       {
         title: "Custom Grillz",
-        href: "/custom-grillz",
+        href: "/services/custom-grillz",
         description: "Personalized gold & diamond grillz",
         icon: Gem,
       },
@@ -82,19 +82,19 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     items: [
       {
         title: "Tooth Extraction",
-        href: "/tooth-extraction",
+        href: "/services/tooth-extraction",
         description: "Safe and comfortable extractions",
         icon: Scissors,
       },
       {
         title: "Root Canal",
-        href: "/root-canal",
+        href: "/services/root-canal",
         description: "Save your natural tooth",
         icon: Syringe,
       },
       {
         title: "Dentures",
-        href: "/dentures",
+        href: "/services/dentures",
         description: "Custom-fitted dentures & repairs",
         icon: Smile,
       },
@@ -105,7 +105,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     items: [
       {
         title: "Emergency Dental",
-        href: "/emergency-dental",
+        href: "/services/emergency-dental",
         description: "Immediate care when you need it most",
         icon: AlertCircle,
       },
@@ -116,19 +116,19 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     items: [
       {
         title: "Oral Hygiene",
-        href: "/oral-hygiene",
+        href: "/services/oral-hygiene",
         description: "Professional cleaning & prevention",
         icon: Sparkles,
       },
       {
         title: "General Dentistry",
-        href: "/general-dentistry",
+        href: "/services/general-dentistry",
         description: "Complete dental care for all ages",
         icon: Smile,
       },
       {
         title: "Mouthguards",
-        href: "/mouthguards",
+        href: "/services/mouthguards",
         description: "Custom sports & night guards",
         icon: Shield,
       },
@@ -139,13 +139,13 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     items: [
       {
         title: "Mobile Dentistry",
-        href: "/mobile-dentistry",
+        href: "/services/mobile-dentistry",
         description: "We come to you",
         icon: Truck,
       },
       {
         title: "Virtual Dentistry",
-        href: "/virtual-dentistry",
+        href: "/services/virtual-dentistry",
         description: "Online consultations & advice",
         icon: Video,
       },

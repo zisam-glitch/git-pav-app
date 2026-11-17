@@ -13,11 +13,11 @@ export function FeaturedArticle({ article, onRead }: FeaturedArticleProps) {
     <section className="pt-12 bg-[#fffdf9]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <a
-          href={`/blogs/${article.slug}`}
+          href={`/blog/${article.slug}`}
           onClick={(e) => {
             if (onRead) {
               e.preventDefault();
-              window.location.href = `/blogs/${article.slug}`;
+              window.location.href = `/blog/${article.slug}`;
             }
           }}
           className="group cursor-pointer relative overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:border-primary/40 grid grid-cols-1 lg:grid-cols-12 gap-0"

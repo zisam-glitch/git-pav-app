@@ -1,10 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { VacanciesPage } from "@/components/vacancies/vacancies-page";
 
-export const Route = createFileRoute("/vacancies")({ component: VacanciesRoute });
+export const Route = createFileRoute("/vacancies")({
+  head: () => seoHead("/vacancies"),
+  component: VacanciesRoute,
+});
 
 function VacanciesRoute() {
   return (

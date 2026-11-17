@@ -5,20 +5,20 @@ const quickLinks = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Services", href: "#services" },
-  { name: "Whitening", href: "/whitening" },
-  { name: "Extraction", href: "/tooth-extraction" },
-  { name: "Root Canal", href: "/root-canal" },
-  { name: "Dentures", href: "/dentures" },
-  { name: "Emergency", href: "/emergency-dental" },
-  { name: "Cosmetic", href: "/cosmetic" },
-  { name: "Aesthetics", href: "/aesthetics" },
-  { name: "Grillz", href: "/custom-grillz" },
+  { name: "Whitening", href: "/services/whitening" },
+  { name: "Extraction", href: "/services/tooth-extraction" },
+  { name: "Root Canal", href: "/services/root-canal" },
+  { name: "Dentures", href: "/services/dentures" },
+  { name: "Emergency", href: "/services/emergency-dental" },
+  { name: "Cosmetic", href: "/services/cosmetic" },
+  { name: "Aesthetics", href: "/services/aesthetics" },
+  { name: "Grillz", href: "/services/custom-grillz" },
   { name: "Team", href: "/team" },
   { name: "Shop", href: "/shop" },
   { name: "Petition", href: "/petition" },
   { name: "Vacancies", href: "/vacancies" },
-  { name: "Blogs", href: "/blogs" },
-  { name: "Contact", href: "/contact" },
+  { name: "Blogs", href: "/blog" },
+  { name: "Contact", href: "/contact-us" },
 ];
 
 const contactInfo = [
@@ -36,10 +36,10 @@ const socialLinks = [
 ];
 
 const legalLinks = [
-  { name: "Terms and Conditions", href: "/terms" },
-  { name: "Privacy Policy", href: "/privacy" },
-  { name: "Cookie Policy", href: "/cookies" },
-  { name: "Complaints Procedure", href: "/complaints" },
+  { name: "Terms and Conditions", href: "/terms-and-condition" },
+  { name: "Privacy Policy", href: "/privacy-policy" },
+  { name: "Cookie Policy", href: "/cookie-policy" },
+  { name: "Complaints Procedure", href: "/complaints-policy" },
 ];
 
 export function Footer() {

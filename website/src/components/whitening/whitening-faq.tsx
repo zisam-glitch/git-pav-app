@@ -104,7 +104,7 @@ export function WhiteningFaq() {
             Our GDC-registered dental team is here to help you select the safest treatment for your enamel.
           </p>
           <a
-            href="/contact"
+            href="/contact-us"
             className="inline-flex items-center gap-2 accent-gradient text-white font-bold rounded-full px-8 h-12 hover:opacity-95 text-sm shadow-sm"
           >
             Speak with a Whitening Dentist

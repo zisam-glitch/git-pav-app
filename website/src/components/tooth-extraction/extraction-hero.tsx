@@ -38,7 +38,7 @@ export function ExtractionHero() {
               size="lg"
               className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
             >
-              <a href="/contact">Book appointment</a>
+              <a href="/contact-us">Book appointment</a>
             </Button>
             <Button
               asChild

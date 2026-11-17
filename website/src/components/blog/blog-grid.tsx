@@ -28,11 +28,11 @@ export function BlogGrid({ articles, onRead, onResetFilter, totalArticles }: Blo
           {articles.map((article) => (
             <a
               key={article.id}
-              href={`/blogs/${article.slug}`}
+              href={`/blog/${article.slug}`}
               onClick={(e) => {
                 if (onRead) {
                   e.preventDefault();
-                  window.location.href = `/blogs/${article.slug}`;
+                  window.location.href = `/blog/${article.slug}`;
                 }
               }}
               className="group flex flex-col justify-between overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-md"

@@ -32,7 +32,7 @@ export function GeneralDentistryPricing() {
             asChild
             className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
           >
-            <a href="/contact" className="flex items-center gap-2">
+            <a href="/contact-us" className="flex items-center gap-2">
               Book Appointment <ArrowRight className="size-4" />
             </a>
           </Button>

@@ -156,7 +156,7 @@ export function PetitionContact() {
         {/* Floating/inline Appointment Button underneath */}
         <div className="mt-14 text-center">
           <a
-            href="/contact"
+            href="/contact-us"
             className="inline-flex items-center gap-2 rounded-lg bg-[#925a27] hover:bg-[#844d1e] text-white px-7 py-3 text-xs sm:text-sm font-semibold shadow-sm transition-transform active:scale-95"
           >
             <Calendar className="size-4" />

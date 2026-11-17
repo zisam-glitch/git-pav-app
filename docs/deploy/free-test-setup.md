@@ -121,7 +121,7 @@ The dashboard keeps the website's shop, blog and form data in its own database.
    | `DATABASE_URL` | Supabase project 2 pooler URI |
    | `WEBSITE_ORIGIN` | your website URL, or `http://localhost:8080` for now |
 
-   Leave Resend, Cloudinary and Sentry empty; those features just stay off.
+   Leave Postmark, Cloudinary and Sentry empty; those features just stay off.
 5. Deploy, then sign in with the admin account from step 2.5. The code arrives by email.
 
 ## 8. The app against the test API

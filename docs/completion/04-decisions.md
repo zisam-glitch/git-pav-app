@@ -110,3 +110,21 @@ C-01 to C-11 (Apple, Google Play, Expo, Stripe live, Daily, Postmark, Twilio, Se
 | When the van cancels a visit (decision 4) | Full refund always, whatever the phase, with an apology message and a one-tap rebook | `cancelVanRequest` with `byVan`; the rebook button is an app screen, not built yet |
 | No-show rule (decision 3) | The crew waits 10 minutes on site and the app records one message and one call attempt; then no-show can be marked and the deposit is kept | Not built yet (N23) |
 | Who accepts a request (decision 1) | Manual accept stays for now; automatic acceptance can be added later on its own | Phase 3 item 6 is not built |
+
+## Owner decisions, 18 Nov 2026 (website)
+
+The live site at www.pavdental.com is a separate Create React App build, not `website/`. These answers set how `website/` is finished and how the domain moves to it.
+
+| Topic | Answer | Affects |
+|---|---|---|
+| Website and shop work | Starts now, ahead of the app. Replaces the 4 Nov "on hold until the app is done" | `website/`, shop screens in `admin-dashboard/` |
+| App parts of the website | Skipped for now: app links in `/.well-known`, `/reset-password`, `/verify-email`, app booking for mobile and virtual dentistry, team data from the app backend (use the verified static list) | `website/` |
+| Source of truth for content | Everything on the live site is real. Port it word for word, and remove what `website/` says that the live site does not | `website/` copy, team, pricing, whitening, shop |
+| NHS wording | As on the live site (the petition). The NHS band prices only `website/` shows are removed; D-13 (private only) stands | `website/` pricing pages |
+| Finance wording | As on the live site (0% and 7.9% APR). D-05 recorded that the practice is not FCA-authorised to advertise finance, so check the wording with V12 before launch | `website/` finance and pricing pages |
+| SEO | Same or better. Keep the live URLs; every live page keeps its title, description and canonical; the domain moves only after a parity check against a recorded baseline passes on a preview | `website/`, Vercel |
+| Shop checkout | Real checkout at launch. Stripe stays in test mode until the switch; the owner adds the live keys to production then | `website/`, `admin-dashboard/` |
+| Enquiries | Website forms send an email to the practice | `admin-dashboard/` form routes |
+| Booking | Setmore, as on the live site | `website/` |
+| Analytics | GA4 `G-KZVKDLY449` (C-15), loaded after cookie consent. Analytics does not affect search rankings | `website/` |
+| Domain switch and Search Console | Decided when the work is done. Add DNS verification in Search Console before the switch | Vercel, Search Console |

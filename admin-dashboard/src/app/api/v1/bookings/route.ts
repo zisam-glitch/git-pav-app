@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { sendEnquiryAlert } from "@/lib/enquiry-alert";
 import { rateLimit } from "@/lib/rate-limit";
 
 const CORS_HEADERS = {
@@ -50,6 +51,13 @@ export async function POST(request: Request) {
         body.message ?? null,
       ],
     );
+
+    await sendEnquiryAlert({
+      kind: "booking",
+      name: patient_name.trim(),
+      email: patient_email.trim(),
+      phone: body.patient_phone?.trim() || null,
+    });
 
     return NextResponse.json({ success: true, id: row.id }, { status: 201, headers: CORS_HEADERS });
   } catch (error) {

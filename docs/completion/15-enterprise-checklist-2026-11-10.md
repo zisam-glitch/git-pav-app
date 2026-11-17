@@ -60,8 +60,10 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       *Done for all four: booking payment (PR 120), video call (PR 123), van live-tracking (PR 126), treatment plan (PR 127). Each has function tests and screen tests.*
 - [ ] **A3 (P1, M) Use the generated API types everywhere.** `api-contract.gen.ts` is imported by only 2 files, while
       screens use `any` (171 non-test uses). Generate types for every endpoint and replace `any`.
-- [ ] **A4 (P1, S) Shared enums, not string literals.** `status`, `channel` and `role` are compared as raw strings in 71
+      *Progress: started (PRs #181–#184, #192): added generated contract types for appointments, odontogram, plans, prescriptions, and documents, and removed `any` annotations across clinician, operator, van, slot-picker, video, records, and lib modules.*
+- [x] **A4 (P1, S) Shared enums, not string literals.** `status`, `channel` and `role` are compared as raw strings in 71
       places. Use one union type and small helpers (`isConfirmed(b)`), so a new status cannot be missed in one screen.
+      *Done (PR #177): centralised status, channel, and role enums and helpers.*
 - [x] **A5 (P1, XS) Delete dead code.** *Done.* The cache-persistence module, the payment-hooks file and the icon registry are gone
       (a test keeps them gone), and the five unused illustration sources are deleted, so the build script cannot bring their art back.
       `backend/src/lib/structured-logging.ts` is kept on purpose: it is the start of the one logger in I3.
@@ -69,36 +71,46 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       (`records/plans/[id].tsx` 880, `consult-room.tsx` 701, `odontogram.tsx` 686, `live-track.tsx` 642, `home.tsx` 604).
 - [ ] **A7 (P2, M) Typed routes.** 146 casts (`as never`) hide wrong paths until a patient taps. Turn on Expo Router
       typed routes and fix them; a renamed screen then fails the build, not the patient.
-- [ ] **A8 (P2, S) Turn on `noUnusedLocals` and `noUnusedParameters`** (currently off) and clear what appears.
-- [ ] **A9 (P2, XS) Remove the 6 `eslint-disable` lines** or give each a written reason.
+- [x] **A8 (P2, S) Turn on `noUnusedLocals` and `noUnusedParameters`** (currently off) and clear what appears.
+      *Done (PR #180): enabled `noUnusedLocals` and `noUnusedParameters` in `pavdental/` and cleared unused symbols.*
+- [x] **A9 (P2, XS) Remove the 6 `eslint-disable` lines** or give each a written reason.
+      *Done (PR #187): removed or justified `eslint-disable` comments.*
 - [ ] **A10 (P2, S) Stop swallowing errors.** 58 places write `catch {}` or `.catch(() => {})`. Some are right (a haptic
       buzz); each should be a decision. At least send the rest to `reportCaughtError`.
-- [ ] **A11 (P3, S) Lint budget.** The cap is 215 warnings and `main` has 214, so one new `any` can fail CI. Lower the
+      *Progress: started (PR #198): routed swallowed errors in part 1 to `reportCaughtError`.*
+- [x] **A11 (P3, S) Lint budget.** The cap is 215 warnings and `main` has 214, so one new `any` can fail CI. Lower the
       count as `any` goes, then lower the cap.
+      *Done (PR #194): lowered the mobile ESLint warning budget to 110.*
 
 ## B. Data and state
 
-- [ ] **B1 (P1, M) One way to fetch.** Move the 12 screens that call `authFetch` directly (video intake, waiting, summary,
+- [x] **B1 (P1, M) One way to fetch.** Move the 12 screens that call `authFetch` directly (video intake, waiting, summary,
       call, message; consent; prescription detail; van check-in; rx dispense; consult room) into React Query hooks so
       loading, error, retry, caching and cancellation behave the same.
+      *Done (PRs #175, #176): migrated non-video, video, and consult-room screens off direct `authFetch` onto React Query hooks.*
 - [ ] **B2 (P1, S) A query-key factory** (`keys.appointments.list()`, `keys.slots(params)`), not free strings.
       `"operator-shift"` is typed by hand 14 times; one typo means a screen never refreshes.
+      *Progress: started (PR #173): centralised React Query keys in `query-keys.ts` (`queryKeys` factory).*
 - [x] **B3 (P1, S) One money formatter.** Use `formatGbp` everywhere; remove `pounds()` in `appointment-detail.ts`
       (added in this work, a duplicate), `depositPaidLabel`, and the 8 inline `toFixed(2)` calls. Add a `Money` type or
       keep pence as integers until display.
-- [ ] **B4 (P1, S) One time/date module.** 23 `toLocale*` calls and 23 `timeZone` mentions are scattered. Route all
+- [x] **B4 (P1, S) One time/date module.** 23 `toLocale*` calls and 23 `timeZone` mentions are scattered. Route all
       through `uk-time.ts`; the clinician screens were missed once already (B6 on 9 Nov).
+      *Done (PR #174): routed remaining date/time formatting through `uk-time.ts`.*
 - [x] **B5 (P1, S) Do not guess prices.** `service-catalog.tsx:98` still falls back to a 25% deposit if the server sends
       none. The server owns the deposit; show an error instead.
-- [ ] **B6 (P2, M) Optimistic updates** for the actions that feel slow: mark message read, cancel, change preferences.
+- [x] **B6 (P2, M) Optimistic updates** for the actions that feel slow: mark message read, cancel, change preferences.
       There are none today (0 `onMutate`).
+      *Done (PR #178): added optimistic updates with rollback for cancel, read, and preferences.*
 - [x] **B7 (P2, M) Fetch one appointment, not the list.** The detail screen still loads every appointment to find one,
       and the booking-confirmed screen did too (B4/B5 on 9 Nov). The server has `GET /appointments/:id`.
       *Progress: done (PR 125): detail, check-in, reschedule and cancelled screens use `useAppointment(id)`.*
-- [ ] **B8 (P2, M) Decide what survives an app restart.** The booking draft (treatment, clinic, time) is in memory only.
+- [x] **B8 (P2, M) Decide what survives an app restart.** The booking draft (treatment, clinic, time) is in memory only.
       Save the non-clinical draft locally so a call or a kill does not lose it. Do not persist health answers.
-- [ ] **B9 (P2, S) Pagination and infinite lists** for appointments, messages, notifications and documents
+      *Done (PR #179): persisted non-clinical booking draft across app restarts.*
+- [x] **B9 (P2, S) Pagination and infinite lists** for appointments, messages, notifications and documents
       (the API caps at 200 and sends all at once).
+      *Done (PR #191): added pagination for lists across mobile and backend.*
 
 ## C. Performance
 
@@ -129,8 +141,10 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       Add `React.memo` to list items once C1 is done and check with the profiler, not by feel.
 - [ ] **C6 (P2, S) Check re-renders from the stores.** Several screens destructure the whole Zustand store
       (`const { a, b, c } = useBookingStore()`), so any field change re-renders them. Select single fields.
-- [ ] **C7 (P2, XS) Stop polling when the screen is hidden or the app is in the background** (10 timers/polls in
+      *Progress: started (PR #197): switched booking and van flows to granular Zustand store selectors.*
+- [x] **C7 (P2, XS) Stop polling when the screen is hidden or the app is in the background** (10 timers/polls in
       screens; `waiting`, `live-track`, `consult-room`). Pair with `focusManager`.
+      *Done (PR #190): paused polling when screen is hidden or app is backgrounded.*
 - [ ] **C8 (P3, S) Enable Hermes bytecode/`inlineRequires` checks** and confirm the production build has them on.
 
 ## D. Reliability and offline
@@ -151,7 +165,8 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       `changed: false`). Left: payment-intent create and the booking confirm step.*
 - [ ] **D4 (P2, M) One hold, not two.** A slot is held in Redis (10 minutes) and again in the database. The countdown and
       the real expiry can differ. Pick one source of truth.
-- [ ] **D5 (P2, S) Backoff and jitter on retries.** Check `retry: 2` with fixed delays against a struggling server.
+- [x] **D5 (P2, S) Backoff and jitter on retries.** Check `retry: 2` with fixed delays against a struggling server.
+      *Done (PR #188): added exponential backoff with jitter on query retries.*
 - [~] **D6 (P2, S) Remove the mock-payment branch from the shipped app.** `summary.tsx` carries `if (intent.isMock)`
       client-side. The server refuses mock keys when deployed, but the code path should not ship at all.
       *Mostly done: the booking payment only skips the card for a mock-Stripe server when the build says so (`allowMockPayment`,
@@ -170,8 +185,9 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **E2 (P1, S) Certificate pinning decision** and jailbreak/root detection decision, written in an ADR.
 - [ ] **E3 (P1, XS) Check what the OS keeps.** Task-switcher snapshots (`screen-security` exists), clipboard use,
       keyboard caching on health fields (`autoCorrect`, `secureTextEntry`, `autoComplete="off"` on medical inputs).
-- [ ] **E4 (P1, S) Remove health data from query cache logs and Sentry breadcrumbs** and add a test that proves it
+- [x] **E4 (P1, S) Remove health data from query cache logs and Sentry breadcrumbs** and add a test that proves it
       (a scrubber exists; test it with realistic payloads).
+      *Done (PR #196): scrubbed health data from Sentry breadcrumbs and logs with tests.*
 - [ ] **E5 (P1, M) Passkeys / Sign in with Apple and Google.** A 15-character password with no alternative will cost
       sign-ups; the decision is open.
 - [ ] **E6 (P2, S) Session UX:** show "signed out because of inactivity" rather than a blank welcome screen.
@@ -220,7 +236,8 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       do; check flaky ones such as the intermittent `admin-attention` and backend jest failures seen on 9 to 10 Nov).
 - [ ] **G7 (P2, S) Mutation or property tests** on the money, time and policy functions.
 - [ ] **G8 (P2, M) Load test script** in the repo (k6) for booking, slots, messages; run before launch.
-- [ ] **G9 (P3, XS) Name the test commands in one place** (`npm run verify`) so a new developer runs one thing.
+- [x] **G9 (P3, XS) Name the test commands in one place** (`npm run verify`) so a new developer runs one thing.
+      *Done (PR #189): added `verify` scripts.*
 
 ## H. Release, operations and team workflow
 
@@ -232,8 +249,9 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
 - [ ] **H4 (P1, S) Crash-free and performance dashboards with alerts** in Sentry, an on-call rota, and a one-page
       incident runbook.
 - [ ] **H5 (P1, S) Release notes and a changelog** generated from pull requests; version bump automation.
-- [ ] **H6 (P2, XS) Housekeeping:** 114 remote branches; a root `README` is missing; `docs/` has 10 folders with no index.
+- [x] **H6 (P2, XS) Housekeeping:** 114 remote branches; a root `README` is missing; `docs/` has 10 folders with no index.
       Delete merged branches, add a README with "run it in 10 minutes", add a docs index.
+      *Done (PR #189): added root README and docs index.*
 - [ ] **H7 (P2, S) Branch protection and required reviews** (a `CODEOWNERS` file exists; check it is enforced), and a
       second reviewer for payment, auth and clinical code.
 - [ ] **H8 (P2, M) Preview builds per pull request** so non-developers can try a change.
@@ -246,12 +264,14 @@ Effort: XS under an hour, S half a day, M one to two days, L a week or more.
       `services/` functions with their own tests; keep routes to parse, call, respond.
 - [~] **I2 (P1, S) Bound every list.** *Started: a patient's reward history, documents, treatment plans and prescriptions are capped (`lib/list-caps.ts`, newest first). Left: consents (`/consents/current` needs every row to find the latest per type, so it needs a query change, not a cap), and the van, queue, message and staff lists.* About 64 `findMany` calls have no `take` (*heuristic*; examples in `messages.ts`,
       `van.ts`, `van-queue.ts`, `consents.ts`, `rewards.ts`). Add a limit and pagination to each.
-- [ ] **I3 (P1, M) One logger.** 201 `console.*` calls while `structured-logging.ts` is used by no file. Use one JSON
+- [x] **I3 (P1, M) One logger.** 201 `console.*` calls while `structured-logging.ts` is used by no file. Use one JSON
       logger with request IDs and the existing scrubber; ship to a log service.
+      *Done (PRs #185, #195): switched backend routes, lib, middleware, and server to `structured-logging`.*
 - [x] **I4 (P1, S) Do not decrypt what the screen does not need.** *Done: the patient list leaves out `triageData` and `accessDetails`; no screen read them from the list, and `GET /appointments/:id` still returns them for one visit. The clinician schedule still decrypts them (it shows the chief complaint).* The patient appointment list decrypts triage data and
       access details for every row (up to 200) on every call. Return them only from the detail endpoint.
-- [ ] **I5 (P1, S) Read configuration in one place.** 45 `process.env` reads sit outside `config/` (`NODE_ENV` 6,
+- [x] **I5 (P1, S) Read configuration in one place.** 45 `process.env` reads sit outside `config/` (`NODE_ENV` 6,
       `APP_URL` 3, `DAILY_API_KEY` 2 ...). Validate all of it once at start-up.
+      *Done (PRs #186, #193): centralised `process.env` reads in `config/env` and routes.*
 - [ ] **I6 (P1, M) A real job queue.** Background work runs from in-process `setInterval` timers behind an advisory lock
       (slot expiry, reminders, van expiry). Use a durable queue (BullMQ on the existing Redis, or Postgres-based) for
       retries, visibility, rate control and dead-letter handling.

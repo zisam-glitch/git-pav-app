@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "advisory": "GHSA-fc5q-39xc-vjpf",
+    "package": "picomatch 4.0.7 (via vite, tinyglobby, fdir, unplugin, @tanstack/start-plugin-core)",
+    "reason": "Build tools only: they match file globs from our own config with it, and the built site does not include it. ReDoS needs an attacker-written glob. No fixed version is published yet (4.0.7 is the newest release); update picomatch when one ships.",
+    "reviewBy": "2026-12-15"
+  }
+]

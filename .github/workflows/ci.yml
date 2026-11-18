@@ -241,3 +241,12 @@ jobs:
       # runs only the Vite build step.
       - name: Build
         run: npm exec -- node scripts/with-app-env.mjs vite build
+
+      # Serves the build and compares every page with the recorded live site (website/seo/README.md).
+      # Fails on a missing page, a changed title, description or canonical, or a page that fell
+      # behind website/seo/parity-ratchet.json. After porting a page, run `npm run seo:parity --
+      # --base http://127.0.0.1:4173 --update-ratchet` and commit the file.
+      - name: SEO parity with the live site
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 &
+          node scripts/seo-parity.mjs --base http://127.0.0.1:4173 --wait-seconds 60

@@ -9,6 +9,27 @@ The live site at www.pavdental.com is a separate Create React App build. `websit
 | `live-seed-paths.json` | Where the crawl starts: the paths in the live app's router. The crawl follows links to find the rest (blog posts, team profiles). |
 | `live-files.json` | The 39 documents and team photos copied from the live site into `website/public/` at the same paths, each with its size, checksum and type, and the 5 documents the live page links to that the live server does not have (`missingOnLive`). `src/content/live-files.test.ts` checks the files against it. |
 | `live-content/` | The structure of a page ported so far (headings, paragraphs, lists, links, images, including FAQ answers hidden in collapsed accordions), captured with `--content-dir`. `src/content/live-pages.ts` holds the ported text. |
+| `parity-exceptions.json` | The differences from the live site that the owner has approved, with the reason: a redirect (`/gdpr`), a page not built yet (`/services/finance`, `/services/regestration`), and a lower sentence minimum for the legal pages that keep the repo's reviewed text. |
+| `parity-ratchet.json` | Each page's coverage of the live page's own sentences, as last recorded. The parity check fails if a page falls behind it. |
+
+## Checking a build against it
+
+`scripts/seo-parity.mjs` fetches every recorded URL from a running copy of the new site and reads the server-rendered HTML the way a search engine does. CI runs it on every website PR, against the built site. To run it yourself, in `website/`:
+
+```
+npm run build
+npm run preview -- --host 127.0.0.1 --port 4173      # in a second terminal
+npm run seo:parity -- --base http://127.0.0.1:4173
+```
+
+For each page it compares the status, title, description, canonical and robots tags, H1 and H2 headings, structured data types, internal links, image alt text, and how many of the live page's own sentences are on the new page (text on 10 or more live pages, such as the header and footer, is left out of that count).
+
+- A **failure** stops the run: a missing page, a changed title, description or canonical, a second title or description tag, or a page kept out of search results. Only the owner can approve one, in `parity-exceptions.json`.
+- A **note** is a gap to close before the switch: missing words, headings, links, alt text, or an H1 count other than one.
+- The **ratchet** (`parity-ratchet.json`) stops a page from getting worse while the rest are ported. After porting a page, run with `--update-ratchet` and commit the file.
+- **Before the switch**, run with `--min-sentences 0.95`: every page must have at least 95% of the live page's own sentences, except where an exception sets its own minimum.
+
+Other options: `--only /a,/b` for some pages, `--out report.json` for the full report with the missing sentences, `--wait-seconds N` to wait for the server to start.
 
 ## What the live site does today
 

@@ -1,0 +1,190 @@
+{
+  "/": {
+    "coverage": 0.458,
+    "fails": []
+  },
+  "/about": {
+    "coverage": 0.16,
+    "fails": []
+  },
+  "/blog": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/blog/24-hour-emergency-dentist-bradford-when-to-call-why-it-matters-and-how-to-get-seen": {
+    "coverage": 0.935,
+    "fails": []
+  },
+  "/blog/24-hour-emergency-dentist-in-leeds-how-quickly-can-you-get-seen": {
+    "coverage": 0.923,
+    "fails": []
+  },
+  "/blog/botox-vs-dermal-fillers-finding-the-right-facial-aesthetics-treatment-in-bradford": {
+    "coverage": 0.927,
+    "fails": []
+  },
+  "/blog/can-a-dentist-assess-a-dental-problem-through-a-video-call-what-can-and-cant-be-checked": {
+    "coverage": 0.936,
+    "fails": []
+  },
+  "/blog/can-you-whiten-just-one-tooth-what-causes-single-tooth-discolouration": {
+    "coverage": 0.93,
+    "fails": []
+  },
+  "/blog/tooth-extraction-in-bradford-when-is-removing-a-tooth-the-best-option": {
+    "coverage": 0.928,
+    "fails": []
+  },
+  "/cctv-policy": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/complaints-policy": {
+    "coverage": 0,
+    "fails": []
+  },
+  "/contact-us": {
+    "coverage": 0.333,
+    "fails": []
+  },
+  "/cookie-policy": {
+    "coverage": 0,
+    "fails": []
+  },
+  "/faq": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/gdpr": {
+    "coverage": 0,
+    "fails": []
+  },
+  "/petition": {
+    "coverage": 0.875,
+    "fails": []
+  },
+  "/practice-policy": {
+    "coverage": 0.875,
+    "fails": []
+  },
+  "/pricing": {
+    "coverage": 0.297,
+    "fails": []
+  },
+  "/privacy-policy": {
+    "coverage": 0.005,
+    "fails": []
+  },
+  "/services": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/services/aesthetics": {
+    "coverage": 0.34,
+    "fails": []
+  },
+  "/services/cosmetic": {
+    "coverage": 0.071,
+    "fails": []
+  },
+  "/services/custom-grillz": {
+    "coverage": 0,
+    "fails": []
+  },
+  "/services/dentures": {
+    "coverage": 0.026,
+    "fails": []
+  },
+  "/services/emergency-dental": {
+    "coverage": 0.05,
+    "fails": []
+  },
+  "/services/finance": {
+    "coverage": 0,
+    "fails": []
+  },
+  "/services/general-dentistry": {
+    "coverage": 0.571,
+    "fails": []
+  },
+  "/services/mobile-dentistry": {
+    "coverage": 0.706,
+    "fails": []
+  },
+  "/services/mouthguards": {
+    "coverage": 0.868,
+    "fails": []
+  },
+  "/services/oral-hygiene": {
+    "coverage": 0.164,
+    "fails": []
+  },
+  "/services/regestration": {
+    "coverage": 0,
+    "fails": []
+  },
+  "/services/root-canal": {
+    "coverage": 0.111,
+    "fails": []
+  },
+  "/services/tooth-extraction": {
+    "coverage": 0.029,
+    "fails": []
+  },
+  "/services/virtual-dentistry": {
+    "coverage": 0.534,
+    "fails": []
+  },
+  "/services/whitening": {
+    "coverage": 0.036,
+    "fails": []
+  },
+  "/shop": {
+    "coverage": 0.1,
+    "fails": []
+  },
+  "/team": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/aboo-bhojani": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/dr-cosimo-meucci": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/dr-hassan-bhojani": {
+    "coverage": 0.975,
+    "fails": []
+  },
+  "/team/haris-bhojani": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/raheela-shafiq": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/sayed-shohag-rahman": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/uwais-ullah": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/team/waleed-javed": {
+    "coverage": 1,
+    "fails": []
+  },
+  "/terms-and-condition": {
+    "coverage": 0.01,
+    "fails": []
+  },
+  "/vacancies": {
+    "coverage": 0.929,
+    "fails": []
+  }
+}

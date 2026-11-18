@@ -16,29 +16,14 @@ export const Route = createFileRoute("/pricing")({
 
 function PricingPage() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
-      
-      {/* Spacer for fixed header */}
-      <div className="pt-16">
-        {/* Top announcement & Hero */}
-        <PricingHero />
-
-        {/* Membership Plans */}
-        <PricingCards />
-
-        {/* Detailed Treatment Fee Schedule Table */}
-        <FeeTable />
-
-        {/* Insurance Providers Section */}
-        <InsuranceProviders />
-
-        {/* Special Announcement Section */}
-        <SpecialAnnouncement />
-      </div>
-
-      {/* Unified Single Footer */}
+      <PricingHero />
+      <PricingCards />
+      <FeeTable />
+      <InsuranceProviders />
+      <SpecialAnnouncement />
       <Footer />
     </main>
   );

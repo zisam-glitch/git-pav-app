@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
+import { Header } from "@/components/home/header";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { TeamGrid } from "@/components/team/team-grid";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/team")({
   head: () => seoHead("/team"),
@@ -12,15 +12,10 @@ export const Route = createFileRoute("/team")({
 
 function TeamPageRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
-
-      {/* Spacer for fixed top header */}
-      <div className="pt-24">
-        <TeamGrid />
-      </div>
-
+      <TeamGrid />
       <Footer />
     </main>
   );

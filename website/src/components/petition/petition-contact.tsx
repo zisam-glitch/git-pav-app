@@ -1,11 +1,12 @@
 import { CheckCircle2, Send } from "lucide-react";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { PETITION } from "@/content/petition";
-import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+import { PRACTICE_EMAIL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { useEnquiry } from "@/lib/use-enquiry";
-
-const FIELD =
-  "w-full rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20";
 
 /** "Get In Touch": the live page's contact form. Messages go to the practice through the dashboard. */
 export function PetitionContact() {
@@ -13,99 +14,145 @@ export function PetitionContact() {
   const { contact: copy } = PETITION;
 
   return (
-    <section className="border-t border-border/40 bg-white py-16 sm:py-24" aria-labelledby="touch-heading">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <div className="mb-10 text-center">
-          <h2 id="touch-heading" className="font-display text-3xl font-bold tracking-tight text-[#844d1e] sm:text-4xl">
-            {copy.heading}
-          </h2>
-          <p className="mx-auto mt-2 max-w-md text-xs text-muted sm:text-sm">{copy.intro}</p>
-        </div>
+    <Section
+      theme="white"
+      width="max"
+      space="sm"
+      aria-labelledby="touch-heading"
+      className="px-2 md:px-4"
+    >
+      <div className="rounded-xl bg-cream">
+        <div className="wrap grid items-start gap-8 py-10 md:grid-cols-[0.9fr_1.1fr] md:gap-12 md:py-16">
+          <div className="max-w-[460px]">
+            <p className="text-small font-medium text-muted">Visit</p>
+            <h2 id="touch-heading" className="mt-2 text-h2-md text-fg">
+              {copy.heading}
+            </h2>
+            <p className="mt-4 text-lead text-muted">{copy.intro}</p>
 
-        {enquiry.sent ? (
-          <div className="rounded-2xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs" role="status">
-            <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-green-100 text-green-700">
-              <CheckCircle2 className="size-6" aria-hidden="true" />
+            <ul className="mt-8 space-y-3 text-body">
+              <li className="text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
+              <li>
+                <a
+                  href={PRACTICE_PHONE_HREF}
+                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                >
+                  {PRACTICE_PHONE}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${PRACTICE_EMAIL}`}
+                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                >
+                  {PRACTICE_EMAIL}
+                </a>
+              </li>
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <BookButton>{copy.bookLabel}</BookButton>
+              <CallButton variant="outline" />
             </div>
-            <h3 className="font-display text-xl font-bold text-fg">Message Received</h3>
-            <p className="mx-auto mt-2 max-w-md text-xs text-muted sm:text-sm">
-              Thank you. Your message has reached the practice, and the team will get back to you. For urgent dental pain,
-              call{" "}
-              <a href={PRACTICE_PHONE_HREF} className="font-semibold text-primary underline">
-                {PRACTICE_PHONE}
-              </a>
-              .
-            </p>
-            <Button onClick={enquiry.reset} className="accent-gradient mt-6 h-10 px-6 text-xs text-white">
-              Send Another Message
-            </Button>
           </div>
-        ) : (
-          <form onSubmit={enquiry.submit} className="space-y-4 sm:space-y-5">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor="touch-name" className="mb-1.5 block text-xs font-semibold text-fg/80">
-                  {copy.fieldLabels.name}
-                </label>
-                <input id="touch-name" name="name" required type="text" autoComplete="name" className={`${FIELD} h-11`} />
-              </div>
-              <div>
-                <label htmlFor="touch-email" className="mb-1.5 block text-xs font-semibold text-fg/80">
-                  {copy.fieldLabels.email}
-                </label>
-                <input id="touch-email" name="email" required type="email" autoComplete="email" className={`${FIELD} h-11`} />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor="touch-subject" className="mb-1.5 block text-xs font-semibold text-fg/80">
-                  {copy.fieldLabels.subject}
-                </label>
-                <input id="touch-subject" name="subject" required type="text" className={`${FIELD} h-11`} />
-              </div>
-              <div>
-                <label htmlFor="touch-phone" className="mb-1.5 block text-xs font-semibold text-fg/80">
-                  {copy.fieldLabels.phone}
-                </label>
-                <input id="touch-phone" name="phone" type="tel" autoComplete="tel" className={`${FIELD} h-11`} />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="touch-message" className="mb-1.5 block text-xs font-semibold text-fg/80">
-                {copy.fieldLabels.message}
-              </label>
-              <textarea id="touch-message" name="message" required rows={5} className={`${FIELD} p-3.5`} />
-            </div>
-
-            <div className="space-y-3 pt-2">
-              {enquiry.error && (
-                <p role="alert" className="text-sm text-red-700">
-                  {enquiry.error}
+          <div className="rounded-xl border border-border bg-white p-6 md:p-[60px]">
+            {enquiry.sent ? (
+              <div className="max-w-[460px]" role="status">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
+                  <CheckCircle2 className="size-6" aria-hidden="true" />
+                </div>
+                <Heading as="h3" size="h3-md">
+                  Message Received
+                </Heading>
+                <p className="mt-3 text-body text-muted">
+                  Thank you. Your message has reached the practice, and the team will get back to
+                  you. For urgent dental pain, call{" "}
+                  <a
+                    href={PRACTICE_PHONE_HREF}
+                    className="font-medium text-terracotta underline underline-offset-4"
+                  >
+                    {PRACTICE_PHONE}
+                  </a>
+                  .
                 </p>
-              )}
-              <Button
-                type="submit"
-                disabled={enquiry.sending}
-                className="accent-gradient h-11 gap-2 rounded-lg px-8 text-xs font-semibold text-white shadow-xs transition-all hover:opacity-95 sm:text-sm"
-              >
-                {enquiry.sending ? "Sending…" : copy.submit}
-                <Send className="size-3.5" aria-hidden="true" />
-              </Button>
-            </div>
-          </form>
-        )}
+                <Button type="button" onClick={enquiry.reset} className="mt-6">
+                  Send Another Message
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={enquiry.submit} className="grid gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="touch-name">{copy.fieldLabels.name}</Label>
+                    <Input
+                      id="touch-name"
+                      name="name"
+                      required
+                      type="text"
+                      autoComplete="name"
+                      placeholder="Jane Doe"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="touch-email">{copy.fieldLabels.email}</Label>
+                    <Input
+                      id="touch-email"
+                      name="email"
+                      required
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="touch-subject">{copy.fieldLabels.subject}</Label>
+                    <Input
+                      id="touch-subject"
+                      name="subject"
+                      required
+                      type="text"
+                      placeholder="NHS dental funding"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="touch-phone">{copy.fieldLabels.phone}</Label>
+                    <Input
+                      id="touch-phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="+44"
+                    />
+                  </div>
+                </div>
 
-        <div className="mt-14 text-center">
-          <a
-            href={BOOKING_URL}
-            className="inline-flex items-center gap-2 rounded-lg bg-[#925a27] px-7 py-3 text-xs font-semibold text-white shadow-sm transition-transform hover:bg-[#844d1e] active:scale-95 sm:text-sm"
-          >
-            {copy.bookLabel}
-          </a>
+                <div className="grid gap-2">
+                  <Label htmlFor="touch-message">{copy.fieldLabels.message}</Label>
+                  <Textarea
+                    id="touch-message"
+                    name="message"
+                    required
+                    rows={5}
+                    placeholder="How can we help?"
+                  />
+                </div>
+
+                {enquiry.error ? (
+                  <p role="alert" className="text-small font-medium text-danger">
+                    {enquiry.error}
+                  </p>
+                ) : null}
+
+                <Button type="submit" disabled={enquiry.sending} className="w-full">
+                  <span>{enquiry.sending ? "Sending…" : copy.submit}</span>
+                  <Send aria-hidden="true" />
+                </Button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -1,34 +1,57 @@
+import { BookButton, ButtonLink, CallButton, CtaBand, Heading, Section } from "@/components/hims";
 import { TeamShowcase } from "@/components/ui/team-showcase";
 import { TEAM_MEMBERS } from "@/content/team-members";
 
-// The people on the team page, as on the live site.
 export function Team() {
   const members = TEAM_MEMBERS.map((member) => ({
     id: member.slug,
     name: member.name,
     role: member.role,
     image: member.photo.src,
+    gdc: member.gdc,
   }));
+
   return (
-    <section className="pb-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-medium">Meet Our Team</h2>
-          <p className="mt-4 text-muted">
-            The dedicated professionals behind PavDental's exceptional care
+    <>
+      <Section theme="white" space="default">
+        <div className="mx-auto max-w-2xl text-center">
+          <Heading as="h2" size="h2" accent="clinicians and care team" tone="terracotta">
+            Care led by real
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            The dedicated dentists, compliance leads, and support team behind Pav Dental in
+            Bradford.
           </p>
         </div>
-        <TeamShowcase members={members} />
-        <div className="mt-10 text-center">
-          <a
-            href="/team"
-            className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-white px-6 py-2.5 text-sm font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-white"
-          >
-            <span>Meet our dentists</span>
-            <span aria-hidden="true">&rarr;</span>
-          </a>
+
+        <div className="mt-10">
+          <TeamShowcase members={members} />
         </div>
-      </div>
-    </section>
+
+        <div className="mt-8 flex justify-center">
+          <ButtonLink to="/team" variant="outline">
+            Meet our dentists
+          </ButtonLink>
+        </div>
+      </Section>
+
+      <CtaBand
+        theme="brown"
+        title="Get In"
+        accent="Touch"
+        tone="gold"
+        actions={
+          <>
+            <BookButton variant="gold">Book Now</BookButton>
+            <ButtonLink to="/contact-us" variant="glass">
+              Contact Us
+            </ButtonLink>
+            <CallButton variant="glass" />
+          </>
+        }
+      >
+        Ready to take control of your dental health? Contact us to book your appointment today!
+      </CtaBand>
+    </>
   );
 }

@@ -1,53 +1,60 @@
-import React from "react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const DETAILED_STEPS = [
   {
-    title: "Booking Your Virtual Dental Consultation",
+    title: "Step 1: Booking Your Virtual Dental Consultation",
     desc: "Initiate your dental care journey by scheduling a video consultation via the Pav Dental app or website. Select a convenient date and time for your appointment, and await confirmation from one of our dentists. This step ensures a seamless integration of dental care into your schedule.",
   },
   {
-    title: "Establishing the Connection",
+    title: "Step 2: Establishing the Connection",
     desc: "Upon appointment confirmation, you'll receive a link to access your video consultation. At the designated time, simply use your computer, smartphone, or tablet to click the link and start the video call. This direct line to your dentist facilitates a personal and effective consultation environment.",
   },
   {
-    title: "Engaging in the Consultation",
-    desc: "The consultation is your opportunity to voice dental concerns and undergo a virtual examination of your teeth and gums. The dentist will collaborate with you to formulate a comprehensive treatment plan. This interactive session allows for real-time questions and personalized advice.",
+    title: "Step 3: Engaging in the Consultation",
+    desc: "The consultation is your opportunity to voice dental concerns and undergo a virtual examination of your teeth and gums. The dentist will collaborate with you to formulate a comprehensive treatment plan. This interactive session allows for real-time questions and personalized advice, ensuring you're fully informed about your dental health options.",
   },
-  {
-    title: "Post-Consultation Outcomes",
-    desc: "Following your consultation, outcomes include: Professional Advice, Online Prescription sent to your pharmacy, Home Visit Coordination for in-person care, and Clinic Treatment Planning for in-clinic appointments.",
-  },
-];
+] as const;
+
+const OUTCOMES = [
+  "Professional Advice: Receive expert guidance on managing your dental health.",
+  "Online Prescription: If needed, obtain prescriptions sent directly to your pharmacy.",
+  "Home Visit Coordination: For cases requiring in-person care, arrange a home visit by a dental professional.",
+  "Clinic Treatment Planning: Schedule an in-clinic appointment",
+] as const;
 
 export function VirtualDentistryHowItWorks() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            How it works?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Our virtual dental consultation process is designed to be simple, convenient, and effective. Here's how it works step by step.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {DETAILED_STEPS.map((step, i) => (
-            <div key={step.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                Step {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12] mb-3">
-                {step.title}
-              </h3>
-              <p className="text-sm text-[#6b5848] leading-relaxed">
-                {step.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section theme="white" space="default">
+      <div className="max-w-2xl">
+        <Heading as="h2" size="h2-md" accent="works?" tone="terracotta" inline>
+          How it
+        </Heading>
       </div>
-    </section>
+
+      <div className="mt-10 grid gap-6 md:grid-cols-2">
+        {DETAILED_STEPS.map((step) => (
+          <Tile key={step.title} as="article" tone="cream" className="p-6 md:p-8">
+            <h3 className="text-h4 text-fg">{step.title}</h3>
+            <p className="mt-4 text-body text-muted">{step.desc}</p>
+          </Tile>
+        ))}
+
+        <Tile as="article" tone="cream" className="p-6 md:p-8">
+          <h3 className="text-h4 text-fg">Step 4: Post-Consultation Outcomes</h3>
+          <p className="mt-4 text-body text-muted">
+            Following your consultation, a range of outcomes will be tailored to your specific
+            needs, including:
+          </p>
+          <ul className="mt-3 space-y-2 text-body text-muted">
+            {OUTCOMES.map((outcome) => (
+              <li key={outcome} className="flex gap-2.5">
+                <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-terracotta" />
+                <span>{outcome}</span>
+              </li>
+            ))}
+          </ul>
+        </Tile>
+      </div>
+    </Section>
   );
 }

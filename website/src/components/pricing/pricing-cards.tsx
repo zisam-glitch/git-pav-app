@@ -1,13 +1,11 @@
-import { cn } from "@/lib/utils";
-import { Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
+import { Check, X } from "lucide-react";
+import { useState } from "react";
+import { BookButton, Heading, Section, Tile, type TileTone } from "@/components/hims";
 import { api } from "@/lib/api";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { cn } from "@/lib/utils";
 
-interface Feature {
+interface PlanFeature {
   text: string;
   included: boolean;
 }
@@ -18,7 +16,7 @@ interface Plan {
   yearlyPrice: string;
   color: "bronze" | "silver" | "gold";
   popular?: boolean;
-  features: Feature[];
+  features: PlanFeature[];
 }
 
 const PLANS: Plan[] = [
@@ -73,10 +71,10 @@ const PLANS: Plan[] = [
   },
 ];
 
-const BANNER_BG: Record<Plan["color"], string> = {
-  bronze: "bg-[#c4824d]",
-  silver: "bg-[#bdc3c7]",
-  gold: "bg-[#f5cf47]",
+const PLAN_TONE: Record<Plan["color"], TileTone> = {
+  bronze: "cream",
+  silver: "sage",
+  gold: "cream",
 };
 
 export function PricingCards() {
@@ -100,163 +98,89 @@ export function PricingCards() {
       : PLANS;
 
   return (
-    <section className="py-8 sm:py-12">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Section title */}
-        <div className="text-center mb-10">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e]">
-            Pav Dental Plans
-          </h2>
-
-          {/* Billing Switch */}
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <span className={cn("text-sm font-medium", isMonthly ? "text-fg" : "text-muted")}>
-              Monthly
-            </span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={!isMonthly}
-              onClick={() => setIsMonthly((v) => !v)}
-              className={cn(
-                "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                !isMonthly ? "bg-primary" : "bg-border",
-              )}
-            >
-              <span
-                className={cn(
-                  "pointer-events-none block size-5 rounded-full bg-white shadow-md transition-transform",
-                  !isMonthly ? "translate-x-[22px]" : "translate-x-[2px]",
-                )}
-              />
-            </button>
-            <span className={cn("text-sm font-medium", !isMonthly ? "text-fg" : "text-muted")}>
-              Annual{" "}
-              <span className="text-primary font-semibold">(Save 20%)</span>
-            </span>
-          </div>
+    <Section id="plans" theme="white" space="default" aria-labelledby="plans-heading">
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <Heading as="h2" size="h2-md" accent="Plans" tone="terracotta" inline className="text-fg">
+            <span id="plans-heading">Pav Dental</span>
+          </Heading>
+          <p className="mt-3 text-lead text-muted">
+            Membership tiers for regular check-ups, hygiene visits, and treatment savings.
+          </p>
         </div>
 
-        {/* 3 cards */}
-        <div className="grid gap-6 lg:gap-8 md:grid-cols-3">
-          {activePlans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.12,
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-              }}
-              className="h-full"
-            >
-              <PricingCard plan={plan} isMonthly={isMonthly} />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
-  const displayPrice = isMonthly ? plan.price : plan.yearlyPrice;
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className={cn(
-        "relative flex flex-col h-full rounded-2xl overflow-hidden bg-white border transition-all duration-300 shadow-sm",
-        plan.popular
-          ? "border-primary/40 shadow-md ring-1 ring-primary/10"
-          : "border-border/80 hover:border-primary/40",
-        hovered && "shadow-soft -translate-y-1",
-      )}
-    >
-      {/* Wavy Banner Header */}
-      <div
-        className={cn(
-          "relative flex flex-col items-center justify-center pt-10 pb-12 overflow-hidden",
-          BANNER_BG[plan.color],
-        )}
-      >
-        {/* Organic wave shape at bottom of banner */}
-        <svg
-          className="absolute bottom-0 left-0 w-full text-white pointer-events-none"
-          viewBox="0 0 500 50"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M0,0 C150,55 350,10 500,45 L500,50 L0,50 Z"
-            fill="currentColor"
-          />
-        </svg>
-
-        <div className="relative z-10 flex items-baseline justify-center text-white">
-          <span className="text-3xl font-bold mr-0.5">£</span>
-          <AnimatePresence mode="popLayout">
-            <motion.span
-              key={displayPrice}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.25 }}
-              className="text-4xl sm:text-5xl font-bold tracking-tight font-display tabular-nums"
-            >
-              {displayPrice}
-            </motion.span>
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Plan Name */}
-      <div className="px-6 pt-6 pb-4 text-center">
-        <h3 className="text-base font-extrabold tracking-widest text-fg">
-          {plan.name}
-        </h3>
-      </div>
-
-      {/* Features list */}
-      <ul className="flex-1 space-y-3 px-6 py-2">
-        {plan.features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-[13px] sm:text-sm">
-            {f.included ? (
-              <Check className="size-4 shrink-0 text-green-600 mt-0.5 stroke-[2.5]" />
-            ) : (
-              <X className="size-4 shrink-0 text-red-500 mt-0.5 stroke-[2.5]" />
+        <div className="inline-flex w-fit items-center gap-3 rounded-pill bg-cream px-4 py-2">
+          <span className={cn("text-small font-medium", isMonthly ? "text-fg" : "text-muted")}>
+            Monthly
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={!isMonthly}
+            aria-label="Toggle annual billing"
+            onClick={() => setIsMonthly((v) => !v)}
+            className={cn(
+              "relative inline-flex h-7 w-12 shrink-0 items-center rounded-pill border-2 border-border-strong t-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              !isMonthly ? "bg-black" : "bg-white",
             )}
+          >
             <span
               className={cn(
-                "leading-snug",
-                f.included ? "text-fg/90" : "text-muted",
+                "pointer-events-none block size-5 rounded-full transition-transform duration-200",
+                !isMonthly ? "translate-x-[22px] bg-white" : "translate-x-[2px] bg-black",
+              )}
+            />
+          </button>
+          <span className={cn("text-small font-medium", !isMonthly ? "text-fg" : "text-muted")}>
+            Annual (Save 20%)
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        {activePlans.map((plan) => {
+          const displayPrice = isMonthly ? plan.price : plan.yearlyPrice;
+          return (
+            <Tile
+              key={plan.name}
+              as="article"
+              tone={PLAN_TONE[plan.color]}
+              lift
+              className={cn(
+                "flex h-full flex-col justify-between gap-8 p-6 md:p-8",
+                plan.popular && "border border-border",
               )}
             >
-              {f.text}
-            </span>
-          </li>
-        ))}
-      </ul>
+              <div>
+                <h3 className="text-label text-muted">{plan.name}</h3>
+                <p className="mt-3 flex items-baseline gap-1.5 text-h3 text-fg tabular-nums">
+                  <span>£{displayPrice}</span>
+                  <span className="text-small text-muted">/ month</span>
+                </p>
 
-      {/* CTA Button */}
-      <div className="p-6 pt-6">
-        <Button
-          asChild
-          variant={plan.popular ? "default" : "outline"}
-          className={cn(
-            "w-full rounded-lg font-semibold text-sm",
-            plan.popular ? "accent-gradient text-white" : "border-border hover:bg-surface",
-          )}
-        >
-          <a href={BOOKING_URL}>Book Now</a>
-        </Button>
+                <ul className="mt-6 space-y-3 border-t border-border pt-6">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-3 text-body">
+                      {feature.included ? (
+                        <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-fg" />
+                      ) : (
+                        <X aria-hidden="true" className="mt-1 size-4 shrink-0 text-subtle" />
+                      )}
+                      <span className={feature.included ? "text-fg" : "text-muted"}>
+                        {feature.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <BookButton variant={plan.popular ? "default" : "outline"} className="w-full">
+                Book Now
+              </BookButton>
+            </Tile>
+          );
+        })}
       </div>
-    </div>
+    </Section>
   );
 }

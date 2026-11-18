@@ -10,7 +10,7 @@ import { PetitionMedia } from "./petition-media";
  */
 export function PetitionPage() {
   return (
-    <div className="min-h-screen bg-white text-fg">
+    <div className="bg-white text-fg">
       <PetitionHero />
       <PetitionFormBar />
       <PetitionMedia />

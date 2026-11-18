@@ -11,9 +11,11 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | Group | Page | Route(s) | Sections | verified | built | todo | blocked | Images to make |
 |---|---|---|---|---|---|---|---|---|
 | S2-A | [Service: Emergency dental](pages/service-emergency-dental.md) | `/services/emergency-dental` | 8 | 8 | 0 | 0 | 0 | 1 |
+| S4-B | [Service: Mobile dentistry](pages/service-mobile-dentistry.md) | `/services/mobile-dentistry` | 6 | 6 | 0 | 0 | 0 | 3 |
 | S1-B | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 8 | 0 | 0 | 0 | 2 |
 | S2-A | [Service: Root canal](pages/service-root-canal.md) | `/services/root-canal` | 7 | 7 | 0 | 0 | 0 | 2 |
 | S1-B | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 7 | 0 | 0 | 0 | 1 |
+| S4-B | [Service: Virtual dentistry](pages/service-virtual-dentistry.md) | `/services/virtual-dentistry` | 8 | 8 | 0 | 0 | 0 | 3 |
 | F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 6 | 0 | 0 | 0 | 0 |
 | A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 7 |
 | S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 17 | 0 | 0 | 0 | 2 |
@@ -23,19 +25,17 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | S3 | [Service: Cosmetic](pages/service-cosmetic.md) | `/services/cosmetic` | 9 | 9 | 0 | 0 | 0 | 3 |
 | S3 | [Service: Custom grillz](pages/service-custom-grillz.md) | `/services/custom-grillz` | 7 | 7 | 0 | 0 | 0 | 2 |
 | S3 | [Service: Whitening](pages/service-whitening.md) | `/services/whitening` | 5 | 5 | 0 | 0 | 0 | 4 |
-| S4 | [Contact us](pages/contact.md) | `/contact-us` | 2 | 0 | 0 | 2 | 0 | 0 |
-| S4 | [Pricing](pages/pricing.md) | `/pricing` | 6 | 0 | 0 | 6 | 0 | 0 |
-| S4 | [Service: Mobile dentistry](pages/service-mobile-dentistry.md) | `/services/mobile-dentistry` | 6 | 0 | 0 | 6 | 0 | 0 |
-| S4 | [Service: Virtual dentistry](pages/service-virtual-dentistry.md) | `/services/virtual-dentistry` | 8 | 0 | 0 | 8 | 0 | 0 |
-| P1 | [About](pages/about.md) | `/about` | 7 | 0 | 0 | 7 | 0 | 0 |
-| P1 | [Petition](pages/petition.md) | `/petition` | 5 | 0 | 0 | 5 | 0 | 0 |
-| P1 | [Team and team profiles](pages/team.md) | `/team`, `/team/$slug` | 3 | 0 | 0 | 3 | 0 | 0 |
-| P1 | [Vacancies](pages/vacancies.md) | `/vacancies` | 6 | 0 | 0 | 6 | 0 | 0 |
+| S4 | [Contact us](pages/contact.md) | `/contact-us` | 2 | 2 | 0 | 0 | 0 | 0 |
+| S4 | [Pricing](pages/pricing.md) | `/pricing` | 6 | 6 | 0 | 0 | 0 | 1 |
+| P1 | [About](pages/about.md) | `/about` | 7 | 7 | 0 | 0 | 0 | 3 |
+| P1 | [Petition](pages/petition.md) | `/petition` | 5 | 5 | 0 | 0 | 0 | 1 |
+| P1 | [Team and team profiles](pages/team.md) | `/team`, `/team/$slug` | 3 | 3 | 0 | 0 | 0 | 0 |
+| P1 | [Vacancies](pages/vacancies.md) | `/vacancies` | 6 | 6 | 0 | 0 | 0 | 2 |
 | C1 | [Blog and posts](pages/blog.md) | `/blog`, `/blog/$slug` | 3 | 0 | 0 | 3 | 0 | 0 |
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
 | SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **174** | **113** | **0** | **61** | **0** | **29** |
+| | **Total** | | **174** | **156** | **0** | **18** | **0** | **42** |
 
 ## Service: Emergency dental
 
@@ -51,6 +51,19 @@ Group S2-A · `/services/emergency-dental` · [page file](pages/service-emergenc
 | 6 | emergency page (page composition) | Hims alternating bands + `TestimonialsSection` | verified | ok | ok | same | Composes all 7 sections plus `TestimonialsSection` (`HOME_TESTIMONIALS`, matching live page's `What people say?` section) |
 | 7 | emergency pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/emergency-dental/1440-pricing.png) | ok | same | Verbatim `£45` / `£90` consultation cards and all 9 live emergency treatment prices in a Hims hairline fee panel |
 | 8 | emergency services | Hims 4-column `Tile` grid | verified | [shot](shots/emergency-dental/1440-triage.png) | ok | reworded | Uses the 8 live triage conditions (`Toothache` through `Painful Gums`) in `Tile` cards with `CallButton` |
+
+## Service: Mobile dentistry
+
+Group S4-B · `/services/mobile-dentistry` · [page file](pages/service-mobile-dentistry.md)
+
+| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | mobile dentistry benefits | Hims cream numbered tiles (`Section theme="cream"`) | verified | ok | ok | same | Restored all 8 verbatim live benefit titles from `services--mobile-dentistry.txt`; dropped repo-only invented descriptions |
+| 2 | mobile dentistry contact | Hims lead-capture card (`rounded-xl bg-cream` + `bg-white` form) | verified | [shot](shots/mobile-dentistry/1440-contact.png) | ok | same | Restyled with shared `Input`, `Label`, `Textarea`, `Button`, `lg:` split columns so placeholders never truncate, and `useEnquiry("Mobile dentistry")` |
+| 3 | mobile dentistry hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) & [treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/mobile-dentistry/1440-hero.png) | [shot](shots/mobile-dentistry/390-hero.png) | reworded | Split hero with `Coming Soon`, verbatim H1 & both live paragraphs, `BookButton`, `ButtonLink`, `CallButton`; temporarily reusing `/images/generated/home-mobile-dentistry.jpg` (`priority`) |
+| 4 | mobile dentistry location | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/mobile-dentistry/1440-location.png) | ok | reworded | `SplitFeature` with verbatim `Location` copy, `<Media tone="cream" />` placeholder, `BookButton` & `ButtonLink`; dropped 3 repo-only location cards |
+| 5 | mobile dentistry page (page composition) | Hims alternating page rhythm + `CtaBand` | verified | ok | ok | reworded | Alternates white/cream/brown bands; renders `MobileDentistryContact` (previously omitted) and closing brown `CtaBand` |
+| 6 | mobile dentistry service | Hims dark brown feature band (`Section theme="brown" width="bento" space="lg"`) | verified | ok | ok | same | `SplitFeature` with `We Come to You` verbatim copy, `BookButton variant="gold"`, `CallButton variant="glass"`, and `<Media tone="brown" className="bg-white/10" />` placeholder |
 
 ## Service: Oral hygiene
 
@@ -94,6 +107,21 @@ Group S1-B · `/services/tooth-extraction` · [page file](pages/service-tooth-ex
 | 5 | extraction page (page composition) | Hims alternating page rhythm + `ContactForm` + `CtaBand` | verified | ok | ok | same | Alternates white/brown/white/cream/white/cream/brown bands; added shared `ContactForm` and closing `CtaBand` |
 | 6 | extraction postop | Hims cream checklist tiles + navy complication alert (`Tile tone="navy"`) | verified | [ok](shots/tooth-extraction/06-postop-1440.png) | ok | same | Verbatim `Post Operative Instructions`, `Reminder:`, all 10 care sections, and `Watch for Complications:` alert with interactive filter tabs |
 | 7 | extraction pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [ok](shots/tooth-extraction/07-pricing-1440.png) | ok | same | Uses promoted `PricingTiles` (`@/components/hims`) with all 4 live tiers (£95–£295) + `Informed Consent for Tooth Extraction` callout |
+
+## Service: Virtual dentistry
+
+Group S4-B · `/services/virtual-dentistry` · [page file](pages/service-virtual-dentistry.md)
+
+| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | virtual dentistry benefits | Hims dark brown bento (`Section theme="brown" width="bento" space="lg"`) | verified | [shot](shots/virtual-dentistry/1440-why.png) | ok | reworded | Restored 5 verbatim benefit headings and paragraphs (`Speed and Convenience`..`Eco-friendly`) in `Tile tone="glass"` cards + `<Media tone="brown" className="bg-white/10" />` + `BookButton variant="gold"` & `CallButton variant="glass"` |
+| 2 | virtual dentistry faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | [shot](shots/virtual-dentistry/1440-faq.png) | ok | reworded | Sticky left header + `FaqList` with all 12 verbatim Q&As from `services--virtual-dentistry.txt` (replacing repo-rewritten answers) |
+| 3 | virtual dentistry hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) & [treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/virtual-dentistry/1440-hero.png) | [shot](shots/virtual-dentistry/390-hero.png) | reworded | Split hero with verbatim `£35 Consultation Fee and £25 Prescription Cost` copy, 2 fee summary `Tile`s, `BookButton`, `CallButton`, `<Media tone="cream" />` (`priority`) |
+| 4 | virtual dentistry how it works | Hims cream step cards (`Section theme="white"` + `Tile tone="cream"`) | verified | [shot](shots/virtual-dentistry/1440-steps.png) | ok | same | Restored full verbatim Step 1–4 text including all 4 post-consultation outcomes; dropped repo-only subheading |
+| 5 | virtual dentistry page (page composition) | Hims alternating page rhythm + `CtaBand` | verified | ok | ok | reworded | Alternates white/cream/brown sections cleanly; added closing brown `CtaBand` |
+| 6 | virtual dentistry prescription process | Hims 4-step cream band (`Section theme="cream"`) | verified | ok | ok | reworded | 4 `Tile tone="white"` step cards using exact live labels; dropped repo-only step descriptions & `"home delivery"` claim |
+| 7 | virtual dentistry registration | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | reworded | `SplitFeature` with verbatim `Registration Process.` copy (deduplicated repeated sentence), `ButtonLink href="#services"` (`Register`), and 5 `Tile tone="white"` field cards |
+| 8 | virtual dentistry services | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | same | `SplitFeature` with verbatim `Choose Type of Services` and `24 x 7 Emergency Dentists`, `<Media tone="cream" />`, `BookButton`, `CallButton`; dropped 5 repo-only invented service cards |
 
 ## Site shell: header, footer, cookie banner, 404
 
@@ -247,8 +275,8 @@ Group S4 · `/contact-us` · [page file](pages/contact.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | contact section | — | todo |  |  |  |  |
-| 2 | contact top bar | — | todo |  |  |  |  |
+| 1 | contact section | Hims lead-capture card (`wrap-max`, `bg-cream`, `p-6 md:p-10 lg:p-12`) + `Tile` details + `CtaBand` | verified | [top](shots/contact/1440-top.png) · [hours](shots/contact/1440-hours.png) | [shot](shots/contact/390-contact.png) | same | Uses `useEnquiry("Contact")` with live fields (`Full Name`, `Email Address`, `Subject`, `Phone`, `Your Message`), `PRACTICE_PHONE`, `PRACTICE_EMAIL`, `PRACTICE_HOURS` (`00:00 – 24:00`), `BOOKING_URL`, `SOCIAL_LINKS`, and Bradford map embed |
+| 2 | contact top bar | — | verified | ok | ok | same | Unused by `routes/contact-us.tsx` (superseded by shared `Header`); cleaned banned classes/raw hex and wired `PRACTICE_PHONE` / `PRACTICE_EMAIL` |
 
 ## Pricing
 
@@ -256,40 +284,12 @@ Group S4 · `/pricing` · [page file](pages/pricing.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | fee table | — | todo |  |  |  |  |
-| 2 | insurance providers | — | todo |  |  |  |  |
-| 3 | pricing cards | — | todo |  |  |  |  |
-| 4 | pricing footer | — | todo |  |  |  |  |
-| 5 | pricing hero | — | todo |  |  |  |  |
-| 6 | special announcement | — | todo |  |  |  |  |
-
-## Service: Mobile dentistry
-
-Group S4 · `/services/mobile-dentistry` · [page file](pages/service-mobile-dentistry.md)
-
-| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
-|---|---|---|---|---|---|---|---|
-| 1 | mobile dentistry benefits | — | todo |  |  |  |  |
-| 2 | mobile dentistry contact | — | todo |  |  |  |  |
-| 3 | mobile dentistry hero | — | todo |  |  |  |  |
-| 4 | mobile dentistry location | — | todo |  |  |  |  |
-| 5 | mobile dentistry page (page composition) | — | todo |  |  |  |  |
-| 6 | mobile dentistry service | — | todo |  |  |  |  |
-
-## Service: Virtual dentistry
-
-Group S4 · `/services/virtual-dentistry` · [page file](pages/service-virtual-dentistry.md)
-
-| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
-|---|---|---|---|---|---|---|---|
-| 1 | virtual dentistry benefits | — | todo |  |  |  |  |
-| 2 | virtual dentistry faq | — | todo |  |  |  |  |
-| 3 | virtual dentistry hero | — | todo |  |  |  |  |
-| 4 | virtual dentistry how it works | — | todo |  |  |  |  |
-| 5 | virtual dentistry page (page composition) | — | todo |  |  |  |  |
-| 6 | virtual dentistry prescription process | — | todo |  |  |  |  |
-| 7 | virtual dentistry registration | — | todo |  |  |  |  |
-| 8 | virtual dentistry services | — | todo |  |  |  |  |
+| 1 | fee table | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) · Hims white rounded panels with 1px hairline rows | verified | [shot](shots/pricing/1440-fees.png) | ok | same | Restored all 13 live fee categories and exact prices from `pricing.txt`; kept `api.pricing.get()`, search input, and added category filter tabs |
+| 2 | insurance providers | Hims cream `Tile` grid on white (`Section`) | verified | ok | ok | same | Kept `We Accept All Insurance Providers` and 6 provider tiles in Hims tokens; dropped unverified `Direct claim processing...` subtitle |
+| 3 | pricing cards | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) · Hims cream/sage `Tile` grid | verified | [shot](shots/pricing/1440-plans.png) | ok | same | BRONZE (£9.47), SILVER (£15.85), GOLD (£19.24) with Monthly/Annual switch, `api.pricing.get()` query, and `BookButton` |
+| 4 | pricing footer | — | verified | ok | ok | same | Unused by `routes/pricing.tsx` (superseded by shared `Footer`); cleaned external Cloudinary URL and banned classes, delegates to `Footer` |
+| 5 | pricing hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · [Mobbin details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/pricing/1440-hero.png) | [shot](shots/pricing/390-hero.png) | same | `SplitFeature` with H1 `You don't have to Pay for it all at once.`, live 0% finance lead from `pricing.txt`, `BookButton`, `CallButton`, and `4 / 3` `<Media>` placeholder (`pricing-hero`) |
+| 6 | special announcement | Hims dark `brown` feature section + glass `Tile` cards | verified | [shot](shots/pricing/1440-announcement.png) | ok | same | Restored live `Special Announcement from Pav Dental`, `Our Price Match Promise`, and `Choose Pav Dental for:` copy verbatim; kept `api.announcements.list()` banner |
 
 ## About
 
@@ -297,13 +297,13 @@ Group P1 · `/about` · [page file](pages/about.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | hero | — | todo |  |  |  |  |
-| 2 | our story | — | todo |  |  |  |  |
-| 3 | team | — | todo |  |  |  |  |
-| 4 | about 3 | — | todo |  |  |  |  |
-| 5 | team showcase | — | todo |  |  |  |  |
-| 6 | hero 05 | — | todo |  |  |  |  |
-| 7 | cta | — | todo |  |  |  |  |
+| 1 | hero | Hims split hero (`Section theme="white"`, `SplitFeature`, `Heading size="hero"`, `Media` 4/3) | verified | [shot](shots/about/1440-hero.png) | [shot](shots/about/390-hero.png) | same | Live `A Legacy of Care and Innovation` copy verbatim (fixed `extendbeyond` typo); `BookButton` + `CallButton`; `<Media>` slot for `about-hero` |
+| 2 | our story | Hims numbered bento (`Section theme="cream"`), dark brown feature (`Section theme="brown"`), split feature (`Section theme="sand"`) | verified | [shot](shots/about/1440-story.png) | ok | same | Replaced Shadcnblocks placeholder copy with verbatim live sections: `The Dream and The Team`, `A Legacy Fulfilled`, `The Future of Dentistry` |
+| 3 | team | Hims trust carousel ("The best care by the best in medicine") + `CtaBand` | verified | [shot](shots/about/1440-team.png) · [cta](shots/about/1440-cta.png) | ok | reworded | Real `TEAM_MEMBERS` in `TeamShowcase` carousel with GDC numbers linking to `/team/$slug` + `CtaBand` with live `Get In Touch` intro |
+| 4 | about 3 | Hims cream split + breakout `Tile` | verified | ok | ok | same | Restyled with `Section`, `Heading`, `Tile`, `Media`, `BookButton`/`ButtonLink`; removed `/media/hero-clinic.jpg`, `/media/hero-smile.jpg`, `glass`, `max-w-6xl` |
+| 5 | team showcase | Hims trust `Carousel` cards (`bg-tile-cream`, `rounded-lg`, `t-lift`) | verified | ok | ok | same | Rebuilt with Hims `Carousel` and `TEAM_MEMBERS` portrait links (`object-cover object-top`, GDC captions) |
+| 6 | hero 05 | Hims split hero (`Section`, `SplitFeature`, `Heading`, `Media`) | verified | ok | ok | same | Restyled with Hims kit; removed blur entrance animations, `tracking-tight`, `max-w-7xl` |
+| 7 | cta | Hims pill buttons (`BookButton`, `ButtonLink`) | verified | ok | ok | same | Uses `BookButton` for `BOOKING_URL` and `ButtonLink` for other links |
 
 ## Petition
 
@@ -311,11 +311,11 @@ Group P1 · `/petition` · [page file](pages/petition.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | petition contact | — | todo |  |  |  |  |
-| 2 | petition form bar | — | todo |  |  |  |  |
-| 3 | petition hero | — | todo |  |  |  |  |
-| 4 | petition media | — | todo |  |  |  |  |
-| 5 | petition page (page composition) | — | todo |  |  |  |  |
+| 1 | petition contact | Hims lead-capture card (`wrap-max`, `bg-cream`, white `p-[60px]` card, shared fields) | verified | [shot](shots/petition/1440-contact.png) | ok | same | Uses `PETITION.contact` verbatim + `BookButton` + `CallButton` + `useEnquiry("Petition")` |
+| 2 | petition form bar | Hims dark brown feature band (`Section theme="brown"`, `bg-white/7`, shared `Input`, `Button variant="gold"`) | verified | [shot](shots/petition/1440-form.png) | ok | same | Preserves `api.forms.submitPetition`, required UK resident checkbox, and `PETITION.form` strings verbatim |
+| 3 | petition hero | Hims split hero (`Section theme="white"`, `SplitFeature`, `Heading size="hero"`, `Media` 4/3) + cream `Tile` pair | verified | [shot](shots/petition/1440-hero.png) | [shot](shots/petition/390-hero.png) | same | All `PETITION` hero copy, buttons, and 2 cards verbatim; `<Media>` slot `petition-hero` |
+| 4 | petition media | Hims light rounded video frame (`max-w-[960px]`, `aspect-video`, `rounded-xl`) | verified | [shot](shots/petition/1440-media.png) | ok | same | Lazy YouTube embed (`youtube-nocookie.com`) on play click; `PETITION.video.heading` verbatim |
+| 5 | petition page (page composition) | Hims section rhythm (`white` -> `brown` -> `white` -> `cream` lead-capture) | verified | ok | ok | same | Exact live page order; no signer names or counters |
 
 ## Team and team profiles
 
@@ -323,9 +323,9 @@ Group P1 · `/team`, `/team/$slug` · [page file](pages/team.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | team grid | — | todo |  |  |  |  |
-| 2 | team photo | — | todo |  |  |  |  |
-| 3 | team profile | — | todo |  |  |  |  |
+| 1 | team grid | Hims trust cards grid (`bg-tile-cream`, `rounded-xl`, `t-lift`) + `CtaBand` | verified | [shot](shots/team/1440-grid.png) | [shot](shots/team/390-grid.png) | same | Live `Dentists & Staff` H1 + lead; all 8 `TEAM_MEMBERS` in live order with real portraits, roles, GDC numbers + closing `CtaBand` |
+| 2 | team photo | Hims portrait frame with `PHOTO_PENDING` fallback | verified | ok | ok | same | Kept real team portrait loading & fallback untouched; formatted |
+| 3 | team profile | Hims split bio opener (`Section theme="cream"`) + prose body (`width="prose"`) + `CtaBand` | verified | [shot](shots/team/1440-profile.png) | ok | same | Preserved JSON-LD, GDC numbers, `withContactLinks`, and verbatim `member.summary`/`blocks`; restyled in Hims tokens |
 
 ## Vacancies
 
@@ -333,12 +333,12 @@ Group P1 · `/vacancies` · [page file](pages/vacancies.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | apply modal | — | todo |  |  |  |  |
-| 2 | open application | — | todo |  |  |  |  |
-| 3 | vacancies hero | — | todo |  |  |  |  |
-| 4 | vacancies list | — | todo |  |  |  |  |
-| 5 | vacancies page (page composition) | — | todo |  |  |  |  |
-| 6 | visa sponsorship banner | — | todo |  |  |  |  |
+| 1 | apply modal | Hims form dialog (`rounded-xl`, shared `Input`/`Textarea`/`Label`/`Button`) | verified | [shot](shots/vacancies/1440-modal.png) | ok | reworded | Accessible `role="dialog"` + Escape close; removed `backdrop-blur-xs` and unverified `within 48 hours` claim |
+| 2 | open application | Hims `CtaBand` (`theme="navy"`, `butter` + `glass`) | verified | ok | ok | same | Links to `/contact-us`, `CallButton`, `hello@pavdental.com`, live Bradford address |
+| 3 | vacancies hero | Hims split hero (`Section theme="white"`, `SplitFeature`, `Heading size="hero"`, `Media` 4/3) | verified | [shot](shots/vacancies/1440-hero.png) | [shot](shots/vacancies/390-hero.png) | reworded | Removed `/media/hero-clinic.jpg`, `blur-3xl`, `backdrop-blur-sm`; added `<Media>` slot `vacancies-hero` |
+| 4 | vacancies list | Hims cream section + white `Tile` cards + shared `Input` search & filter pills | verified | [shot](shots/vacancies/1440-list.png) | ok | same | Kept search & category filters; removed unverified `tags` (`50% Private Split`, `Accredited Practice`, `Home Office Sponsor`, `Funded NVQ Level 3`) from display |
+| 5 | vacancies page (page composition) | Hims section rhythm (`white` -> `cream` -> `brown` -> `navy`) | verified | ok | ok | same | Composes hero, list, visa sponsorship banner, open application band, and apply modal |
+| 6 | visa sponsorship banner | Hims dark brown feature (`Section theme="brown"`, `SplitFeature`, `Media` 4/3) | verified | [shot](shots/vacancies/1440-visa.png) | ok | same | Uses verbatim live `Foreign Visa and Sponsorship` paragraph; removed unverified Home Office licence / housing claims |
 
 ## Blog and posts
 

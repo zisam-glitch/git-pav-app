@@ -12,15 +12,10 @@ export const Route = createFileRoute("/contact-us")({
 
 function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
-
-      {/* Spacer for fixed header */}
-      <div className="pt-16">
-        <ContactSection />
-      </div>
-
+      <ContactSection />
       <Footer />
     </main>
   );

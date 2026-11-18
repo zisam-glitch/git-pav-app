@@ -1,59 +1,66 @@
 import { HeartHandshake } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  BookButton,
+  ButtonLink,
+  Heading,
+  Media,
+  Section,
+  SplitFeature,
+  Tile,
+} from "@/components/hims";
 import { PETITION } from "@/content/petition";
-import { BOOKING_URL } from "@/lib/enquiry";
 
-/** The petition page's opening: the live page's heading, text and two buttons. */
+/** The petition page's opening: the live page's heading, text, two buttons and two cards. */
 export function PetitionHero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#faf6f0] to-white pb-12 pt-12 sm:pb-16 sm:pt-16">
-      <div className="pointer-events-none absolute -left-40 -top-40 size-[500px] rounded-full bg-primary/[0.05] blur-3xl" />
-      <div className="pointer-events-none absolute -right-40 top-20 size-[500px] rounded-full bg-gold/[0.05] blur-3xl" />
-
-      <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#d9383a] sm:text-sm">
-          <HeartHandshake className="size-4" aria-hidden="true" />
-          <span>{PETITION.eyebrow}</span>
-        </p>
-
-        <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] tracking-tight text-[#2a1c12] sm:text-5xl lg:text-6xl">
-          {PETITION.title}
-        </h1>
-
-        <p className="mt-6 text-base font-semibold text-[#844d1e] sm:text-lg">{PETITION.lead}</p>
-        {PETITION.paragraphs.map((paragraph) => (
-          <p key={paragraph} className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-            {paragraph}
+    <Section theme="white" space="default">
+      <SplitFeature
+        reverse
+        media={
+          <Media
+            alt="Bradford community supporting accessible NHS dental care"
+            ratio="4 / 3"
+            tone="cream"
+            priority
+          />
+        }
+      >
+        <div>
+          <p className="inline-flex items-center gap-2 text-small font-medium text-terracotta">
+            <HeartHandshake className="size-4" aria-hidden="true" />
+            <span>{PETITION.eyebrow}</span>
           </p>
-        ))}
 
-        <div className="mt-8 flex flex-col items-center justify-center gap-3.5 sm:flex-row">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient w-full gap-2 px-8 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-95 sm:w-auto"
-          >
-            <a href={BOOKING_URL}>{PETITION.bookLabel}</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="w-full gap-2 border-border/80 bg-white px-7 text-sm font-medium text-fg shadow-2xs hover:bg-[#faf6f0] sm:w-auto"
-          >
-            <a href="/contact-us">{PETITION.contactLabel}</a>
-          </Button>
-        </div>
+          <Heading as="h1" size="hero" accent="Funding Petition" tone="terracotta" className="mt-3">
+            NHS Dental
+          </Heading>
 
-        <ul className="mx-auto mt-12 grid max-w-3xl list-none grid-cols-1 gap-5 text-left sm:grid-cols-2">
-          {PETITION.cards.map((card) => (
-            <li key={card.title} className="rounded-2xl border border-border/60 bg-white/90 p-6 shadow-2xs">
-              <h2 className="font-display text-lg font-bold text-fg">{card.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{card.text}</p>
-            </li>
+          <p className="mt-5 text-lead font-medium text-fg">{PETITION.lead}</p>
+          {PETITION.paragraphs.map((paragraph) => (
+            <p key={paragraph} className="mt-4 text-body text-muted">
+              {paragraph}
+            </p>
           ))}
-        </ul>
-      </div>
-    </section>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <BookButton>{PETITION.bookLabel}</BookButton>
+            <ButtonLink to="/contact-us" variant="outline">
+              {PETITION.contactLabel}
+            </ButtonLink>
+          </div>
+        </div>
+      </SplitFeature>
+
+      <ul className="mt-12 grid list-none gap-6 sm:grid-cols-2">
+        {PETITION.cards.map((card) => (
+          <li key={card.title}>
+            <Tile tone="cream" className="h-full p-6 md:p-8">
+              <h2 className="text-h4 text-fg">{card.title}</h2>
+              <p className="mt-3 text-body text-muted">{card.text}</p>
+            </Tile>
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 }

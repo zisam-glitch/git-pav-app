@@ -1,15 +1,15 @@
-import { Button } from "@/components/ui/button";
+import { BookButton, ButtonLink, Heading, Media, Section, Tile } from "@/components/hims";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 interface About3Props {
   title?: string;
   description?: string;
   mainImage?: {
-    src: string;
+    src?: string;
     alt: string;
   };
   secondaryImage?: {
-    src: string;
+    src?: string;
     alt: string;
   };
   breakout?: {
@@ -26,64 +26,55 @@ export const About3 = ({
   title = "About Us",
   description = "Providing exceptional dental care with comprehensive services and patient-centered treatment plans.",
   mainImage = {
-    src: "/media/hero-clinic.jpg",
-    alt: "Clinic",
+    alt: "Pav Dental clinic interior",
   },
   secondaryImage = {
-    src: "/media/hero-smile.jpg",
-    alt: "Smile",
+    alt: "Patient care environment",
   },
   breakout = {
-    src: "/media/gdc.bde60269dddf420e3b5a.png",
-    alt: "Logo",
     title: "Your Trusted Dental Partner",
-    description: "Providing comprehensive dental care with same-day appointments, mobile services, and 24/7 emergency support when you need it most.",
+    description:
+      "Providing comprehensive dental care with same-day appointments, mobile services, and 24/7 emergency support when you need it most.",
     buttonText: "Book Appointment",
     buttonUrl: BOOKING_URL,
   },
 }: About3Props = {}) => {
   return (
-    <section className="py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mb-14 grid gap-5 text-center md:grid-cols-2 md:text-left">
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium">{title}</h1>
-          <p className="text-muted">{description}</p>
+    <Section theme="cream" space="default">
+      <div className="grid gap-6 md:grid-cols-2 md:items-end">
+        <Heading as="h2" size="h2-md">
+          {title}
+        </Heading>
+        <p className="text-lead text-muted">{description}</p>
+      </div>
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <Media src={mainImage.src || undefined} alt={mainImage.alt} ratio="16 / 9" tone="sand" />
         </div>
-        <div className="grid gap-7 lg:grid-cols-3">
-          <img
-            src={mainImage.src}
-            alt={mainImage.alt}
-            className="size-full max-h-[620px] rounded-2xl object-cover lg:col-span-2"
-          />
-          <div className="flex flex-col gap-7 md:flex-row lg:flex-col">
-            <div className="flex flex-col justify-between gap-6 rounded-2xl glass p-7 md:w-1/2 lg:w-auto">
-              {breakout.src ? (
-                <img
-                  src={breakout.src}
-                  alt={breakout.alt || "Logo"}
-                  className="mr-auto h-12"
-                />
-              ) : (
-                <div className="grid size-12 place-items-center rounded-lg accent-gradient text-primary-fg">
-                  <span className="text-xl font-bold">P</span>
-                </div>
-              )}
-              <div>
-                <p className="mb-2 text-lg font-semibold text-fg">{breakout.title}</p>
-                <p className="text-muted">{breakout.description}</p>
-              </div>
-              <Button variant="outline" className="mr-auto" asChild>
-                <a href={breakout.buttonUrl}>{breakout.buttonText}</a>
-              </Button>
+        <div className="flex flex-col gap-6">
+          <Tile tone="white" className="flex flex-1 flex-col justify-between gap-6 p-6 md:p-8">
+            <div>
+              <p className="text-h4 text-fg">{breakout.title}</p>
+              <p className="mt-2 text-body text-muted">{breakout.description}</p>
             </div>
-            <img
-              src={secondaryImage.src}
-              alt={secondaryImage.alt}
-              className="grow basis-0 rounded-2xl object-cover md:w-1/2 lg:min-h-0 lg:w-auto"
-            />
-          </div>
+            {breakout.buttonText ? (
+              breakout.buttonUrl === BOOKING_URL ? (
+                <BookButton className="self-start">{breakout.buttonText}</BookButton>
+              ) : (
+                <ButtonLink href={breakout.buttonUrl} variant="outline" className="self-start">
+                  {breakout.buttonText}
+                </ButtonLink>
+              )
+            ) : null}
+          </Tile>
+          <Media
+            src={secondaryImage.src || undefined}
+            alt={secondaryImage.alt}
+            ratio="16 / 9"
+            tone="sage"
+          />
         </div>
       </div>
-    </section>
+    </Section>
   );
 };

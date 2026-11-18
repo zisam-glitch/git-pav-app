@@ -13,9 +13,11 @@
 | [#203](https://github.com/zisam-glitch/git-pav-app/pull/203) | The dashboard emails the practice when a website form comes in | Merged |
 | [#202](https://github.com/zisam-glitch/git-pav-app/pull/202) | Live URLs, live titles and descriptions, canonicals, sitemap, robots.txt, redirects | Merged |
 | [#204](https://github.com/zisam-glitch/git-pav-app/pull/204) | Every website form sends; real phone, email and hours beside them | Merged |
-| [#206](https://github.com/zisam-glitch/git-pav-app/pull/206) | FAQ, CCTV policy, practice documents and services pages; `/gdpr` redirects | CodeQL alert fixed; merges on green |
+| [#206](https://github.com/zisam-glitch/git-pav-app/pull/206) | FAQ, CCTV policy, practice documents and services pages; `/gdpr` redirects | Merged |
+| [#208](https://github.com/zisam-glitch/git-pav-app/pull/208) | The team page and the eight profile pages | Merged |
+| [#209](https://github.com/zisam-glitch/git-pav-app/pull/209) | The six blog posts, with their links and tables | Open; merges on green CI |
 
-**Live URLs covered: 39 of 47** (31 once #206 landed, plus the 8 team profiles). Still to do: 6 blog posts, `/services/finance` and `/services/regestration`.
+**Live URLs covered: 45 of 47** once #209 lands (31 after #206, plus the 8 team profiles and the 6 blog posts). Still to do: `/services/finance` and `/services/regestration`, both waiting for the owner.
 
 ## 2. Rules for all remaining work
 
@@ -27,7 +29,7 @@
    - `/gdpr` is not ported. The live page is another practice's template ("Parish Dental", another jurisdiction's law).
 5. **Every page renders its tags and text on the server**, with a canonical URL on www. The cart, checkout, order and account pages are noindex.
 6. **Skipped for now (app parts):** app links in `/.well-known`, `/reset-password`, `/verify-email`, app booking for mobile and virtual dentistry, and team data from the app backend.
-7. **One concern per PR.** Each passes `npm run typecheck`, `npm run lint -- --max-warnings=87`, `npm test` and the build in `website/`, and merges on green CI.
+7. **One concern per PR.** Each passes `npm run typecheck`, `npm run lint -- --max-warnings=80`, `npm test` and the build in `website/`, and merges on green CI.
 
 ## 3. Remaining work
 
@@ -35,9 +37,9 @@
 
 | Step | Work | Done when | Needs |
 |---|---|---|---|
-| A1 Documents | Copy the 36 files (10.7 MB) the live site serves under `/policies`, `/forms` and `/posters` into `website/public/`, at the same paths, so the links on `/practice-policy` keep working. | All 36 return 200 on a preview | Owner's OK to download them |
+| A1 Files | Copy the 36 documents (10.7 MB) the live site serves under `/policies`, `/forms` and `/posters`, and the 8 team photos (2.1 MB, `/images/team/1.jpg` to `8.jpg`), into `website/public/` at the same paths. The links on `/practice-policy` and the team photos then work; until then the pages show a placeholder photo and the document links return 404. | All 44 return 200 on a preview | Owner's OK to download them (12.8 MB in all) |
 | A2 Team (done) | `/team` lists the 8 people on the live site, and `/team/<slug>` shows each profile with the live title, description, bio and photo. The data is static, not from the app backend. Update the team rule in `website/AGENTS.md`. | 8 profile URLs return 200 with live titles | — |
-| A3 Blog | The 6 live posts at `/blog/<slug>`, with their full text, listed on `/blog`. Replace the demo articles in `blog-data.ts` and their `MedicalScholarlyArticle` markup with `BlogPosting`. | 6 post URLs return 200 with titles | — |
+| A3 Blog (done) | The 6 live posts at `/blog/<slug>`, with their full text, links and tables, listed on `/blog`. The demo articles and their `MedicalScholarlyArticle` markup are replaced with `BlogPosting`. The cover images stay on the live site's Contentful account. | 6 post URLs return 200 with titles | — |
 | A4 Finance | `/services/finance`. The live page promotes credit (0% APR, "7.9% APR representative"), but its calculator shows 9.9% APR. | Page live, or a decision recorded | Owner, with V12: the practice is not FCA-authorised to advertise finance (D-05) |
 | A5 Registration | `/services/regestration`. The live page collects NHS number, ethnicity and medical and dental history through a third-party form service. | Page live, or a decision recorded | Owner: recommended is an information page (register by phone or in the clinic), with no health questionnaire on the website |
 
@@ -85,7 +87,7 @@ App links (Apple Team ID in the `apple-app-site-association` file, and the Andro
 
 | # | Question | Recommendation |
 |---|---|---|
-| 1 | Copy the 36 live documents into the website? | Yes, so the download links keep working |
+| 1 | Copy the 36 live documents and the 8 team photos (12.8 MB) into the website? | Yes, so the download links and photos keep working |
 | 2 | Finance page: publish the live credit wording? | Check with V12 first (D-05); hold the page until then |
 | 3 | Registration page: keep the online medical-history form? | No: an information page instead, since health data stays out of website forms |
 | 4 | `/gdpr` redirects to the privacy policy | Keep |
@@ -103,6 +105,7 @@ App links (Apple Team ID in the `apple-app-site-association` file, and the Andro
 | Enquiries go unread | Postmark alerts (#203); settings checked at the switch |
 | Analytics drops after the switch | Expected (consent); judge by Search Console |
 | Invented or wrong content goes live | Phase B1 test; owner review in D4 |
+| Blog cover images vanish | They are hosted on the live site's Contentful account, not in the repo. If that account is closed they disappear; copy them locally in a later step if the owner wants that |
 
 ## 6. Tools
 

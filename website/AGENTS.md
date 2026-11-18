@@ -16,6 +16,7 @@ This folder contains the public-facing marketing website and online shop for Pav
 - `src/lib/seo.ts`: every page's title, description and head tags, the practice's structured data, and the permanent redirects.
 - `seo/`: the recorded live site (`live-baseline.json`, `live-text/`, `live-content/`); see `seo/README.md`.
 - `src/content/live-pages.ts`: text pages ported word for word from the live site (FAQ, CCTV policy, practice documents, services index), shown by `LiveContentPage`.
+- `src/content/team-members.ts` and `src/content/blog-posts.ts`: the eight team profiles and the six blog posts, ported word for word and checked against the recorded live pages by their tests.
 - `src/components/`: Reusable UI components grouped by feature (`home/`, `about/`, `shop/`, `team/`, etc.).
 - `src/lib/`: Utilities, analytics, the account-link helpers (`app-account.ts`), query provider.
 - `public/`: Static assets (favicons, images, logos).

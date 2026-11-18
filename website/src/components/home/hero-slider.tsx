@@ -109,11 +109,11 @@ export function HeroSlider() {
             to={tile.to}
             className="group flex h-[80px] items-center justify-between gap-3 overflow-hidden rounded-xl bg-tile-cream px-4 t-lift lg:h-[100px]"
           >
-            <span className="text-h4 text-fg">
+            <span className="text-nav-lg font-[470] text-fg">
               {tile.title} <span className={ACCENT_TEXT[tile.accentTone]}>{tile.accent}</span>
             </span>
             <span className="flex shrink-0 items-center gap-2">
-              <span className="t-zoom block w-16 overflow-hidden rounded-md lg:w-20">
+              <span className="t-zoom block w-14 overflow-hidden rounded-md lg:w-16">
                 <Media
                   src={idx === 0 ? "/media/hero.jpg" : undefined}
                   alt={tile.mediaAlt}

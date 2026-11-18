@@ -141,11 +141,11 @@ export function Header() {
         aria-hidden={!menuOpen}
         inert={!menuOpen}
         className={cn(
-          "fixed inset-y-0 right-0 z-[71] flex w-full max-w-[547px] flex-col bg-white shadow-card transition-transform duration-300 ease-smooth",
+          "fixed inset-y-0 right-0 z-[71] flex w-full max-w-[547px] flex-col bg-white shadow-card transition-transform duration-300 ease-smooth md:rounded-l-xl",
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="flex h-[49px] shrink-0 items-center justify-between border-b border-border px-6">
+        <div className="flex h-[49px] shrink-0 items-center justify-between px-6">
           <span className="text-caption font-medium text-subtle">Menu</span>
           <Button
             ref={closeButtonRef}
@@ -159,16 +159,16 @@ export function Header() {
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="flex-1 overflow-y-auto px-6 py-4">
           <nav aria-label="Primary navigation">
             <p className="mb-2 text-caption font-medium text-subtle">Explore</p>
-            <ul className="divide-y divide-border">
+            <ul className="space-y-0.5">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
                     onClick={closeMenu}
-                    className="group flex items-center justify-between py-3.5 text-nav-lg text-fg t-colors hover:text-muted"
+                    className="group flex items-center justify-between rounded-md py-2.5 text-nav-lg text-fg t-colors hover:text-muted"
                   >
                     <span>{link.name}</span>
                     <ArrowRight
@@ -215,13 +215,13 @@ export function Header() {
                 View all
               </a>
             </div>
-            <ul className="divide-y divide-border">
+            <ul className="space-y-0.5">
               {SERVICE_PAGES.map((service) => (
                 <li key={service.href}>
                   <a
                     href={service.href}
                     onClick={closeMenu}
-                    className="group flex items-center justify-between py-3 text-nav-lg text-fg t-colors hover:text-muted"
+                    className="group flex items-center justify-between rounded-md py-2 text-nav-lg text-fg t-colors hover:text-muted"
                   >
                     <span>{service.name}</span>
                     <ArrowRight

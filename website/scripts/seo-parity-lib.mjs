@@ -58,10 +58,30 @@ function openingTags(html, name) {
   return found;
 }
 
+/**
+ * The text of an HTML fragment: everything outside tags. It reads the fragment once, from "<" to
+ * the next ">", instead of stripping tags with a pattern, which can leave a tag behind
+ * ("<scr<script>ipt>"). The result is only ever compared as plain text, never put back in a page.
+ * Server-rendered HTML escapes "<" and ">" in text and attribute values, so a raw "<" starts a tag.
+ */
+function removeTags(html) {
+  let text = "";
+  let at = 0;
+  while (at < html.length) {
+    const open = html.indexOf("<", at);
+    if (open === -1) return text + html.slice(at);
+    text += html.slice(at, open);
+    const close = html.indexOf(">", open + 1);
+    if (close === -1) return text;
+    at = close + 1;
+  }
+  return text;
+}
+
 function elementTexts(html, name) {
   const found = [];
   for (const m of html.matchAll(new RegExp(`<${name}\\b[^>]*>([\\s\\S]*?)</${name}>`, "gi"))) {
-    const text = decodeEntities(m[1].replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
+    const text = decodeEntities(removeTags(m[1])).replace(/\s+/g, " ").trim();
     if (text) found.push(text);
   }
   return found;
@@ -103,11 +123,12 @@ export function parsePage(html, origin = LIVE_ORIGIN) {
   const bodyStart = source.search(/<body\b/i);
   const text = normalizeText(
     decodeEntities(
-      (bodyStart >= 0 ? source.slice(bodyStart) : source)
-        .replace(/<(script|style|noscript|template|svg)\b[\s\S]*?<\/\1>/gi, " ")
-        .replace(/<!--[\s\S]*?-->/g, " ")
-        .replace(BLOCK_TAG, "\n")
-        .replace(/<[^>]+>/g, ""),
+      removeTags(
+        (bodyStart >= 0 ? source.slice(bodyStart) : source)
+          .replace(/<(script|style|noscript|template|svg)\b[\s\S]*?<\/\1>/gi, " ")
+          .replace(/<!--[\s\S]*?-->/g, " ")
+          .replace(BLOCK_TAG, "\n"),
+      ),
     ),
   );
   return {

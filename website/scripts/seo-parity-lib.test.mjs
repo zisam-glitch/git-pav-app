@@ -62,6 +62,18 @@ describe("parsePage", () => {
   });
 });
 
+describe("parsePage text", () => {
+  it("leaves no tag fragment in the text, even when tags are nested inside a tag", () => {
+    const page = parsePage("<html><body><p>Before <scr<script>ipt>alert(1)</scr</script>ipt> after</p><p>unfinished <a href=");
+    assert.doesNotMatch(page.text, /</);
+    assert.match(page.text, /^Before\s+after/);
+  });
+
+  it("keeps an escaped angle bracket as the text it is", () => {
+    assert.equal(parsePage("<body><p>&lt;b&gt; bold</p></body>").text, "<b> bold");
+  });
+});
+
 describe("normalizeForMatch", () => {
   it("ignores typography: quotes, dashes, spaces and capitals", () => {
     assert.equal(normalizeForMatch("It\u2019s  a \u201cNew\u201d\u00a0day \u2013 really\u2026"), `it's a "new" day - really...`);

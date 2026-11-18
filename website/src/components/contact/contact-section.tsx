@@ -1,107 +1,100 @@
 import { useState, type FormEvent } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { Link } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
 import {
-  Mail,
-  Phone,
-  MapPin,
-  Send,
-  CheckCircle2,
-  Headphones,
-  MessageSquareText,
-  Newspaper,
-  ChevronDown,
-  ExternalLink,
+  AlertCircle,
   ArrowRight,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
   Clock,
+  ExternalLink,
+  Mail,
+  MapPin,
+  MessageSquareText,
   Navigation,
-  Building2,
-  Sparkles,
+  Phone,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Reveal } from "@/components/home/reveal";
 import { api } from "@/lib/api";
+import { BOOKING_URL } from "@/lib/enquiry";
 
-/* ------------------------------------------------------------------ */
-/*  FAQ data                                                          */
-/* ------------------------------------------------------------------ */
 const faqs = [
   {
     q: "What are your opening hours?",
-    a: "We are open 7 days a week, from 08:00 to 22:00. Emergency appointments are available 24/7 by calling our dedicated emergency line.",
+    a: "Our Bradford clinic is open 7 days a week from 08:00 to 22:00, with 24/7 emergency dental cover available by calling 0800 1938 786.",
   },
   {
     q: "How do I book an appointment?",
-    a: "You can book online through the form on this page, call us directly at 0800 1938 786, or send a WhatsApp message. We typically respond within 30 minutes during business hours.",
+    a: "You can book online via Setmore at any time, call our freephone helpline on 0800 1938 786, or message us on WhatsApp at +44 7311 871456.",
   },
   {
     q: "Do you accept walk-in patients?",
-    a: "Yes, we welcome walk-in patients. However, we recommend booking in advance to minimise wait times and ensure you receive the most convenient slot.",
+    a: "Yes, we welcome walk-in patients. Calling ahead on 0800 1938 786 or booking online helps minimise wait times and ensures a clinician is ready for you.",
   },
   {
     q: "What payment methods do you accept?",
-    a: "We accept all major credit and debit cards, bank transfers, and offer 0% interest finance plans. Payment can be made in the clinic or online.",
+    a: "We accept all major credit and debit cards as well as bank transfers. Please speak to our reception team if you would like to discuss treatment payment options.",
   },
   {
     q: "Is parking available at the clinic?",
-    a: "Yes, we have a free on-site car park with dedicated disabled spaces. Street parking is also available on Leeds Road.",
+    a: "Yes, we have free on-site parking with accessible spaces at 786 Leeds Road, Bradford, BD3 9TY, and nearby bus routes 72 and 73.",
   },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Department cards                                                  */
-/* ------------------------------------------------------------------ */
-const departments = [
+const CONTACT_CHANNELS = [
   {
-    icon: Headphones,
-    title: "Customer Support",
-    description:
-      "Our support team is available around the clock to address any concerns or queries you may have.",
-    link: "Get support",
+    icon: Phone,
+    href: "tel:08001938786",
+    label: "0800 1938 786",
+    sub: "24/7 Freephone · Urgent & routine enquiries",
   },
   {
     icon: MessageSquareText,
-    title: "Feedback & Suggestions",
-    description:
-      "We value your feedback and are continuously working to improve. Your input is crucial in shaping our future.",
-    link: "Share feedback",
+    href: "https://wa.me/447311871456",
+    label: "Whatsapp: +44 7311 871456",
+    sub: "Message our reception team on WhatsApp",
+    external: true,
   },
   {
-    icon: Newspaper,
-    title: "Media Inquiries",
-    description:
-      "For media-related questions or press inquiries, please contact us at hello@pavdental.com.",
-    link: "Press contact",
+    icon: Mail,
+    href: "mailto:hello@pavdental.com",
+    label: "hello@pavdental.com",
+    sub: "Practice Manager & general enquiries",
+  },
+  {
+    icon: MapPin,
+    href: "https://maps.google.com/?q=786+Leeds+Road+Bradford+BD3+9TY",
+    label: "786 Leeds Road, Bradford, BD3 9TY",
+    sub: "Free on-site parking",
+    external: true,
   },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Main Section                                                      */
-/* ------------------------------------------------------------------ */
 export function ContactSection() {
   return (
     <>
       <ContactHero />
-      <DepartmentCards />
-      <FaqSection />
       <MapSection />
+      <FaqSection />
       <CtaBanner />
     </>
   );
 }
 
-/* ================================================================== */
-/*  1. CONTACT HERO  — left info + right form card                    */
-/* ================================================================== */
 function ContactHero() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    subject: "",
     phone: "",
     message: "",
   });
@@ -109,16 +102,20 @@ function ContactHero() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg(null);
     try {
       await api.forms.submitContact({
         name: `${formData.firstName} ${formData.lastName}`.trim(),
         email: formData.email,
         phone: formData.phone,
+        subject: formData.subject.trim() || undefined,
         message: formData.message,
       });
       setSubmitted(true);
     } catch {
-      setSubmitted(true);
+      setErrorMsg(
+        "We could not send your message right now. Please call 0800 1938 786 or email hello@pavdental.com.",
+      );
     } finally {
       setLoading(false);
     }
@@ -126,224 +123,161 @@ function ContactHero() {
 
   const reset = () => {
     setSubmitted(false);
-    setFormData({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+    setErrorMsg(null);
+    setFormData({ firstName: "", lastName: "", email: "", subject: "", phone: "", message: "" });
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#faf8f5] pb-24 pt-14 sm:pt-20 lg:pb-32">
-      {/* ---- Layered decorative background ---- */}
-      <div className="pointer-events-none absolute -right-52 -top-52 size-[600px] rounded-full bg-gradient-to-br from-primary/[0.06] to-gold/[0.04] blur-[100px]" />
-      <div className="pointer-events-none absolute -left-32 bottom-0 size-[400px] rounded-full bg-gradient-to-tr from-primary/[0.03] to-transparent blur-[80px]" />
-      {/* Subtle grain overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-        }}
-      />
+    <section className="border-b border-border-soft bg-[#faf6f0] py-14 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Left column: headline + direct contact directory */}
+          <div className="lg:col-span-5">
+            <h1 className="font-display text-4xl font-bold text-fg sm:text-5xl">
+              Contact <span className="text-primary">Us</span>
+            </h1>
+            <p className="mt-4 text-base leading-relaxed text-muted">
+              Email, call, or complete the form to learn how we can help you with your dental care
+              needs.
+            </p>
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-2 lg:gap-20">
-          {/* ---- Left column: headline + contact info ---- */}
-          <Reveal>
-            <div className="max-w-lg pt-2 lg:pt-10">
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm"
-              >
-                <Sparkles className="size-3.5" />
-                We'd love to hear from you
-              </motion.div>
+            {/* Quick actions */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <a href={BOOKING_URL}>
+                  <Calendar className="size-4" />
+                  Book Appointment
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <a href="tel:08001938786">
+                  <Phone className="size-4" />
+                  0800 1938 786
+                </a>
+              </Button>
+            </div>
 
-              <h1 className="font-display text-4xl font-bold text-fg sm:text-5xl lg:text-[3.5rem] lg:leading-[1.08]">
-                Contact{" "}
-                <span className="accent-text">Us</span>
-              </h1>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-muted sm:text-[1.05rem]">
-                Email, call, or complete the form to learn how we can help you with your dental care
-                needs.
+            {/* Structured contact directory */}
+            <div className="mt-8 divide-y divide-[#e8ddd0] rounded-xl border border-border-soft bg-white">
+              {CONTACT_CHANNELS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="group flex items-center gap-4 p-4 transition-colors hover:bg-[#faf6f0]"
+                >
+                  <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-border-soft bg-[#faf6f0] text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                    <item.icon className="size-4" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-semibold text-fg group-hover:text-primary">
+                      {item.label}
+                    </span>
+                    <span className="block text-xs text-muted">{item.sub}</span>
+                  </span>
+                  <ArrowRight className="size-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Right column: enquiry form card */}
+          <div className="lg:col-span-7">
+            <div className="rounded-xl border border-border bg-white p-6 shadow-soft sm:p-9">
+              <h2 className="font-display text-2xl font-bold text-fg sm:text-3xl">
+                Send us Message
+              </h2>
+              <p className="mt-1.5 text-sm text-muted">
+                You can reach us anytime — our Practice Manager and reception team respond promptly.
               </p>
 
-              {/* Quick contact links */}
-              <div className="mt-10 space-y-4">
-                {[
-                  {
-                    icon: Mail,
-                    href: "mailto:hello@pavdental.com",
-                    label: "hello@pavdental.com",
-                    sub: "Email us anytime",
-                  },
-                  {
-                    icon: Phone,
-                    href: "tel:08001938786",
-                    label: "0800 1938 786",
-                    sub: "Mon–Sun, 08:00–22:00",
-                  },
-                  {
-                    icon: MapPin,
-                    href: "https://maps.google.com/?q=786+Leeds+Road+Bradford+BD3+9TY",
-                    label: "786 Leeds Road, Bradford",
-                    sub: "BD3 9TY · Free parking",
-                    external: true,
-                  },
-                ].map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="group flex items-center gap-4 rounded-xl p-2 -ml-2 transition-colors hover:bg-white/60"
+              <AnimatePresence mode="wait">
+                {submitted ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="mt-7 rounded-xl border border-border-soft bg-[#faf6f0] p-8 text-center"
                   >
-                    <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border/50 bg-white text-primary shadow-sm transition-all duration-200 group-hover:scale-105 group-hover:border-primary/30 group-hover:shadow-md">
-                      <item.icon className="size-[18px]" />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-sm font-semibold text-fg group-hover:text-primary transition-colors">
-                        {item.label}
-                      </span>
-                      <span className="block text-xs text-muted/80">{item.sub}</span>
-                    </span>
-                  </a>
-                ))}
-              </div>
-
-              {/* Customer Support link */}
-              <div className="mt-10 flex items-center gap-6">
-                <a
-                  href="#faq"
-                  className="group inline-flex items-center gap-2 text-sm font-semibold text-fg transition-colors hover:text-primary"
-                >
-                  Customer Support
-                  <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-                </a>
-                <span className="h-5 w-px bg-border/60" />
-                <a
-                  href="https://wa.me/447311871456"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 text-sm font-semibold text-fg transition-colors hover:text-primary"
-                >
-                  WhatsApp
-                  <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-                </a>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* ---- Right column: form card ---- */}
-          <Reveal delay={0.12}>
-            <div className="relative">
-              {/* Card glow behind */}
-              <div className="pointer-events-none absolute -inset-3 rounded-xl bg-gradient-to-br from-primary/[0.07] via-gold/[0.05] to-transparent blur-2xl" />
-
-              <div className="relative overflow-hidden rounded-xl border border-white/70 bg-white/95 p-7 shadow-[0_24px_64px_-16px_rgba(42,28,18,0.18)] sm:p-9">
-                {/* Accent line at top */}
-
-                <h2 className="font-display text-2xl font-bold text-fg sm:text-[1.7rem]">
-                  Get in Touch
-                </h2>
-                <p className="mt-1.5 text-sm text-muted">You can reach us anytime</p>
-
-                <AnimatePresence mode="wait">
-                  {submitted ? (
-                    <motion.div
-                      key="success"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="mt-8 rounded-xl bg-gradient-to-br from-[#faf6f0] to-[#f5f0e8] p-8 text-center ring-1 ring-primary/10"
-                    >
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ duration: 0.4, delay: 0.15, type: "spring", bounce: 0.5 }}
-                        className="mx-auto mb-5 flex size-16 items-center justify-center rounded-full bg-green-100 text-green-600 shadow-sm"
+                    <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-primary text-white">
+                      <CheckCircle2 className="size-7" />
+                    </div>
+                    <h3 className="font-display text-xl font-bold text-fg">Message Sent</h3>
+                    <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted">
+                      Thank you for reaching out. Our team has received your enquiry and will get
+                      back to you shortly.
+                    </p>
+                    <Button onClick={reset} className="mt-6" size="sm">
+                      Send Another Message
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                    {errorMsg && (
+                      <div
+                        role="alert"
+                        className="flex items-start gap-2.5 rounded-lg border border-danger/40 bg-[#fef2f2] p-3.5 text-sm text-danger"
                       >
-                        <CheckCircle2 className="size-8" />
-                      </motion.div>
-                      <h3 className="font-display text-xl font-bold text-fg">Message Sent!</h3>
-                      <p className="mx-auto mt-2.5 max-w-xs text-sm leading-relaxed text-muted">
-                        Thank you for reaching out. Our team will review your inquiry and get back
-                        to you shortly.
-                      </p>
-                      <Button onClick={reset} className="mt-7 text-xs" size="sm">
-                        Send Another Message
-                      </Button>
-                    </motion.div>
-                  ) : (
-                    <motion.form
-                      key="form"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onSubmit={handleSubmit}
-                      className="mt-7 space-y-5"
-                    >
-                      {/* First + Last Name row */}
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label htmlFor="firstName" className="text-xs font-medium text-muted">
-                            First name
-                          </Label>
-                          <Input
-                            id="firstName"
-                            required
-                            placeholder="Jane"
-                            value={formData.firstName}
-                            onChange={(e) =>
-                              setFormData({ ...formData, firstName: e.target.value })
-                            }
-                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="lastName" className="text-xs font-medium text-muted">
-                            Last name
-                          </Label>
-                          <Input
-                            id="lastName"
-                            placeholder="Doe"
-                            value={formData.lastName}
-                            onChange={(e) =>
-                              setFormData({ ...formData, lastName: e.target.value })
-                            }
-                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
-                          />
-                        </div>
+                        <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                        <span>{errorMsg}</span>
                       </div>
+                    )}
 
-                      {/* Email */}
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-xs font-medium text-muted">
-                          Your email
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="firstName" className="text-xs font-semibold text-fg">
+                          First name
                         </Label>
-                        <div className="relative">
-                          <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
-                          <Input
-                            id="email"
-                            type="email"
-                            required
-                            placeholder="you@example.com"
-                            value={formData.email}
-                            onChange={(e) =>
-                              setFormData({ ...formData, email: e.target.value })
-                            }
-                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] pl-10 text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
-                          />
-                        </div>
+                        <Input
+                          id="firstName"
+                          required
+                          placeholder="Jane"
+                          value={formData.firstName}
+                          onChange={(e) =>
+                            setFormData({ ...formData, firstName: e.target.value })
+                          }
+                          className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                        />
                       </div>
-
-                      {/* Phone */}
-                      <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-xs font-medium text-muted">
-                          Phone number
+                      <div className="space-y-1.5">
+                        <Label htmlFor="lastName" className="text-xs font-semibold text-fg">
+                          Last name
                         </Label>
-                        <div className="flex gap-2.5">
-                          <div className="flex h-11 w-[4.5rem] items-center justify-center rounded-xl border border-border/50 bg-[#fdfcfa] text-sm font-medium text-muted shadow-sm">
+                        <Input
+                          id="lastName"
+                          placeholder="Doe"
+                          value={formData.lastName}
+                          onChange={(e) =>
+                            setFormData({ ...formData, lastName: e.target.value })
+                          }
+                          className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="email" className="text-xs font-semibold text-fg">
+                          Email Address
+                        </Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          required
+                          placeholder="you@example.com"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="phone" className="text-xs font-semibold text-fg">
+                          Phone
+                        </Label>
+                        <div className="flex gap-2">
+                          <div className="flex h-11 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-[#faf6f0] text-sm font-medium text-fg">
                             +44
                           </div>
                           <Input
@@ -351,423 +285,267 @@ function ContactHero() {
                             type="tel"
                             placeholder="7311 871 456"
                             value={formData.phone}
-                            onChange={(e) =>
-                              setFormData({ ...formData, phone: e.target.value })
-                            }
-                            className="h-11 flex-1 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            className="h-11 flex-1 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
                           />
                         </div>
                       </div>
+                    </div>
 
-                      {/* Message */}
-                      <div className="space-y-2">
-                        <Label htmlFor="message" className="text-xs font-medium text-muted">
-                          How can we help?
-                        </Label>
-                        <Textarea
-                          id="message"
-                          required
-                          rows={4}
-                          placeholder="Tell us about your dental needs..."
-                          value={formData.message}
-                          onChange={(e) =>
-                            setFormData({ ...formData, message: e.target.value })
-                          }
-                          className="min-h-[7rem] rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
-                        />
-                      </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="subject" className="text-xs font-semibold text-fg">
+                        Subject
+                      </Label>
+                      <Input
+                        id="subject"
+                        placeholder="General enquiry, emergency care, or appointment question"
+                        value={formData.subject}
+                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                        className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                      />
+                    </div>
 
-                      {/* Submit */}
-                      <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full gap-2.5 text-sm font-semibold"
-                        size="lg"
-                      >
-                        {loading ? (
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex items-center gap-2"
-                          >
-                            <motion.span
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                              className="inline-block size-4 rounded-full border-2 border-white/30 border-t-white"
-                            />
-                            Sending…
-                          </motion.span>
-                        ) : (
-                          <>
-                            Submit
-                            <Send className="size-4" />
-                          </>
-                        )}
-                      </Button>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="message" className="text-xs font-semibold text-fg">
+                        Your Message
+                      </Label>
+                      <Textarea
+                        id="message"
+                        required
+                        rows={4}
+                        placeholder="Tell us how we can help..."
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        className="min-h-[7rem] rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                      />
+                    </div>
 
-                      <p className="text-center text-[11px] leading-relaxed text-muted">
-                        By contacting us, you agree to our{" "}
-                        <a
-                          href="#"
-                          className="font-medium text-muted underline underline-offset-2 transition-colors hover:text-fg"
-                        >
-                          Terms of Service
-                        </a>{" "}
-                        and{" "}
-                        <a
-                          href="#"
-                          className="font-medium text-muted underline underline-offset-2 transition-colors hover:text-fg"
-                        >
-                          Privacy Policy
-                        </a>
-                      </p>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ================================================================== */
-/*  2. DEPARTMENT CARDS                                               */
-/* ================================================================== */
-function DepartmentCards() {
-  return (
-    <section className="relative bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <Reveal>
-          <div className="mb-12 max-w-lg">
-            <span className="text-xs font-semibold uppercase text-primary">
-              How can we help
-            </span>
-            <h2 className="mt-3 font-display text-3xl font-bold text-fg sm:text-4xl">
-              Get in touch with the right team
-            </h2>
-          </div>
-        </Reveal>
-
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {departments.map((dept, i) => (
-            <Reveal key={dept.title} delay={i * 0.08}>
-              <div className="group relative overflow-hidden rounded-xl border border-border/30 bg-gradient-to-b from-[#fdfcfa] to-[#faf8f5] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_20px_50px_-20px_rgba(42,28,18,0.15)] sm:p-8">
-                {/* Hover glow */}
-                <div className="pointer-events-none absolute -right-8 -top-8 size-28 rounded-full bg-primary/[0.06] opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
-
-                <div className="relative">
-                  <div className="mb-5 flex size-12 items-center justify-center rounded-xl bg-white text-primary shadow-sm ring-1 ring-border/40 transition-all duration-300 group-hover:ring-primary/30 group-hover:shadow-md group-hover:scale-110">
-                    <dept.icon className="size-5" strokeWidth={1.8} />
-                  </div>
-                  <h3 className="font-display text-lg font-bold text-fg">{dept.title}</h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-muted">{dept.description}</p>
-                  <a
-                    href="#"
-                    className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary opacity-0 transition-all duration-300 group-hover:opacity-100"
-                  >
-                    {dept.link}
-                    <ArrowRight className="size-3 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </a>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ================================================================== */
-/*  3. FAQ SECTION                                                    */
-/* ================================================================== */
-function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  return (
-    <section id="faq" className="relative bg-[#faf8f5] py-20 sm:py-28">
-      {/* Background decoration */}
-      <div className="pointer-events-none absolute left-0 top-1/2 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary/[0.04] to-transparent blur-[100px]" />
-
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
-          {/* Left: heading + question prompt */}
-          <Reveal>
-            <div className="sticky top-24">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-white/70 px-3 py-1 text-xs font-semibold uppercase text-primary shadow-sm">
-                FAQ
-              </span>
-              <h2 className="mt-5 font-display text-3xl font-bold text-fg sm:text-4xl lg:text-[2.5rem]">
-                Do you have any
-                <br />
-                questions for us?
-              </h2>
-              <p className="mt-5 text-sm leading-relaxed text-muted sm:text-base">
-                If there are questions you want to ask, we will answer all your questions. You can
-                also reach us directly at our email.
-              </p>
-
-              {/* Quick email input */}
-              <div className="mt-8 flex items-center gap-2.5">
-                <div className="relative flex-1">
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
-                  <input
-                    type="email"
-                    aria-label="Email address"
-                    placeholder="Enter your email"
-                    className="h-12 w-full rounded-xl border border-border/50 bg-white pl-10 pr-4 text-sm text-fg shadow-sm placeholder:text-muted transition-all duration-200 focus:border-primary/40 focus:outline-none focus:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
-                  />
-                </div>
-                <Button size="lg" className="shrink-0 text-sm font-semibold px-6">
-                  Submit
-                </Button>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* Right: accordion */}
-          <Reveal delay={0.1}>
-            <div className="rounded-xl border border-border/30 bg-white/80 p-2 shadow-sm sm:p-3">
-              {faqs.map((faq, i) => {
-                const isOpen = openIndex === i;
-                return (
-                  <div
-                    key={i}
-                    className={`overflow-hidden rounded-xl transition-colors duration-200 ${
-                      isOpen ? "bg-[#faf8f5]" : "hover:bg-[#fdfcfa]"
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setOpenIndex(isOpen ? null : i)}
-                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-                      aria-expanded={isOpen}
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full gap-2 text-sm font-semibold"
+                      size="lg"
                     >
-                      <span className="text-sm font-semibold text-fg sm:text-[0.95rem]">
-                        {faq.q}
-                      </span>
-                      <span
-                        className={`grid size-7 shrink-0 place-items-center rounded-lg transition-all duration-200 ${
-                          isOpen
-                            ? "bg-primary text-white rotate-180"
-                            : "bg-white text-muted ring-1 ring-border/40 shadow-sm"
-                        }`}
+                      {loading ? "Sending..." : "Send Message"}
+                      <Send className="size-4" />
+                    </Button>
+
+                    <p className="text-center text-xs leading-relaxed text-muted">
+                      By contacting us, you agree to our{" "}
+                      <Link
+                        to="/terms-and-condition"
+                        className="font-medium text-primary underline underline-offset-2 hover:text-[#7a491e]"
                       >
-                        <ChevronDown className="size-4" />
-                      </span>
-                    </button>
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                          className="overflow-hidden"
-                        >
-                          <p className="px-5 pb-5 text-sm leading-relaxed text-muted">
-                            {faq.a}
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              })}
+                        Terms &amp; Conditions
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        to="/privacy-policy"
+                        className="font-medium text-primary underline underline-offset-2 hover:text-[#7a491e]"
+                      >
+                        Privacy Policy
+                      </Link>
+                      .
+                    </p>
+                  </form>
+                )}
+              </AnimatePresence>
             </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ================================================================== */
-/*  4. MAP SECTION                                                    */
-/* ================================================================== */
 function MapSection() {
   return (
-    <section className="bg-white py-20 sm:py-28">
+    <section className="bg-[#fffdf9] py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <Reveal>
-          <div className="text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-[#faf8f5] px-3 py-1 text-xs font-semibold uppercase text-primary shadow-sm">
-              Our Location
-            </span>
-            <h2 className="mt-5 font-display text-3xl font-bold text-fg sm:text-4xl lg:text-[2.5rem]">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="font-display text-3xl font-bold text-fg sm:text-4xl">
               Connecting Near and Far
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted sm:text-base">
-              Visit us at our modern clinic in Bradford, easily accessible with free parking.
+            <p className="mt-3 max-w-xl text-base text-muted">
+              Visit us at our clinic in Bradford — easily accessible with free on-site parking.
             </p>
           </div>
-        </Reveal>
+          <Button asChild variant="outline">
+            <a
+              href="https://maps.google.com/?q=786+Leeds+Road+Bradford+BD3+9TY"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open in Google Maps
+              <ExternalLink className="size-4" />
+            </a>
+          </Button>
+        </div>
 
-        <Reveal delay={0.1}>
-          <div className="mt-12 overflow-hidden rounded-xl border border-border/30 bg-white shadow-[0_24px_64px_-20px_rgba(42,28,18,0.12)]">
-            {/* Map embed */}
-            <div className="relative h-72 w-full bg-[#e8ecef] sm:h-[420px]">
-              <iframe
-                title="Pav Dental Bradford Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2356.4024254848316!2d-1.728923322964094!3d53.79978714088019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48795c6fcb3dc04b%3A0x7d6f51a7e4b9bbd0!2s786%20Leeds%20Rd%2C%20Bradford%20BD3%209TY%2C%20UK!5e0!3m2!1sen!2suk!4v1700000000000!5m2!1sen!2suk"
-                className="h-full w-full border-0"
-                loading="lazy"
-              />
-
-              {/* Floating info card over map */}
-              <div className="absolute bottom-4 left-4 hidden rounded-xl border border-white/60 bg-white/95 p-4 shadow-lg sm:block sm:max-w-xs">
-                <div className="flex items-center gap-3">
-                  <div className="grid size-10 shrink-0 place-items-center rounded-lg accent-gradient text-white shadow-sm">
-                    <MapPin className="size-4.5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-fg">Pav Dental</p>
-                    <p className="text-xs text-muted">786 Leeds Rd, Bradford BD3 9TY</p>
-                  </div>
-                </div>
-                <a
-                  href="https://maps.google.com/?q=786+Leeds+Road+Bradford+BD3+9TY"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-fg"
-                >
-                  Open Google Maps
-                  <ExternalLink className="size-3" />
-                </a>
-              </div>
-            </div>
-
-            {/* Map footer info — mobile fallback */}
-            <div className="flex flex-col items-start justify-between gap-4 border-t border-border/30 p-5 sm:flex-row sm:items-center sm:p-6">
-              <div className="flex items-center gap-3.5">
-                <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#faf8f5] text-primary ring-1 ring-border/30">
-                  <MapPin className="size-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-fg">Pav Dental</p>
-                  <p className="text-xs text-muted">786 Leeds Road, Bradford, BD3 9TY</p>
-                </div>
-              </div>
-              <a
-                href="https://maps.google.com/?q=786+Leeds+Road+Bradford+BD3+9TY"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-[#faf8f5] px-4 py-2 text-sm font-medium text-fg shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
-              >
-                Open in Google Maps
-                <ExternalLink className="size-3.5" />
-              </a>
-            </div>
+        <div className="mt-8 overflow-hidden rounded-xl border border-border bg-white">
+          <div className="h-72 w-full bg-[#faf6f0] sm:h-[400px]">
+            <iframe
+              title="Pav Dental Bradford Location Map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2356.4024254848316!2d-1.728923322964094!3d53.79978714088019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48795c6fcb3dc04b%3A0x7d6f51a7e4b9bbd0!2s786%20Leeds%20Rd%2C%20Bradford%20BD3%209TY%2C%20UK!5e0!3m2!1sen!2suk!4v1700000000000!5m2!1sen!2suk"
+              className="h-full w-full border-0"
+              loading="lazy"
+            />
           </div>
-        </Reveal>
 
-        {/* Location details row */}
-        <Reveal delay={0.18}>
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
+          <div className="grid grid-cols-1 divide-y divide-[#e8ddd0] border-t border-border-soft bg-[#faf6f0] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             {[
               {
-                icon: Building2,
-                label: "Headquarters",
+                icon: Building2Strip,
+                label: "Clinic Address",
                 title: "Pav Dental",
                 sub: "786 Leeds Road, Bradford, BD3 9TY",
               },
               {
                 icon: Clock,
                 label: "Opening Hours",
-                title: "Mon – Sun",
-                sub: "08:00 – 22:00 (Emergency 24/7)",
+                title: "Mon – Sun · 08:00 – 22:00",
+                sub: "24/7 emergency dental cover",
               },
               {
                 icon: Navigation,
-                label: "Get Directions",
+                label: "Directions & Parking",
                 title: "Easy Access",
                 sub: "Free parking · Bus routes 72 & 73",
               },
             ].map((item) => (
-              <div
-                key={item.label}
-                className="group rounded-xl border border-border/30 bg-gradient-to-b from-[#fdfcfa] to-[#faf8f5] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
-              >
-                <div className="mb-3 flex size-9 items-center justify-center rounded-lg bg-white text-primary shadow-sm ring-1 ring-border/30 transition-all duration-300 group-hover:ring-primary/25 group-hover:scale-105">
-                  <item.icon className="size-4" strokeWidth={1.8} />
+              <div key={item.label} className="flex items-start gap-3.5 p-5 sm:p-6">
+                <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-border-soft bg-white text-primary">
+                  <item.icon className="size-4" />
                 </div>
-                <span className="text-[10px] font-semibold uppercase text-primary/70">
-                  {item.label}
-                </span>
-                <p className="mt-1.5 text-sm font-bold text-fg">{item.title}</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-muted">{item.sub}</p>
+                <div>
+                  <p className="text-xs font-semibold uppercase text-primary">{item.label}</p>
+                  <p className="mt-1 text-sm font-bold text-fg">{item.title}</p>
+                  <p className="mt-0.5 text-xs text-muted">{item.sub}</p>
+                </div>
               </div>
             ))}
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ================================================================== */
-/*  5. CTA BANNER                                                     */
-/* ================================================================== */
-function CtaBanner() {
+function Building2Strip({ className }: { className?: string }) {
+  return <MapPin className={className} />;
+}
+
+function FaqSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
   return (
-    <section className="bg-[#faf8f5] py-16 sm:py-20">
+    <section id="faq" className="border-t border-border-soft bg-[#faf6f0] py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <Reveal>
-          <div className="relative isolate overflow-hidden rounded-xl accent-gradient px-6 py-14 text-center text-white sm:px-16 sm:py-20">
-            {/* Layered decorative elements */}
-            <div className="pointer-events-none absolute -left-20 -top-20 size-64 rounded-full bg-white/[0.08] blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-24 -right-24 size-80 rounded-full bg-white/[0.08] blur-3xl" />
-            <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-px w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-
-            {/* Floating sparkle accents */}
-            <motion.div
-              animate={{ y: [-4, 4, -4], opacity: [0.4, 0.7, 0.4] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="pointer-events-none absolute left-[15%] top-[20%] size-2 rounded-full bg-white/40"
-            />
-            <motion.div
-              animate={{ y: [3, -3, 3], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="pointer-events-none absolute right-[20%] top-[30%] size-1.5 rounded-full bg-white/40"
-            />
-
-            <div className="relative">
-              <h2 className="font-display text-3xl font-bold sm:text-4xl lg:text-5xl">
-                Ready to Get Started?
-              </h2>
-              <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
-                Book your appointment today and take the first step toward a healthier, brighter
-                smile.
-              </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-                <Button
-                  asChild
-                  className="bg-white text-primary hover:bg-white/90 shadow-[0_4px_14px_-4px_rgba(0,0,0,0.15)] font-semibold"
-                  size="lg"
-                >
-                  <a className="text-white" href="tel:08001938786">
-                    <Phone className="size-4" />
-                    Call 0800 1938 786
-                  </a>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-white/30 bg-white/[0.08] text-white hover:bg-white/15 shadow-none"
-                  size="lg"
-                >
-                  <a href="https://wa.me/447311871456" target="_blank" rel="noopener noreferrer">
-                    WhatsApp Us
-                  </a>
-                </Button>
-              </div>
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <h2 className="font-display text-3xl font-bold text-fg sm:text-4xl">
+              Frequently Asked Questions
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted">
+              Quick answers about opening hours, appointments, walk-ins, and parking. Need
+              immediate help? Call or email our team directly.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild>
+                <a href="tel:08001938786">
+                  <Phone className="size-4" />
+                  Call 0800 1938 786
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href="mailto:hello@pavdental.com">
+                  <Mail className="size-4" />
+                  hello@pavdental.com
+                </a>
+              </Button>
             </div>
           </div>
-        </Reveal>
+
+          <div className="divide-y divide-[#e8ddd0] rounded-xl border border-border-soft bg-white lg:col-span-7">
+            {faqs.map((faq, i) => {
+              const isOpen = openIndex === i;
+              return (
+                <div key={faq.q}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[#faf6f0]"
+                  >
+                    <span className="text-sm font-semibold text-fg sm:text-base">{faq.q}</span>
+                    <span
+                      className={`grid size-7 shrink-0 place-items-center rounded-md border transition-transform duration-200 ${
+                        isOpen
+                          ? "rotate-180 border-primary bg-primary text-white"
+                          : "border-border-soft bg-[#faf6f0] text-fg"
+                      }`}
+                    >
+                      <ChevronDown className="size-4" />
+                    </span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="px-6 pb-5 text-sm leading-relaxed text-muted">{faq.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CtaBanner() {
+  return (
+    <section className="bg-[#fffdf9] py-14 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-xl border border-primary bg-[#2a1c12] px-6 py-12 text-center text-white sm:px-14 sm:py-16">
+          <h2 className="font-display text-3xl font-bold sm:text-4xl">Ready to Get Started?</h2>
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#e8ddd0] sm:text-base">
+            Book your appointment today or speak directly with our Bradford reception team.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="tel:08001938786"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#cf9448] px-6 text-sm font-bold text-[#1a1a1a] transition-colors hover:bg-[#c2873d]"
+            >
+              <Phone className="size-4" />
+              Call 0800 1938 786
+            </a>
+            <a
+              href={BOOKING_URL}
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#925a27] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#7a491e]"
+            >
+              <Calendar className="size-4" />
+              Book Appointment
+            </a>
+            <a
+              href="https://wa.me/447311871456"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-[#925a27] bg-[#372418] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#462f20]"
+            >
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

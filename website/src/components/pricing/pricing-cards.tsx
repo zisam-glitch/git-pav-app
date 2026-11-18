@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 interface Feature {
   text: string;
@@ -253,7 +254,7 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
             plan.popular ? "accent-gradient text-white" : "border-border hover:bg-surface",
           )}
         >
-          <a href="#contact">Book Now</a>
+          <a href={BOOKING_URL}>Book Now</a>
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const FAQS = [
   {
@@ -57,7 +58,7 @@ export function ExtractionFaq() {
               asChild
               className="mt-6 accent-gradient text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm hover:opacity-95"
             >
-              <a href="/contact-us" className="flex items-center gap-2">
+              <a href={BOOKING_URL} className="flex items-center gap-2">
                 Book Appointment <ArrowRight className="size-3.5" />
               </a>
             </Button>

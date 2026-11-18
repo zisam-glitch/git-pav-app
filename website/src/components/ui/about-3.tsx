@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 interface About3Props {
   title?: string;
@@ -38,7 +39,7 @@ export const About3 = ({
     title: "Your Trusted Dental Partner",
     description: "Providing comprehensive dental care with same-day appointments, mobile services, and 24/7 emergency support when you need it most.",
     buttonText: "Book Appointment",
-    buttonUrl: "#contact",
+    buttonUrl: BOOKING_URL,
   },
 }: About3Props = {}) => {
   return (

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GeneralDentistryRootCanalPricing } from "./general-dentistry-root-canal-pricing";
 import { GeneralDentistryFillingPricing } from "./general-dentistry-filling-pricing";
 import { GeneralDentistryExtractionPricing } from "./general-dentistry-extraction-pricing";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function GeneralDentistryPricing() {
   return (
@@ -32,7 +33,7 @@ export function GeneralDentistryPricing() {
             asChild
             className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
           >
-            <a href="/contact-us" className="flex items-center gap-2">
+            <a href={BOOKING_URL} className="flex items-center gap-2">
               Book Appointment <ArrowRight className="size-4" />
             </a>
           </Button>

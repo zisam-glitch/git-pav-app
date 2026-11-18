@@ -1,6 +1,7 @@
 import React from "react";
 import { CalendarDays, Phone, MapPin, Clock, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const REASONS = [
   "GDC-registered surgical team with 15+ years experience",
@@ -55,7 +56,7 @@ export function ExtractionBook() {
               asChild
               className="accent-gradient rounded-full px-10 h-12 text-white font-bold hover:opacity-90 transition-opacity shadow-sm"
             >
-              <a href="/contact-us" className="flex items-center gap-2">
+              <a href={BOOKING_URL} className="flex items-center gap-2">
                 <CalendarDays className="size-4" />
                 Book Appointment Now
                 <ArrowRight className="size-4" />

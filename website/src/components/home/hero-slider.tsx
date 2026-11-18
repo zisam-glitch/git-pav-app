@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spotlight } from "./spotlight";
+import { BOOKING_URL, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 const SLIDES = [
   {
@@ -11,6 +12,7 @@ const SLIDES = [
     body: "Only £7.60 more than the NHS fee — with same-day access and premium care in Bradford.",
     image: "/media/hero.jpg",
     cta: "Book check-up",
+    href: BOOKING_URL,
   },
   {
     id: "emergency",
@@ -19,6 +21,7 @@ const SLIDES = [
     body: "Pain, trauma, or a lost restoration — our team is on call including bank holidays.",
     image: "/media/hero1.jpg",
     cta: "Call now",
+    href: PRACTICE_PHONE_HREF,
   },
   {
     id: "smile",
@@ -27,6 +30,7 @@ const SLIDES = [
     body: "Digital imaging and considered treatment plans — never rushed, never upsold.",
     image: "/media/hero2.jpg",
     cta: "View services",
+    href: "/services",
   },
 ];
 
@@ -89,7 +93,7 @@ export function HeroSlider() {
           <p className="mt-5 max-w-md text-base text-muted sm:text-lg">{slide.body}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <a href={slide.id === "emergency" ? "tel:08001938786" : "#contact"}>{slide.cta}</a>
+              <a href={slide.href}>{slide.cta}</a>
             </Button>
             <Button asChild variant="outline" size="lg">
               <a href="#services">Explore care</a>

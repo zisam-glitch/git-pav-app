@@ -1,5 +1,6 @@
 import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function EmergencyBanner() {
   return (
@@ -35,7 +36,7 @@ export function EmergencyBanner() {
               asChild
               className="border-2 border-white/50 text-white bg-black/20 hover:bg-black/35 font-bold h-14 px-6 rounded-full"
             >
-              <a href="#contact-form">
+              <a href={BOOKING_URL}>
                 Book Online
               </a>
             </Button>

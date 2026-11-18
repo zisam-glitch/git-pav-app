@@ -22,6 +22,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 type LinkItem = {
   title: string;
@@ -322,7 +323,7 @@ export function Header() {
                     <p className="px-2 text-sm text-muted">
                       Not sure which service you need?{" "}
                       <a
-                        href="#contact"
+                        href={BOOKING_URL}
                         className="font-medium text-fg underline-offset-2 hover:underline"
                         onClick={() => setServicesOpen(false)}
                       >
@@ -350,7 +351,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           
           <Button asChild size="sm">
-            <a href="/booking">Book Now</a>
+            <a href={BOOKING_URL}>Book Now</a>
           </Button>
           <Button
             variant="ghost"
@@ -420,7 +421,7 @@ export function Header() {
 
           <div className="mt-3 flex flex-col gap-2 border-t border-border/60 pt-3">
             <Button asChild className="w-full">
-              <a href="/booking" onClick={() => setMobileOpen(false)}>
+              <a href={BOOKING_URL} onClick={() => setMobileOpen(false)}>
                 Book Now
               </a>
             </Button>

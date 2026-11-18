@@ -1,5 +1,6 @@
 import { Phone, Calendar, Clock, AlertCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function EmergencyHero() {
   return (
@@ -100,7 +101,7 @@ export function EmergencyHero() {
                 asChild
                 className="w-full bg-white/15 hover:bg-white/25 text-white border border-white/30 rounded-2xl h-12 font-bold backdrop-blur-sm"
               >
-                <a href="#contact-form" className="flex items-center justify-center gap-2">
+                <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
                   <Calendar className="size-4" />
                   Book Emergency Appointment
                 </a>

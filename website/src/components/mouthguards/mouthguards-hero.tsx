@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Spotlight } from "@/components/home/spotlight";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function MouthguardsHero() {
   return (
@@ -37,7 +38,7 @@ export function MouthguardsHero() {
             size="lg"
             className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
           >
-            <a href="#ordering">Make an Appointment</a>
+            <a href={BOOKING_URL}>Make an Appointment</a>
           </Button>
           <Button
             asChild

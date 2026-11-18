@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const ACRYLIC_DENTURES = [
   { service: "Acrylic Partial Denture (1–3 teeth)", price: "from £350" },
@@ -109,7 +110,7 @@ export function DenturesPricing() {
             asChild
             className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
           >
-            <a href="#contact" className="flex items-center gap-2">
+            <a href={BOOKING_URL} className="flex items-center gap-2">
               Book Denture Assessment <ArrowRight className="size-4" />
             </a>
           </Button>

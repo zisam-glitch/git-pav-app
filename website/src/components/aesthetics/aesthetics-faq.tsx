@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const FAQS = [
   {
@@ -104,7 +105,7 @@ export function AestheticsFaq() {
             Our experienced dental team is here to help you achieve your dream smile.
           </p>
           <a
-            href="#contact"
+            href={BOOKING_URL}
             className="inline-flex items-center gap-2 accent-gradient text-primary-fg font-bold rounded-full px-8 h-12 hover:opacity-95 text-sm shadow-sm"
           >
             Book Aesthetic Consultation

@@ -18,7 +18,7 @@ const FAQS = [
   },
   {
     q: "What is the difference between 10k, 14k, and 18k gold?",
-    a: "10k gold contains 41.7% pure gold; it is the hardest, most durable alloy and highly resistant to daily wear. 14k gold (58.3% pure gold) is our most popular choice, offering a richer warm yellow tone while maintaining excellent hardness. 18k gold (75% pure gold) offers deep, luxurious luster and prestigious purity, ideal for high-end statement pieces.",
+    a: "10k gold contains 41.7% pure gold; it is the hardest, most durable alloy and highly resistant to daily wear. 14k gold (58.3% pure gold) offers a richer warm yellow tone while maintaining excellent hardness. 18k gold (75% pure gold) offers deep, luxurious luster and prestigious purity, ideal for high-end statement pieces.",
   },
   {
     q: "How long does the production process take?",

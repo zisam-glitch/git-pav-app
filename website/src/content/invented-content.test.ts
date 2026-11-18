@@ -36,6 +36,8 @@ const BANNED: Array<{ pattern: RegExp; why: string }> = [
   { pattern: /SMILE10/, why: "a promo code written into the page" },
   { pattern: /PETITION_GOAL|CURRENT_SIGNATURES_BASE|INITIAL_SIGNATURES/, why: "petition figures and signers made up in code" },
   { pattern: /BBC Look North|ITV News/, why: "a news report the live petition page does not have" },
+  { pattern: /Most Popular/i, why: "an unverified 'Most Popular' badge not on the live site" },
+  { pattern: /15\+\s*years/i, why: "an unverified '15+ years' claim not on the live site" },
 ];
 
 describe("content the live site does not have stays out", () => {

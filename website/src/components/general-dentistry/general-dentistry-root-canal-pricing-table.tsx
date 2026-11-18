@@ -80,11 +80,6 @@ export function GeneralDentistryRootCanalPricingTable() {
                         : "bg-white"
                     }`}
                   >
-                    {t.highlight && (
-                      <div className="inline-block bg-[#925a27] text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                        Most Popular
-                      </div>
-                    )}
                     <div>{t.label}</div>
                     <div
                       className={`text-base sm:text-lg font-display font-bold mt-0.5 ${

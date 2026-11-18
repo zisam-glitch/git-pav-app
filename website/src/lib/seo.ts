@@ -345,9 +345,14 @@ export function productHead(slug: string) {
   });
 }
 
-/** The sitemap: every page in PAGES. scripts/write-sitemap.mjs writes it to public/sitemap.xml. */
+/** Paths in PAGES that are not built yet (Phase A4, A5) and stay out of sitemap.xml until decided. */
+const UNBUILT_PATHS = new Set(["/services/finance", "/services/regestration"]);
+
+/** The sitemap: every built page in PAGES. scripts/write-sitemap.mjs writes it to public/sitemap.xml. */
 export function sitemapXml(): string {
-  const urls = Object.keys(PAGES).map((path) => `  <url><loc>${canonicalUrl(path)}</loc></url>`);
+  const urls = Object.keys(PAGES)
+    .filter((path) => !UNBUILT_PATHS.has(path))
+    .map((path) => `  <url><loc>${canonicalUrl(path)}</loc></url>`);
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',

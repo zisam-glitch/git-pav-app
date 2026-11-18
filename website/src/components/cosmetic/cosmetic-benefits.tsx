@@ -15,7 +15,7 @@ const BENEFITS = [
   },
   {
     title: "Stain-Resistant Durability",
-    desc: "Modern multi-layer feldspathic and E.max ceramics resist staining from coffee, tea, and wine for 15+ years.",
+    desc: "Modern multi-layer feldspathic and E.max ceramics resist staining from coffee, tea, and wine for long-lasting results.",
   },
 ];
 

@@ -319,16 +319,6 @@ export const LIVE_PAGES = {
             "text": "Virtual dental consultations from the comfort of your home.",
             "href": "/services/virtual-dentistry",
             "badge": "Coming soon"
-          },
-          {
-            "title": "Finance",
-            "text": "0% Finance Available On Private Treatments...",
-            "href": "/services/finance"
-          },
-          {
-            "title": "Registration",
-            "text": "Register with Pav Dental to access our full range of services",
-            "href": "/services/regestration"
           }
         ]
       }

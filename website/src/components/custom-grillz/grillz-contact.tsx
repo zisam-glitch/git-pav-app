@@ -102,7 +102,7 @@ export function GrillzContact() {
                     <option value="">Select gold purity…</option>
                     <option>10k Yellow Gold</option>
                     <option>10k White Gold</option>
-                    <option>14k Yellow Gold (Most Popular)</option>
+                    <option>14k Yellow Gold</option>
                     <option>14k Rose Gold</option>
                     <option>14k White Gold</option>
                     <option>18k Yellow Gold (High Purity)</option>

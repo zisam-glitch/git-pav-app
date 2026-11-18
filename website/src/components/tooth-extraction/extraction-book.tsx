@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const REASONS = [
-  "GDC-registered surgical team with 15+ years experience",
+  "GDC-registered surgical dental team",
   "Sedation available for anxious patients",
   "Same-day emergency slots, 7 days a week",
   "Full aftercare and 30-day follow-up included",

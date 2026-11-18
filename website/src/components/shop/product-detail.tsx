@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, CheckCircle2, ShoppingBag, Truck, ShieldCheck, Plus, Minus, ArrowLeft } from "lucide-react";
+import { CheckCircle2, ShoppingBag, Truck, ShieldCheck, Plus, Minus, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Product } from "./shop-data";
 import { useQuery } from "@tanstack/react-query";
@@ -102,8 +102,6 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         ? parseFloat(product.original_price)
         : product.original_price
       : undefined,
-    rating: product.rating || 4.9,
-    reviewsCount: product.reviews_count || 120,
     image: images[selectedImageIndex] || images[0],
     variants: product.variants,
     relatedProducts: product.relatedProducts,
@@ -151,11 +149,6 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
       availability: isCurrentInStock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: productData.rating,
-      reviewCount: productData.reviewsCount,
     },
   };
 
@@ -228,17 +221,6 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
               <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg mt-2">
                 {productData.name}
               </h1>
-
-              {/* Rating */}
-              <div className="flex items-center gap-2 mt-3">
-                <div className="flex text-amber-500">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="size-4 fill-current" />
-                  ))}
-                </div>
-                <span className="text-sm font-semibold text-fg">{productData.rating}</span>
-                <span className="text-sm text-muted">({productData.reviewsCount} reviews)</span>
-              </div>
             </div>
 
             {/* Price & Stock Badge */}

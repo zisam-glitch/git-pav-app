@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Trash2, Plus, Minus, ShoppingBag, Truck, ArrowRight, CheckCircle2, Shield } from "lucide-react";
+import { X, Trash2, Plus, Minus, ShoppingBag, Truck, ArrowRight, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "./shop-data";
 
@@ -25,8 +25,7 @@ export function CartDrawer({
   const [promoCode, setPromoCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
-  const [checkingOut, setCheckingOut] = useState(false);
-  const [checkoutComplete, setCheckoutComplete] = useState(false);
+  const [promoLabel, setPromoLabel] = useState("");
 
   if (!isOpen) return null;
 
@@ -61,6 +60,12 @@ export function CartDrawer({
         } else {
           setDiscountPercent(Math.round((res.discount.value / (rawSubtotal || 1)) * 100));
         }
+        const code = String(res.discount.code ?? promoCode).trim().toUpperCase();
+        const amount =
+          res.discount.type === "percentage"
+            ? `-${res.discount.value}%`
+            : `-£${Number(res.discount.value).toFixed(2)}`;
+        setPromoLabel(`Promo ${code} applied (${amount})`);
         setPromoApplied(true);
       } else {
         alert(res.message || "Invalid promo code.");
@@ -73,11 +78,6 @@ export function CartDrawer({
   const handleCheckout = () => {
     onClose();
     window.location.href = "/checkout";
-  };
-
-  const handleCloseAndReset = () => {
-    setCheckoutComplete(false);
-    onClose();
   };
 
   return (
@@ -96,7 +96,7 @@ export function CartDrawer({
           </div>
           <button
             type="button"
-            onClick={handleCloseAndReset}
+            onClick={onClose}
             className="flex size-8 items-center justify-center rounded-full bg-slate-100 text-muted hover:bg-slate-200 hover:text-fg"
             aria-label="Close cart"
           >
@@ -105,7 +105,7 @@ export function CartDrawer({
         </div>
 
         {/* Free Shipping Progress Indicator */}
-        {items.length > 0 && !checkoutComplete && (
+        {items.length > 0 && (
           <div className="bg-[#faf6f0] px-5 py-3 border-b border-primary/15 text-xs">
             <div className="flex items-center justify-between mb-1.5 font-medium text-fg">
               <span className="flex items-center gap-1.5">
@@ -129,20 +129,7 @@ export function CartDrawer({
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-5">
-          {checkoutComplete ? (
-            <div className="py-12 text-center space-y-4">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-sm">
-                <CheckCircle2 className="size-8" />
-              </div>
-              <h3 className="font-display text-2xl font-bold text-fg">Order Placed!</h3>
-              <p className="text-xs sm:text-sm text-muted max-w-xs mx-auto leading-relaxed">
-                Thank you for your order. A confirmation email and Royal Mail tracking number have been sent to your email.
-              </p>
-              <Button onClick={handleCloseAndReset} className="mt-4" size="sm">
-                Continue Shopping
-              </Button>
-            </div>
-          ) : items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="py-16 text-center space-y-3">
               <ShoppingBag className="size-12 mx-auto text-muted/40 stroke-[1.2]" />
               <p className="font-display text-lg font-bold text-fg">Your bag is empty</p>
@@ -215,14 +202,14 @@ export function CartDrawer({
         </div>
 
         {/* Footer with Subtotal & Checkout */}
-        {items.length > 0 && !checkoutComplete && (
+        {items.length > 0 && (
           <div className="p-5 border-t border-border/60 bg-[#faf8f5] space-y-3">
             {/* Promo code */}
             {!promoApplied ? (
               <form onSubmit={handleApplyPromo} className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Discount code (try SMILE10)"
+                  placeholder="Discount code"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   className="flex-1 h-9 rounded-lg border border-border/70 bg-white px-3 text-xs placeholder:text-muted/60 focus:border-primary focus:outline-none"
@@ -236,11 +223,12 @@ export function CartDrawer({
               </form>
             ) : (
               <div className="flex items-center justify-between text-xs text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
-                <span>Promo SMILE10 applied (-10%)</span>
+                <span>{promoLabel}</span>
                 <button
                   type="button"
                   onClick={() => {
                     setPromoApplied(false);
+                    setPromoLabel("");
                     setDiscountPercent(0);
                     setPromoCode("");
                   }}
@@ -287,10 +275,9 @@ export function CartDrawer({
               </Button>
               <Button
                 onClick={handleCheckout}
-                disabled={checkingOut}
                 className="flex-1 accent-gradient text-white text-xs sm:text-sm font-semibold h-11 shadow-xs gap-2"
               >
-                <span>{checkingOut ? "Processing..." : "Secure Checkout"}</span>
+                <span>Secure Checkout</span>
                 <ArrowRight className="size-4" />
               </Button>
             </div>

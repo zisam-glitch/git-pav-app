@@ -6,7 +6,10 @@ import {
   normalizePath,
   normalizeText,
   proxyFromEnv,
+  redactSignerBlocks,
+  redactSigners,
   shouldBlockRequest,
+  SIGNERS_OMITTED,
   sitemapLocs,
   slugForPath,
   textHash,
@@ -113,5 +116,50 @@ describe("proxyFromEnv", () => {
       password: "p:ss",
       bypass: "localhost",
     });
+  });
+});
+
+describe("redactSigners", () => {
+  const page = [
+    "Sign Petition",
+    "Petition Signatures (3)",
+    "Signatures",
+    "Date",
+    "Test Person One",
+    "15 July 2026",
+    "Test Person Two",
+    "2 June 2026",
+    "Test Person Three",
+    "30 November 2025",
+    "Get In Touch",
+    "Send Message",
+  ];
+
+  it("keeps the heading with its count and drops every name and date under it", () => {
+    assert.equal(
+      redactSigners(page.join("\n")),
+      ["Sign Petition", "Petition Signatures (3)", SIGNERS_OMITTED, "Get In Touch", "Send Message"].join("\n"),
+    );
+  });
+
+  it("does not touch a name that follows the list, or a page with no list", () => {
+    assert.equal(redactSigners("About us\nOur team\nDr Example Person"), "About us\nOur team\nDr Example Person");
+    assert.equal(redactSigners(""), "");
+  });
+
+  it("drops the list items from content blocks and keeps the other blocks", () => {
+    const blocks = [
+      { tag: "h3", text: "Petition Signatures (2)" },
+      { tag: "li", text: "Test Person One\n15 July 2026" },
+      { tag: "li", text: "Test Person Two\n2 June 2026" },
+      { tag: "li", text: "1" },
+      { tag: "li", text: "Opening hours\nMonday" },
+    ];
+    assert.deepEqual(redactSignerBlocks(blocks), [
+      { tag: "h3", text: "Petition Signatures (2)" },
+      { tag: "li", text: "1" },
+      { tag: "li", text: "Opening hours\nMonday" },
+    ]);
+    assert.equal(redactSignerBlocks(null), null);
   });
 });

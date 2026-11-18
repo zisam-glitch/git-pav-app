@@ -37,8 +37,6 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
     { id: "featured", label: "Sort: Featured" },
     { id: "price_asc", label: "Price: Low to High" },
     { id: "price_desc", label: "Price: High to Low" },
-    { id: "rating", label: "Highest Rated" },
-    { id: "popular", label: "Most Popular" },
   ];
 
   const filteredProducts = useMemo(() => {
@@ -57,10 +55,6 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price_desc") {
       list.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "rating") {
-      list.sort((a, b) => b.rating - a.rating);
-    } else if (sortBy === "popular") {
-      list.sort((a, b) => b.reviewsCount - a.reviewsCount);
     }
 
     return list;

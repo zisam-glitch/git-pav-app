@@ -30,6 +30,8 @@ import {
   normalizePath,
   normalizeText,
   proxyFromEnv,
+  redactSignerBlocks,
+  redactSigners,
   shouldBlockRequest,
   sitemapLocs,
   slugForPath,
@@ -147,7 +149,8 @@ function pageEntry(path, origin, rendered, textDir) {
   let textFile = null;
   if (textDir) {
     textFile = join(textDir, `${slugForPath(path)}.txt`);
-    writeFileSync(textFile, `${text}\n`);
+    // The hash and word count above describe the whole page; the file leaves out personal data.
+    writeFileSync(textFile, `${redactSigners(text)}\n`);
   }
   return {
     path,
@@ -180,7 +183,7 @@ function pageEntry(path, origin, rendered, textDir) {
 
 /** A page's content blocks, for porting it word for word (see extractContentBlocks). */
 function writeContent(dir, path, rendered) {
-  const content = { path, title: rendered.seo.title, h1: rendered.seo.h1, blocks: rendered.blocks };
+  const content = { path, title: rendered.seo.title, h1: rendered.seo.h1, blocks: redactSignerBlocks(rendered.blocks) };
   writeFileSync(join(dir, `${slugForPath(path)}.json`), `${JSON.stringify(content, null, 2)}\n`);
 }
 

@@ -17,6 +17,7 @@ This folder contains the public-facing marketing website and online shop for Pav
 - `seo/`: the recorded live site (`live-baseline.json`, `live-text/`, `live-content/`); see `seo/README.md`.
 - `src/content/live-pages.ts`: text pages ported word for word from the live site (FAQ, CCTV policy, practice documents, services index), shown by `LiveContentPage`.
 - `src/content/team-members.ts` and `src/content/blog-posts.ts`: the eight team profiles and the six blog posts, ported word for word and checked against the recorded live pages by their tests.
+- `src/content/testimonials.ts` and `src/content/petition.ts`: the patient comments under "What people say?" (home and aesthetics) and the petition page's words, ported word for word and checked against the recorded live pages by their tests.
 - `src/components/`: Reusable UI components grouped by feature (`home/`, `about/`, `shop/`, `team/`, etc.).
 - `src/lib/`: Utilities, analytics, the account-link helpers (`app-account.ts`), query provider.
 - `public/`: Static assets (favicons, images, logos).
@@ -32,6 +33,7 @@ This folder contains the public-facing marketing website and online shop for Pav
   - Team profiles are the eight people on the live team page, kept in `src/content/team-members.ts` and ported word for word. Clinicians show their GDC numbers (Dr Hassan Bhojani 262970, Dr Cosimo Meucci 280128). Don't add or invent people without the owner's say-so.
   - Accurate practice details: 786 Leeds Road, Bradford, BD3 9TY.
   - No fake claims, fabricated reviews, or unverified regulatory statements.
+  - The only patient comments are the ones in `src/content/testimonials.ts`, which the live site publishes. No star ratings, review counts, `AggregateRating` markup, signature counters or made-up signers: `src/content/invented-content.test.ts` fails if any come back. The petition's list of signers is personal data and is not kept in the repo (the crawler leaves it out of `seo/live-text/`).
 - **SEO (same or better than the live site)**:
   - Keep the live URLs. If a page has to move, add its old path to `MOVED_PATHS` in `src/lib/seo.ts` (permanent redirect).
   - Every route sets its head with `seoHead(path)` (or `noindexHead` for carts, checkout and private pages). Live titles and descriptions are copied word for word and `src/lib/seo.test.ts` fails if one changes: changing one is the owner's decision.

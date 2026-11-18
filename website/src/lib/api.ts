@@ -59,8 +59,6 @@ export interface Product {
   category_slug?: string | null;
   price: number;
   original_price?: number | null;
-  rating: number;
-  reviews_count: number;
   image?: string;
   images?: ProductImage[];
   variants?: ProductVariant[];

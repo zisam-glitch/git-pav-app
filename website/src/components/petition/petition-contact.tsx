@@ -1,142 +1,85 @@
-import { useState } from "react";
-import { Send, CheckCircle2, Phone, Calendar } from "lucide-react";
+import { CheckCircle2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PETITION } from "@/content/petition";
+import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { useEnquiry } from "@/lib/use-enquiry";
 
+const FIELD =
+  "w-full rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20";
+
+/** "Get In Touch": the live page's contact form. Messages go to the practice through the dashboard. */
 export function PetitionContact() {
   const enquiry = useEnquiry("Petition");
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    subject: "",
-    phone: "",
-    message: "",
-  });
+  const { contact: copy } = PETITION;
 
   return (
-    <section className="py-16 sm:py-24 bg-white border-t border-border/40">
+    <section className="border-t border-border/40 bg-white py-16 sm:py-24" aria-labelledby="touch-heading">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        {/* Header matching screenshot */}
-        <div className="text-center mb-10">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e] tracking-tight">
-            Get In Touch
+        <div className="mb-10 text-center">
+          <h2 id="touch-heading" className="font-display text-3xl font-bold tracking-tight text-[#844d1e] sm:text-4xl">
+            {copy.heading}
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-muted max-w-md mx-auto">
-            Fill out the form below with your inquiry and our clinic and campaign team will get back to you shortly.
-          </p>
+          <p className="mx-auto mt-2 max-w-md text-xs text-muted sm:text-sm">{copy.intro}</p>
         </div>
 
         {enquiry.sent ? (
-          <div className="rounded-2xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-green-100 text-green-700 mb-3">
-              <CheckCircle2 className="size-6" />
+          <div className="rounded-2xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs" role="status">
+            <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-green-100 text-green-700">
+              <CheckCircle2 className="size-6" aria-hidden="true" />
             </div>
-            <h3 className="font-display text-xl font-bold text-fg">
-              Message Received
-            </h3>
-            <p className="mt-2 text-xs sm:text-sm text-muted max-w-md mx-auto">
-              Thank you for contacting PavDental. A member of our community coordination team will respond within 24 hours. For urgent dental pain, please call our emergency line at 0800 1938 786.
+            <h3 className="font-display text-xl font-bold text-fg">Message Received</h3>
+            <p className="mx-auto mt-2 max-w-md text-xs text-muted sm:text-sm">
+              Thank you. Your message has reached the practice, and the team will get back to you. For urgent dental pain,
+              call{" "}
+              <a href={PRACTICE_PHONE_HREF} className="font-semibold text-primary underline">
+                {PRACTICE_PHONE}
+              </a>
+              .
             </p>
-            <Button
-              onClick={() => {
-                enquiry.reset();
-                setFormData({ fullName: "", email: "", subject: "", phone: "", message: "" });
-              }}
-              className="mt-6 accent-gradient text-white text-xs h-10 px-6"
-            >
-              Send Another Inquiry
+            <Button onClick={enquiry.reset} className="accent-gradient mt-6 h-10 px-6 text-xs text-white">
+              Send Another Message
             </Button>
           </div>
         ) : (
           <form onSubmit={enquiry.submit} className="space-y-4 sm:space-y-5">
-            {/* Row 1: Full Name & Email Address */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="touch-name" className="block text-xs font-semibold text-fg/80 mb-1.5">
-                  Full Name *
+                <label htmlFor="touch-name" className="mb-1.5 block text-xs font-semibold text-fg/80">
+                  {copy.fieldLabels.name}
                 </label>
-                <input
-                  id="touch-name"
-                  name="fullName"
-                  required
-                  type="text"
-                  placeholder="Your Name"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full h-11 rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
-                />
+                <input id="touch-name" name="name" required type="text" autoComplete="name" className={`${FIELD} h-11`} />
               </div>
-
               <div>
-                <label htmlFor="touch-email" className="block text-xs font-semibold text-fg/80 mb-1.5">
-                  Email Address *
+                <label htmlFor="touch-email" className="mb-1.5 block text-xs font-semibold text-fg/80">
+                  {copy.fieldLabels.email}
                 </label>
-                <input
-                  id="touch-email"
-                  name="email"
-                  required
-                  type="email"
-                  placeholder="example@gmail.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full h-11 rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
-                />
+                <input id="touch-email" name="email" required type="email" autoComplete="email" className={`${FIELD} h-11`} />
               </div>
             </div>
 
-            {/* Row 2: Subject & Phone */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="touch-subject" className="block text-xs font-semibold text-fg/80 mb-1.5">
-                  Subject *
+                <label htmlFor="touch-subject" className="mb-1.5 block text-xs font-semibold text-fg/80">
+                  {copy.fieldLabels.subject}
                 </label>
-                <input
-                  id="touch-subject"
-                  name="subject"
-                  required
-                  type="text"
-                  placeholder="Inquiry / Petition Support"
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full h-11 rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
-                />
+                <input id="touch-subject" name="subject" required type="text" className={`${FIELD} h-11`} />
               </div>
-
               <div>
-                <label htmlFor="touch-phone" className="block text-xs font-semibold text-fg/80 mb-1.5">
-                  Phone
+                <label htmlFor="touch-phone" className="mb-1.5 block text-xs font-semibold text-fg/80">
+                  {copy.fieldLabels.phone}
                 </label>
-                <input
-                  id="touch-phone"
-                  name="phone"
-                  type="tel"
-                  placeholder="+44 7311 871456"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full h-11 rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
-                />
+                <input id="touch-phone" name="phone" type="tel" autoComplete="tel" className={`${FIELD} h-11`} />
               </div>
             </div>
 
-            {/* Row 3: Your Message */}
             <div>
-              <label htmlFor="touch-message" className="block text-xs font-semibold text-fg/80 mb-1.5">
-                Your Message *
+              <label htmlFor="touch-message" className="mb-1.5 block text-xs font-semibold text-fg/80">
+                {copy.fieldLabels.message}
               </label>
-              <textarea
-                id="touch-message"
-                name="message"
-                required
-                rows={5}
-                placeholder="Share your experience or ask a question..."
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full rounded-lg border border-border/70 bg-[#fdfcfb] p-3.5 text-sm placeholder:text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
-              />
+              <textarea id="touch-message" name="message" required rows={5} className={`${FIELD} p-3.5`} />
             </div>
 
-            {/* Submit Button matching screenshot */}
-            <div className="pt-2 space-y-3">
+            <div className="space-y-3 pt-2">
               {enquiry.error && (
                 <p role="alert" className="text-sm text-red-700">
                   {enquiry.error}
@@ -145,27 +88,24 @@ export function PetitionContact() {
               <Button
                 type="submit"
                 disabled={enquiry.sending}
-                className="accent-gradient text-white font-semibold text-xs sm:text-sm h-11 px-8 rounded-lg shadow-xs hover:opacity-95 transition-all gap-2"
+                className="accent-gradient h-11 gap-2 rounded-lg px-8 text-xs font-semibold text-white shadow-xs transition-all hover:opacity-95 sm:text-sm"
               >
-                {enquiry.sending ? "Sending…" : "Send Message"}
-                <Send className="size-3.5" />
+                {enquiry.sending ? "Sending…" : copy.submit}
+                <Send className="size-3.5" aria-hidden="true" />
               </Button>
             </div>
           </form>
         )}
 
-        {/* Floating/inline Appointment Button underneath */}
         <div className="mt-14 text-center">
           <a
-            href="/contact-us"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#925a27] hover:bg-[#844d1e] text-white px-7 py-3 text-xs sm:text-sm font-semibold shadow-sm transition-transform active:scale-95"
+            href={BOOKING_URL}
+            className="inline-flex items-center gap-2 rounded-lg bg-[#925a27] px-7 py-3 text-xs font-semibold text-white shadow-sm transition-transform hover:bg-[#844d1e] active:scale-95 sm:text-sm"
           >
-            <Calendar className="size-4" />
-            <span>Book an Appointment</span>
+            {copy.bookLabel}
           </a>
         </div>
       </div>
     </section>
   );
 }
-

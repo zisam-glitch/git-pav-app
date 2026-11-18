@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion, type Variants } from "motion/react"
 import { buttonVariants } from "@/components/ui/button"
-import { ShoppingCart, Star, Heart, Check } from "lucide-react"
+import { ShoppingCart, Check } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import type { Product } from "@/components/shop/shop-data"

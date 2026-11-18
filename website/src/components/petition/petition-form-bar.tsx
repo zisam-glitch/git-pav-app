@@ -1,168 +1,133 @@
 import { useState, type FormEvent } from "react";
-import { CheckCircle2, ShieldCheck, PenTool, Sparkles } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PETITION } from "@/content/petition";
 import { api } from "@/lib/api";
 
-interface PetitionFormBarProps {
-  currentSignatures: number;
-  goal: number;
-  onSign: (data: { name: string; email: string; postcode: string }) => void;
-}
+type Status = "idle" | "sending" | "signed" | "failed";
 
-export function PetitionFormBar({ currentSignatures, goal, onSign }: PetitionFormBarProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [postcode, setPostcode] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+const INPUT =
+  "h-12 w-full rounded-xl bg-white px-4 text-sm text-fg shadow-xs placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-white/80";
 
-  const percentage = Math.min(100, Math.round((currentSignatures / goal) * 100));
+/**
+ * The sign-the-petition form: name, email, postcode and a tick to say the signer is a British
+ * citizen or UK resident, all required, as on the live page. A signature is only reported as
+ * signed when the dashboard saved it. If sending fails the form keeps what was typed and says so.
+ */
+export function PetitionFormBar() {
+  const [status, setStatus] = useState<Status>("idle");
+  const { form: copy } = PETITION;
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const postcode = String(data.get("postcode") ?? "").trim();
+    if (!name || !email || !postcode) return;
 
-    setLoading(true);
+    setStatus("sending");
     try {
       await api.forms.submitPetition({
-        name: name.trim(),
-        email: email.trim(),
-        message: `Postcode: ${postcode.trim() || "N/A"}`,
+        name,
+        email,
+        message: `Postcode: ${postcode}\nBritish citizen or UK resident: Yes`,
       });
-      onSign({ name: name.trim(), email: email.trim(), postcode: postcode.trim() });
-      setSubmitted(true);
+      form.reset();
+      setStatus("signed");
     } catch {
-      onSign({ name: name.trim(), email: email.trim(), postcode: postcode.trim() });
-      setSubmitted(true);
-    } finally {
-      setLoading(false);
+      setStatus("failed");
     }
-  };
+  }
 
   return (
-    <section id="sign-form" className="relative overflow-hidden bg-gradient-to-r from-[#925a27] via-[#b77436] to-[#cf9448] py-12 sm:py-14 text-white shadow-inner">
-      {/* Decorative texture overlay */}
-      <div className="pointer-events-none absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
+    <section
+      id="sign-form"
+      aria-labelledby="sign-heading"
+      className="relative overflow-hidden bg-gradient-to-r from-[#925a27] via-[#b77436] to-[#cf9448] py-12 text-white shadow-inner sm:py-14"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] opacity-10 [background-size:24px_24px]" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-        <div className=" mx-auto">
-          {/* Header & Goal Progress */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-            <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Sign the Petition
-              </h2>
-              <p className="mt-1 text-xs sm:text-sm text-white/90">
-                Help us reach our target of {goal.toLocaleString()} verified signatures in Bradford & West Yorkshire.
-              </p>
-            </div>
+        <h2 id="sign-heading" className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          {copy.heading}
+        </h2>
+        <p className="mt-1 text-xs text-white/90 sm:text-sm">{copy.eligibility}</p>
 
-            {/* Signature Counter & Progress */}
-            <div className="text-left md:text-right shrink-0">
-              <div className="flex items-baseline md:justify-end gap-1.5 font-display text-2xl sm:text-3xl font-bold text-white">
-                <span>{currentSignatures.toLocaleString()}</span>
-                <span className="text-sm font-normal text-white/80">/ {goal.toLocaleString()} signed</span>
-              </div>
-              <div className="mt-2 w-48 md:w-56 h-2 rounded-full bg-black/20 overflow-hidden">
-                <div
-                  className="h-full bg-white rounded-full transition-all duration-700 ease-out shadow-xs"
-                  style={{ width: `${percentage}%` }}
-                />
-              </div>
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-12 sm:gap-3.5">
+            <div className="sm:col-span-4">
+              <label htmlFor="pet-name" className="sr-only">
+                {copy.fieldLabels.name}
+              </label>
+              <input
+                id="pet-name"
+                name="name"
+                required
+                type="text"
+                autoComplete="name"
+                placeholder={`${copy.fieldLabels.name} *`}
+                className={INPUT}
+              />
+            </div>
+            <div className="sm:col-span-4">
+              <label htmlFor="pet-email" className="sr-only">
+                {copy.fieldLabels.email}
+              </label>
+              <input
+                id="pet-email"
+                name="email"
+                required
+                type="email"
+                autoComplete="email"
+                placeholder={`${copy.fieldLabels.email} *`}
+                className={INPUT}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="pet-postcode" className="sr-only">
+                {copy.fieldLabels.postcode}
+              </label>
+              <input
+                id="pet-postcode"
+                name="postcode"
+                required
+                type="text"
+                autoComplete="postal-code"
+                placeholder={`${copy.fieldLabels.postcode} *`}
+                className={INPUT}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Button
+                type="submit"
+                disabled={status === "sending"}
+                className="h-12 w-full rounded-xl !bg-white !bg-none text-sm font-bold text-[#844d1e] shadow-sm hover:!bg-[#fffbf6] hover:text-[#5a3311]"
+              >
+                {status === "sending" ? "Submitting..." : copy.submit}
+              </Button>
             </div>
           </div>
 
-          {/* Form or Success Notification */}
-          {submitted ? (
-            <div className="rounded-2xl border border-white/40 bg-white/15 p-6 sm:p-8 backdrop-blur-md text-center">
-              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-white text-[#925a27] shadow-sm mb-3">
-                <CheckCircle2 className="size-6" />
-              </div>
-              <h3 className="font-display text-xl sm:text-2xl font-bold text-white">
-                Thank You, {name}!
-              </h3>
-              <p className="mt-2 text-xs sm:text-sm text-white/90 max-w-md mx-auto">
-                Your signature has been officially added to our campaign. We will keep you updated on our petition progress and meetings with health authorities.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSubmitted(false);
-                  setName("");
-                  setEmail("");
-                  setPostcode("");
-                }}
-                className="mt-5 text-xs text-white/80 underline hover:text-white"
-              >
-                Sign for another family member
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-3.5 items-center">
-                {/* Full Name */}
-                <div className="sm:col-span-4">
-                  <label htmlFor="pet-name" className="sr-only">Full Name</label>
-                  <input
-                    id="pet-name"
-                    required
-                    type="text"
-                    placeholder="Full Name *"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full h-12 rounded-xl bg-white text-fg px-4 text-sm placeholder:text-muted/70 shadow-xs focus:outline-none focus:ring-2 focus:ring-white/80"
-                  />
-                </div>
+          <div className="flex items-center gap-2.5 text-sm">
+            <input id="pet-resident" name="resident" type="checkbox" required className="size-4 accent-white" />
+            <label htmlFor="pet-resident">{copy.residentLabel}</label>
+          </div>
 
-                {/* Email Address */}
-                <div className="sm:col-span-4">
-                  <label htmlFor="pet-email" className="sr-only">Email Address</label>
-                  <input
-                    id="pet-email"
-                    required
-                    type="email"
-                    placeholder="Email Address *"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-12 rounded-xl bg-white text-fg px-4 text-sm placeholder:text-muted/70 shadow-xs focus:outline-none focus:ring-2 focus:ring-white/80"
-                  />
-                </div>
-
-                {/* Postcode */}
-                <div className="sm:col-span-2">
-                  <label htmlFor="pet-postcode" className="sr-only">Postcode</label>
-                  <input
-                    id="pet-postcode"
-                    type="text"
-                    placeholder="Postcode (BD3)"
-                    value={postcode}
-                    onChange={(e) => setPostcode(e.target.value)}
-                    className="w-full h-12 rounded-xl bg-white text-fg px-4 text-sm placeholder:text-muted/70 shadow-xs focus:outline-none focus:ring-2 focus:ring-white/80"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <div className="sm:col-span-2">
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full h-12 rounded-xl bg-white text-[#844d1e] font-bold hover:bg-[#fffbf6] hover:text-[#5a3311] shadow-sm transition-transform active:scale-95 text-sm"
-                  >
-                    {loading ? "Signing..." : "Sign Petition"}
-                  </Button>
-                </div>
-              </div>
-
-              {/* Privacy disclaimer */}
-              <div className="flex items-center justify-center gap-2 text-[11px] sm:text-xs text-white/80 pt-1">
-                <ShieldCheck className="size-3.5 shrink-0 text-white/90" />
-                <span>We respect your privacy. Your email will only be used for petition updates and verification.</span>
-              </div>
-            </form>
+          {status === "signed" && (
+            <p role="status" className="flex items-center gap-2 rounded-xl bg-white/15 px-4 py-3 text-sm font-medium">
+              <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+              {copy.thanks}
+            </p>
           )}
-        </div>
+          {status === "failed" && (
+            <p role="alert" className="rounded-xl bg-black/25 px-4 py-3 text-sm font-medium">
+              {copy.failed}
+            </p>
+          )}
+        </form>
       </div>
     </section>
   );
 }
-

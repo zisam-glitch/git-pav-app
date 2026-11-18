@@ -97,6 +97,32 @@ export function normalizeText(text) {
     .trim();
 }
 
+export const SIGNERS_OMITTED = "[signer names and dates are not kept in this recording]";
+
+const SIGNED_DATE = /^\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December) \d{4}$/;
+
+/**
+ * The live petition page lists the people who signed, by name and date. Those names are
+ * personal data, so the recording keeps the heading (it carries the count) and drops the list.
+ * The list is a "Signatures" / "Date" header, then a name line and a date line for each signer.
+ * Page text that has no such list comes back unchanged.
+ */
+export function redactSigners(text) {
+  const lines = String(text ?? "").split("\n");
+  const start = lines.findIndex((line) => /^Petition Signatures \(\d+\)$/.test(line.trim()));
+  if (start < 0) return String(text ?? "");
+  let end = start + 1;
+  while (end < lines.length && /^(Signatures|Date)$/.test(lines[end].trim())) end += 1;
+  while (end + 1 < lines.length && SIGNED_DATE.test(lines[end + 1].trim())) end += 2;
+  return [...lines.slice(0, start + 1), SIGNERS_OMITTED, ...lines.slice(end)].join("\n");
+}
+
+/** The same for content blocks, where each signer is one "name\ndate" list item. */
+export function redactSignerBlocks(blocks) {
+  if (!Array.isArray(blocks)) return blocks;
+  return blocks.filter((block) => !(block?.tag === "li" && /\n/.test(block.text ?? "") && SIGNED_DATE.test(block.text.split("\n").pop().trim())));
+}
+
 export function wordCount(text) {
   const words = normalizeText(text).match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu);
   return words ? words.length : 0;

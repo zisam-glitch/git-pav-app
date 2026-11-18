@@ -7,10 +7,11 @@ import { Header } from "@/components/home/header";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { Marquee } from "@/components/home/marquee";
 import { Overview } from "@/components/home/overview";
-import { Reviews } from "@/components/home/reviews";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { ServiceTabs } from "@/components/home/service-tabs";
+import { TestimonialsSection } from "@/components/testimonials/testimonials-section";
 import { VideoSection } from "@/components/home/video-section";
+import { HOME_TESTIMONIALS } from "@/content/testimonials";
 
 export const Route = createFileRoute("/")({
   head: () => seoHead("/"),
@@ -28,7 +29,7 @@ function Home() {
       <VideoSection />
       <ServiceTabs />
       <Counters />
-      <Reviews />
+      <TestimonialsSection testimonials={HOME_TESTIMONIALS} />
       <ContactForm />
       <Footer />
     </main>

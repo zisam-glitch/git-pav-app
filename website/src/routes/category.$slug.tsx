@@ -39,8 +39,6 @@ function CategoryRoute() {
         ? parseFloat(p.original_price)
         : p.original_price
       : undefined,
-    rating: p.rating || 4.9,
-    reviewsCount: p.reviews_count || 120,
     image: p.image || "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=85",
     shortDesc: p.short_desc || "",
     fullDesc: p.full_desc || "",
@@ -94,8 +92,6 @@ function CategoryRoute() {
             category: it.category || "dental-care",
             categoryLabel: it.categoryLabel || "Dental Care",
             price: it.unitPrice,
-            rating: 4.9,
-            reviewsCount: 100,
             image: it.image,
             shortDesc: "",
             fullDesc: "",

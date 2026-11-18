@@ -9,6 +9,8 @@ export const PRACTICE_PHONE_HREF = "tel:08001938786";
 export const PRACTICE_EMAIL = "hello@pavdental.com";
 /** The live site's working hours: every day, 00:00 – 24:00. */
 export const PRACTICE_HOURS = "Open 24 hours, 7 days a week";
+/** Where every "Book" button on the live site goes: the practice's Setmore page. */
+export const BOOKING_URL = "https://pavdental.setmore.com/";
 
 export interface EnquiryFields {
   name: string;

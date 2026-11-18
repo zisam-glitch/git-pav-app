@@ -34,7 +34,7 @@ export const PRODUCTS_DATA: WhiteningProduct[] = [
     tag: "Dentist Gold Standard",
     shadesLighter: "Up to 8-10 Shades",
     treatmentTime: "2-3 Weeks (Overnight or 1hr)",
-    description: "The clinic-standard system prescribed by Dr. Hussain. Includes 3D intraoral impressions for custom vacuum-formed trays, 16% carbamide peroxide gel, and remineralizing ACP serum.",
+    description: "The clinic-standard system. Includes 3D intraoral impressions for custom vacuum-formed trays, 16% carbamide peroxide gel, and remineralizing ACP serum.",
     benefits: [
       "Laboratory custom-sculpted trays",
       "4x Professional syringe refills",

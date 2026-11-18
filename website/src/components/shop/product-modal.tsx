@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Star, CheckCircle2, ShoppingBag, Truck, ShieldCheck, Plus, Minus } from "lucide-react";
+import { X, CheckCircle2, ShoppingBag, Truck, ShieldCheck, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "./shop-data";
 
@@ -64,17 +64,6 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
               <h2 className="font-display text-2xl font-bold text-fg mt-1">
                 {product.name}
               </h2>
-
-              {/* Rating */}
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <div className="flex text-amber-500">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="size-3.5 fill-current" />
-                  ))}
-                </div>
-                <span className="text-xs font-semibold text-fg">{product.rating}</span>
-                <span className="text-xs text-muted">({product.reviewsCount} reviews)</span>
-              </div>
             </div>
 
             {/* Price */}

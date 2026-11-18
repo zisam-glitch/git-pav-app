@@ -6,7 +6,6 @@ import {
   Sparkles,
   Phone,
   CheckCircle2,
-  Star,
   Calendar,
   ArrowRight,
   Megaphone,
@@ -154,16 +153,6 @@ export function SpecialAnnouncement() {
         <div className="mt-12 pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Trust points */}
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-xs text-muted">
-            <div className="flex items-center gap-1.5">
-              <div className="flex text-amber-500">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="size-3.5 fill-current" />
-                ))}
-              </div>
-              <span className="font-semibold text-fg">4.9/5.0</span>
-              <span>(1,200+ Reviews)</span>
-            </div>
-
             <div className="flex items-center gap-1.5">
               <Calendar className="size-3.5 text-primary" />
               <span>Same-Day Appointments</span>

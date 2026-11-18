@@ -14,26 +14,7 @@ export function ExtractionBook() {
   return (
     <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
-          {/* Left — doctor photo */}
-          <div className="relative">
-            <div className="bg-white rounded-xl p-3 border border-[#e2d4c0] shadow-md max-w-sm mx-auto lg:mx-0">
-              <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-[#2a1c12]">
-                <img
-                  src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=90"
-                  alt="Dr Hussain — Lead Dental Surgeon"
-                  className="size-full object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#2a1c12]/75 via-transparent to-transparent" />
-
-                
-              </div>
-
-              
-            </div>
-          </div>
-
-          {/* Right — text */}
+        <div className="max-w-2xl">
           <div>
             <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
               Book Your Appointment Today

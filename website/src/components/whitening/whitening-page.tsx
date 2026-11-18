@@ -1,31 +1,21 @@
 import React from "react";
-import { WhiteningHero } from "./whitening-hero";
-import { WhiteningEvidence } from "./whitening-evidence";
 import { WhiteningVisualizer } from "./whitening-visualizer";
-import { WhiteningVideo } from "./whitening-video";
 import { WhiteningComparison } from "./whitening-comparison";
 import { WhiteningProducts } from "./whitening-products";
-import { WhiteningAwards } from "./whitening-awards";
 import { WhiteningFaq } from "./whitening-faq";
-import { WhiteningContact } from "./whitening-contact";
 
+/**
+ * The whitening page as it stands before it is rebuilt from the live page's text (three
+ * products at £65, £295 and £495, and its own questions and answers). The sections left here
+ * are the ones not yet replaced; the doctor video, awards, evidence, hero and contact
+ * sections were removed because they named a dentist and made claims the live site does not.
+ */
 export function WhiteningPage() {
   return (
     <main>
-      
-      {/* 3. Interactive 8-Shade VITA Bleach Guide Simulator (Part 2 of Variant B synthesis) */}
       <WhiteningVisualizer />
-
-      {/* 4. Doctor-Led Video Consultation & Informed Consent (Part 3 of Variant D synthesis) */}
-      <WhiteningVideo />
-
-      {/* 5. 3-Tier System Comparison Matrix (Part 4 of Variant B synthesis) */}
       <WhiteningComparison />
-
-      {/* 6. Detailed Product Specifications (Solid cards, no glass, no italics) */}
       <WhiteningProducts />
-
-      {/* 8. Frequently Asked Questions (Solid accordion & solid CTA) */}
       <WhiteningFaq />
     </main>
   );

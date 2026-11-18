@@ -15,9 +15,10 @@
 | [#204](https://github.com/zisam-glitch/git-pav-app/pull/204) | Every website form sends; real phone, email and hours beside them | Merged |
 | [#206](https://github.com/zisam-glitch/git-pav-app/pull/206) | FAQ, CCTV policy, practice documents and services pages; `/gdpr` redirects | Merged |
 | [#208](https://github.com/zisam-glitch/git-pav-app/pull/208) | The team page and the eight profile pages | Merged |
-| [#209](https://github.com/zisam-glitch/git-pav-app/pull/209) | The six blog posts, with their links and tables | Open; merges on green CI |
+| [#209](https://github.com/zisam-glitch/git-pav-app/pull/209) | The six blog posts, with their links and tables | Merged |
+| [#211](https://github.com/zisam-glitch/git-pav-app/pull/211) | The live site's documents and team photos | Merged |
 
-**Live URLs covered: 45 of 47** once #209 lands (31 after #206, plus the 8 team profiles and the 6 blog posts). Still to do: `/services/finance` and `/services/regestration`, both waiting for the owner.
+**Live URLs covered: 45 of 47** (31 after #206, plus the 8 team profiles and the 6 blog posts). Still to do: `/services/finance` and `/services/regestration`, both waiting for the owner.
 
 ## 2. Rules for all remaining work
 
@@ -29,11 +30,11 @@
    - `/gdpr` is not ported. The live page is another practice's template ("Parish Dental", another jurisdiction's law).
 5. **Every page renders its tags and text on the server**, with a canonical URL on www. The cart, checkout, order and account pages are noindex.
 6. **Skipped for now (app parts):** app links in `/.well-known`, `/reset-password`, `/verify-email`, app booking for mobile and virtual dentistry, and team data from the app backend.
-7. **One concern per PR.** Each passes `npm run typecheck`, `npm run lint -- --max-warnings=80`, `npm test` and the build in `website/`, and merges on green CI.
+7. **One concern per PR.** Each passes `npm run typecheck`, `npm run lint -- --max-warnings=63`, `npm test` and the build in `website/`, and merges on green CI.
 
 ## 3. Remaining work
 
-### Phase A: every live URL exists (16 to go)
+### Phase A: every live URL exists (2 to go)
 
 | Step | Work | Done when | Needs |
 |---|---|---|---|
@@ -47,7 +48,7 @@
 
 | Step | Work | Done when |
 |---|---|---|
-| B1 Remove invented content | Dr M. Hussain (whitening hero, video and data; aesthetics testimonials). Whitening badges "ISO Certified", "Vegan Formula", "4.9 Rating", "GDC Certified". Testimonials: home "Verified patient", dentures, aesthetics. The shop's default 4.9 stars and 120 reviews, and the `AggregateRating` built from them. NHS band prices (oral hygiene, general dentistry, root canal). Whitening prices that differ from live (strips £25 here, £65 live). | A test finds none of these in `website/src` |
+| B1 Remove invented content (done) | **Removed:** Dr M. Hussain everywhere. Every invented testimonial (home "Verified patient", aesthetics, emergency, dentures): the home and aesthetics sections now show the live site's own comments, word for word (4 and 3). The petition's 2,418-of-5,000 counter, 32 made-up signers, "BBC/ITV" broadcast and statistics: the page now has the live text, the live YouTube video, and a sign form (name, email, postcode, UK-resident tick) that only says "signed" when the dashboard saved it. The shop's default 4.9 stars and 120 reviews, star rows, rating sorts, `AggregateRating`, the unused static product list and the "SMILE10" hints. The pricing page's "4.9/5.0 (1,200+ Reviews)". The whitening hero, awards ("ISO Certified", "Vegan Formula", "4.9 Rating"), evidence, doctor video and contact sections. The extraction consent video and doctor photo. The petition's signer names are also left out of `seo/live-text/` (personal data). **Left for B2 and C2**, because they go with a page rewrite or need the owner: NHS band prices (oral hygiene, general dentistry, root canal), whitening prices and sections not yet rebuilt (strips £25 here, £65 live), invented finance terms and "Most Popular" badges in pricing tables, GDC/CQC and "15+ years" statements, "within 24 hours" promises in form thank-you messages, and the shop's delivery, returns and guarantee wording (C2). | `src/content/invented-content.test.ts` finds none of the removed items in `website/src` |
 | B2 Port the live copy | Home, about, pricing, petition, vacancies, contact and the 13 service pages, two or three pages per PR. The text comes from `seo/live-content/<page>.json` and keeps the new design. | The parity check (D1) finds at least 95% of each live page's sentences on the new page, and the differences are listed |
 | B3 Booking | Every "Book" button goes to Setmore (pavdental.setmore.com), as on the live site. `/booking` redirects there. | No button points at the old request form |
 | B4 Not-found page | A branded page with the header, footer and useful links, still returning 404. | Unknown URLs show it with status 404 |
@@ -96,6 +97,9 @@ App links (Apple Team ID in the `apple-app-site-association` file, and the Andro
 | 7 | The live `/contact-us` description is the GDPR page's text | Fix it: the only intended change to a live description |
 | 8 | When to switch the domain, and who holds Vercel and Search Console access | Decide at Phase E |
 | 9 | The live Practice Policy page links to 5 documents that were never on the server (see A1) | Send the files and they will be added back, or confirm they can stay off |
+| 10 | The live petition page lists 34 signers by name and date. The new page does not show them, because the names are personal data and the dashboard has no public list | Keep the list off, or import the names with each signer's consent and add a public list endpoint |
+| 11 | The live home page shows a small photo beside each of its 4 comments (`/images/testimonials/1.jpg` to `4.jpg`). The new page shows the comments without photos | Copy the 4 photos if they are the commenters' own, with their permission; otherwise leave them off |
+| 12 | The live petition form emails the practice for each signature and sends the signer a thank-you. The dashboard only stores a signature | Add the practice alert (a small dashboard change, like #203) |
 
 ## 5. Risks
 
@@ -105,7 +109,7 @@ App links (Apple Team ID in the `apple-app-site-association` file, and the Andro
 | A live URL is missing after the switch | The parity check fails on any URL that does not return 200 |
 | Enquiries go unread | Postmark alerts (#203); settings checked at the switch |
 | Analytics drops after the switch | Expected (consent); judge by Search Console |
-| Invented or wrong content goes live | Phase B1 test; owner review in D4 |
+| Invented or wrong content goes live | `invented-content.test.ts` (B1) and the live-page tests for ported text; owner review in D4 |
 | Blog cover images vanish | They are hosted on the live site's Contentful account, not in the repo. If that account is closed they disappear; copy them locally in a later step if the owner wants that |
 
 ## 6. Tools

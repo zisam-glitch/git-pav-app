@@ -3,7 +3,6 @@ import { EmergencyPricing } from "./emergency-pricing";
 import { EmergencyServices } from "./emergency-services";
 import { EmergencyFaq } from "./emergency-faq";
 import { EmergencyBanner } from "./emergency-banner";
-import { EmergencyTestimonials } from "./emergency-testimonials";
 import { EmergencyContactStrip } from "./emergency-contact-strip";
 import { EmergencyContactForm } from "./emergency-contact-form";
 
@@ -15,7 +14,6 @@ export function EmergencyDentalPage() {
       <EmergencyServices />
       <EmergencyFaq />
       <EmergencyBanner />
-      <EmergencyTestimonials />
       <EmergencyContactStrip />
       <EmergencyContactForm />
     </main>

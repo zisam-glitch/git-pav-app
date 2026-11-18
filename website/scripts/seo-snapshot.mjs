@@ -24,6 +24,7 @@ import { dirname, join } from "node:path";
 import { chromium, devices, request } from "playwright";
 import {
   bareHost,
+  extractContentBlocks,
   extractPageSeo,
   internalPath,
   normalizePath,
@@ -37,7 +38,7 @@ import {
 } from "./seo-snapshot-lib.mjs";
 
 const USAGE =
-  "usage: node scripts/seo-snapshot.mjs --base URL --out FILE [--seeds FILE] [--text-dir DIR] [--crawl] [--max N] [--delay-ms N]";
+  "usage: node scripts/seo-snapshot.mjs --base URL --out FILE [--seeds FILE] [--text-dir DIR] [--content-dir DIR] [--crawl] [--max N] [--delay-ms N]";
 
 /** A path no site has, to see what the host does with an unknown page. */
 const MISSING_PATH = "/__seo-snapshot-missing-page__";
@@ -56,6 +57,7 @@ function parseArgs(argv) {
     else if (flag === "--out") args.out = value();
     else if (flag === "--seeds") args.seeds = value();
     else if (flag === "--text-dir") args.textDir = value();
+    else if (flag === "--content-dir") args.contentDir = value();
     else if (flag === "--crawl") args.crawl = true;
     else if (flag === "--max") args.max = Number(value());
     else if (flag === "--delay-ms") args.delayMs = Number(value());
@@ -104,7 +106,7 @@ async function siteFile(api, url) {
   }
 }
 
-async function renderPage(context, url) {
+async function renderPage(context, url, withBlocks = false) {
   const page = await context.newPage();
   try {
     const res = await page.goto(url, { waitUntil: "load", timeout: 45_000 });
@@ -116,7 +118,8 @@ async function renderPage(context, url) {
     await page.waitForLoadState("networkidle", { timeout: 6_000 }).catch(() => {});
     await page.waitForTimeout(1_000);
     const seo = await page.evaluate(extractPageSeo);
-    return { status: res?.status() ?? null, finalUrl: page.url(), seo };
+    const blocks = withBlocks ? await page.evaluate(extractContentBlocks) : null;
+    return { status: res?.status() ?? null, finalUrl: page.url(), seo, blocks };
   } finally {
     await page.close();
   }
@@ -175,6 +178,12 @@ function pageEntry(path, origin, rendered, textDir) {
   };
 }
 
+/** A page's content blocks, for porting it word for word (see extractContentBlocks). */
+function writeContent(dir, path, rendered) {
+  const content = { path, title: rendered.seo.title, h1: rendered.seo.h1, blocks: rendered.blocks };
+  writeFileSync(join(dir, `${slugForPath(path)}.json`), `${JSON.stringify(content, null, 2)}\n`);
+}
+
 function printSummary({ pages, missingPage, notVisited }) {
   const rendered = pages.filter((p) => !p.error);
   const byTitle = new Map();
@@ -198,6 +207,7 @@ async function main() {
   const proxy = proxyFromEnv();
   mkdirSync(dirname(args.out), { recursive: true });
   if (args.textDir) mkdirSync(args.textDir, { recursive: true });
+  if (args.contentDir) mkdirSync(args.contentDir, { recursive: true });
 
   const seeds = ["/", ...(args.seeds ? JSON.parse(readFileSync(args.seeds, "utf8")) : [])].map(normalizePath);
 
@@ -246,7 +256,9 @@ async function main() {
       const path = queue.shift();
       process.stdout.write(`${path} ... `);
       try {
-        const entry = pageEntry(path, origin, await renderPage(context, `${origin}${path}`), args.textDir);
+        const rendered = await renderPage(context, `${origin}${path}`, Boolean(args.contentDir));
+        const entry = pageEntry(path, origin, rendered, args.textDir);
+        if (args.contentDir) writeContent(args.contentDir, path, rendered);
         entry.looksLikeNotFound =
           path !== "/" && Boolean(missingPage?.textHash) && entry.textHash === missingPage.textHash;
         pages.push(entry);

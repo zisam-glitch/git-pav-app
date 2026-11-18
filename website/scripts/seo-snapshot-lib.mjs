@@ -135,6 +135,54 @@ export function proxyFromEnv(env = process.env) {
 }
 
 /**
+ * Runs inside the page. The page's content as blocks in reading order, for
+ * porting it word for word: headings, paragraphs, list items, links, buttons
+ * and images with their alt text. The site header and footer are left out,
+ * and so is nothing else: text hidden in a collapsed accordion (FAQ answers)
+ * is kept, because search engines read it too.
+ */
+export function extractContentBlocks() {
+  const CHROME = "header, footer, .st-site-header, .st-site-footer, script, style, noscript, svg, template";
+  const BLOCK = /^(H[1-6]|P|LI|BLOCKQUOTE|TD|TH|DT|DD|FIGCAPTION|BUTTON|LABEL|A|SUMMARY)$/;
+  // Visible text keeps its line breaks (points of a policy written with <br>).
+  // Text in a closed <details> or other collapsed accordion has no rendered
+  // text, so it falls back to the raw text, which search engines still read.
+  const textOf = (el) =>
+    String(el.innerText?.trim() ? el.innerText : el.textContent)
+      .split("\n")
+      .map((line) => line.replace(/[ \t\u00a0]+/g, " ").trim())
+      .filter(Boolean)
+      .join("\n");
+  const taken = new Set();
+  const blocks = [];
+  for (const el of document.body.querySelectorAll("*")) {
+    if (el.closest(CHROME)) continue;
+    let covered = false;
+    for (let up = el.parentElement; up && up !== document.body; up = up.parentElement) {
+      if (taken.has(up)) {
+        covered = true;
+        break;
+      }
+    }
+    if (covered) continue;
+    if (el.tagName === "IMG") {
+      const src = el.getAttribute("src");
+      if (src) blocks.push({ tag: "img", src: new URL(src, location.href).href, alt: el.getAttribute("alt") });
+      continue;
+    }
+    const ownText = Array.from(el.childNodes).some((node) => node.nodeType === 3 && node.textContent.trim());
+    if (!ownText && !BLOCK.test(el.tagName)) continue;
+    const text = textOf(el);
+    if (!text) continue;
+    taken.add(el);
+    const block = { tag: el.tagName.toLowerCase(), text };
+    if (el.tagName === "A" && el.getAttribute("href")) block.href = new URL(el.getAttribute("href"), location.href).href;
+    blocks.push(block);
+  }
+  return blocks;
+}
+
+/**
  * Runs inside the page, after JavaScript (the live site sets its tags with
  * react-helmet, so the raw HTML has none of them). Collects everything a
  * search engine reads: tags, structured data, headings, links, images, text.

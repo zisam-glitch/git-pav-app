@@ -1,0 +1,548 @@
+{
+  "path": "/practice-policy",
+  "title": "",
+  "h1": [],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "h2",
+      "text": "Pav Dental Documents"
+    },
+    {
+      "tag": "div",
+      "text": "Comprehensive Policies and Guidelines for Excellence in Dental Practice"
+    },
+    {
+      "tag": "p",
+      "text": "Policies"
+    },
+    {
+      "tag": "p",
+      "text": "Download"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "CCTV Policy"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/CCTV%20Policy.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Complaints Policy"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/Complaints%20Policy.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "CQC Statement of Purpose Policy"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/CQC%20Statement%20of%20Purpose%20Policy.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Herpes Simplex Guidance"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/Herpes%20Simplex%20Guidance.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Privacy Notice for Patients including Children"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/Privacy%20Notice%20for%20Patients%20including%20children.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Quality Assurance Statement"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/Quality%20Assurance%20Statement.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Was Not Brought Implementation Guide"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/Was%20Not%20Brought%20Implementation%20Guide.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Zero Tolerance Policy"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/policies/Zero%20Tolerance%20Policy.pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Forms"
+    },
+    {
+      "tag": "p",
+      "text": "Download"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Bridges"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Bridges.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Composite Bonding"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Composite%20Bonding.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Crowns"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Crowns.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Denture"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Denture.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Direct Access"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Direct%20access.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Extraction"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Extraction.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Filling Restoration"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Filling%20Restoration.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Implant"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Implant.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - IV Sedation"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20IV%20Sedation.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Nightguards"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Nightguards.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Periodontal Treatment"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Periodontal%20Treatment.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Permission to Book Appointment"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Permission%20to%20book%20appointment.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Photograph Usage for Teaching"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Photograph%20usage%20for%20teaching.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Photography"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Photography.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Rad Exposure on Pregnancy"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Rad%20exposure%20on%20Pregnancy.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Refusal of Consent"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Refusal%20of%20Consent%20form.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Root Canal Treatment"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Root%20Canal%20Treatment.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Sharing Records to Secondary Care"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Sharing%20Records%20to%20Secondary%20Care.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Third Party Request"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Third%20Party%20Request.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Consent Form - Whitening"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/forms/Consent%20form%20-%20Whitening.docx"
+    },
+    {
+      "tag": "p",
+      "text": "Posters"
+    },
+    {
+      "tag": "p",
+      "text": "Download"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "COSHH Chemicals Poster"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/COSHH%20Chemicals%20Poster.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Domestic Abuse"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/Domestic%20Abuse.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Domestic Violence"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/Domestic%20Violence.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Free Dental Treatment Poster A3"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/Free%20dental%20treatment%20poster%20A3.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733687666/document_16509217_dvrvoh.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "GDC Standards"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/GDC%20Standards.pdf"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690891/jpg_9497384_yhwvwz.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Hand Hygiene"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/Hand%20Hygiene.png"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690107/file_14969669_etuilb.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Safeguarding Flow Chart"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/Safeguarding%20flow%20chart.docx"
+    },
+    {
+      "tag": "img",
+      "src": "https://res.cloudinary.com/db1i46uiv/image/upload/v1733690807/png_9497371_mgwu7r.png",
+      "alt": "pdf"
+    },
+    {
+      "tag": "p",
+      "text": "Sepsis Trust Dentist Campaign Poster"
+    },
+    {
+      "tag": "a",
+      "text": "Download",
+      "href": "https://www.pavdental.com/posters/Sepsis%20Trust%20Dentist%20Campaign%20Poster.jpg"
+    }
+  ]
+}

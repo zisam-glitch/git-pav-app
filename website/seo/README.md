@@ -7,6 +7,7 @@ The live site at www.pavdental.com is a separate Create React App build. `websit
 | `live-baseline.json` | Every live page, rendered in a browser on 18 Nov 2026: status, title, description, canonical, robots, Open Graph and Twitter tags, structured data, headings, links, images, word count and a text hash. Also how the host answers (redirects, unknown pages), robots.txt and the sitemap. |
 | `live-text/` | The visible text of each page, to port word for word. |
 | `live-seed-paths.json` | Where the crawl starts: the paths in the live app's router. The crawl follows links to find the rest (blog posts, team profiles). |
+| `live-content/` | The structure of a page ported so far (headings, paragraphs, lists, links, images, including FAQ answers hidden in collapsed accordions), captured with `--content-dir`. `src/content/live-pages.ts` holds the ported text. |
 
 ## What the live site does today
 
@@ -25,4 +26,4 @@ SEO_BROWSER_CHANNEL=chrome npm run seo:snapshot -- --base https://www.pavdental.
   --seeds seo/live-seed-paths.json --out seo/live-baseline.json --text-dir seo/live-text --crawl
 ```
 
-Analytics and ad beacons are blocked during a crawl, so it is not counted as visits. Don't edit these files by hand; re-run the snapshot.
+Add `--content-dir seo/live-content` to also save each page's structure for porting. Analytics and ad beacons are blocked during a crawl, so it is not counted as visits. Don't edit these files by hand; re-run the snapshot.

@@ -12,13 +12,13 @@ export const Route = createFileRoute("/petition")({
 
 function PetitionPageRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       {/* Single Unified Header */}
       <Header />
 
       {/* Spacer for fixed header */}
-      <div className="pt-16">
+      <div className="pt-20 sm:pt-24">
         <PetitionPage />
       </div>
 

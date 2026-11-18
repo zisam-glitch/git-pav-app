@@ -2,7 +2,6 @@ import { GeneralDentistryHero } from "./general-dentistry-hero";
 import { GeneralDentistryCavities } from "./general-dentistry-cavities";
 import { GeneralDentistryServices } from "./general-dentistry-services";
 import { GeneralDentistryImportance } from "./general-dentistry-importance";
-import { GeneralDentistryPricing } from "./general-dentistry-pricing";
 import { GeneralDentistryFillingPricingTable } from "./general-dentistry-filling-pricing-table";
 import { GeneralDentistryExtractionPricingTable } from "./general-dentistry-extraction-pricing-table";
 import { GeneralDentistryRootCanalPricingTable } from "./general-dentistry-root-canal-pricing-table";
@@ -14,7 +13,7 @@ import { GeneralDentistryFaq } from "./general-dentistry-faq";
 
 export function GeneralDentistryPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5] text-black/88">
       <GeneralDentistryHero />
       <GeneralDentistryCavities />
       <GeneralDentistryRootCanalPricingTable />

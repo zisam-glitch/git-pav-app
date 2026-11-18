@@ -1,3 +1,5 @@
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { TeamShowcase } from "@/components/ui/team-showcase";
 import { TEAM_MEMBERS } from "@/content/team-members";
 
@@ -9,25 +11,29 @@ export function Team() {
     role: member.role,
     image: member.photo.src,
   }));
+
   return (
-    <section className="pb-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-medium">Meet Our Team</h2>
-          <p className="mt-4 text-muted">
-            The dedicated professionals behind PavDental's exceptional care
-          </p>
+    <section className="py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col justify-between gap-6 border-t border-black/10 pt-14 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-black/50">Clinicians &amp; Staff</p>
+            <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+              Meet Our <span className="text-[#754B3D]">Team</span>
+            </h2>
+            <p className="mt-3 max-w-xl text-base text-black/65">
+              The dedicated professionals behind Pav Dental&apos;s exceptional care
+            </p>
+          </div>
+          <Button asChild size="lg">
+            <a href="/team">
+              Meet our dentists
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </a>
+          </Button>
         </div>
+
         <TeamShowcase members={members} />
-        <div className="mt-10 text-center">
-          <a
-            href="/team"
-            className="inline-flex items-center gap-2 rounded-full   bg-white px-6 py-2.5 text-sm font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-white"
-          >
-            <span>Meet our dentists</span>
-            <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
       </div>
     </section>
   );

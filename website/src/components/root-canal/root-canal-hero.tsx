@@ -1,59 +1,110 @@
-import React from "react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+
+const HIGHLIGHTS = [
+  {
+    eyebrow: "Front teeth",
+    title: "Basic Root Canal — £195",
+    subtitle: "Single-root incisors and canines",
+    tone: "hims-tile-warm",
+  },
+  {
+    eyebrow: "Premolars",
+    title: "Intermediate — £295",
+    subtitle: "Premolars or teeth with two roots",
+    tone: "hims-tile-sage",
+  },
+  {
+    eyebrow: "Molars",
+    title: "Advanced — £395",
+    subtitle: "Complex multi-root molar systems",
+    tone: "bg-[#F2EDE5]",
+  },
+] as const;
 
 export function RootCanalHero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
-      aria-label="Advanced root canal therapy"
+      className="bg-[#FBF8F5] pt-24 pb-8 sm:pt-28 sm:pb-12"
+      aria-label="Pav Dental Advanced Root Canal Care"
     >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="/media/hero-clinic.jpg"
-          alt="Pav Dental clinical treatment room"
-          className="kenburns h-full w-full object-cover opacity-35"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
-      </div>
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="relative overflow-hidden rounded-[1.5rem] hims-hero-gradient text-white">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-10 px-6 py-14 sm:px-10 sm:py-20 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <span className="inline-flex items-center rounded-full bg-white/18 px-3.5 py-1 text-xs font-medium tracking-wide text-white backdrop-blur-sm">
+                Microscope-enhanced endodontics
+              </span>
+              <h1 className="mt-5 max-w-2xl font-display text-4xl font-normal tracking-[-0.045em] leading-[1.06] text-white sm:text-5xl lg:text-[4rem]">
+                Pav Dental Advanced Root Canal Care
+              </h1>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
+                Explore our transparent root canal pricing for basic, intermediate, and advanced
+                treatments, along with essential information to help you make an informed decision
+                about your dental care.
+              </p>
 
-      <Spotlight />
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild size="lg">
+                  <a href={BOOKING_URL}>
+                    Make an appointment <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="glass" size="lg">
+                  <a href="#pricing">View prices</a>
+                </Button>
+              </div>
 
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center">
-        <p className="mb-4 text-xs font-medium text-primary">
-          Microscope-enhanced endodontics
-        </p>
-        <h1 className="max-w-2xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-          Advanced root canal therapy from <span className="text-primary">£195</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base text-muted sm:text-lg leading-relaxed">
-          Gentle, pain-free endodontic therapy designed to save your natural teeth using operating microscopes, 3D digital imaging, and flexible rotary systems in Bradford.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
-          >
-            <a href={BOOKING_URL}>Book appointment</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
-          >
-            <a href="#pricing">View prices</a>
-          </Button>
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium text-white/85 sm:text-sm">
+                <li>Local anaesthetic comfort</li>
+                <li>Preserves natural teeth</li>
+                <li>
+                  <a
+                    href={PRACTICE_PHONE_HREF}
+                    className="underline underline-offset-4 hover:text-white"
+                  >
+                    Emergency line: {PRACTICE_PHONE}
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="overflow-hidden rounded-[1.5rem] border border-white/15 bg-black/15 shadow-2xl">
+              <img
+                src="/media/hims/suite-editorial.jpg"
+                alt="Pav Dental clinical treatment room"
+                className="aspect-[4/3] w-full object-cover lg:aspect-[5/4]"
+              />
+            </div>
+          </div>
         </div>
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <li>95%+ tooth preservation</li>
-          <li>100% pain-free promise</li>
-          <li>Same-day emergency access</li>
-        </ul>
+
+        <div className="relative z-10 mx-auto -mt-6 max-w-[87rem] px-2 sm:-mt-8 sm:px-6 lg:px-8">
+          <div className="grid gap-3 md:grid-cols-3">
+            {HIGHLIGHTS.map((item) => (
+              <a
+                key={item.title}
+                href="#pricing"
+                className={`${item.tone} group flex items-center justify-between gap-4 rounded-[1.5rem] border border-black/6 p-5 shadow-[0_6px_24px_rgba(0,0,0,0.05)] transition-transform duration-200 hover:-translate-y-0.5 sm:p-6`}
+              >
+                <div>
+                  <span className="inline-block rounded-full bg-black/6 px-2.5 py-0.5 text-[11px] font-medium text-black/70">
+                    {item.eyebrow}
+                  </span>
+                  <h2 className="mt-2 font-display text-xl font-normal tracking-[-0.02em] text-black">
+                    {item.title}
+                  </h2>
+                  <p className="mt-1 text-sm text-black/60">{item.subtitle}</p>
+                </div>
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-black text-white transition-transform duration-200 group-hover:scale-105">
+                  <ArrowRight className="size-4" />
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

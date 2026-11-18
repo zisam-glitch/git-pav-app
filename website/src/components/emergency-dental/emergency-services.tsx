@@ -1,137 +1,142 @@
 import {
   Activity,
   AlertOctagon,
-  Sparkles,
-  Shield,
-  Zap,
   Droplets,
   Flame,
   HelpCircle,
+  Shield,
+  Sparkles,
+  Zap,
 } from "lucide-react";
+import { Reveal } from "@/components/home/reveal";
+import { PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 const EMERGENCY_CONDITIONS = [
   {
     id: "toothache",
-    title: "Severe Toothache",
-    desc: "Unbearable, throbbing, or sharp pain that prevents sleeping, eating, or concentrating.",
+    title: "Toothache",
+    desc: "Constant or throbbing tooth pain that prevents sleeping, eating, or daily focus.",
     icon: Zap,
-    color: "#d9383a",
     tag: "Immediate Relief",
+    tone: "hims-tile-warm",
+  },
+  {
+    id: "sensitivity",
+    title: "Sensitivity",
+    desc: "Acute sensitivity to hot, cold, or pressure pointing to deep decay or exposed dentin.",
+    icon: Activity,
+    tag: "Same-Day Check",
+    tone: "hims-tile-sage",
+  },
+  {
+    id: "broken-filling",
+    title: "Broken Filling / Tooth",
+    desc: "Fractured teeth or damaged fillings leaving sharp edges or exposed sensitive structure.",
+    icon: Sparkles,
+    tag: "Urgent Repair",
+    tone: "bg-white",
   },
   {
     id: "swelling",
-    title: "Facial Swelling",
-    desc: "Visible swelling of the cheek, jawline, or neck requiring urgent antibiotic and drainage care.",
+    title: "Swelling / Abscess",
+    desc: "Gum boils, localised infection, or cheek swelling requiring assessment, antibiotics, or drainage.",
     icon: Flame,
-    color: "#cf711f",
-    tag: "Urgent",
-  },
-  {
-    id: "broken-tooth",
-    title: "Broken / Chipped Tooth",
-    desc: "Fractured teeth with sharp exposed edges, causing cuts to tongue or exposing sensitive nerves.",
-    icon: Sparkles,
-    color: "#925a27",
-    tag: "Same-day repair",
-  },
-  {
-    id: "lost-filling",
-    title: "Lost Filling or Crown",
-    desc: "Dislodged crowns, inlays or large fillings leaving exposed sensitive dentin to food and cold air.",
-    icon: Shield,
-    color: "#5b7fa6",
-    tag: "Re-cementing",
-  },
-  {
-    id: "abscess",
-    title: "Dental Abscess",
-    desc: "Pus-filled gum boil, bad taste, and localized infection that can spread rapidly if untreated.",
-    icon: AlertOctagon,
-    color: "#c0392b",
     tag: "Infection Care",
+    tone: "hims-tile-warm",
   },
   {
-    id: "bleeding",
-    title: "Bleeding Gums",
-    desc: "Uncontrolled bleeding after trauma or extraction that won't stop with gentle biting pressure.",
+    id: "denture",
+    title: "Denture Adjustment",
+    desc: "Painful rubbing, fractured acrylic, or sudden loss of denture fit needing urgent adjustment.",
+    icon: AlertOctagon,
+    tag: "Repair & Relief",
+    tone: "bg-white",
+  },
+  {
+    id: "recement",
+    title: "Re-cement Crowns",
+    desc: "Dislodged crowns, bridges, or veneers that need prompt cleaning and re-cementing.",
+    icon: Shield,
+    tag: "From £60",
+    tone: "hims-tile-sage",
+  },
+  {
+    id: "trauma",
+    title: "Dental Trauma",
+    desc: "Knocked-out or loosened teeth from accidents or sport — call immediately for guidance.",
     icon: Droplets,
-    color: "#b02a1e",
-    tag: "Coagulation Care",
+    tag: "Time Critical",
+    tone: "hims-tile-warm",
   },
   {
-    id: "knocked-out",
-    title: "Knocked Out Tooth",
-    desc: "Dental avulsion from sports or accidents. Keep the tooth in milk and arrive within 60 minutes.",
-    icon: Activity,
-    color: "#27ae60",
-    tag: "Time Critical (60m)",
-  },
-  {
-    id: "wisdom-pain",
-    title: "Wisdom Tooth Pain",
-    desc: "Pericoronitis, lockjaw, or intense pain radiating to ear and neck from impacted wisdom teeth.",
+    id: "painful-gums",
+    title: "Painful Gums",
+    desc: "Acute gum inflammation, pericoronitis around wisdom teeth, or dry socket pain.",
     icon: HelpCircle,
-    color: "#cf9448",
-    tag: "Surgical Relief",
+    tag: "Irrigation & Care",
+    tone: "hims-tile-sage",
   },
 ];
 
 export function EmergencyServices() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fbf8f4]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="text-xs font-bold uppercase text-[#925a27] mb-3">
-            Comprehensive Triage
-          </p>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
-            Our Emergency Dentist Can Help With{" "}
-            <span className="accent-text">The Following</span>
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-base leading-relaxed">
-            From sudden accidents to escalating infections, we treat every kind of urgent oral crisis with gentle, pain-free techniques.
-          </p>
-        </div>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                Urgent triage
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Our emergency dentist can help{" "}
+                <span className="text-[#754B3D]">with the following</span>
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-black/65">
+                Whether it is a chipped tooth, a loose filling, or severe toothache, we aim to
+                relieve pain and get you back to normal quickly.
+              </p>
+            </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {EMERGENCY_CONDITIONS.map((cond) => {
-            const Icon = cond.icon;
-            return (
-              <div
-                key={cond.id}
-                className="group relative rounded-xl bg-white p-7   shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-5">
-                    <div className="size-14 rounded-xl bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center transition-transform group-hover:scale-110">
-                      <Icon className="size-7" />
-                    </div>
-                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-[#925a27] text-white">
-                      {cond.tag}
-                    </span>
-                  </div>
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {EMERGENCY_CONDITIONS.map((cond, i) => {
+                const Icon = cond.icon;
+                return (
+                  <Reveal key={cond.id} delay={0.03 * i} className="h-full">
+                    <article
+                      className={`${cond.tone} flex h-full flex-col justify-between rounded-[1.5rem] border border-black/6 p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)]`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="grid size-10 place-items-center rounded-2xl border border-black/6 bg-white text-[#1B3745]">
+                            <Icon className="size-4" />
+                          </span>
+                          <span className="rounded-full bg-[#1B3745] px-2.5 py-0.5 text-[11px] font-medium text-white">
+                            {cond.tag}
+                          </span>
+                        </div>
 
-                  <h3 className="font-display text-lg font-bold text-[#2a1c12] group-hover:text-[#925a27] transition-colors">
-                    {cond.title}
-                  </h3>
+                        <h3 className="mt-5 font-display text-xl font-normal tracking-[-0.02em] text-black">
+                          {cond.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-relaxed text-black/65">{cond.desc}</p>
+                      </div>
 
-                  <p className="mt-2 text-xs sm:text-sm text-[#6b5848] leading-relaxed">
-                    {cond.desc}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4   flex items-center justify-between text-xs">
-                  <span className="font-semibold text-[#925a27]">Emergency Slot</span>
-                  <a
-                    href="tel:07311871456"
-                    className="font-bold text-[#925a27] hover:underline flex items-center gap-1"
-                  >
-                    Call Now &rarr;
-                  </a>
-                </div>
-              </div>
-            );
-          })}
+                      <div className="mt-6 flex items-center justify-between border-t border-black/8 pt-4 text-xs">
+                        <span className="text-black/55">Emergency slot</span>
+                        <a
+                          href={PRACTICE_PHONE_HREF}
+                          className="font-medium text-[#1B3745] hover:underline"
+                        >
+                          Call 0800 1938 786 &rarr;
+                        </a>
+                      </div>
+                    </article>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>

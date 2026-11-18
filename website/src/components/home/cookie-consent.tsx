@@ -35,9 +35,9 @@ export function CookieConsent() {
 
   return (
     <div className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-5 sm:max-w-sm z-50 animate-in fade-in slide-in-from-bottom-5">
-      <div className="rounded-xl   bg-white p-4 shadow-lg">
+      <div className="rounded-[1.25rem] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
         <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-[#faf6f0]   text-primary shrink-0">
+          <div className="shrink-0 rounded-xl bg-[#F2EDE5] p-2 text-[#1B3745]">
             <ShieldCheck className="size-4" />
           </div>
           <div className="space-y-1">

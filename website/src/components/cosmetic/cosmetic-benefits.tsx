@@ -1,52 +1,62 @@
-import React from "react";
+import { Reveal } from "@/components/home/reveal";
 
 const BENEFITS = [
   {
-    title: "Enhanced Facial Harmony",
-    desc: "Achieve a symmetrical, naturally luminous smile that complements your skin tone and lip line with flawless balance.",
+    title: "Enhanced Appearance",
+    desc: "The most obvious benefit is a more attractive, balanced smile tailored to your natural features.",
   },
   {
-    title: "Boosted Daily Confidence",
-    desc: "Smile, laugh, and present with complete confidence in professional meetings, wedding photos, and everyday social settings.",
+    title: "Boosted Confidence",
+    desc: "A better smile often leads to increased self-esteem and confidence in work and social settings.",
   },
   {
-    title: "Restored Chewing Function",
-    desc: "Repairing worn enamel and correcting minor misalignments restores comfortable chewing dynamics and clear speech.",
+    title: "Improved Oral Health",
+    desc: "Some procedures help improve your oral health by aligning surfaces and making cleaning easier.",
   },
   {
-    title: "Stain-Resistant Durability",
-    desc: "Modern multi-layer feldspathic and E.max ceramics resist staining from coffee, tea, and wine for long-lasting results.",
+    title: "Long-Lasting Results",
+    desc: "Many cosmetic dentistry procedures offer long-term or permanent solutions when properly cared for.",
+  },
+  {
+    title: "Wider Range of Options",
+    desc: "There are treatments available for almost every aesthetic issue you might have with your teeth.",
   },
 ];
 
 export function CosmeticBenefits() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Benefits of Cosmetic Dentistry
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            A transformative investment in your daily confidence, dental comfort, and overall quality of life.
-          </p>
-        </div>
-
-        {/* Minimal editorial grid — no card boxes, no shadows */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-8  ">
-          {BENEFITS.map((b, i) => (
-            <div key={b.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                0{i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {b.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {b.desc}
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <Reveal className="max-w-2xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                Why patients choose it
               </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Benefits of{" "}
+                <span className="text-[#754B3D]">cosmetic dentistry</span>
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-black/65">
+                Thoughtful aesthetic care improves how your smile looks, feels, and cleans day to
+                day.
+              </p>
+            </Reveal>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {BENEFITS.map((b, i) => (
+                <Reveal key={b.title} delay={0.04 * i} className="h-full">
+                  <div className="flex h-full flex-col rounded-[1.5rem] border border-black/6 bg-white p-6">
+                    <span className="font-mono text-xs font-medium text-[#754B3D]">0{i + 1}</span>
+                    <h3 className="mt-3 font-display text-xl font-normal tracking-[-0.02em] text-black">
+                      {b.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-black/65">{b.desc}</p>
+                  </div>
+                </Reveal>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>

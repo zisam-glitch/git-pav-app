@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Linkedin, Twitter, Instagram, Instagram as Behance } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Linkedin, Twitter, Instagram, Instagram as Behance } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface TeamMember {
   id: string;
@@ -27,42 +27,39 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
   const col3 = members.filter((_, i) => i % 3 === 2);
 
   return (
-    <div className="flex flex-col items-center md:flex-row gap-8 md:gap-10 lg:gap-14 select-none w-full mx-auto py-8 font-sans">
-      {/* ── Left: photo grid ── */}
-      <div className="flex gap-2 md:gap-3 flex-shrink-0 overflow-x-auto pb-1 md:pb-0">
-        {/* Column 1 */}
-        <div className="flex flex-col gap-2 md:gap-3">
+    <div className="mx-auto flex w-full select-none flex-col items-center gap-10 py-6 font-sans md:flex-row lg:gap-14">
+      {/* Left: staggered photo grid */}
+      <div className="flex flex-shrink-0 gap-3 overflow-x-auto pb-2 md:pb-0">
+        <div className="flex flex-col gap-3">
           {col1.map((member) => (
             <PhotoCard
               key={member.id}
               member={member}
-              className="w-[110px] h-[120px] sm:w-[130px] sm:h-[140px] md:w-[230px] md:h-[250px]"
+              className="h-[130px] w-[112px] sm:h-[155px] sm:w-[136px] md:h-[235px] md:w-[210px]"
               hoveredId={hoveredId}
               onHover={setHoveredId}
             />
           ))}
         </div>
 
-        {/* Column 2 */}
-        <div className="flex flex-col gap-2 md:gap-3 mt-[48px] sm:mt-[56px] md:mt-[68px]">
+        <div className="mt-[44px] flex flex-col gap-3 sm:mt-[54px] md:mt-[64px]">
           {col2.map((member) => (
             <PhotoCard
               key={member.id}
               member={member}
-              className="w-[122px] h-[132px] sm:w-[145px] sm:h-[155px] md:w-[240px] md:h-[260px]"
+              className="h-[140px] w-[120px] sm:h-[168px] sm:w-[146px] md:h-[245px] md:w-[220px]"
               hoveredId={hoveredId}
               onHover={setHoveredId}
             />
           ))}
         </div>
 
-        {/* Column 3 */}
-        <div className="flex flex-col gap-2 md:gap-3 mt-[22px] sm:mt-[26px] md:mt-[32px]">
+        <div className="mt-[20px] flex flex-col gap-3 sm:mt-[24px] md:mt-[30px]">
           {col3.map((member) => (
             <PhotoCard
               key={member.id}
               member={member}
-              className="w-[115px] h-[125px] sm:w-[136px] sm:h-[146px] md:w-[230px] md:h-[250px]"
+              className="h-[135px] w-[116px] sm:h-[160px] sm:w-[140px] md:h-[235px] md:w-[210px]"
               hoveredId={hoveredId}
               onHover={setHoveredId}
             />
@@ -70,8 +67,8 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
         </div>
       </div>
 
-      {/* ── Right: member name list*/}
-      <div className="flex flex-col sm:grid sm:grid-cols-2 md:flex md:flex-col gap-4 md:gap-5 pt-0 md:pt-2 flex-1 w-full">
+      {/* Right: member name directory */}
+      <div className="flex w-full flex-1 flex-col divide-y divide-black/10 border-y border-black/10">
         {members.map((member) => (
           <MemberRow
             key={member.id}
@@ -84,10 +81,6 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     </div>
   );
 }
-
-/* ─────────────────────────────────────────
-   Photo card 
-───────────────────────────────────────── */
 
 function PhotoCard({
   member,
@@ -104,11 +97,13 @@ function PhotoCard({
   const isDimmed = hoveredId !== null && !isActive;
 
   return (
-    <div
+    <a
+      href={`/team/${member.id}`}
       className={cn(
-        'overflow-hidden rounded-xl cursor-pointer flex-shrink-0 transition-opacity duration-400',
+        "block flex-shrink-0 overflow-hidden rounded-[1.25rem] border border-black/6 bg-[#FAF8F2] transition-all duration-300",
         className,
-        isDimmed ? 'opacity-60' : 'opacity-100',
+        isDimmed ? "opacity-55" : "opacity-100",
+        isActive && "ring-2 ring-[#1B3745]",
       )}
       onMouseEnter={() => onHover(member.id)}
       onMouseLeave={() => onHover(null)}
@@ -116,18 +111,11 @@ function PhotoCard({
       <img
         src={member.image}
         alt={member.name}
-        className="w-full h-full object-cover transition-[filter] duration-500"
-        style={{
-          filter: isActive ? 'grayscale(0) brightness(1)' : 'grayscale(1) brightness(0.77)',
-        }}
+        className="h-full w-full object-cover object-top transition-transform duration-500 hover:scale-[1.03]"
       />
-    </div>
+    </a>
   );
 }
-
-/* ─────────────────────────────────────────
-   Member name section
-───────────────────────────────────────── */
 
 function MemberRow({
   member,
@@ -140,100 +128,66 @@ function MemberRow({
 }) {
   const isActive = hoveredId === member.id;
   const isDimmed = hoveredId !== null && !isActive;
-  const hasSocial = member.social?.twitter ?? member.social?.linkedin ?? member.social?.instagram ?? member.social?.behance;
+  const hasSocial =
+    member.social?.twitter ??
+    member.social?.linkedin ??
+    member.social?.instagram ??
+    member.social?.behance;
 
   return (
-    <div
+    <a
+      href={`/team/${member.id}`}
       className={cn(
-        'cursor-pointer transition-opacity duration-300',
-        isDimmed ? 'opacity-50' : 'opacity-100',
+        "group flex items-center justify-between gap-4 py-4 transition-opacity duration-200",
+        isDimmed ? "opacity-50" : "opacity-100",
       )}
       onMouseEnter={() => onHover(member.id)}
       onMouseLeave={() => onHover(null)}
     >
-      {/* Name + social*/}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-3">
         <span
           className={cn(
-            'w-4 h-3 rounded-[5px] flex-shrink-0 transition-all duration-300',
-            isActive ? 'bg-fg w-5' : 'bg-fg/25',
+            "h-2.5 w-2.5 flex-shrink-0 rounded-full transition-all duration-200",
+            isActive ? "scale-125 bg-[#1B3745]" : "bg-[#754B3D]/35",
           )}
         />
-        <span
-          className={cn(
-            'text-base md:text-[18px] font-semibold leading-none transition-colors duration-300',
-            isActive ? 'text-fg' : 'text-fg/80',
-          )}
-        >
-          {member.name}
-        </span>
-
-        {/* Social icons */}
-        {hasSocial && (
-          <div
+        <div>
+          <span
             className={cn(
-              'flex items-center gap-1.5 ml-0.5 transition-all duration-200',
-              isActive
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 -translate-x-2 pointer-events-none',
+              "block font-display text-lg font-normal tracking-[-0.02em] transition-colors",
+              isActive ? "text-[#1B3745]" : "text-black",
             )}
           >
-            {member.social?.twitter && (
-              <a
-                href={member.social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 rounded text-muted hover:text-fg hover:bg-fg/10 transition-all duration-150 hover:scale-110"
-                title="X / Twitter"
-              >
-                <Twitter size={10} />
-              </a>
-            )}
-            {member.social?.linkedin && (
-              <a
-                href={member.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 rounded text-muted hover:text-fg hover:bg-fg/10 transition-all duration-150 hover:scale-110"
-                title="LinkedIn"
-              >
-                <Linkedin size={10} />
-              </a>
-            )}
-            {member.social?.instagram && (
-              <a
-                href={member.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 rounded text-muted hover:text-fg hover:bg-fg/10 transition-all duration-150 hover:scale-110"
-                title="Instagram"
-              >
-                <Instagram size={10} />
-              </a>
-            )}
-            {member.social?.behance && (
-              <a
-                href={member.social.behance}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 rounded text-muted hover:text-fg hover:bg-fg/10 transition-all duration-150 hover:scale-110"
-                title="Behance"
-              >
-                <Behance size={10} />
-              </a>
-            )}
-          </div>
-        )}
+            {member.name}
+          </span>
+          <span className="block text-xs text-black/55">{member.role}</span>
+        </div>
       </div>
 
-      {/* Role */}
-      <p className="mt-1.5 pl-[27px] text-[7px] md:text-[10px] font-medium uppercase text-muted">
-        {member.role}
-      </p>
-    </div>
+      {hasSocial && (
+        <div className="flex items-center gap-1.5">
+          {member.social?.twitter && (
+            <span className="p-1 text-black/45">
+              <Twitter size={12} />
+            </span>
+          )}
+          {member.social?.linkedin && (
+            <span className="p-1 text-black/45">
+              <Linkedin size={12} />
+            </span>
+          )}
+          {member.social?.instagram && (
+            <span className="p-1 text-black/45">
+              <Instagram size={12} />
+            </span>
+          )}
+          {member.social?.behance && (
+            <span className="p-1 text-black/45">
+              <Behance size={12} />
+            </span>
+          )}
+        </div>
+      )}
+    </a>
   );
 }

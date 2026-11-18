@@ -1,193 +1,164 @@
-import React from "react";
-import { Check, ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const TIERS = [
   {
     id: "basic",
-    title: "Basic Care",
+    title: "Basic Root Canal",
     price: "£195",
     toothType: "Incisors & Canines",
-    canals: "1 Single Canal",
+    canals: "Single Root",
     description:
-      "Treatment for anterior front teeth with single straight root canals. Fast, gentle relief restoring tooth structure.",
+      "Root canal treatments on teeth with a single root, such as front teeth (incisors and canines). Straightforward root canal system.",
     includes: [
-      "Diagnostic digital X-rays",
-      "Painless localized anaesthesia",
-      "Rotary cleaning & sterile debridement",
-      "Biocompatible temporary core seal",
+      "Local anaesthesia",
+      "Diagnostic digital X-ray",
+      "Single-canal cleaning & seal",
     ],
-    highlight: false,
-    tag: "Front Teeth",
+    tone: "hims-tile-warm",
+    dark: false,
   },
   {
     id: "intermediate",
-    title: "Intermediate Care",
-    price: "£275",
+    title: "Intermediate Root Canal",
+    price: "£295",
     toothType: "Premolars",
-    canals: "1–2 Root Canals",
+    canals: "Two Roots",
     description:
-      "For mid-arch premolar teeth with one or two interconnected root canals, requiring precision apex tracking and thermal seal.",
+      "For root canal treatments on premolars or teeth with two roots, addressing multiple roots and more intricate root canal systems.",
     includes: [
-      "Everything in Basic Care",
-      "Electronic apex locator tracking",
-      "Flexible WaveOne Gold rotary files",
-      "Ultrasonic irrigation disinfection",
+      "Local anaesthesia",
+      "Multi-canal shaping & disinfection",
+      "Biocompatible root canal seal",
     ],
-    highlight: true,
-    tag: "Most Common",
+    tone: "hims-navy-gradient",
+    dark: true,
   },
   {
     id: "advanced",
-    title: "Advanced Care",
-    price: "£375",
-    toothType: "Molars & Complex",
-    canals: "3–4 Complex Canals",
+    title: "Advanced Root Canal",
+    price: "£395",
+    toothType: "Molars",
+    canals: "Multiple Roots",
     description:
-      "Specialist care for posterior molars featuring 3 to 4 curved, branching, or calcified canals treated under high surgical magnification.",
+      "For the most complex root canal treatments, typically involving molars with multiple roots and a more complex root canal system.",
     includes: [
-      "Operating microscope guidance",
-      "Treatment of calcified / curved roots",
-      "Warm vertical compaction obturation",
-      "Coronal core build-up for crown",
+      "Advanced endodontic equipment",
+      "Complex multi-canal debridement",
+      "Crown restoration guidance",
     ],
-    highlight: false,
-    tag: "Complex Molars",
+    tone: "hims-tile-sage",
+    dark: false,
   },
-];
+] as const;
 
 export function RootCanalPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Transparent Root Canal Pricing
+    <section id="pricing" className="bg-[#FBF8F5] py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Transparent fees
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Our Root Canal{" "}
+            <span className="text-[#754B3D]">Prices</span>
           </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Clear upfront fees tailored to the anatomy of your tooth. Zero hidden charges; NHS Band rates and 0% APR finance available.
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Clear upfront pricing based on tooth type and canal complexity.
           </p>
         </div>
 
-        {/* Pricing Comparison Table */}
-        <div className="overflow-x-auto rounded-xl   bg-white shadow-sm">
-          <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
-            <thead>
-              <tr className="  text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
-                <th className="py-5 px-6 bg-white w-1/4">Tooth Anatomy</th>
-                {TIERS.map((t) => (
-                  <th
-                    key={t.id}
-                    className={`py-5 px-6 w-1/4 ${
-                      t.highlight
-                        ? "bg-[#faf6f0]   text-[#925a27] relative"
-                        : "bg-white"
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {TIERS.map((tier) => (
+            <article
+              key={tier.id}
+              className={`${tier.tone} flex flex-col justify-between rounded-[1.5rem] border ${
+                tier.dark ? "border-[#1B3745] text-white" : "border-black/6 text-black"
+              } p-7 shadow-[0_6px_24px_rgba(0,0,0,0.04)] sm:p-8`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`inline-block rounded-full px-3 py-1 text-[11px] font-medium ${
+                      tier.dark
+                        ? "bg-[#ECD880] text-[#1B3745]"
+                        : "bg-black/6 text-black/75"
                     }`}
                   >
-                    {t.highlight && (
-                      <div className="inline-block bg-[#925a27] text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                        {t.tag}
-                      </div>
-                    )}
-                    <div>{t.toothType}</div>
-                    <div
-                      className={`text-base sm:text-lg font-display font-bold mt-0.5 ${
-                        t.highlight ? "text-[#925a27]" : "text-[#2a1c12]"
-                      }`}
-                    >
-                      {t.price}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className=" /70 text-[#2a1c12]">
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Canals Cleaned</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 font-semibold ${
-                      t.highlight ? "bg-[#faf6f0]   text-[#925a27]" : "text-[#6b5848]"
+                    {tier.toothType}
+                  </span>
+                  <span
+                    className={`text-xs font-medium ${
+                      tier.dark ? "text-white/75" : "text-black/55"
                     }`}
                   >
-                    {t.canals}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Description</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 text-[#6b5848] text-xs leading-relaxed ${
-                      t.highlight ? "bg-[#faf6f0]  " : ""
-                    }`}
-                  >
-                    {t.description}
-                  </td>
-                ))}
-              </tr>
-              {[0, 1, 2, 3].map((idx) => (
-                <tr key={idx}>
-                  <td className="py-4 px-6 font-bold text-[#2a1c12]">
-                    {idx === 0 ? "Includes" : ""}
-                  </td>
-                  {TIERS.map((t) => (
-                    <td
-                      key={t.id}
-                      className={`py-4 px-6 ${
-                        t.highlight
-                          ? "bg-[#faf6f0]   font-bold text-emerald-800"
-                          : "text-[#2a1c12]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-primary flex-shrink-0" />
-                        {t.includes[idx]}
-                      </span>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-              <tr className="bg-[#fffdf9]">
-                <td className="py-5 px-6 font-bold text-[#2a1c12]">Action</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-5 px-6 ${
-                      t.highlight ? "bg-[#faf6f0]  " : ""
-                    }`}
-                  >
-                    {t.highlight ? (
-                      <Button
-                        asChild
-                        className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95"
-                      >
-                        <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
-                          Book Treatment <ArrowRight className="size-3.5" />
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="w-full rounded-full  text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
-                      >
-                        <a href={BOOKING_URL}>Book Treatment</a>
-                      </Button>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                    {tier.canals}
+                  </span>
+                </div>
 
-        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
-          NHS Band 2 and Band 3 endodontic treatments are also provided for eligible patients based on clinical necessity. 0% APR finance available on treatments over £250.
-        </p>
+                <h3
+                  className={`mt-5 font-display text-2xl font-normal tracking-[-0.03em] ${
+                    tier.dark ? "text-white" : "text-black"
+                  }`}
+                >
+                  {tier.title}
+                </h3>
+
+                <p
+                  className={`mt-2 font-display text-4xl font-normal tracking-[-0.04em] ${
+                    tier.dark ? "text-[#ECD880]" : "text-[#1B3745]"
+                  }`}
+                >
+                  {tier.price}
+                </p>
+
+                <p
+                  className={`mt-4 text-sm leading-relaxed ${
+                    tier.dark ? "text-white/80" : "text-black/65"
+                  }`}
+                >
+                  {tier.description}
+                </p>
+
+                <ul className="mt-6 space-y-2.5 text-sm">
+                  {tier.includes.map((item) => (
+                    <li
+                      key={item}
+                      className={`flex items-start gap-2.5 ${
+                        tier.dark ? "text-white/90" : "text-black/80"
+                      }`}
+                    >
+                      <span
+                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${
+                          tier.dark
+                            ? "bg-[#ECD880] text-[#1B3745]"
+                            : "bg-black text-white"
+                        }`}
+                      >
+                        <Check className="size-3" strokeWidth={2.5} />
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <Button
+                  asChild
+                  variant={tier.dark ? "gold" : "default"}
+                  className="w-full"
+                >
+                  <a href={BOOKING_URL}>
+                    Book appointment <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

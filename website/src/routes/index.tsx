@@ -7,8 +7,10 @@ import { Header } from "@/components/home/header";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { Marquee } from "@/components/home/marquee";
 import { Overview } from "@/components/home/overview";
+import { PersonalizedCards } from "@/components/home/personalized-cards";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { ServiceTabs } from "@/components/home/service-tabs";
+import { TotalCare } from "@/components/home/total-care";
 import { TestimonialsSection } from "@/components/testimonials/testimonials-section";
 import { VideoSection } from "@/components/home/video-section";
 import { HOME_TESTIMONIALS } from "@/content/testimonials";
@@ -24,7 +26,9 @@ function Home() {
       <ScrollProgress />
       <Header />
       <HeroSlider />
+      <PersonalizedCards />
       <Marquee />
+      <TotalCare />
       <Overview />
       <VideoSection />
       <ServiceTabs />

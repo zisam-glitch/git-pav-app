@@ -1,74 +1,62 @@
-import React from "react";
+import { ArrowRight, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
+import { Reveal } from "@/components/home/reveal";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 export function AestheticsHero() {
   return (
-    <section
-      id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
-      aria-label="Doctor-led facial aesthetics"
-    >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="/media/hero-smile.jpg"
-          alt=""
-          className="kenburns h-full w-full object-cover opacity-35"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/85 to-bg/30" />
-      </div>
+    <section className="pt-4 pb-8 sm:pt-8 sm:pb-12" aria-label="Pav Dental Aesthetics">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="hims-tile-warm relative overflow-hidden rounded-[1.5rem] border border-black/6">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-10 px-6 py-12 sm:px-10 sm:py-16 lg:grid-cols-[1.1fr_0.9fr]">
+            <Reveal>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1 text-xs font-medium text-[#1B3745] border border-black/6">
+                <Crown className="size-3.5 text-[#754B3D]" />
+                Pav Dental Aesthetics
+              </span>
+              <h1 className="mt-5 max-w-xl font-display text-4xl font-normal tracking-[-0.045em] leading-[1.06] text-black sm:text-5xl lg:text-[3.75rem]">
+                Excellence in dental and{" "}
+                <span className="text-[#754B3D]">aesthetic care</span>
+              </h1>
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-black/65 sm:text-lg">
+                Seeking perfection? Our Bradford dental and aesthetic clinic combines medical-grade
+                products with clinician-led precision for natural, refreshed results.
+              </p>
 
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto grid w-full min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div>
-          <p className="mb-4 text-xs font-medium text-primary">
-            Doctor-led facial aesthetics
-          </p>
-          <h1 className="max-w-xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-            Natural facial enhancements &amp; <span className="text-primary">skin therapies</span>
-          </h1>
-          <p className="mt-5 max-w-md text-base text-muted sm:text-lg">
-            Dentist-administered medical aesthetics in Bradford. Combining intimate facial anatomical mastery with artistic subtlety for balanced, refined results.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button
-              asChild
-              size="lg"
-              className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
-            >
-              <a href={BOOKING_URL}>Book consultation</a>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
-            >
-              <a href="#pricing">View price list</a>
-            </Button>
-          </div>
-          <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-            <li>Dentist-administered</li>
-            <li>CQC registered clinic</li>
-            <li>Natural results promise</li>
-          </ul>
-        </div>
-
-        <div className="relative hidden h-[420px] overflow-hidden rounded-xl   bg-white shadow-md lg:block">
-          <img
-            src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=85"
-            alt="Pav Dental Aesthetics Clinic Treatment Suite in Bradford"
-            className="h-full w-full object-cover"
-          />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-[#2a1c12]/95 p-4 text-sm text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold">Sterile, private aesthetics suite</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild size="lg">
+                  <a href={BOOKING_URL}>
+                    Book Now
+                    <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <a href="#pricing">View price list</a>
+                </Button>
               </div>
-            </div>
+
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-black/8 pt-6 text-xs font-medium text-black/65 sm:text-sm">
+                <li>CQC regulated clinic</li>
+                <li>Clinician-led care</li>
+                <li>Strictly 18+ age policy</li>
+              </ul>
+            </Reveal>
+
+            <Reveal delay={0.08}>
+              <div className="relative overflow-hidden rounded-[1.5rem] border border-black/6 bg-white p-3 shadow-[0_12px_36px_rgba(0,0,0,0.06)]">
+                <div className="aspect-[4/3] overflow-hidden rounded-[1.1rem] bg-[#F2EDE5]">
+                  <img
+                    src="/media/hims/card-aesthetics.jpg"
+                    alt="Pav Dental Aesthetics Clinic Treatment Suite in Bradford"
+                    className="size-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between px-2 pb-1 text-xs text-black/60">
+                  <span>Private clinical aesthetics suite</span>
+                  <span className="font-medium text-[#1B3745]">Bradford, BD3 9TY</span>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </div>

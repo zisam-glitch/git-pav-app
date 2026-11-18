@@ -12,7 +12,7 @@ export const Route = createFileRoute("/cart")({
 
 function CartRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
       <CartPage />
@@ -20,4 +20,3 @@ function CartRoute() {
     </main>
   );
 }
-

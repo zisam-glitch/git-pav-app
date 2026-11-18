@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 interface TreatmentItem {
   name: string;
@@ -166,56 +168,55 @@ export function FeeTable() {
     .filter((cat) => cat.items.length > 0);
 
   return (
-    <section className="py-12 sm:py-16">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e]">
-            Pav Dental Plans
+    <section className="py-14 sm:py-20">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Treatment Guide
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-4xl">
+            Treatment &amp; <span className="text-[#754B3D]">Fee Schedule</span>
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-muted">
+          <p className="mt-3 text-sm text-black/65 sm:text-base">
             Complete treatment and fee schedule for all general, restorative, and cosmetic services.
           </p>
 
-          {/* Quick search input */}
-          <div className="mt-6 max-w-md mx-auto relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted" />
+          <div className="relative mx-auto mt-6 max-w-md">
+            <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-black/45" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search treatments"
               placeholder="Search treatments (e.g. check-up, whitening, crown)..."
-              className="w-full pl-10 pr-4 py-2 text-sm rounded-full   bg-white shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              className="h-11 w-full rounded-full border border-black/10 bg-white pl-11 pr-4 text-sm text-black placeholder:text-black/45 focus:border-[#1B3745] focus:outline-none focus:ring-2 focus:ring-[#1B3745]/15"
             />
           </div>
         </div>
 
-        {/* Treatment fee tables */}
         <div className="space-y-6">
           {filteredCategories.map((group) => (
             <div
               key={group.category}
-              className="rounded-xl overflow-hidden   bg-white shadow-xs"
+              className="overflow-hidden rounded-[1.5rem] border border-black/6 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.03)]"
             >
-              {/* Category Header Row (warm beige background matching screenshot) */}
-              <div className="flex items-center justify-between bg-[#efe5d8] px-5 py-3  ">
-                <span className="font-semibold text-sm sm:text-base text-[#693d17]">
+              <div className="flex items-center justify-between border-b border-black/10 bg-[#FAF8F2] px-6 py-3.5">
+                <h3 className="font-display text-lg font-normal tracking-[-0.02em] text-black">
                   {group.category}
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-[#693d17] uppercase">
+                </h3>
+                <span className="text-xs font-medium uppercase tracking-wider text-black/50">
                   Fee
                 </span>
               </div>
 
-              {/* Items List */}
-              <div className="  text-sm">
+              <div className="divide-y divide-black/8 text-sm">
                 {group.items.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between px-5 py-3 hover:bg-surface/50 transition-colors"
+                    className="flex items-center justify-between px-6 py-3.5 transition-colors hover:bg-[#FAF8F2]/60"
                   >
-                    <span className="text-fg/90 font-medium pr-4">{item.name}</span>
-                    <span className="text-[#844d1e] font-semibold shrink-0 text-right">
+                    <span className="pr-4 font-normal text-black/85">{item.name}</span>
+                    <span className="shrink-0 text-right font-medium tabular-nums text-[#1B3745]">
                       {item.fee}
                     </span>
                   </div>
@@ -225,13 +226,21 @@ export function FeeTable() {
           ))}
 
           {filteredCategories.length === 0 && (
-            <div className="text-center py-12 text-muted">
-              No treatments match "{search}". Try searching for another service.
+            <div className="rounded-[1.5rem] border border-black/6 bg-white py-12 text-center text-sm text-black/60">
+              No treatments match &ldquo;{search}&rdquo;. Try searching for another service.
             </div>
           )}
+        </div>
+
+        <div className="mt-10 text-center">
+          <Button asChild size="lg">
+            <a href={BOOKING_URL}>
+              Book Appointment
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </a>
+          </Button>
         </div>
       </div>
     </section>
   );
 }
-

@@ -2,81 +2,43 @@
 @import "tw-animate-css";
 
 @font-face {
-  font-family: "You_Sans";
-  src: url("/fonts/You_Sans-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "You_Sans";
-  src: url("/fonts/You_Sans-Regular_Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "You_Sans";
-  src: url("/fonts/You_Sans-Light.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "You_Sans";
-  src: url("/fonts/You_Sans-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "You_Sans";
-  src: url("/fonts/You_Sans-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "You_Sans";
-  src: url("/fonts/You_Sans-Black.woff2") format("woff2");
-  font-weight: 900;
+  font-family: "CareSans";
+  src: url("/fonts/CareSans-VF-Roman-subset.woff2") format("woff2");
+  font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
 
 @theme {
-  --color-bg: #ffffff;
-  --color-surface: #fffdf9;
-  --color-elevated: #ffffff;
-  --color-fg: #2a1c12;
-  --color-muted: #6b5848;
-  --color-subtle: #6e5a49;
-  --color-primary: #925a27;
-  --color-primary-hover: #7a491e;
-  --color-primary-fg: #fffdf8;
-  --color-gold: #cf9448;
-  --color-gold-ink: #1a1a1a;
-  --color-cream: #faf6f0;
-  --color-border: transparent;
-  --color-border-soft: transparent;
-  --color-ring: #925a27;
-  --color-danger: #b42318;
+  --color-bg: #FBF8F5;
+  --color-surface: #FAF8F2;
+  --color-elevated: #FFFFFF;
+  --color-fg: rgba(0, 0, 0, 0.88);
+  --color-muted: rgba(0, 0, 0, 0.54);
+  --color-subtle: rgba(0, 0, 0, 0.65);
+  --color-primary: #1B3745;
+  --color-primary-hover: #2E4F5F;
+  --color-primary-fg: #FFFFFF;
+  --color-gold: #ECD880;
+  --color-gold-ink: #1B3745;
+  --color-cream: #F2EDE5;
+  --color-terracotta: #AD6E4B;
+  --color-espresso: #754B3D;
+  --color-border: rgba(0, 0, 0, 0.12);
+  --color-border-soft: rgba(0, 0, 0, 0.06);
+  --color-ring: #1B3745;
+  --color-danger: #8A3A34;
 
-  --font-sans: "You_Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "You_Sans", ui-serif, Georgia, serif;
+  --font-sans: "CareSans", Helvetica, Arial, sans-serif;
+  --font-display: "CareSans", Helvetica, Arial, sans-serif;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-sm: 0.625rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 1.5rem;
 
-  --shadow-soft: 0 18px 50px -28px rgb(42 28 18 / 0.35);
+  --shadow-soft: 0 2px 16px rgba(0, 0, 0, 0.05);
 }
 
 @layer base {
@@ -85,6 +47,8 @@
     -moz-osx-font-smoothing: grayscale;
     background: var(--color-bg);
     color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 16px;
     scroll-behavior: smooth;
   }
 
@@ -92,7 +56,9 @@
     background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: 1.4;
+    letter-spacing: -0.011em;
     caret-color: var(--color-primary);
   }
 
@@ -106,6 +72,8 @@
   h3 {
     text-wrap: balance;
     font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.04em;
     line-height: 1.12;
   }
 
@@ -119,8 +87,8 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--color-gold) 45%, transparent);
-    color: var(--color-fg);
+    background: color-mix(in oklab, var(--color-gold) 55%, transparent);
+    color: #000000;
   }
 
   a {
@@ -157,9 +125,31 @@
   height: 2px;
   width: 100%;
   transform-origin: 0 50%;
-  background: linear-gradient(90deg, rgb(146, 90, 39), rgb(207, 148, 72) 57%);
+  background: linear-gradient(90deg, #1B3745, #AD6E4B 60%, #ECD880);
   z-index: 80;
   pointer-events: none;
+}
+
+.hims-tile-warm {
+  background: linear-gradient(167deg, #f4f1e6 0%, #faf8f2 38%, #faf8f2 84%, #f4f1e6 100%);
+}
+
+.hims-tile-sage {
+  background: linear-gradient(167deg, #e4eee6 0%, #f2f9f4 38%, #f2f9f4 84%, #e4eee6 100%);
+}
+
+.hims-hero-gradient {
+  background:
+    linear-gradient(180deg, rgba(202, 154, 126, 0.2) 40%, rgba(173, 110, 75, 0.92) 100%),
+    radial-gradient(circle at 25% 20%, #E9B89A 0%, #AD6E4B 75%);
+}
+
+.hims-navy-gradient {
+  background: linear-gradient(180deg, #2e4d5e 0%, #1b3745 100%);
+}
+
+.hims-amber-gradient {
+  background: linear-gradient(to bottom, #DCA773, #BC8753);
 }
 
 .marquee-track {
@@ -196,7 +186,7 @@
 }
 
 .accent-gradient {
-  background-image: linear-gradient(90deg, rgb(146, 90, 39), rgb(207, 148, 72) 57%);
+  background-image: linear-gradient(180deg, #2e4d5e 0%, #1b3745 100%);
 }
 
 .accent-text {

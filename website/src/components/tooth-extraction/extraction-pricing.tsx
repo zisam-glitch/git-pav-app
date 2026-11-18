@@ -1,4 +1,3 @@
-import React from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/lib/enquiry";
@@ -7,140 +6,166 @@ const TIERS = [
   {
     id: "simple",
     label: "Simple Extraction",
-    price: "£75",
-    priceNote: "NHS Band 2: £23.80",
+    price: "£95",
+    badge: "Fully erupted teeth",
     description:
-      "For visible, fully erupted teeth removable without surgical incision. Ideal for decayed, cracked, or mobile teeth.",
+      "Removal of teeth that are visible in the mouth and do not require surgical procedures. Straightforward extractions with simple root structures.",
     includes: [
       "Local anaesthetic",
-      "Digital X-ray",
+      "Clinical assessment",
       "Post-op instructions",
-      "Aftercare pack",
     ],
-    highlight: false,
+    tone: "hims-tile-warm",
+    dark: false,
+  },
+  {
+    id: "intermediate",
+    label: "Intermediate Extraction",
+    price: "£145",
+    badge: "Broken at gum line",
+    description:
+      "More complex procedures than simple extractions, including removing teeth broken at the gum line or partially erupted wisdom teeth.",
+    includes: [
+      "Local anaesthetic",
+      "Tooth sectioning if needed",
+      "Post-op guidance",
+    ],
+    tone: "bg-white",
+    dark: false,
+  },
+  {
+    id: "advanced",
+    label: "Advanced Extraction",
+    price: "£195",
+    badge: "Complex root anatomy",
+    description:
+      "Difficult extractions due to root shape, tooth position, or limited access. May require sectioning or removing a small amount of surrounding bone.",
+    includes: [
+      "Digital X-ray assessment",
+      "Precision sectioning",
+      "Full aftercare support",
+    ],
+    tone: "hims-tile-sage",
+    dark: false,
   },
   {
     id: "surgical",
     label: "Surgical Extraction",
-    price: "£195",
-    priceNote: "NHS Band 2: £73.50",
-    description:
-      "For broken, impacted, or deeply rooted teeth requiring incision and possible sectioning for safe removal.",
-    includes: [
-      "Everything in Simple",
-      "Surgical incision & stitches",
-      "Sedation option available",
-      "Follow-up appointment",
-    ],
-    highlight: true,
-  },
-  {
-    id: "wisdom",
-    label: "Impacted Wisdom Tooth",
     price: "£295",
-    priceNote: "NHS Band 2: £73.50",
+    badge: "Impacted teeth",
     description:
-      "Specialist removal of fully or partially impacted wisdom teeth. Panoramic X-ray included for surgical planning.",
+      "Surgical procedure for impacted or severely damaged teeth, often requiring gum incision, bone removal, and tooth sectioning for safe removal.",
     includes: [
-      "Panoramic X-ray (OPG)",
-      "Surgical removal",
-      "IV sedation available",
-      "Full aftercare & review",
+      "Surgical gum incision & sutures",
+      "Bone & root management",
+      "Comprehensive follow-up",
     ],
-    highlight: false,
+    tone: "hims-navy-gradient",
+    dark: true,
   },
-];
+] as const;
 
 export function ExtractionPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Transparent Extraction Pricing
+    <section id="pricing" className="bg-[#FBF8F5] py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Transparent fees
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Our Tooth Extraction{" "}
+            <span className="text-[#754B3D]">Prices</span>
           </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base">
-            No hidden charges. All fees include clinical assessment, anaesthetic
-            and aftercare. NHS rates available for eligible patients.
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Affordable and transparent pricing assessed before treatment begins — no surprises.
           </p>
         </div>
 
-        {/* Pricing table */}
-        <div className="overflow-x-auto rounded-xl   bg-white shadow-sm">
-          <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
-            <thead>
-              <tr className="  text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
-                <th className="py-5 px-6 bg-white w-1/4">Treatment</th>
-                {TIERS.map((t) => (
-                  <th
-                    key={t.id}
-                    className={`py-5 px-6 w-1/4 ${t.highlight ? "bg-[#faf6f0]   text-[#925a27] relative" : "bg-white"}`}
-                  >
-                    <div>{t.label}</div>
-                    <div className={`text-base sm:text-lg font-display font-bold mt-0.5 ${t.highlight ? "text-[#925a27]" : "text-[#2a1c12]"}`}>
-                      {t.price}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className=" /70 text-[#2a1c12]">
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">NHS Rate</td>
-                {TIERS.map((t) => (
-                  <td key={t.id} className={`py-4 px-6 text-[#6b5848] ${t.highlight ? "bg-[#faf6f0]  " : ""}`}>
-                    {t.priceNote}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Description</td>
-                {TIERS.map((t) => (
-                  <td key={t.id} className={`py-4 px-6 text-[#6b5848] text-xs leading-relaxed ${t.highlight ? "bg-[#faf6f0]  " : ""}`}>
-                    {t.description}
-                  </td>
-                ))}
-              </tr>
-              {[0, 1, 2, 3].map((idx) => (
-                <tr key={idx}>
-                  <td className="py-4 px-6 font-bold text-[#2a1c12]">
-                    {idx === 0 ? "Includes" : ""}
-                  </td>
-                  {TIERS.map((t) => (
-                    <td key={t.id} className={`py-4 px-6 ${t.highlight ? "bg-[#faf6f0]   font-bold text-emerald-800" : "text-[#2a1c12]"}`}>
-                      <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-primary flex-shrink-0" />
-                        {t.includes[idx]}
+        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {TIERS.map((tier) => (
+            <article
+              key={tier.id}
+              className={`${tier.tone} flex flex-col justify-between rounded-[1.5rem] border ${
+                tier.dark ? "border-[#1B3745] text-white" : "border-black/6 text-black"
+              } p-6 shadow-[0_6px_24px_rgba(0,0,0,0.04)] sm:p-7`}
+            >
+              <div>
+                <span
+                  className={`inline-block rounded-full px-3 py-1 text-[11px] font-medium ${
+                    tier.dark
+                      ? "bg-[#ECD880] text-[#1B3745]"
+                      : "bg-black/6 text-black/75"
+                  }`}
+                >
+                  {tier.badge}
+                </span>
+
+                <h3
+                  className={`mt-4 font-display text-2xl font-normal tracking-[-0.03em] ${
+                    tier.dark ? "text-white" : "text-black"
+                  }`}
+                >
+                  {tier.label}
+                </h3>
+
+                <p
+                  className={`mt-2 font-display text-4xl font-normal tracking-[-0.04em] ${
+                    tier.dark ? "text-[#ECD880]" : "text-[#1B3745]"
+                  }`}
+                >
+                  {tier.price}
+                </p>
+
+                <p
+                  className={`mt-4 text-sm leading-relaxed ${
+                    tier.dark ? "text-white/80" : "text-black/65"
+                  }`}
+                >
+                  {tier.description}
+                </p>
+
+                <ul className="mt-6 space-y-2.5 text-sm">
+                  {tier.includes.map((item) => (
+                    <li
+                      key={item}
+                      className={`flex items-start gap-2.5 ${
+                        tier.dark ? "text-white/90" : "text-black/80"
+                      }`}
+                    >
+                      <span
+                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${
+                          tier.dark
+                            ? "bg-[#ECD880] text-[#1B3745]"
+                            : "bg-black text-white"
+                        }`}
+                      >
+                        <Check className="size-3" strokeWidth={2.5} />
                       </span>
-                    </td>
+                      <span>{item}</span>
+                    </li>
                   ))}
-                </tr>
-              ))}
-              <tr className="bg-[#fffdf9]">
-                <td className="py-5 px-6 font-bold text-[#2a1c12]">Action</td>
-                {TIERS.map((t) => (
-                  <td key={t.id} className={`py-5 px-6 ${t.highlight ? "bg-[#faf6f0]  " : ""}`}>
-                    {t.highlight ? (
-                      <Button asChild className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95">
-                        <a href={BOOKING_URL} className="flex items-center gap-2">
-                          Book Now <ArrowRight className="size-3.5" />
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button asChild variant="outline" className="w-full rounded-full  text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]">
-                        <a href={BOOKING_URL}>Book Now</a>
-                      </Button>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <Button
+                  asChild
+                  variant={tier.dark ? "gold" : "default"}
+                  className="w-full"
+                >
+                  <a href={BOOKING_URL}>
+                    Book appointment <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+              </div>
+            </article>
+          ))}
         </div>
 
-        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
-          Prices may vary with complexity assessed at consultation. NHS eligibility subject to clinical need. 0% APR finance on treatments over £250.
+        <p className="mt-6 text-xs text-black/55">
+          Informed consent for tooth extraction is discussed with your clinician before any
+          procedure begins.
         </p>
       </div>
     </section>

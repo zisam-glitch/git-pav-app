@@ -16,12 +16,12 @@ export const Route = createFileRoute("/pricing")({
 
 function PricingPage() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
-      
+
       {/* Spacer for fixed header */}
-      <div className="pt-16">
+      <div className="pt-20 sm:pt-24">
         {/* Top announcement & Hero */}
         <PricingHero />
 

@@ -15,17 +15,10 @@ export function VacanciesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg">
-      {/* 1. Hero Section with Culture & Perks */}
+    <div className="min-h-screen bg-[#FBF8F5] text-fg">
       <VacanciesHero />
-
-      {/* 2. Vacancies List with Category Filters & Search */}
       <VacanciesList onApply={handleApply} />
-
-      {/* 3. Speculative Inquiries & Recruitment Details */}
       <OpenApplication />
-
-      {/* Interactive Application Modal */}
       <ApplyModal
         vacancy={selectedVacancy}
         isOpen={isApplyModalOpen}
@@ -34,4 +27,3 @@ export function VacanciesPage() {
     </div>
   );
 }
-

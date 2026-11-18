@@ -1,58 +1,74 @@
-import React from "react";
+import { ArrowRight, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
+import { Reveal } from "@/components/home/reveal";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function GeneralDentistryHero() {
   return (
-    <section
-      id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
-      aria-label="General dentistry services"
-    >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=85"
-          alt=""
-          className="kenburns h-full w-full object-cover opacity-35"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
-      </div>
+    <section className="pt-4 pb-8 sm:pt-8 sm:pb-12" aria-label="General dentistry">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="hims-tile-warm relative overflow-hidden rounded-[1.5rem] border border-black/6">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-10 px-6 py-12 sm:px-10 sm:py-16 lg:grid-cols-[1.1fr_0.9fr]">
+            <Reveal>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-black/6 bg-white px-3.5 py-1 text-xs font-medium text-[#1B3745]">
+                <Smile className="size-3.5 text-[#754B3D]" />
+                Comprehensive dental care
+              </span>
+              <h1 className="mt-5 max-w-xl font-display text-4xl font-normal tracking-[-0.045em] leading-[1.06] text-black sm:text-5xl lg:text-[3.75rem]">
+                General dentistry: your gateway to{" "}
+                <span className="text-[#754B3D]">lifelong oral health</span>
+              </h1>
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-black/65 sm:text-lg">
+                Welcome to your guide to General Dentistry, covering check-ups to fillings.
+                Discover how preventative and restorative care maintains your dental health for
+                lifelong healthy smiles.
+              </p>
 
-      <Spotlight />
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild size="lg">
+                  <a href={BOOKING_URL}>
+                    Book Now
+                    <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <a href="#pricing">View prices</a>
+                </Button>
+              </div>
 
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 flex flex-col justify-center items-center text-center">
-        <p className="mb-4 text-xs font-medium text-primary">
-          Comprehensive dental care
-        </p>
-        <h1 className="max-w-2xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-          General Dentistry: Your <span className="text-primary">Gateway to Lifelong Oral Health</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base text-muted sm:text-lg leading-relaxed">
-          Welcome to your guide to General Dentistry, covering check-ups to fillings. Discover how it maintains and improves your dental health for lifelong healthy smiles.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
-          >
-            <a href="#services">Our services</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
-          >
-            <a href="#pricing">View prices</a>
-          </Button>
+              <div className="mt-8 grid max-w-md grid-cols-3 gap-3 border-t border-black/8 pt-6">
+                <div>
+                  <p className="text-xs text-black/50">White fillings</p>
+                  <p className="mt-0.5 font-display text-xl text-black">from £95</p>
+                </div>
+                <div>
+                  <p className="text-xs text-black/50">Extractions</p>
+                  <p className="mt-0.5 font-display text-xl text-black">from £95</p>
+                </div>
+                <div>
+                  <p className="text-xs text-black/50">Root canal</p>
+                  <p className="mt-0.5 font-display text-xl text-[#754B3D]">from £195</p>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.08}>
+              <div className="relative overflow-hidden rounded-[1.5rem] border border-black/6 bg-white p-3 shadow-[0_12px_36px_rgba(0,0,0,0.06)]">
+                <div className="aspect-[4/3] overflow-hidden rounded-[1.1rem] bg-[#F2EDE5]">
+                  <img
+                    src="/media/hims/suite-editorial.jpg"
+                    alt="General dentistry clinic room at Pav Dental"
+                    className="size-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between px-2 pb-1 text-xs text-black/60">
+                  <span>Check-ups, fillings, root canals &amp; extractions</span>
+                  <span className="font-medium text-[#1B3745]">Bradford, BD3 9TY</span>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </div>
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <li>Preventative care</li>
-          <li>Family dentistry</li>
-          <li>Comprehensive treatments</li>
-        </ul>
       </div>
     </section>
   );

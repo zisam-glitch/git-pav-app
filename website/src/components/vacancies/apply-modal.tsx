@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { X, CheckCircle2, Briefcase, FileText, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Vacancy } from "./vacancies-data";
+import { type Vacancy } from "./vacancies-data";
 import { api } from "@/lib/api";
 
 interface ApplyModalProps {
@@ -9,6 +9,9 @@ interface ApplyModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const MODAL_INPUT =
+  "w-full h-10 rounded-xl border border-black/10 bg-[#FAF8F2] px-3 text-xs sm:text-sm text-black placeholder:text-black/45 focus:border-[#1B3745] focus:outline-none focus:ring-2 focus:ring-[#1B3745]/15";
 
 export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
   const [name, setName] = useState("");
@@ -58,16 +61,16 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
       role="dialog"
       aria-modal="true"
       aria-label={`Apply for ${vacancy.title}`}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/55 p-4 backdrop-blur-xs"
     >
       <div
-        className="relative w-full max-w-lg rounded-xl bg-white p-6 sm:p-8 shadow-2xl my-8"
+        className="relative my-8 w-full max-w-lg rounded-[1.5rem] border border-black/10 bg-white p-6 shadow-2xl sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={handleResetAndClose}
-          className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full bg-slate-100 text-muted hover:bg-slate-200 hover:text-fg"
+          className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full bg-[#F2EDE5] text-black/65 transition-colors hover:bg-black hover:text-white"
           aria-label="Close dialog"
         >
           <X className="size-4" />
@@ -75,16 +78,18 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
 
         {submitted ? (
           <div className="py-8 text-center">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-sm">
+            <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-[#1B3745] text-[#ECD880]">
               <CheckCircle2 className="size-8" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-fg">
+            <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
               Application Received
             </h3>
-            <p className="mt-2 text-sm text-muted max-w-sm mx-auto leading-relaxed">
-              Thank you, <strong>{name}</strong>. Your application for <strong>{vacancy.title}</strong> has been forwarded directly to our Practice Principal and HR recruitment team.
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-black/65">
+              Thank you, <strong>{name}</strong>. Your application for{" "}
+              <strong>{vacancy.title}</strong> has been forwarded directly to our Practice Principal
+              and HR recruitment team.
             </p>
-            <p className="mt-2 text-xs text-muted">
+            <p className="mt-2 text-xs text-black/50">
               We typically review clinical applications within 48 hours.
             </p>
             <Button onClick={handleResetAndClose} className="mt-6" size="sm">
@@ -93,26 +98,26 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
           </div>
         ) : (
           <div>
-            <div className="  pb-4 pr-6">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex items-center gap-1 rounded-md bg-[#faf6f0]   px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+            <div className="border-b border-black/10 pb-4 pr-6">
+              <div className="mb-1.5 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#F2EDE5] px-2.5 py-0.5 text-[11px] font-medium text-[#1B3745]">
                   <Briefcase className="size-3" />
                   {vacancy.department}
                 </span>
-                <span className="text-xs text-muted">{vacancy.contractType}</span>
+                <span className="text-xs text-black/55">{vacancy.contractType}</span>
               </div>
-              <h2 className="font-display text-2xl font-bold text-fg">
+              <h2 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
                 Apply for {vacancy.title}
               </h2>
-              <p className="text-xs text-muted mt-1">
-                PavDental · 786 Leeds Road, Bradford, BD3 9TY
+              <p className="mt-1 text-xs text-black/55">
+                Pav Dental · 786 Leeds Road, Bradford, BD3 9TY
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="apply-name" className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-name" className="mb-1 block text-xs font-medium text-black/75">
                     Full Name *
                   </label>
                   <input
@@ -122,12 +127,12 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="Dr. / Nurse Jane Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className={MODAL_INPUT}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="apply-email" className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-email" className="mb-1 block text-xs font-medium text-black/75">
                     Email Address *
                   </label>
                   <input
@@ -137,14 +142,14 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className={MODAL_INPUT}
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="apply-phone" className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-phone" className="mb-1 block text-xs font-medium text-black/75">
                     Phone Number *
                   </label>
                   <input
@@ -154,12 +159,12 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="+44 7311 871456"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className={MODAL_INPUT}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="apply-gdc" className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-gdc" className="mb-1 block text-xs font-medium text-black/75">
                     GDC Reg No. (if registered)
                   </label>
                   <input
@@ -168,17 +173,17 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="e.g. 123456"
                     value={gdcNumber}
                     onChange={(e) => setGdcNumber(e.target.value)}
-                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className={MODAL_INPUT}
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="apply-cv" className="block text-xs font-semibold text-fg/80 mb-1">
+                <label htmlFor="apply-cv" className="mb-1 block text-xs font-medium text-black/75">
                   LinkedIn Profile / CV Link *
                 </label>
                 <div className="relative">
-                  <FileText className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
+                  <FileText className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-black/45" />
                   <input
                     id="apply-cv"
                     required
@@ -186,13 +191,13 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="https://linkedin.com/in/... or Google Drive link"
                     value={cvLink}
                     onChange={(e) => setCvLink(e.target.value)}
-                    className="w-full h-10 rounded-xl   bg-[#faf8f5] pl-9 pr-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className={`${MODAL_INPUT} pl-9`}
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="apply-message" className="block text-xs font-semibold text-fg/80 mb-1">
+                <label htmlFor="apply-message" className="mb-1 block text-xs font-medium text-black/75">
                   Brief Note / Clinical Experience *
                 </label>
                 <textarea
@@ -202,33 +207,23 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                   placeholder="Tell us about your background, clinical interests, or visa requirements..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded-xl   bg-[#faf8f5] p-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                  className="w-full rounded-xl border border-black/10 bg-[#FAF8F2] p-3 text-xs text-black placeholder:text-black/45 focus:border-[#1B3745] focus:outline-none focus:ring-2 focus:ring-[#1B3745]/15 sm:text-sm"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-between">
+              <div className="flex items-center justify-between pt-2">
                 <a
                   href="mailto:hello@pavdental.com?subject=Direct%20Application%20Inquiry"
-                  className="text-xs text-muted hover:text-primary underline"
+                  className="text-xs text-black/60 underline underline-offset-4 hover:text-[#1B3745]"
                 >
                   Or email CV directly
                 </a>
 
                 <div className="flex gap-2.5">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleResetAndClose}
-                  >
+                  <Button type="button" variant="ghost" size="sm" onClick={handleResetAndClose}>
                     Cancel
                   </Button>
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    size="sm"
-                    className="accent-gradient text-white gap-1.5 shadow-sm"
-                  >
+                  <Button type="submit" disabled={loading} size="sm" className="gap-1.5">
                     {loading ? "Submitting..." : "Submit Application"}
                     <Send className="size-3.5" />
                   </Button>
@@ -241,4 +236,3 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
     </div>
   );
 }
-

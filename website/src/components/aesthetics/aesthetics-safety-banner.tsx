@@ -1,67 +1,70 @@
-import React from "react";
-import { ShieldCheck, CheckCircle2, ShieldAlert } from "lucide-react";
+import { CheckCircle2, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Reveal } from "@/components/home/reveal";
+
+const SAFETY_POINTS = [
+  {
+    title: "Age Limit (18+)",
+    description:
+      "For the well-being and safety of our patients, all individuals seeking treatment with us MUST be at least 18 years of age.",
+    icon: ShieldAlert,
+  },
+  {
+    title: "Things to Know",
+    description:
+      "Before you embark on your journey, we take time to walk through key clinical details, suitability, and realistic outcomes.",
+    icon: CheckCircle2,
+  },
+  {
+    title: "CQC Regulated Clinic",
+    description:
+      "We adhere to rigorous Care Quality Commission guidelines for cleanliness, sterilisation, staff training, and personal protective equipment.",
+    icon: ShieldCheck,
+  },
+];
 
 export function AestheticsSafetyBanner() {
-  const safetyPoints = [
-    {
-      title: "Dentist-Level Anatomical Mastery",
-      description:
-        "Our clinicians inject with extensive training in deep facial nerve pathways, vascular networks, and SMAS planes.",
-      icon: ShieldCheck,
-    },
-    {
-      title: "Single-Use Sterile Micro-Cannulas",
-      description:
-        "Whenever appropriate, blunt-tip micro-cannulas are used to significantly minimize bruising, swelling, and vascular trauma.",
-      icon: CheckCircle2,
-    },
-    {
-      title: "Hyaluronidase Ready On-Site",
-      description:
-        "Emergency reversal enzymes are permanently stocked on site for total clinical safety and peace of mind.",
-      icon: ShieldAlert,
-    },
-  ];
-
   return (
-    <section className="bg-[#2a1c12] text-white py-16 sm:py-20  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mb-12">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
-            How We Keep You Safe
-          </h2>
-          <p className="mt-4 text-sm sm:text-base text-white/85 leading-relaxed">
-            Medical aesthetics should always be practiced with the same uncompromising sterility and clinical governance as hospital surgery.
-          </p>
-        </div>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="hims-navy-gradient rounded-[1.5rem] px-6 py-14 text-white sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <Reveal className="max-w-3xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#ECD880]">
+                Patient safety first
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-white sm:text-5xl">
+                How we are keeping you safe
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-white/80">
+                At Pav Dental, your safety is paramount. We prioritise your well-being and have
+                implemented stringent measures to create a safe and healthy environment. By
+                choosing Pav Dental, you can trust that we meet the highest standards of quality
+                and safety.
+              </p>
+            </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {safetyPoints.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.title} className="flex flex-col">
-                <Icon className="size-6 text-[#cf9448] mb-3 flex-shrink-0" />
-                <h3 className="text-base font-bold text-white mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-12 pt-8  /80 flex flex-wrap items-center justify-between gap-4 text-xs text-white/80">
-          <p>
-            <span className="font-semibold text-[#cf9448]">Age Limit:</span> Strictly 18+ only. Photographic ID required at clinical assessment.
-          </p>
-          <p>
-            <span className="font-semibold text-[#cf9448]">Cooling-Off Protocol:</span> Comprehensive consultation with unhurried decision making.
-          </p>
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {SAFETY_POINTS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="rounded-[1.5rem] border border-white/12 bg-white/6 p-6 sm:p-7"
+                  >
+                    <Icon className="size-6 text-[#ECD880]" />
+                    <h3 className="mt-4 font-display text-xl font-normal tracking-[-0.02em] text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-white/75">
+                      {item.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
-

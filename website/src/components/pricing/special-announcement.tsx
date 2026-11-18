@@ -1,11 +1,9 @@
-import { motion } from "motion/react";
 import {
   CreditCard,
   HeartHandshake,
   ShieldCheck,
-  Sparkles,
   Phone,
-  CheckCircle2,
+  Check,
   Calendar,
   ArrowRight,
   Megaphone,
@@ -13,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 const ANNOUNCEMENTS = [
   {
@@ -63,120 +61,106 @@ export function SpecialAnnouncement() {
   const active = announcements?.find((a) => a.is_active);
 
   return (
-    <section className="py-16 sm:py-24 bg-white relative overflow-hidden  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Dynamic Admin Announcement Banner if configured */}
+    <section className="bg-[#FBF8F5] py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
         {active && (
-          <div className="mb-12 rounded-xl bg-amber-500/10   p-5 sm:p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3 text-left">
-              <div className="size-10 rounded-full bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
-                <Megaphone className="size-5" />
+          <div className="mx-auto mb-12 flex max-w-3xl flex-col items-center justify-between gap-4 rounded-[1.5rem] hims-navy-gradient p-6 text-white sm:flex-row">
+            <div className="flex items-center gap-3.5 text-left">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-[#ECD880]">
+                <Megaphone className="size-5" aria-hidden="true" />
               </div>
               <div>
-                {active.title && <h4 className="font-bold text-sm text-[#844d1e]">{active.title}</h4>}
-                <p className="text-xs sm:text-sm text-fg/90">{active.body}</p>
+                {active.title && <h4 className="text-sm font-medium text-[#ECD880]">{active.title}</h4>}
+                <p className="text-xs text-white/85 sm:text-sm">{active.body}</p>
               </div>
             </div>
             {active.cta_text && (
-              <Button asChild size="sm" className="bg-[#844d1e] text-white shrink-0">
+              <Button asChild variant="gold" size="sm" className="shrink-0">
                 <a href={active.cta_url || BOOKING_URL}>{active.cta_text}</a>
               </Button>
             )}
           </div>
         )}
 
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 rounded-full   bg-white/80 px-3.5 py-1 text-xs font-semibold text-primary mb-4 shadow-xs">
-            <Sparkles className="size-3.5 text-primary" />
-            <span>Patient Care & Accessibility</span>
-          </div>
-
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#844d1e]">
-            Special Announcement from Pav Dental
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Patient Care &amp; Accessibility
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Special Announcement from{" "}
+            <span className="text-[#754B3D]">Pav Dental</span>
           </h2>
-
-          <p className="mt-4 text-sm sm:text-base text-muted leading-relaxed">
-            At Pav Dental, we believe that high-quality dental care should be accessible to all.
-            We understand that dental treatments can be a significant investment, and we are
-            committed to making our services as affordable, transparent, and welcoming as possible.
+          <p className="mt-4 text-sm leading-relaxed text-black/65 sm:text-base">
+            At Pav Dental, we take immense pride in being recognized as the market leader in dental
+            pricing. We guarantee to beat the price of any dental treatment offered by our
+            competitors — present us with a written quote and we will offer you a better price.
           </p>
         </div>
 
-        {/* 3 Announcement Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {ANNOUNCEMENTS.map((item, idx) => {
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {ANNOUNCEMENTS.map((item) => {
             const Icon = item.icon;
             return (
-              <motion.div
+              <div
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="flex flex-col justify-between rounded-xl   bg-white p-6 shadow-xs hover:shadow-soft hover:border-primary/40 transition-all duration-200"
+                className="flex flex-col justify-between rounded-[1.5rem] border border-black/6 bg-[#FAF8F2] p-7 transition-all duration-200 hover:bg-white hover:shadow-[0_8px_28px_rgba(0,0,0,0.04)]"
               >
                 <div>
-                  {/* Top Bar: Icon & Badge */}
-                  <div className="flex items-center justify-between gap-3 mb-5">
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#f6ecdf] text-[#844d1e]">
-                      <Icon className="size-6" />
+                  <div className="mb-5 flex items-center justify-between gap-3">
+                    <div className="flex size-11 items-center justify-center rounded-full bg-[#F2EDE5] text-[#1B3745]">
+                      <Icon className="size-5" aria-hidden="true" />
                     </div>
-                    <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full  ">
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[#754B3D] border border-black/6">
                       {item.badge}
                     </span>
                   </div>
 
-                  {/* Title & Description */}
-                  <h3 className="text-lg font-bold text-fg mb-2">
+                  <h3 className="font-display text-xl font-normal tracking-[-0.025em] text-black">
                     {item.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-muted leading-relaxed">
+                  <p className="mt-2.5 text-sm leading-relaxed text-black/65">
                     {item.description}
                   </p>
                 </div>
 
-                {/* Benefits List */}
-                <div className="mt-6 pt-4   space-y-2">
-                  {item.perks.map((perk, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-fg/85">
-                      <CheckCircle2 className="size-3.5 text-primary shrink-0" />
+                <ul className="mt-6 space-y-2.5 border-t border-black/8 pt-5">
+                  {item.perks.map((perk) => (
+                    <li key={perk} className="flex items-center gap-2.5 text-xs text-black/80 sm:text-sm">
+                      <span className="inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-black text-white">
+                        <Check className="size-2.5 stroke-[2.5]" aria-hidden="true" />
+                      </span>
                       <span>{perk}</span>
-                    </div>
+                    </li>
                   ))}
-                </div>
-              </motion.div>
+                </ul>
+              </div>
             );
           })}
         </div>
 
-        {/* Trust Bar & CTAs */}
-        <div className="mt-12 pt-8   flex flex-col sm:flex-row items-center justify-between gap-6">
-          {/* Trust points */}
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-xs text-muted">
-            <div className="flex items-center gap-1.5">
-              <Calendar className="size-3.5 text-primary" />
-              <span>Same-Day Appointments</span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="size-3.5 text-primary" />
-              <span>GDC Registered Bradford</span>
-            </div>
+        <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-black/10 pt-8 sm:flex-row">
+          <div className="flex flex-wrap items-center justify-center gap-5 text-xs text-black/60 sm:justify-start">
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar className="size-3.5 text-[#1B3745]" aria-hidden="true" />
+              Same-Day Appointments
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="size-3.5 text-[#1B3745]" aria-hidden="true" />
+              GDC Registered Bradford
+            </span>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-center">
-            <Button asChild size="default" className="accent-gradient text-white font-semibold text-xs h-10 px-5 gap-1.5">
+          <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto">
+            <Button asChild size="default">
               <a href={BOOKING_URL}>
                 Book Free Consultation
-                <ArrowRight className="size-3.5" />
+                <ArrowRight className="size-4" aria-hidden="true" />
               </a>
             </Button>
-            <Button asChild variant="outline" className="text-xs h-10 px-4 gap-1.5 text-fg">
-              <a href="tel:08001938786">
-                <Phone className="size-3.5 text-primary" />
-                <span>0800 1938 786</span>
+            <Button asChild variant="outline" size="default">
+              <a href={PRACTICE_PHONE_HREF}>
+                <Phone className="size-4 text-[#1B3745]" aria-hidden="true" />
+                {PRACTICE_PHONE}
               </a>
             </Button>
           </div>

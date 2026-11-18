@@ -1,8 +1,8 @@
-import { Send, CheckCircle2, Phone, Clock, MapPin } from "lucide-react";
+import { CheckCircle2, Clock, MapPin, Phone, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { PRACTICE_HOURS } from "@/lib/enquiry";
 import { useEnquiry } from "@/lib/use-enquiry";
 
@@ -10,147 +10,117 @@ export function CosmeticContact() {
   const enquiry = useEnquiry("Cosmetic dentistry");
 
   return (
-    <section id="contact" className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-start">
-          {/* Left: Contact info */}
-          <div>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-              Get in Touch
-            </h2>
-            <p className="mt-4 text-sm sm:text-base text-[#6b5848] leading-relaxed max-w-md">
-              Ready to explore your options? Contact our smile design team today and receive a tailored consultation plan within 24 hours.
-            </p>
+    <section id="contact" className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto grid max-w-[87rem] items-start gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">Visit</p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Get in touch
+              </h2>
+              <p className="mt-4 max-w-md text-base leading-relaxed text-black/65">
+                Ready to take control of your dental health? Contact us to discuss your cosmetic
+                dentistry options in Bradford.
+              </p>
 
-            <div className="mt-8 space-y-4">
-              {[
-                { icon: Phone, label: "0800 1938 786", sub: "Clinic consultation line" },
-                { icon: MapPin, label: "786 Leeds Road, Bradford, BD3 9TY", sub: "Practice address" },
-                { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
-              ].map(({ icon: Icon, label, sub }) => (
-                <div key={label} className="flex items-start gap-4">
-                  <div className="size-10 rounded-lg bg-white   flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Icon className="size-4 text-[#925a27]" />
+              <div className="mt-8 space-y-4">
+                {[
+                  { icon: Phone, label: "0800 1938 786", sub: "Clinic consultation line" },
+                  { icon: MapPin, label: "786 Leeds Road, Bradford, BD3 9TY", sub: "Practice address" },
+                  { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
+                ].map(({ icon: Icon, label, sub }) => (
+                  <div key={label} className="flex items-start gap-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-black/6 bg-white text-[#1B3745]">
+                      <Icon className="size-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-black/55">{sub}</p>
+                      <p className="mt-0.5 text-sm font-medium text-black">{label}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs text-[#6b5848]">{sub}</p>
-                    <p className="text-sm font-semibold text-[#2a1c12] mt-0.5">{label}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right: Solid white form card */}
-          <div className="bg-white rounded-xl   shadow-sm p-8">
-            {enquiry.sent ? (
-              <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
-                <CheckCircle2 className="size-12 text-emerald-500" />
-                <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
-                  Consultation Request Received!
-                </h3>
-                <p className="text-[#6b5848] text-sm max-w-sm">
-                  Thank you for contacting Pav Dental. Our smile design coordinator will be in touch shortly.
-                </p>
-                <button
-                  type="button"
-                  onClick={enquiry.reset}
-                  className="text-xs text-[#925a27] underline mt-2"
-                >
-                  Send another message
-                </button>
+                ))}
               </div>
-            ) : (
-              <form onSubmit={enquiry.submit} className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="cos-name" className="text-sm font-semibold text-[#2a1c12]">
-                      Full Name
-                    </Label>
-                    <Input
-                      id="cos-name"
-                      name="name"
-                      placeholder="e.g. Jessica Smith"
-                      required
-                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cos-email" className="text-sm font-semibold text-[#2a1c12]">
-                      Email Address
-                    </Label>
-                    <Input
-                      id="cos-email"
-                      name="email"
-                      type="email"
-                      placeholder="jessica@example.com"
-                      required
-                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
-                    />
-                  </div>
-                </div>
+            </div>
 
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="cos-service" className="text-sm font-semibold text-[#2a1c12]">
-                      Procedure of Interest
-                    </Label>
-                    <select
-                      id="cos-service"
-                      name="interest"
-                      className="w-full h-11 rounded-lg   bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
-                    >
-                      <option value="">Select a procedure…</option>
-                      <option>Porcelain Veneers</option>
-                      <option>Composite Bonding</option>
-                      <option>Dental Implants</option>
-                      <option>Full Smile Makeover</option>
-                      <option>General Aesthetic Consultation</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cos-phone" className="text-sm font-semibold text-[#2a1c12]">
-                      Phone Number
-                    </Label>
-                    <Input
-                      id="cos-phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="+44 7700 900456"
-                      required
-                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="cos-message" className="text-sm font-semibold text-[#2a1c12]">
-                    Your Goals &amp; Questions
-                  </Label>
-                  <Textarea
-                    id="cos-message"
-                    name="message"
-                    placeholder="Tell us what you would love to improve about your smile (e.g. gaps, shade, chipped edges)..."
-                    className="min-h-28 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30 resize-none"
-                    required
-                  />
-                </div>
-
-                {enquiry.error && (
-                  <p role="alert" className="text-sm text-red-700">
-                    {enquiry.error}
+            <div className="rounded-[1.5rem] border border-black/6 bg-white p-6 shadow-[0_6px_24px_rgba(0,0,0,0.04)] sm:p-9">
+              {enquiry.sent ? (
+                <div className="flex flex-col items-center justify-center gap-4 py-10 text-center">
+                  <CheckCircle2 className="size-12 text-[#1B3745]" />
+                  <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                    Enquiry received
+                  </h3>
+                  <p className="max-w-sm text-sm text-black/65">
+                    Thank you for contacting Pav Dental. A member of our team will respond during
+                    clinic hours.
                   </p>
-                )}
-                <Button
-                  type="submit"
-                  disabled={enquiry.sending}
-                  className="accent-gradient rounded-full px-8 h-11 text-white font-bold shadow-sm hover:opacity-95 transition-opacity"
-                >
-                  <Send className="mr-2 size-4" />
-                  {enquiry.sending ? "Sending…" : "Send Consultation Request"}
-                </Button>
-              </form>
-            )}
+                  <Button variant="outline" size="sm" onClick={enquiry.reset}>
+                    Send another message
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={enquiry.submit} className="space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="cos-name">Full Name</Label>
+                      <Input id="cos-name" name="name" placeholder="Jane Doe" required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cos-email">Email Address</Label>
+                      <Input
+                        id="cos-email"
+                        name="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="cos-service">Procedure of Interest</Label>
+                      <select
+                        id="cos-service"
+                        name="interest"
+                        className="h-11 w-full rounded-[1rem] border border-black/12 bg-white px-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#1B3745]"
+                      >
+                        <option value="">Select a procedure…</option>
+                        <option>Porcelain Veneers</option>
+                        <option>Dental Bonding</option>
+                        <option>Dental Implants</option>
+                        <option>Teeth Whitening</option>
+                        <option>Tooth Contouring</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cos-phone">Phone Number</Label>
+                      <Input id="cos-phone" name="phone" type="tel" placeholder="+44" required />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="cos-message">Your Message</Label>
+                    <Textarea
+                      id="cos-message"
+                      name="message"
+                      placeholder="How can we help with your smile?"
+                      required
+                    />
+                  </div>
+
+                  {enquiry.error && (
+                    <p role="alert" className="text-sm text-[#8A3A34]">
+                      {enquiry.error}
+                    </p>
+                  )}
+                  <Button type="submit" disabled={enquiry.sending} size="lg">
+                    <Send className="size-4" />
+                    {enquiry.sending ? "Sending…" : "Send Message"}
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>

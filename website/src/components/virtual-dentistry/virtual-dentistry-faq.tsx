@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/lib/enquiry";
 
@@ -10,47 +10,47 @@ const FAQS = [
   },
   {
     q: "Do I need to have any specific technology to use the virtual consultation service?",
-    a: "You need a device with a camera and microphone (computer, smartphone, or tablet) and a stable internet connection. Our platform works on most modern browsers and devices.",
+    a: "You can access the service from any device with an internet connection and a camera, such as a smartphone, tablet, or computer.",
   },
   {
     q: "How does the virtual consultation work?",
-    a: "After booking, you'll receive a link to join the video consultation at your scheduled time. You'll connect with a qualified dentist who can assess your dental concerns and provide advice or prescriptions as needed.",
+    a: "The virtual consultation works by connecting you with a licensed dentist through video conferencing. During the consultation, the dentist will assess your dental needs and discuss your treatment options.",
   },
   {
     q: "What happens after the virtual consultation?",
-    a: "After the consultation, you may receive professional advice, an online prescription sent to your pharmacy, coordination for a home visit if needed, or planning for an in-clinic appointment depending on your dental needs.",
+    a: "Following the virtual consultation, if deemed necessary prior to an in-person visit or primary care, the dentist will issue an electronic prescription for any required treatments or medications, transmitted to your preferred pharmacy.",
   },
   {
     q: "How long does it take to receive a prescription after the virtual consultation?",
-    a: "Prescriptions are typically generated immediately after the consultation if deemed necessary by the dentist and can be sent directly to your chosen pharmacy.",
+    a: "After your virtual consultation with the dentist, they will promptly e-file your prescription with your preferred pharmacy. Its availability to retrieve depends on their stock and business hours.",
   },
   {
     q: "How much does a prescription cost?",
-    a: "Prescription cost is £25, and the consultation fee is £35. These are affordable rates to ensure quality dental care is accessible to everyone.",
+    a: "Flat rate £25 for the prescription, alongside a £35 consultation fee.",
   },
   {
     q: "What is a virtual video consultation?",
-    a: "A virtual video consultation is a remote dental appointment where you connect with a dentist via video call to discuss your dental concerns, receive advice, and potentially get prescriptions without visiting a clinic.",
+    a: "A virtual video dental consultation is a way for you to connect with a dentist via video call to discuss your oral health concerns and treatment plan and get your questions answered.",
   },
   {
     q: "How do I book a virtual video consultation?",
-    a: "You can book through our website or mobile app by selecting the virtual consultation option, choosing your preferred time slot, and confirming your appointment.",
+    a: "You can book a virtual video dental consultation through Pav Dental's platform, either as a subscriber or on a pay-as-you-go basis, by selecting the appointment type and choosing a convenient time.",
   },
   {
     q: "What type of services can I receive during a virtual video dental consultation?",
-    a: "You can receive dental advice, diagnosis for common issues, prescription services, treatment planning, and referrals for in-person care when necessary.",
+    a: "During a virtual video dental consultation, you can receive a wide range of support including preventive care advice, smile correction discussions, night guards, remineralization trays, sleep apnea devices, electronic prescriptions, and specialist referrals.",
   },
   {
     q: "What equipment do I need for a virtual video dental consultation?",
-    a: "You need a device with camera and microphone, stable internet connection, and good lighting. A quiet, private space is also recommended for the consultation.",
+    a: "All you need is a device with a camera, such as a smartphone, tablet, or computer, and a reliable internet connection.",
   },
   {
     q: "Can I receive a diagnosis and treatment plan during a virtual video dental consultation?",
-    a: "Yes, our dentists can provide diagnoses for many common dental issues and create treatment plans. For complex cases requiring physical examination, we may recommend an in-person visit.",
+    a: "Yes, your dentist will assess your oral health, answer any questions you have, and provide you with a personalized treatment plan.",
   },
   {
     q: "How long does a virtual video dental consultation typically last?",
-    a: "Consultations typically last 15-30 minutes depending on the complexity of your dental concerns and the discussion required.",
+    a: "Virtual video dental consultations typically last up to 30 minutes, giving you ample time to discuss your oral health concerns and treatment plan.",
   },
 ];
 
@@ -58,68 +58,51 @@ export function VirtualDentistryFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
-          {/* Left sticky header */}
-          <div className="lg:sticky lg:top-24">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#2a1c12]">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-sm text-[#6b5848] leading-relaxed">
-              Everything you need to know about virtual dental consultations, online prescriptions, and remote dental care.
+    <section className="bg-[#FBF8F5] py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.35fr] lg:gap-16">
+          <div className="lg:sticky lg:top-28">
+            <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+              Questions &amp; answers
             </p>
-            <Button
-              asChild
-              className="mt-6 accent-gradient text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm hover:opacity-95"
-            >
-              <a href={BOOKING_URL} className="flex items-center gap-2">
-                Book Consultation <ArrowRight className="size-3.5" />
+            <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-4xl">
+              Frequently Asked{" "}
+              <span className="text-[#754B3D]">Questions</span>
+            </h2>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-black/65">
+              Everything you need to know about virtual dental consultations, e-prescriptions, and
+              remote care.
+            </p>
+            <Button asChild className="mt-6">
+              <a href={BOOKING_URL}>
+                Book consultation <ArrowRight className="size-4" />
               </a>
             </Button>
           </div>
 
-          {/* Right accordion */}
-          <div className=" ">
+          <div className="divide-y divide-black/10 border-t border-b border-black/10">
             {FAQS.map((faq, i) => {
               const isOpen = openIndex === i;
               return (
-                <div key={i} className="py-1">
+                <div key={faq.q}>
                   <button
                     type="button"
                     aria-expanded={isOpen}
                     onClick={() => setOpenIndex(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+                    className="group flex w-full items-center justify-between gap-6 py-6 text-left"
                   >
-                    <span
-                      className={`font-semibold text-sm sm:text-base transition-colors duration-200 ${
-                        isOpen
-                          ? "text-[#925a27]"
-                          : "text-[#2a1c12] group-hover:text-[#925a27]"
-                      }`}
-                    >
+                    <span className="font-display text-lg font-normal tracking-[-0.02em] text-black transition-colors group-hover:text-[#754B3D] sm:text-xl">
                       {faq.q}
                     </span>
-                    <span
-                      className={`flex-shrink-0 size-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isOpen
-                          ? "accent-gradient text-white rotate-180"
-                          : "bg-[#f0e8dc] text-[#925a27]"
-                      }`}
-                    >
-                      <ChevronDown className="size-4" />
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#F2EDE5] text-black transition-colors group-hover:bg-black group-hover:text-white">
+                      {isOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
                     </span>
                   </button>
-
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <p className="pb-5 text-sm text-[#6b5848] leading-relaxed max-w-2xl">
+                  {isOpen && (
+                    <p className="max-w-2xl pb-6 text-sm leading-relaxed text-black/65 sm:text-base">
                       {faq.a}
                     </p>
-                  </div>
+                  )}
                 </div>
               );
             })}

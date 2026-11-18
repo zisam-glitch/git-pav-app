@@ -26,7 +26,7 @@ function BlogPostRoute() {
   const post = Route.useLoaderData();
 
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
       <BlogPostPage post={post} />

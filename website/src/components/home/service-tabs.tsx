@@ -50,63 +50,73 @@ const SERVICES = [
 
 export function ServiceTabs() {
   return (
-    <section id="services" className="py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <Reveal>
-          <p className="text-xs font-medium text-primary">Care</p>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl">Six ways we look after you</h2>
-        </Reveal>
+    <section id="services" className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <Reveal>
+              <p className="text-xs font-medium uppercase tracking-wider text-black/55">Care</p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Six ways we look after you
+              </h2>
+            </Reveal>
 
-        <Tabs.Root defaultValue="emergency" className="mt-10">
-          <Tabs.List className="flex snap-x gap-2 overflow-x-auto pb-2">
-            {SERVICES.map((s) => (
-              <Tabs.Trigger
-                key={s.id}
-                value={s.id}
-                className="snap-start inline-flex h-11 shrink-0 items-center gap-2 rounded-full   bg-surface px-4 text-sm text-muted transition-colors duration-150 hover:border-primary data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-fg"
-              >
-                <s.icon className="size-4" />
-                {s.title}
-              </Tabs.Trigger>
-            ))}
-          </Tabs.List>
-
-          {SERVICES.map((s) => (
-            <Tabs.Content key={s.id} value={s.id} className="mt-8 focus-visible:outline-none">
-              <motion.div
-                initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.35 }}
-                className="grid gap-8 lg:grid-cols-[1fr_0.7fr]"
-              >
-                <div>
-                  <h3 className="font-display text-2xl">{s.title} dentistry</h3>
-                  <p className="mt-3 max-w-xl text-muted">{s.copy}</p>
-                  <ul className="mt-6 space-y-2 text-sm">
-                    {s.points.map((p) => (
-                      <li key={p} className="flex gap-2 text-fg">
-                        <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="rounded-xl   bg-white p-6 shadow-soft">
-                  <p className="text-sm text-muted">Typical next step</p>
-                  <p className="mt-2 font-display text-xl">
-                    Book a £35 assessment or call the emergency line if you are in pain now.
-                  </p>
-                  <a
-                    href="#contact"
-                    className="mt-6 inline-flex h-11 items-center rounded-full accent-gradient px-5 text-sm font-medium text-primary-fg"
+            <Tabs.Root defaultValue="emergency" className="mt-10">
+              <Tabs.List className="flex snap-x gap-2 overflow-x-auto pb-2">
+                {SERVICES.map((s) => (
+                  <Tabs.Trigger
+                    key={s.id}
+                    value={s.id}
+                    className="snap-start inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-white/80 px-5 text-sm font-medium text-black/70 shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-colors duration-200 hover:bg-white hover:text-black data-[state=active]:bg-black data-[state=active]:text-white"
                   >
-                    Continue
-                  </a>
-                </div>
-              </motion.div>
-            </Tabs.Content>
-          ))}
-        </Tabs.Root>
+                    <s.icon className="size-4" />
+                    {s.title}
+                  </Tabs.Trigger>
+                ))}
+              </Tabs.List>
+
+              {SERVICES.map((s) => (
+                <Tabs.Content key={s.id} value={s.id} className="mt-8 focus-visible:outline-none">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 0.35 }}
+                    className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]"
+                  >
+                    <div>
+                      <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black sm:text-3xl">
+                        {s.title} dentistry
+                      </h3>
+                      <p className="mt-3 max-w-xl text-base leading-relaxed text-black/65">{s.copy}</p>
+                      <ul className="mt-6 space-y-2.5 text-sm">
+                        {s.points.map((p) => (
+                          <li key={p} className="flex items-center gap-3 text-black/85">
+                            <span className="size-1.5 shrink-0 rounded-full bg-[#1B3745]" />
+                            {p}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded-[1.5rem] bg-white p-8 shadow-[0_6px_24px_rgba(0,0,0,0.04)]">
+                      <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                        Typical next step
+                      </p>
+                      <p className="mt-3 font-display text-xl font-normal tracking-[-0.02em] text-black sm:text-2xl">
+                        Book a £35 assessment or call the emergency line if you are in pain now.
+                      </p>
+                      <a
+                        href="#contact"
+                        className="mt-6 inline-flex h-12 items-center rounded-full bg-black px-6 text-sm font-medium text-white transition-colors hover:bg-[#1B3745]"
+                      >
+                        Continue
+                      </a>
+                    </div>
+                  </motion.div>
+                </Tabs.Content>
+              ))}
+            </Tabs.Root>
+          </div>
+        </div>
       </div>
     </section>
   );

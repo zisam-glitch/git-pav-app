@@ -1,46 +1,55 @@
-import { MapPin, Phone, Clock } from "lucide-react";
+import { Clock, MapPin, Phone } from "lucide-react";
+import { PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 export function EmergencyContactStrip() {
   return (
-    <div className="bg-[#2a1c12] text-white py-6 sm:py-8  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
-          {/* Item 1 */}
-          <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-xl bg-[#372418]   flex items-center justify-center flex-shrink-0">
-              <MapPin className="size-6 text-[#cf9448]" />
+    <section className="py-4 sm:py-6">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="hims-tile-warm grid gap-6 rounded-[1.5rem] border border-black/6 p-6 sm:grid-cols-3 sm:p-8">
+          <div className="flex items-center gap-4">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-black/6 bg-white text-[#1B3745]">
+              <MapPin className="size-5" />
             </div>
             <div>
-              <p className="text-[11px] uppercase text-[#cf9448] font-bold">Address</p>
-              <p className="text-sm font-semibold text-white">786 Leeds Road, Bradford, BD3 9TY</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">Address</p>
+              <p className="mt-0.5 text-sm font-medium text-black">
+                786 Leeds Road, Bradford, BD3 9TY
+              </p>
             </div>
           </div>
 
-          {/* Item 2 */}
-          <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-xl bg-[#372418]   flex items-center justify-center flex-shrink-0">
-              <Phone className="size-6 text-[#cf9448]" />
+          <div className="flex items-center gap-4">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-black/6 bg-white text-[#1B3745]">
+              <Phone className="size-5" />
             </div>
             <div>
-              <p className="text-[11px] uppercase text-[#cf9448] font-bold">24/7 Phone</p>
-              <a href="tel:07311871456" className="text-sm font-bold text-white hover:underline">
-                07311 871456 / 0800 1938 786
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                24/7 Phone
+              </p>
+              <a
+                href={PRACTICE_PHONE_HREF}
+                className="mt-0.5 block text-sm font-medium text-black hover:text-[#1B3745] hover:underline"
+              >
+                0800 1938 786 / 07311 871456
               </a>
             </div>
           </div>
 
-          {/* Item 3 */}
-          <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-xl bg-[#372418]   flex items-center justify-center flex-shrink-0">
-              <Clock className="size-6 text-[#cf9448]" />
+          <div className="flex items-center gap-4">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-black/6 bg-white text-[#1B3745]">
+              <Clock className="size-5" />
             </div>
             <div>
-              <p className="text-[11px] uppercase text-[#cf9448] font-bold">Opening Hours</p>
-              <p className="text-sm font-semibold text-white">Open 24/7 · 365 Days a Year</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                Opening Hours
+              </p>
+              <p className="mt-0.5 text-sm font-medium text-black">
+                Open 24/7 · Including Bank Holidays
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

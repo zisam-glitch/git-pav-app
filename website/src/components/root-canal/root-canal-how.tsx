@@ -1,26 +1,26 @@
-import React, { useState } from "react";
-import { Play, X, Check } from "lucide-react";
+import { useState } from "react";
+import { Play, X } from "lucide-react";
 
 const STAGES = [
   {
     step: "01",
-    title: "Access & Isolation",
-    desc: "The tooth is completely numbed and isolated with a protective rubber dam to keep the canal completely sterile.",
+    title: "Numbed & Isolated",
+    desc: "The area is thoroughly numbed with local anaesthesia so you remain comfortable throughout the procedure.",
   },
   {
     step: "02",
-    title: "Canal Debridement",
-    desc: "Infected nerve tissue and bacteria are gently cleared using ultra-flexible nickel-titanium rotary instruments.",
+    title: "Pulp Removal",
+    desc: "Infected or inflamed pulp inside the tooth is gently removed to relieve pressure and stop infection.",
   },
   {
     step: "03",
-    title: "Ultrasonic Irrigation",
-    desc: "Advanced acoustic irrigating solutions cleanse microscopic lateral accessory channels that mechanical files cannot reach.",
+    title: "Cleaning & Shaping",
+    desc: "Root canals are carefully cleaned, disinfected, and shaped to prepare for a lasting internal seal.",
   },
   {
     step: "04",
-    title: "Hermetic Bioseal",
-    desc: "Cleaned canals are filled with biocompatible gutta-percha and bioceramic sealer to permanently prevent reinfection.",
+    title: "Sealing & Restoration",
+    desc: "Canals are filled with biocompatible material and sealed, with a protective crown recommended where needed.",
   },
 ];
 
@@ -28,69 +28,84 @@ export function RootCanalHow() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white leading-tight">
-            How Root Canal Treatment is Done
-          </h2>
-          <p className="mt-4 text-white/80 max-w-2xl text-sm sm:text-base leading-relaxed">
-            Under modern surgical protocols, a root canal is as gentle and routine as having a regular filling. Here is how our endodontic specialists eliminate pain and preserve your natural tooth root.
-          </p>
-        </div>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] hims-navy-gradient px-6 py-14 text-white sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <div className="max-w-2xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#ECD880]">
+                Step-by-step procedure
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-white sm:text-5xl">
+                How the root canal treatment is done
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-white/75">
+                Modern root canal treatments are designed for comfort — removing infected pulp,
+                cleaning the canals, and sealing your natural tooth for long-term protection.
+              </p>
+            </div>
 
-        {/* Video Player */}
-        <div className="rounded-xl overflow-hidden   shadow-xl">
-          <div className="relative aspect-video sm:aspect-[21/9] bg-[#2a1c12] group">
-            {isPlaying ? (
-              <div className="relative size-full">
-                <video
-                  src="/media/clinic-reel.mp4"
-                  autoPlay
-                  controls
-                  loop
-                  className="size-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying(false)}
-                  aria-label="Close video"
-                  className="absolute top-4 right-4 z-20 size-9 rounded-full bg-black/75 text-white flex items-center justify-center hover:bg-black"
-                >
-                  <X className="size-4" />
-                </button>
+            <div className="mt-10 overflow-hidden rounded-[1.5rem] border border-white/10 bg-black/25 shadow-2xl">
+              <div className="relative aspect-video sm:aspect-[21/9]">
+                {isPlaying ? (
+                  <div className="relative size-full">
+                    <video
+                      src="/media/clinic-reel.mp4"
+                      autoPlay
+                      controls
+                      loop
+                      className="size-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setIsPlaying(false)}
+                      aria-label="Close video"
+                      className="absolute top-4 right-4 z-20 grid size-10 place-items-center rounded-full bg-black/75 text-white hover:bg-black"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <img
+                      src="/media/hims/suite-editorial.jpg"
+                      alt="Dental root canal treatment walkthrough"
+                      className="size-full object-cover opacity-80"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1B3745]/85 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={() => setIsPlaying(true)}
+                        className="grid size-20 place-items-center rounded-full bg-[#ECD880] text-[#1B3745] shadow-xl transition-transform duration-200 hover:scale-105 hover:bg-[#FDEAA0]"
+                        aria-label="Play root canal walkthrough video"
+                      >
+                        <Play className="size-8 translate-x-0.5 fill-current" />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
-            ) : (
-              <>
-                <img
-                  src="https://images.unsplash.com/photo-1609208272522-82d1af6bfb73?auto=format&fit=crop&w=1600&q=85"
-                  alt="3D cross-section model of molar root canal therapy"
-                  className="size-full object-cover object-center opacity-70"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+            </div>
 
-                {/* Lower-third */}
-                
-
-                {/* Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsPlaying(true)}
-                    className="relative flex size-20 sm:size-24 items-center justify-center rounded-full bg-[#cf9448] text-[#1a1a1a] shadow-xl hover:scale-110 hover:bg-[#d8a258] transition-all duration-300"
-                    aria-label="Play root canal walkthrough video"
-                  >
-                    <span className="absolute inset-0 rounded-full bg-[#cf9448] animate-ping opacity-20" />
-                    <Play className="size-8 sm:size-10 fill-current translate-x-1" />
-                  </button>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {STAGES.map((stage) => (
+                <div
+                  key={stage.step}
+                  className="rounded-[1.5rem] border border-white/10 bg-white/8 p-6 backdrop-blur-sm"
+                >
+                  <span className="inline-flex size-8 items-center justify-center rounded-full bg-[#ECD880] text-xs font-medium text-[#1B3745]">
+                    {stage.step}
+                  </span>
+                  <h3 className="mt-4 font-display text-xl font-normal tracking-[-0.02em] text-white">
+                    {stage.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/75">{stage.desc}</p>
                 </div>
-              </>
-            )}
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* 4 Steps Below */}
-       
       </div>
     </section>
   );

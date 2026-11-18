@@ -8,7 +8,7 @@ import { EmergencyContactForm } from "./emergency-contact-form";
 
 export function EmergencyDentalPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5] text-black/88">
       <EmergencyHero />
       <EmergencyPricing />
       <EmergencyServices />

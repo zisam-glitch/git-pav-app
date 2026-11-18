@@ -7,7 +7,7 @@ import { ExtractionFaq } from "./extraction-faq";
 
 export function ToothExtractionPage() {
   return (
-    <main>
+    <main className="bg-[#FBF8F5]">
       <ExtractionHero />
       <ExtractionGuarantee />
       <ExtractionPricing />

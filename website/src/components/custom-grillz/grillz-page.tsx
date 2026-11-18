@@ -6,7 +6,7 @@ import { GrillzFaq } from "./grillz-faq";
 
 export function CustomGrillzPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5] text-black/88">
       <GrillzHero />
       <GrillzStyles />
       <GrillzPricing />

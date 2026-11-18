@@ -21,7 +21,7 @@ export const Route = createRootRoute({
       // seoHead (or noindexHead), and its values win.
       { title: "Pav Dental" },
       { name: "description", content: PAGES["/"].description },
-      { name: "theme-color", content: "#f6f1ea" },
+      { name: "theme-color", content: "#FBF8F5" },
       { name: "apple-mobile-web-app-title", content: "Pav Dental" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Pav Dental" },
@@ -40,12 +40,6 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Outfit:wght@400;500;600;700&display=swap",
-      },
     ],
   }),
   component: () => (

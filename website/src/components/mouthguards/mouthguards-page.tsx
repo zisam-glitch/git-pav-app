@@ -7,7 +7,7 @@ import { MouthguardsUsers } from "./mouthguards-users";
 
 export function MouthguardsPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5]">
       <MouthguardsHero />
       <MouthguardsOrdering />
       <MouthguardsWhyChoose />

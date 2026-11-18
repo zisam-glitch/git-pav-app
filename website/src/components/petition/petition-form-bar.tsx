@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 type Status = "idle" | "sending" | "signed" | "failed";
 
 const INPUT =
-  "h-12 w-full rounded-xl bg-white px-4 text-sm text-fg shadow-xs placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-white/80";
+  "h-12 w-full rounded-xl border border-white/20 bg-white px-4 text-sm text-black placeholder:text-black/45 focus:border-[#ECD880] focus:outline-none focus:ring-2 focus:ring-[#ECD880]/40";
 
 /**
  * The sign-the-petition form: name, email, postcode and a tick to say the signer is a British
@@ -42,91 +42,100 @@ export function PetitionFormBar() {
   }
 
   return (
-    <section
-      id="sign-form"
-      aria-labelledby="sign-heading"
-      className="relative overflow-hidden accent-gradient py-12 text-white shadow-inner sm:py-14"
-    >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] opacity-10 [background-size:24px_24px]" />
+    <section id="sign-form" aria-labelledby="sign-heading" className="py-4">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="rounded-[1.5rem] hims-navy-gradient px-6 py-12 text-white sm:px-10 sm:py-14">
+          <h2
+            id="sign-heading"
+            className="font-display text-3xl font-normal tracking-[-0.04em] text-white sm:text-4xl"
+          >
+            {copy.heading}
+          </h2>
+          <p className="mt-2 text-xs text-white/75 sm:text-sm">{copy.eligibility}</p>
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 id="sign-heading" className="font-display text-2xl font-bold text-white sm:text-3xl">
-          {copy.heading}
-        </h2>
-        <p className="mt-1 text-xs text-white/90 sm:text-sm">{copy.eligibility}</p>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-12 sm:gap-3.5">
+              <div className="sm:col-span-4">
+                <label htmlFor="pet-name" className="sr-only">
+                  {copy.fieldLabels.name}
+                </label>
+                <input
+                  id="pet-name"
+                  name="name"
+                  required
+                  type="text"
+                  autoComplete="name"
+                  placeholder={`${copy.fieldLabels.name} *`}
+                  className={INPUT}
+                />
+              </div>
+              <div className="sm:col-span-4">
+                <label htmlFor="pet-email" className="sr-only">
+                  {copy.fieldLabels.email}
+                </label>
+                <input
+                  id="pet-email"
+                  name="email"
+                  required
+                  type="email"
+                  autoComplete="email"
+                  placeholder={`${copy.fieldLabels.email} *`}
+                  className={INPUT}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="pet-postcode" className="sr-only">
+                  {copy.fieldLabels.postcode}
+                </label>
+                <input
+                  id="pet-postcode"
+                  name="postcode"
+                  required
+                  type="text"
+                  autoComplete="postal-code"
+                  placeholder={`${copy.fieldLabels.postcode} *`}
+                  className={INPUT}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Button
+                  type="submit"
+                  variant="gold"
+                  disabled={status === "sending"}
+                  className="h-12 w-full"
+                >
+                  {status === "sending" ? "Submitting..." : copy.submit}
+                </Button>
+              </div>
+            </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-12 sm:gap-3.5">
-            <div className="sm:col-span-4">
-              <label htmlFor="pet-name" className="sr-only">
-                {copy.fieldLabels.name}
-              </label>
+            <div className="flex items-center gap-2.5 text-sm text-white/90">
               <input
-                id="pet-name"
-                name="name"
+                id="pet-resident"
+                name="resident"
+                type="checkbox"
                 required
-                type="text"
-                autoComplete="name"
-                placeholder={`${copy.fieldLabels.name} *`}
-                className={INPUT}
+                className="size-4 accent-[#ECD880]"
               />
+              <label htmlFor="pet-resident">{copy.residentLabel}</label>
             </div>
-            <div className="sm:col-span-4">
-              <label htmlFor="pet-email" className="sr-only">
-                {copy.fieldLabels.email}
-              </label>
-              <input
-                id="pet-email"
-                name="email"
-                required
-                type="email"
-                autoComplete="email"
-                placeholder={`${copy.fieldLabels.email} *`}
-                className={INPUT}
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label htmlFor="pet-postcode" className="sr-only">
-                {copy.fieldLabels.postcode}
-              </label>
-              <input
-                id="pet-postcode"
-                name="postcode"
-                required
-                type="text"
-                autoComplete="postal-code"
-                placeholder={`${copy.fieldLabels.postcode} *`}
-                className={INPUT}
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <Button
-                type="submit"
-                disabled={status === "sending"}
-                className="h-12 w-full rounded-xl !bg-white !bg-none text-sm font-bold text-[#844d1e] shadow-sm hover:!bg-[#fffbf6] hover:text-[#5a3311]"
+
+            {status === "signed" && (
+              <p
+                role="status"
+                className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-3 text-sm font-medium text-[#ECD880]"
               >
-                {status === "sending" ? "Submitting..." : copy.submit}
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 text-sm">
-            <input id="pet-resident" name="resident" type="checkbox" required className="size-4 accent-white" />
-            <label htmlFor="pet-resident">{copy.residentLabel}</label>
-          </div>
-
-          {status === "signed" && (
-            <p role="status" className="flex items-center gap-2 rounded-xl bg-white/15 px-4 py-3 text-sm font-medium">
-              <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
-              {copy.thanks}
-            </p>
-          )}
-          {status === "failed" && (
-            <p role="alert" className="rounded-xl bg-black/25 px-4 py-3 text-sm font-medium">
-              {copy.failed}
-            </p>
-          )}
-        </form>
+                <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+                {copy.thanks}
+              </p>
+            )}
+            {status === "failed" && (
+              <p role="alert" className="rounded-xl bg-black/25 px-4 py-3 text-sm font-medium">
+                {copy.failed}
+              </p>
+            )}
+          </form>
+        </div>
       </div>
     </section>
   );

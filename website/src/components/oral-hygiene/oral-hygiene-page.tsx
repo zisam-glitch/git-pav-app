@@ -8,7 +8,7 @@ import { OralHygieneConsent } from "./oral-hygiene-consent";
 
 export function OralHygienePage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5] text-black/88">
       <OralHygieneHero />
       <OralHygieneImportance />
       <OralHygienePricing />

@@ -5,11 +5,10 @@ import { CosmeticBenefits } from "./cosmetic-benefits";
 import { CosmeticFinancing } from "./cosmetic-financing";
 import { CosmeticShowcase } from "./cosmetic-showcase";
 import { CosmeticFaq } from "./cosmetic-faq";
-import { CosmeticContact } from "./cosmetic-contact";
 
 export function CosmeticPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5] text-black/88">
       <CosmeticHero />
       <CosmeticAbout />
       <CosmeticProcedures />

@@ -12,12 +12,12 @@ export const Route = createFileRoute("/team")({
 
 function TeamPageRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
 
       {/* Spacer for fixed top header */}
-      <div className="pt-24">
+      <div className="pt-24 sm:pt-28">
         <TeamGrid />
       </div>
 

@@ -1,6 +1,6 @@
-import React from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const TIERS = [
@@ -53,131 +53,119 @@ const TIERS = [
 
 export function GeneralDentistryFillingPricingTable() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            White Filling Prices
-          </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Natural-looking composite fillings with transparent pricing. From basic repairs to advanced restorations, we offer options for every need.
+    <section id="filling-pricing" className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Restorative pricing
           </p>
-        </div>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Our white filling{" "}
+            <span className="text-[#754B3D]">prices</span>
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Tooth-colored composite fillings matched to your enamel for natural aesthetics and
+            lasting function.
+          </p>
+        </Reveal>
 
-        {/* Pricing Table */}
-        <div className="overflow-x-auto rounded-xl   bg-white shadow-sm">
-          <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
-            <thead>
-              <tr className="  text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
-                <th className="py-5 px-6 bg-white w-1/4">Treatment</th>
-                {TIERS.map((t) => (
-                  <th
-                    key={t.id}
-                    className={`py-5 px-6 w-1/4 ${
-                      t.highlight
-                        ? "bg-[#faf6f0]   text-[#925a27] relative"
-                        : "bg-white"
-                    }`}
-                  >
-                    <div>{t.label}</div>
-                    <div
-                      className={`text-base sm:text-lg font-display font-bold mt-0.5 ${
-                        t.highlight ? "text-[#925a27]" : "text-[#2a1c12]"
-                      }`}
-                    >
-                      {t.price}
-                    </div>
+        <Reveal delay={0.06}>
+          <div className="mt-10 overflow-x-auto rounded-[1.5rem] border border-black/6 bg-white shadow-[0_6px_24px_rgba(0,0,0,0.04)]">
+            <table className="w-full min-w-[680px] border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-black/8">
+                  <th className="w-1/4 px-6 py-6 text-xs font-medium uppercase tracking-wider text-black/50">
+                    Treatment
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className=" /70 text-[#2a1c12]">
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Category</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 font-medium text-[#6b5848] ${
-                      t.highlight ? "bg-[#faf6f0]   text-[#925a27] font-bold" : ""
-                    }`}
-                  >
-                    {t.category}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Description</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 text-[#6b5848] text-xs leading-relaxed ${
-                      t.highlight ? "bg-[#faf6f0]  " : ""
-                    }`}
-                  >
-                    {t.description}
-                  </td>
-                ))}
-              </tr>
-              {[0, 1, 2, 3].map((idx) => (
-                <tr key={idx}>
-                  <td className="py-4 px-6 font-bold text-[#2a1c12]">
-                    {idx === 0 ? "Includes" : ""}
-                  </td>
+                  {TIERS.map((t) => (
+                    <th
+                      key={t.id}
+                      className={`w-1/4 px-6 py-6 ${t.highlight ? "hims-tile-warm" : ""}`}
+                    >
+                      <div className="text-xs font-medium text-black/60">{t.label}</div>
+                      <div
+                        className={`mt-1 font-display text-2xl font-normal tracking-[-0.03em] ${
+                          t.highlight ? "text-[#754B3D]" : "text-black"
+                        }`}
+                      >
+                        {t.price}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/8 text-black/80">
+                <tr>
+                  <td className="px-6 py-4 font-medium text-black">Category</td>
                   {TIERS.map((t) => (
                     <td
                       key={t.id}
-                      className={`py-4 px-6 ${
-                        t.highlight
-                          ? "bg-[#faf6f0]   font-bold text-emerald-800"
-                          : "text-[#2a1c12]"
+                      className={`px-6 py-4 text-black/65 ${
+                        t.highlight ? "hims-tile-warm font-medium text-[#1B3745]" : ""
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#925a27] flex-shrink-0" />
-                        {t.includes[idx]}
-                      </span>
+                      {t.category}
                     </td>
                   ))}
                 </tr>
-              ))}
-              <tr className="bg-[#fffdf9]">
-                <td className="py-5 px-6 font-bold text-[#2a1c12]">Action</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-5 px-6 ${
-                      t.highlight ? "bg-[#faf6f0]  " : ""
-                    }`}
-                  >
-                    {t.highlight ? (
+                <tr>
+                  <td className="px-6 py-4 font-medium text-black">Description</td>
+                  {TIERS.map((t) => (
+                    <td
+                      key={t.id}
+                      className={`px-6 py-4 text-xs leading-relaxed text-black/65 ${
+                        t.highlight ? "hims-tile-warm" : ""
+                      }`}
+                    >
+                      {t.description}
+                    </td>
+                  ))}
+                </tr>
+                {[0, 1, 2, 3].map((idx) => (
+                  <tr key={idx}>
+                    <td className="px-6 py-4 font-medium text-black">
+                      {idx === 0 ? "Includes" : ""}
+                    </td>
+                    {TIERS.map((t) => (
+                      <td
+                        key={t.id}
+                        className={`px-6 py-4 ${t.highlight ? "hims-tile-warm" : ""}`}
+                      >
+                        <span className="flex items-center gap-2.5 text-sm text-black/85">
+                          <span className="grid size-4 shrink-0 place-items-center rounded-full bg-black text-white">
+                            <Check className="size-2.5" />
+                          </span>
+                          {t.includes[idx]}
+                        </span>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                <tr>
+                  <td className="px-6 py-5 font-medium text-black">Action</td>
+                  {TIERS.map((t) => (
+                    <td
+                      key={t.id}
+                      className={`px-6 py-5 ${t.highlight ? "hims-tile-warm" : ""}`}
+                    >
                       <Button
                         asChild
-                        className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95"
+                        variant={t.highlight ? "default" : "outline"}
+                        size="sm"
+                        className="w-full"
                       >
-                        <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
-                          Book Appointment <ArrowRight className="size-3.5" />
+                        <a href={BOOKING_URL}>
+                          Book Appointment
+                          <ArrowRight className="size-3.5" />
                         </a>
                       </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="w-full rounded-full  text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
-                      >
-                        <a href={BOOKING_URL}>Book Appointment</a>
-                      </Button>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
-          All composite fillings use tooth-colored materials for natural aesthetics. Treatment complexity determined by clinical assessment. Written quotes provided before treatment.
-        </p>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ const SOCIAL_ICONS: Record<(typeof SOCIAL_LINKS)[number]["name"], (props: { clas
 const ADDRESS = ["786 Leeds Road, Bradford,", "BD3 9TY"];
 const SECOND_PHONE = { text: "+44 7311 871456", href: "tel:+447311871456" };
 
-const linkClass = "font-medium transition-colors hover:text-white";
+const linkClass = "text-sm font-normal text-white/55 transition-colors hover:text-white";
 
 /**
  * Under every page. Its links are plain links in the server-rendered HTML, so a search engine
@@ -31,19 +31,19 @@ const linkClass = "font-medium transition-colors hover:text-white";
  */
 export function Footer() {
   return (
-    <footer className="py-16 accent-gradient">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
-          <div className="flex flex-col gap-4">
+    <footer className="mx-auto mt-8 max-w-[108rem] rounded-t-[1.5rem] bg-black px-4 py-16 text-white sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-[87rem]">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr_1.15fr]">
+          <div className="flex flex-col gap-5">
             <a href="/" className="inline-flex w-fit items-center">
               <img
                 src="https://res.cloudinary.com/db1i46uiv/image/upload/v1725565405/PAV_LOGO_2-01_r2ecmh_2_kko0yz.png"
                 alt="Pav Dental"
-                className="h-10 w-auto"
+                className="h-9 w-auto"
               />
             </a>
-            <p className="max-w-xs text-sm text-white/80">{FOOTER.about}</p>
-            <ul className="flex items-center gap-4 text-white/80">
+            <p className="max-w-xs text-sm leading-relaxed text-white/55">{FOOTER.about}</p>
+            <ul className="flex items-center gap-4 text-white/60">
               {SOCIAL_LINKS.map((social) => {
                 const Icon = SOCIAL_ICONS[social.name];
                 return (
@@ -53,9 +53,9 @@ export function Footer() {
                       aria-label={social.name}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition-colors hover:text-white"
+                      className="inline-flex size-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20 hover:text-white"
                     >
-                      <Icon className="size-5" />
+                      <Icon className="size-4" />
                     </a>
                   </li>
                 );
@@ -64,8 +64,8 @@ export function Footer() {
           </div>
 
           <nav aria-label="Quick links">
-            <h2 className="mb-4 font-bold text-white">{FOOTER.quickLinksHeading}</h2>
-            <ul className="space-y-3 text-sm text-white/80">
+            <h2 className="mb-4 text-base font-medium text-white">{FOOTER.quickLinksHeading}</h2>
+            <ul className="space-y-2.5">
               {FOOTER.quickLinks.map((link) => (
                 <li key={link.href}>
                   <a href={link.href} className={linkClass}>
@@ -77,8 +77,8 @@ export function Footer() {
           </nav>
 
           <nav aria-label="Services">
-            <h2 className="mb-4 font-bold text-white">{FOOTER.servicesHeading}</h2>
-            <ul className="space-y-3 text-sm text-white/80">
+            <h2 className="mb-4 text-base font-medium text-white">{FOOTER.servicesHeading}</h2>
+            <ul className="space-y-2.5">
               {SERVICE_PAGES.map((link) => (
                 <li key={link.href}>
                   <a href={link.href} className={linkClass}>
@@ -90,10 +90,10 @@ export function Footer() {
           </nav>
 
           <div>
-            <h2 className="mb-4 font-bold text-white">{FOOTER.contactsHeading}</h2>
-            <ul className="space-y-3 text-sm text-white/80">
+            <h2 className="mb-4 text-base font-medium text-white">{FOOTER.contactsHeading}</h2>
+            <ul className="space-y-3 text-sm text-white/55">
               <li className="flex items-start gap-3">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-white" aria-hidden="true" />
+                <MapPin className="mt-0.5 size-4 shrink-0 text-white/75" aria-hidden="true" />
                 <address className="not-italic">
                   {ADDRESS[0]}
                   <br />
@@ -101,19 +101,19 @@ export function Footer() {
                 </address>
               </li>
               <li className="flex items-start gap-3">
-                <Mail className="mt-0.5 size-4 shrink-0 text-white" aria-hidden="true" />
+                <Mail className="mt-0.5 size-4 shrink-0 text-white/75" aria-hidden="true" />
                 <a href={`mailto:${PRACTICE_EMAIL}`} className={linkClass}>
                   {PRACTICE_EMAIL}
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <Phone className="mt-0.5 size-4 shrink-0 text-white" aria-hidden="true" />
+                <Phone className="mt-0.5 size-4 shrink-0 text-white/75" aria-hidden="true" />
                 <a href={PRACTICE_PHONE_HREF} className={linkClass}>
                   {PRACTICE_PHONE}
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <Phone className="mt-0.5 size-4 shrink-0 text-white" aria-hidden="true" />
+                <Phone className="mt-0.5 size-4 shrink-0 text-white/75" aria-hidden="true" />
                 <a href={SECOND_PHONE.href} className={linkClass}>
                   {SECOND_PHONE.text}
                 </a>
@@ -122,10 +122,10 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col justify-between gap-4   pt-8 text-xs font-medium text-white/80 md:flex-row md:items-center">
+        <div className="mt-14 flex flex-col justify-between gap-4 border-t border-white/12 pt-8 text-xs text-white/50 md:flex-row md:items-center">
           <p className="order-2 md:order-1">Copyright {new Date().getFullYear()} Pav Dental.</p>
           <nav aria-label="Policies" className="order-1 md:order-2">
-            <ul className="flex flex-wrap gap-x-4 gap-y-2">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {FOOTER.policyLinks.map((link) => (
                 <li key={link.href}>
                   <a href={link.href} className="transition-colors hover:text-white">
@@ -135,6 +135,14 @@ export function Footer() {
               ))}
             </ul>
           </nav>
+        </div>
+
+        {/* Hims-style subtle full-width brand wordmark */}
+        <div
+          aria-hidden="true"
+          className="mt-12 select-none overflow-hidden text-center font-display text-[clamp(3.25rem,13vw,11rem)] font-normal leading-[0.88] tracking-[-0.055em] text-white/[0.12]"
+        >
+          pav dental
         </div>
       </div>
     </footer>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X, Trash2, Plus, Minus, ShoppingBag, Truck, ArrowRight, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CartItem } from "./shop-data";
+import type { CartItem } from "./shop-data";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -20,12 +20,12 @@ export function CartDrawer({
   items,
   onUpdateQuantity,
   onRemoveItem,
-  onClearCart,
 }: CartDrawerProps) {
   const [promoCode, setPromoCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoLabel, setPromoLabel] = useState("");
+  const [promoError, setPromoError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -51,6 +51,7 @@ export function CartDrawer({
   const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
+    setPromoError(null);
     try {
       const { api } = await import("@/lib/api");
       const res = await api.discounts.validate(promoCode.trim());
@@ -58,7 +59,9 @@ export function CartDrawer({
         if (res.discount.type === "percentage") {
           setDiscountPercent(res.discount.value);
         } else {
-          setDiscountPercent(Math.round((res.discount.value / (rawSubtotal || 1)) * 100));
+          setDiscountPercent(
+            Math.round((res.discount.value / (rawSubtotal || 1)) * 100),
+          );
         }
         const code = String(res.discount.code ?? promoCode).trim().toUpperCase();
         const amount =
@@ -68,10 +71,10 @@ export function CartDrawer({
         setPromoLabel(`Promo ${code} applied (${amount})`);
         setPromoApplied(true);
       } else {
-        alert(res.message || "Invalid promo code.");
+        setPromoError(res.message || "Invalid promo code.");
       }
     } catch {
-      alert("Failed to validate promo code.");
+      setPromoError("Failed to validate promo code.");
     }
   };
 
@@ -81,26 +84,29 @@ export function CartDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs"
+      onClick={onClose}
+    >
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Shopping bag"
-        className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between"
+        className="relative flex h-full w-full max-w-md flex-col justify-between bg-[#FBF8F5] shadow-[0_24px_64px_rgba(0,0,0,0.22)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5   flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="size-5 text-primary" />
-            <h2 className="font-display text-lg font-bold text-fg">
-              Your Shopping Bag ({items.reduce((s, i) => s + i.quantity, 0)})
+        <div className="flex items-center justify-between border-b border-black/10 bg-white px-6 py-5">
+          <div className="flex items-center gap-2.5">
+            <ShoppingBag className="size-4 text-black" />
+            <h2 className="font-display text-lg font-normal tracking-[-0.02em] text-black">
+              Shopping Bag ({items.reduce((s, i) => s + i.quantity, 0)})
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-8 items-center justify-center rounded-full bg-[#faf6f0] text-[#6b5848] hover:bg-[#e8ddd0] hover:text-[#2a1c12] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
+            className="flex size-8 items-center justify-center rounded-full border border-black/10 bg-white text-black/65 transition-colors hover:bg-[#F2EDE5] hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B3745]"
             aria-label="Close cart"
           >
             <X className="size-4" />
@@ -109,21 +115,25 @@ export function CartDrawer({
 
         {/* Free Shipping Progress Indicator */}
         {items.length > 0 && (
-          <div className="bg-[#faf6f0] px-5 py-3   text-xs">
-            <div className="flex items-center justify-between mb-1.5 font-medium text-fg">
+          <div className="border-b border-black/10 bg-[#FAF8F2] px-6 py-3.5 text-xs">
+            <div className="mb-2 flex items-center justify-between font-medium text-black">
               <span className="flex items-center gap-1.5">
-                <Truck className="size-3.5 text-primary" />
+                <Truck className="size-3.5 text-[#1B3745]" />
                 {isFreeShipping ? (
-                  <span className="text-[#925a27] font-bold">You've unlocked Free UK Tracked Delivery!</span>
+                  <span className="text-[#1B3745]">
+                    You&apos;ve unlocked Free UK Tracked Delivery
+                  </span>
                 ) : (
-                  <span>Add £{amountNeededForFreeShipping.toFixed(2)} more for Free UK Delivery</span>
+                  <span>
+                    Add £{amountNeededForFreeShipping.toFixed(2)} more for Free UK Delivery
+                  </span>
                 )}
               </span>
-              <span className="font-bold">{shippingProgress}%</span>
+              <span className="tabular-nums text-black/60">{shippingProgress}%</span>
             </div>
-            <div className="w-full h-1.5 bg-[#e8ddd0] rounded-full overflow-hidden">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-black/10">
               <div
-                className="h-full bg-[#925a27] rounded-full transition-all duration-500"
+                className="h-full rounded-full bg-black transition-all duration-500"
                 style={{ width: `${shippingProgress}%` }}
               />
             </div>
@@ -131,57 +141,60 @@ export function CartDrawer({
         )}
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto p-6">
           {items.length === 0 ? (
             <div className="py-16 text-center space-y-3">
-              <ShoppingBag className="size-12 mx-auto text-[#6b5848] stroke-[1.2]" />
-              <p className="font-display text-lg font-bold text-fg">Your bag is empty</p>
-              <p className="text-xs text-muted max-w-xs mx-auto">
-                Explore our clinical dental care products to begin your smile routine.
+              <div className="mx-auto grid size-14 place-items-center rounded-full bg-[#F2EDE5] text-[#1B3745]">
+                <ShoppingBag className="size-6 stroke-[1.5]" />
+              </div>
+              <p className="font-display text-xl font-normal tracking-[-0.02em] text-black">
+                Your bag is empty
               </p>
-              <Button
-                onClick={onClose}
-                variant="outline"
-                size="sm"
-                className="mt-4"
-              >
+              <p className="mx-auto max-w-xs text-xs leading-relaxed text-black/60">
+                Explore our clinical dental care products to begin your daily routine.
+              </p>
+              <Button onClick={onClose} variant="outline" size="sm" className="mt-4">
                 Browse Products
               </Button>
             </div>
           ) : (
-            <div className="  space-y-4">
+            <div className="divide-y divide-black/10 rounded-[1.5rem] border border-black/8 bg-white px-4">
               {items.map((item) => (
-                <div key={item.product.id} className="pt-4 first:pt-0 flex gap-3.5 items-start">
+                <div key={item.product.id} className="flex items-start gap-3.5 py-4">
                   <img
                     src={item.product.image}
                     alt={item.product.name}
-                    className="size-16 rounded-xl object-cover   bg-[#faf6f0] shrink-0"
+                    className="size-16 shrink-0 rounded-xl border border-black/6 bg-[#FAF8F2] object-contain p-1"
                   />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-fg line-clamp-1">
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-1 text-sm font-medium text-black">
                       {item.product.name}
                     </p>
-                    <p className="text-xs text-primary font-bold mt-0.5">
+                    <p className="mt-0.5 text-xs font-medium tabular-nums text-black/65">
                       £{item.product.price.toFixed(2)}
                     </p>
 
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center rounded-lg   bg-[#faf8f5] px-1.5 py-0.5">
+                    <div className="mt-2.5 flex items-center justify-between">
+                      <div className="inline-flex items-center rounded-full border border-black/12 bg-[#FBF8F5] px-1.5 py-0.5">
                         <button
                           type="button"
-                          onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
-                          className="size-5 flex items-center justify-center text-muted hover:text-fg rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
+                          onClick={() =>
+                            onUpdateQuantity(item.product.id, item.quantity - 1)
+                          }
+                          className="flex size-6 items-center justify-center rounded-full text-black/60 hover:bg-white hover:text-black"
                           aria-label="Decrease quantity"
                         >
                           <Minus className="size-3" />
                         </button>
-                        <span className="w-6 text-center text-xs font-semibold">
+                        <span className="w-6 text-center text-xs font-medium tabular-nums">
                           {item.quantity}
                         </span>
                         <button
                           type="button"
-                          onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
-                          className="size-5 flex items-center justify-center text-muted hover:text-fg rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
+                          onClick={() =>
+                            onUpdateQuantity(item.product.id, item.quantity + 1)
+                          }
+                          className="flex size-6 items-center justify-center rounded-full text-black/60 hover:bg-white hover:text-black"
                           aria-label="Increase quantity"
                         >
                           <Plus className="size-3" />
@@ -191,7 +204,7 @@ export function CartDrawer({
                       <button
                         type="button"
                         onClick={() => onRemoveItem(item.product.id)}
-                        className="text-muted hover:text-rose-700 transition-colors p-1 rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
+                        className="rounded-full p-1.5 text-black/45 transition-colors hover:bg-[#F2EDE5] hover:text-[#8A3A34]"
                         aria-label="Remove item"
                       >
                         <Trash2 className="size-3.5" />
@@ -206,28 +219,32 @@ export function CartDrawer({
 
         {/* Footer with Subtotal & Checkout */}
         {items.length > 0 && (
-          <div className="p-5   bg-[#faf8f5] space-y-3">
-            {/* Promo code */}
+          <div className="space-y-4 border-t border-black/10 bg-white p-6">
             {!promoApplied ? (
-              <form onSubmit={handleApplyPromo} className="flex gap-2">
-                <input
-                  type="text"
-                  aria-label="Discount code"
-                  placeholder="Discount code"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  className="flex-1 h-9 rounded-lg   bg-white px-3 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
-                />
-                <button
-                  type="submit"
-                  className="h-9 px-3 rounded-lg bg-white   text-xs font-semibold text-fg hover:bg-[#faf6f0] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
-                >
-                  Apply
-                </button>
-              </form>
+              <div>
+                <form onSubmit={handleApplyPromo} className="flex gap-2">
+                  <input
+                    type="text"
+                    aria-label="Discount code"
+                    placeholder="Discount code"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    className="h-10 flex-1 rounded-xl border border-black/12 bg-[#FBF8F5] px-3.5 text-xs text-black placeholder:text-black/45 focus:border-black focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="h-10 rounded-full border border-black/12 bg-white px-4 text-xs font-medium text-black transition-colors hover:bg-[#F2EDE5]"
+                  >
+                    Apply
+                  </button>
+                </form>
+                {promoError && (
+                  <p className="mt-1.5 text-[11px] text-[#8A3A34]">{promoError}</p>
+                )}
+              </div>
             ) : (
-              <div className="flex items-center justify-between text-xs text-[#2a1c12] bg-[#faf6f0] px-3 py-1.5 rounded-lg  ">
-                <span className="font-medium text-[#925a27]">{promoLabel}</span>
+              <div className="flex items-center justify-between rounded-xl border border-black/8 bg-[#FAF8F2] px-3.5 py-2 text-xs">
+                <span className="font-medium text-[#1B3745]">{promoLabel}</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -236,58 +253,53 @@ export function CartDrawer({
                     setDiscountPercent(0);
                     setPromoCode("");
                   }}
-                  className="text-muted hover:text-fg font-bold focus-visible:outline-2 focus-visible:outline-[#925a27] rounded"
+                  className="font-medium text-black/60 underline hover:text-black"
                 >
                   Remove
                 </button>
               </div>
             )}
 
-            {/* Price lines */}
-            <div className="space-y-1.5 text-xs text-muted">
+            <div className="space-y-1.5 text-xs text-black/65">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-semibold text-fg">£{rawSubtotal.toFixed(2)}</span>
+                <span className="font-medium tabular-nums text-black">
+                  £{rawSubtotal.toFixed(2)}
+                </span>
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex justify-between text-[#925a27] font-medium">
+                <div className="flex justify-between font-medium text-[#754B3D]">
                   <span>Discount</span>
-                  <span>-£{discountAmount.toFixed(2)}</span>
+                  <span className="tabular-nums">-£{discountAmount.toFixed(2)}</span>
                 </div>
               )}
 
               <div className="flex justify-between">
                 <span>UK Delivery</span>
-                <span>{shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}</span>
+                <span className="font-medium tabular-nums text-black">
+                  {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
+                </span>
               </div>
 
-              <div className="flex justify-between text-sm font-bold text-fg pt-1.5  ">
+              <div className="flex justify-between border-t border-black/10 pt-2.5 text-sm font-medium text-black">
                 <span>Total</span>
-                <span className="text-[#925a27]">£{total.toFixed(2)}</span>
+                <span className="tabular-nums">£{total.toFixed(2)}</span>
               </div>
             </div>
 
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                asChild
-                className="w-1/3 text-xs h-11 "
-                onClick={onClose}
-              >
+            <div className="flex gap-2.5">
+              <Button variant="outline" asChild className="h-11 w-1/3 text-xs" onClick={onClose}>
                 <a href="/cart">View Bag</a>
               </Button>
-              <Button
-                onClick={handleCheckout}
-                className="flex-1 bg-[#925a27] hover:bg-[#7a491e] text-white text-xs sm:text-sm font-semibold h-11 shadow-xs gap-2 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
-              >
+              <Button onClick={handleCheckout} className="h-11 flex-1 text-xs sm:text-sm">
                 <span>Secure Checkout</span>
                 <ArrowRight className="size-4" />
               </Button>
             </div>
 
-            <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted text-center pt-1">
-              <Shield className="size-3 text-[#925a27]" />
+            <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-black/50">
+              <Shield className="size-3 text-[#1B3745]" />
               <span>256-bit SSL encrypted checkout · 30-day returns</span>
             </div>
           </div>
@@ -296,4 +308,3 @@ export function CartDrawer({
     </div>
   );
 }
-

@@ -1,124 +1,131 @@
-import React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
 import { BOOKING_URL } from "@/lib/enquiry";
 
-const ANTI_WRINKLE = [
-  { service: "1 Area (e.g. Frown Lines or Crow's Feet)", price: "£130" },
-  { service: "2 Areas (e.g. Forehead & Glabella)", price: "£180" },
-  { service: "3 Areas (Full Upper Face Refresh)", price: "£220" },
-  { service: "Masseter Slimming / Bruxism (Teeth Grinding)", price: "£250" },
-  { service: "Nefertiti Neck & Jawline Lift", price: "£280" },
-  { service: "Hyperhidrosis (Excessive Sweating)", price: "£350" },
-];
-
 const DERMAL_FILLERS = [
-  { service: "Subtle Lip Enhancement (0.5ml Juvéderm)", price: "£140" },
-  { service: "Full Contour Lip Definition (1.0ml)", price: "£210" },
-  { service: "Cheekbone Contouring & Lift", price: "£250" },
-  { service: "Tear Trough (Under-Eye Hollows)", price: "£290" },
-  { service: "Nasolabial Smile Lines / Marionette", price: "£220" },
-  { service: "Jawline & Chin Sculpting (per ml)", price: "£240" },
+  { service: "0.5ML", price: "£100" },
+  { service: "0.7ML", price: "£150" },
+  { service: "1ML", price: "£250" },
+  { service: "2ML", price: "£350" },
+  { service: "3ML", price: "£400" },
+  { service: "4ML", price: "£450" },
 ];
 
-const SKIN_REJUVENATION = [
-  { service: "Profhilo® Bio-Remodeling (Face or Neck)", price: "£250" },
-  { service: "Polynucleotides (Plenhyage / Ameela)", price: "£200" },
-  { service: "Seventy Hyal 2000 Skin Booster", price: "£160" },
-  { service: "Medical-Grade Microneedling & Serum", price: "£95" },
+const BOTOX = [
+  { service: "1 Area", price: "£180" },
+  { service: "2 Areas", price: "£240" },
+  { service: "3 Areas", price: "£300" },
+  { service: "4 Areas", price: "£400" },
+];
+
+const OTHERS = [
+  { service: "Profhilo First Dose", price: "£249" },
+  { service: "Sosum Booster", price: "£160" },
 ];
 
 export function AestheticsPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Transparent Aesthetics Price List
+    <section id="pricing" className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Aesthetics price list
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Transparent aesthetics{" "}
+            <span className="text-[#754B3D]">pricing</span>
           </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Premium FDA-approved products administered exclusively by certified dental clinicians. No hidden clinic facility fees.
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Offers and packages are available. Please enquire with our team today on{" "}
+            <a href="tel:08000996375" className="font-medium text-[#1B3745] underline underline-offset-4">
+              0800 099 6375
+            </a>{" "}
+            to find out more.
           </p>
+        </Reveal>
+
+        <div className="mt-12 grid gap-4 md:grid-cols-2">
+          <Reveal className="h-full">
+            <div className="hims-tile-warm h-full rounded-[1.5rem] border border-black/6 p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-8">
+              <div className="border-b border-black/8 pb-4">
+                <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                  Dermal Fillers
+                </h3>
+                <p className="mt-1 text-xs font-medium text-[#754B3D]">Volume &amp; contour</p>
+              </div>
+              <div className="divide-y divide-black/8">
+                {DERMAL_FILLERS.map((row) => (
+                  <div key={row.service} className="flex items-center justify-between gap-4 py-3.5">
+                    <span className="text-sm font-medium text-black/85">{row.service}</span>
+                    <span className="font-display text-lg text-[#1B3745] tabular-nums">
+                      {row.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.06} className="h-full">
+            <div className="hims-tile-sage h-full rounded-[1.5rem] border border-black/6 p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-8">
+              <div className="border-b border-black/8 pb-4">
+                <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                  Botox
+                </h3>
+                <p className="mt-1 text-xs font-medium text-[#1B3745]">Wrinkle smoothing</p>
+              </div>
+              <div className="divide-y divide-black/8">
+                {BOTOX.map((row) => (
+                  <div key={row.service} className="flex items-center justify-between gap-4 py-3.5">
+                    <span className="text-sm font-medium text-black/85">{row.service}</span>
+                    <span className="font-display text-lg text-[#1B3745] tabular-nums">
+                      {row.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* Table 1: Anti-Wrinkle */}
-          <div className="rounded-xl bg-white   p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4  ">
-              <div>
-                <h3 className="font-display text-xl font-bold text-[#2a1c12]">Anti-Wrinkle Injections</h3>
-                <p className="text-xs text-[#925a27] font-semibold">Botox® / Bocouture®</p>
-              </div>
-              
+        <Reveal delay={0.1}>
+          <div className="mt-4 rounded-[1.5rem] border border-black/6 bg-white p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-8">
+            <div className="border-b border-black/8 pb-4">
+              <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                Others — Skin Boosters &amp; Bio-Remodeling
+              </h3>
+              <p className="mt-1 text-xs font-medium text-[#754B3D]">
+                Profhilo® &amp; Sosum Booster
+              </p>
             </div>
-
-            <div className=" /70">
-              {ANTI_WRINKLE.map((row) => (
-                <div key={row.service} className="py-3 flex items-center justify-between gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                  <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
+            <div className="grid gap-x-10 divide-y divide-black/8 sm:grid-cols-2 sm:divide-y-0">
+              {OTHERS.map((row) => (
+                <div
+                  key={row.service}
+                  className="flex items-center justify-between gap-4 py-3.5 sm:border-b sm:border-black/8"
+                >
+                  <span className="text-sm font-medium text-black/85">{row.service}</span>
+                  <span className="font-display text-lg text-[#754B3D] tabular-nums">
                     {row.price}
                   </span>
                 </div>
               ))}
             </div>
           </div>
+        </Reveal>
 
-          {/* Table 2: Dermal Fillers */}
-          <div className="rounded-xl bg-white   p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4  ">
-              <div>
-                <h3 className="font-display text-xl font-bold text-[#2a1c12]">Dermal Fillers</h3>
-                <p className="text-xs text-[#925a27] font-semibold">Juvéderm® / Teosyal®</p>
-              </div>
-             
-            </div>
-
-            <div className=" /70">
-              {DERMAL_FILLERS.map((row) => (
-                <div key={row.service} className="py-3 flex items-center justify-between gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                  <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                    {row.price}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Table 3: Skin Boosters */}
-        <div className="rounded-xl bg-white   p-6 shadow-sm mb-10">
-          <div className="flex items-center justify-between mb-5 pb-4  ">
-            <div>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">Skin Boosters &amp; Bio-Remodeling</h3>
-              <p className="text-xs text-[#925a27] font-semibold">Profhilo®, Polynucleotides &amp; Deep Hydration</p>
-            </div>
-           
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-x-8  sm:divide-y-0 /70">
-            {SKIN_REJUVENATION.map((row) => (
-              <div key={row.service} className="py-3 flex items-center justify-between gap-4  /50">
-                <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                  {row.price}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center">
-          <p className="text-xs text-[#6b5848] mb-6">
-            *Consultation fee of £30 is fully redeemable against treatment. All procedures performed by GDC-registered dental clinicians.
-          </p>
-          <Button
-            asChild
-            className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
-          >
-            <a href={BOOKING_URL} className="flex items-center gap-2">
-              Book Your Aesthetics Assessment <ArrowRight className="size-4" />
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <Button asChild size="lg">
+            <a href={BOOKING_URL}>
+              Book Your Aesthetics Assessment
+              <ArrowRight className="size-4" />
+            </a>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <a href="tel:08000996375">
+              <Phone className="size-4" />
+              Enquire: 0800 099 6375
             </a>
           </Button>
         </div>

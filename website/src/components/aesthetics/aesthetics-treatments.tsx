@@ -1,99 +1,105 @@
-import React from "react";
-import { ArrowRight, Droplets, Sparkle, Shield } from "lucide-react";
+import { ArrowRight, Droplets, Layers, Shield, Smile, Sparkle, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
 
 const TREATMENTS = [
   {
-    id: "fillers",
-    title: "Dermal Fillers",
-    subtitle: "Precision volume restoration & lip shaping",
-    desc: "Premium cross-linked hyaluronic acid gels sculpt, define, and replenish lost facial volume with microscopic precision. Tailored for natural lip enhancement, cheekbone definition, and smoothing smile lines.",
-    targetAreas: "Lips, Cheeks, Jawline, Marionette Lines",
-    longevity: "9–18 Months",
-    icon: Droplets,
-    accentColor: "#925a27",
-    tag: "Subtle Plumping",
-  },
-  {
-    id: "anti-wrinkle",
-    title: "Anti-Wrinkle Injections",
-    subtitle: "Targeted smoothing of dynamic expression lines",
-    desc: "Doctor-prescribed neuromodulators gently relax underlying hyperactive facial muscles to soften forehead creases, frown lines, and crow's feet while preserving genuine facial expressions.",
-    targetAreas: "Forehead, Glabella, Eyes, Masseter (Jaw Slimming)",
-    longevity: "3–5 Months",
+    id: "microneedling",
+    title: "Microneedling",
+    subtitle: "Skin health & texture",
+    desc: "We offer microneedling as a safe and effective treatment to help improve the overall health and appearance of your skin.",
+    tone: "hims-tile-warm",
     icon: Sparkle,
-    accentColor: "#cf9448",
-    tag: "Expression Preserving",
   },
   {
-    id: "skin-boosters",
-    title: "Skin Boosters & Profhilo",
-    subtitle: "Bio-remodeling & cellular hydration",
-    desc: "High-concentration ultra-pure hyaluronic acid (Profhilo) stimulated directly into skin layers to trigger intense elastin synthesis, tightening lax skin and imparting luminous vitality.",
-    targetAreas: "Face, Neck, Décolletage, Hands",
-    longevity: "6–9 Months",
+    id: "botox",
+    title: "Botox",
+    subtitle: "Wrinkle & fine line smoothing",
+    desc: "Botox is a non-surgical treatment that smooths out wrinkles and fine lines, giving you a more youthful appearance.",
+    tone: "hims-tile-sage",
     icon: Shield,
-    accentColor: "#4a7c59",
-    tag: "Deep Collagen Boost",
+  },
+  {
+    id: "dermal-fillers",
+    title: "Dermal Fillers",
+    subtitle: "Volume & facial balance",
+    desc: "Dermal fillers are used to add volume and fullness to areas of the face that have lost volume due to aging or other factors.",
+    tone: "bg-[#F2EDE5]",
+    icon: Droplets,
+  },
+  {
+    id: "chemical-peels",
+    title: "Chemical Peels",
+    subtitle: "Cellular skin renewal",
+    desc: "Chemical peels are an effective way to rejuvenate the skin by removing dead skin cells and promoting the growth of new, healthy skin.",
+    tone: "hims-tile-sage",
+    icon: Layers,
+  },
+  {
+    id: "lip-enhancement",
+    title: "Lip Enhancement",
+    subtitle: "Volume & definition",
+    desc: "Our lip enhancement treatments are designed to add volume and definition to your lips, giving you a fuller and more youthful appearance.",
+    tone: "hims-tile-warm",
+    icon: Smile,
+  },
+  {
+    id: "skin-rejuvenation",
+    title: "Skin Rejuvenation",
+    subtitle: "Restorative skin therapies",
+    desc: "Our skin rejuvenation treatments are designed to reduce the appearance of fine lines, wrinkles, and other signs of aging.",
+    tone: "bg-[#F2EDE5]",
+    icon: Sun,
   },
 ];
 
 export function AestheticsTreatments() {
   return (
-    <section id="treatments" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Signature Aesthetics Treatments
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[#6b5848] leading-relaxed">
-            Every procedure is customized to honor your natural facial anatomy, ensuring balanced, refined, and never overdone results.
+    <section id="treatments" className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Aesthetics treatments
           </p>
-        </div>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Subtle enhancements,{" "}
+            <span className="text-[#754B3D]">clinically delivered</span>
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Every procedure is tailored to your natural facial anatomy for balanced, refreshed
+            results.
+          </p>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TREATMENTS.map((item) => {
+        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {TREATMENTS.map((item, index) => {
             const Icon = item.icon;
             return (
-              <div
-                key={item.id}
-                className="rounded-xl   bg-white p-7 shadow-sm flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs font-bold text-[#925a27]  mt-1 mb-3">
-                    {item.subtitle}
-                  </p>
-
-                  <p className="text-sm text-[#6b5848] leading-relaxed mb-6">
-                    {item.desc}
-                  </p>
-
-                  <div className="space-y-2 mb-6 text-xs text-[#2a1c12]">
-                    <div>
-                      <span className="font-bold text-[#925a27]">Target Areas: </span>
-                      <span>{item.targetAreas}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-[#925a27]">Longevity: </span>
-                      <span>{item.longevity}</span>
-                    </div>
+              <Reveal key={item.id} delay={0.04 * index} className="h-full">
+                <article
+                  className={`${item.tone} flex h-full flex-col justify-between rounded-[1.5rem] border border-black/6 p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)]`}
+                >
+                  <div>
+                    <span className="grid size-10 place-items-center rounded-2xl border border-black/6 bg-white text-[#1B3745]">
+                      <Icon className="size-4" />
+                    </span>
+                    <h3 className="mt-5 font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-xs font-medium text-[#754B3D]">{item.subtitle}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-black/65">{item.desc}</p>
                   </div>
-                </div>
 
-                <div className="pt-4  ">
-                  <Button
-                    asChild
-                    className="w-full rounded-full h-11 bg-white hover:bg-[#faf6f0] text-xs font-bold"
-                  >
-                    <a href="#pricing" className="flex items-center justify-center gap-2">
-                      View Pricing <ArrowRight className="size-3.5" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
+                  <div className="mt-6 pt-2">
+                    <Button asChild variant="outline" className="w-full">
+                      <a href="#pricing">
+                        View Pricing
+                        <ArrowRight className="size-4" />
+                      </a>
+                    </Button>
+                  </div>
+                </article>
+              </Reveal>
             );
           })}
         </div>

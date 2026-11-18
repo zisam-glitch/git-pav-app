@@ -1,40 +1,33 @@
-import React, { useState } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const FAQS = [
   {
-    q: "How often should I have a dental hygiene appointment?",
-    a: "For most patients, we recommend a professional hygiene appointment every 6 months. However, if you have a history of gum disease, are prone to plaque buildup, or have certain medical conditions, your dentist may recommend more frequent visits every 3-4 months.",
+    q: "How often should I see the hygienist?",
+    a: "Most patients benefit from hygiene care every 3 to 6 months. Patients with gum disease or a higher risk of dental problems may need more frequent visits. Our dentist or hygienist will recommend the right interval for you.",
   },
   {
-    q: "What's the difference between a scale and polish and a routine hygiene appointment?",
-    a: "A scale and polish focuses specifically on removing plaque and tartar buildup and polishing teeth. A routine hygiene appointment is more comprehensive, including the cleaning plus a full oral health assessment, gum examination, oral cancer screening, and personalized hygiene advice.",
+    q: "Does hygiene treatment hurt?",
+    a: "Hygiene treatment is usually very comfortable. If your gums are sensitive, we can apply a numbing gel to make the treatment easier and more relaxing.",
   },
   {
-    q: "Is dental hygiene treatment painful?",
-    a: "Most hygiene treatments are not painful. You may feel some sensitivity or mild discomfort during scaling, especially if you have sensitive teeth or gum inflammation. Our hygienists are trained to work gently and can use numbing gel or local anesthesia if needed for your comfort.",
+    q: "Is hygiene the same as teeth whitening?",
+    a: "No. Hygiene treatment removes tartar, plaque, and surface stains, while teeth whitening is designed to lighten the natural colour of your teeth.",
   },
   {
-    q: "What are the signs that I need gum disease treatment?",
-    a: "Common signs include red, swollen, or bleeding gums (especially when brushing), persistent bad breath, receding gums, loose teeth, or changes in your bite. If you notice any of these symptoms, schedule an appointment promptly for assessment and treatment.",
+    q: "Can hygiene stop bleeding gums?",
+    a: "Yes. In most cases, professional cleaning combined with correct home care significantly improves bleeding gums.",
   },
   {
-    q: "Are fissure sealants suitable for adults?",
-    a: "While fissure sealants are most commonly applied to children's teeth as a preventative measure, adults can also benefit from them, particularly if they have deep grooves in their molars that are prone to decay or if they're at higher risk for cavities.",
+    q: "Is hygiene safe during pregnancy?",
+    a: "Yes. Hygiene treatment is completely safe during pregnancy and is highly recommended to maintain healthy gums and teeth.",
   },
   {
-    q: "How long does a typical hygiene appointment take?",
-    a: "A standard scale and polish typically takes 30-45 minutes. A comprehensive routine hygiene appointment usually takes 45-60 minutes. More complex treatments like deep cleaning for gum disease may take 60-90 minutes and may require multiple visits.",
-  },
-  {
-    q: "Can dental hygiene treatment whiten my teeth?",
-    a: "While a scale and polish can remove some surface stains and make teeth appear brighter, it's not a whitening treatment. For significant whitening results, we recommend professional whitening treatments. However, good hygiene helps maintain whitening results and prevents new stains.",
-  },
-  {
-    q: "What should I do between hygiene appointments?",
-    a: "Maintain good home care by brushing twice daily with fluoride toothpaste, flossing daily, using interdental brushes as recommended, and limiting sugary foods and drinks. Your hygienist will provide personalized advice based on your specific oral health needs.",
+    q: "Will my breath improve after hygiene treatment?",
+    a: "Yes. Removing bacteria and tartar from your teeth and gums significantly reduces bad breath and helps keep your mouth fresh.",
   },
 ];
 
@@ -42,72 +35,61 @@ export function OralHygieneFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
-          {/* Left sticky header */}
-          <div className="lg:sticky lg:top-24">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#2a1c12]">
+    <section className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.3fr]">
+          <Reveal className="lg:sticky lg:top-24">
+            <p className="text-xs font-medium uppercase tracking-wider text-black/50">
               Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-sm text-[#6b5848] leading-relaxed">
-              Everything you need to know about dental hygiene services, gum disease prevention, and maintaining optimal oral health.
             </p>
-            <Button
-              asChild
-              className="mt-6 accent-gradient text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm hover:opacity-95"
-            >
-              <a href={BOOKING_URL} className="flex items-center gap-2">
-                Book Appointment <ArrowRight className="size-3.5" />
+            <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+              Hygiene care,{" "}
+              <span className="text-[#754B3D]">explained clearly</span>
+            </h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-black/65">
+              Answers on visit frequency, gum sensitivity, pregnancy safety, and keeping breath
+              fresh.
+            </p>
+            <Button asChild className="mt-7">
+              <a href={BOOKING_URL}>
+                Book Appointment
+                <ArrowRight className="size-4" />
               </a>
             </Button>
-          </div>
+          </Reveal>
 
-          {/* Right accordion */}
-          <div className=" ">
-            {FAQS.map((faq, i) => {
-              const isOpen = openIndex === i;
-              return (
-                <div key={i} className="py-1">
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-                  >
-                    <span
-                      className={`font-semibold text-sm sm:text-base transition-colors duration-200 ${
-                        isOpen
-                          ? "text-[#925a27]"
-                          : "text-[#2a1c12] group-hover:text-[#925a27]"
-                      }`}
+          <Reveal delay={0.06}>
+            <div className="divide-y divide-black/10 border-t border-b border-black/10">
+              {FAQS.map((faq, i) => {
+                const isOpen = openIndex === i;
+                return (
+                  <div key={faq.q}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenIndex(isOpen ? null : i)}
+                      className="flex w-full items-center justify-between gap-4 py-6 text-left transition-colors hover:text-[#1B3745]"
                     >
-                      {faq.q}
-                    </span>
-                    <span
-                      className={`flex-shrink-0 size-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isOpen
-                          ? "accent-gradient text-white rotate-180"
-                          : "bg-[#f0e8dc] text-[#925a27]"
-                      }`}
-                    >
-                      <ChevronDown className="size-4" />
-                    </span>
-                  </button>
+                      <span className="font-display text-lg font-normal tracking-[-0.02em] text-black sm:text-xl">
+                        {faq.q}
+                      </span>
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#F2EDE5] text-black">
+                        {isOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
+                      </span>
+                    </button>
 
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <p className="pb-5 text-sm text-[#6b5848] leading-relaxed max-w-2xl">
-                      {faq.a}
-                    </p>
+                    {isOpen && (
+                      <div className="pb-6 pr-12">
+                        <p className="text-sm leading-relaxed text-black/65 sm:text-base">
+                          {faq.a}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

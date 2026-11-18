@@ -1,64 +1,64 @@
-import React from "react";
-import { Calendar, MessageCircle, FileText, Truck } from "lucide-react";
+import { Calendar, FileText, MessageCircle, Truck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const STEPS = [
   {
     icon: Calendar,
     title: "Book Appointment",
-    desc: "Schedule your virtual consultation at your convenience",
+    desc: "Schedule your virtual consultation at a time that suits you.",
   },
   {
     icon: MessageCircle,
     title: "Speak With Dentist",
-    desc: "Connect with a qualified dentist via video call",
+    desc: "Connect with a qualified dentist directly via video call.",
   },
   {
     icon: FileText,
     title: "Generate Prescription",
-    desc: "Receive your prescription online if needed",
+    desc: "Receive an electronic prescription online if clinically appropriate.",
   },
   {
     icon: Truck,
     title: "Get Your Prescription Filled",
-    desc: "Collect from your local pharmacy or home delivery",
+    desc: "Collect from your preferred pharmacy or arrange delivery.",
   },
 ];
 
 export function VirtualDentistryPrescriptionProcess() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            How Online Prescription Service Works?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Simple 4-step process to get your dental prescription online without leaving your home.
-          </p>
+    <section className="bg-[#FBF8F5] py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+              Online prescriptions
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+              How Online Prescription{" "}
+              <span className="text-[#754B3D]">Service Works</span>
+            </h2>
+          </div>
+          <Button asChild size="lg" className="shrink-0">
+            <a href={BOOKING_URL}>Get started today</a>
+          </Button>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {STEPS.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.title} className="text-center">
-                <div className="relative inline-block mb-6">
-                  <div className="size-20 rounded-full bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mx-auto">
-                    <Icon className="size-10" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 size-8 rounded-full bg-[#925a27] text-white flex items-center justify-center font-bold text-sm">
-                    {i + 1}
-                  </div>
-                </div>
-                <h3 className="font-display text-lg font-bold text-[#2a1c12] mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-[#6b5848] leading-relaxed">
-                  {step.desc}
-                </p>
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((step, i) => (
+            <div key={step.title} className="flex flex-col items-start">
+              <div className="flex items-center gap-3">
+                <span className="grid size-12 place-items-center rounded-2xl bg-[#F2EDE5] text-[#754B3D]">
+                  <step.icon className="size-5" />
+                </span>
+                <span className="text-xs font-medium text-black/45">0{i + 1}</span>
               </div>
-            );
-          })}
+              <h3 className="mt-5 font-display text-xl font-normal tracking-[-0.02em] text-black">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-black/65">{step.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

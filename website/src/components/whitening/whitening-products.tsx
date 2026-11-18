@@ -1,76 +1,92 @@
-import React from "react";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
+import { BOOKING_URL } from "@/lib/enquiry";
 import { PRODUCTS_DATA } from "./whitening-data";
 
 export function WhiteningProducts() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Detailed Product Specifications
-          </h2>
-          <p className="mt-3 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            From daily maintenance to dental-chair transformation, discover our clinically engineered solutions.
+    <section className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Whitening options
           </p>
-        </div>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Award-winning{" "}
+            <span className="text-[#754B3D]">whitening treatments</span>
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Experience our award-winning whitening treatments for a brilliantly radiant smile.
+            Discover the difference of our dentist-curated whitening services today.
+          </p>
+        </Reveal>
 
-        {/* Product rows */}
-        <div className="space-y-16 sm:space-y-24">
+        <div className="mt-14 space-y-10 sm:space-y-14">
           {PRODUCTS_DATA.map((product, i) => {
             const flip = i % 2 === 1;
+            const tileClass = i % 2 === 0 ? "hims-tile-warm" : "hims-tile-sage";
             return (
-              <div
-                key={product.id}
-                className={`grid lg:grid-cols-2 gap-10 lg:gap-14 items-center ${
-                  flip ? "lg:flex-row-reverse" : ""
-                }`}
-              >
-                {/* Image side */}
-                <div className={`relative ${flip ? "lg:order-2" : "lg:order-1"}`}>
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden   shadow-sm bg-white">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="size-full object-cover"
-                    />
+              <Reveal key={product.id} delay={0.04 * i}>
+                <div className="grid items-center gap-8 rounded-[1.5rem] border border-black/6 bg-white p-6 shadow-[0_6px_24px_rgba(0,0,0,0.04)] sm:p-10 lg:grid-cols-2 lg:gap-14">
+                  <div className={flip ? "lg:order-2" : "lg:order-1"}>
+                    <div className={`${tileClass} overflow-hidden rounded-[1.25rem] border border-black/6 p-3`}>
+                      <div className="aspect-[4/3] overflow-hidden rounded-[1rem] bg-white">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="size-full object-cover"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Text side */}
-                <div className={`${flip ? "lg:order-1" : "lg:order-2"} pt-4 lg:pt-0`}>
-                 
+                  <div className={flip ? "lg:order-1" : "lg:order-2"}>
+                    <div className="flex flex-wrap gap-2">
+                      {product.formats.map((format) => (
+                        <span
+                          key={format}
+                          className="rounded-full bg-[#F2EDE5] px-3 py-1 text-xs font-medium text-[#1B3745]"
+                        >
+                          {format}
+                        </span>
+                      ))}
+                    </div>
 
-                  <h3 className="font-display text-2xl sm:text-4xl font-bold text-[#2a1c12]">
-                    {product.name}
-                  </h3>
+                    <h3 className="mt-4 font-display text-3xl font-normal tracking-[-0.03em] text-black sm:text-4xl">
+                      {product.name}
+                    </h3>
 
-                  <div className="mt-2 flex items-baseline gap-3">
-                    <p className="font-display text-3xl sm:text-4xl font-extrabold text-[#925a27]">
+                    <p className="mt-2 font-display text-3xl font-normal tracking-[-0.03em] text-[#754B3D]">
                       {product.price}
                     </p>
+
+                    <p className="mt-4 text-base leading-relaxed text-black/65">
+                      {product.description}
+                    </p>
+
+                    <ul className="mt-6 divide-y divide-black/8 border-t border-black/8">
+                      {product.benefits.map((b) => (
+                        <li key={b} className="flex items-center gap-3 py-3 text-sm text-black/85">
+                          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-black text-white">
+                            <Check className="size-3" />
+                          </span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-7 flex flex-wrap gap-3">
+                      <Button asChild>
+                        <a href={BOOKING_URL}>
+                          Book Now
+                          <ArrowRight className="size-4" />
+                        </a>
+                      </Button>
+                    </div>
                   </div>
-
-                  <p className="mt-4 text-sm sm:text-base text-[#6b5848] leading-relaxed">
-                    {product.description}
-                  </p>
-
-                  {/* Benefits with solid icons */}
-                  <ul className="mt-6 space-y-2.5">
-                    {product.benefits.map((b) => (
-                      <li key={b} className="flex items-center gap-3 text-xs sm:text-sm text-[#2a1c12]">
-                        <span className="size-5 rounded-md bg-[#faf6f0]  /40 text-[#925a27] flex items-center justify-center flex-shrink-0">
-                          <Check className="size-3 stroke-[3]" />
-                        </span>
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>

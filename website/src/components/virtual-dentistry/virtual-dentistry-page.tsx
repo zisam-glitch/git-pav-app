@@ -8,14 +8,14 @@ import { VirtualDentistryServices } from "./virtual-dentistry-services";
 
 export function VirtualDentistryPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5]">
       <VirtualDentistryHero />
       <VirtualDentistryPrescriptionProcess />
       <VirtualDentistryHowItWorks />
       <VirtualDentistryBenefits />
-      <VirtualDentistryFaq />
       <VirtualDentistryRegistration />
       <VirtualDentistryServices />
+      <VirtualDentistryFaq />
     </main>
   );
 }

@@ -24,7 +24,7 @@ export const Route = createFileRoute("/team_/$slug")({
 function TeamProfileRoute() {
   const member = Route.useLoaderData();
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <Header />
       <TeamProfile member={member} />
       <Footer />

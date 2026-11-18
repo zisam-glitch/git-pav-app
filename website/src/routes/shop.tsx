@@ -12,7 +12,7 @@ export const Route = createFileRoute("/shop")({
 
 function ShopRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
       <ShopPage />
@@ -20,4 +20,3 @@ function ShopRoute() {
     </main>
   );
 }
-

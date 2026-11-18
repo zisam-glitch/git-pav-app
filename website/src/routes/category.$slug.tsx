@@ -39,7 +39,9 @@ function CategoryRoute() {
         ? parseFloat(p.original_price)
         : p.original_price
       : undefined,
-    image: p.image || "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=85",
+    image:
+      p.image ||
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=85",
     shortDesc: p.short_desc || "",
     fullDesc: p.full_desc || "",
     features: Array.isArray(p.features) ? p.features : [],
@@ -56,21 +58,31 @@ function CategoryRoute() {
     .join(" ");
 
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
 
-      <div className="bg-[#faf6f0]   py-4 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <a href="/shop" className="inline-flex items-center gap-2 text-xs text-muted hover:text-primary">
-            <ArrowLeft className="size-4" />
-            <span>All Categories</span>
-          </a>
-          <span className="text-xs font-semibold text-[#844d1e] uppercase">{categoryTitle}</span>
+      <div className="pt-24 sm:pt-28">
+        <div className="mx-auto max-w-[108rem] px-3 sm:px-6 lg:px-10">
+          <div className="mx-auto max-w-[87rem] border-b border-black/10 pb-6">
+            <div className="flex items-center justify-between">
+              <a
+                href="/shop"
+                className="inline-flex items-center gap-2 text-xs font-medium text-black/60 transition-colors hover:text-black"
+              >
+                <ArrowLeft className="size-3.5" />
+                <span>All Categories</span>
+              </a>
+              <span className="rounded-full bg-[#F2EDE5] px-3 py-1 text-xs font-medium text-[#754B3D]">
+                Category
+              </span>
+            </div>
+            <h1 className="mt-4 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+              {categoryTitle}
+            </h1>
+          </div>
         </div>
-      </div>
 
-      <div className="py-12">
         <ShopCatalog
           products={productsToDisplay}
           isLoading={isLoading}
@@ -115,18 +127,18 @@ function CategoryRoute() {
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full accent-gradient px-4 py-3 text-white shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full bg-black px-5 py-3 text-white shadow-[0_12px_32px_rgba(0,0,0,0.2)] transition-colors duration-200 hover:bg-[#1B3745]"
         aria-label="View shopping bag"
       >
         <div className="relative">
-          <ShoppingBag className="size-5" />
+          <ShoppingBag className="size-4" />
           {totalItemCount > 0 && (
-            <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-white text-primary text-[10px] font-bold shadow-xs">
+            <span className="absolute -top-2 -right-2.5 flex size-4 items-center justify-center rounded-full bg-[#ECD880] text-[10px] font-semibold text-[#1B3745]">
               {totalItemCount}
             </span>
           )}
         </div>
-        <span className="text-xs font-semibold hidden sm:inline">
+        <span className="hidden text-xs font-medium sm:inline">
           View Bag ({totalItemCount})
         </span>
       </button>
@@ -135,4 +147,3 @@ function CategoryRoute() {
     </main>
   );
 }
-

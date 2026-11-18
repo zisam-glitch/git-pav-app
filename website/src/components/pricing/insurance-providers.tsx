@@ -1,70 +1,69 @@
 export function InsuranceProviders() {
   return (
-    <section className="py-16 sm:py-20 bg-[#f7f1e7]   relative overflow-hidden">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-[#844d1e]">
-          We Accept All Insurance Providers
-        </h2>
-        <p className="mt-3 text-sm sm:text-base text-muted max-w-lg mx-auto leading-relaxed">
-          Direct claim processing and hassle-free coverage with leading UK private dental insurance plans.
-        </p>
+    <section className="py-6 sm:py-10">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 text-center sm:px-10 sm:py-16">
+          <div className="mx-auto max-w-[87rem]">
+            <p className="text-xs font-medium uppercase tracking-wider text-black/55">
+              Insurance &amp; Claims
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-4xl">
+              We Accept All <span className="text-[#754B3D]">Insurance Providers</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-black/65 sm:text-base">
+              Direct claim processing and hassle-free coverage with leading UK private dental
+              insurance plans.
+            </p>
 
-        {/* Insurance logos grid in modern elevated cards */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-          {/* AXA Health */}
-          <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white   shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-[#00008f] text-white font-extrabold px-2.5 py-1 text-xs rounded-xs">
-                AXA
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-5">
+              <div className="flex h-16 items-center justify-center rounded-2xl border border-black/6 bg-white px-6 shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+                <div className="flex items-center gap-2">
+                  <div className="rounded-xs bg-[#00008f] px-2.5 py-1 text-xs font-extrabold text-white">
+                    AXA
+                  </div>
+                  <span className="text-sm font-bold text-[#00008f]">Health</span>
+                </div>
               </div>
-              <span className="font-bold text-[#00008f] text-sm">Health</span>
-            </div>
-          </div>
 
-          {/* Simplyhealth */}
-          <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white   shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-center gap-2">
-              <div className="size-6 rounded-full bg-[#82c91e] flex items-center justify-center text-[#1a1a1a] font-black text-xs">
-                S
+              <div className="flex h-16 items-center justify-center rounded-2xl border border-black/6 bg-white px-6 shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+                <div className="flex items-center gap-2">
+                  <div className="flex size-6 items-center justify-center rounded-full bg-[#82c91e] text-xs font-black text-[#1a1a1a]">
+                    S
+                  </div>
+                  <span className="text-sm font-bold text-gray-800">Simplyhealth</span>
+                </div>
               </div>
-              <span className="font-bold text-gray-800 text-sm">Simplyhealth</span>
-            </div>
-          </div>
 
-          {/* Bupa */}
-          <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white   shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-[#0079c8] text-white font-bold px-3 py-1 text-sm rounded-sm">
-                Bupa
+              <div className="flex h-16 items-center justify-center rounded-2xl border border-black/6 bg-white px-6 shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+                <div className="rounded-sm bg-[#0079c8] px-3 py-1 text-sm font-bold text-white">
+                  Bupa
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Aviva */}
-          <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white   shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-center gap-2">
-              <div className="size-3.5 bg-[#ffcc00] rounded-xs transform rotate-45" />
-              <span className="font-black text-[#004f9e] text-base">AVIVA</span>
-            </div>
-          </div>
-
-          {/* Denplan */}
-          <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white   shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-center gap-2">
-              <div className="size-5 rounded-full border-2  flex items-center justify-center text-[#166534] font-bold text-[10px]">
-                D
+              <div className="flex h-16 items-center justify-center rounded-2xl border border-black/6 bg-white px-6 shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+                <div className="flex items-center gap-2">
+                  <div className="size-3.5 rotate-45 rounded-xs bg-[#ffcc00]" />
+                  <span className="text-base font-black text-[#004f9e]">AVIVA</span>
+                </div>
               </div>
-              <span className="font-bold text-[#166534] text-sm">Denplan</span>
-            </div>
-          </div>
 
-          {/* WPA */}
-          <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white   shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-[#7c3aed] text-white font-bold px-2 py-0.5 text-[11px] rounded-xs">
-                WPA
+              <div className="flex h-16 items-center justify-center rounded-2xl border border-black/6 bg-white px-6 shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+                <div className="flex items-center gap-2">
+                  <div className="flex size-5 items-center justify-center rounded-full border-2 border-[#166534] text-[10px] font-bold text-[#166534]">
+                    D
+                  </div>
+                  <span className="text-sm font-bold text-[#166534]">Denplan</span>
+                </div>
               </div>
-              <span className="font-semibold text-gray-700 text-xs">Health Insurance</span>
+
+              <div className="flex h-16 items-center justify-center rounded-2xl border border-black/6 bg-white px-6 shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+                <div className="flex items-center gap-2">
+                  <div className="rounded-xs bg-[#7c3aed] px-2 py-0.5 text-[11px] font-bold text-white">
+                    WPA
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700">Health Insurance</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

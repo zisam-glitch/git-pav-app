@@ -12,7 +12,7 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-[#FBF8F5] text-fg">
       <ScrollProgress />
       <Header />
       <CheckoutPage />
@@ -20,4 +20,3 @@ function CheckoutRoute() {
     </main>
   );
 }
-

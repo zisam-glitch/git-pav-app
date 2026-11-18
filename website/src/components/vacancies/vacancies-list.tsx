@@ -2,14 +2,15 @@ import { useState, useMemo } from "react";
 import {
   MapPin,
   Briefcase,
-  Sparkles,
   ArrowRight,
   Search,
-  CheckCircle2,
+  Check,
   Clock,
   ExternalLink,
 } from "lucide-react";
-import { VACANCIES, Vacancy } from "./vacancies-data";
+import { Button } from "@/components/ui/button";
+import { VACANCIES, type Vacancy } from "./vacancies-data";
+import { cn } from "@/lib/utils";
 
 interface VacanciesListProps {
   onApply: (vacancy: Vacancy) => void;
@@ -37,170 +38,167 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
 
   const categories = [
     { id: "all", label: "All Roles", count: VACANCIES.length },
-    { id: "dentistry", label: "Dentists", count: VACANCIES.filter((v) => v.category === "dentistry").length },
-    { id: "nursing", label: "Nursing", count: VACANCIES.filter((v) => v.category === "nursing").length },
-    { id: "hygiene", label: "Hygiene & Therapy", count: VACANCIES.filter((v) => v.category === "hygiene").length },
+    {
+      id: "dentistry",
+      label: "Dentists",
+      count: VACANCIES.filter((v) => v.category === "dentistry").length,
+    },
+    {
+      id: "nursing",
+      label: "Nursing",
+      count: VACANCIES.filter((v) => v.category === "nursing").length,
+    },
+    {
+      id: "hygiene",
+      label: "Hygiene & Therapy",
+      count: VACANCIES.filter((v) => v.category === "hygiene").length,
+    },
   ];
 
   return (
-    <section id="roles" className="py-16 sm:py-24 bg-[#fffdf9]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
-            Open Positions
+    <section id="roles" className="bg-[#FBF8F5] py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">Vacancies</p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Open <span className="text-[#754B3D]">Positions</span>
           </h2>
-          <p className="mt-3 text-base sm:text-lg text-muted max-w-2xl mx-auto">
+          <p className="mx-auto mt-3 max-w-2xl text-base text-black/65 sm:text-lg">
             Discover your next opportunity in a supportive, modern dental practice
           </p>
         </div>
 
         {/* Search and filter bar */}
-        <div className="flex flex-col md:flex-row gap-4 mb-10 items-start justify-between">
-          {/* Search bar */}
+        <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="relative w-full md:w-96">
-            <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" />
+            <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-black/45" />
             <input
               type="text"
               aria-label="Search open positions"
               placeholder="Search roles, departments, or keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 rounded-xl   bg-white pl-12 pr-4 text-sm placeholder:text-muted focus:border-[#925a27] focus:outline-none focus:ring-2 focus:ring-[#925a27]/20 shadow-sm"
+              className="h-11 w-full rounded-full border border-black/10 bg-white pl-11 pr-4 text-sm text-black placeholder:text-black/45 focus:border-[#1B3745] focus:outline-none focus:ring-2 focus:ring-[#1B3745]/15"
             />
           </div>
 
-          {/* Category filtering pills */}
           <div className="flex flex-wrap items-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
-                  selectedCategory === cat.id
-                    ? "accent-gradient text-white shadow-md scale-105"
-                    : "bg-white text-muted   hover:border-[#925a27] hover:text-[#2a1c12]"
-                }`}
-              >
-                {cat.label} <span className="opacity-80">({cat.count})</span>
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const active = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-xs font-medium transition-colors duration-200",
+                    active
+                      ? "bg-black text-white"
+                      : "border border-black/10 bg-white text-black/70 hover:bg-[#F2EDE5] hover:text-black",
+                  )}
+                >
+                  {cat.label} <span className="opacity-75">({cat.count})</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Vacancy cards grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredVacancies.map((vacancy) => {
-            const isFeatured = vacancy.featured;
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {filteredVacancies.map((vacancy) => (
+            <div
+              key={vacancy.id}
+              className="flex flex-col justify-between rounded-[1.5rem] border border-black/6 bg-white p-6 shadow-[0_6px_24px_rgba(0,0,0,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.05)] sm:p-7"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-block rounded-full bg-[#FAF8F2] px-3 py-1 text-xs font-medium text-[#754B3D] border border-black/6">
+                    {vacancy.department}
+                  </span>
+                  {vacancy.featured && (
+                    <span className="inline-block rounded-full bg-[#F2EDE5] px-3 py-1 text-xs font-medium text-[#1B3745]">
+                      Featured
+                    </span>
+                  )}
+                </div>
 
-            return (
-              <div
-                key={vacancy.id}
-                className={`relative overflow-hidden rounded-xl  bg-white p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                  isFeatured
-                    ? "/50 shadow-md"
-                    : " shadow-sm hover:border-[#925a27]/50"
-                }`}
-              >
-                {/* Featured badge */}
-                {isFeatured && (
-                  <div className="absolute top-4 right-4">
-                    <div className="flex items-center gap-1.5 rounded-full bg-[#faf6f0]   px-3 py-1 text-[11px] font-bold uppercase text-[#925a27]">
-                      <Sparkles className="size-3" />
-                      <span>Featured</span>
-                    </div>
-                  </div>
-                )}
+                <h3 className="mt-4 font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                  {vacancy.title}
+                </h3>
 
-                
+                <p className="mt-2.5 text-sm leading-relaxed text-black/65 line-clamp-3">
+                  {vacancy.description}
+                </p>
 
-                <div className="space-y-4">
-                  
+                <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-black/55">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock className="size-3.5 text-[#1B3745]" aria-hidden="true" />
+                    {vacancy.contractType}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin className="size-3.5 text-[#1B3745]" aria-hidden="true" />
+                    Bradford, BD3
+                  </span>
+                </div>
 
-                  {/* Title */}
-                  <h3 className="font-display text-xl sm:text-2xl font-bold text-[#2a1c12]">
-                    {vacancy.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-sm leading-relaxed text-muted line-clamp-3">
-                    {vacancy.description}
-                  </p>
-
-                  {/* Metadata row */}
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="size-3.5 text-[#925a27]" />
-                      {vacancy.contractType}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="size-3.5 text-[#925a27]" />
-                      Bradford, BD3
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {vacancy.tags.slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center gap-1 rounded-full bg-[#faf6f0] px-2.5 py-1 text-[11px] font-medium text-[#844d1e]  /50"
-                      >
-                        <CheckCircle2 className="size-3 text-[#925a27]" />
-                        {tag}
-                      </span>
-                    ))}
-                    {vacancy.tags.length > 3 && (
-                      <span className="text-[11px] text-muted">+{vacancy.tags.length - 3} more</span>
-                    )}
-                  </div>
-
-                  
-
-                  {/* Action buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button
-                      onClick={() => onApply(vacancy)}
-                      className="flex-1 h-11 rounded-xl accent-gradient text-white text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm"
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {vacancy.tags.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF8F2] px-3 py-1 text-xs text-black/75 border border-black/6"
                     >
-                      <span>Apply Now</span>
-                      <ArrowRight className="size-4" />
-                    </button>
-
-                    <a
-                      href={`mailto:hello@pavdental.com?subject=Application%20for%20${encodeURIComponent(vacancy.title)}`}
-                      className="h-11 rounded-xl   text-sm font-medium text-muted hover:border-[#925a27] hover:text-[#2a1c12] transition-colors flex items-center justify-center px-8 gap-2"
-                    >
-                      <ExternalLink className="size-3.5" />
-                      <span>Email Us</span>
-                    </a>
-                  </div>
+                      <Check className="size-3 text-[#1B3745]" aria-hidden="true" />
+                      {tag}
+                    </span>
+                  ))}
+                  {vacancy.tags.length > 3 && (
+                    <span className="text-xs text-black/50">+{vacancy.tags.length - 3} more</span>
+                  )}
                 </div>
               </div>
-            );
-          })}
+
+              <div className="mt-6 flex flex-col gap-3 border-t border-black/8 pt-5 sm:flex-row">
+                <Button onClick={() => onApply(vacancy)} className="flex-1">
+                  <span>Apply Now</span>
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Button>
+
+                <Button asChild variant="outline" className="px-6">
+                  <a
+                    href={`mailto:hello@pavdental.com?subject=Application%20for%20${encodeURIComponent(vacancy.title)}`}
+                  >
+                    <ExternalLink className="size-3.5" aria-hidden="true" />
+                    <span>Email Us</span>
+                  </a>
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Empty state */}
         {filteredVacancies.length === 0 && (
-          <div className="rounded-xl border-2 border-dashed  bg-white p-16 text-center">
-            <Briefcase className="size-12 mx-auto text-muted mb-4" />
-            <p className="font-display text-xl font-bold text-[#2a1c12]">No positions match your search</p>
-            <p className="mt-2 text-sm text-muted">Try clearing your filters or searching with a different keyword.</p>
-            <button
+          <div className="rounded-[1.5rem] border border-dashed border-black/15 bg-white p-14 text-center">
+            <Briefcase className="mx-auto mb-4 size-10 text-black/40" aria-hidden="true" />
+            <p className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+              No positions match your search
+            </p>
+            <p className="mt-2 text-sm text-black/60">
+              Try clearing your filters or searching with a different keyword.
+            </p>
+            <Button
               onClick={() => {
                 setSelectedCategory("all");
                 setSearchQuery("");
               }}
-              className="mt-6 px-6 py-2.5 rounded-xl accent-gradient text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="mt-6"
             >
               Reset Filters
-            </button>
+            </Button>
           </div>
         )}
       </div>
     </section>
   );
 }
-

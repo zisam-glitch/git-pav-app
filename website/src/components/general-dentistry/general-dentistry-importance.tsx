@@ -1,4 +1,4 @@
-import React from "react";
+import { Reveal } from "@/components/home/reveal";
 
 const IMPORTANCE_POINTS = [
   {
@@ -21,30 +21,37 @@ const IMPORTANCE_POINTS = [
 
 export function GeneralDentistryImportance() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Why General Dentistry is Important?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            General dentistry forms the foundation of good oral health, providing essential care that prevents problems before they start and ensures your smile stays healthy for life.
+    <section className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <Reveal className="max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Preventative foundation
           </p>
-        </div>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Why general dentistry{" "}
+            <span className="text-[#754B3D]">is important</span>
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            General dentistry forms the foundation of good oral health, preventing problems early
+            and supporting healthy smiles for life.
+          </p>
+        </Reveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-8  ">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {IMPORTANCE_POINTS.map((point, i) => (
-            <div key={point.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {point.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {point.desc}
-              </p>
-            </div>
+            <Reveal key={point.title} delay={0.04 * i} className="h-full">
+              <div
+                className={`${
+                  i % 2 === 0 ? "hims-tile-warm" : "hims-tile-sage"
+                } flex h-full flex-col rounded-[1.5rem] border border-black/6 p-6`}
+              >
+                <span className="font-mono text-xs font-medium text-[#754B3D]">0{i + 1}</span>
+                <h3 className="mt-3 font-display text-xl font-normal tracking-[-0.02em] text-black">
+                  {point.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-black/65">{point.desc}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

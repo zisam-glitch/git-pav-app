@@ -1,6 +1,6 @@
-import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const SINGLE_TOOTH = [
@@ -23,95 +23,99 @@ const DIAMOND_OPTIONS = [
 
 export function GrillzPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Custom Grillz Price List
+    <section id="pricing" className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Pricing
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Custom grillz{" "}
+            <span className="text-[#754B3D]">price list</span>
           </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Transparent pricing with zero hidden lab charges. All packages include dentist appointment, medical impression, custom cast, and protective case.
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Transparent pricing with zero hidden lab charges. All packages include dentist
+            appointment, medical impression, custom cast, and protective case.
           </p>
+        </Reveal>
+
+        <div className="mt-12 grid gap-4 md:grid-cols-2">
+          <Reveal className="h-full">
+            <div className="hims-tile-warm h-full rounded-[1.5rem] border border-black/6 p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-8">
+              <div className="border-b border-black/8 pb-4">
+                <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                  Single Tooth Caps
+                </h3>
+                <p className="mt-1 text-xs font-medium text-[#754B3D]">Solid gold options</p>
+              </div>
+              <div className="divide-y divide-black/8">
+                {SINGLE_TOOTH.map((row) => (
+                  <div key={row.service} className="flex items-center justify-between gap-4 py-3.5">
+                    <span className="text-sm font-medium text-black/85">{row.service}</span>
+                    <span className="font-display text-lg text-[#1B3745] whitespace-nowrap">
+                      {row.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.06} className="h-full">
+            <div className="hims-tile-sage h-full rounded-[1.5rem] border border-black/6 p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-8">
+              <div className="border-b border-black/8 pb-4">
+                <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                  Special Styles
+                </h3>
+                <p className="mt-1 text-xs font-medium text-[#1B3745]">Custom designs</p>
+              </div>
+              <div className="divide-y divide-black/8">
+                {SPECIAL_STYLES.map((row) => (
+                  <div key={row.service} className="flex items-center justify-between gap-4 py-3.5">
+                    <span className="text-sm font-medium text-black/85">{row.service}</span>
+                    <span className="font-display text-lg text-[#1B3745] whitespace-nowrap">
+                      {row.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* Table 1: Single Tooth */}
-          <div className="rounded-xl bg-white   p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4  ">
-              <div>
-                <h3 className="font-display text-xl font-bold text-[#2a1c12]">Single Tooth Caps</h3>
-                <p className="text-xs text-[#925a27] font-semibold">Solid gold options</p>
-              </div>
-              
+        <Reveal delay={0.1}>
+          <div className="mt-4 rounded-[1.5rem] border border-black/6 bg-white p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-8">
+            <div className="border-b border-black/8 pb-4">
+              <h3 className="font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                Diamond &amp; Full Sets
+              </h3>
+              <p className="mt-1 text-xs font-medium text-[#754B3D]">VVS diamonds &amp; 6-tooth sets</p>
             </div>
-
-            <div className=" /70">
-              {SINGLE_TOOTH.map((row) => (
-                <div key={row.service} className="py-3 flex items-center justify-between gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                  <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
+            <div className="grid gap-x-10 divide-y divide-black/8 sm:grid-cols-2 sm:divide-y-0">
+              {DIAMOND_OPTIONS.map((row) => (
+                <div
+                  key={row.service}
+                  className="flex items-center justify-between gap-4 py-3.5 sm:border-b sm:border-black/8"
+                >
+                  <span className="text-sm font-medium text-black/85">{row.service}</span>
+                  <span className="font-display text-lg text-[#754B3D] whitespace-nowrap">
                     {row.price}
                   </span>
                 </div>
               ))}
             </div>
           </div>
+        </Reveal>
 
-          {/* Table 2: Special Styles */}
-          <div className="rounded-xl bg-white   p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4  ">
-              <div>
-                <h3 className="font-display text-xl font-bold text-[#2a1c12]">Special Styles</h3>
-                <p className="text-xs text-[#925a27] font-semibold">Custom designs</p>
-              </div>
-             
-            </div>
-
-            <div className=" /70">
-              {SPECIAL_STYLES.map((row) => (
-                <div key={row.service} className="py-3 flex items-center justify-between gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                  <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                    {row.price}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Table 3: Diamond Options */}
-        <div className="rounded-xl bg-white   p-6 shadow-sm mb-10">
-          <div className="flex items-center justify-between mb-5 pb-4  ">
-            <div>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">Diamond & Full Sets</h3>
-              <p className="text-xs text-[#925a27] font-semibold">Premium options</p>
-            </div>
-           
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-x-8  sm:divide-y-0 /70">
-            {DIAMOND_OPTIONS.map((row) => (
-              <div key={row.service} className="py-3 flex items-center justify-between gap-4  /50">
-                <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                  {row.price}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center">
-          <p className="text-xs text-[#6b5848] mb-6">
-            *All grillz include free in-clinic impression, luxury storage box, and tight snap-fit guarantee. UK Assay certified gold.
+        <div className="mt-10 text-center">
+          <p className="mb-6 text-xs text-black/55">
+            *All grillz include in-clinic impression, protective storage box, and 1-year craftsmanship
+            guarantee.
           </p>
-          <Button
-            asChild
-            className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
-          >
-            <a href={BOOKING_URL} className="flex items-center gap-2">
-              Book Impression Appointment <ArrowRight className="size-4" />
+          <Button asChild size="lg">
+            <a href={BOOKING_URL}>
+              Book Impression Appointment
+              <ArrowRight className="size-4" />
             </a>
           </Button>
         </div>

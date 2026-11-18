@@ -1,59 +1,67 @@
-import React from "react";
-import { ShieldCheck, CheckCircle, Lock } from "lucide-react";
+import { Lock, ShieldCheck } from "lucide-react";
+import { Reveal } from "@/components/home/reveal";
 
 export function AestheticsPremium() {
   return (
-    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-          {/* Left Column */}
-          <div className="lg:col-span-7">
-            <h2 className="font-display text-3xl sm:text-5xl font-bold text-white leading-tight">
-              Exclusively Utilizing Premium Medical-Grade Products
-            </h2>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="hims-navy-gradient rounded-[1.5rem] px-6 py-14 text-white sm:px-10 sm:py-20">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-10 lg:grid-cols-12">
+            <Reveal className="lg:col-span-7">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#ECD880]">
+                Quality &amp; governance
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-white sm:text-5xl">
+                We exclusively utilise{" "}
+                <span className="text-[#ECD880]">premium-grade products</span>
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-white/80">
+                Experience excellence with our Aesthetics services, where we use only the finest
+                products to ensure exceptional results each time.
+              </p>
+              <p className="mt-4 text-base leading-relaxed text-white/80">
+                Indulge in the finest aesthetic treatments you&apos;ll ever experience. Through
+                meticulous research, we have curated a selection of top-notch products, ensuring
+                utmost quality and satisfaction for our esteemed clients.
+              </p>
+            </Reveal>
 
-            <p className="mt-5 text-white/85 text-sm sm:text-base leading-relaxed">
-              At Pav Dental Aesthetics, your safety and natural outcome are paramount. We never compromise with unverified grey-market imports or low-grade substitutes. All injectable products are sourced exclusively from licensed UK pharmacies and FDA/CE-cleared global leaders including Juvéderm®, Botox®, and Profhilo®.
-            </p>
-
-            <p className="mt-4 text-white/85 text-sm sm:text-base leading-relaxed">
-              Because all aesthetic procedures are performed by GDC-registered dental surgeons, our clinicians possess five-plus years of rigorous university training in head and neck anatomy, vascular mapping, and sterile injection protocols.
-            </p>
-          </div>
-
-          {/* Right Column: CQC Card */}
-          <div className="lg:col-span-5">
-            <div className="bg-[#372418] rounded-xl   p-8 text-white flex flex-col justify-between aspect-square">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="size-11 rounded-full border-2  flex items-center justify-center font-bold text-lg text-white">
-                    Q
+            <Reveal delay={0.08} className="lg:col-span-5">
+              <div className="flex flex-col justify-between rounded-[1.5rem] border border-white/14 bg-white/8 p-8 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-[#ECD880]">
+                      <ShieldCheck className="size-5" />
+                    </div>
+                    <div>
+                      <p className="font-display text-lg font-normal text-white">Care Quality</p>
+                      <p className="text-[11px] uppercase tracking-wider text-white/65">
+                        Commission Regulated
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-display text-lg font-bold">CareQuality</p>
-                    <p className="text-[10px] uppercase text-white/80">Commission</p>
-                  </div>
+                  <Lock className="size-4 text-[#ECD880]" />
                 </div>
-                <Lock className="size-4 text-[#cf9448]" />
-              </div>
 
-              <div className="my-6">
-                <p className="text-xs font-bold uppercase text-[#cf9448] mb-1">
-                  Official Regulatory Compliance
-                </p>
-                <h3 className="font-display text-xl sm:text-2xl font-bold leading-snug">
-                  Regulated Medical Aesthetics Practice
-                </h3>
-                <p className="text-xs text-white/80 mt-2 leading-relaxed">
-                  Pav Dental is registered and monitored by the Care Quality Commission (CQC), guaranteeing that our infection control, clinician competence, and emergency readiness meet England's strictest healthcare standards.
-                </p>
-              </div>
+                <div className="my-7">
+                  <p className="text-xs font-medium uppercase tracking-wider text-[#ECD880]">
+                    Official Regulatory Compliance
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl font-normal tracking-[-0.02em] text-white">
+                    Regulated Medical Aesthetics Practice
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/75">
+                    As a regulated clinic under the Care Quality Commission (CQC), we adhere to
+                    rigorous guidelines for cleanliness, sterilisation, and staff training.
+                  </p>
+                </div>
 
-              <div className="pt-4   flex items-center justify-between text-xs text-white/80">
-                <span>Location: Bradford, West Yorkshire</span>
-                <span className="font-bold text-emerald-400">Status: Registered</span>
+                <div className="flex items-center justify-between border-t border-white/12 pt-4 text-xs text-white/75">
+                  <span>Bradford, West Yorkshire</span>
+                  <span className="font-medium text-[#ECD880]">CQC Registered</span>
+                </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </div>

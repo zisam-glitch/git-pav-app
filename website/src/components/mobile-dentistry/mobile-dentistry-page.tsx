@@ -6,11 +6,12 @@ import { MobileDentistryContact } from "./mobile-dentistry-contact";
 
 export function MobileDentistryPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5]">
       <MobileDentistryHero />
       <MobileDentistryBenefits />
       <MobileDentistryService />
       <MobileDentistryLocation />
+      <MobileDentistryContact />
     </main>
   );
 }

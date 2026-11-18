@@ -1,119 +1,132 @@
+import { CheckCircle2, PhoneCall, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { useEnquiry } from "@/lib/use-enquiry";
 
 export function MobileDentistryContact() {
   const enquiry = useEnquiry("Mobile dentistry");
 
   return (
-    <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Get In Touch
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Have questions about our mobile dental services? Contact us today to discuss your needs or schedule an appointment.
-          </p>
-        </div>
-
-        <div className="max-w-2xl mx-auto">
-          {enquiry.sent ? (
-            <div role="status" className="text-center py-10">
-              <h3 className="font-display text-2xl font-bold text-[#2a1c12]">Message received</h3>
-              <p className="mt-3 text-sm text-[#6b5848]">
-                Thank you. Your message has reached the practice, and the team will get back to you.
+    <section id="contact" className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-16 sm:px-10 sm:py-24">
+          <div className="mx-auto max-w-3xl">
+            <div className="text-center">
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                Home &amp; care home visits
               </p>
-              <button type="button" onClick={enquiry.reset} className="text-xs text-[#925a27] underline mt-4">
-                Send another message
-              </button>
-            </div>
-          ) : (
-          <form onSubmit={enquiry.submit} className="space-y-6">
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-[#2a1c12] mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#2a1c12] mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-[#2a1c12] mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
-                  placeholder="How can we help?"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-[#2a1c12] mb-2">
-                  Phone
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
-                  placeholder="Your phone number"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-[#2a1c12] mb-2">
-                Your Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent resize-none"
-                placeholder="Tell us about your dental care needs..."
-                required
-              />
-            </div>
-
-            {enquiry.error && (
-              <p role="alert" className="text-sm text-red-700">
-                {enquiry.error}
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Get In <span className="text-[#754B3D]">Touch</span>
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-black/65">
+                Have questions about our mobile dental services? Contact us today to discuss your
+                needs or arrange a visit.
               </p>
-            )}
-            <Button
-              type="submit"
-              disabled={enquiry.sending}
-              className="w-full accent-gradient text-white rounded-full px-8 py-4 font-bold shadow hover:opacity-95"
-            >
-              {enquiry.sending ? "Sending…" : "Send Message"}
-            </Button>
-          </form>
-          )}
+            </div>
+
+            <div className="mt-10 rounded-[1.5rem] border border-black/6 bg-white p-6 shadow-[0_6px_24px_rgba(0,0,0,0.04)] sm:p-10">
+              {enquiry.sent ? (
+                <div role="status" className="flex flex-col items-center py-10 text-center">
+                  <CheckCircle2 className="size-12 text-[#1B3745]" />
+                  <h3 className="mt-4 font-display text-2xl font-normal tracking-[-0.03em] text-black">
+                    Message received
+                  </h3>
+                  <p className="mt-2 max-w-md text-sm text-black/65">
+                    Thank you. Your message has reached the practice, and the team will get back to
+                    you.
+                  </p>
+                  <Button type="button" onClick={enquiry.reset} className="mt-6">
+                    Send another message
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={enquiry.submit} className="space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">Full Name</Label>
+                      <Input
+                        id="fullName"
+                        name="fullName"
+                        placeholder="Your full name"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address</Label>
+                      <Input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="your@email.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Subject</Label>
+                      <Input
+                        id="subject"
+                        name="subject"
+                        placeholder="How can we help?"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <Input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Your phone number"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Your Message</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      rows={5}
+                      className="resize-none"
+                      placeholder="Tell us about your dental care needs..."
+                      required
+                    />
+                  </div>
+
+                  {enquiry.error && (
+                    <p role="alert" className="text-sm font-medium text-[#8A3A34]">
+                      {enquiry.error}
+                    </p>
+                  )}
+
+                  <div className="flex flex-col items-center justify-between gap-4 pt-2 sm:flex-row">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={enquiry.sending}
+                      className="w-full sm:w-auto"
+                    >
+                      <Send className="size-4" />
+                      {enquiry.sending ? "Sending…" : "Send Message"}
+                    </Button>
+                    <a
+                      href={PRACTICE_PHONE_HREF}
+                      className="inline-flex items-center gap-2 text-sm font-medium text-[#1B3745] hover:underline"
+                    >
+                      <PhoneCall className="size-4" />
+                      {PRACTICE_PHONE}
+                    </a>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>

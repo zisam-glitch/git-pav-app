@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { api } from "@/lib/api";
-import { ArrowLeft, CheckCircle2, Lock, ShieldCheck, Truck, AlertCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Lock, ShieldCheck, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function CheckoutPage() {
@@ -22,11 +22,13 @@ export function CheckoutPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [promoCodeInput, setPromoCodeInput] = useState("");
-  const [promoMessage, setPromoMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [promoMessage, setPromoMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const [shippingMethods, setShippingMethods] = useState<any[]>([]);
   const [loadingShipping, setLoadingShipping] = useState(true);
@@ -53,11 +55,14 @@ export function CheckoutPage() {
     loadShipping();
   }, []);
 
-  const selectedMethod = shippingMethods.find((m) => m.id === selectedShippingMethodId) || shippingMethods[0];
+  const selectedMethod =
+    shippingMethods.find((m) => m.id === selectedShippingMethodId) || shippingMethods[0];
   let shippingCost = 0;
   if (selectedMethod) {
     const base = parseFloat(selectedMethod.base_price);
-    const threshold = selectedMethod.free_shipping_threshold ? parseFloat(selectedMethod.free_shipping_threshold) : null;
+    const threshold = selectedMethod.free_shipping_threshold
+      ? parseFloat(selectedMethod.free_shipping_threshold)
+      : null;
     shippingCost = threshold !== null && subtotal >= threshold ? 0 : base;
   } else {
     shippingCost = subtotal >= 40 ? 0 : 3.99;
@@ -105,7 +110,7 @@ export function CheckoutPage() {
           name: fullName,
           address: address,
           city,
-          state: city, // Using city as state for UK addresses
+          state: city,
           zip,
           country: "GB",
         },
@@ -120,14 +125,15 @@ export function CheckoutPage() {
         shippingMethodId: selectedShippingMethodId || undefined,
         discountCode: appliedDiscount?.code || undefined,
         sessionId,
-        // The server refuses the order if its total differs from what's shown here.
         expectedTotal: finalTotal,
       };
 
       const res = await api.checkout.createSession(payload);
 
       if (!res.url) {
-        throw new Error("We couldn't open the payment page. You haven't been charged. Please try again.");
+        throw new Error(
+          "We couldn't open the payment page. You haven't been charged. Please try again.",
+        );
       }
       window.location.href = res.url;
     } catch (err: any) {
@@ -138,41 +144,69 @@ export function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <h1 className="font-display text-2xl font-bold text-fg">Your Bag is Empty</h1>
-        <p className="mt-2 text-sm text-muted">Add clinical oral care products before checking out.</p>
-        <Button asChild className="mt-6 bg-[#925a27] hover:bg-[#7a491e] text-white">
-          <a href="/shop">Browse Store</a>
-        </Button>
+      <div className="min-h-[75vh] bg-[#FBF8F5] pt-28 pb-20 px-4 flex flex-col items-center justify-center">
+        <div className="w-full max-w-md rounded-[1.5rem] border border-black/8 bg-white p-10 text-center shadow-[0_2px_16px_rgba(0,0,0,0.04)]">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Checkout
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black">
+            Your Bag is Empty
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-black/65">
+            Add clinical oral care products before checking out.
+          </p>
+          <Button asChild className="mt-7 h-12 px-8">
+            <a href="/shop">Browse Store</a>
+          </Button>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <a href="/shop" className="inline-flex items-center gap-2 text-xs text-muted hover:text-primary mb-8">
-          <ArrowLeft className="size-4" />
-          <span>Back to Shopping</span>
-        </a>
+  const inputCls =
+    "mt-1.5 w-full rounded-xl border border-black/12 bg-white px-3.5 py-2.5 text-sm text-black placeholder:text-black/40 focus:border-black focus:outline-none";
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+  return (
+    <div className="min-h-screen bg-[#FBF8F5] text-fg pt-24 pb-20 px-4 sm:pt-28 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-[87rem]">
+        <div className="mb-8 border-b border-black/10 pb-6">
+          <a
+            href="/shop"
+            className="inline-flex items-center gap-2 text-xs font-medium text-black/60 transition-colors hover:text-black"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>Back to Shopping</span>
+          </a>
+          <h1 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Checkout
+          </h1>
+        </div>
+
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
           {/* Form Left Side */}
-          <form onSubmit={handleProceedToPayment} className="lg:col-span-7 space-y-8">
+          <form onSubmit={handleProceedToPayment} className="space-y-6 lg:col-span-7">
             {errorMessage && (
-              <div className="p-4 rounded-xl bg-red-50   text-red-700 text-xs flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 rounded-2xl border border-[#8A3A34]/20 bg-[#8A3A34]/8 p-4 text-xs font-medium text-[#8A3A34]">
                 <AlertCircle className="size-4 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
             {/* 1. Contact Info */}
-            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-4">
-              <h2 className="font-display text-lg font-bold text-fg flex items-center gap-2">
-                <span>1. Contact Information</span>
-              </h2>
+            <div className="space-y-4 rounded-[1.5rem] border border-black/8 bg-white p-6 shadow-[0_2px_16px_rgba(0,0,0,0.04)] sm:p-7">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-6 place-items-center rounded-full bg-black text-[11px] font-medium text-white">
+                  1
+                </span>
+                <h2 className="font-display text-xl font-normal tracking-[-0.02em] text-black">
+                  Contact Information
+                </h2>
+              </div>
+
               <div>
-                <label htmlFor="checkout-email" className="text-xs font-semibold text-fg">Email Address *</label>
+                <label htmlFor="checkout-email" className="text-xs font-medium text-black/80">
+                  Email Address *
+                </label>
                 <input
                   id="checkout-email"
                   type="email"
@@ -180,28 +214,43 @@ export function CheckoutPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.co.uk"
-                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className={inputCls}
                 />
-                <p className="text-[11px] text-muted mt-1">We'll send your receipt and tracking updates here.</p>
+                <p className="mt-1.5 text-[11px] text-black/50">
+                  We&apos;ll send your receipt and tracking updates here.
+                </p>
               </div>
+
               <div>
-                <label htmlFor="checkout-phone" className="text-xs font-semibold text-fg">Phone Number (Optional)</label>
+                <label htmlFor="checkout-phone" className="text-xs font-medium text-black/80">
+                  Phone Number (Optional)
+                </label>
                 <input
                   id="checkout-phone"
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+44 7123 456789"
-                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className={inputCls}
                 />
               </div>
             </div>
 
             {/* 2. Delivery Address */}
-            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-4">
-              <h2 className="font-display text-lg font-bold text-fg">2. Shipping Address</h2>
+            <div className="space-y-4 rounded-[1.5rem] border border-black/8 bg-white p-6 shadow-[0_2px_16px_rgba(0,0,0,0.04)] sm:p-7">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-6 place-items-center rounded-full bg-black text-[11px] font-medium text-white">
+                  2
+                </span>
+                <h2 className="font-display text-xl font-normal tracking-[-0.02em] text-black">
+                  Shipping Address
+                </h2>
+              </div>
+
               <div>
-                <label htmlFor="checkout-name" className="text-xs font-semibold text-fg">Full Name *</label>
+                <label htmlFor="checkout-name" className="text-xs font-medium text-black/80">
+                  Full Name *
+                </label>
                 <input
                   id="checkout-name"
                   type="text"
@@ -209,11 +258,14 @@ export function CheckoutPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Dr. Jane Smith"
-                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className={inputCls}
                 />
               </div>
+
               <div>
-                <label htmlFor="checkout-address" className="text-xs font-semibold text-fg">Address Line 1 *</label>
+                <label htmlFor="checkout-address" className="text-xs font-medium text-black/80">
+                  Address Line 1 *
+                </label>
                 <input
                   id="checkout-address"
                   type="text"
@@ -221,13 +273,15 @@ export function CheckoutPage() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Street address or P.O. Box"
-                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className={inputCls}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="checkout-city" className="text-xs font-semibold text-fg">Town / City *</label>
+                  <label htmlFor="checkout-city" className="text-xs font-medium text-black/80">
+                    Town / City *
+                  </label>
                   <input
                     id="checkout-city"
                     type="text"
@@ -235,11 +289,13 @@ export function CheckoutPage() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="Bradford, Leeds, London..."
-                    className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                    className={inputCls}
                   />
                 </div>
                 <div>
-                  <label htmlFor="checkout-zip" className="text-xs font-semibold text-fg">Postcode *</label>
+                  <label htmlFor="checkout-zip" className="text-xs font-medium text-black/80">
+                    Postcode *
+                  </label>
                   <input
                     id="checkout-zip"
                     type="text"
@@ -247,31 +303,41 @@ export function CheckoutPage() {
                     value={zip}
                     onChange={(e) => setZip(e.target.value)}
                     placeholder="e.g. BD1 1AA"
-                    className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                    className={`${inputCls} uppercase placeholder:normal-case`}
                   />
                 </div>
               </div>
             </div>
 
             {/* 3. Shipping Method */}
-            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-4">
-              <h2 className="font-display text-lg font-bold text-fg">3. Delivery Options</h2>
+            <div className="space-y-4 rounded-[1.5rem] border border-black/8 bg-white p-6 shadow-[0_2px_16px_rgba(0,0,0,0.04)] sm:p-7">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-6 place-items-center rounded-full bg-black text-[11px] font-medium text-white">
+                  3
+                </span>
+                <h2 className="font-display text-xl font-normal tracking-[-0.02em] text-black">
+                  Delivery Options
+                </h2>
+              </div>
+
               {loadingShipping ? (
-                <p className="text-xs text-muted">Loading delivery rates...</p>
+                <p className="text-xs text-black/55">Loading delivery rates...</p>
               ) : (
                 <div className="space-y-2.5">
                   {shippingMethods.map((m) => {
                     const price = parseFloat(m.base_price);
-                    const isFree = m.free_shipping_threshold && subtotal >= parseFloat(m.free_shipping_threshold);
+                    const isFree =
+                      m.free_shipping_threshold &&
+                      subtotal >= parseFloat(m.free_shipping_threshold);
                     const isSelected = selectedShippingMethodId === m.id;
 
                     return (
                       <label
                         key={m.id}
-                        className={`flex items-center justify-between p-3.5 rounded-xl  cursor-pointer transition-all ${
+                        className={`flex cursor-pointer items-center justify-between rounded-2xl border p-4 transition-colors ${
                           isSelected
-                            ? " bg-[#faf6f0]  ring-[#925a27]"
-                            : " bg-white hover:border-[#925a27]"
+                            ? "border-black bg-[#FAF8F2]"
+                            : "border-black/12 bg-white hover:border-black/30"
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -280,14 +346,16 @@ export function CheckoutPage() {
                             name="shippingMethod"
                             checked={isSelected}
                             onChange={() => setShippingMethodId(m.id)}
-                            className="text-[#925a27] focus:ring-[#925a27]"
+                            className="accent-black"
                           />
                           <div>
-                            <p className="text-xs font-semibold text-fg">{m.name}</p>
-                            {m.description && <p className="text-[11px] text-muted">{m.description}</p>}
+                            <p className="text-sm font-medium text-black">{m.name}</p>
+                            {m.description && (
+                              <p className="text-xs text-black/55">{m.description}</p>
+                            )}
                           </div>
                         </div>
-                        <span className="text-xs font-bold text-fg">
+                        <span className="text-xs font-medium tabular-nums text-black">
                           {isFree ? "FREE" : `£${price.toFixed(2)}`}
                         </span>
                       </label>
@@ -297,41 +365,43 @@ export function CheckoutPage() {
               )}
             </div>
 
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="w-full h-12 bg-[#925a27] hover:bg-[#7a491e] text-white font-semibold text-sm rounded-xl shadow-md gap-2 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
-            >
+            <Button type="submit" disabled={submitting} className="h-12 w-full text-sm">
               <Lock className="size-4" />
-              <span>{submitting ? "Securing Order..." : `Proceed to Secure Payment · £${finalTotal.toFixed(2)}`}</span>
+              <span>
+                {submitting
+                  ? "Securing Order..."
+                  : `Proceed to Secure Payment · £${finalTotal.toFixed(2)}`}
+              </span>
             </Button>
           </form>
 
           {/* Right Summary Side */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-6">
-              <h2 className="font-display text-lg font-bold text-fg">Order Summary</h2>
+          <div className="space-y-4 lg:sticky lg:top-28 lg:col-span-5">
+            <div className="space-y-5 rounded-[1.5rem] border border-black/8 bg-white p-6 shadow-[0_2px_16px_rgba(0,0,0,0.04)] sm:p-7">
+              <h2 className="font-display text-xl font-normal tracking-[-0.02em] text-black">
+                Order Summary
+              </h2>
 
-              {/* Items list */}
-              <div className=" /60 max-h-80 overflow-y-auto pr-1">
+              <div className="max-h-80 divide-y divide-black/10 overflow-y-auto pr-1">
                 {items.map((it) => (
-                  <div key={it.id} className="py-3 flex items-center gap-3">
+                  <div key={it.id} className="flex items-center gap-3.5 py-3 first:pt-0">
                     <img
                       src={it.image}
                       alt={it.name}
-                      className="size-12 rounded-lg object-cover bg-[#faf6f0]   shrink-0"
+                      className="size-12 shrink-0 rounded-xl border border-black/6 bg-[#FAF8F2] object-contain p-1"
                     />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-fg truncate">{it.name}</p>
-                      <p className="text-[11px] text-muted">Qty: {it.quantity}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-medium text-black">{it.name}</p>
+                      <p className="text-[11px] text-black/55">Qty: {it.quantity}</p>
                     </div>
-                    <span className="text-xs font-bold text-fg">£{it.itemTotal.toFixed(2)}</span>
+                    <span className="text-xs font-medium tabular-nums text-black">
+                      £{it.itemTotal.toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
 
-              {/* Promo Code Form */}
-              <div className="pt-2">
+              <div className="border-t border-black/10 pt-4">
                 {!appliedDiscount ? (
                   <form onSubmit={handleApplyDiscount} className="flex gap-2">
                     <input
@@ -340,65 +410,73 @@ export function CheckoutPage() {
                       placeholder="Promo code"
                       value={promoCodeInput}
                       onChange={(e) => setPromoCodeInput(e.target.value)}
-                      className="flex-1 rounded-xl   bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                      className="h-10 flex-1 rounded-xl border border-black/12 bg-[#FBF8F5] px-3.5 text-xs text-black uppercase placeholder:normal-case placeholder:text-black/40 focus:border-black focus:outline-none"
                     />
-                    <Button type="submit" variant="outline" size="sm" className="rounded-xl">
+                    <Button type="submit" variant="outline" size="sm" className="h-10 px-4">
                       Apply
                     </Button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between bg-[#faf6f0]   text-[#2a1c12] p-2.5 rounded-xl text-xs">
-                    <div className="flex items-center gap-1.5 font-medium text-[#925a27]">
-                      <CheckCircle2 className="size-4 text-[#925a27] shrink-0" />
-                      <span>Coupon {appliedDiscount.code} applied (-£{discountAmount.toFixed(2)})</span>
+                  <div className="flex items-center justify-between rounded-xl border border-black/8 bg-[#FAF8F2] px-3.5 py-2.5 text-xs">
+                    <div className="flex items-center gap-1.5 font-medium text-[#1B3745]">
+                      <CheckCircle2 className="size-4 shrink-0" />
+                      <span>
+                        Coupon {appliedDiscount.code} applied (-£{discountAmount.toFixed(2)})
+                      </span>
                     </div>
                     <button
                       type="button"
                       onClick={removeDiscount}
-                      className="text-xs text-muted hover:text-fg underline ml-2 font-semibold focus-visible:outline-2 focus-visible:outline-[#925a27] rounded"
+                      className="ml-2 font-medium text-black/60 underline hover:text-black"
                     >
                       Remove
                     </button>
                   </div>
                 )}
                 {promoMessage && !appliedDiscount && (
-                  <p className={`text-[11px] mt-1.5 ${promoMessage.type === "success" ? "text-[#925a27]" : "text-red-700"}`}>
+                  <p
+                    className={`mt-1.5 text-[11px] ${
+                      promoMessage.type === "success" ? "text-[#1B3745]" : "text-[#8A3A34]"
+                    }`}
+                  >
                     {promoMessage.text}
                   </p>
                 )}
               </div>
 
-              {/* Totals Calculation */}
-              <div className="space-y-2   pt-4 text-xs">
-                <div className="flex justify-between text-muted">
+              <div className="space-y-2.5 border-t border-black/10 pt-4 text-xs">
+                <div className="flex justify-between text-black/65">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-fg">£{subtotal.toFixed(2)}</span>
+                  <span className="font-medium tabular-nums text-black">
+                    £{subtotal.toFixed(2)}
+                  </span>
                 </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-[#925a27] font-medium">
+                  <div className="flex justify-between font-medium text-[#754B3D]">
                     <span>Promo Discount</span>
-                    <span>-£{discountAmount.toFixed(2)}</span>
+                    <span className="tabular-nums">-£{discountAmount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-muted">
+                <div className="flex justify-between text-black/65">
                   <span>UK Delivery</span>
-                  <span className="font-semibold text-fg">
+                  <span className="font-medium tabular-nums text-black">
                     {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm font-bold text-fg pt-3  ">
+                <div className="flex justify-between border-t border-black/10 pt-3 text-base font-medium text-black">
                   <span>Total (inc. VAT)</span>
-                  <span className="text-[#925a27] text-base">£{finalTotal.toFixed(2)}</span>
+                  <span className="tabular-nums">£{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
-            {/* Security Guarantee Box */}
-            <div className="p-4 rounded-xl   bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
-              <ShieldCheck className="size-6 text-[#925a27] shrink-0" />
+            <div className="flex items-center gap-3 rounded-[1.5rem] border border-black/8 bg-[#FAF8F2] p-4 text-xs">
+              <ShieldCheck className="size-5 shrink-0 text-[#1B3745]" />
               <div>
-                <p className="font-semibold">256-Bit SSL Encrypted Payment</p>
-                <p className="text-[11px] text-[#6b5848]">Authorized clinical dispenser. 30-day money back guarantee.</p>
+                <p className="font-medium text-black">256-Bit SSL Encrypted Payment</p>
+                <p className="mt-0.5 text-[11px] text-black/60">
+                  Authorized clinical dispenser. 30-day money back guarantee.
+                </p>
               </div>
             </div>
           </div>
@@ -407,4 +485,3 @@ export function CheckoutPage() {
     </div>
   );
 }
-

@@ -1,74 +1,87 @@
-import React from "react";
-import { CheckCircle, Shield, Clock3, HeartPulse } from "lucide-react";
+import { Check, Clock3, HeartPulse, Shield, Sparkles } from "lucide-react";
+
+const CHECKLIST = [
+  "No waiting lists — same-day emergency access",
+  "Experienced and compassionate surgical team",
+  "State-of-the-art digital X-ray assessment",
+  "Affordable and transparent upfront pricing",
+];
 
 const PERKS = [
   {
     icon: Clock3,
     title: "Same-Day Treatment",
-    desc: "Emergency slots reserved every day — call in the morning and be seen the same afternoon.",
+    desc: "Tooth pain cannot wait. We reserve emergency slots daily so you can be seen and treated promptly.",
   },
   {
     icon: Shield,
-    title: "Pain-Free Promise",
-    desc: "Advanced local anaesthetic and sedation options ensure you feel only comfort throughout.",
+    title: "Comfortable Anaesthetic",
+    desc: "Effective local anaesthetic ensures you feel pressure rather than pain throughout your extraction.",
   },
   {
     icon: HeartPulse,
-    title: "Post-Operative Care",
-    desc: "Every patient gets a full aftercare pack and 24-hour direct line to our clinical team.",
+    title: "Comprehensive Aftercare",
+    desc: "Clear written recovery instructions and direct access to our clinical team if questions arise.",
   },
   {
-    icon: CheckCircle,
-    title: "All Extractions Covered",
-    desc: "From routine extractions to complex impacted wisdom teeth — handled in a single visit.",
+    icon: Sparkles,
+    title: "Patient-Centric Approach",
+    desc: "Every step is explained clearly before we begin, with informed consent and replacement options discussed.",
   },
 ];
 
 export function ExtractionGuarantee() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-          {/* Left — text */}
-          <div>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-              Guaranteed Same-Day Treatment
-            </h2>
-            <p className="mt-5 text-[#6b5848] leading-relaxed max-w-lg text-sm sm:text-base">
-              Dental pain is never something you should endure. At Pav Dental,
-              we've built our extraction service around immediate, affordable and
-              lasting relief — assessed, planned and treated in one appointment.
-            </p>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-12 lg:grid-cols-[1fr_1.05fr]">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-black/55">
+                Same-day care
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Guaranteed Tooth Extraction{" "}
+                <span className="text-[#754B3D]">Same Day Treatment</span>
+              </h2>
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-black/65">
+                We understand that tooth pain can be unbearable and waiting is not an option.
+                Using modern techniques and equipment, we safely remove the affected tooth,
+                alleviating your pain and preventing further complications.
+              </p>
 
-            <ul className="mt-8 space-y-3">
-              {[
-                "No waiting lists — same-day emergency access",
-                "Local anaesthetic or sedation for anxious patients",
-                "Digital X-ray assessment before every extraction",
-                "Antibiotic and pain relief prescription included",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-[#2a1c12]">
-                  <CheckCircle className="size-4 text-primary mt-0.5 flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+              <ul className="mt-8 divide-y divide-black/10 border-t border-b border-black/10">
+                {CHECKLIST.map((item) => (
+                  <li key={item} className="flex items-center justify-between gap-4 py-3.5 text-sm text-black/85">
+                    <span>{item}</span>
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-black text-white">
+                      <Check className="size-3.5" strokeWidth={2.5} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Right — solid feature cards */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            {PERKS.map((p) => (
-              <div
-                key={p.title}
-                className="bg-white rounded-xl p-6 flex flex-col gap-4   shadow-sm"
-              >
-                <p.icon className="size-5 text-[#925a27]" />
-                <div>
-                  <p className="font-bold text-[#2a1c12] text-sm">{p.title}</p>
-                  <p className="text-xs text-[#6b5848] mt-1.5 leading-relaxed">{p.desc}</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {PERKS.map((p, index) => (
+                <div
+                  key={p.title}
+                  className={`${
+                    index % 2 === 0 ? "bg-white" : "hims-tile-warm"
+                  } flex flex-col justify-between gap-4 rounded-[1.5rem] border border-black/6 p-6 shadow-[0_6px_24px_rgba(0,0,0,0.04)]`}
+                >
+                  <span className="grid size-10 place-items-center rounded-xl bg-[#F2EDE5] text-[#1B3745]">
+                    <p.icon className="size-5" />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl font-normal tracking-[-0.02em] text-black">
+                      {p.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-black/65">{p.desc}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

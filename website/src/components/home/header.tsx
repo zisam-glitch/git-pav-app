@@ -189,35 +189,35 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50  transition-[background,box-shadow,border-color] duration-200",
+        "fixed inset-x-0 top-0 z-50 transition-[background,box-shadow,backdrop-filter] duration-300",
         servicesOpen
-          ? "border-transparent bg-white shadow-soft"
+          ? "bg-white shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
           : scrolled || mobileOpen
-          ? " bg-white shadow-soft"
-          : "border-transparent bg-transparent",
+          ? "bg-[#FBF8F5]/90 backdrop-blur-md shadow-[0_2px_16px_rgba(0,0,0,0.05)]"
+          : "bg-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-20 max-w-[108rem] items-center justify-between gap-3 px-4 sm:px-6 lg:px-10">
         {/* Logo */}
         <a
           href="/"
-          className="flex shrink-0 items-center gap-2 font-medium"
+          className="flex shrink-0 items-center gap-2 rounded-full bg-white/95 px-3.5 py-1.5 shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-transform hover:scale-[1.02]"
           onClick={() => setMobileOpen(false)}
         >
-          <img className="h-8 w-auto" src="https://res.cloudinary.com/db1i46uiv/image/upload/v1723411040/PAV_LOGO_2-01_r2ecmh.png" alt="Pav Dental" />
+          <img className="h-6 w-auto" src="https://res.cloudinary.com/db1i46uiv/image/upload/v1723411040/PAV_LOGO_2-01_r2ecmh.png" alt="Pav Dental" />
         </a>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+        {/* Desktop nav — Hims floating white pill bar */}
+        <nav className="hidden items-center gap-1.5 lg:flex" aria-label="Primary">
           <a
             href="/"
-            className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
+            className="inline-flex h-[34px] items-center rounded-full bg-white px-3.5 text-xs font-medium text-black shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-colors duration-200 hover:bg-[#F2EDE5]"
           >
             Home
           </a>
           <a
             href="/about"
-            className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
+            className="inline-flex h-[34px] items-center rounded-full bg-white px-3.5 text-xs font-medium text-black shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-colors duration-200 hover:bg-[#F2EDE5]"
           >
             About
           </a>
@@ -231,8 +231,10 @@ export function Header() {
             <button
               type="button"
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm transition-colors duration-150",
-                servicesOpen ? "text-fg" : "text-muted hover:text-fg",
+                "inline-flex h-[34px] items-center gap-1 rounded-full px-3.5 text-xs font-medium shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-colors duration-200",
+                servicesOpen
+                  ? "bg-black text-white"
+                  : "bg-white text-black hover:bg-[#F2EDE5]",
               )}
               aria-expanded={servicesOpen}
               aria-haspopup="true"
@@ -241,7 +243,7 @@ export function Header() {
               Services
               <ChevronDown
                 className={cn(
-                  "size-4 mt-0.5 transition-transform duration-200",
+                  "size-3.5 transition-transform duration-200",
                   servicesOpen && "rotate-180",
                 )}
               />
@@ -249,34 +251,34 @@ export function Header() {
 
             {servicesOpen && (
               <div
-                className="absolute left-1/2 top-full z-[60] mt-[15px] w-[min(720px,calc(100vw-2rem))] -translate-x-1/2"
+                className="absolute left-1/2 top-full z-[60] pt-3 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2"
                 onMouseEnter={openServices}
                 onMouseLeave={scheduleCloseServices}
               >
-                <div className="bg-[#FFF] overflow-hidden rounded-b-xl p-4">
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3">
+                <div className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.12)]">
+                  <div className="grid grid-cols-2 gap-x-5 gap-y-5 sm:grid-cols-3">
                     {SERVICE_CATEGORIES.map((category) => (
                       <div key={category.title} className="min-w-0">
-                        <p className="mb-2 px-2 text-[11px] font-semibold text-subtle">
+                        <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-black/45">
                           {category.title}
                         </p>
-                        <ul className="space-y-0.5">
+                        <ul className="space-y-1">
                           {category.items.map((item) => (
                             <li key={item.title}>
                               <a
                                 href={item.href}
-                                className="flex items-start gap-2.5 rounded-xl p-2 transition-colors hover:bg-elevated/70"
+                                className="flex items-start gap-2.5 rounded-2xl p-2 transition-colors hover:bg-[#FAF8F2]"
                                 onClick={() => setServicesOpen(false)}
                               >
-                                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg   bg-surface/80">
-                                  <item.icon className="size-3.5 text-primary" />
+                                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl bg-[#F2EDE5]">
+                                  <item.icon className="size-3.5 text-[#1B3745]" />
                                 </span>
                                 <span className="min-w-0">
-                                  <span className="block text-sm font-medium leading-tight text-fg">
+                                  <span className="block text-sm font-medium leading-tight text-black">
                                     {item.title}
                                   </span>
                                   {item.description && (
-                                    <span className="mt-0.5 block text-[11px] leading-snug text-muted line-clamp-1">
+                                    <span className="mt-0.5 block text-[11px] leading-snug text-black/55 line-clamp-1">
                                       {item.description}
                                     </span>
                                   )}
@@ -289,21 +291,19 @@ export function Header() {
                     ))}
                   </div>
 
-                  <div className="mt-4   pt-3">
-                    <p className="px-2 pb-2 text-sm">
-                      <a
-                        href="/services"
-                        className="font-medium text-fg underline-offset-2 hover:underline"
-                        onClick={() => setServicesOpen(false)}
-                      >
-                        View all services
-                      </a>
-                    </p>
-                    <p className="px-2 text-sm text-muted">
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-black/8 pt-4 px-2">
+                    <a
+                      href="/services"
+                      className="text-sm font-medium text-black underline-offset-4 hover:underline"
+                      onClick={() => setServicesOpen(false)}
+                    >
+                      View all services →
+                    </a>
+                    <p className="text-xs text-black/55">
                       Not sure which service you need?{" "}
                       <a
                         href={BOOKING_URL}
-                        className="font-medium text-fg underline-offset-2 hover:underline"
+                        className="font-medium text-black underline-offset-4 hover:underline"
                         onClick={() => setServicesOpen(false)}
                       >
                         Book a free consultation
@@ -319,7 +319,7 @@ export function Header() {
             <a
               key={l.href}
               href={l.href}
-              className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
+              className="inline-flex h-[34px] items-center rounded-full bg-white px-3.5 text-xs font-medium text-black shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-colors duration-200 hover:bg-[#F2EDE5]"
             >
               {l.name}
             </a>
@@ -328,14 +328,20 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          
-          <Button asChild size="sm">
+          <a
+            href="tel:08001938786"
+            className="hidden h-[34px] items-center gap-1.5 rounded-full bg-white px-3.5 text-xs font-medium text-black shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#F2EDE5] xl:inline-flex"
+          >
+            <Phone className="size-3.5 text-[#1B3745]" />
+            <span>0800 1938 786</span>
+          </a>
+          <Button asChild size="sm" className="h-[34px] px-4 text-xs">
             <a href={BOOKING_URL}>Book Now</a>
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
-            className="lg:hidden"
+            className="size-[34px] rounded-full border-black/10 bg-white lg:hidden"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
@@ -344,7 +350,7 @@ export function Header() {
               setServicesOpen(false);
             }}
           >
-            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {mobileOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </Button>
         </div>
       </div>
@@ -353,7 +359,7 @@ export function Header() {
       <div
         id="mobile-menu"
         className={cn(
-          "bg-white max-h-[calc(100dvh-4rem)] overflow-y-auto   lg:hidden",
+          "bg-[#FBF8F5] max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-black/8 lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
       >

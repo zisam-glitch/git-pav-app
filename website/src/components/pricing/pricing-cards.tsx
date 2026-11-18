@@ -1,11 +1,10 @@
-import { cn } from "@/lib/utils";
-import { Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { Check, Minus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { BOOKING_URL } from "@/lib/enquiry";
+import { cn } from "@/lib/utils";
 
 interface Feature {
   text: string;
@@ -17,7 +16,6 @@ interface Plan {
   price: string;
   yearlyPrice: string;
   color: "bronze" | "silver" | "gold";
-  popular?: boolean;
   features: Feature[];
 }
 
@@ -43,7 +41,6 @@ const PLANS: Plan[] = [
     price: "15.85",
     yearlyPrice: "12.68",
     color: "silver",
-    popular: true,
     features: [
       { text: "1x artificial intelligence dental health scan", included: false },
       { text: "Dedicated Whatsapp Number,", included: false },
@@ -73,12 +70,6 @@ const PLANS: Plan[] = [
   },
 ];
 
-const BANNER_BG: Record<Plan["color"], string> = {
-  bronze: "bg-[#925a27] text-white",
-  silver: "bg-[#2a1c12] text-white",
-  gold: "bg-[#cf9448] text-[#1a1a1a]",
-};
-
 export function PricingCards() {
   const [isMonthly, setIsMonthly] = useState(true);
 
@@ -94,23 +85,21 @@ export function PricingCards() {
           price: parseFloat(p.monthly_price as unknown as string).toFixed(2),
           yearlyPrice: parseFloat(p.yearly_price as unknown as string).toFixed(2),
           color: (p.color as Plan["color"]) || "bronze",
-          popular: p.is_popular,
           features: p.features || [],
         }))
       : PLANS;
 
   return (
     <section className="py-8 sm:py-12">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Section title */}
-        <div className="text-center mb-10">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e]">
-            Pav Dental Plans
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <h2 className="font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-4xl">
+            Pav Dental <span className="text-[#754B3D]">Plans</span>
           </h2>
 
           {/* Billing Switch */}
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <span className={cn("text-sm font-medium", isMonthly ? "text-fg" : "text-muted")}>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <span className={cn("text-sm font-medium", isMonthly ? "text-black" : "text-black/50")}>
               Monthly
             </span>
             <button
@@ -121,42 +110,25 @@ export function PricingCards() {
               onClick={() => setIsMonthly((v) => !v)}
               className={cn(
                 "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                !isMonthly ? "bg-primary" : "bg-border",
+                !isMonthly ? "bg-[#1B3745]" : "bg-black/20",
               )}
             >
               <span
                 className={cn(
-                  "pointer-events-none block size-5 rounded-full bg-white shadow-md transition-transform",
+                  "pointer-events-none block size-5 rounded-full bg-white shadow-sm transition-transform",
                   !isMonthly ? "translate-x-[22px]" : "translate-x-[2px]",
                 )}
               />
             </button>
-            <span className={cn("text-sm font-medium", !isMonthly ? "text-fg" : "text-muted")}>
-              Annual{" "}
-              <span className="text-primary font-semibold">(Save 20%)</span>
+            <span className={cn("text-sm font-medium", !isMonthly ? "text-black" : "text-black/50")}>
+              Annual <span className="font-medium text-[#754B3D]">(Save 20%)</span>
             </span>
           </div>
         </div>
 
-        {/* 3 cards */}
-        <div className="grid gap-6 lg:gap-8 md:grid-cols-3">
-          {activePlans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.12,
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-              }}
-              className="h-full"
-            >
-              <PricingCard plan={plan} isMonthly={isMonthly} />
-            </motion.div>
+        <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
+          {activePlans.map((plan) => (
+            <PricingCard key={plan.name} plan={plan} isMonthly={isMonthly} />
           ))}
         </div>
       </div>
@@ -166,94 +138,112 @@ export function PricingCards() {
 
 function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
   const displayPrice = isMonthly ? plan.price : plan.yearlyPrice;
-  const [hovered, setHovered] = useState(false);
+  const isGold = plan.color === "gold";
+  const isSilver = plan.color === "silver";
 
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex flex-col h-full rounded-xl overflow-hidden bg-white  transition-all duration-300 shadow-sm",
-        plan.popular
-          ? " shadow-md  "
-          : " hover:border-primary/40",
-        hovered && "shadow-soft -translate-y-1",
+        "flex h-full flex-col justify-between overflow-hidden rounded-[1.5rem] border p-7 transition-all duration-200 hover:-translate-y-0.5 sm:p-8",
+        isGold
+          ? "hims-navy-gradient border-[#1B3745] text-white shadow-[0_12px_32px_rgba(27,55,69,0.18)]"
+          : isSilver
+            ? "border-black/8 bg-[#F2EDE5] text-black shadow-[0_6px_24px_rgba(0,0,0,0.04)]"
+            : "border-black/6 bg-white text-black shadow-[0_6px_24px_rgba(0,0,0,0.04)]",
       )}
     >
-      {/* Wavy Banner Header */}
-      <div
-        className={cn(
-          "relative flex flex-col items-center justify-center pt-10 pb-12 overflow-hidden",
-          BANNER_BG[plan.color],
-        )}
-      >
-        {/* Organic wave shape at bottom of banner */}
-        <svg
-          className="absolute bottom-0 left-0 w-full text-white pointer-events-none"
-          viewBox="0 0 500 50"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M0,0 C150,55 350,10 500,45 L500,50 L0,50 Z"
-            fill="currentColor"
-          />
-        </svg>
-
-        <div className="relative z-10 flex items-baseline justify-center">
-          <span className="text-3xl font-bold mr-0.5">£</span>
-          <AnimatePresence mode="popLayout">
-            <motion.span
-              key={displayPrice}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.25 }}
-              className="text-4xl sm:text-5xl font-bold font-display tabular-nums"
-            >
-              {displayPrice}
-            </motion.span>
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Plan Name */}
-      <div className="px-6 pt-6 pb-4 text-center">
-        <h3 className="text-base font-extrabold text-fg">
-          {plan.name}
-        </h3>
-      </div>
-
-      {/* Features list */}
-      <ul className="flex-1 space-y-3 px-6 py-2">
-        {plan.features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-[13px] sm:text-sm">
-            {f.included ? (
-              <Check className="size-4 shrink-0 text-green-600 mt-0.5 stroke-[2.5]" />
-            ) : (
-              <X className="size-4 shrink-0 text-red-500 mt-0.5 stroke-[2.5]" />
+      <div>
+        <div className="flex items-center justify-between gap-2">
+          <h3
+            className={cn(
+              "font-display text-sm font-medium uppercase tracking-wider",
+              isGold ? "text-[#ECD880]" : "text-[#754B3D]",
             )}
-            <span
-              className={cn(
-                "leading-snug",
-                f.included ? "text-fg/90" : "text-muted",
-              )}
-            >
-              {f.text}
-            </span>
-          </li>
-        ))}
-      </ul>
+          >
+            {plan.name}
+          </h3>
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 text-[11px] font-medium",
+              isGold ? "bg-white/10 text-white/85" : "bg-[#FAF8F2] text-black/60",
+            )}
+          >
+            {isMonthly ? "Per month" : "Monthly (annual)"}
+          </span>
+        </div>
 
-      {/* CTA Button */}
-      <div className="p-6 pt-6">
+        <div className="mt-5 flex items-baseline gap-1">
+          <span
+            className={cn(
+              "font-display text-2xl font-normal",
+              isGold ? "text-[#ECD880]" : "text-black",
+            )}
+          >
+            £
+          </span>
+          <span
+            className={cn(
+              "font-display text-5xl font-normal tracking-[-0.04em] tabular-nums",
+              isGold ? "text-white" : "text-black",
+            )}
+          >
+            {displayPrice}
+          </span>
+        </div>
+
+        <ul
+          className={cn(
+            "mt-7 divide-y border-t",
+            isGold ? "divide-white/10 border-white/10" : "divide-black/8 border-black/8",
+          )}
+        >
+          {plan.features.map((f, i) => (
+            <li key={i} className="flex items-center justify-between gap-3 py-3 text-sm">
+              <span
+                className={cn(
+                  "leading-snug",
+                  isGold
+                    ? f.included
+                      ? "text-white/90"
+                      : "text-white/40"
+                    : f.included
+                      ? "text-black/85"
+                      : "text-black/40",
+                )}
+              >
+                {f.text}
+              </span>
+              {f.included ? (
+                <span
+                  className={cn(
+                    "inline-flex size-5 shrink-0 items-center justify-center rounded-full",
+                    isGold ? "bg-[#ECD880] text-[#1B3745]" : "bg-black text-white",
+                  )}
+                  aria-hidden="true"
+                >
+                  <Check className="size-3 stroke-[2.5]" />
+                </span>
+              ) : (
+                <span
+                  className={cn(
+                    "inline-flex size-5 shrink-0 items-center justify-center rounded-full",
+                    isGold ? "bg-white/10 text-white/40" : "bg-black/6 text-black/35",
+                  )}
+                  aria-hidden="true"
+                >
+                  <Minus className="size-3" />
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="pt-7">
         <Button
           asChild
-          variant={plan.popular ? "default" : "outline"}
-          className={cn(
-            "w-full rounded-lg font-semibold text-sm",
-            plan.popular ? "accent-gradient text-white" : " hover:bg-surface",
-          )}
+          variant={isGold ? "gold" : "default"}
+          className="w-full"
         >
           <a href={BOOKING_URL}>Book Now</a>
         </Button>

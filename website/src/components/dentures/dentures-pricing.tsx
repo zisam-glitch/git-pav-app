@@ -1,120 +1,158 @@
-import React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_URL } from "@/lib/enquiry";
 
-const ACRYLIC_DENTURES = [
-  { service: "Acrylic Partial Denture (1–3 teeth)", price: "from £350" },
-  { service: "Full Upper or Lower Acrylic Denture", price: "from £550" },
-  { service: "Complete Set (Upper & Lower Dentures)", price: "from £950" },
-];
-
-const PREMIUM_DENTURES = [
-  { service: "Flexible Valplast® Metal-Free Partial", price: "from £595" },
-  { service: "Cobalt Chrome Cast Metal Precision Denture", price: "from £795" },
-  { service: "Implant-Retained Snap-On Overdenture", price: "from £1,800" },
-];
-
-const REPAIRS_SERVICES = [
-  { service: "Same-Day Emergency Denture Repair / Fracture Fix", price: "from £80" },
-  { service: "Denture Soft Reline (Per Arch)", price: "from £120" },
-  { service: "Denture Hard Reline (Per Arch)", price: "from £150" },
-];
+const DENTURE_PLANS = [
+  {
+    id: "acrylic",
+    title: "Acrylic Denture",
+    badge: "Classic & adaptable",
+    price: "£495",
+    description:
+      "Traditional full or partial acrylic dentures crafted for reliable function, speech support, and natural tooth shading.",
+    points: [
+      "Custom shade and tooth shape matching",
+      "Full or partial arch designs",
+      "Easy to adjust or reline over time",
+    ],
+    tone: "hims-tile-warm",
+    dark: false,
+  },
+  {
+    id: "flexible",
+    title: "Flexible (Valplast) Denture",
+    badge: "Metal-free comfort",
+    price: "£795",
+    description:
+      "Lightweight flexible nylon resin dentures with discreet gum-toned clasps that blend seamlessly with your natural gums.",
+    points: [
+      "Invisible gum-coloured clasps",
+      "Gentle adaptation to gum contours",
+      "No rigid metal components",
+    ],
+    tone: "hims-navy-gradient",
+    dark: true,
+  },
+  {
+    id: "cobalt-chromium",
+    title: "Cobalt Chromium Denture",
+    badge: "Precision alloy frame",
+    price: "£1,195",
+    description:
+      "Precision-cast cobalt chromium dentures offering an ultra-slim, strong profile that leaves more of your palate uncovered.",
+    points: [
+      "Ultra-thin high-strength frame",
+      "Improved taste and temperature feel",
+      "Long-term structural durability",
+    ],
+    tone: "hims-tile-sage",
+    dark: false,
+  },
+] as const;
 
 export function DenturesPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Transparent Denture Price List
+    <section id="pricing" className="bg-[#FBF8F5] py-16 sm:py-24">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Transparent fees
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+            Our Denture{" "}
+            <span className="text-[#754B3D]">Prices</span>
           </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Clear, upfront pricing for all denture solutions. NHS Band 3 (£319.10) options available for eligible patients.
+          <p className="mt-4 text-base leading-relaxed text-black/65">
+            Affordable denture options designed for comfort and aesthetics. Book a consultation
+            with one of our GDC-registered dentists to discuss the right option for your smile.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* Table 1: Acrylic Dentures */}
-          <div className="rounded-xl bg-white   p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4  ">
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {DENTURE_PLANS.map((plan) => (
+            <article
+              key={plan.id}
+              className={`${plan.tone} flex flex-col justify-between rounded-[1.5rem] border ${
+                plan.dark ? "border-[#1B3745] text-white" : "border-black/6 text-black"
+              } p-7 shadow-[0_6px_24px_rgba(0,0,0,0.04)] sm:p-8`}
+            >
               <div>
-                <h3 className="font-display text-xl font-bold text-[#2a1c12]">Acrylic Dentures</h3>
-                <p className="text-xs text-[#925a27] font-semibold">Standard prosthetics</p>
-              </div>
-              
-            </div>
-
-            <div className=" /70">
-              {ACRYLIC_DENTURES.map((row) => (
-                <div key={row.service} className="py-3 flex items-center justify-between gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                  <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                    {row.price}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Table 2: Premium Dentures */}
-          <div className="rounded-xl bg-white   p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4  ">
-              <div>
-                <h3 className="font-display text-xl font-bold text-[#2a1c12]">Premium Dentures</h3>
-                <p className="text-xs text-[#925a27] font-semibold">Advanced materials & techniques</p>
-              </div>
-             
-            </div>
-
-            <div className=" /70">
-              {PREMIUM_DENTURES.map((row) => (
-                <div key={row.service} className="py-3 flex items-center justify-between gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                  <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                    {row.price}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Table 3: Repairs & Relines */}
-        <div className="rounded-xl bg-white   p-6 shadow-sm mb-10">
-          <div className="flex items-center justify-between mb-5 pb-4  ">
-            <div>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">Repairs &amp; Relines</h3>
-              <p className="text-xs text-[#925a27] font-semibold">Same-day laboratory services</p>
-            </div>
-           
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-x-8  sm:divide-y-0 /70">
-            {REPAIRS_SERVICES.map((row) => (
-              <div key={row.service} className="py-3 flex items-center justify-between gap-4  /50">
-                <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
-                <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
-                  {row.price}
+                <span
+                  className={`inline-block rounded-full px-3 py-1 text-[11px] font-medium ${
+                    plan.dark
+                      ? "bg-[#ECD880] text-[#1B3745]"
+                      : "bg-black/6 text-black/75"
+                  }`}
+                >
+                  {plan.badge}
                 </span>
+
+                <h3
+                  className={`mt-5 font-display text-2xl font-normal tracking-[-0.03em] ${
+                    plan.dark ? "text-white" : "text-black"
+                  }`}
+                >
+                  {plan.title}
+                </h3>
+
+                <p
+                  className={`mt-2 font-display text-4xl font-normal tracking-[-0.04em] ${
+                    plan.dark ? "text-[#ECD880]" : "text-[#1B3745]"
+                  }`}
+                >
+                  {plan.price}
+                </p>
+
+                <p
+                  className={`mt-4 text-sm leading-relaxed ${
+                    plan.dark ? "text-white/80" : "text-black/65"
+                  }`}
+                >
+                  {plan.description}
+                </p>
+
+                <ul className="mt-6 space-y-2.5 text-sm">
+                  {plan.points.map((point) => (
+                    <li
+                      key={point}
+                      className={`flex items-start gap-2.5 ${
+                        plan.dark ? "text-white/90" : "text-black/80"
+                      }`}
+                    >
+                      <span
+                        className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${
+                          plan.dark
+                            ? "bg-[#ECD880] text-[#1B3745]"
+                            : "bg-black text-white"
+                        }`}
+                      >
+                        <Check className="size-3" strokeWidth={2.5} />
+                      </span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </div>
+
+              <div className="mt-8">
+                <Button
+                  asChild
+                  variant={plan.dark ? "gold" : "default"}
+                  className="w-full"
+                >
+                  <a href={BOOKING_URL}>
+                    Book denture consultation <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+              </div>
+            </article>
+          ))}
         </div>
 
-        <div className="text-center">
-          <p className="text-xs text-[#6b5848] mb-6">
-            *All new dentures include adjustment visits and 12-month structural warranty. NHS Band 3 patients: £319.10 contribution required.
-          </p>
-          <Button
-            asChild
-            className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
-          >
-            <a href={BOOKING_URL} className="flex items-center gap-2">
-              Book Denture Assessment <ArrowRight className="size-4" />
-            </a>
-          </Button>
-        </div>
+        <p className="mt-6 text-xs text-black/55">
+          NHS Band 3 (£319.10) options and mobile denture visits are also available for eligible
+          patients.
+        </p>
       </div>
     </section>
   );

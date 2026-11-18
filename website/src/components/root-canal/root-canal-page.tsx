@@ -3,11 +3,10 @@ import { RootCanalHow } from "./root-canal-how";
 import { RootCanalPricing } from "./root-canal-pricing";
 import { RootCanalConsent } from "./root-canal-consent";
 import { RootCanalFaq } from "./root-canal-faq";
-import { RootCanalContact } from "./root-canal-contact";
 
 export function RootCanalPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-[#FBF8F5]">
       <RootCanalHero />
       <RootCanalHow />
       <RootCanalPricing />

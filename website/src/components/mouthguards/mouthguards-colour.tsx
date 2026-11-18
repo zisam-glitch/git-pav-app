@@ -1,5 +1,3 @@
-import React from "react";
-
 const COLOR_FILTERS = [
   { name: "Original Pink", filter: "none" },
   { name: "Hot Pink", filter: "hue-rotate(350deg) saturate(1.3)" },
@@ -37,37 +35,44 @@ const COLOR_FILTERS = [
 
 export function MouthguardsColour() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Choose Your Colour
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            You can choose from a variety of colour options for your custom mouthguard. Select your favorite colour or contact us for custom colour matching.
-          </p>
-        </div>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <div className="max-w-2xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-black/55">
+                Custom finishes
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Choose Your <span className="text-[#754B3D]">Colour</span>
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-black/65">
+                You can choose from a variety of colour options, including single colour, two
+                colour combinations, mixed colours, or glitter and special finishes for a more
+                unique look.
+              </p>
+            </div>
 
-        {/* Single Colors */}
-        <div className="mb-12">
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4">
-            {COLOR_FILTERS.map((color) => (
-              <div
-                key={color.name}
-                className="group relative aspect-square rounded-xl shadow-sm hover:scale-105 transition-all cursor-pointer overflow-hidden bg-white"
-                title={color.name}
-              >
-                <img
-                  src="/media/mg.png"
-                  alt={color.name}
-                  className="w-full h-full object-cover"
-                  style={{ filter: color.filter }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
-                  <span className="text-white text-xs font-medium">{color.name}</span>
+            <div className="mt-10 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+              {COLOR_FILTERS.map((color) => (
+                <div
+                  key={color.name}
+                  className="overflow-hidden rounded-[1.25rem] border border-black/6 bg-white p-2.5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  <div className="aspect-square overflow-hidden rounded-xl bg-[#FAF8F2]">
+                    <img
+                      src="/media/mg.png"
+                      alt={color.name}
+                      className="h-full w-full object-contain p-1.5"
+                      style={{ filter: color.filter }}
+                    />
+                  </div>
+                  <p className="mt-2 truncate text-center text-xs font-medium text-black/80">
+                    {color.name}
+                  </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

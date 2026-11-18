@@ -11,18 +11,17 @@ import { useCartStore } from "@/lib/cart-store";
 export function ShopPage() {
   const [apiProducts, setApiProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      api.products.list()
+    if (typeof window !== "undefined") {
+      api.products
+        .list()
         .then((data) => {
           setApiProducts(data);
           setIsLoading(false);
         })
         .catch((err) => {
-          console.error('Error fetching products:', err);
-          setError(err as Error);
+          console.error("Error fetching products:", err);
           setIsLoading(false);
         });
     }
@@ -44,7 +43,7 @@ export function ShopPage() {
             : undefined,
           image:
             p.image ||
-            "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=85",
+            "/media/hims/bento-whitening.jpg",
           shortDesc: p.short_desc || "",
           fullDesc: p.full_desc || "",
           features: Array.isArray(p.features) ? p.features : [],
@@ -97,21 +96,17 @@ export function ShopPage() {
   const totalItemCount = storeItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg relative">
-      {/* 1. Hero Section */}
+    <div className="relative min-h-screen bg-[#FBF8F5] text-fg">
       <ShopHero />
 
-      {/* 2. Product Catalog */}
       <ShopCatalog
         products={productsToDisplay}
         isLoading={isLoading}
         onAddToCart={handleAddToCart}
       />
 
-      {/* 3. Guarantees & FAQs */}
       <ShopGuarantee />
 
-      {/* Slide-over Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -121,26 +116,25 @@ export function ShopPage() {
         onClearCart={clearCart}
       />
 
-      {/* Floating Cart Button */}
+      {/* Floating Bag Button */}
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full bg-[#925a27] hover:bg-[#7a491e] px-4 py-3 text-white shadow-xl transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full bg-black px-5 py-3 text-white shadow-[0_12px_32px_rgba(0,0,0,0.2)] transition-colors duration-200 hover:bg-[#1B3745] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B3745] focus-visible:ring-offset-2"
         aria-label="View shopping bag"
       >
         <div className="relative">
-          <ShoppingBag className="size-5" />
+          <ShoppingBag className="size-4" />
           {totalItemCount > 0 && (
-            <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-white text-primary text-[10px] font-bold shadow-xs">
+            <span className="absolute -top-2 -right-2.5 flex size-4 items-center justify-center rounded-full bg-[#ECD880] text-[10px] font-semibold text-[#1B3745]">
               {totalItemCount}
             </span>
           )}
         </div>
-        <span className="text-xs font-semibold hidden sm:inline">
+        <span className="hidden text-xs font-medium sm:inline">
           View Bag ({totalItemCount})
         </span>
       </button>
     </div>
   );
 }
-

@@ -1,6 +1,6 @@
-import React from "react";
+import { ArrowRight, FileText, Heart, Mail, MapPin, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { User, Mail, MapPin, FileText, Heart } from "lucide-react";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const REGISTRATION_INFO = [
   {
@@ -32,45 +32,52 @@ const REGISTRATION_INFO = [
 
 export function VirtualDentistryRegistration() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight mb-6">
-              Registration Process
-            </h2>
-            <p className="text-[#6b5848] text-sm sm:text-base leading-relaxed mb-6">
-              The process of signing up for Pav Dental video consultation service is quick, short, and easy. Signing up for Pav Dental virtual video consultation service is quick, short, and easy.
-            </p>
-            <p className="text-[#6b5848] text-sm sm:text-base leading-relaxed mb-8">
-              The process involves providing basic information such as name, email, phone number, gender, address, health history, and dental history. This information is used to evaluate the patient before connecting them with a provider for the consultation. The entire process is designed to be user-friendly and convenient.
-            </p>
-            <Button
-              asChild
-              className="accent-gradient text-white rounded-full px-8 font-bold shadow hover:opacity-95"
-            >
-              <a href="#services">Register</a>
-            </Button>
-          </div>
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] hims-navy-gradient px-6 py-14 text-white sm:px-10 sm:py-20">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-12 lg:grid-cols-2">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-[#ECD880]">
+                Quick onboarding
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-white sm:text-5xl">
+                Registration Process
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-white/80">
+                Signing up for the Pav Dental video consultation service is quick, short, and easy.
+                Providing basic details helps our clinical team evaluate your needs before
+                connecting you with a dentist.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild variant="gold" size="lg">
+                  <a href={BOOKING_URL}>
+                    Book video consultation <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="glass" size="lg">
+                  <a href="#services">View services</a>
+                </Button>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {REGISTRATION_INFO.map((info) => {
-              const Icon = info.icon;
-              return (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {REGISTRATION_INFO.map((info, index) => (
                 <div
                   key={info.title}
-                  className="bg-white rounded-xl p-4 shadow-sm  "
+                  className={`${
+                    index === REGISTRATION_INFO.length - 1 ? "sm:col-span-2" : ""
+                  } rounded-[1.25rem] border border-white/10 bg-white/8 p-5 backdrop-blur-sm`}
                 >
-                  <div className="size-10 rounded-lg bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mb-3">
-                    <Icon className="size-5" />
-                  </div>
-                  <h3 className="font-semibold text-[#2a1c12] text-sm mb-1">
+                  <span className="grid size-9 place-items-center rounded-xl bg-[#ECD880] text-[#1B3745]">
+                    <info.icon className="size-4" />
+                  </span>
+                  <h3 className="mt-3 font-display text-lg font-normal text-white">
                     {info.title}
                   </h3>
-                  <p className="text-xs text-[#6b5848]">{info.desc}</p>
+                  <p className="mt-1 text-xs text-white/75">{info.desc}</p>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,3 @@
-import React from "react";
-
 const BENEFITS = [
   {
     title: "Unique mobile dental service",
@@ -7,61 +5,77 @@ const BENEFITS = [
   },
   {
     title: "Working with care homes",
-    desc: "Specialized services designed for care home residents and their specific needs.",
+    desc: "Specialized services designed for care home residents and their daily needs.",
   },
   {
-    title: "CQC-compliant oral health",
-    desc: "Help make your home oral-health services fully compliant with CQC standards.",
+    title: "Make your home oral-health CQC-compliant",
+    desc: "Support your care setting with structured, CQC-compliant oral-health care.",
   },
   {
     title: "NHS partners",
-    desc: "We work with NHS to provide accessible dental care for eligible patients.",
+    desc: "Working with NHS partners to provide accessible dental care for eligible patients.",
   },
   {
-    title: "Latest mobile dental equipment",
-    desc: "State-of-the-art technology and equipment for the best possible care.",
+    title: "The very latest mobile dental equipment",
+    desc: "Portable clinical equipment designed for safe, thorough home visits.",
   },
   {
     title: "Hundreds of satisfied patients",
-    desc: "Proven track record with many happy patients across the UK.",
+    desc: "Experienced clinicians trusted across home and care-home visits.",
   },
   {
     title: "Attract more residents",
-    desc: "Quality dental services can help attract more residents to your care home.",
+    desc: "On-site dental support strengthens care quality for prospective families.",
   },
   {
     title: "Engage carers and improve staff retention",
-    desc: "Better dental care leads to improved carer engagement and staff satisfaction.",
+    desc: "Practical guidance that supports carers with residents' oral hygiene.",
   },
 ];
 
 export function MobileDentistryBenefits() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Concerned about your residents' dental needs?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            We Are The Dentists That Come To You. Our mobile dental service brings comprehensive care to your doorstep.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-8  ">
-          {BENEFITS.map((benefit, i) => (
-            <div key={benefit.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {benefit.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {benefit.desc}
+    <section className="py-10 sm:py-14">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="rounded-[1.5rem] bg-[#F2EDE5] px-6 py-14 sm:px-10 sm:py-20">
+          <div className="mx-auto max-w-[87rem]">
+            <div className="max-w-2xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-black/55">
+                We are the dentists that come to you
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+                Concerned about your residents&apos;{" "}
+                <span className="text-[#754B3D]">dental needs?</span>
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-black/65">
+                Our mobile dental service brings comprehensive care directly to homes and
+                residential care settings.
               </p>
             </div>
-          ))}
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {BENEFITS.map((benefit, i) => (
+                <article
+                  key={benefit.title}
+                  className={`${
+                    i % 3 === 0
+                      ? "bg-white"
+                      : i % 3 === 1
+                        ? "hims-tile-warm"
+                        : "hims-tile-sage"
+                  } rounded-[1.5rem] border border-black/6 p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]`}
+                >
+                  <span className="inline-flex size-7 items-center justify-center rounded-full bg-[#1B3745] text-xs font-medium text-[#ECD880]">
+                    {i + 1}
+                  </span>
+                  <h3 className="mt-4 font-display text-xl font-normal tracking-[-0.02em] text-black">
+                    {benefit.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-black/65">{benefit.desc}</p>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,17 +1,23 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { TEAM_MEMBERS } from "@/content/team-members";
 import { TeamPhoto } from "./team-photo";
 
 /** The team page: one card per person, each linking to their own profile page. */
 export function TeamGrid() {
   return (
-    <div className="bg-[#fffdf9] pb-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#FBF8F5] pb-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
         <header className="mx-auto max-w-2xl text-center">
-          <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">Dentists &amp; Staff</h1>
-          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6b5848]">
-            We have a dedicated team consisting of highly skilled dentists and staff who works relentlessly to preserve your
-            happy smile.
+          <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+            Our Practice Team
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-normal tracking-[-0.04em] leading-[1.06] text-black sm:text-5xl lg:text-6xl">
+            Dentists &amp; <span className="text-[#754B3D]">Staff</span>
+          </h1>
+          <p className="mt-4 text-sm leading-relaxed text-black/65 sm:text-base">
+            We have a dedicated team consisting of highly skilled dentists and staff who works
+            relentlessly to preserve your happy smile.
           </p>
         </header>
 
@@ -21,18 +27,36 @@ export function TeamGrid() {
               <Link
                 to="/team/$slug"
                 params={{ slug: member.slug }}
-                className="group block overflow-hidden rounded-xl   bg-white shadow-sm transition-colors hover:border-[#925a27]"
+                className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/6 bg-[#FAF8F2] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_10px_28px_rgba(0,0,0,0.05)]"
               >
-                <TeamPhoto
-                  member={member}
-                  priority={index < 4}
-                  className="aspect-[4/5] w-full bg-[#faf6f0] object-cover object-top"
-                />
-                <span className="block p-3 sm:p-5">
-                  <span className="block font-display text-base sm:text-lg font-bold text-[#2a1c12] group-hover:text-[#925a27]">
-                    {member.name}
+                <div className="overflow-hidden bg-[#F2EDE5]">
+                  <TeamPhoto
+                    member={member}
+                    priority={index < 4}
+                    className="aspect-[4/5] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+                <span className="flex flex-1 flex-col justify-between p-4 sm:p-6">
+                  <span>
+                    <span className="block font-display text-lg font-normal tracking-[-0.025em] text-black group-hover:text-[#1B3745] sm:text-xl">
+                      {member.name}
+                    </span>
+                    <span className="mt-1 block text-xs leading-snug text-black/60 sm:text-sm">
+                      {member.role}
+                    </span>
+                    {member.gdc && (
+                      <span className="mt-2 inline-block rounded-full bg-[#F2EDE5] px-2.5 py-0.5 text-[11px] font-medium text-[#1B3745]">
+                        GDC {member.gdc}
+                      </span>
+                    )}
                   </span>
-                  <span className="mt-1 block text-xs sm:text-sm text-[#6b5848]">{member.role}</span>
+                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-[#754B3D] group-hover:text-[#1B3745]">
+                    View profile
+                    <ArrowRight
+                      className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </span>
                 </span>
               </Link>
             </li>

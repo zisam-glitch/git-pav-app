@@ -1,44 +1,41 @@
-import React, { useState } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/home/reveal";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const FAQS = [
   {
     q: "Are custom dental grillz safe for my teeth and enamel?",
-    a: "Yes — when properly fitted by a dentist! Because our clinical dental team takes accurate medical-grade intraoral impressions, your grill is custom-cast to slide on and off with gentle frictional suction. It does not scrape enamel, abrade gums, or force teeth out of alignment. Cheap DIY online molds frequently cause enamel damage, bite trauma, and gum recession.",
+    a: "Yes — when properly fitted by a dentist. Because our clinical dental team takes accurate medical-grade intraoral impressions, your grill is custom-cast to slide on and off smoothly without scraping enamel or abrading gums.",
   },
   {
     q: "Why get grillz at Pav Dental instead of an online mold kit?",
-    a: "Online companies send you silicone putty to mix at home, which almost always distorts before setting, resulting in ill-fitting grillz that rock, trap bacteria, or cut into gum tissue. At Pav Dental, a qualified dental surgeon inspects your oral health, ensures zero active cavities or gum disease, takes professional impressions, and inspects the final fit.",
+    a: "At-home putty kits often distort before setting, creating ill-fitting grillz that trap bacteria or irritate gums. At Pav Dental, a dentist inspects your oral health first, takes professional impressions, and verifies the final fit.",
   },
   {
     q: "Are the grillz permanent or removable?",
-    a: "All our custom grillz are 100% removable. They clip securely over your natural teeth using snug biological retention and can be popped off in seconds for eating, brushing, sleeping, or working.",
+    a: "All our custom grillz are 100% removable. They clip securely over your natural teeth using snug retention and can be popped off in seconds for eating, brushing, and sleeping.",
   },
   {
     q: "What is the difference between 10k, 14k, and 18k gold?",
-    a: "10k gold contains 41.7% pure gold; it is the hardest, most durable alloy and highly resistant to daily wear. 14k gold (58.3% pure gold) offers a richer warm yellow tone while maintaining excellent hardness. 18k gold (75% pure gold) offers deep, luxurious luster and prestigious purity, ideal for high-end statement pieces.",
+    a: "10k gold is the hardest, most durable alloy for daily wear. 14k gold offers a richer warm tone while maintaining strong durability. 18k gold provides deep luster and high purity for statement pieces.",
   },
   {
     q: "How long does the production process take?",
-    a: "Standard turnaround from your dental impression to delivery is 7 to 10 working days. An express 3 to 5-day priority rush service is also available upon request for upcoming shoots, events, or celebrations.",
+    a: "Standard turnaround from your dental impression to delivery is 7 to 10 working days. Priority express options are available upon request for upcoming shoots or events.",
   },
   {
-    q: "Can I eat, drink, or smoke with my grillz in?",
-    a: "We strongly advise removing your grillz before eating food or drinking sugary/acidic liquids. Food particles trapped under dental caps can promote rapid bacterial growth and plaque buildup. Drinking clear water while wearing grillz is completely fine.",
-  },
-  {
-    q: "Can I get grillz if I have missing teeth or minor crowding?",
-    a: "Yes! Because each cap is custom wax-carved by hand on a stone replica of your teeth, we can create bridge connectors across a missing tooth space, or contour caps to harmonize with slightly crowded or crooked teeth.",
+    q: "Can I eat or drink with my grillz in?",
+    a: "We advise removing your grillz before eating food or drinking sugary or acidic beverages so food particles are not trapped against enamel. Drinking plain water while wearing them is fine.",
   },
   {
     q: "How do I clean and polish my gold grillz?",
-    a: "Rinse your grillz in lukewarm water after removal, clean gently with a soft toothbrush and non-abrasive dish soap, and buff with the microfiber polishing cloth provided in your luxury case. Never boil your grillz or clean them with harsh bleach or household chemicals.",
+    a: "Rinse your grillz in lukewarm water after removal, clean gently with a soft toothbrush and mild non-abrasive soap, and buff with the polishing cloth provided in your case.",
   },
   {
-    q: "What diamonds are used in your iced-out diamond grillz?",
-    a: "We exclusively set natural, conflict-free VVS1–VVS2 clarity, F/G color round brilliant cut diamonds. Each stone is individually hand-seated in micro-prongs by our master diamond setters to guarantee zero loose stones and maximum scintillation.",
+    q: "What diamonds are used in your diamond grillz?",
+    a: "We set natural, conflict-free VVS1–VVS2 clarity, F/G color round brilliant cut diamonds in micro-prong settings for maximum sparkle and secure retention.",
   },
 ];
 
@@ -46,72 +43,61 @@ export function GrillzFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
-          {/* Left sticky header */}
-          <div className="lg:sticky lg:top-24">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#2a1c12]">
+    <section className="py-14 sm:py-20">
+      <div className="mx-auto max-w-[87rem] px-4 sm:px-6 lg:px-8">
+        <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.3fr]">
+          <Reveal className="lg:sticky lg:top-24">
+            <p className="text-xs font-medium uppercase tracking-wider text-black/50">
               Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-sm text-[#6b5848] leading-relaxed">
-              Everything you need to know about dental jewelry, gold alloys, fitting appointments, and care.
             </p>
-            <Button
-              asChild
-              className="mt-6 accent-gradient text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm hover:opacity-95"
-            >
-              <a href={BOOKING_URL} className="flex items-center gap-2">
-                Book Impression <ArrowRight className="size-3.5" />
+            <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.04em] text-black sm:text-5xl">
+              Grillz questions,{" "}
+              <span className="text-[#754B3D]">answered</span>
+            </h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-black/65">
+              Everything you need to know about dental jewelry, gold purity, fitting appointments,
+              and aftercare.
+            </p>
+            <Button asChild className="mt-7">
+              <a href={BOOKING_URL}>
+                Book Impression
+                <ArrowRight className="size-4" />
               </a>
             </Button>
-          </div>
+          </Reveal>
 
-          {/* Right accordion */}
-          <div className=" ">
-            {FAQS.map((faq, i) => {
-              const isOpen = openIndex === i;
-              return (
-                <div key={i} className="py-1">
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-                  >
-                    <span
-                      className={`font-semibold text-sm sm:text-base transition-colors duration-200 ${
-                        isOpen
-                          ? "text-[#925a27]"
-                          : "text-[#2a1c12] group-hover:text-[#925a27]"
-                      }`}
+          <Reveal delay={0.06}>
+            <div className="divide-y divide-black/10 border-t border-b border-black/10">
+              {FAQS.map((faq, i) => {
+                const isOpen = openIndex === i;
+                return (
+                  <div key={faq.q}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenIndex(isOpen ? null : i)}
+                      className="flex w-full items-center justify-between gap-4 py-6 text-left transition-colors hover:text-[#1B3745]"
                     >
-                      {faq.q}
-                    </span>
-                    <span
-                      className={`flex-shrink-0 size-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isOpen
-                          ? "accent-gradient text-white rotate-180"
-                          : "bg-[#f0e8dc] text-[#925a27]"
-                      }`}
-                    >
-                      <ChevronDown className="size-4" />
-                    </span>
-                  </button>
+                      <span className="font-display text-lg font-normal tracking-[-0.02em] text-black sm:text-xl">
+                        {faq.q}
+                      </span>
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#F2EDE5] text-black">
+                        {isOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
+                      </span>
+                    </button>
 
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <p className="pb-5 text-sm text-[#6b5848] leading-relaxed max-w-2xl">
-                      {faq.a}
-                    </p>
+                    {isOpen && (
+                      <div className="pb-6 pr-12">
+                        <p className="text-sm leading-relaxed text-black/65 sm:text-base">
+                          {faq.a}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

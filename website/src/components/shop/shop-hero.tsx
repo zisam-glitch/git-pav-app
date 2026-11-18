@@ -1,61 +1,78 @@
-import React from "react";
+import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
 
 interface ShopHeroProps {
   onCategorySelect?: (category: string) => void;
 }
 
-export function ShopHero({ onCategorySelect }: ShopHeroProps) {
+const HIGHLIGHTS = [
+  "Free UK delivery over £40",
+  "Dentist-formulated",
+  "100% satisfaction guarantee",
+];
+
+export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps) {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-[#faf6f0]   py-20 sm:py-28"
+      className="bg-[#FBF8F5] pt-24 pb-8 sm:pt-28 sm:pb-12"
       aria-label="Shop dental products"
     >
-      {/* Background layer with subtle gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="/media/hero-clinic.jpg"
-          alt="Pav Dental Bradford clinic interior"
-          className="h-full w-full object-cover opacity-20"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#faf6f0] via-[#faf6f0]/95 to-[#faf6f0]/80" />
-      </div>
+      <div className="mx-auto max-w-[108rem] px-3 sm:px-6 lg:px-10">
+        <div className="hims-tile-warm overflow-hidden rounded-[1.5rem] border border-black/6 px-6 py-12 sm:px-12 sm:py-16 lg:px-16 lg:py-20">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-black/50">
+                Pav Dental Shop · Bradford
+              </p>
+              <h1 className="mt-4 font-display text-4xl font-normal leading-[1.06] tracking-[-0.04em] text-black sm:text-5xl lg:text-6xl">
+                Designed by <span className="text-[#754B3D]">Dentists</span>
+              </h1>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-black/65 sm:text-lg">
+                Elevate your daily smile routine with professional teeth whitening, acoustic sonic
+                brushes, and custom at-home impression kits delivered directly from our clinic in
+                Bradford.
+              </p>
 
-      <Spotlight />
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg" className="h-12 px-7 text-sm">
+                  <a href="#catalog" className="inline-flex items-center gap-2">
+                    <span>Browse Products</span>
+                    <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="h-12 px-7 text-sm">
+                  <a href="#guarantee">Our Guarantee</a>
+                </Button>
+              </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
-       <div className='pt-16'></div>
-        <h1 className="max-w-2xl mx-auto font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-          Designed by <span className="text-[#925a27]">Dentists</span>
-        </h1>
-        <p className="mt-5 max-w-xl mx-auto text-base text-[#6b5848] sm:text-lg leading-relaxed">
-          Elevate your daily smile routine with professional teeth whitening, acoustic sonic brushes, and custom at-home impression kits delivered directly from our clinic in Bradford.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="bg-[#925a27] hover:bg-[#7a491e] text-white rounded-full px-8 font-bold shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
-          >
-            <a href="#catalog">Browse Products</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0] transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
-          >
-            <a href="#guarantee">Our Guarantee</a>
-          </Button>
+              <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-2.5 text-sm text-black/75">
+                {HIGHLIGHTS.map((item) => (
+                  <li key={item} className="inline-flex items-center gap-2">
+                    <span className="grid size-5 place-items-center rounded-full bg-black text-white">
+                      <Check className="size-3" strokeWidth={2.5} />
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="relative overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-2 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <div className="aspect-[4/3] overflow-hidden rounded-[1.125rem] bg-[#F2EDE5]">
+                <img
+                  src="/media/hims/bento-whitening.jpg"
+                  alt="Pav Dental Bradford clinic interior"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-3 text-xs text-black/65">
+                <span className="font-medium text-black">786 Leeds Road, Bradford BD3 9TY</span>
+                <span>Same-day dispatch Mon–Fri before 2 PM</span>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-[#6b5848]">
-          <li className="hover:text-[#925a27] transition-colors">Free UK delivery</li>
-          <li className="hover:text-[#925a27] transition-colors">Dentist-formulated</li>
-          <li className="hover:text-[#925a27] transition-colors">100% satisfaction guarantee</li>
-        </ul>
       </div>
     </section>
   );

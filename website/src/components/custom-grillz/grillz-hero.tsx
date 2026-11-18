@@ -1,58 +1,64 @@
-import React from "react";
+import { ArrowRight, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
+import { Reveal } from "@/components/home/reveal";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function GrillzHero() {
   return (
-    <section
-      id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
-      aria-label="Custom grillz and dental jewelry"
-    >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=1200&q=85"
-          alt=""
-          className="kenburns h-full w-full object-cover opacity-35"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
-      </div>
+    <section className="pt-4 pb-8 sm:pt-8 sm:pb-12" aria-label="Custom grillz and tooth gems">
+      <div className="mx-auto max-w-[108rem] px-2 sm:px-4">
+        <div className="hims-navy-gradient relative overflow-hidden rounded-[1.5rem] text-white">
+          <div className="mx-auto grid max-w-[87rem] items-center gap-10 px-6 py-12 sm:px-10 sm:py-16 lg:grid-cols-[1.1fr_0.9fr]">
+            <Reveal>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3.5 py-1 text-xs font-medium text-[#ECD880] backdrop-blur-sm">
+                <Gem className="size-3.5" />
+                Custom Grillz &amp; Tooth Gems
+              </span>
+              <h1 className="mt-5 max-w-xl font-display text-4xl font-normal tracking-[-0.045em] leading-[1.06] text-white sm:text-5xl lg:text-[3.75rem]">
+                Crafted for stardom,{" "}
+                <span className="text-[#ECD880]">fitted by dentists</span>
+              </h1>
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg">
+                Pav Dental crafts unique custom grillz in gold, silver, and diamond finishes,
+                emphasizing clinical fit, comfort, and individuality.
+              </p>
 
-      <Spotlight />
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild variant="gold" size="lg">
+                  <a href={BOOKING_URL}>
+                    Book Now
+                    <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="glass" size="lg">
+                  <a href="#styles">Explore styles</a>
+                </Button>
+              </div>
 
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 flex flex-col justify-center items-center text-center">
-        <p className="mb-4 text-xs font-medium text-primary">
-          Dentist-fitted dental jewelry
-        </p>
-        <h1 className="max-w-2xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-          Custom grillz for a <span className="text-primary">luxurious smile</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base text-muted sm:text-lg leading-relaxed">
-          Handcrafted solid gold and diamond grillz made with clinical precision. Professional impressions ensure a perfect, safe fit that protects your natural teeth.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
-          >
-            <a href="#styles">Explore styles</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
-          >
-            <a href="#pricing">View prices</a>
-          </Button>
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/12 pt-6 text-xs font-medium text-white/75 sm:text-sm">
+                <li>Gold, silver &amp; VVS diamond</li>
+                <li>1-year guarantee</li>
+                <li>Worldwide delivery</li>
+              </ul>
+            </Reveal>
+
+            <Reveal delay={0.08}>
+              <div className="relative overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/6 p-3">
+                <div className="aspect-[4/3] overflow-hidden rounded-[1.1rem]">
+                  <img
+                    src="/media/hims/grillz-editorial.jpg"
+                    alt="Dentist-fitted custom grillz consultation at Pav Dental"
+                    className="size-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between px-2 pb-1 text-xs text-white/75">
+                  <span>Tailored Elegance</span>
+                  <span className="font-medium text-[#ECD880]">Perfect Fit, Guaranteed</span>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </div>
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <li>100% solid gold</li>
-          <li>Dentist fitted</li>
-          <li>VVS diamonds</li>
-        </ul>
       </div>
     </section>
   );

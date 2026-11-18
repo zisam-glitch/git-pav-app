@@ -54,9 +54,9 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4-xs overflow-y-auto">
       <div
-        className="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl my-8"
+        className="relative w-full max-w-lg rounded-xl bg-white p-6 sm:p-8 shadow-2xl my-8"
         onClick={(e) => e.stopPropagation()}
       >
         <button

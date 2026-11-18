@@ -6,7 +6,7 @@ export function OpenApplication() {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
         
 
-        <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-[#2a1c12] tracking-tight">
+        <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-[#2a1c12]">
           Don't See Your Perfect Role?
         </h2>
         

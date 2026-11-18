@@ -81,7 +81,7 @@ export function CartDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/50-xs">
       <div
         className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between"
         onClick={(e) => e.stopPropagation()}

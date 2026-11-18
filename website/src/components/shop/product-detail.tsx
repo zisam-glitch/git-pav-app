@@ -178,7 +178,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Product Images Gallery */}
           <div className="space-y-4">
-            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#faf6f0] border border-[#e2d4c0]">
+            <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0] border border-[#e2d4c0]">
               <img
                 src={images[selectedImageIndex] || images[0]}
                 alt={productData.name}
@@ -215,7 +215,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
           {/* Details */}
           <div className="space-y-6">
             <div>
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+              <span className="text-xs font-semibold text-primary uppercase">
                 {productData.categoryLabel}
               </span>
               <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg mt-2">
@@ -249,7 +249,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
             {/* Variant Selector */}
             {variants.length > 0 && (
               <div className="space-y-2.5 pt-2 border-t border-[#e2d4c0]">
-                <label className="text-xs font-bold text-fg uppercase tracking-wider">
+                <label className="text-xs font-bold text-fg uppercase">
                   Select Option:
                 </label>
                 {variantError && (
@@ -379,7 +379,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 <a
                   key={rel.id}
                   href={`/shop/${rel.slug}`}
-                  className="group rounded-2xl border border-[#e2d4c0] bg-[#fffdf9] p-4 transition-all hover:shadow-md hover:border-[#844d1e]"
+                  className="group rounded-xl border border-[#e2d4c0] bg-[#fffdf9] p-4 transition-all hover:shadow-md hover:border-[#844d1e]"
                 >
                   <div className="aspect-square rounded-xl overflow-hidden bg-[#faf6f0] mb-3">
                     <img

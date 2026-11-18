@@ -153,13 +153,13 @@ function ContactHero() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur-sm"
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm"
               >
                 <Sparkles className="size-3.5" />
                 We'd love to hear from you
               </motion.div>
 
-              <h1 className="font-display text-4xl font-bold tracking-tight text-fg sm:text-5xl lg:text-[3.5rem] lg:leading-[1.08]">
+              <h1 className="font-display text-4xl font-bold text-fg sm:text-5xl lg:text-[3.5rem] lg:leading-[1.08]">
                 Contact{" "}
                 <span className="accent-text">Us</span>
               </h1>
@@ -237,9 +237,9 @@ function ContactHero() {
           <Reveal delay={0.12}>
             <div className="relative">
               {/* Card glow behind */}
-              <div className="pointer-events-none absolute -inset-3 rounded-3xl bg-gradient-to-br from-primary/[0.07] via-gold/[0.05] to-transparent blur-2xl" />
+              <div className="pointer-events-none absolute -inset-3 rounded-xl bg-gradient-to-br from-primary/[0.07] via-gold/[0.05] to-transparent blur-2xl" />
 
-              <div className="relative overflow-hidden rounded-2xl border border-white/70 bg-white/95 p-7 shadow-[0_24px_64px_-16px_rgba(42,28,18,0.18)] backdrop-blur-xl sm:p-9">
+              <div className="relative overflow-hidden rounded-xl border border-white/70 bg-white/95 p-7 shadow-[0_24px_64px_-16px_rgba(42,28,18,0.18)] sm:p-9">
                 {/* Accent line at top */}
 
                 <h2 className="font-display text-2xl font-bold text-fg sm:text-[1.7rem]">
@@ -255,7 +255,7 @@ function ContactHero() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="mt-8 rounded-2xl bg-gradient-to-br from-[#faf6f0] to-[#f5f0e8] p-8 text-center ring-1 ring-primary/10"
+                      className="mt-8 rounded-xl bg-gradient-to-br from-[#faf6f0] to-[#f5f0e8] p-8 text-center ring-1 ring-primary/10"
                     >
                       <motion.div
                         initial={{ scale: 0 }}
@@ -381,7 +381,7 @@ function ContactHero() {
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full gap-2.5 text-sm font-semibold tracking-wide"
+                        className="w-full gap-2.5 text-sm font-semibold"
                         size="lg"
                       >
                         {loading ? (
@@ -443,10 +443,10 @@ function DepartmentCards() {
         {/* Section header */}
         <Reveal>
           <div className="mb-12 max-w-lg">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+            <span className="text-xs font-semibold uppercase text-primary">
               How can we help
             </span>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+            <h2 className="mt-3 font-display text-3xl font-bold text-fg sm:text-4xl">
               Get in touch with the right team
             </h2>
           </div>
@@ -455,7 +455,7 @@ function DepartmentCards() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {departments.map((dept, i) => (
             <Reveal key={dept.title} delay={i * 0.08}>
-              <div className="group relative overflow-hidden rounded-2xl border border-border/30 bg-gradient-to-b from-[#fdfcfa] to-[#faf8f5] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_20px_50px_-20px_rgba(42,28,18,0.15)] sm:p-8">
+              <div className="group relative overflow-hidden rounded-xl border border-border/30 bg-gradient-to-b from-[#fdfcfa] to-[#faf8f5] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_20px_50px_-20px_rgba(42,28,18,0.15)] sm:p-8">
                 {/* Hover glow */}
                 <div className="pointer-events-none absolute -right-8 -top-8 size-28 rounded-full bg-primary/[0.06] opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -498,10 +498,10 @@ function FaqSection() {
           {/* Left: heading + question prompt */}
           <Reveal>
             <div className="sticky top-24">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary shadow-sm backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-white/70 px-3 py-1 text-xs font-semibold uppercase text-primary shadow-sm">
                 FAQ
               </span>
-              <h2 className="mt-5 font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl lg:text-[2.5rem]">
+              <h2 className="mt-5 font-display text-3xl font-bold text-fg sm:text-4xl lg:text-[2.5rem]">
                 Do you have any
                 <br />
                 questions for us?
@@ -530,7 +530,7 @@ function FaqSection() {
 
           {/* Right: accordion */}
           <Reveal delay={0.1}>
-            <div className="rounded-2xl border border-border/30 bg-white/80 p-2 shadow-sm backdrop-blur-sm sm:p-3">
+            <div className="rounded-xl border border-border/30 bg-white/80 p-2 shadow-sm sm:p-3">
               {faqs.map((faq, i) => {
                 const isOpen = openIndex === i;
                 return (
@@ -594,10 +594,10 @@ function MapSection() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
           <div className="text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-[#faf8f5] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-[#faf8f5] px-3 py-1 text-xs font-semibold uppercase text-primary shadow-sm">
               Our Location
             </span>
-            <h2 className="mt-5 font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl lg:text-[2.5rem]">
+            <h2 className="mt-5 font-display text-3xl font-bold text-fg sm:text-4xl lg:text-[2.5rem]">
               Connecting Near and Far
             </h2>
             <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted sm:text-base">
@@ -607,7 +607,7 @@ function MapSection() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="mt-12 overflow-hidden rounded-2xl border border-border/30 bg-white shadow-[0_24px_64px_-20px_rgba(42,28,18,0.12)]">
+          <div className="mt-12 overflow-hidden rounded-xl border border-border/30 bg-white shadow-[0_24px_64px_-20px_rgba(42,28,18,0.12)]">
             {/* Map embed */}
             <div className="relative h-72 w-full bg-[#e8ecef] sm:h-[420px]">
               <iframe
@@ -618,7 +618,7 @@ function MapSection() {
               />
 
               {/* Floating info card over map */}
-              <div className="absolute bottom-4 left-4 hidden rounded-xl border border-white/60 bg-white/95 p-4 shadow-lg backdrop-blur-md sm:block sm:max-w-xs">
+              <div className="absolute bottom-4 left-4 hidden rounded-xl border border-white/60 bg-white/95 p-4 shadow-lg sm:block sm:max-w-xs">
                 <div className="flex items-center gap-3">
                   <div className="grid size-10 shrink-0 place-items-center rounded-lg accent-gradient text-white shadow-sm">
                     <MapPin className="size-4.5" />
@@ -689,12 +689,12 @@ function MapSection() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="group rounded-2xl border border-border/30 bg-gradient-to-b from-[#fdfcfa] to-[#faf8f5] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+                className="group rounded-xl border border-border/30 bg-gradient-to-b from-[#fdfcfa] to-[#faf8f5] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
               >
                 <div className="mb-3 flex size-9 items-center justify-center rounded-lg bg-white text-primary shadow-sm ring-1 ring-border/30 transition-all duration-300 group-hover:ring-primary/25 group-hover:scale-105">
                   <item.icon className="size-4" strokeWidth={1.8} />
                 </div>
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+                <span className="text-[10px] font-semibold uppercase text-primary/70">
                   {item.label}
                 </span>
                 <p className="mt-1.5 text-sm font-bold text-fg">{item.title}</p>
@@ -716,7 +716,7 @@ function CtaBanner() {
     <section className="bg-[#faf8f5] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="relative isolate overflow-hidden rounded-3xl accent-gradient px-6 py-14 text-center text-white sm:px-16 sm:py-20">
+          <div className="relative isolate overflow-hidden rounded-xl accent-gradient px-6 py-14 text-center text-white sm:px-16 sm:py-20">
             {/* Layered decorative elements */}
             <div className="pointer-events-none absolute -left-20 -top-20 size-64 rounded-full bg-white/[0.08] blur-3xl" />
             <div className="pointer-events-none absolute -bottom-24 -right-24 size-80 rounded-full bg-white/[0.08] blur-3xl" />
@@ -756,7 +756,7 @@ function CtaBanner() {
                 <Button
                   asChild
                   variant="outline"
-                  className="border-white/30 bg-white/[0.08] text-white backdrop-blur-sm hover:bg-white/15 shadow-none"
+                  className="border-white/30 bg-white/[0.08] text-white hover:bg-white/15 shadow-none"
                   size="lg"
                 >
                   <a href="https://wa.me/447311871456" target="_blank" rel="noopener noreferrer">

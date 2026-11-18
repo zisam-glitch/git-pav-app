@@ -7,22 +7,22 @@ export function EmergencyContactStrip() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
           {/* Item 1 */}
           <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
+            <div className="size-12 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <MapPin className="size-6 text-white" />
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-widest text-red-200 font-bold">Address</p>
+              <p className="text-[11px] uppercase text-red-200 font-bold">Address</p>
               <p className="text-sm font-semibold text-white">786 Leeds Road, Bradford, BD3 9TY</p>
             </div>
           </div>
 
           {/* Item 2 */}
           <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
+            <div className="size-12 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Phone className="size-6 text-white" />
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-widest text-red-200 font-bold">24/7 Phone</p>
+              <p className="text-[11px] uppercase text-red-200 font-bold">24/7 Phone</p>
               <a href="tel:07311871456" className="text-sm font-bold text-white hover:underline">
                 07311 871456 / 0800 1938 786
               </a>
@@ -31,11 +31,11 @@ export function EmergencyContactStrip() {
 
           {/* Item 3 */}
           <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
+            <div className="size-12 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Clock className="size-6 text-white" />
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-widest text-red-200 font-bold">Opening Hours</p>
+              <p className="text-[11px] uppercase text-red-200 font-bold">Opening Hours</p>
               <p className="text-sm font-semibold text-white">Open 24/7 · 365 Days a Year</p>
             </div>
           </div>

@@ -133,7 +133,7 @@ export function ProductRevealCard({
       whileHover="hover"
       variants={containerVariants}
       className={cn(
-        "relative w-full rounded-2xl border border-white/20 bg-white/10 text-white overflow-hidden",
+        "relative w-full rounded-xl border border-white/20 bg-white/10 text-white overflow-hidden",
         "shadow-lg shadow-black/20 cursor-pointer group",
         className,
       )}
@@ -182,7 +182,7 @@ export function ProductRevealCard({
               e.stopPropagation()
               onQuickView?.()
             }}
-            className="text-lg font-bold leading-tight tracking-tight font-display cursor-pointer hover:text-[#cf9448] transition-colors text-white"
+            className="text-lg font-bold leading-tight font-display cursor-pointer hover:text-[#cf9448] transition-colors text-white"
             initial={{ opacity: 0.9 }}
             whileHover={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -233,7 +233,7 @@ export function ProductRevealCard({
 
       <motion.div
         variants={overlayVariants}
-        className="absolute inset-0 bg-[#2a1c12]/98 backdrop-blur-xl flex flex-col justify-end z-20 pointer-events-none"
+        className="absolute inset-0 bg-[#2a1c12]/98 flex flex-col justify-end z-20 pointer-events-none"
       >
         <div className="p-5 space-y-4 pointer-events-auto">
           <motion.div variants={contentVariants}>

@@ -94,7 +94,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
     <div className="min-h-screen bg-[#fffdf9] text-fg py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Success Header */}
-        <div className="text-center bg-white rounded-3xl border border-[#e2d4c0] p-8 shadow-xs">
+        <div className="text-center bg-white rounded-xl border border-[#e2d4c0] p-8 shadow-xs">
           <div className="size-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="size-10" />
           </div>
@@ -110,7 +110,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
         </div>
 
         {/* Order Details Card */}
-        <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-6">
+        <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#e2d4c0]">
             <div className="flex items-center gap-2 text-xs text-muted">
               <Calendar className="size-4" />
@@ -151,7 +151,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
 
           {/* Ordered items */}
           <div className="space-y-3 pt-4 border-t border-[#e2d4c0]">
-            <p className="text-xs font-bold text-fg uppercase tracking-wider">Purchased Items</p>
+            <p className="text-xs font-bold text-fg uppercase">Purchased Items</p>
             <div className="divide-y divide-[#e2d4c0]/50">
               {orderItems.map((it: any) => (
                 <div key={it.id} className="py-3 flex items-center justify-between gap-4 text-xs">

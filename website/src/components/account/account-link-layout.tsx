@@ -8,8 +8,8 @@ export function AccountLinkLayout({ title, children }: { title: string; children
     <main className="min-h-screen bg-[#fffdf9] text-fg">
       <Header />
       <div className="px-4 pt-28 pb-20 sm:px-6">
-        <div className="mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
-          <h1 className="font-serif text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
+        <div className="mx-auto max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
+          <h1 className="font-serif text-2xl font-bold text-slate-900">{title}</h1>
           <div className="mt-4 space-y-4 text-sm leading-relaxed text-slate-700">{children}</div>
         </div>
       </div>

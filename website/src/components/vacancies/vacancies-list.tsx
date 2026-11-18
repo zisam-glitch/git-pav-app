@@ -48,7 +48,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
             Open Positions
           </h2>
           <p className="mt-3 text-base sm:text-lg text-muted max-w-2xl mx-auto">
@@ -66,7 +66,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
               placeholder="Search roles, departments, or keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 rounded-2xl border border-[#e2d4c0] bg-white pl-12 pr-4 text-sm placeholder:text-muted/60 focus:border-[#cf9448] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/20 shadow-sm"
+              className="w-full h-12 rounded-xl border border-[#e2d4c0] bg-white pl-12 pr-4 text-sm placeholder:text-muted/60 focus:border-[#cf9448] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/20 shadow-sm"
             />
           </div>
 
@@ -97,7 +97,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
             return (
               <div
                 key={vacancy.id}
-                className={`relative overflow-hidden rounded-2xl border bg-white p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                className={`relative overflow-hidden rounded-xl border bg-white p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                   isFeatured
                     ? "border-[#cf9448]/50 shadow-md"
                     : "border-[#e2d4c0] shadow-sm hover:border-[#cf9448]/50"
@@ -106,7 +106,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
                 {/* Featured badge */}
                 {isFeatured && (
                   <div className="absolute top-4 right-4">
-                    <div className="flex items-center gap-1.5 rounded-full bg-[#cf9448]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#cf9448]">
+                    <div className="flex items-center gap-1.5 rounded-full bg-[#cf9448]/10 px-3 py-1 text-[11px] font-bold uppercase text-[#cf9448]">
                       <Sparkles className="size-3" />
                       <span>Featured</span>
                     </div>
@@ -119,7 +119,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
                   
 
                   {/* Title */}
-                  <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[#2a1c12]">
+                  <h3 className="font-display text-xl sm:text-2xl font-bold text-[#2a1c12]">
                     {vacancy.title}
                   </h3>
 
@@ -184,7 +184,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
 
         {/* Empty state */}
         {filteredVacancies.length === 0 && (
-          <div className="rounded-2xl border-2 border-dashed border-[#e2d4c0] bg-white p-16 text-center">
+          <div className="rounded-xl border-2 border-dashed border-[#e2d4c0] bg-white p-16 text-center">
             <Briefcase className="size-12 mx-auto text-muted/40 mb-4" />
             <p className="font-display text-xl font-bold text-[#2a1c12]">No positions match your search</p>
             <p className="mt-2 text-sm text-muted">Try clearing your filters or searching with a different keyword.</p>

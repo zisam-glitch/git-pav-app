@@ -26,9 +26,9 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4-xs overflow-y-auto">
       <div
-        className="relative w-full max-w-2xl rounded-3xl bg-white p-6 sm:p-8 shadow-2xl my-8"
+        className="relative w-full max-w-2xl rounded-xl bg-white p-6 sm:p-8 shadow-2xl my-8"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -42,7 +42,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
           {/* Product Image */}
-          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#faf6f0] border border-border/60">
+          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0] border border-border/60">
             <img
               src={product.image}
               alt={product.name}
@@ -58,7 +58,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
           {/* Details */}
           <div className="space-y-4">
             <div>
-              <span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-primary uppercase">
                 {product.categoryLabel}
               </span>
               <h2 className="font-display text-2xl font-bold text-fg mt-1">

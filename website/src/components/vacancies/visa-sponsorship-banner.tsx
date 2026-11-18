@@ -17,7 +17,7 @@ export function VisaSponsorshipBanner({ onApplySponsorship }: VisaSponsorshipBan
             {/* Left: Overseas Dentist Invitation */}
             <div className="lg:col-span-8 space-y-5">
             
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 Qualified Dentist Living Abroad?
               </h2>
 
@@ -55,7 +55,7 @@ export function VisaSponsorshipBanner({ onApplySponsorship }: VisaSponsorshipBan
 
             {/* Right: CTA */}
             <div className="lg:col-span-4 flex flex-col items-start lg:items-end justify-center">
-              <div className="rounded-2xl border border-white/20 bg-white/10 p-8 backdrop-blur-md w-full text-center space-y-4">
+              <div className="rounded-xl border border-white/20 bg-white/10 p-8 w-full text-center space-y-4">
                 <div className="flex size-16 items-center justify-center rounded-full bg-white/15 mx-auto">
                   <Plane className="size-8 text-[#d4a574]" />
                 </div>

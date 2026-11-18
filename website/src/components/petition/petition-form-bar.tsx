@@ -50,7 +50,7 @@ export function PetitionFormBar() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] opacity-10 [background-size:24px_24px]" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 id="sign-heading" className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+        <h2 id="sign-heading" className="font-display text-2xl font-bold text-white sm:text-3xl">
           {copy.heading}
         </h2>
         <p className="mt-1 text-xs text-white/90 sm:text-sm">{copy.eligibility}</p>

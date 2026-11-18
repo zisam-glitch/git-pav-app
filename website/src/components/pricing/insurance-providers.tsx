@@ -14,10 +14,10 @@ export function InsuranceProviders() {
           {/* AXA Health */}
           <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white border border-border/60 shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-center gap-2">
-              <div className="bg-[#00008f] text-white font-extrabold px-2.5 py-1 text-xs tracking-wider rounded-xs">
+              <div className="bg-[#00008f] text-white font-extrabold px-2.5 py-1 text-xs rounded-xs">
                 AXA
               </div>
-              <span className="font-bold text-[#00008f] text-sm tracking-tight">Health</span>
+              <span className="font-bold text-[#00008f] text-sm">Health</span>
             </div>
           </div>
 
@@ -27,7 +27,7 @@ export function InsuranceProviders() {
               <div className="size-6 rounded-full bg-[#82c91e] flex items-center justify-center text-white font-black text-xs">
                 S
               </div>
-              <span className="font-bold text-gray-800 text-sm tracking-tight">Simplyhealth</span>
+              <span className="font-bold text-gray-800 text-sm">Simplyhealth</span>
             </div>
           </div>
 
@@ -44,7 +44,7 @@ export function InsuranceProviders() {
           <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white border border-border/60 shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-center gap-2">
               <div className="size-3.5 bg-[#ffcc00] rounded-xs transform rotate-45" />
-              <span className="font-black text-[#004f9e] text-base tracking-wider">AVIVA</span>
+              <span className="font-black text-[#004f9e] text-base">AVIVA</span>
             </div>
           </div>
 

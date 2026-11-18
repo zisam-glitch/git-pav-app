@@ -67,7 +67,7 @@ export function SpecialAnnouncement() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Dynamic Admin Announcement Banner if configured */}
         {active && (
-          <div className="mb-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 sm:p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mb-12 rounded-xl bg-amber-500/10 border border-amber-500/30 p-5 sm:p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-left">
               <div className="size-10 rounded-full bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
                 <Megaphone className="size-5" />
@@ -92,7 +92,7 @@ export function SpecialAnnouncement() {
             <span>Patient Care & Accessibility</span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#844d1e] tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#844d1e]">
             Special Announcement from Pav Dental
           </h2>
 
@@ -114,7 +114,7 @@ export function SpecialAnnouncement() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="flex flex-col justify-between rounded-2xl border border-border/80 bg-white p-6 shadow-xs hover:shadow-soft hover:border-primary/40 transition-all duration-200"
+                className="flex flex-col justify-between rounded-xl border border-border/80 bg-white p-6 shadow-xs hover:shadow-soft hover:border-primary/40 transition-all duration-200"
               >
                 <div>
                   {/* Top Bar: Icon & Badge */}

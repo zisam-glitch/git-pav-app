@@ -53,10 +53,10 @@ export const About3 = ({
           <img
             src={mainImage.src}
             alt={mainImage.alt}
-            className="size-full max-h-[620px] rounded-2xl object-cover lg:col-span-2"
+            className="size-full max-h-[620px] rounded-xl object-cover lg:col-span-2"
           />
           <div className="flex flex-col gap-7 md:flex-row lg:flex-col">
-            <div className="flex flex-col justify-between gap-6 rounded-2xl glass p-7 md:w-1/2 lg:w-auto">
+            <div className="flex flex-col justify-between gap-6 rounded-xl glass p-7 md:w-1/2 lg:w-auto">
               {breakout.src ? (
                 <img
                   src={breakout.src}
@@ -79,7 +79,7 @@ export const About3 = ({
             <img
               src={secondaryImage.src}
               alt={secondaryImage.alt}
-              className="grow basis-0 rounded-2xl object-cover md:w-1/2 lg:min-h-0 lg:w-auto"
+              className="grow basis-0 rounded-xl object-cover md:w-1/2 lg:min-h-0 lg:w-auto"
             />
           </div>
         </div>

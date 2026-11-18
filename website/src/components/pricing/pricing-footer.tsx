@@ -62,7 +62,7 @@ export function PricingFooter() {
               ))}
             </ul>
             <div className="pt-2">
-              <span className="inline-block rounded-md border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold text-white/90 tracking-wide">
+              <span className="inline-block rounded-md border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold text-white/90">
                 GDC Registered Practice
               </span>
             </div>

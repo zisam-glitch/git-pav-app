@@ -16,14 +16,14 @@ export function PetitionContact() {
     <section className="border-t border-border/40 bg-white py-16 sm:py-24" aria-labelledby="touch-heading">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <div className="mb-10 text-center">
-          <h2 id="touch-heading" className="font-display text-3xl font-bold tracking-tight text-[#844d1e] sm:text-4xl">
+          <h2 id="touch-heading" className="font-display text-3xl font-bold text-[#844d1e] sm:text-4xl">
             {copy.heading}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-xs text-muted sm:text-sm">{copy.intro}</p>
         </div>
 
         {enquiry.sent ? (
-          <div className="rounded-2xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs" role="status">
+          <div className="rounded-xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs" role="status">
             <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-green-100 text-green-700">
               <CheckCircle2 className="size-6" aria-hidden="true" />
             </div>

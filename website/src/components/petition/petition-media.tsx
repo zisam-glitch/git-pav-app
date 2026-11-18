@@ -17,12 +17,12 @@ export function PetitionMedia() {
       <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
         <h2
           id="petition-video-heading"
-          className="font-display text-3xl font-bold tracking-tight text-[#844d1e] sm:text-4xl lg:text-[2.6rem]"
+          className="font-display text-3xl font-bold text-[#844d1e] sm:text-4xl lg:text-[2.6rem]"
         >
           {heading}
         </h2>
 
-        <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-3xl border border-border/70 bg-black shadow-2xl">
+        <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-xl border border-border/70 bg-black shadow-2xl">
           <div className="relative aspect-video w-full">
             {playing ? (
               <iframe

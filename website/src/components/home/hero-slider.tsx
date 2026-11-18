@@ -106,7 +106,7 @@ export function HeroSlider() {
           </ul>
         </div>
 
-        <div className="relative hidden h-[420px] overflow-hidden rounded-2xl glass shadow-lg lg:block">
+        <div className="relative hidden h-[420px] overflow-hidden rounded-xl glass shadow-lg lg:block">
           <AnimatePresence mode="wait">
             <motion.img
               key={slide.id}

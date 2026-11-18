@@ -81,7 +81,7 @@ export function CartPage() {
         </div>
 
         {/* Free Shipping Progress bar */}
-        <div className="bg-white rounded-2xl border border-[#e2d4c0] p-4 shadow-xs">
+        <div className="bg-white rounded-xl border border-[#e2d4c0] p-4 shadow-xs">
           <div className="flex items-center justify-between text-xs mb-2">
             <span className="font-semibold text-fg">
               {isFreeShipping ? "🎉 You've unlocked FREE UK Delivery!" : `Add £${amountNeededForFree.toFixed(2)} more for FREE UK Delivery`}
@@ -98,7 +98,7 @@ export function CartPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Items Table Left */}
-          <div className="lg:col-span-8 bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs divide-y divide-[#e2d4c0]">
+          <div className="lg:col-span-8 bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs divide-y divide-[#e2d4c0]">
             {items.map((it) => (
               <div key={it.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0 flex-1">
@@ -156,7 +156,7 @@ export function CartPage() {
 
           {/* Right Summary Column */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-5">
+            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-5">
               <h2 className="font-display text-lg font-bold text-fg">Summary</h2>
 
               {/* Promo Code Input */}

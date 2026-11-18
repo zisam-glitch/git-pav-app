@@ -167,7 +167,7 @@ export function CheckoutPage() {
             )}
 
             {/* 1. Contact Info */}
-            <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg flex items-center gap-2">
                 <span>1. Contact Information</span>
               </h2>
@@ -196,7 +196,7 @@ export function CheckoutPage() {
             </div>
 
             {/* 2. Delivery Address */}
-            <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg">2. Shipping Address</h2>
               <div>
                 <label className="text-xs font-semibold text-fg">Full Name *</label>
@@ -248,7 +248,7 @@ export function CheckoutPage() {
             </div>
 
             {/* 3. Shipping Method */}
-            <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg">3. Delivery Options</h2>
               {loadingShipping ? (
                 <p className="text-xs text-muted">Loading delivery rates...</p>
@@ -303,7 +303,7 @@ export function CheckoutPage() {
 
           {/* Right Summary Side */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-6">
+            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-6">
               <h2 className="font-display text-lg font-bold text-fg">Order Summary</h2>
 
               {/* Items list */}

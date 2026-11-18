@@ -18,10 +18,10 @@ function CookiePolicyPage() {
       <div className="pt-24 pb-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="mb-10 text-center">
-            <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+            <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800 uppercase">
               Privacy & Preferences
             </span>
-            <h1 className="mt-4 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="mt-4 font-serif text-3xl font-bold text-slate-900 sm:text-4xl">
               Cookie Policy
             </h1>
             <p className="mt-2 text-sm text-slate-600">
@@ -30,14 +30,14 @@ function CookiePolicyPage() {
           </div>
 
           <div className="prose prose-slate max-w-none space-y-8 text-slate-700 leading-relaxed">
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-serif text-xl font-semibold text-slate-900">1. What Are Cookies?</h2>
               <p className="mt-3 text-sm">
                 Cookies are small text files placed on your computer or mobile device when you visit our website. They help the site remember your preferences, keep you signed in, support shopping cart functionality, and help us understand website performance.
               </p>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-serif text-xl font-semibold text-slate-900">2. Types of Cookies We Use</h2>
               <div className="mt-4 space-y-6 text-sm">
                 <div className="border-l-4 border-emerald-600 pl-4">
@@ -59,7 +59,7 @@ function CookiePolicyPage() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-serif text-xl font-semibold text-slate-900">3. Managing Your Preferences</h2>
               <p className="mt-3 text-sm">
                 You can change or withdraw your cookie consent at any time by clearing your browser cookies and reloading the page, which will re-trigger the cookie banner, or by adjusting your web browser settings to reject non-essential cookies.
@@ -71,7 +71,7 @@ function CookiePolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-serif text-xl font-semibold text-slate-900">4. Contact Us</h2>
               <p className="mt-3 text-sm">
                 If you have questions about how we use cookies, please contact us at{" "}

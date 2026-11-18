@@ -101,7 +101,7 @@ export function Hero05({
   const taglineElement = tagline && (
     <p
       className={cn(
-        'text-muted max-w-xs leading-relaxed tracking-tight',
+        'text-muted max-w-xs leading-relaxed',
         vs.tagline,
       )}
     >
@@ -112,7 +112,7 @@ export function Hero05({
   const titleElement = title && (
     <h1
       className={cn(
-        'text-fg font-display font-medium tracking-tight text-balance',
+        'text-fg font-display font-medium text-balance',
         vs.title,
       )}
     >

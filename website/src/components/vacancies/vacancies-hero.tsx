@@ -21,7 +21,7 @@ export function VacanciesHero() {
         
 
         {/* Headline */}
-        <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
+        <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1]">
           Build Your Future at <span className="text-[#d4a574]">PavDental</span>
         </h1>
 
@@ -32,22 +32,22 @@ export function VacanciesHero() {
 
         {/* Key benefits grid */}
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          <div className=" p-4 backdrop-blur-sm">
+          <div className=" p-4">
             <Plane className="size-6 text-[#d4a574] mx-auto mb-2" />
             <h3 className="font-display text-sm font-bold text-white text-center">Visa Sponsorship</h3>
           </div>
 
-          <div className=" p-4 backdrop-blur-sm">
+          <div className=" p-4">
             <Cpu className="size-6 text-[#d4a574] mx-auto mb-2" />
             <h3 className="font-display text-sm font-bold text-white text-center">Advanced Tech</h3>
           </div>
 
-          <div className=" p-4 backdrop-blur-sm">
+          <div className=" p-4">
             <GraduationCap className="size-6 text-[#d4a574] mx-auto mb-2" />
             <h3 className="font-display text-sm font-bold text-white text-center">Mentorship</h3>
           </div>
 
-          <div className=" p-4 backdrop-blur-sm">
+          <div className=" p-4">
             <Users className="size-6 text-[#d4a574] mx-auto mb-2" />
             <h3 className="font-display text-sm font-bold text-white text-center">Supportive Team</h3>
           </div>

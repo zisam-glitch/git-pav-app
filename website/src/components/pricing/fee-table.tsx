@@ -201,7 +201,7 @@ export function FeeTable() {
                 <span className="font-semibold text-sm sm:text-base text-[#693d17]">
                   {group.category}
                 </span>
-                <span className="text-xs sm:text-sm font-semibold text-[#693d17] uppercase tracking-wider">
+                <span className="text-xs sm:text-sm font-semibold text-[#693d17] uppercase">
                   Fee
                 </span>
               </div>

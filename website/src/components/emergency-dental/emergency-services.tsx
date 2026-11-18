@@ -81,12 +81,12 @@ export function EmergencyServices() {
     <section className="py-20 sm:py-28 bg-[#fbf8f4]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#cf9448] mb-3">
+          <p className="text-xs font-bold uppercase text-[#cf9448] mb-3">
             Comprehensive Triage
           </p>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
             Our Emergency Dentist Can Help With{" "}
-            <span className="accent-text italic">The Following</span>
+            <span className="accent-text">The Following</span>
           </h2>
           <p className="mt-4 text-[#6b5848] text-base leading-relaxed">
             From sudden accidents to escalating infections, we treat every kind of urgent oral crisis with gentle, pain-free techniques.
@@ -99,18 +99,18 @@ export function EmergencyServices() {
             return (
               <div
                 key={cond.id}
-                className="group relative rounded-3xl bg-white p-7 border border-[#e8ddd0] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
+                className="group relative rounded-xl bg-white p-7 border border-[#e8ddd0] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-5">
                     <div
-                      className="size-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110"
+                      className="size-14 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
                       style={{ backgroundColor: `${cond.color}15` }}
                     >
                       <Icon className="size-7" style={{ color: cond.color }} />
                     </div>
                     <span
-                      className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full text-white"
+                      className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full text-white"
                       style={{ backgroundColor: cond.color }}
                     >
                       {cond.tag}

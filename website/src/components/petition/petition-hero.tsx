@@ -11,12 +11,12 @@ export function PetitionHero() {
       <div className="pointer-events-none absolute -right-40 top-20 size-[500px] rounded-full bg-gold/[0.05] blur-3xl" />
 
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#d9383a] sm:text-sm">
+        <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase text-[#d9383a] sm:text-sm">
           <HeartHandshake className="size-4" aria-hidden="true" />
           <span>{PETITION.eyebrow}</span>
         </p>
 
-        <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] tracking-tight text-[#2a1c12] sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] text-[#2a1c12] sm:text-5xl lg:text-6xl">
           {PETITION.title}
         </h1>
 
@@ -47,7 +47,7 @@ export function PetitionHero() {
 
         <ul className="mx-auto mt-12 grid max-w-3xl list-none grid-cols-1 gap-5 text-left sm:grid-cols-2">
           {PETITION.cards.map((card) => (
-            <li key={card.title} className="rounded-2xl border border-border/60 bg-white/90 p-6 shadow-2xs">
+            <li key={card.title} className="rounded-xl border border-border/60 bg-white/90 p-6 shadow-2xs">
               <h2 className="font-display text-lg font-bold text-fg">{card.title}</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">{card.text}</p>
             </li>

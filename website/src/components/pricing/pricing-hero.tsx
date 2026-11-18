@@ -11,7 +11,7 @@ export function PricingHero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#844d1e] tracking-tight leading-[1.15]"
+            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#844d1e] leading-[1.15]"
           >
             You don't have to Pay for it all at once.
           </motion.h1>

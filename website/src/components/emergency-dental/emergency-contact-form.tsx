@@ -46,19 +46,19 @@ export function EmergencyContactForm() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-50 px-4 py-1.5 mb-3">
             <AlertTriangle className="size-3.5 text-red-600" />
-            <span className="text-xs font-bold uppercase tracking-widest text-red-700">
+            <span className="text-xs font-bold uppercase text-red-700">
               Immediate Attention
             </span>
           </div>
-          <h2 className="font-display text-4xl sm:text-5xl font-bold text-[#2a1c12] tracking-tight">
-            Send us a <span className="text-red-600 italic">message</span>
+          <h2 className="font-display text-4xl sm:text-5xl font-bold text-[#2a1c12]">
+            Send us a <span className="text-red-600">message</span>
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[#6b5848] max-w-lg mx-auto">
             Need an urgent appointment or advice? Fill in the form and our on-call dental coordinator will contact you immediately.
           </p>
         </div>
 
-        <div className="glass rounded-3xl p-8 sm:p-12 shadow-xl border border-[#e2d4c0]/80">
+        <div className="glass rounded-xl p-8 sm:p-12 shadow-xl border border-[#e2d4c0]/80">
           {submitted ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-500" />
@@ -68,7 +68,7 @@ export function EmergencyContactForm() {
               <p className="text-[#6b5848] text-sm max-w-md">
                 Our on-call team has been alerted. We will call you within 15 minutes to confirm your slot and give you immediate pain relief advice.
               </p>
-              <div className="mt-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+              <div className="mt-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
                 If your condition is severe or rapidly deteriorating, please call directly on <strong>07311 871456</strong>.
               </div>
               <button

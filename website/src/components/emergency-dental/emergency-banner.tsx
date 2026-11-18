@@ -10,10 +10,10 @@ export function EmergencyBanner() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
           <div>
-            <span className="inline-block text-xs uppercase tracking-widest font-extrabold text-red-200 mb-2 bg-black/20 px-3 py-1 rounded-full">
+            <span className="inline-block text-xs uppercase font-extrabold text-red-200 mb-2 bg-black/20 px-3 py-1 rounded-full">
               Fast Relief · Open 24/7 · Same Day Slots
             </span>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black">
               Say Goodbye TO Your Dental Pain!
             </h2>
             <p className="mt-2 text-sm sm:text-base text-red-100/90 max-w-xl">

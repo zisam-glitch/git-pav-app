@@ -66,7 +66,7 @@ function CategoryRoute() {
             <ArrowLeft className="size-4" />
             <span>All Categories</span>
           </a>
-          <span className="text-xs font-semibold text-[#844d1e] uppercase tracking-wider">{categoryTitle}</span>
+          <span className="text-xs font-semibold text-[#844d1e] uppercase">{categoryTitle}</span>
         </div>
       </div>
 

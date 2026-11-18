@@ -172,7 +172,7 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex flex-col h-full rounded-2xl overflow-hidden bg-white border transition-all duration-300 shadow-sm",
+        "relative flex flex-col h-full rounded-xl overflow-hidden bg-white border transition-all duration-300 shadow-sm",
         plan.popular
           ? "border-primary/40 shadow-md ring-1 ring-primary/10"
           : "border-border/80 hover:border-primary/40",
@@ -208,7 +208,7 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.25 }}
-              className="text-4xl sm:text-5xl font-bold tracking-tight font-display tabular-nums"
+              className="text-4xl sm:text-5xl font-bold font-display tabular-nums"
             >
               {displayPrice}
             </motion.span>
@@ -218,7 +218,7 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
 
       {/* Plan Name */}
       <div className="px-6 pt-6 pb-4 text-center">
-        <h3 className="text-base font-extrabold tracking-widest text-fg">
+        <h3 className="text-base font-extrabold text-fg">
           {plan.name}
         </h3>
       </div>

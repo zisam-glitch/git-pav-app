@@ -21,20 +21,20 @@ export function EmergencyPricing() {
           {/* Left column */}
           <div className="lg:col-span-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/30 bg-[#cf9448]/10 px-4 py-1.5 mb-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#925a27]">
+              <span className="text-xs font-bold uppercase text-[#925a27]">
                 Clear &amp; Transparent
               </span>
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
-              How much does it <span className="accent-text italic">cost?</span>
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
+              How much does it <span className="accent-text">cost?</span>
             </h2>
 
             <p className="mt-4 text-[#6b5848] text-base leading-relaxed">
               We believe emergency healthcare should never come with hidden surprises. Before any treatment begins, our dentist conducts a thorough triage examination, explains your options, and gives you an exact upfront price.
             </p>
 
-            <div className="mt-8 rounded-3xl border border-[#e2d4c0] bg-[#faf6f0] p-6 sm:p-8 shadow-sm">
+            <div className="mt-8 rounded-xl border border-[#e2d4c0] bg-[#faf6f0] p-6 sm:p-8 shadow-sm">
               <ul className="divide-y divide-[#e2d4c0]/70">
                 {PRICE_ITEMS.map((row) => (
                   <li key={row.item} className="py-3 sm:py-3.5 flex items-center justify-between gap-4">
@@ -73,7 +73,7 @@ export function EmergencyPricing() {
           <div className="lg:col-span-5">
             <div className="relative mx-auto max-w-md lg:max-w-none">
               {/* Outer decorative card */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl border-4 border-white bg-white">
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1000&q=85"
@@ -84,18 +84,18 @@ export function EmergencyPricing() {
 
                   {/* Top Badge */}
                   <div className="absolute top-5 left-5 right-5 text-center">
-                    <div className="inline-block rounded-2xl bg-white/95 backdrop-blur-md px-6 py-2.5 shadow-xl border border-white">
-                      <p className="font-display text-2xl sm:text-3xl font-black text-red-600 tracking-tight">
+                    <div className="inline-block rounded-xl bg-white/95 px-6 py-2.5 shadow-xl border border-white">
+                      <p className="font-display text-2xl sm:text-3xl font-black text-red-600">
                         Open 24/7
                       </p>
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-[#925a27]">
+                      <p className="text-[11px] font-bold uppercase text-[#925a27]">
                         All Smiles Welcome
                       </p>
                     </div>
                   </div>
 
                   {/* Bottom details banner */}
-                  <div className="absolute bottom-5 inset-x-5 glass rounded-2xl p-4 text-center">
+                  <div className="absolute bottom-5 inset-x-5 glass rounded-xl p-4 text-center">
                     <p className="font-display text-lg font-bold text-[#2a1c12]">
                       Dedicated On-Call Surgical Team
                     </p>
@@ -107,8 +107,8 @@ export function EmergencyPricing() {
               </div>
 
               {/* Floating accent badge */}
-              <div className="absolute -bottom-5 -right-5 rounded-2xl bg-gradient-to-br from-red-600 to-[#925a27] text-white p-4 shadow-xl hidden sm:block">
-                <p className="text-xs font-bold uppercase tracking-wider text-white/80">Typical Wait</p>
+              <div className="absolute -bottom-5 -right-5 rounded-xl bg-gradient-to-br from-red-600 to-[#925a27] text-white p-4 shadow-xl hidden sm:block">
+                <p className="text-xs font-bold uppercase text-white/80">Typical Wait</p>
                 <p className="font-display text-2xl font-black">&lt; 30 Mins</p>
                 <p className="text-[10px] text-white/80">From arrival to triage</p>
               </div>

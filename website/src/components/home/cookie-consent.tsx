@@ -35,7 +35,7 @@ export function CookieConsent() {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5">
-      <div className="rounded-2xl border border-border bg-white/95 p-5 shadow-2xl backdrop-blur-md">
+      <div className="rounded-xl border border-border bg-white/95 p-5 shadow-2xl">
         <div className="flex items-start gap-3.5">
           <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
             <ShieldCheck className="size-5" />

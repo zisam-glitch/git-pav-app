@@ -58,12 +58,12 @@ export function EmergencyFaq() {
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/30 bg-[#cf9448]/10 px-4 py-1.5 mb-3">
             <HelpCircle className="size-3.5 text-[#cf9448]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#925a27]">
+            <span className="text-xs font-bold uppercase text-[#925a27]">
               Common Questions
             </span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
-            Frequently Asked <span className="accent-text italic">Questions</span>
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
+            Frequently Asked <span className="accent-text">Questions</span>
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[#6b5848]">
             Essential guidance on triage protocols, fees, night care, and what to do in a dental crisis.
@@ -76,7 +76,7 @@ export function EmergencyFaq() {
             return (
               <div
                 key={faq.q}
-                className={`rounded-2xl transition-all duration-200 border ${
+                className={`rounded-xl transition-all duration-200 border ${
                   isOpen
                     ? "bg-[#844d1e] text-white border-[#844d1e] shadow-lg"
                     : "bg-white text-[#2a1c12] border-[#e8ddd0] hover:border-[#cf9448]/60"
@@ -117,7 +117,7 @@ export function EmergencyFaq() {
         </div>
 
         {/* Bottom CTA block */}
-        <div className="mt-14 rounded-3xl bg-[#faf6f0] border border-[#e2d4c0] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <div className="mt-14 rounded-xl bg-[#faf6f0] border border-[#e2d4c0] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
           <div>
             <h3 className="font-display text-xl font-bold text-[#2a1c12]">
               Still dealing with unbearable pain?

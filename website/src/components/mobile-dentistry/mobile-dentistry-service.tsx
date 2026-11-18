@@ -20,7 +20,7 @@ export function MobileDentistryService() {
             <img
               src="https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=800&q=85"
               alt="Mobile dental surgery"
-              className="rounded-2xl shadow-lg w-full"
+              className="rounded-xl shadow-lg w-full"
             />
             <div className="absolute -bottom-6 -right-6 bg-[#925a27] text-white p-6 rounded-xl shadow-lg max-w-xs">
               <p className="font-display text-lg font-bold mb-2">Mobile Surgery</p>

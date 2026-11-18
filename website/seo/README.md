@@ -24,7 +24,7 @@ npm run seo:parity -- --base http://127.0.0.1:4173
 
 For each page it compares the status, title, description, canonical and robots tags, H1 and H2 headings, structured data types, internal links, image alt text, and how many of the live page's own sentences are on the new page (text on 10 or more live pages, such as the header and footer, is left out of that count).
 
-- A **failure** stops the run: a missing page, a changed title, description or canonical, a second title or description tag, or a page kept out of search results. Only the owner can approve one, in `parity-exceptions.json`.
+- A **failure** stops the run: a missing page, a changed title, description or canonical, a second title or description tag, a page kept out of search results, or a header or footer link that the live site has on 85% of its pages and the page lacks (links to approved missing or redirected pages excepted). Only the owner can approve one, in `parity-exceptions.json`.
 - A **note** is a gap to close before the switch: missing words, headings, links, alt text, or an H1 count other than one.
 - The **ratchet** (`parity-ratchet.json`) stops a page from getting worse while the rest are ported. After porting a page, run with `--update-ratchet` and commit the file.
 - **Before the switch**, run with `--min-sentences 0.95`: every page must have at least 95% of the live page's own sentences, except where an exception sets its own minimum.

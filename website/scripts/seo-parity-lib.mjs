@@ -207,6 +207,18 @@ export function coverage(units, pageText, shared = new Set()) {
 
 const squash = (text) => String(text ?? "").replace(/\s+/g, " ").trim();
 
+/**
+ * The links the live site carries on nearly every page: its header and footer. A page of the new
+ * site that lacks one has lost part of its navigation, so that is a failure, not a note.
+ */
+export function chromeLinks(pages, share = 0.85) {
+  const counts = new Map();
+  for (const page of pages) {
+    for (const link of page.internalLinks ?? []) counts.set(link, (counts.get(link) ?? 0) + 1);
+  }
+  return [...counts].filter(([, count]) => count >= pages.length * share).map(([link]) => link).sort();
+}
+
 /** The canonical URL a page at `path` should have: on www, with no trailing slash (but "/" keeps it). */
 export function expectedCanonical(path) {
   return `${LIVE_ORIGIN}${path === "/" ? "/" : path}`;
@@ -218,10 +230,21 @@ export function expectedCanonical(path) {
  * close (words, headings, links, alt text) before the switch.
  * `exception` is this path's entry in seo/parity-exceptions.json, if it has one.
  */
-export function comparePage({ path, live, page, status, location = null, cover, exception = null, minCoverage = null }) {
+export function comparePage({
+  path,
+  live,
+  page,
+  status,
+  location = null,
+  cover,
+  exception = null,
+  minCoverage = null,
+  chrome = [],
+  exceptions = {},
+}) {
   const issues = [];
-  const fail = (code, message) => issues.push({ level: "fail", code, message });
-  const note = (code, message) => issues.push({ level: "note", code, message });
+  const fail = (code, message, detail) => issues.push({ level: "fail", code, message, ...(detail && { detail }) });
+  const note = (code, message, detail) => issues.push({ level: "note", code, message, ...(detail && { detail }) });
 
   if (exception?.missing) {
     if (status === 404) return [{ level: "approved", code: "missing", message: exception.reason ?? "not built yet" }];
@@ -271,8 +294,19 @@ export function comparePage({ path, live, page, status, location = null, cover, 
   const lostTypes = liveTypes.filter((type) => !page.jsonLdTypes.includes(type));
   if (lostTypes.length) note("json-ld", `structured data types missing: ${lostTypes.join(", ")}`);
 
-  const lostLinks = (live.internalLinks ?? []).filter((link) => link !== path && !page.internalLinks.includes(link));
-  if (lostLinks.length) note("links", `${lostLinks.length} live internal links missing: ${lostLinks.slice(0, 4).join(", ")}${lostLinks.length > 4 ? ", ..." : ""}`);
+  // A live link to a page the owner approved leaving out (not built, or redirected to a page this
+  // one links to) is not a loss.
+  const approvedAway = (link) => {
+    const approved = exceptions[link];
+    return Boolean(approved?.missing || (approved?.redirect && page.internalLinks.includes(approved.redirect)));
+  };
+  const lostLinks = (live.internalLinks ?? []).filter(
+    (link) => link !== path && !page.internalLinks.includes(link) && !approvedAway(link),
+  );
+  const lostChrome = lostLinks.filter((link) => chrome.includes(link));
+  if (lostChrome.length) fail("chrome-links", `${lostChrome.length} header or footer links the live site has on nearly every page are missing: ${lostChrome.join(", ")}`, lostChrome);
+  const lostOther = lostLinks.filter((link) => !chrome.includes(link));
+  if (lostOther.length) note("links", `${lostOther.length} live internal links missing: ${lostOther.slice(0, 4).join(", ")}${lostOther.length > 4 ? ", ..." : ""}`, lostOther);
   if (page.images.missingAlt) note("alt", `${page.images.missingAlt} of ${page.images.total} images have no alt text`);
 
   if (cover) {

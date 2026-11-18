@@ -22,7 +22,7 @@
  *   --update-ratchet --min-sentences 0.95 --wait-seconds N --only /a,/b --out FILE --quiet
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { comparePage, coverage, liveUnits, parsePage, ratchetProblems, sharedUnits } from "./seo-parity-lib.mjs";
+import { chromeLinks, comparePage, coverage, liveUnits, parsePage, ratchetProblems, sharedUnits } from "./seo-parity-lib.mjs";
 import { slugForPath } from "./seo-snapshot-lib.mjs";
 
 function parseArgs(argv) {
@@ -85,6 +85,7 @@ for (const page of baseline.pages) {
   unitsByPath.set(page.path, existsSync(file) ? liveUnits(readFileSync(file, "utf8")) : []);
 }
 const shared = sharedUnits(unitsByPath);
+const chrome = chromeLinks(baseline.pages.filter((page) => !page.error));
 
 const results = [];
 for (const live of livePages) {
@@ -101,6 +102,8 @@ for (const live of livePages) {
     cover,
     exception,
     minCoverage: exception?.minCoverage ?? minSentences,
+    chrome,
+    exceptions,
   });
   results.push({ path: live.path, status, location, coverage: cover?.ratio ?? 0, cover, issues });
 }
@@ -130,7 +133,11 @@ if (args.updateRatchet) {
   writeFileSync(args.ratchet, `${JSON.stringify(current, null, 2)}\n`);
   console.log(`\nwrote ${args.ratchet} (${results.length} pages)`);
 } else if (ratchet) {
-  for (const r of results) problems.push(...ratchetProblems(r.path, current[r.path], ratchet[r.path]));
+  // A page whose exception sets its own minimum (the legal pages) is meant to differ from the live
+  // text, so that minimum is its floor and the ratchet does not apply.
+  for (const r of results) {
+    if (exceptions[r.path]?.minCoverage === undefined) problems.push(...ratchetProblems(r.path, current[r.path], ratchet[r.path]));
+  }
 }
 
 if (args.out) {

@@ -1,5 +1,8 @@
 // Pages ported word for word from the live site (seo/live-content/*.json),
 // apart from the typo fixes listed in the pull request that added them.
+// Five documents the live Practice Policy page links to are not on the live server
+// (seo/live-files.json lists them under missingOnLive), so they are left out here
+// until the practice supplies the files.
 // Edit the text here from now on.
 import type { ContentBlock } from "@/components/content/content-blocks";
 
@@ -123,10 +126,6 @@ export const LIVE_PAGES = {
             "href": "/policies/Quality%20Assurance%20Statement.pdf"
           },
           {
-            "text": "Was Not Brought Implementation Guide",
-            "href": "/policies/Was%20Not%20Brought%20Implementation%20Guide.pdf"
-          },
-          {
             "text": "Zero Tolerance Policy",
             "href": "/policies/Zero%20Tolerance%20Policy.pdf"
           }
@@ -184,20 +183,8 @@ export const LIVE_PAGES = {
             "href": "/forms/Consent%20form%20-%20Periodontal%20Treatment.docx"
           },
           {
-            "text": "Consent Form - Permission to Book Appointment",
-            "href": "/forms/Consent%20form%20-%20Permission%20to%20book%20appointment.docx"
-          },
-          {
-            "text": "Consent Form - Photograph Usage for Teaching",
-            "href": "/forms/Consent%20form%20-%20Photograph%20usage%20for%20teaching.docx"
-          },
-          {
             "text": "Consent Form - Photography",
             "href": "/forms/Consent%20form%20-%20Photography.docx"
-          },
-          {
-            "text": "Consent Form - Rad Exposure on Pregnancy",
-            "href": "/forms/Consent%20form%20-%20Rad%20exposure%20on%20Pregnancy.docx"
           },
           {
             "text": "Consent Form - Refusal of Consent",
@@ -247,10 +234,6 @@ export const LIVE_PAGES = {
           {
             "text": "GDC Standards",
             "href": "/posters/GDC%20Standards.pdf"
-          },
-          {
-            "text": "Hand Hygiene",
-            "href": "/posters/Hand%20Hygiene.png"
           },
           {
             "text": "Safeguarding Flow Chart",

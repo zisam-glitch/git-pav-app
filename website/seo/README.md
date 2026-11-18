@@ -7,6 +7,7 @@ The live site at www.pavdental.com is a separate Create React App build. `websit
 | `live-baseline.json` | Every live page, rendered in a browser on 18 Nov 2026: status, title, description, canonical, robots, Open Graph and Twitter tags, structured data, headings, links, images, word count and a text hash. Also how the host answers (redirects, unknown pages), robots.txt and the sitemap. |
 | `live-text/` | The visible text of each page, to port word for word. |
 | `live-seed-paths.json` | Where the crawl starts: the paths in the live app's router. The crawl follows links to find the rest (blog posts, team profiles). |
+| `live-files.json` | The 39 documents and team photos copied from the live site into `website/public/` at the same paths, each with its size, checksum and type, and the 5 documents the live page links to that the live server does not have (`missingOnLive`). `src/content/live-files.test.ts` checks the files against it. |
 | `live-content/` | The structure of a page ported so far (headings, paragraphs, lists, links, images, including FAQ answers hidden in collapsed accordions), captured with `--content-dir`. `src/content/live-pages.ts` holds the ported text. |
 
 ## What the live site does today

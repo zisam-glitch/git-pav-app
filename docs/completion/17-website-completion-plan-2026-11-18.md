@@ -37,7 +37,7 @@
 
 | Step | Work | Done when | Needs |
 |---|---|---|---|
-| A1 Files | Copy the 36 documents (10.7 MB) the live site serves under `/policies`, `/forms` and `/posters`, and the 8 team photos (2.1 MB, `/images/team/1.jpg` to `8.jpg`), into `website/public/` at the same paths. The links on `/practice-policy` and the team photos then work; until then the pages show a placeholder photo and the document links return 404. | All 44 return 200 on a preview | Owner's OK to download them (12.8 MB in all) |
+| A1 Files (done) | The live site's documents and the 8 team photos are copied into `website/public/` at the same paths: 31 documents (7 policies, 17 consent forms, 7 posters) and 8 photos, 12.8 MB in all, checked against checksums in `website/seo/live-files.json`. The live Practice Policy page also links to 5 documents that the live server never had (it answers with its own web page, so those links are dead there): the *Was Not Brought* implementation guide, the consent forms for *Permission to book appointment*, *Photograph usage for teaching* and *Rad exposure on pregnancy*, and the *Hand Hygiene* poster. They are left off the new page until the practice supplies the files. | All 39 files return 200 on a preview; no link on `/practice-policy` is dead | — |
 | A2 Team (done) | `/team` lists the 8 people on the live site, and `/team/<slug>` shows each profile with the live title, description, bio and photo. The data is static, not from the app backend. Update the team rule in `website/AGENTS.md`. | 8 profile URLs return 200 with live titles | — |
 | A3 Blog (done) | The 6 live posts at `/blog/<slug>`, with their full text, links and tables, listed on `/blog`. The demo articles and their `MedicalScholarlyArticle` markup are replaced with `BlogPosting`. The cover images stay on the live site's Contentful account. | 6 post URLs return 200 with titles | — |
 | A4 Finance | `/services/finance`. The live page promotes credit (0% APR, "7.9% APR representative"), but its calculator shows 9.9% APR. | Page live, or a decision recorded | Owner, with V12: the practice is not FCA-authorised to advertise finance (D-05) |
@@ -87,7 +87,7 @@ App links (Apple Team ID in the `apple-app-site-association` file, and the Andro
 
 | # | Question | Recommendation |
 |---|---|---|
-| 1 | Copy the 36 live documents and the 8 team photos (12.8 MB) into the website? | Yes, so the download links and photos keep working |
+| 1 | Copy the live documents and team photos into the website | Done: the owner said yes on 18 Nov (see A1) |
 | 2 | Finance page: publish the live credit wording? | Check with V12 first (D-05); hold the page until then |
 | 3 | Registration page: keep the online medical-history form? | No: an information page instead, since health data stays out of website forms |
 | 4 | `/gdpr` redirects to the privacy policy | Keep |
@@ -95,6 +95,7 @@ App links (Apple Team ID in the `apple-app-site-association` file, and the Andro
 | 6 | The CCTV policy charges £10 to see your own footage | Remove the fee (free under UK GDPR since 2018), after a legal check |
 | 7 | The live `/contact-us` description is the GDPR page's text | Fix it: the only intended change to a live description |
 | 8 | When to switch the domain, and who holds Vercel and Search Console access | Decide at Phase E |
+| 9 | The live Practice Policy page links to 5 documents that were never on the server (see A1) | Send the files and they will be added back, or confirm they can stay off |
 
 ## 5. Risks
 

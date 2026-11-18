@@ -1,0 +1,30 @@
+{
+  "/complaints-policy": {
+    "minCoverage": 0,
+    "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
+  },
+  "/cookie-policy": {
+    "minCoverage": 0,
+    "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
+  },
+  "/gdpr": {
+    "redirect": "/privacy-policy",
+    "reason": "The live page is another practice's template (\"Parish Dental\", another jurisdiction's law), so visitors go to the reviewed privacy notice (plan decision 4)."
+  },
+  "/privacy-policy": {
+    "minCoverage": 0,
+    "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
+  },
+  "/services/finance": {
+    "missing": true,
+    "reason": "Waits for the owner and V12: the practice is not FCA-authorised to advertise finance (plan A4, decision 2)."
+  },
+  "/services/regestration": {
+    "missing": true,
+    "reason": "Waits for the owner: the live page collects health data through a third-party form (plan A5, decision 3)."
+  },
+  "/terms-and-condition": {
+    "minCoverage": 0,
+    "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
+  }
+}

@@ -40,6 +40,7 @@ This folder contains the public-facing marketing website and online shop for Pav
   - Keep the live URLs. If a page has to move, add its old path to `MOVED_PATHS` in `src/lib/seo.ts` (permanent redirect).
   - Every route sets its head with `seoHead(path)` (or `noindexHead` for carts, checkout and private pages). Live titles and descriptions are copied word for word and `src/lib/seo.test.ts` fails if one changes: changing one is the owner's decision.
   - After adding a page to `PAGES`, run `npm run seo:sitemap`.
+  - `npm run seo:parity` compares a running build with the recorded live site (see `seo/README.md`). CI runs it; a page may not fall behind `seo/parity-ratchet.json`, so after porting a page run it with `--update-ratchet` and commit the file.
 - **Privacy & Security**:
   - Google Analytics 4 (`G-KZVKDLY449`) must only load after cookie consent is granted.
   - Never commit real secrets or `.env*` files.

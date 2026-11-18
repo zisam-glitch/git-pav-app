@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { Send, CheckCircle2, CalendarDays, PhoneCall, AlertTriangle } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { PRACTICE_EMAIL, PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 export function EmergencyContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -21,7 +21,9 @@ export function EmergencyContactForm() {
     const name = String(formData.get("name") || "").trim();
     const email = String(formData.get("email") || "").trim();
     const phone = String(formData.get("phone") || "").trim();
-    const subject = String(formData.get("subject") || "Emergency Dental Consultation Request").trim();
+    const subject = String(
+      formData.get("subject") || "Emergency Dental Consultation Request",
+    ).trim();
     const message = String(formData.get("message") || "").trim();
 
     try {
@@ -33,158 +35,131 @@ export function EmergencyContactForm() {
         message,
       });
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err?.message || "Could not submit your emergency request. Please call directly.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : undefined;
+      setError(msg || "Could not submit your emergency request. Please call directly.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <section id="contact-form" className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-50 px-4 py-1.5 mb-3">
-            <AlertTriangle className="size-3.5 text-red-600" />
-            <span className="text-xs font-bold uppercase tracking-widest text-red-700">
-              Immediate Attention
-            </span>
-          </div>
-          <h2 className="font-display text-4xl sm:text-5xl font-bold text-[#2a1c12] tracking-tight">
-            Send us a <span className="text-red-600 italic">message</span>
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[#6b5848] max-w-lg mx-auto">
-            Need an urgent appointment or advice? Fill in the form and our on-call dental coordinator will contact you immediately.
-          </p>
-        </div>
+    <Section id="contact-form" theme="white" width="max" space="sm" className="px-2 md:px-4">
+      <div className="rounded-xl bg-cream">
+        <div className="wrap grid items-start gap-8 py-10 md:grid-cols-[0.9fr_1.1fr] md:gap-12 md:py-16">
+          <div className="max-w-[460px]">
+            <Heading as="h2" size="h2-md" accent="a message" tone="terracotta" inline>
+              Send us
+            </Heading>
+            <p className="mt-4 text-lead text-muted">
+              For urgent dental pain, call us directly or send a message and our team will respond
+              as soon as possible.
+            </p>
 
-        <div className="glass rounded-3xl p-8 sm:p-12 shadow-xl border border-[#e2d4c0]/80">
-          {submitted ? (
-            <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
-              <CheckCircle2 className="size-16 text-emerald-500" />
-              <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
-                Emergency Request Received!
-              </h3>
-              <p className="text-[#6b5848] text-sm max-w-md">
-                Our on-call team has been alerted. We will call you within 15 minutes to confirm your slot and give you immediate pain relief advice.
-              </p>
-              <div className="mt-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
-                If your condition is severe or rapidly deteriorating, please call directly on <strong>07311 871456</strong>.
-              </div>
-              <button
-                type="button"
-                onClick={() => setSubmitted(false)}
-                className="text-xs text-[#925a27] underline mt-2"
-              >
-                Send another message
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="em-name" className="text-sm font-semibold text-[#2a1c12]">
-                    Full Name *
-                  </Label>
-                  <Input
-                    id="em-name"
-                    name="name"
-                    placeholder="e.g. John Doe"
-                    required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-red-500/30"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="em-email" className="text-sm font-semibold text-[#2a1c12]">
-                    Email Address *
-                  </Label>
-                  <Input
-                    id="em-email"
-                    name="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-red-500/30"
-                  />
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="em-subject" className="text-sm font-semibold text-[#2a1c12]">
-                    Subject
-                  </Label>
-                  <Input
-                    id="em-subject"
-                    name="subject"
-                    placeholder="e.g. Severe Toothache / Swelling"
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-red-500/30"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="em-phone" className="text-sm font-semibold text-[#2a1c12]">
-                    Phone Number *
-                  </Label>
-                  <Input
-                    id="em-phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="+44 7700 900123"
-                    required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-red-500/30"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="em-message" className="text-sm font-semibold text-[#2a1c12]">
-                  Your Message (Describe pain, swelling or trauma) *
-                </Label>
-                <Textarea
-                  id="em-message"
-                  name="message"
-                  placeholder="Please describe what happened, when the pain started, and any swelling or bleeding..."
-                  className="min-h-32 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-red-500/30 resize-none"
-                  required
-                />
-              </div>
-
-              {error && <p className="text-sm font-medium text-red-600">{error}</p>}
-
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full sm:w-auto accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-md hover:opacity-95"
+            <ul className="mt-8 space-y-3 text-body">
+              <li className="text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
+              <li>
+                <a
+                  href={PRACTICE_PHONE_HREF}
+                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 >
-                  <Send className="mr-2 size-4" />
+                  {PRACTICE_PHONE}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${PRACTICE_EMAIL}`}
+                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                >
+                  {PRACTICE_EMAIL}
+                </a>
+              </li>
+              <li className="text-small text-muted">{PRACTICE_HOURS}</li>
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+              <BookButton variant="outline">Book Appointment</BookButton>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-white p-6 md:p-[60px]">
+            {submitted ? (
+              <div className="max-w-[460px]">
+                <Heading as="h3" size="h3-md">
+                  Emergency Request Received
+                </Heading>
+                <p className="mt-3 text-body text-muted">
+                  Thank you. Our team has received your message. If your pain or swelling is severe,
+                  please call {PRACTICE_PHONE} straight away.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <CallButton variant="default">Call {PRACTICE_PHONE}</CallButton>
+                  <Button type="button" variant="outline" onClick={() => setSubmitted(false)}>
+                    Send another message
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="grid gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="em-name">Full Name</Label>
+                    <Input
+                      id="em-name"
+                      name="name"
+                      autoComplete="name"
+                      placeholder="Full Name"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="em-email">Email Address</Label>
+                    <Input
+                      id="em-email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="Email Address"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="em-subject">Subject</Label>
+                    <Input id="em-subject" name="subject" placeholder="Subject" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="em-phone">Phone</Label>
+                    <Input
+                      id="em-phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="Phone"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="em-message">Your Message</Label>
+                  <Textarea id="em-message" name="message" placeholder="Your Message" required />
+                </div>
+
+                {error ? (
+                  <p role="alert" className="text-small font-medium text-danger">
+                    {error}
+                  </p>
+                ) : null}
+
+                <Button type="submit" disabled={loading} className="h-12 w-full">
                   {loading ? "Sending..." : "Send Message"}
                 </Button>
-                <a
-                  href="tel:07311871456"
-                  className="text-xs sm:text-sm font-bold text-red-600 hover:underline flex items-center gap-1.5"
-                >
-                  <PhoneCall className="size-4" />
-                  Prefer to speak now? Call 07311 871456
-                </a>
-              </div>
-            </form>
-          )}
-        </div>
-
-        {/* Big centered Book Appointment button at the bottom */}
-        <div className="mt-12 text-center">
-          <Button
-            asChild
-            className="accent-gradient rounded-full px-12 h-14 text-base text-white font-bold shadow-xl hover:opacity-95 transition-all"
-          >
-            <a href={BOOKING_URL}>
-              <CalendarDays className="mr-2.5 size-5" />
-              Book Appointment
-            </a>
-          </Button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

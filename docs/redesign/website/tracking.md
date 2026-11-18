@@ -10,15 +10,15 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 
 | Group | Page | Route(s) | Sections | verified | built | todo | blocked | Images to make |
 |---|---|---|---|---|---|---|---|---|
+| S2-A | [Service: Emergency dental](pages/service-emergency-dental.md) | `/services/emergency-dental` | 8 | 8 | 0 | 0 | 0 | 1 |
 | S1-B | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 8 | 0 | 0 | 0 | 2 |
+| S2-A | [Service: Root canal](pages/service-root-canal.md) | `/services/root-canal` | 7 | 7 | 0 | 0 | 0 | 2 |
 | S1-B | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 7 | 0 | 0 | 0 | 1 |
 | F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 6 | 0 | 0 | 0 | 0 |
 | A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 7 |
 | S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 17 | 0 | 0 | 0 | 2 |
-| S2 | [Service: Dentures](pages/service-dentures.md) | `/services/dentures` | 7 | 0 | 0 | 7 | 0 | 0 |
-| S2 | [Service: Emergency dental](pages/service-emergency-dental.md) | `/services/emergency-dental` | 8 | 0 | 0 | 8 | 0 | 0 |
-| S2 | [Service: Mouthguards](pages/service-mouthguards.md) | `/services/mouthguards` | 7 | 0 | 0 | 7 | 0 | 0 |
-| S2 | [Service: Root canal](pages/service-root-canal.md) | `/services/root-canal` | 7 | 0 | 0 | 7 | 0 | 0 |
+| S2 | [Service: Dentures](pages/service-dentures.md) | `/services/dentures` | 7 | 7 | 0 | 0 | 0 | 2 |
+| S2 | [Service: Mouthguards](pages/service-mouthguards.md) | `/services/mouthguards` | 7 | 7 | 0 | 0 | 0 | 1 |
 | S3 | [Service: Aesthetics](pages/service-aesthetics.md) | `/services/aesthetics` | 9 | 0 | 0 | 9 | 0 | 0 |
 | S3 | [Service: Cosmetic](pages/service-cosmetic.md) | `/services/cosmetic` | 9 | 0 | 0 | 9 | 0 | 0 |
 | S3 | [Service: Custom grillz](pages/service-custom-grillz.md) | `/services/custom-grillz` | 7 | 0 | 0 | 7 | 0 | 0 |
@@ -35,7 +35,22 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
 | SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **174** | **54** | **0** | **120** | **0** | **12** |
+| | **Total** | | **174** | **83** | **0** | **91** | **0** | **18** |
+
+## Service: Emergency dental
+
+Group S2-A · `/services/emergency-dental` · [page file](pages/service-emergency-dental.md)
+
+| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | emergency banner | Hims `CtaBand` (`theme="brown"`) | verified | [shot](shots/emergency-dental/1440-cta.png) | ok | same | Uses `CtaBand` with `CallButton` (`gold`, primary) and `BookButton` (`glass`); keeps verbatim `Say Goodbye TO Your Dental Pain!` and `Book An Emergency Dental Appointment With US TODAY!` |
+| 2 | emergency contact form | Hims lead-capture card (`home/contact-form.tsx`) | verified | ok | ok | reworded | Restyled with Hims `Input`, `Textarea`, `Label`; keeps `api.forms.submitContact`, `CallButton` primary, and `BookButton` |
+| 3 | emergency contact strip | Hims 3-column cream `Tile` strip | verified | ok | ok | same | Uses `Section` + 3 `Tile` cards (`Address`, `Phone` via `PRACTICE_PHONE`, `Email` via `PRACTICE_EMAIL`) |
+| 4 | emergency faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | [shot](shots/emergency-dental/1440-faq.png) | ok | same | Uses `FaqList` (`@/components/hims`) with all 15 verbatim Q&As from `services--emergency-dental.txt`; Call is primary CTA |
+| 5 | emergency hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) & [treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/emergency-dental/1440-hero.png) | [shot](shots/emergency-dental/390-hero.png) | same | Verbatim H1 `Emergency Dentist`, Bradford 24/7 lead, `£45 consultation`, `£90* out-of-hours consultation`, `CallButton` primary (`PRACTICE_PHONE`), `Media` wired to `/images/generated/home-emergency-night.jpg` (`priority`) |
+| 6 | emergency page (page composition) | Hims alternating bands + `TestimonialsSection` | verified | ok | ok | same | Composes all 7 sections plus `TestimonialsSection` (`HOME_TESTIMONIALS`, matching live page's `What people say?` section) |
+| 7 | emergency pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/emergency-dental/1440-pricing.png) | ok | same | Verbatim `£45` / `£90` consultation cards and all 9 live emergency treatment prices in a Hims hairline fee panel |
+| 8 | emergency services | Hims 4-column `Tile` grid | verified | [shot](shots/emergency-dental/1440-triage.png) | ok | reworded | Uses the 8 live triage conditions (`Toothache` through `Painful Gums`) in `Tile` cards with `CallButton` |
 
 ## Service: Oral hygiene
 
@@ -51,6 +66,20 @@ Group S1-B · `/services/oral-hygiene` · [page file](pages/service-oral-hygiene
 | 6 | oral hygiene pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [ok](shots/oral-hygiene/06-pricing-1440.png) | ok | same | Uses promoted `PricingTiles` (`@/components/hims`) with exact live tiers (£45, £65, £75) |
 | 7 | oral hygiene showcase | [Mobbin split treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [ok](shots/oral-hygiene/07-showcase-1440.png) | ok | reworded | Restyled with `SplitFeature` + `<Media src="/images/generated/oral-hygiene-showcase.jpg" />` + interactive `/media/clinic-reel.mp4` player |
 | 8 | oral hygiene who needs | Hims symptom grid (`Tile tone="cream"`) + `sage` note | verified | ok | ok | same | Verbatim heading, intro, 7 live symptom items, and dental-work closing line |
+
+## Service: Root canal
+
+Group S2-A · `/services/root-canal` · [page file](pages/service-root-canal.md)
+
+| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | root canal consent | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/root-canal/1440-consent.png) | ok | same | Uses promoted `ConsentPanel` (`@/components/hims`) with verbatim heading and root canal consent items; removed Unsplash URL |
+| 2 | root canal contact | Hims lead-capture card (`home/contact-form.tsx`) | verified | ok | ok | same | Restyled with Hims `Input`, `Textarea`, `Label`; preserves `useEnquiry("Root canal")`, `PRACTICE_PHONE`, `PRACTICE_HOURS`, `PRACTICE_EMAIL`, `BookButton` |
+| 3 | root canal faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | [shot](shots/root-canal/1440-faq.png) | ok | same | Uses `FaqList` (`@/components/hims`) with all 10 verbatim Q&As from `services--root-canal.txt` |
+| 4 | root canal hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) & [treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/root-canal/1440-hero.png) | [shot](shots/root-canal/390-hero.png) | same | Verbatim H1 `Pav Dental Advanced Root Canal Care` and live lead; `<Media priority />` placeholder (`src` omitted pending image quota) |
+| 5 | root canal how | Hims dark brown bento (`Section` + `Media` video player) | verified | [shot](shots/root-canal/1440-how.png) | ok | same | Verbatim `How the Root canal treatment is done.`; keeps `/media/clinic-reel.mp4` player and replaced `/media/hero-clinic.jpg` with `<Media tone="brown" />` placeholder pending image quota |
+| 6 | root canal page (page composition) | Hims alternating light/dark rhythm + `CtaBand` | verified | [shot](shots/root-canal/1440-cta.png) | ok | reworded | Restored `RootCanalContact` (which was imported but omitted from JSX) and added closing `CtaBand` |
+| 7 | root canal pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/root-canal/1440-pricing.png) | ok | same | Uses promoted `PricingTiles` (`@/components/hims`) with all 3 live tiers (`£195`, `£295`, `£395`) and verbatim descriptions |
 
 ## Service: Tooth extraction
 
@@ -132,28 +161,13 @@ Group S2 · `/services/dentures` · [page file](pages/service-dentures.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | dentures contact | — | todo |  |  |  |  |
-| 2 | dentures faq | — | todo |  |  |  |  |
-| 3 | dentures hero | — | todo |  |  |  |  |
-| 4 | dentures page (page composition) | — | todo |  |  |  |  |
-| 5 | dentures pricing | — | todo |  |  |  |  |
-| 6 | dentures showcase | — | todo |  |  |  |  |
-| 7 | dentures solutions | — | todo |  |  |  |  |
-
-## Service: Emergency dental
-
-Group S2 · `/services/emergency-dental` · [page file](pages/service-emergency-dental.md)
-
-| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
-|---|---|---|---|---|---|---|---|
-| 1 | emergency banner | — | todo |  |  |  |  |
-| 2 | emergency contact form | — | todo |  |  |  |  |
-| 3 | emergency contact strip | — | todo |  |  |  |  |
-| 4 | emergency faq | — | todo |  |  |  |  |
-| 5 | emergency hero | — | todo |  |  |  |  |
-| 6 | emergency page (page composition) | — | todo |  |  |  |  |
-| 7 | emergency pricing | — | todo |  |  |  |  |
-| 8 | emergency services | — | todo |  |  |  |  |
+| 1 | dentures contact | Hims capture (lead-capture panel) · [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/dentures/1440-contact.png) | ok | same | Restyled with `Section theme="cream"`, `Heading`, shared `Input`/`Select`/`Textarea`/`Label`/`Button` pills, `CallButton`, and `useEnquiry("Dentures")` |
+| 2 | dentures faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | [shot](shots/dentures/1440-faq.png) | ok | same | Uses `FaqList` with sticky `Heading` + `BookButton`; restored all 10 live FAQs verbatim |
+| 3 | dentures hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/dentures/1440-hero.png) | [shot](shots/dentures/390-hero.png) | reworded | `SplitFeature` with `text-hero` `<h1>`, live lead, `BookButton` + `ButtonLink` (`#contact`), and `<Media ratio="4 / 3" tone="cream" priority />` placeholder |
+| 4 | dentures page (page composition) | Hims capture (`CtaBand`, alternating `white`/`cream`/`brown` bands) | verified | [shot](shots/dentures/1440-cta.png) | ok | same | Composes all 6 sections + closing `CtaBand` (`theme="brown"`) with alternating bands |
+| 5 | dentures pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/dentures/1440-pricing.png) | ok | same | Uses promoted `PricingTiles` (`@/components/hims`) with the 3 live denture prices (`£495`, `£795`, `£1195`), `Qualifications` line, and consultation footer |
+| 6 | dentures showcase | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · Hims brown band | verified | [shot](shots/dentures/1440-showcase.png) | ok | same | `Section theme="brown"` + `SplitFeature` with `<Media ratio="4 / 3" tone="brown" className="bg-white/10" />` placeholder and glass `Tile` cards for live options |
+| 7 | dentures solutions | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/dentures/1440-solutions.png) | ok | same | 4-col `Tile` grid (`tone="white"`) on `cream` for the 4 live solutions + `Affordable Denture Options` callout block |
 
 ## Service: Mouthguards
 
@@ -161,27 +175,13 @@ Group S2 · `/services/mouthguards` · [page file](pages/service-mouthguards.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | mouthguards colour | — | todo |  |  |  |  |
-| 2 | mouthguards hero | — | todo |  |  |  |  |
-| 3 | mouthguards ordering | — | todo |  |  |  |  |
-| 4 | mouthguards page (page composition) | — | todo |  |  |  |  |
-| 5 | mouthguards personalisation | — | todo |  |  |  |  |
-| 6 | mouthguards users | — | todo |  |  |  |  |
-| 7 | mouthguards why choose | — | todo |  |  |  |  |
-
-## Service: Root canal
-
-Group S2 · `/services/root-canal` · [page file](pages/service-root-canal.md)
-
-| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
-|---|---|---|---|---|---|---|---|
-| 1 | root canal consent | — | todo |  |  |  |  |
-| 2 | root canal contact | — | todo |  |  |  |  |
-| 3 | root canal faq | — | todo |  |  |  |  |
-| 4 | root canal hero | — | todo |  |  |  |  |
-| 5 | root canal how | — | todo |  |  |  |  |
-| 6 | root canal page (page composition) | — | todo |  |  |  |  |
-| 7 | root canal pricing | — | todo |  |  |  |  |
+| 1 | mouthguards colour | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/mouthguards/1440-colour.png) | ok | same | Interactive 32-colour swatch grid (`/media/mg.png`) + finish selector in Hims `Tile` and `Button` pills; calibrated blue/cyan/purple `hue-rotate` filters |
+| 2 | mouthguards hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/mouthguards/1440-hero.png) | [shot](shots/mouthguards/390-hero.png) | same | `SplitFeature` with `text-hero` `<h1>`, verbatim live subtitle/body, `BookButton` + `ButtonLink` (`#contact`), and `<Media ratio="4 / 3" tone="cream" priority />` placeholder |
+| 3 | mouthguards ordering | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) · [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/mouthguards/1440-order.png) | ok | same | Interactive pathway selector (`Visit Our Clinic` / `Order From Home`) over 2-col `Tile` step cards with all 4+4 live steps verbatim |
+| 4 | mouthguards page (page composition) | Hims capture (`CtaBand`, `ContactForm`, alternating `white`/`cream`/`brown` bands) | verified | [shot](shots/mouthguards/1440-contact.png) · [cta](shots/mouthguards/1440-cta.png) | ok | same | Composes all 6 sections + shared `ContactForm` (`Get In Touch` live copy) + closing `CtaBand` (`theme="brown"`) |
+| 5 | mouthguards personalisation | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/mouthguards/1440-personalisation.png) | ok | same | Interactive personalisation builder (`Name`, `Initials`, `Team Name`, `Number`, `Custom Logo`) with `Button` pills, shared `Input`/`Label`, and live preview tile |
+| 6 | mouthguards users | Hims capture (`Carousel` + `Tile`) | verified | [shot](shots/mouthguards/1440-who.png) | ok | same | `Carousel` of 7 `Tile tone="white"` cards on `cream` with exact live headings and descriptions |
+| 7 | mouthguards why choose | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | same | Numbered `Tile tone="cream"` grid for the 7 verbatim live benefits |
 
 ## Service: Aesthetics
 

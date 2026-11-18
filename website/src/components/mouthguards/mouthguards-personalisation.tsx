@@ -1,59 +1,83 @@
-import React from "react";
+import { useState } from "react";
+import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const PERSONALISATION_OPTIONS = [
-  {
-    title: "Name",
-    desc: "Add your name for easy identification",
-  },
-  {
-    title: "Initials",
-    desc: "Personalize with your initials",
-  },
-  {
-    title: "Team Name",
-    desc: "Show your team pride",
-  },
-  {
-    title: "Number",
-    desc: "Add your player number",
-  },
-  {
-    title: "Custom Logo",
-    desc: "Add your team or club logo",
-  },
-];
+  { id: "name", label: "Name", placeholder: "e.g. Jordan" },
+  { id: "initials", label: "Initials", placeholder: "e.g. J.S." },
+  { id: "team", label: "Team Name", placeholder: "e.g. Bradford RFC" },
+  { id: "number", label: "Number", placeholder: "e.g. 10" },
+  { id: "logo", label: "Custom Logo", placeholder: "Describe your club or team logo" },
+] as const;
 
 export function MouthguardsPersonalisation() {
+  const [selectedId, setSelectedId] =
+    useState<(typeof PERSONALISATION_OPTIONS)[number]["id"]>("name");
+  const [customText, setCustomText] = useState("");
+
+  const active =
+    PERSONALISATION_OPTIONS.find((option) => option.id === selectedId) ??
+    PERSONALISATION_OPTIONS[0];
+
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Add Personalisation
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Personalise your mouthguard with your name, initials, team name, number, or even a custom logo if required.
+    <Section id="personalisation" theme="white">
+      <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
+        <div className="max-w-xl">
+          <Heading size="h2-md" accent="Personalisation" tone="terracotta" inline>
+            Add
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            Personalise your mouthguard with your name, initials, team name, number, or even a
+            custom logo if required.
           </p>
+
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {PERSONALISATION_OPTIONS.map((option) => (
+              <li key={option.id}>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={selectedId === option.id ? "default" : "outline"}
+                  aria-pressed={selectedId === option.id}
+                  onClick={() => setSelectedId(option.id)}
+                >
+                  {option.label}
+                </Button>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {PERSONALISATION_OPTIONS.map((option, i) => (
-            <div key={option.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {option.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {option.desc}
+        <Tile tone="cream" className="p-6 md:p-8">
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="mg-personalisation-input">{active.label}</Label>
+              <Input
+                id="mg-personalisation-input"
+                value={customText}
+                onChange={(event) => setCustomText(event.target.value)}
+                placeholder={active.placeholder}
+              />
+            </div>
+
+            <div className="rounded-xl border border-border bg-white px-5 py-4">
+              <p className="text-caption text-muted">Preview ({active.label})</p>
+              <p className="mt-1 text-h4 text-fg">
+                {customText.trim() || active.placeholder.replace(/^e\.g\.\s*/, "")}
               </p>
             </div>
-          ))}
-        </div>
 
-       
+            <div className="flex flex-wrap gap-3 pt-2">
+              <BookButton>Make an Appointment</BookButton>
+              <ButtonLink href="#contact" variant="outline">
+                Contact us
+              </ButtonLink>
+            </div>
+          </div>
+        </Tile>
       </div>
-    </section>
+    </Section>
   );
 }

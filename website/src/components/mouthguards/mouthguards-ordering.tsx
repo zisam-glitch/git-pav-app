@@ -1,193 +1,131 @@
-import React from "react";
-import {
-  Building2,
-  Home,
-  MapPin,
-  Compass,
-  Calendar,
-  Scan,
-  Package,
-  Truck,
-  Mail,
-  Send,
-  Clock,
-  Flag,
-  Gem,
-  Sparkles,
-  type LucideIcon,
-} from "lucide-react";
+import { useState } from "react";
+import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-interface Step {
-  icon: LucideIcon;
+type RouteOption = "clinic" | "home";
+
+const PATHWAYS: ReadonlyArray<{
+  id: RouteOption;
   title: string;
-  desc: string;
-  position: "left" | "right";
-}
-
-const CLINIC_STEPS: Step[] = [
-  { icon: Calendar, title: "Book an appointment", desc: "Schedule your visit at Pav Dental clinic", position: "left" },
-  { icon: Scan, title: "Digital scan", desc: "We take a precise digital scan of your teeth", position: "right" },
-  { icon: Package, title: "Manufacturing", desc: "Your custom mouthguard is created", position: "left" },
-  { icon: Truck, title: "Delivery", desc: "Delivered straight to your address", position: "right" },
+  subtitle: string;
+  steps: readonly string[];
+  note: string;
+}> = [
+  {
+    id: "clinic",
+    title: "Visit Our Clinic",
+    subtitle: "Accurate digital scan with quick delivery",
+    steps: [
+      "Book an appointment at Pav Dental",
+      "We take a precise digital scan of your teeth",
+      "Your custom mouthguard is manufactured",
+      "Delivered straight to your address",
+    ],
+    note: "Digital scans give the highest accuracy and a perfect fit.",
+  },
+  {
+    id: "home",
+    title: "Order From Home",
+    subtitle: "Easy mould kit sent to your door",
+    steps: [
+      "We send you a mould kit",
+      "You take the impression at home",
+      "Use the prepaid label to return it",
+      "We create it and send it back to you",
+    ],
+    note: "This option is ideal if you live far away or need a convenient home solution.",
+  },
 ];
-
-const HOME_STEPS: Step[] = [
-  { icon: Mail, title: "Mould kit sent", desc: "We send you a mould kit to your door", position: "left" },
-  { icon: Home, title: "Take impression", desc: "You take the impression at home", position: "right" },
-  { icon: Send, title: "Return kit", desc: "Use the prepaid label to return it", position: "left" },
-  { icon: Clock, title: "Receive guard", desc: "We create it and send it back to you", position: "right" },
-];
-
-// Builds a wandering, hand-drawn-feeling trail through each step's waypoint.
-function buildTrail(steps: Step[]) {
-  const rowHeight = 100;
-  const height = steps.length * rowHeight + 70;
-  const points = [{ x: 50, y: 0 }];
-  steps.forEach((s, i) => points.push({ x: s.position === "left" ? 18 : 82, y: i * rowHeight + 70 }));
-  points.push({ x: 50, y: height - 15 });
-
-  let d = `M ${points[0].x},${points[0].y}`;
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i];
-    const p1 = points[i + 1];
-    const cy = (p0.y + p1.y) / 2;
-    d += ` C ${p0.x},${cy} ${p1.x},${cy} ${p1.x},${p1.y}`;
-  }
-  return { d, height };
-}
-
-interface TrailProps {
-  steps: Step[];
-  accent: string;
-  accentSoft: string;
-  label: string;
-}
-
-function Trail({ steps, accent, accentSoft }: TrailProps) {
-  const { d, height } = buildTrail(steps);
-
-  return (
-    <div className="relative">
-      {/* Start flag */}
-
-
-      {/* Winding dotted trail + waypoints */}
-      <div className="relative">
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox={`0 0 100 ${height}`}
-          preserveAspectRatio="none"
-        >
-          <path
-            d={d}
-            fill="none"
-            stroke={accent}
-            strokeWidth="1.4"
-            strokeDasharray="0.5 6"
-            strokeLinecap="round"
-            opacity="0.55"
-          />
-        </svg>
-
-        <div className="relative z-10 space-y-10 py-2">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            const isRight = step.position === "right";
-            return (
-              <div
-                key={step.title}
-                className={`flex items-center gap-4 ${isRight ? "flex-row-reverse" : ""}`}
-              >
-                {/* Waypoint medallion */}
-                <div className="relative flex-shrink-0">
-
-                  {/* small pennant with the stop number */}
-                  {/* <div
-                    className="absolute -top-1.5 -right-1.5 size-5 flex items-center justify-center text-[10px] font-bold text-white rounded-sm rotate-6 shadow-sm"
-                    style={{ backgroundColor: accent }}
-                  >
-                    {index + 1}
-                  </div> */}
-                </div>
-
-                {/* Parchment tag */}
-                <div
-                  className={`flex-1 min-w-0 px-4 py-3 bg-[#fffaf0] border border-dashed rounded-sm shadow-sm ${
-                    isRight ? "text-right -rotate-1" : "rotate-1"
-                  }`}
-                  style={{ borderColor: accentSoft }}
-                >
-                  <h4 className="font-semibold text-[#2a1c12] leading-snug">{step.title}</h4>
-                  <p className="mt-0.5 text-sm text-[#6b5848] leading-relaxed">{step.desc}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* X marks the spot */}
-
-    </div>
-  );
-}
 
 export function MouthguardsOrdering() {
+  const [selected, setSelected] = useState<RouteOption>("clinic");
+
   return (
-    <section
-      id="ordering"
-      className="relative overflow-hidden  bg-[#faf6f0] py-20 sm:py-28"
-    >
-
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <div className="mb-4 flex items-center justify-center gap-2">
-            <h2 className="font-display text-3xl font-bold text-[#2a1c12] sm:text-5xl">
-              How to Order Your Mouthguard
-            </h2>
-          </div>
-          <p className="mt-4 text-sm leading-relaxed text-[#6b5848] sm:text-base">
-            Every mouthguard is custom-made just for you. Follow the clinic trail or the home
-            route — both lead to the same perfect fit.
-          </p>
+    <Section id="ordering" theme="cream">
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl">
+          <Heading size="h2-md" accent="Your Mouthguard" tone="terracotta" inline>
+            How to Order
+          </Heading>
         </div>
 
-        <div className="relative grid gap-16 md:grid-cols-2 md:gap-12">
-          {/* Center divider with compass */}
-          <div className="absolute left-1/2 top-8 hidden h-[calc(100%-2rem)] w-px -translate-x-1/2 border-l-2 border-dashed border-[#d8c6a8] md:block" />
-
-
-          {/* Clinic trail */}
-          <div>
-            <div className="mb-8 flex items-center gap-3 justify-center">
-              <div className="text-center">
-                <h3 className="font-display text-2xl font-bold text-[#2a1c12]">Visit Our Clinic</h3>
-                <p className="text-sm font-medium text-[#925a27]">Accurate digital scan with quick delivery</p>
-              </div>
-            </div>
-
-            <Trail steps={CLINIC_STEPS} accent="#925a27" accentSoft="#cf9448" label="picked up or delivered" />
-
-
-          </div>
-
-          {/* Home trail */}
-          <div>
-            <div className="mb-8 flex items-center gap-3 justify-center">
-              <div className="text-center">
-                <h3 className="font-display text-2xl font-bold text-[#2a1c12]">Order From Home</h3>
-                <p className="text-sm font-medium text-[#4a7c59]">Easy mould kit sent to your door</p>
-              </div>
-            </div>
-
-            <Trail steps={HOME_STEPS} accent="#4a7c59" accentSoft="#6b9b7a" label="mailed straight to you" />
-
-
-          </div>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Ordering route">
+          {PATHWAYS.map((pathway) => (
+            <Button
+              key={pathway.id}
+              type="button"
+              size="sm"
+              variant={selected === pathway.id ? "default" : "outline"}
+              aria-pressed={selected === pathway.id}
+              onClick={() => setSelected(pathway.id)}
+            >
+              {pathway.title}
+            </Button>
+          ))}
         </div>
-
       </div>
-    </section>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        {PATHWAYS.map((pathway) => {
+          const isSelected = selected === pathway.id;
+          return (
+            <Tile
+              key={pathway.id}
+              tone="white"
+              className={cn(
+                "flex flex-col justify-between gap-6 p-6 md:p-8 t-colors",
+                isSelected && "ring-2 ring-black",
+              )}
+            >
+              <div>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-h3-md text-fg">{pathway.title}</h3>
+                    <p className="mt-2 text-lead text-muted">{pathway.subtitle}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelected(pathway.id)}
+                    aria-pressed={isSelected}
+                    className={cn(
+                      "shrink-0 rounded-pill border px-3 py-1 text-small font-medium t-colors",
+                      isSelected
+                        ? "border-black bg-black text-white"
+                        : "border-border-strong bg-white text-fg hover:border-black",
+                    )}
+                  >
+                    {isSelected ? "Selected" : "Choose"}
+                  </button>
+                </div>
+
+                <ol className="mt-6 divide-y divide-border border-y border-border">
+                  {pathway.steps.map((step, index) => (
+                    <li key={step} className="flex items-baseline gap-4 py-3.5">
+                      <span className="text-small font-medium tabular-nums text-muted">
+                        {index + 1}
+                      </span>
+                      <span className="text-body text-fg">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+
+                <p className="mt-5 text-body text-muted">{pathway.note}</p>
+              </div>
+
+              <div>
+                {pathway.id === "clinic" ? (
+                  <BookButton className="w-full sm:w-auto">Make an Appointment</BookButton>
+                ) : (
+                  <ButtonLink href="#contact" variant="outline" className="w-full sm:w-auto">
+                    Contact us
+                  </ButtonLink>
+                )}
+              </div>
+            </Tile>
+          );
+        })}
+      </div>
+    </Section>
   );
 }

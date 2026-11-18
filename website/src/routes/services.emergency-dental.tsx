@@ -11,12 +11,10 @@ export const Route = createFileRoute("/services/emergency-dental")({
 
 function Page() {
   return (
-    <>
+    <div className="min-h-screen bg-white text-fg">
       <Header />
-      <div className="pt-16">
-        <EmergencyDentalPage />
-      </div>
+      <EmergencyDentalPage />
       <Footer />
-    </>
+    </div>
   );
 }

@@ -1,122 +1,63 @@
-import { Phone, Calendar, Clock, AlertCircle, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { BOOKING_URL } from "@/lib/enquiry";
+import {
+  BookButton,
+  ButtonLink,
+  CallButton,
+  Heading,
+  Media,
+  Section,
+  Tile,
+} from "@/components/hims";
+import { PRACTICE_PHONE } from "@/lib/enquiry";
 
 export function EmergencyHero() {
   return (
-    <section className="relative overflow-hidden bg-[#1f1611] text-white">
-      {/* Background surgery image with dark overlay */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1800&q=85"
-          alt="Modern Emergency Dental Surgery"
-          className="size-full object-cover object-center opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1c120c]/95 via-[#1c120c]/85 to-[#1c120c]/70" />
-      </div>
+    <Section
+      id="top"
+      theme="white"
+      space="sm"
+      className="pt-6 md:pt-10"
+      aria-label="Emergency Dentist"
+    >
+      <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <p className="text-label text-terracotta">24/7 Emergency Dental Care</p>
+          <Heading as="h1" size="hero" accent="Dentist" tone="terracotta" inline className="mt-3">
+            Emergency
+          </Heading>
+          <p className="mt-5 max-w-xl text-lead text-muted">
+            Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
+          </p>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left card */}
-          <div className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 mb-6 backdrop-blur-sm">
-              <span className="relative flex size-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                <span className="relative inline-flex rounded-full size-2.5 bg-red-500" />
-              </span>
-              <span className="text-xs font-bold uppercase tracking-widest text-red-400">
-                24/7 Immediate Response
-              </span>
-            </div>
-
-            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 sm:p-10 shadow-2xl border border-white/40 text-[#2a1c12]">
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#2a1c12] leading-[1.08]">
-                Emergency{" "}
-                <span className="text-[#c0392b] italic">Dentist</span>
-              </h1>
-
-              <p className="mt-4 text-base sm:text-lg font-medium text-[#6b5848] leading-relaxed">
-                Covering Bradford 24 hours a day, 7 days a week — including weekends, bank holidays, and late evenings.
+          <div className="mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
+            <Tile tone="cream" className="p-4">
+              <p className="text-h4 text-fg tabular-nums">£45 consultation</p>
+              <p className="mt-1 text-small text-muted">Monday to Friday between 9am – 5pm</p>
+            </Tile>
+            <Tile tone="sage" className="p-4">
+              <p className="text-h4 text-fg tabular-nums">£90* out-of-hours consultation</p>
+              <p className="mt-1 text-small text-muted">
+                Weekends 9am – 8pm and Weekdays 5pm – 8pm
               </p>
-
-              <div className="mt-6 pt-5 border-t border-[#e2d4c0]/80 grid sm:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="size-9 rounded-xl bg-red-50 flex items-center justify-center text-red-600 flex-shrink-0">
-                    <Clock className="size-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-[#925a27]">Clinic Hours</p>
-                    <p className="text-sm font-bold text-[#2a1c12]">24/7 Out of Hours Care</p>
-                    <p className="text-xs text-[#6b5848]">Fast same-day admission</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="size-9 rounded-xl bg-[#cf9448]/15 flex items-center justify-center text-[#925a27] flex-shrink-0">
-                    <ShieldCheck className="size-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-[#925a27]">Clear Rates</p>
-                    <p className="text-sm font-bold text-[#2a1c12]">Transparent Pricing</p>
-                    <p className="text-xs text-[#6b5848]">NHS &amp; Private emergency slots</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </Tile>
           </div>
 
-          {/* Right action block */}
-          <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="bg-gradient-to-br from-red-600 to-[#b02a1e] rounded-3xl p-8 sm:p-9 shadow-2xl border border-red-400/40 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 size-36 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-              
-              <div className="flex items-center gap-3 mb-4">
-                <div className="size-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <Phone className="size-6 text-white animate-pulse" />
-                </div>
-                <div>
-                  <span className="text-xs uppercase tracking-widest text-white/80 font-bold">
-                    Emergency Hotline
-                  </span>
-                  <p className="text-xs text-white/90">Immediate triage with our on-call clinician</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <a
-                  href="tel:07311871456"
-                  className="block text-center py-3.5 px-4 rounded-2xl bg-white text-red-600 font-display text-2xl font-black shadow-lg hover:bg-white/95 transition-transform active:scale-[0.98]"
-                >
-                  07311 871456
-                </a>
-                <a
-                  href="tel:08001938786"
-                  className="block text-center py-2.5 px-4 rounded-xl bg-black/25 text-white font-semibold text-sm hover:bg-black/35 transition-colors"
-                >
-                  Freephone: 0800 1938 786
-                </a>
-              </div>
-
-              <Button
-                asChild
-                className="w-full bg-white/15 hover:bg-white/25 text-white border border-white/30 rounded-2xl h-12 font-bold backdrop-blur-sm"
-              >
-                <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
-                  <Calendar className="size-4" />
-                  Book Emergency Appointment
-                </a>
-              </Button>
-            </div>
-
-            <div className="bg-[#2a1c12]/80 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center gap-3">
-              <AlertCircle className="size-5 text-amber-400 flex-shrink-0" />
-              <p className="text-xs text-white/80 leading-snug">
-                <strong>Severe swelling or trauma?</strong> Call right away so we can prepare a surgical suite before you arrive.
-              </p>
-            </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+            <BookButton variant="outline">Book Online</BookButton>
+            <ButtonLink href="#pricing" variant="ghost">
+              How much does it cost?
+            </ButtonLink>
           </div>
         </div>
+
+        <Media
+          src="/images/generated/home-emergency-night.jpg"
+          alt="Pav Dental emergency dental clinic in Bradford ready for 24-hour urgent dental care"
+          ratio="4 / 3"
+          tone="navy"
+          priority
+        />
       </div>
-    </section>
+    </Section>
   );
 }

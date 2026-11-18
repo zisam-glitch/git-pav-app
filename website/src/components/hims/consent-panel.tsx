@@ -15,12 +15,14 @@ export type ConsentItem = {
  * Renders consent headings, intro, and items verbatim inside wrap-prose.
  */
 export function ConsentPanel({
+  id,
   theme = "cream",
   title,
   accent,
   intro,
   items,
 }: {
+  id?: string;
   theme?: SectionTheme;
   title: ReactNode;
   accent?: ReactNode;
@@ -30,7 +32,7 @@ export function ConsentPanel({
   const panelSurface = theme === "cream" ? "border border-border bg-white" : "bg-cream";
 
   return (
-    <Section theme={theme} width="prose">
+    <Section id={id} theme={theme} width="prose">
       <div className={cn("rounded-xl p-6 md:p-10", panelSurface)}>
         <Heading size="h3-md" accent={accent} tone="terracotta" inline>
           {title}

@@ -24,7 +24,7 @@ export function NewsletterCta() {
   }
 
   return (
-    <section className="py-16 sm:py-20 bg-[#fffdf9] border-t border-[#e2d4c0]">
+    <section className="py-16 sm:py-20 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
         <div className="relative overflow-hidden rounded-xl accent-gradient p-8 sm:p-12 text-white shadow-xl">
           <div className="pointer-events-none absolute -right-20 -top-20 w-60 h-60 rounded-full bg-white/10 blur-2xl" />
@@ -42,7 +42,7 @@ export function NewsletterCta() {
             </p>
 
             {subscribed ? (
-              <div className="mt-6 rounded-xl bg-white/15 border border-white/30 p-5">
+              <div className="mt-6 rounded-xl bg-white/15   p-5">
                 <CheckCircle2 className="w-8 h-8 mx-auto text-white mb-2" />
                 <p className="text-sm font-bold">You're Subscribed!</p>
                 <p className="text-xs text-white/85 mt-1">
@@ -60,7 +60,7 @@ export function NewsletterCta() {
                     placeholder="Enter your email address..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 rounded-xl bg-white/10 border border-white/25 text-white pl-10 pr-4 text-xs sm:text-sm placeholder:text-white/75 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/80"
+                    className="w-full h-11 rounded-xl bg-white/10   text-white pl-10 pr-4 text-xs sm:text-sm placeholder:text-white/75 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/80"
                   />
                 </div>
                 <button

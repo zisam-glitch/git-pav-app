@@ -44,7 +44,7 @@ export function EmergencyContactForm() {
     <section id="contact-form" className="py-20 sm:py-28 bg-[#fffdf9]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#e2d4c0] bg-[#faf6f0] px-4 py-1.5 mb-3">
+          <div className="inline-flex items-center gap-2 rounded-full   bg-[#faf6f0] px-4 py-1.5 mb-3">
             <AlertTriangle className="size-3.5 text-[#925a27]" />
             <span className="text-xs font-bold uppercase text-[#925a27]">
               Immediate Attention
@@ -58,7 +58,7 @@ export function EmergencyContactForm() {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto bg-white rounded-xl p-8 sm:p-12 shadow-xl border border-[#e2d4c0]/80">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl p-8 sm:p-12 shadow-xl  /80">
           {submitted ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-600" />
@@ -68,7 +68,7 @@ export function EmergencyContactForm() {
               <p className="text-[#6b5848] text-sm max-w-md">
                 Our on-call team has been alerted. We will call you within 15 minutes to confirm your slot and give you immediate pain relief advice.
               </p>
-              <div className="mt-4 p-4 rounded-xl bg-[#faf6f0] border border-[#e2d4c0] text-[#2a1c12] text-xs font-medium">
+              <div className="mt-4 p-4 rounded-xl bg-[#faf6f0]   text-[#2a1c12] text-xs font-medium">
                 If your condition is severe or rapidly deteriorating, please call directly on <strong>07311 871456</strong>.
               </div>
               <button
@@ -91,7 +91,7 @@ export function EmergencyContactForm() {
                     name="name"
                     placeholder="e.g. John Doe"
                     required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white focus-visible:ring-[#925a27]/30"
+                    className="h-12 rounded-xl  bg-white focus-visible:ring-[#925a27]/30"
                   />
                 </div>
                 <div className="space-y-2">
@@ -104,7 +104,7 @@ export function EmergencyContactForm() {
                     type="email"
                     placeholder="john@example.com"
                     required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white focus-visible:ring-[#925a27]/30"
+                    className="h-12 rounded-xl  bg-white focus-visible:ring-[#925a27]/30"
                   />
                 </div>
               </div>
@@ -118,7 +118,7 @@ export function EmergencyContactForm() {
                     id="em-subject"
                     name="subject"
                     placeholder="e.g. Severe Toothache / Swelling"
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white focus-visible:ring-[#925a27]/30"
+                    className="h-12 rounded-xl  bg-white focus-visible:ring-[#925a27]/30"
                   />
                 </div>
                 <div className="space-y-2">
@@ -131,7 +131,7 @@ export function EmergencyContactForm() {
                     type="tel"
                     placeholder="+44 7700 900123"
                     required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white focus-visible:ring-[#925a27]/30"
+                    className="h-12 rounded-xl  bg-white focus-visible:ring-[#925a27]/30"
                   />
                 </div>
               </div>
@@ -144,7 +144,7 @@ export function EmergencyContactForm() {
                   id="em-message"
                   name="message"
                   placeholder="Please describe what happened, when the pain started, and any swelling or bleeding..."
-                  className="min-h-32 rounded-xl border-[#e2d4c0] bg-white focus-visible:ring-[#925a27]/30 resize-none"
+                  className="min-h-32 rounded-xl  bg-white focus-visible:ring-[#925a27]/30 resize-none"
                   required
                 />
               </div>

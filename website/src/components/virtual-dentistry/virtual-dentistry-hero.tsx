@@ -7,7 +7,7 @@ export function VirtualDentistryHero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16 border-b border-[#e8ddd0] flex items-center"
+      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
       aria-label="Virtual dentistry services"
     >
       {/* Background layer with subtle kenburns and gradient overlay */}

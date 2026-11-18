@@ -63,7 +63,7 @@ export function ServiceTabs() {
               <Tabs.Trigger
                 key={s.id}
                 value={s.id}
-                className="snap-start inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm text-muted transition-colors duration-150 hover:border-primary data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-fg"
+                className="snap-start inline-flex h-11 shrink-0 items-center gap-2 rounded-full   bg-surface px-4 text-sm text-muted transition-colors duration-150 hover:border-primary data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-fg"
               >
                 <s.icon className="size-4" />
                 {s.title}
@@ -91,7 +91,7 @@ export function ServiceTabs() {
                     ))}
                   </ul>
                 </div>
-                <div className="rounded-xl border border-border-soft bg-white p-6 shadow-soft">
+                <div className="rounded-xl   bg-white p-6 shadow-soft">
                   <p className="text-sm text-muted">Typical next step</p>
                   <p className="mt-2 font-display text-xl">
                     Book a £35 assessment or call the emergency line if you are in pain now.

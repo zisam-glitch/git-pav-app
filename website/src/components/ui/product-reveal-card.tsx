@@ -133,7 +133,7 @@ export function ProductRevealCard({
       whileHover="hover"
       variants={containerVariants}
       className={cn(
-        "relative w-full rounded-xl border border-white/20 bg-white/10 text-white overflow-hidden",
+        "relative w-full rounded-xl   bg-white/10 text-white overflow-hidden",
         "shadow-lg shadow-black/20 cursor-pointer group",
         className,
       )}
@@ -251,7 +251,7 @@ export function ProductRevealCard({
                 {displayFeatures.map((feat, idx) => (
                   <div
                     key={idx}
-                    className="bg-white/10 rounded-lg p-2.5 text-center border border-white/20"
+                    className="bg-white/10 rounded-lg p-2.5 text-center  "
                   >
                     <div className="font-semibold text-white line-clamp-1">
                       {feat.split(":")[0].split("—")[0].trim()}

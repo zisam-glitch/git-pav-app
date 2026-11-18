@@ -74,7 +74,7 @@ export function ContactForm() {
 
         <Reveal delay={0.1}>
           {sent ? (
-            <div className="rounded-xl border border-border-soft bg-white p-8 shadow-soft">
+            <div className="rounded-xl   bg-white p-8 shadow-soft">
               <h3 className="font-display text-2xl">Message received</h3>
               <p className="mt-3 text-muted">
                 Thank you. A member of the team will reply during clinic hours. For pain now, call
@@ -85,7 +85,7 @@ export function ContactForm() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={onSubmit} className="grid gap-5 rounded-xl border border-border-soft bg-white p-6 shadow-soft sm:p-8">
+            <form onSubmit={onSubmit} className="grid gap-5 rounded-xl   bg-white p-6 shadow-soft sm:p-8">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Full name</Label>

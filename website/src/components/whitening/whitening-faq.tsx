@@ -53,7 +53,7 @@ export function WhiteningFaq() {
         </div>
 
         {/* Solid Accordion */}
-        <div className="divide-y divide-[#e8ddd0] border-y border-[#e8ddd0]">
+        <div className="   ">
           {FAQS.map((faq, i) => {
             const isOpen = open === i;
             return (
@@ -75,7 +75,7 @@ export function WhiteningFaq() {
                     className={`flex-shrink-0 size-8 rounded-full flex items-center justify-center transition-all ${
                       isOpen
                         ? "accent-gradient text-white rotate-180"
-                        : "bg-[#faf6f0] border border-[#e2d4c0] text-[#925a27]"
+                        : "bg-[#faf6f0]   text-[#925a27]"
                     }`}
                   >
                     <ChevronDown className="size-4" />
@@ -97,7 +97,7 @@ export function WhiteningFaq() {
         </div>
 
         {/* Bottom Solid CTA Box with crisp rounded-xl */}
-        <div className="mt-14 text-center bg-[#faf6f0] border border-[#e2d4c0] rounded-xl p-8 sm:p-10 shadow-sm">
+        <div className="mt-14 text-center bg-[#faf6f0]   rounded-xl p-8 sm:p-10 shadow-sm">
           <p className="font-display text-2xl font-bold text-[#2a1c12] mb-2">
             Have a Specific Clinical Question?
           </p>

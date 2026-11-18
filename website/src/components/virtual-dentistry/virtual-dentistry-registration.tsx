@@ -32,7 +32,7 @@ const REGISTRATION_INFO = [
 
 export function VirtualDentistryRegistration() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
+    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -59,7 +59,7 @@ export function VirtualDentistryRegistration() {
               return (
                 <div
                   key={info.title}
-                  className="bg-white rounded-xl p-4 shadow-sm border border-[#e2d4c0]"
+                  className="bg-white rounded-xl p-4 shadow-sm  "
                 >
                   <div className="size-10 rounded-lg bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mb-3">
                     <Icon className="size-5" />

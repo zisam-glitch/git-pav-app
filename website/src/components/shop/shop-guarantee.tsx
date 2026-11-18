@@ -25,7 +25,7 @@ export function ShopGuarantee() {
   ];
 
   return (
-    <section id="guarantee" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="guarantee" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
           {/* Left sticky header */}
@@ -47,7 +47,7 @@ export function ShopGuarantee() {
           </div>
 
           {/* Right accordion */}
-          <div className="divide-y divide-[#e8ddd0]">
+          <div className=" ">
             {faqs.map((faq, i) => {
               const isOpen = openFaq === i;
               return (

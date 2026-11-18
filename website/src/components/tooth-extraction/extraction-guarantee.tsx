@@ -26,7 +26,7 @@ const PERKS = [
 
 export function ExtractionGuarantee() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
+    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           {/* Left — text */}
@@ -60,7 +60,7 @@ export function ExtractionGuarantee() {
             {PERKS.map((p) => (
               <div
                 key={p.title}
-                className="bg-white rounded-xl p-6 flex flex-col gap-4 border border-[#e2d4c0] shadow-sm"
+                className="bg-white rounded-xl p-6 flex flex-col gap-4   shadow-sm"
               >
                 <p.icon className="size-5 text-[#925a27]" />
                 <div>

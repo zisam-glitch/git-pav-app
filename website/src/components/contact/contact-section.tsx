@@ -128,7 +128,7 @@ function ContactHero() {
   };
 
   return (
-    <section className="border-b border-border-soft bg-[#faf6f0] py-14 sm:py-20 lg:py-24">
+    <section className="bg-[#faf6f0] py-14 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
           {/* Left column: headline + direct contact directory */}
@@ -149,7 +149,7 @@ function ContactHero() {
                   Book Appointment
                 </a>
               </Button>
-              <Button asChild variant="outline" size="lg">
+              <Button asChild variant="outline" size="lg" className="bg-white hover:bg-[#f0e7da]">
                 <a href="tel:08001938786">
                   <Phone className="size-4" />
                   0800 1938 786
@@ -157,16 +157,16 @@ function ContactHero() {
               </Button>
             </div>
 
-            {/* Structured contact directory */}
-            <div className="mt-8 divide-y divide-[#e8ddd0] rounded-xl border border-border-soft bg-white">
+            {/* Borderless contact directory */}
+            <div className="mt-8 space-y-2.5">
               {CONTACT_CHANNELS.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
                   {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="group flex items-center gap-4 p-4 transition-colors hover:bg-[#faf6f0]"
+                  className="group flex items-center gap-4 rounded-xl bg-white p-4 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-sm"
                 >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-border-soft bg-[#faf6f0] text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#faf6f0] text-primary transition-colors group-hover:bg-primary group-hover:text-white">
                     <item.icon className="size-4" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -181,9 +181,9 @@ function ContactHero() {
             </div>
           </div>
 
-          {/* Right column: enquiry form card */}
+          {/* Right column: borderless elevated enquiry form card */}
           <div className="lg:col-span-7">
-            <div className="rounded-xl border border-border bg-white p-6 shadow-soft sm:p-9">
+            <div className="rounded-xl bg-white p-6 shadow-soft sm:p-9">
               <h2 className="font-display text-2xl font-bold text-fg sm:text-3xl">
                 Send us Message
               </h2>
@@ -199,7 +199,7 @@ function ContactHero() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="mt-7 rounded-xl border border-border-soft bg-[#faf6f0] p-8 text-center"
+                    className="mt-7 rounded-xl bg-[#faf6f0] p-8 text-center"
                   >
                     <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-primary text-white">
                       <CheckCircle2 className="size-7" />
@@ -218,7 +218,7 @@ function ContactHero() {
                     {errorMsg && (
                       <div
                         role="alert"
-                        className="flex items-start gap-2.5 rounded-lg border border-danger/40 bg-[#fef2f2] p-3.5 text-sm text-danger"
+                        className="flex items-start gap-2.5 rounded-lg bg-[#fef2f2] p-3.5 text-sm text-danger"
                       >
                         <AlertCircle className="mt-0.5 size-4 shrink-0" />
                         <span>{errorMsg}</span>
@@ -238,7 +238,7 @@ function ContactHero() {
                           onChange={(e) =>
                             setFormData({ ...formData, firstName: e.target.value })
                           }
-                          className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                          className="h-11 rounded-lg border-0 bg-[#faf6f0] text-sm text-fg placeholder:text-subtle"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -252,7 +252,7 @@ function ContactHero() {
                           onChange={(e) =>
                             setFormData({ ...formData, lastName: e.target.value })
                           }
-                          className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                          className="h-11 rounded-lg border-0 bg-[#faf6f0] text-sm text-fg placeholder:text-subtle"
                         />
                       </div>
                     </div>
@@ -269,7 +269,7 @@ function ContactHero() {
                           placeholder="you@example.com"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                          className="h-11 rounded-lg border-0 bg-[#faf6f0] text-sm text-fg placeholder:text-subtle"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -277,7 +277,7 @@ function ContactHero() {
                           Phone
                         </Label>
                         <div className="flex gap-2">
-                          <div className="flex h-11 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-[#faf6f0] text-sm font-medium text-fg">
+                          <div className="flex h-11 w-14 shrink-0 items-center justify-center rounded-lg bg-[#faf6f0] text-sm font-medium text-fg">
                             +44
                           </div>
                           <Input
@@ -286,7 +286,7 @@ function ContactHero() {
                             placeholder="7311 871 456"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="h-11 flex-1 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                            className="h-11 flex-1 rounded-lg border-0 bg-[#faf6f0] text-sm text-fg placeholder:text-subtle"
                           />
                         </div>
                       </div>
@@ -301,7 +301,7 @@ function ContactHero() {
                         placeholder="General enquiry, emergency care, or appointment question"
                         value={formData.subject}
                         onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                        className="h-11 rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                        className="h-11 rounded-lg border-0 bg-[#faf6f0] text-sm text-fg placeholder:text-subtle"
                       />
                     </div>
 
@@ -316,7 +316,7 @@ function ContactHero() {
                         placeholder="Tell us how we can help..."
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="min-h-[7rem] rounded-lg border-border bg-white text-sm text-fg placeholder:text-subtle"
+                        className="min-h-[7rem] rounded-lg border-0 bg-[#faf6f0] text-sm text-fg placeholder:text-subtle"
                       />
                     </div>
 
@@ -383,7 +383,7 @@ function MapSection() {
           </Button>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-xl border border-border bg-white">
+        <div className="mt-8 overflow-hidden rounded-xl bg-white shadow-soft">
           <div className="h-72 w-full bg-[#faf6f0] sm:h-[400px]">
             <iframe
               title="Pav Dental Bradford Location Map"
@@ -393,10 +393,10 @@ function MapSection() {
             />
           </div>
 
-          <div className="grid grid-cols-1 divide-y divide-[#e8ddd0] border-t border-border-soft bg-[#faf6f0] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          <div className="grid grid-cols-1 gap-4 bg-[#faf6f0] p-5 sm:grid-cols-3 sm:p-6">
             {[
               {
-                icon: Building2Strip,
+                icon: MapPin,
                 label: "Clinic Address",
                 title: "Pav Dental",
                 sub: "786 Leeds Road, Bradford, BD3 9TY",
@@ -414,8 +414,8 @@ function MapSection() {
                 sub: "Free parking · Bus routes 72 & 73",
               },
             ].map((item) => (
-              <div key={item.label} className="flex items-start gap-3.5 p-5 sm:p-6">
-                <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-border-soft bg-white text-primary">
+              <div key={item.label} className="flex items-start gap-3.5 rounded-lg bg-white p-4">
+                <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#faf6f0] text-primary">
                   <item.icon className="size-4" />
                 </div>
                 <div>
@@ -432,15 +432,11 @@ function MapSection() {
   );
 }
 
-function Building2Strip({ className }: { className?: string }) {
-  return <MapPin className={className} />;
-}
-
 function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="border-t border-border-soft bg-[#faf6f0] py-16 sm:py-24">
+    <section id="faq" className="bg-[#faf6f0] py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
@@ -458,7 +454,7 @@ function FaqSection() {
                   Call 0800 1938 786
                 </a>
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="bg-white hover:bg-[#f0e7da]">
                 <a href="mailto:hello@pavdental.com">
                   <Mail className="size-4" />
                   hello@pavdental.com
@@ -467,23 +463,21 @@ function FaqSection() {
             </div>
           </div>
 
-          <div className="divide-y divide-[#e8ddd0] rounded-xl border border-border-soft bg-white lg:col-span-7">
+          <div className="space-y-3 lg:col-span-7">
             {faqs.map((faq, i) => {
               const isOpen = openIndex === i;
               return (
-                <div key={faq.q}>
+                <div key={faq.q} className="rounded-xl bg-white shadow-xs">
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : i)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[#faf6f0]"
+                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
                   >
                     <span className="text-sm font-semibold text-fg sm:text-base">{faq.q}</span>
                     <span
-                      className={`grid size-7 shrink-0 place-items-center rounded-md border transition-transform duration-200 ${
-                        isOpen
-                          ? "rotate-180 border-primary bg-primary text-white"
-                          : "border-border-soft bg-[#faf6f0] text-fg"
+                      className={`grid size-7 shrink-0 place-items-center rounded-md transition-transform duration-200 ${
+                        isOpen ? "rotate-180 bg-primary text-white" : "bg-[#faf6f0] text-fg"
                       }`}
                     >
                       <ChevronDown className="size-4" />
@@ -516,7 +510,7 @@ function CtaBanner() {
   return (
     <section className="bg-[#fffdf9] py-14 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-xl border border-primary bg-[#2a1c12] px-6 py-12 text-center text-white sm:px-14 sm:py-16">
+        <div className="rounded-xl bg-[#2a1c12] px-6 py-12 text-center text-white sm:px-14 sm:py-16">
           <h2 className="font-display text-3xl font-bold sm:text-4xl">Ready to Get Started?</h2>
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#e8ddd0] sm:text-base">
             Book your appointment today or speak directly with our Bradford reception team.
@@ -540,7 +534,7 @@ function CtaBanner() {
               href="https://wa.me/447311871456"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-[#925a27] bg-[#372418] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#462f20]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#372418] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#462f20]"
             >
               WhatsApp Us
             </a>

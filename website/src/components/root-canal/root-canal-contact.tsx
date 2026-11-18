@@ -10,7 +10,7 @@ export function RootCanalContact() {
   const enquiry = useEnquiry("Root canal");
 
   return (
-    <section id="contact" className="py-20 sm:py-28 bg-[#faf6f0] border-t border-[#e2d4c0]">
+    <section id="contact" className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-start">
           {/* Left: Contact info */}
@@ -29,7 +29,7 @@ export function RootCanalContact() {
                 { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex items-start gap-4">
-                  <div className="size-10 rounded-lg bg-white border border-[#e2d4c0] flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <div className="size-10 rounded-lg bg-white   flex items-center justify-center flex-shrink-0 shadow-sm">
                     <Icon className="size-4 text-[#925a27]" />
                   </div>
                   <div>
@@ -42,7 +42,7 @@ export function RootCanalContact() {
           </div>
 
           {/* Right: Solid white form card */}
-          <div className="bg-white rounded-xl border border-[#e2d4c0] shadow-sm p-8">
+          <div className="bg-white rounded-xl   shadow-sm p-8">
             {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
                 <CheckCircle2 className="size-12 text-emerald-500" />
@@ -72,7 +72,7 @@ export function RootCanalContact() {
                       name="name"
                       placeholder="e.g. Robert Taylor"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                   <div className="space-y-2">
@@ -85,7 +85,7 @@ export function RootCanalContact() {
                       type="email"
                       placeholder="robert@example.com"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                 </div>
@@ -99,7 +99,7 @@ export function RootCanalContact() {
                       id="rc-subject"
                       name="subject"
                       placeholder="Toothache / Root Canal Query"
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                   <div className="space-y-2">
@@ -112,7 +112,7 @@ export function RootCanalContact() {
                       type="tel"
                       placeholder="+44 7700 900786"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                 </div>
@@ -125,7 +125,7 @@ export function RootCanalContact() {
                     id="rc-message"
                     name="message"
                     placeholder="Describe the affected tooth, pain level, sensitivity to hot/cold, or duration..."
-                    className="min-h-28 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
+                    className="min-h-28 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                     required
                   />
                 </div>

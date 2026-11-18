@@ -54,7 +54,7 @@ export function AestheticsFaq() {
         </div>
 
         {/* Solid Accordion */}
-        <div className="divide-y divide-border border-y border-border">
+        <div className="   ">
           {FAQS.map((faq, i) => {
             const isOpen = open === i;
             return (
@@ -76,7 +76,7 @@ export function AestheticsFaq() {
                     className={`flex-shrink-0 size-8 rounded-full flex items-center justify-center transition-all ${
                       isOpen
                         ? "accent-gradient text-primary-fg rotate-180"
-                        : "bg-elevated border border-border text-primary"
+                        : "bg-elevated   text-primary"
                     }`}
                   >
                     <ChevronDown className="size-4" />
@@ -98,7 +98,7 @@ export function AestheticsFaq() {
         </div>
 
         {/* Bottom Solid CTA Box */}
-        <div className="mt-14 text-center bg-elevated border border-border rounded-xl p-8 sm:p-10 shadow-sm">
+        <div className="mt-14 text-center bg-elevated   rounded-xl p-8 sm:p-10 shadow-sm">
           <p className="font-display text-2xl font-bold text-fg mb-2">
             Have Questions About Aesthetic Treatments?
           </p>

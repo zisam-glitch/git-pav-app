@@ -26,7 +26,7 @@ export function NotFoundPage() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block rounded-xl border border-border/70 bg-white px-4 py-3 text-sm font-medium text-fg shadow-2xs transition-colors hover:border-primary/40 hover:text-primary"
+                  className="block rounded-xl   bg-white px-4 py-3 text-sm font-medium text-fg shadow-2xs transition-colors hover:border-primary/40 hover:text-primary"
                 >
                   {link.label}
                 </a>

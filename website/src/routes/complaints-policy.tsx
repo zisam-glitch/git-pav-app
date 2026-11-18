@@ -19,7 +19,7 @@ function ComplaintsPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-[72ch]">
           <div className="mb-10 text-center">
-            <span className="inline-block rounded-full border border-[#e2d4c0] bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
+            <span className="inline-block rounded-full   bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
               Clinical Governance
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold text-[#2a1c12] sm:text-4xl">
@@ -31,14 +31,14 @@ function ComplaintsPage() {
           </div>
 
           <div className="space-y-8 text-[#4a3b2f] leading-relaxed">
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">1. Our Commitment</h2>
               <p className="mt-3 text-sm">
                 At Pav Dental, we aim to provide high-quality, patient-centred dental care. If any aspect of our service does not meet your expectations, we take your feedback seriously and operate a transparent complaints procedure compliant with General Dental Council (GDC) ethical principles.
               </p>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">2. How to Raise a Concern or Complaint</h2>
               <p className="mt-3 text-sm">
                 You can raise a complaint in person, by phone, or in writing. Please direct your concern to our Practice Manager:
@@ -50,24 +50,24 @@ function ComplaintsPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">3. Timescales & Investigation Process</h2>
               <div className="mt-4 space-y-4 text-sm">
-                <div className="border-l-4 border-[#925a27] pl-4">
+                <div className="border-l-4  pl-4">
                   <h3 className="font-semibold text-[#2a1c12]">Step 1: Acknowledgment (Within 3 Working Days)</h3>
                   <p className="mt-1 text-[#6b5848]">
                     We will acknowledge receipt of your complaint in writing within three working days and confirm who is investigating the matter.
                   </p>
                 </div>
 
-                <div className="border-l-4 border-[#925a27] pl-4">
+                <div className="border-l-4  pl-4">
                   <h3 className="font-semibold text-[#2a1c12]">Step 2: Investigation & Review (Within 10 Working Days)</h3>
                   <p className="mt-1 text-[#6b5848]">
                     Our Clinical Lead (Dr Hassan Bhojani, GDC #262970) or Practice Manager will thoroughly examine the relevant clinical records, consult the treating team, and conduct a detailed review.
                   </p>
                 </div>
 
-                <div className="border-l-4 border-[#925a27] pl-4">
+                <div className="border-l-4  pl-4">
                   <h3 className="font-semibold text-[#2a1c12]">Step 3: Comprehensive Written Response</h3>
                   <p className="mt-1 text-[#6b5848]">
                     You will receive a full written explanation of the findings, any corrective clinical actions taken, and proposals for resolution. If a complex clinical investigation requires more time, we will provide regular updates.
@@ -76,7 +76,7 @@ function ComplaintsPage() {
               </div>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">4. External Escalation</h2>
               <p className="mt-3 text-sm">
                 If you are dissatisfied with the outcome of our internal investigation, you have the right to escalate your complaint to independent external bodies:

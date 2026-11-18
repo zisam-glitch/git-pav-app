@@ -22,7 +22,7 @@ export function DenturesShowcase() {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white border-b border-[#3d2a1d]">
+    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-white">
@@ -39,7 +39,7 @@ export function DenturesShowcase() {
             return (
               <div
                 key={demo.id}
-                className="rounded-xl overflow-hidden bg-[#372418] border border-[#523825] shadow-sm flex flex-col justify-between"
+                className="rounded-xl overflow-hidden bg-[#372418]   shadow-sm flex flex-col justify-between"
               >
                 <div className="relative aspect-video w-full bg-[#2a1c12] overflow-hidden">
                   {isPlaying ? (

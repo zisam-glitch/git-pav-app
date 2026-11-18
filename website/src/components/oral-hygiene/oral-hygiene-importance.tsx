@@ -29,7 +29,7 @@ const BENEFITS = [
 
 export function OralHygieneImportance() {
   return (
-    <section id="importance" className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
+    <section id="importance" className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-16">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
@@ -40,7 +40,7 @@ export function OralHygieneImportance() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-[#e2d4c0]">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8  ">
           {BENEFITS.map((b, i) => (
             <div key={b.title} className="flex flex-col">
               <span className="font-mono text-xs font-bold text-[#925a27] mb-4">

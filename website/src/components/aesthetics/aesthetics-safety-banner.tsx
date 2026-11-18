@@ -24,7 +24,7 @@ export function AestheticsSafetyBanner() {
   ];
 
   return (
-    <section className="bg-[#2a1c12] text-white py-16 sm:py-20 border-y border-[#3d2a1d]">
+    <section className="bg-[#2a1c12] text-white py-16 sm:py-20  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mb-12">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
@@ -52,7 +52,7 @@ export function AestheticsSafetyBanner() {
           })}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-[#3d2a1d]/80 flex flex-wrap items-center justify-between gap-4 text-xs text-white/80">
+        <div className="mt-12 pt-8  /80 flex flex-wrap items-center justify-between gap-4 text-xs text-white/80">
           <p>
             <span className="font-semibold text-[#cf9448]">Age Limit:</span> Strictly 18+ only. Photographic ID required at clinical assessment.
           </p>

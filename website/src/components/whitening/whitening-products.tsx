@@ -29,7 +29,7 @@ export function WhiteningProducts() {
               >
                 {/* Image side */}
                 <div className={`relative ${flip ? "lg:order-2" : "lg:order-1"}`}>
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[#e2d4c0] shadow-sm bg-white">
+                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden   shadow-sm bg-white">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -60,7 +60,7 @@ export function WhiteningProducts() {
                   <ul className="mt-6 space-y-2.5">
                     {product.benefits.map((b) => (
                       <li key={b} className="flex items-center gap-3 text-xs sm:text-sm text-[#2a1c12]">
-                        <span className="size-5 rounded-md bg-[#faf6f0] border border-[#cf9448]/40 text-[#925a27] flex items-center justify-center flex-shrink-0">
+                        <span className="size-5 rounded-md bg-[#faf6f0]  /40 text-[#925a27] flex items-center justify-center flex-shrink-0">
                           <Check className="size-3 stroke-[3]" />
                         </span>
                         <span>{b}</span>

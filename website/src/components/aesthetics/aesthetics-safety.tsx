@@ -38,7 +38,7 @@ export function AestheticsSafety() {
               ))}
             </div>
 
-            <div className="mt-8 pt-6 border-t border-[#e8ddd0]">
+            <div className="mt-8 pt-6  ">
               <div className="flex items-start gap-3 text-xs text-[#6b5848] leading-relaxed">
                 <ShieldCheck className="size-4 text-[#925a27] flex-shrink-0 mt-0.5" />
                 <p>
@@ -49,7 +49,7 @@ export function AestheticsSafety() {
           </div>
 
           {/* Right: Solid Consultation Form Card */}
-          <div className="bg-white rounded-xl border border-[#e2d4c0] shadow-sm p-8">
+          <div className="bg-white rounded-xl   shadow-sm p-8">
             {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
                 <CheckCircle2 className="size-12 text-emerald-500" />
@@ -79,7 +79,7 @@ export function AestheticsSafety() {
                       name="name"
                       placeholder="e.g. Sarah Jenkins"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                   <div className="space-y-2">
@@ -92,7 +92,7 @@ export function AestheticsSafety() {
                       type="email"
                       placeholder="sarah@example.com"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export function AestheticsSafety() {
                     <select
                       id="aes-service"
                       name="interest"
-                      className="w-full h-11 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
+                      className="w-full h-11 rounded-lg   bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
                     >
                       <option value="">Select a treatment…</option>
                       <option>Anti-Wrinkle Injections (Botox®)</option>
@@ -125,7 +125,7 @@ export function AestheticsSafety() {
                       type="tel"
                       placeholder="+44 7700 900555"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export function AestheticsSafety() {
                     id="aes-message"
                     name="message"
                     placeholder="Tell us what areas you would like to enhance, refresh, or discuss with the doctor..."
-                    className="min-h-28 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
+                    className="min-h-28 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                     required
                   />
                 </div>

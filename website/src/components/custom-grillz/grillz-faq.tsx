@@ -46,7 +46,7 @@ export function GrillzFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
           {/* Left sticky header */}
@@ -68,7 +68,7 @@ export function GrillzFaq() {
           </div>
 
           {/* Right accordion */}
-          <div className="divide-y divide-[#e8ddd0]">
+          <div className=" ">
             {FAQS.map((faq, i) => {
               const isOpen = openIndex === i;
               return (

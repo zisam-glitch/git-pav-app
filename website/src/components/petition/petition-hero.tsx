@@ -39,7 +39,7 @@ export function PetitionHero() {
             asChild
             variant="outline"
             size="lg"
-            className="w-full gap-2 border-border/80 bg-white px-7 text-sm font-medium text-fg shadow-2xs hover:bg-[#faf6f0] sm:w-auto"
+            className="w-full gap-2  bg-white px-7 text-sm font-medium text-fg shadow-2xs hover:bg-[#faf6f0] sm:w-auto"
           >
             <a href="/contact-us">{PETITION.contactLabel}</a>
           </Button>
@@ -47,7 +47,7 @@ export function PetitionHero() {
 
         <ul className="mx-auto mt-12 grid max-w-3xl list-none grid-cols-1 gap-5 text-left sm:grid-cols-2">
           {PETITION.cards.map((card) => (
-            <li key={card.title} className="rounded-xl border border-border/60 bg-white/90 p-6 shadow-2xs">
+            <li key={card.title} className="rounded-xl   bg-white/90 p-6 shadow-2xs">
               <h2 className="font-display text-lg font-bold text-fg">{card.title}</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">{card.text}</p>
             </li>

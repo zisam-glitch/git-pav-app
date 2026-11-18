@@ -28,7 +28,7 @@ export function RootCanalHow() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white border-b border-[#3d2a1d]">
+    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-white leading-tight">
@@ -40,7 +40,7 @@ export function RootCanalHow() {
         </div>
 
         {/* Video Player */}
-        <div className="rounded-xl overflow-hidden border border-[#523825] shadow-xl">
+        <div className="rounded-xl overflow-hidden   shadow-xl">
           <div className="relative aspect-video sm:aspect-[21/9] bg-[#2a1c12] group">
             {isPlaying ? (
               <div className="relative size-full">

@@ -22,7 +22,7 @@ export function PetitionMedia() {
           {heading}
         </h2>
 
-        <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-xl border border-border/70 bg-black shadow-2xl">
+        <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-xl   bg-black shadow-2xl">
           <div className="relative aspect-video w-full">
             {playing ? (
               <iframe

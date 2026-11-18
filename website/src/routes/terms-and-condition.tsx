@@ -19,7 +19,7 @@ function TermsPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-[72ch]">
           <div className="mb-10 text-center">
-            <span className="inline-block rounded-full border border-[#e2d4c0] bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
+            <span className="inline-block rounded-full   bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
               Working Draft • Pending Legal Review
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold text-[#2a1c12] sm:text-4xl">
@@ -30,12 +30,12 @@ function TermsPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#e2d4c0] bg-[#faf6f0] p-4 sm:p-5 text-xs text-[#2a1c12] mb-8 leading-relaxed">
+          <div className="rounded-xl   bg-[#faf6f0] p-4 sm:p-5 text-xs text-[#2a1c12] mb-8 leading-relaxed">
             <strong className="text-[#925a27]">Pre-Launch Notice:</strong> These terms govern the booking, deposits, cancellation policy, and clinical consultations of the Pav Dental platform. They represent a working draft undergoing formal legal review (LG-08) prior to full launch.
           </div>
 
           <div className="space-y-8 text-[#4a3b2f] leading-relaxed">
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">1. About Pav Dental</h2>
               <p className="mt-3 text-sm">
                 These terms govern your use of the Pav Dental website, mobile application, and dental healthcare services provided by Pav Dental:
@@ -48,7 +48,7 @@ function TermsPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">2. Bookings, Deposits & Cancellations</h2>
               <div className="mt-3 space-y-4 text-sm">
                 <div>
@@ -70,7 +70,7 @@ function TermsPage() {
               </div>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">3. Clinical Care & Treatment Plans</h2>
               <p className="mt-3 text-sm">
                 All dental treatments are performed exclusively by registered dental practitioners licensed by the General Dental Council (GDC).
@@ -82,7 +82,7 @@ function TermsPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">4. Patient Responsibilities</h2>
               <p className="mt-3 text-sm">
                 To enable safe clinical practice, you agree to:
@@ -94,7 +94,7 @@ function TermsPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">5. Contact & Complaints</h2>
               <p className="mt-3 text-sm">
                 We take patient satisfaction seriously. For enquiries, feedback, or complaints regarding our services, please view our{" "}

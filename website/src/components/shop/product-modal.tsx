@@ -45,7 +45,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
           {/* Product Image */}
-          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0] border border-[#e2d4c0]">
+          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0]  ">
             <img
               src={product.image}
               alt={product.name}
@@ -79,7 +79,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                   £{product.originalPrice.toFixed(2)}
                 </span>
               )}
-              <span className="text-[11px] font-medium text-[#925a27] bg-[#faf6f0] border border-[#e2d4c0] px-2 py-0.5 rounded-md">
+              <span className="text-[11px] font-medium text-[#925a27] bg-[#faf6f0]   px-2 py-0.5 rounded-md">
                 In Stock & Ready to Dispatch
               </span>
             </div>
@@ -90,7 +90,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </p>
 
             {/* Clinical Features */}
-            <div className="border-t border-[#e2d4c0] pt-3 space-y-1.5">
+            <div className="  pt-3 space-y-1.5">
               <p className="text-xs font-bold text-fg">Clinical Highlights:</p>
               {product.features.map((feat, idx) => (
                 <div key={idx} className="flex items-start gap-2 text-xs text-muted">
@@ -101,14 +101,14 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </div>
 
             {/* How to use */}
-            <div className="bg-[#faf6f0] rounded-xl p-3 text-xs text-muted border border-[#e2d4c0]">
+            <div className="bg-[#faf6f0] rounded-xl p-3 text-xs text-muted  ">
               <span className="font-bold text-fg block mb-0.5">Directions for Use:</span>
               <span>{product.howToUse}</span>
             </div>
 
             {/* Quantity and Add to Bag */}
             <div className="pt-2 flex items-center gap-3">
-              <div className="flex items-center rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-2 py-1">
+              <div className="flex items-center rounded-xl   bg-[#faf8f5] px-2 py-1">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}

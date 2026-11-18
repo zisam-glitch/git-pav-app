@@ -10,7 +10,7 @@ export function ShopHero({ onCategorySelect }: ShopHeroProps) {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-[#faf6f0] border-b border-[#e2d4c0] py-20 sm:py-28"
+      className="relative overflow-hidden bg-[#faf6f0]   py-20 sm:py-28"
       aria-label="Shop dental products"
     >
       {/* Background layer with subtle gradient overlay */}
@@ -45,7 +45,7 @@ export function ShopHero({ onCategorySelect }: ShopHeroProps) {
             asChild
             variant="outline"
             size="lg"
-            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0] transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
+            className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0] transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
           >
             <a href="#guarantee">Our Guarantee</a>
           </Button>

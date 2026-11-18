@@ -20,15 +20,15 @@ const EXTRACTIONS = [
 
 export function GeneralDentistryExtractionPricing() {
   return (
-    <div className="rounded-xl bg-white border border-[#e2d4c0] p-6 shadow-sm">
-      <div className="mb-5 pb-4 border-b border-[#e8ddd0]">
+    <div className="rounded-xl bg-white   p-6 shadow-sm">
+      <div className="mb-5 pb-4  ">
         <h3 className="font-display text-xl font-bold text-[#2a1c12]">Tooth Extraction</h3>
         <p className="text-xs text-[#925a27] font-semibold mt-1">Safe tooth removal</p>
       </div>
 
       <div className="space-y-4">
         {EXTRACTIONS.map((row) => (
-          <div key={row.service} className="pb-4 border-b border-[#e8ddd0]/50 last:border-0">
+          <div key={row.service} className="pb-4  /50 last:border-0">
             <div className="flex items-center justify-between gap-2 mb-2">
               <span className="text-sm sm:text-base font-semibold text-[#2a1c12]">{row.service}</span>
               <span className="text-base sm:text-lg font-bold text-[#925a27] font-display whitespace-nowrap">

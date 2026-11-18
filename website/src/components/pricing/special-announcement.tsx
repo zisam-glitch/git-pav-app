@@ -63,11 +63,11 @@ export function SpecialAnnouncement() {
   const active = announcements?.find((a) => a.is_active);
 
   return (
-    <section className="py-16 sm:py-24 bg-white relative overflow-hidden border-t border-border/40">
+    <section className="py-16 sm:py-24 bg-white relative overflow-hidden  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Dynamic Admin Announcement Banner if configured */}
         {active && (
-          <div className="mb-12 rounded-xl bg-amber-500/10 border border-amber-500/30 p-5 sm:p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mb-12 rounded-xl bg-amber-500/10   p-5 sm:p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-left">
               <div className="size-10 rounded-full bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
                 <Megaphone className="size-5" />
@@ -87,7 +87,7 @@ export function SpecialAnnouncement() {
 
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-white/80 px-3.5 py-1 text-xs font-semibold text-primary mb-4 shadow-xs">
+          <div className="inline-flex items-center gap-1.5 rounded-full   bg-white/80 px-3.5 py-1 text-xs font-semibold text-primary mb-4 shadow-xs">
             <Sparkles className="size-3.5 text-primary" />
             <span>Patient Care & Accessibility</span>
           </div>
@@ -114,7 +114,7 @@ export function SpecialAnnouncement() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="flex flex-col justify-between rounded-xl border border-border/80 bg-white p-6 shadow-xs hover:shadow-soft hover:border-primary/40 transition-all duration-200"
+                className="flex flex-col justify-between rounded-xl   bg-white p-6 shadow-xs hover:shadow-soft hover:border-primary/40 transition-all duration-200"
               >
                 <div>
                   {/* Top Bar: Icon & Badge */}
@@ -122,7 +122,7 @@ export function SpecialAnnouncement() {
                     <div className="flex size-12 items-center justify-center rounded-xl bg-[#f6ecdf] text-[#844d1e]">
                       <Icon className="size-6" />
                     </div>
-                    <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/15">
+                    <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full  ">
                       {item.badge}
                     </span>
                   </div>
@@ -137,7 +137,7 @@ export function SpecialAnnouncement() {
                 </div>
 
                 {/* Benefits List */}
-                <div className="mt-6 pt-4 border-t border-border/50 space-y-2">
+                <div className="mt-6 pt-4   space-y-2">
                   {item.perks.map((perk, i) => (
                     <div key={i} className="flex items-center gap-2 text-xs text-fg/85">
                       <CheckCircle2 className="size-3.5 text-primary shrink-0" />
@@ -151,7 +151,7 @@ export function SpecialAnnouncement() {
         </div>
 
         {/* Trust Bar & CTAs */}
-        <div className="mt-12 pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="mt-12 pt-8   flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Trust points */}
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-xs text-muted">
             <div className="flex items-center gap-1.5">

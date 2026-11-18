@@ -80,7 +80,7 @@ export function GeneralDentistryFaq() {
           </div>
 
           {/* Right accordion */}
-          <div className="divide-y divide-[#e8ddd0]">
+          <div className=" ">
             {FAQS.map((faq, i) => {
               const isOpen = openIndex === i;
               return (

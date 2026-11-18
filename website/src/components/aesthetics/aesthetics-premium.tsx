@@ -3,7 +3,7 @@ import { ShieldCheck, CheckCircle, Lock } from "lucide-react";
 
 export function AestheticsPremium() {
   return (
-    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white border-b border-[#3d2a1d]">
+    <section className="py-20 sm:py-28 bg-[#2a1c12] text-white  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           {/* Left Column */}
@@ -23,10 +23,10 @@ export function AestheticsPremium() {
 
           {/* Right Column: CQC Card */}
           <div className="lg:col-span-5">
-            <div className="bg-[#372418] rounded-xl border border-[#523825] p-8 text-white flex flex-col justify-between aspect-square">
+            <div className="bg-[#372418] rounded-xl   p-8 text-white flex flex-col justify-between aspect-square">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="size-11 rounded-full border-2 border-white flex items-center justify-center font-bold text-lg text-white">
+                  <div className="size-11 rounded-full border-2  flex items-center justify-center font-bold text-lg text-white">
                     Q
                   </div>
                   <div>
@@ -49,7 +49,7 @@ export function AestheticsPremium() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/80">
+              <div className="pt-4   flex items-center justify-between text-xs text-white/80">
                 <span>Location: Bradford, West Yorkshire</span>
                 <span className="font-bold text-emerald-400">Status: Registered</span>
               </div>

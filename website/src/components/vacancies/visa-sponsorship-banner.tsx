@@ -55,7 +55,7 @@ export function VisaSponsorshipBanner({ onApplySponsorship }: VisaSponsorshipBan
 
             {/* Right: CTA */}
             <div className="lg:col-span-4 flex flex-col items-start lg:items-end justify-center">
-              <div className="rounded-xl border border-white/20 bg-white/10 p-8 w-full text-center space-y-4">
+              <div className="rounded-xl   bg-white/10 p-8 w-full text-center space-y-4">
                 <div className="flex size-16 items-center justify-center rounded-full bg-white/15 mx-auto">
                   <Plane className="size-8 text-[#d4a574]" />
                 </div>

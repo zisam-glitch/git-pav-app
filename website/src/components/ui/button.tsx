@@ -10,7 +10,7 @@ export const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-fg hover:bg-[#7a491e] shadow-xs",
         outline:
-          "border border-border bg-white text-fg hover:bg-[#faf6f0]",
+          "bg-[#faf6f0] text-fg hover:bg-[#f0e7da]",
         ghost: "text-muted hover:text-fg hover:bg-elevated/50",
       },
       size: {

@@ -37,7 +37,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
   if (isLoading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <div className="inline-block size-8 border-2 border-[#925a27] border-t-transparent rounded-full animate-spin" />
+        <div className="inline-block size-8 border-2  border-t-transparent rounded-full animate-spin" />
         <p className="mt-4 text-sm text-muted">Retrieving your order details...</p>
       </div>
     );
@@ -60,7 +60,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
         {waiting && (
-          <div className="inline-block size-8 border-2 border-[#925a27] border-t-transparent rounded-full animate-spin" />
+          <div className="inline-block size-8 border-2  border-t-transparent rounded-full animate-spin" />
         )}
         <h1 className="mt-4 font-display text-2xl font-bold text-fg">
           {waiting ? "Confirming your payment" : "This order hasn't been paid"}
@@ -94,8 +94,8 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
     <div className="min-h-screen bg-[#fffdf9] text-fg py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Success Header */}
-        <div className="text-center bg-white rounded-xl border border-[#e2d4c0] p-8 shadow-xs">
-          <div className="size-16 rounded-full bg-[#faf6f0] border border-[#e2d4c0] text-[#925a27] flex items-center justify-center mx-auto mb-4">
+        <div className="text-center bg-white rounded-xl   p-8 shadow-xs">
+          <div className="size-16 rounded-full bg-[#faf6f0]   text-[#925a27] flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="size-10" />
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg">Thank You for Your Order!</h1>
@@ -103,20 +103,20 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
             We've received your payment for this order, placed with{" "}
             <span className="font-semibold text-fg">{order.customer_email}</span>.
           </p>
-          <div className="mt-4 inline-flex items-center gap-2 bg-[#faf6f0] px-4 py-2 rounded-full border border-[#e2d4c0] text-xs">
+          <div className="mt-4 inline-flex items-center gap-2 bg-[#faf6f0] px-4 py-2 rounded-full   text-xs">
             <span className="text-muted">Order ID:</span>
             <span className="font-mono font-bold text-[#925a27]">{order.id}</span>
           </div>
         </div>
 
         {/* Order Details Card */}
-        <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#e2d4c0]">
+        <div className="bg-white rounded-xl   p-6 shadow-xs space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4  ">
             <div className="flex items-center gap-2 text-xs text-muted">
               <Calendar className="size-4" />
               <span>Placed on {new Date(order.created_at).toLocaleDateString("en-GB", { dateStyle: "long" })}</span>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#faf6f0] text-[#925a27] border border-[#e2d4c0] capitalize">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#faf6f0] text-[#925a27]   capitalize">
               Status: {order.status}
             </span>
           </div>
@@ -150,16 +150,16 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
           </div>
 
           {/* Ordered items */}
-          <div className="space-y-3 pt-4 border-t border-[#e2d4c0]">
+          <div className="space-y-3 pt-4  ">
             <p className="text-xs font-bold text-fg uppercase">Purchased Items</p>
-            <div className="divide-y divide-[#e2d4c0]/50">
+            <div className=" /50">
               {orderItems.map((it: any) => (
                 <div key={it.id} className="py-3 flex items-center justify-between gap-4 text-xs">
                   <div className="flex items-center gap-3">
                     <img
                       src={it.image || "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=400&q=80"}
                       alt={it.name}
-                      className="size-12 rounded-lg object-cover bg-[#faf6f0] border border-[#e2d4c0] shrink-0"
+                      className="size-12 rounded-lg object-cover bg-[#faf6f0]   shrink-0"
                     />
                     <div>
                       <p className="font-semibold text-fg">{it.name}</p>
@@ -174,7 +174,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
           </div>
 
           {/* Financial summary */}
-          <div className="border-t border-[#e2d4c0] pt-4 space-y-2 text-xs">
+          <div className="  pt-4 space-y-2 text-xs">
             <div className="flex justify-between text-muted">
               <span>Subtotal</span>
               <span className="font-semibold text-fg">£{parseFloat(order.subtotal || "0").toFixed(2)}</span>
@@ -191,7 +191,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
                 {parseFloat(order.shipping_cost || "0") === 0 ? "FREE" : `£${parseFloat(order.shipping_cost).toFixed(2)}`}
               </span>
             </div>
-            <div className="flex justify-between text-base font-bold text-fg pt-3 border-t border-[#e2d4c0]">
+            <div className="flex justify-between text-base font-bold text-fg pt-3  ">
               <span>Total Paid</span>
               <span className="text-[#925a27]">£{parseFloat(String(orderTotal)).toFixed(2)}</span>
             </div>

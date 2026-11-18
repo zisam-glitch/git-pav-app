@@ -59,7 +59,7 @@ const TIERS = [
 
 export function RootCanalPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
@@ -71,17 +71,17 @@ export function RootCanalPricing() {
         </div>
 
         {/* Pricing Comparison Table */}
-        <div className="overflow-x-auto rounded-xl border border-[#e2d4c0] bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-xl   bg-white shadow-sm">
           <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
             <thead>
-              <tr className="border-b border-[#e2d4c0] text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
+              <tr className="  text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
                 <th className="py-5 px-6 bg-white w-1/4">Tooth Anatomy</th>
                 {TIERS.map((t) => (
                   <th
                     key={t.id}
                     className={`py-5 px-6 w-1/4 ${
                       t.highlight
-                        ? "bg-[#faf6f0] border-x border-[#e2d4c0] text-[#925a27] relative"
+                        ? "bg-[#faf6f0]   text-[#925a27] relative"
                         : "bg-white"
                     }`}
                   >
@@ -102,14 +102,14 @@ export function RootCanalPricing() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#e8ddd0]/70 text-[#2a1c12]">
+            <tbody className=" /70 text-[#2a1c12]">
               <tr>
                 <td className="py-4 px-6 font-bold text-[#2a1c12]">Canals Cleaned</td>
                 {TIERS.map((t) => (
                   <td
                     key={t.id}
                     className={`py-4 px-6 font-semibold ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0] text-[#925a27]" : "text-[#6b5848]"
+                      t.highlight ? "bg-[#faf6f0]   text-[#925a27]" : "text-[#6b5848]"
                     }`}
                   >
                     {t.canals}
@@ -122,7 +122,7 @@ export function RootCanalPricing() {
                   <td
                     key={t.id}
                     className={`py-4 px-6 text-[#6b5848] text-xs leading-relaxed ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""
+                      t.highlight ? "bg-[#faf6f0]  " : ""
                     }`}
                   >
                     {t.description}
@@ -139,7 +139,7 @@ export function RootCanalPricing() {
                       key={t.id}
                       className={`py-4 px-6 ${
                         t.highlight
-                          ? "bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800"
+                          ? "bg-[#faf6f0]   font-bold text-emerald-800"
                           : "text-[#2a1c12]"
                       }`}
                     >
@@ -157,7 +157,7 @@ export function RootCanalPricing() {
                   <td
                     key={t.id}
                     className={`py-5 px-6 ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""
+                      t.highlight ? "bg-[#faf6f0]  " : ""
                     }`}
                   >
                     {t.highlight ? (
@@ -173,7 +173,7 @@ export function RootCanalPricing() {
                       <Button
                         asChild
                         variant="outline"
-                        className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
+                        className="w-full rounded-full  text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
                       >
                         <a href={BOOKING_URL}>Book Treatment</a>
                       </Button>

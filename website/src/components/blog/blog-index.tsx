@@ -22,7 +22,7 @@ export function BlogIndex() {
                 <Link
                   to="/blog/$slug"
                   params={{ slug: post.slug }}
-                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-sm transition-colors hover:border-[#925a27]"
+                  className="group flex h-full flex-col overflow-hidden rounded-xl   bg-white shadow-sm transition-colors hover:border-[#925a27]"
                 >
                   <img
                     src={post.image.src}

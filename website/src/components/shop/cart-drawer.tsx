@@ -90,7 +90,7 @@ export function CartDrawer({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 border-b border-[#e2d4c0] flex items-center justify-between">
+        <div className="p-5   flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingBag className="size-5 text-primary" />
             <h2 className="font-display text-lg font-bold text-fg">
@@ -109,7 +109,7 @@ export function CartDrawer({
 
         {/* Free Shipping Progress Indicator */}
         {items.length > 0 && (
-          <div className="bg-[#faf6f0] px-5 py-3 border-b border-[#e2d4c0] text-xs">
+          <div className="bg-[#faf6f0] px-5 py-3   text-xs">
             <div className="flex items-center justify-between mb-1.5 font-medium text-fg">
               <span className="flex items-center gap-1.5">
                 <Truck className="size-3.5 text-primary" />
@@ -149,13 +149,13 @@ export function CartDrawer({
               </Button>
             </div>
           ) : (
-            <div className="divide-y divide-[#e8ddd0] space-y-4">
+            <div className="  space-y-4">
               {items.map((item) => (
                 <div key={item.product.id} className="pt-4 first:pt-0 flex gap-3.5 items-start">
                   <img
                     src={item.product.image}
                     alt={item.product.name}
-                    className="size-16 rounded-xl object-cover border border-[#e2d4c0] bg-[#faf6f0] shrink-0"
+                    className="size-16 rounded-xl object-cover   bg-[#faf6f0] shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-fg line-clamp-1">
@@ -166,7 +166,7 @@ export function CartDrawer({
                     </p>
 
                     <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center rounded-lg border border-[#e2d4c0] bg-[#faf8f5] px-1.5 py-0.5">
+                      <div className="flex items-center rounded-lg   bg-[#faf8f5] px-1.5 py-0.5">
                         <button
                           type="button"
                           onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
@@ -206,7 +206,7 @@ export function CartDrawer({
 
         {/* Footer with Subtotal & Checkout */}
         {items.length > 0 && (
-          <div className="p-5 border-t border-[#e2d4c0] bg-[#faf8f5] space-y-3">
+          <div className="p-5   bg-[#faf8f5] space-y-3">
             {/* Promo code */}
             {!promoApplied ? (
               <form onSubmit={handleApplyPromo} className="flex gap-2">
@@ -216,17 +216,17 @@ export function CartDrawer({
                   placeholder="Discount code"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
-                  className="flex-1 h-9 rounded-lg border border-[#e2d4c0] bg-white px-3 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className="flex-1 h-9 rounded-lg   bg-white px-3 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
                 <button
                   type="submit"
-                  className="h-9 px-3 rounded-lg bg-white border border-[#e2d4c0] text-xs font-semibold text-fg hover:bg-[#faf6f0] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className="h-9 px-3 rounded-lg bg-white   text-xs font-semibold text-fg hover:bg-[#faf6f0] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 >
                   Apply
                 </button>
               </form>
             ) : (
-              <div className="flex items-center justify-between text-xs text-[#2a1c12] bg-[#faf6f0] px-3 py-1.5 rounded-lg border border-[#e2d4c0]">
+              <div className="flex items-center justify-between text-xs text-[#2a1c12] bg-[#faf6f0] px-3 py-1.5 rounded-lg  ">
                 <span className="font-medium text-[#925a27]">{promoLabel}</span>
                 <button
                   type="button"
@@ -262,7 +262,7 @@ export function CartDrawer({
                 <span>{shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}</span>
               </div>
 
-              <div className="flex justify-between text-sm font-bold text-fg pt-1.5 border-t border-[#e8ddd0]">
+              <div className="flex justify-between text-sm font-bold text-fg pt-1.5  ">
                 <span>Total</span>
                 <span className="text-[#925a27]">£{total.toFixed(2)}</span>
               </div>
@@ -272,7 +272,7 @@ export function CartDrawer({
               <Button
                 variant="outline"
                 asChild
-                className="w-1/3 text-xs h-11 border-[#e2d4c0]"
+                className="w-1/3 text-xs h-11 "
                 onClick={onClose}
               >
                 <a href="/cart">View Bag</a>

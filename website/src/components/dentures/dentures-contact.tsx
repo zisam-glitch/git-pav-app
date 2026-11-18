@@ -20,7 +20,7 @@ export function DenturesContact() {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto rounded-xl bg-white border border-[#e2d4c0] p-8 sm:p-12 shadow-sm">
+        <div className="max-w-4xl mx-auto rounded-xl bg-white   p-8 sm:p-12 shadow-sm">
           {enquiry.sent ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-500" />
@@ -50,7 +50,7 @@ export function DenturesContact() {
                     name="name"
                     placeholder="e.g. William Bennett"
                     required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-[#cf9448]/30"
+                    className="h-12 rounded-xl  bg-white/70 focus-visible:ring-[#cf9448]/30"
                   />
                 </div>
                 <div className="space-y-2">
@@ -63,7 +63,7 @@ export function DenturesContact() {
                     type="email"
                     placeholder="william@example.com"
                     required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-[#cf9448]/30"
+                    className="h-12 rounded-xl  bg-white/70 focus-visible:ring-[#cf9448]/30"
                   />
                 </div>
               </div>
@@ -76,7 +76,7 @@ export function DenturesContact() {
                   <select
                     id="den-service"
                     name="interest"
-                    className="w-full h-12 rounded-xl border border-[#e2d4c0] bg-white/70 px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
+                    className="w-full h-12 rounded-xl   bg-white/70 px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
                   >
                     <option value="">Select a denture service…</option>
                     <option>Full Dentures (Upper / Lower)</option>
@@ -98,7 +98,7 @@ export function DenturesContact() {
                     type="tel"
                     placeholder="+44 7700 900567"
                     required
-                    className="h-12 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-[#cf9448]/30"
+                    className="h-12 rounded-xl  bg-white/70 focus-visible:ring-[#cf9448]/30"
                   />
                 </div>
               </div>
@@ -111,7 +111,7 @@ export function DenturesContact() {
                   id="den-message"
                   name="message"
                   placeholder="Tell us about your current dentures, loose fit, missing teeth, or if you need an emergency repair..."
-                  className="min-h-32 rounded-xl border-[#e2d4c0] bg-white/70 focus-visible:ring-[#cf9448]/30 resize-none"
+                  className="min-h-32 rounded-xl  bg-white/70 focus-visible:ring-[#cf9448]/30 resize-none"
                   required
                 />
               </div>

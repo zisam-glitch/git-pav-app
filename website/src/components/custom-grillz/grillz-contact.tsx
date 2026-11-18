@@ -9,7 +9,7 @@ export function GrillzContact() {
   const enquiry = useEnquiry("Custom grillz");
 
   return (
-    <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
@@ -20,7 +20,7 @@ export function GrillzContact() {
           </p>
         </div>
 
-        <div className="rounded-xl bg-white border border-[#e2d4c0] p-8 sm:p-12 shadow-sm">
+        <div className="rounded-xl bg-white   p-8 sm:p-12 shadow-sm">
           {enquiry.sent ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-500" />
@@ -50,7 +50,7 @@ export function GrillzContact() {
                     name="name"
                     placeholder="e.g. Marcus Vance"
                     required
-                    className="h-12 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                    className="h-12 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                   />
                 </div>
                 <div className="space-y-2">
@@ -63,7 +63,7 @@ export function GrillzContact() {
                     type="email"
                     placeholder="marcus@example.com"
                     required
-                    className="h-12 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                    className="h-12 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                   />
                 </div>
               </div>
@@ -76,7 +76,7 @@ export function GrillzContact() {
                   <select
                     id="gz-style"
                     name="interest"
-                    className="w-full h-12 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30 appearance-none"
+                    className="w-full h-12 rounded-lg   bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30 appearance-none"
                   >
                     <option value="">Select style / placement…</option>
                     <option>Single Tooth Cap</option>
@@ -97,7 +97,7 @@ export function GrillzContact() {
                   <select
                     id="gz-metal"
                     name="interest2"
-                    className="w-full h-12 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30 appearance-none"
+                    className="w-full h-12 rounded-lg   bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30 appearance-none"
                   >
                     <option value="">Select gold purity…</option>
                     <option>10k Yellow Gold</option>
@@ -122,7 +122,7 @@ export function GrillzContact() {
                   type="tel"
                   placeholder="+44 7700 900890"
                   required
-                  className="h-12 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                  className="h-12 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export function GrillzContact() {
                   id="gz-message"
                   name="message"
                   placeholder="Tell us about specific engravings, diamond placement, perm-cut grooves, or upcoming events/deadlines..."
-                  className="min-h-32 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
+                  className="min-h-32 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                   required
                 />
               </div>

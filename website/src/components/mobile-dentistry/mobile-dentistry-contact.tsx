@@ -5,7 +5,7 @@ export function MobileDentistryContact() {
   const enquiry = useEnquiry("Mobile dentistry");
 
   return (
-    <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
@@ -38,7 +38,7 @@ export function MobileDentistryContact() {
                   type="text"
                   id="fullName"
                   name="fullName"
-                  className="w-full px-4 py-3 rounded-lg border border-[#e2d4c0] bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
                   placeholder="Your full name"
                   required
                 />
@@ -51,7 +51,7 @@ export function MobileDentistryContact() {
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full px-4 py-3 rounded-lg border border-[#e2d4c0] bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
                   placeholder="your@email.com"
                   required
                 />
@@ -67,7 +67,7 @@ export function MobileDentistryContact() {
                   type="text"
                   id="subject"
                   name="subject"
-                  className="w-full px-4 py-3 rounded-lg border border-[#e2d4c0] bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
                   placeholder="How can we help?"
                   required
                 />
@@ -80,7 +80,7 @@ export function MobileDentistryContact() {
                   type="tel"
                   id="phone"
                   name="phone"
-                  className="w-full px-4 py-3 rounded-lg border border-[#e2d4c0] bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent"
                   placeholder="Your phone number"
                 />
               </div>
@@ -94,7 +94,7 @@ export function MobileDentistryContact() {
                 id="message"
                 name="message"
                 rows={5}
-                className="w-full px-4 py-3 rounded-lg border border-[#e2d4c0] bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent resize-none"
+                className="w-full px-4 py-3 rounded-lg   bg-white text-[#2a1c12] placeholder:text-[#6b5848] focus:outline-none focus:ring-2 focus:ring-[#925a27] focus:border-transparent resize-none"
                 placeholder="Tell us about your dental care needs..."
                 required
               />

@@ -69,7 +69,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
     return (
       <div className="min-h-screen bg-[#fffdf9] flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block size-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="inline-block size-8 border-2  border-t-transparent rounded-full animate-spin" />
           <p className="mt-4 text-sm text-muted">Loading product details...</p>
         </div>
       </div>
@@ -161,7 +161,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
       />
 
       {/* Breadcrumb */}
-      <div className="bg-[#faf6f0] border-b border-[#e2d4c0]">
+      <div className="bg-[#faf6f0]  ">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-4">
           <a 
             href="/shop" 
@@ -178,7 +178,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Product Images Gallery */}
           <div className="space-y-4">
-            <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0] border border-[#e2d4c0]">
+            <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0]  ">
               <img
                 src={images[selectedImageIndex] || images[0]}
                 alt={productData.name}
@@ -201,8 +201,8 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                     onClick={() => setSelectedImageIndex(idx)}
                     className={`relative size-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 ${
                       selectedImageIndex === idx
-                        ? "border-[#925a27] ring-2 ring-[#925a27]/20"
-                        : "border-[#e2d4c0] opacity-70 hover:opacity-100"
+                        ? " ring-2 ring-[#925a27]/20"
+                        : " opacity-70 hover:opacity-100"
                     }`}
                   >
                     <img src={img} alt={`Thumbnail ${idx + 1}`} className="size-full object-cover" />
@@ -234,13 +234,13 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 </span>
               )}
               {isCurrentInStock ? (
-                <span className="text-xs font-medium text-[#925a27] bg-[#faf6f0] border border-[#e2d4c0] px-3 py-1 rounded-md">
+                <span className="text-xs font-medium text-[#925a27] bg-[#faf6f0]   px-3 py-1 rounded-md">
                   {currentStockQty < 10
                     ? `Low Stock · Only ${currentStockQty} left`
                     : "In Stock & Ready to Dispatch"}
                 </span>
               ) : (
-                <span className="text-xs font-medium text-red-700 bg-red-50 border border-red-200 px-3 py-1 rounded-md">
+                <span className="text-xs font-medium text-red-700 bg-red-50   px-3 py-1 rounded-md">
                   Out of Stock
                 </span>
               )}
@@ -248,12 +248,12 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
             {/* Variant Selector */}
             {variants.length > 0 && (
-              <div className="space-y-2.5 pt-2 border-t border-[#e2d4c0]">
+              <div className="space-y-2.5 pt-2  ">
                 <span className="block text-xs font-bold text-fg uppercase">
                   Select Option:
                 </span>
                 {variantError && (
-                  <div className="text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded-md">
+                  <div className="text-xs text-red-700 bg-red-50   px-3 py-2 rounded-md">
                     {variantError}
                   </div>
                 )}
@@ -271,12 +271,12 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                         type="button"
                         onClick={() => handleVariantSelect(v.id)}
                         disabled={outOfStock}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 ${
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold  transition-all focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 ${
                           isSelected
-                            ? "border-[#925a27] bg-[#925a27] text-white shadow-sm"
+                            ? " bg-[#925a27] text-white shadow-sm"
                             : outOfStock
-                            ? "border-[#e2d4c0] bg-[#faf6f0] text-[#6b5848] line-through cursor-not-allowed"
-                            : "border-[#e2d4c0] bg-[#faf8f5] text-fg hover:border-[#925a27]"
+                            ? " bg-[#faf6f0] text-[#6b5848] line-through cursor-not-allowed"
+                            : " bg-[#faf8f5] text-fg hover:border-[#925a27]"
                         }`}
                       >
                         {label} {v.price_override ? `(+£${(parseFloat(String(v.price_override)) - parseFloat(String(product.price))).toFixed(2)})` : ""}
@@ -294,7 +294,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
             {/* Clinical Features */}
             {productData.features && productData.features.length > 0 && (
-              <div className="border-t border-[#e2d4c0] pt-6 space-y-3">
+              <div className="  pt-6 space-y-3">
                 <p className="text-sm font-bold text-fg">Clinical Highlights:</p>
                 {productData.features.map((feat, idx) => (
                   <div key={idx} className="flex items-start gap-3 text-sm text-muted">
@@ -307,7 +307,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
             {/* How to use */}
             {productData.howToUse && (
-              <div className="bg-[#faf6f0] rounded-xl p-4 text-sm text-muted border border-[#e2d4c0]">
+              <div className="bg-[#faf6f0] rounded-xl p-4 text-sm text-muted  ">
                 <span className="font-bold text-fg block mb-1">Directions for Use:</span>
                 <span>{productData.howToUse}</span>
               </div>
@@ -327,7 +327,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
             {/* Quantity and Add to Bag */}
             <div className="pt-4 flex items-center gap-4">
-              <div className="flex items-center rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3 py-2">
+              <div className="flex items-center rounded-xl   bg-[#faf8f5] px-3 py-2">
                 <button
                   type="button"
                   disabled={!isCurrentInStock}
@@ -370,7 +370,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
         {/* Related Products Section */}
         {product.relatedProducts && product.relatedProducts.length > 0 && (
-          <div className="mt-20 pt-12 border-t border-[#e2d4c0]">
+          <div className="mt-20 pt-12  ">
             <h2 className="font-display text-2xl font-bold text-fg mb-6">
               Complementary Oral Care
             </h2>
@@ -379,7 +379,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 <a
                   key={rel.id}
                   href={`/shop/${rel.slug}`}
-                  className="group rounded-xl border border-[#e2d4c0] bg-[#fffdf9] p-4 transition-all hover:shadow-md hover:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
+                  className="group rounded-xl   bg-[#fffdf9] p-4 transition-all hover:shadow-md hover:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
                 >
                   <div className="aspect-square rounded-xl overflow-hidden bg-[#faf6f0] mb-3">
                     <img

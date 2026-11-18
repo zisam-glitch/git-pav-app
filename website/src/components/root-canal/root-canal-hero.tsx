@@ -7,7 +7,7 @@ export function RootCanalHero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16 border-b border-[#e8ddd0] flex items-center"
+      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
       aria-label="Advanced root canal therapy"
     >
       {/* Background layer with subtle kenburns and gradient overlay */}
@@ -44,7 +44,7 @@ export function RootCanalHero() {
             asChild
             variant="outline"
             size="lg"
-            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
+            className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
           >
             <a href="#pricing">View prices</a>
           </Button>

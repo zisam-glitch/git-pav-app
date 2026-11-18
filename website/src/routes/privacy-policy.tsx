@@ -19,7 +19,7 @@ function PrivacyPolicyPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-[72ch]">
           <div className="mb-10 text-center">
-            <span className="inline-block rounded-full border border-[#e2d4c0] bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
+            <span className="inline-block rounded-full   bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
               Working Draft • Pending Legal Review
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold text-[#2a1c12] sm:text-4xl">
@@ -30,12 +30,12 @@ function PrivacyPolicyPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#e2d4c0] bg-[#faf6f0] p-4 sm:p-5 text-xs text-[#2a1c12] mb-8 leading-relaxed">
+          <div className="rounded-xl   bg-[#faf6f0] p-4 sm:p-5 text-xs text-[#2a1c12] mb-8 leading-relaxed">
             <strong className="text-[#925a27]">Pre-Launch Notice:</strong> This privacy notice accurately reflects the technical architecture, sub-processors, and data handling of the Pav Dental software platform. It is currently undergoing formal legal, DPO, and clinical lead review (LG-01) prior to full launch.
           </div>
 
           <div className="space-y-8 text-[#4a3b2f] leading-relaxed">
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">1. Data Controller Information</h2>
               <p className="mt-3 text-sm">
                 Pav Dental ("we", "us", "our") is the data controller responsible for your personal information.
@@ -49,7 +49,7 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">2. Information We Collect</h2>
               <p className="mt-3 text-sm">
                 To provide safe, comprehensive dental treatment and appointment scheduling, we process the following categories of information:
@@ -74,7 +74,7 @@ function PrivacyPolicyPage() {
               </div>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">3. Lawful Basis for Processing</h2>
               <p className="mt-3 text-sm">
                 Under the UK General Data Protection Regulation (UK GDPR) and Data Protection Act 2018:
@@ -86,7 +86,7 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">4. Third-Party Technical Processors & Infrastructure</h2>
               <p className="mt-3 text-sm">
                 We never sell, rent, or trade your personal data. We utilize third-party technology providers to host, secure, and deliver the service. Formal Data Processing Agreements (DPAs) and standard contractual clauses are managed as part of pre-launch compliance onboarding (tracked in our DPA Register):
@@ -107,7 +107,7 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">5. Retention Periods</h2>
               <p className="mt-3 text-sm">
                 In compliance with GDC Standards and the NHS Records Management Code of Practice:
@@ -119,7 +119,7 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">6. Your Rights</h2>
               <p className="mt-3 text-sm">
                 You have statutory rights under UK data protection law:

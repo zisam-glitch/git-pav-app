@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail } from "lucide-react";
 
 export function MobileDentistryLocation() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
+    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
@@ -15,7 +15,7 @@ export function MobileDentistryLocation() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2d4c0]">
+          <div className="bg-white rounded-xl p-6 shadow-sm  ">
             <div className="size-12 rounded-lg bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mb-4">
               <MapPin className="size-6" />
             </div>
@@ -27,7 +27,7 @@ export function MobileDentistryLocation() {
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2d4c0]">
+          <div className="bg-white rounded-xl p-6 shadow-sm  ">
             <div className="size-12 rounded-lg bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mb-4">
               <Phone className="size-6" />
             </div>
@@ -39,7 +39,7 @@ export function MobileDentistryLocation() {
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2d4c0]">
+          <div className="bg-white rounded-xl p-6 shadow-sm  ">
             <div className="size-12 rounded-lg bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mb-4">
               <Mail className="size-6" />
             </div>

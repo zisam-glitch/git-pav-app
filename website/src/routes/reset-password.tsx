@@ -72,7 +72,7 @@ function ResetPasswordPage() {
     );
   }
 
-  const field = "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 focus:border-slate-900 focus:outline-none";
+  const field = "mt-1 w-full rounded-lg   px-3 py-2 text-slate-900 focus:border-slate-900 focus:outline-none";
   return (
     <AccountLinkLayout title="Set your password">
       <form onSubmit={submit} className="space-y-4" noValidate>

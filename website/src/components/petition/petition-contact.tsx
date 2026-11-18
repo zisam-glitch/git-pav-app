@@ -5,7 +5,7 @@ import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry"
 import { useEnquiry } from "@/lib/use-enquiry";
 
 const FIELD =
-  "w-full rounded-lg border border-border/70 bg-[#fdfcfb] px-3.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20";
+  "w-full rounded-lg   bg-[#fdfcfb] px-3.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20";
 
 /** "Get In Touch": the live page's contact form. Messages go to the practice through the dashboard. */
 export function PetitionContact() {
@@ -13,7 +13,7 @@ export function PetitionContact() {
   const { contact: copy } = PETITION;
 
   return (
-    <section className="border-t border-border/40 bg-white py-16 sm:py-24" aria-labelledby="touch-heading">
+    <section className="  bg-white py-16 sm:py-24" aria-labelledby="touch-heading">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
           <h2 id="touch-heading" className="font-display text-3xl font-bold text-[#844d1e] sm:text-4xl">
@@ -23,7 +23,7 @@ export function PetitionContact() {
         </div>
 
         {enquiry.sent ? (
-          <div className="rounded-xl border border-primary/20 bg-[#faf6f0] p-8 text-center shadow-xs" role="status">
+          <div className="rounded-xl   bg-[#faf6f0] p-8 text-center shadow-xs" role="status">
             <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-green-100 text-green-700">
               <CheckCircle2 className="size-6" aria-hidden="true" />
             </div>

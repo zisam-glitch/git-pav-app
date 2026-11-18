@@ -68,10 +68,10 @@ export function TeamProfile({ member }: { member: TeamMember }) {
           <TeamPhoto
             member={member}
             priority
-            className="aspect-[4/5] w-full rounded-xl border border-[#e2d4c0] bg-[#faf6f0] object-cover object-top"
+            className="aspect-[4/5] w-full rounded-xl   bg-[#faf6f0] object-cover object-top"
           />
           <div>
-            <span className="inline-block rounded-full border border-[#e2d4c0] bg-white px-4 py-1.5 text-xs font-bold uppercase text-[#925a27]">
+            <span className="inline-block rounded-full   bg-white px-4 py-1.5 text-xs font-bold uppercase text-[#925a27]">
               {member.role}
             </span>
             <h1 className="mt-4 font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">{member.name}</h1>
@@ -103,7 +103,7 @@ export function TeamProfile({ member }: { member: TeamMember }) {
           </div>
         </div>
 
-        <div className="mt-6 border-t border-[#e2d4c0] pt-2">
+        <div className="mt-6   pt-2">
           <ContentBlocks blocks={member.blocks} />
         </div>
       </div>

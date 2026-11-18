@@ -52,7 +52,7 @@ export function CartPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <div className="size-20 rounded-full bg-[#faf6f0] border border-[#e2d4c0] flex items-center justify-center mb-4 text-muted">
+        <div className="size-20 rounded-full bg-[#faf6f0]   flex items-center justify-center mb-4 text-muted">
           <ShoppingBag className="size-10" />
         </div>
         <h1 className="font-display text-3xl font-bold text-fg">Your Shopping Bag is Empty</h1>
@@ -69,7 +69,7 @@ export function CartPage() {
   return (
     <div className="min-h-screen bg-[#fffdf9] text-fg py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center justify-between border-b border-[#e2d4c0] pb-6">
+        <div className="flex items-center justify-between   pb-6">
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg">Shopping Bag</h1>
           <button
             type="button"
@@ -81,14 +81,14 @@ export function CartPage() {
         </div>
 
         {/* Free Shipping Progress bar */}
-        <div className="bg-white rounded-xl border border-[#e2d4c0] p-4 shadow-xs">
+        <div className="bg-white rounded-xl   p-4 shadow-xs">
           <div className="flex items-center justify-between text-xs mb-2">
             <span className="font-semibold text-fg">
               {isFreeShipping ? "🎉 You've unlocked FREE UK Delivery!" : `Add £${amountNeededForFree.toFixed(2)} more for FREE UK Delivery`}
             </span>
             <span className="text-muted font-medium">{progressPercent}%</span>
           </div>
-          <div className="h-2 w-full bg-[#faf6f0] rounded-full overflow-hidden border border-[#e2d4c0]">
+          <div className="h-2 w-full bg-[#faf6f0] rounded-full overflow-hidden  ">
             <div
               className="h-full bg-[#925a27] transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
@@ -98,14 +98,14 @@ export function CartPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Items Table Left */}
-          <div className="lg:col-span-8 bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs divide-y divide-[#e2d4c0]">
+          <div className="lg:col-span-8 bg-white rounded-xl   p-6 shadow-xs  ">
             {items.map((it) => (
               <div key={it.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <img
                     src={it.image}
                     alt={it.name}
-                    className="size-16 rounded-xl object-cover bg-[#faf6f0] border border-[#e2d4c0] shrink-0"
+                    className="size-16 rounded-xl object-cover bg-[#faf6f0]   shrink-0"
                   />
                   <div className="min-w-0">
                     <a href={`/shop/${it.slug}`} className="text-sm font-semibold text-fg hover:text-primary transition-colors line-clamp-1">
@@ -117,7 +117,7 @@ export function CartPage() {
 
                 <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-6">
                   {/* Quantity selector */}
-                  <div className="flex items-center rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-2 py-1">
+                  <div className="flex items-center rounded-xl   bg-[#faf8f5] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity - 1)}
@@ -156,7 +156,7 @@ export function CartPage() {
 
           {/* Right Summary Column */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-5">
+            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-5">
               <h2 className="font-display text-lg font-bold text-fg">Summary</h2>
 
               {/* Promo Code Input */}
@@ -169,14 +169,14 @@ export function CartPage() {
                       placeholder="Promo code"
                       value={promoCodeInput}
                       onChange={(e) => setPromoCodeInput(e.target.value)}
-                      className="flex-1 rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                      className="flex-1 rounded-xl   bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                     />
                     <Button type="submit" variant="outline" size="sm" className="rounded-xl">
                       Apply
                     </Button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between bg-[#faf6f0] border border-[#e2d4c0] text-[#2a1c12] p-2.5 rounded-xl text-xs">
+                  <div className="flex items-center justify-between bg-[#faf6f0]   text-[#2a1c12] p-2.5 rounded-xl text-xs">
                     <span className="font-medium text-[#925a27]">Coupon {appliedDiscount.code} applied</span>
                     <button
                       type="button"
@@ -195,7 +195,7 @@ export function CartPage() {
               </div>
 
               {/* Cost breakdown */}
-              <div className="space-y-2 border-t border-[#e2d4c0] pt-4 text-xs">
+              <div className="space-y-2   pt-4 text-xs">
                 <div className="flex justify-between text-muted">
                   <span>Subtotal</span>
                   <span className="font-semibold text-fg">£{subtotal.toFixed(2)}</span>
@@ -212,7 +212,7 @@ export function CartPage() {
                     {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-bold text-fg pt-3 border-t border-[#e2d4c0]">
+                <div className="flex justify-between text-base font-bold text-fg pt-3  ">
                   <span>Total</span>
                   <span className="text-[#925a27]">£{total.toFixed(2)}</span>
                 </div>
@@ -226,7 +226,7 @@ export function CartPage() {
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl border border-[#e2d4c0] bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
+            <div className="p-4 rounded-xl   bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
               <ShieldCheck className="size-6 text-[#925a27] shrink-0" />
               <div>
                 <p className="font-semibold">Clinical Guarantee</p>

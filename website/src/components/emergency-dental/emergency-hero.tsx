@@ -19,7 +19,7 @@ export function EmergencyHero() {
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left card */}
           <div className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/40 bg-[#cf9448]/15 px-4 py-1.5 mb-6">
+            <div className="inline-flex items-center gap-2 rounded-full  /40 bg-[#cf9448]/15 px-4 py-1.5 mb-6">
               <span className="relative flex size-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#cf9448] opacity-75" />
                 <span className="relative inline-flex rounded-full size-2.5 bg-[#cf9448]" />
@@ -29,7 +29,7 @@ export function EmergencyHero() {
               </span>
             </div>
 
-            <div className="bg-white/95 rounded-xl p-8 sm:p-10 shadow-2xl border border-white/40 text-[#2a1c12]">
+            <div className="bg-white/95 rounded-xl p-8 sm:p-10 shadow-2xl   text-[#2a1c12]">
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-[#2a1c12] leading-[1.08]">
                 Emergency{" "}
                 <span className="text-[#925a27]">Dentist</span>
@@ -39,7 +39,7 @@ export function EmergencyHero() {
                 Covering Bradford 24 hours a day, 7 days a week — including weekends, bank holidays, and late evenings.
               </p>
 
-              <div className="mt-6 pt-5 border-t border-[#e2d4c0]/80 grid sm:grid-cols-2 gap-4">
+              <div className="mt-6 pt-5  /80 grid sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
                   <div className="size-9 rounded-xl bg-[#cf9448]/15 flex items-center justify-center text-[#925a27] flex-shrink-0">
                     <Clock className="size-5" />
@@ -67,7 +67,7 @@ export function EmergencyHero() {
 
           {/* Right action block */}
           <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="bg-[#2a1c12] rounded-xl p-8 sm:p-9 shadow-2xl border border-[#925a27] text-white relative overflow-hidden">
+            <div className="bg-[#2a1c12] rounded-xl p-8 sm:p-9 shadow-2xl   text-white relative overflow-hidden">
               <div className="flex items-center gap-3 mb-5">
                 <div className="size-12 rounded-xl bg-[#925a27] flex items-center justify-center">
                   <Phone className="size-6 text-white" />
@@ -89,7 +89,7 @@ export function EmergencyHero() {
                 </a>
                 <a
                   href="tel:07311871456"
-                  className="block text-center py-2.5 px-4 rounded-xl bg-[#372418] border border-[#925a27]/60 text-white font-semibold text-sm hover:bg-[#462f20] transition-colors"
+                  className="block text-center py-2.5 px-4 rounded-xl bg-[#372418]  /60 text-white font-semibold text-sm hover:bg-[#462f20] transition-colors"
                 >
                   Direct / WhatsApp: 07311 871456
                 </a>
@@ -106,7 +106,7 @@ export function EmergencyHero() {
               </Button>
             </div>
 
-            <div className="bg-[#2a1c12]/80 rounded-xl p-4 border border-white/10 flex items-center gap-3">
+            <div className="bg-[#2a1c12]/80 rounded-xl p-4   flex items-center gap-3">
               <AlertCircle className="size-5 text-amber-400 flex-shrink-0" />
               <p className="text-xs text-white/80 leading-snug">
                 <strong>Severe swelling or trauma?</strong> Call right away so we can prepare a surgical suite before you arrive.

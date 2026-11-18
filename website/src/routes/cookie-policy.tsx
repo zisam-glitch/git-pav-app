@@ -19,7 +19,7 @@ function CookiePolicyPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-[72ch]">
           <div className="mb-10 text-center">
-            <span className="inline-block rounded-full border border-[#e2d4c0] bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
+            <span className="inline-block rounded-full   bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
               Privacy & Preferences
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold text-[#2a1c12] sm:text-4xl">
@@ -31,24 +31,24 @@ function CookiePolicyPage() {
           </div>
 
           <div className="space-y-8 text-[#4a3b2f] leading-relaxed">
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">1. What Are Cookies?</h2>
               <p className="mt-3 text-sm">
                 Cookies are small text files placed on your computer or mobile device when you visit our website. They help the site remember your preferences, keep you signed in, support shopping cart functionality, and help us understand website performance.
               </p>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">2. Types of Cookies We Use</h2>
               <div className="mt-4 space-y-6 text-sm">
-                <div className="border-l-4 border-[#925a27] pl-4">
+                <div className="border-l-4  pl-4">
                   <h3 className="font-semibold text-[#2a1c12]">Strictly Necessary Cookies (Always Active)</h3>
                   <p className="mt-1 text-[#6b5848]">
                     These cookies are essential for the operation of our website, security tokens, login sessions, and shopping cart persistence during checkout. They cannot be switched off in our systems.
                   </p>
                 </div>
 
-                <div className="border-l-4 border-[#cf9448] pl-4">
+                <div className="border-l-4  pl-4">
                   <h3 className="font-semibold text-[#2a1c12]">Analytics & Performance Cookies (Optional)</h3>
                   <p className="mt-1 text-[#6b5848]">
                     We use Google Analytics 4 (Measurement ID: <code>G-KZVKDLY449</code>) to collect aggregated, anonymised statistics on site usage, page visits, and navigation paths. 
@@ -60,7 +60,7 @@ function CookiePolicyPage() {
               </div>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">3. Managing Your Preferences</h2>
               <p className="mt-3 text-sm">
                 You can change or withdraw your cookie consent at any time by clearing your browser cookies and reloading the page, which will re-trigger the cookie banner, or by adjusting your web browser settings to reject non-essential cookies.
@@ -72,7 +72,7 @@ function CookiePolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+            <section className="rounded-xl   bg-white p-6 sm:p-8 shadow-xs">
               <h2 className="font-display text-xl font-bold text-[#2a1c12]">4. Contact Us</h2>
               <p className="mt-3 text-sm">
                 If you have questions about how we use cookies, please contact us at{" "}

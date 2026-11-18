@@ -54,7 +54,7 @@ export function WhiteningVisualizer() {
                       backgroundColor: s.color,
                       height: selected ? "108px" : "76px",
                     }}
-                    className={`group relative flex-shrink-0 w-7 sm:w-9 rounded-t-[3px] border border-b-0 border-[#d8c5af]/70 transition-[height] duration-200 ease-out flex flex-col justify-end items-center pb-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29463b] ${selected
+                    className={`group relative flex-shrink-0 w-7 sm:w-9 rounded-t-[3px]  border-b-0 /70 transition-[height] duration-200 ease-out flex flex-col justify-end items-center pb-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29463b] ${selected
                       ? "shadow-[0_-2px_10px_rgba(0,0,0,0.08)] z-10"
                       : "opacity-90 hover:opacity-100"
                       }`}
@@ -112,7 +112,7 @@ export function WhiteningVisualizer() {
         </div>
 
         {/* CTA row */}
-        <div className="mt-12 pt-8 border-t border-[#221c16]/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-12 pt-8  /10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <p className="text-sm text-[#5b4f44] max-w-sm">
             Dentist-fitted trays seal against your gum line, so gel stays on
             enamel and off soft tissue.

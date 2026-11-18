@@ -36,7 +36,7 @@ const SERVICES = [
 
 export function VirtualDentistryServices() {
   return (
-    <section id="services" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="services" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
@@ -53,7 +53,7 @@ export function VirtualDentistryServices() {
             return (
               <div
                 key={service.title}
-                className="bg-white rounded-xl p-6 shadow-sm border border-[#e2d4c0] hover:border-[#925a27] transition-colors"
+                className="bg-white rounded-xl p-6 shadow-sm   hover:border-[#925a27] transition-colors"
               >
                 <div className="size-12 rounded-lg bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mb-4">
                   <Icon className="size-6" />

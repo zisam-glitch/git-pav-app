@@ -23,7 +23,7 @@ const DIAMOND_OPTIONS = [
 
 export function GrillzPricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
@@ -36,8 +36,8 @@ export function GrillzPricing() {
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           {/* Table 1: Single Tooth */}
-          <div className="rounded-xl bg-white border border-[#e2d4c0] p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#e8ddd0]">
+          <div className="rounded-xl bg-white   p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-5 pb-4  ">
               <div>
                 <h3 className="font-display text-xl font-bold text-[#2a1c12]">Single Tooth Caps</h3>
                 <p className="text-xs text-[#925a27] font-semibold">Solid gold options</p>
@@ -45,7 +45,7 @@ export function GrillzPricing() {
               
             </div>
 
-            <div className="divide-y divide-[#e8ddd0]/70">
+            <div className=" /70">
               {SINGLE_TOOTH.map((row) => (
                 <div key={row.service} className="py-3 flex items-center justify-between gap-4">
                   <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
@@ -58,8 +58,8 @@ export function GrillzPricing() {
           </div>
 
           {/* Table 2: Special Styles */}
-          <div className="rounded-xl bg-white border border-[#e2d4c0] p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#e8ddd0]">
+          <div className="rounded-xl bg-white   p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-5 pb-4  ">
               <div>
                 <h3 className="font-display text-xl font-bold text-[#2a1c12]">Special Styles</h3>
                 <p className="text-xs text-[#925a27] font-semibold">Custom designs</p>
@@ -67,7 +67,7 @@ export function GrillzPricing() {
              
             </div>
 
-            <div className="divide-y divide-[#e8ddd0]/70">
+            <div className=" /70">
               {SPECIAL_STYLES.map((row) => (
                 <div key={row.service} className="py-3 flex items-center justify-between gap-4">
                   <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
@@ -81,8 +81,8 @@ export function GrillzPricing() {
         </div>
 
         {/* Table 3: Diamond Options */}
-        <div className="rounded-xl bg-white border border-[#e2d4c0] p-6 shadow-sm mb-10">
-          <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#e8ddd0]">
+        <div className="rounded-xl bg-white   p-6 shadow-sm mb-10">
+          <div className="flex items-center justify-between mb-5 pb-4  ">
             <div>
               <h3 className="font-display text-xl font-bold text-[#2a1c12]">Diamond & Full Sets</h3>
               <p className="text-xs text-[#925a27] font-semibold">Premium options</p>
@@ -90,9 +90,9 @@ export function GrillzPricing() {
            
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-x-8 divide-y sm:divide-y-0 divide-[#e8ddd0]/70">
+          <div className="grid sm:grid-cols-2 gap-x-8  sm:divide-y-0 /70">
             {DIAMOND_OPTIONS.map((row) => (
-              <div key={row.service} className="py-3 flex items-center justify-between gap-4 border-b border-[#e8ddd0]/50">
+              <div key={row.service} className="py-3 flex items-center justify-between gap-4  /50">
                 <span className="text-xs sm:text-sm font-medium text-[#2a1c12]">{row.service}</span>
                 <span className="text-sm font-bold text-[#925a27] font-display whitespace-nowrap">
                   {row.price}

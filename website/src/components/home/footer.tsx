@@ -122,7 +122,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col justify-between gap-4 border-t border-white/20 pt-8 text-xs font-medium text-white/80 md:flex-row md:items-center">
+        <div className="mt-10 flex flex-col justify-between gap-4   pt-8 text-xs font-medium text-white/80 md:flex-row md:items-center">
           <p className="order-2 md:order-1">Copyright {new Date().getFullYear()} Pav Dental.</p>
           <nav aria-label="Policies" className="order-1 md:order-2">
             <ul className="flex flex-wrap gap-x-4 gap-y-2">

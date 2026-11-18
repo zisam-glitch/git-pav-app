@@ -40,7 +40,7 @@ export function TiltCard({
         onPointerMove={onMove}
         onPointerLeave={onLeave}
         className={cn(
-          "preserve-3d relative rounded-xl border border-border-soft bg-white p-6 shadow-soft transition-transform duration-150 ease-out will-change-transform",
+          "preserve-3d relative rounded-xl   bg-white p-6 shadow-soft transition-transform duration-150 ease-out will-change-transform",
           className,
         )}
         style={

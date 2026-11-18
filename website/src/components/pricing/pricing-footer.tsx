@@ -62,7 +62,7 @@ export function PricingFooter() {
               ))}
             </ul>
             <div className="pt-2">
-              <span className="inline-block rounded-md border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold text-white/90">
+              <span className="inline-block rounded-md   bg-white/10 px-3 py-1 text-xs font-semibold text-white/90">
                 GDC Registered Practice
               </span>
             </div>
@@ -101,7 +101,7 @@ export function PricingFooter() {
           {/* Column 4: Location Map matching screenshot */}
           <div>
             <h3 className="mb-4 font-bold text-base text-white">Find Us</h3>
-            <div className="rounded-xl overflow-hidden border border-white/20 shadow-md bg-white text-gray-800">
+            <div className="rounded-xl overflow-hidden   shadow-md bg-white text-gray-800">
               {/* Map visual embed */}
               <div className="relative h-44 w-full bg-[#e8ecef] overflow-hidden">
                 <iframe
@@ -129,7 +129,7 @@ export function PricingFooter() {
         </div>
 
         {/* Bottom copyright & legal */}
-        <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/20 pt-8 text-xs text-white/80 md:flex-row md:items-center">
+        <div className="mt-12 flex flex-col justify-between gap-4   pt-8 text-xs text-white/80 md:flex-row md:items-center">
           <p>© 2026 PavDental. All rights reserved.</p>
           <ul className="flex flex-wrap gap-4">
             {legalLinks.map((link, idx) => (

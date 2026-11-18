@@ -60,7 +60,7 @@ function CategoryRoute() {
       <ScrollProgress />
       <Header />
 
-      <div className="bg-[#faf6f0] border-b border-[#e2d4c0] py-4 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#faf6f0]   py-4 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <a href="/shop" className="inline-flex items-center gap-2 text-xs text-muted hover:text-primary">
             <ArrowLeft className="size-4" />

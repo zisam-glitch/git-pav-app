@@ -10,7 +10,7 @@ export function CosmeticContact() {
   const enquiry = useEnquiry("Cosmetic dentistry");
 
   return (
-    <section id="contact" className="py-20 sm:py-28 bg-[#faf6f0] border-t border-[#e2d4c0]">
+    <section id="contact" className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-start">
           {/* Left: Contact info */}
@@ -29,7 +29,7 @@ export function CosmeticContact() {
                 { icon: Clock, label: PRACTICE_HOURS, sub: "Opening hours" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex items-start gap-4">
-                  <div className="size-10 rounded-lg bg-white border border-[#e2d4c0] flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <div className="size-10 rounded-lg bg-white   flex items-center justify-center flex-shrink-0 shadow-sm">
                     <Icon className="size-4 text-[#925a27]" />
                   </div>
                   <div>
@@ -42,7 +42,7 @@ export function CosmeticContact() {
           </div>
 
           {/* Right: Solid white form card */}
-          <div className="bg-white rounded-xl border border-[#e2d4c0] shadow-sm p-8">
+          <div className="bg-white rounded-xl   shadow-sm p-8">
             {enquiry.sent ? (
               <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
                 <CheckCircle2 className="size-12 text-emerald-500" />
@@ -72,7 +72,7 @@ export function CosmeticContact() {
                       name="name"
                       placeholder="e.g. Jessica Smith"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                   <div className="space-y-2">
@@ -85,7 +85,7 @@ export function CosmeticContact() {
                       type="email"
                       placeholder="jessica@example.com"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                 </div>
@@ -98,7 +98,7 @@ export function CosmeticContact() {
                     <select
                       id="cos-service"
                       name="interest"
-                      className="w-full h-11 rounded-lg border border-[#e2d4c0] bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
+                      className="w-full h-11 rounded-lg   bg-white px-3 text-sm text-[#2a1c12] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/30"
                     >
                       <option value="">Select a procedure…</option>
                       <option>Porcelain Veneers</option>
@@ -118,7 +118,7 @@ export function CosmeticContact() {
                       type="tel"
                       placeholder="+44 7700 900456"
                       required
-                      className="h-11 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30"
+                      className="h-11 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30"
                     />
                   </div>
                 </div>
@@ -131,7 +131,7 @@ export function CosmeticContact() {
                     id="cos-message"
                     name="message"
                     placeholder="Tell us what you would love to improve about your smile (e.g. gaps, shade, chipped edges)..."
-                    className="min-h-28 rounded-lg border-[#e2d4c0] bg-white focus-visible:ring-[#cf9448]/30 resize-none"
+                    className="min-h-28 rounded-lg  bg-white focus-visible:ring-[#cf9448]/30 resize-none"
                     required
                   />
                 </div>

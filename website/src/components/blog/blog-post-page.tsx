@@ -43,13 +43,13 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
               <ContentBlocks blocks={post.blocks} />
             </div>
 
-            <nav aria-label="More posts" className="mt-12 grid gap-4 border-t border-[#e2d4c0] pt-8 sm:grid-cols-2">
+            <nav aria-label="More posts" className="mt-12 grid gap-4   pt-8 sm:grid-cols-2">
               {previous ? (
                 <Link
                   to="/blog/$slug"
                   params={{ slug: previous.slug }}
                   rel="prev"
-                  className="rounded-lg border border-[#e2d4c0] bg-white p-4 hover:border-[#925a27]"
+                  className="rounded-lg   bg-white p-4 hover:border-[#925a27]"
                 >
                   <span className="flex items-center gap-2 text-xs font-bold uppercase text-[#925a27]">
                     <ArrowLeft className="size-3.5" aria-hidden="true" />
@@ -65,7 +65,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                   to="/blog/$slug"
                   params={{ slug: next.slug }}
                   rel="next"
-                  className="rounded-lg border border-[#e2d4c0] bg-white p-4 text-right hover:border-[#925a27] sm:col-start-2"
+                  className="rounded-lg   bg-white p-4 text-right hover:border-[#925a27] sm:col-start-2"
                 >
                   <span className="flex items-center justify-end gap-2 text-xs font-bold uppercase text-[#925a27]">
                     Next Post

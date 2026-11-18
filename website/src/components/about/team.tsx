@@ -22,7 +22,7 @@ export function Team() {
         <div className="mt-10 text-center">
           <a
             href="/team"
-            className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-white px-6 py-2.5 text-sm font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full   bg-white px-6 py-2.5 text-sm font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-white"
           >
             <span>Meet our dentists</span>
             <span aria-hidden="true">&rarr;</span>

@@ -47,7 +47,7 @@ const RED_FLAGS = [
 
 export function ExtractionPostOp() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-14">
@@ -65,7 +65,7 @@ export function ExtractionPostOp() {
           {INSTRUCTIONS.map((section) => (
             <div
               key={section.title}
-              className="bg-white rounded-xl p-7 flex flex-col gap-5 border border-[#e2d4c0] shadow-sm"
+              className="bg-white rounded-xl p-7 flex flex-col gap-5   shadow-sm"
             >
               <div
                 className="size-11 rounded-lg flex items-center justify-center"
@@ -95,7 +95,7 @@ export function ExtractionPostOp() {
         </div>
 
         {/* Red flags panel — solid dark */}
-        <div className="bg-[#2a1c12] rounded-xl p-7 sm:p-10 max-w-6xl mx-auto border border-[#3d2a1d]">
+        <div className="bg-[#2a1c12] rounded-xl p-7 sm:p-10 max-w-6xl mx-auto  ">
           <div className="flex items-center gap-3 mb-6">
             <div className="size-10 rounded-lg bg-red-900/40 flex items-center justify-center">
               <AlertTriangle className="size-5 text-red-400" />
@@ -115,7 +115,7 @@ export function ExtractionPostOp() {
               </li>
             ))}
           </ul>
-          <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-4 items-center">
+          <div className="mt-6 pt-5   flex flex-wrap gap-4 items-center">
             <div>
               <p className="text-xs text-white/80 mb-1">24h emergency line</p>
               <p className="font-display text-xl font-bold text-white">0800 1938 786</p>

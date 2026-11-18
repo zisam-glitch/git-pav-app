@@ -160,14 +160,14 @@ export function CheckoutPage() {
           {/* Form Left Side */}
           <form onSubmit={handleProceedToPayment} className="lg:col-span-7 space-y-8">
             {errorMessage && (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5">
+              <div className="p-4 rounded-xl bg-red-50   text-red-700 text-xs flex items-center gap-2.5">
                 <AlertCircle className="size-4 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
             {/* 1. Contact Info */}
-            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg flex items-center gap-2">
                 <span>1. Contact Information</span>
               </h2>
@@ -180,7 +180,7 @@ export function CheckoutPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.co.uk"
-                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
                 <p className="text-[11px] text-muted mt-1">We'll send your receipt and tracking updates here.</p>
               </div>
@@ -192,13 +192,13 @@ export function CheckoutPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+44 7123 456789"
-                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
               </div>
             </div>
 
             {/* 2. Delivery Address */}
-            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg">2. Shipping Address</h2>
               <div>
                 <label htmlFor="checkout-name" className="text-xs font-semibold text-fg">Full Name *</label>
@@ -209,7 +209,7 @@ export function CheckoutPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Dr. Jane Smith"
-                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
               </div>
               <div>
@@ -221,7 +221,7 @@ export function CheckoutPage() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Street address or P.O. Box"
-                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                  className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
               </div>
 
@@ -235,7 +235,7 @@ export function CheckoutPage() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="Bradford, Leeds, London..."
-                    className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                    className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                   />
                 </div>
                 <div>
@@ -247,14 +247,14 @@ export function CheckoutPage() {
                     value={zip}
                     onChange={(e) => setZip(e.target.value)}
                     placeholder="e.g. BD1 1AA"
-                    className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                    className="mt-1 w-full rounded-xl   bg-[#faf8f5] px-3.5 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                   />
                 </div>
               </div>
             </div>
 
             {/* 3. Shipping Method */}
-            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg">3. Delivery Options</h2>
               {loadingShipping ? (
                 <p className="text-xs text-muted">Loading delivery rates...</p>
@@ -268,10 +268,10 @@ export function CheckoutPage() {
                     return (
                       <label
                         key={m.id}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                        className={`flex items-center justify-between p-3.5 rounded-xl  cursor-pointer transition-all ${
                           isSelected
-                            ? "border-[#925a27] bg-[#faf6f0] ring-1 ring-[#925a27]"
-                            : "border-[#e2d4c0] bg-white hover:border-[#925a27]"
+                            ? " bg-[#faf6f0]  ring-[#925a27]"
+                            : " bg-white hover:border-[#925a27]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -309,17 +309,17 @@ export function CheckoutPage() {
 
           {/* Right Summary Side */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-6">
+            <div className="bg-white rounded-xl   p-6 shadow-xs space-y-6">
               <h2 className="font-display text-lg font-bold text-fg">Order Summary</h2>
 
               {/* Items list */}
-              <div className="divide-y divide-[#e2d4c0]/60 max-h-80 overflow-y-auto pr-1">
+              <div className=" /60 max-h-80 overflow-y-auto pr-1">
                 {items.map((it) => (
                   <div key={it.id} className="py-3 flex items-center gap-3">
                     <img
                       src={it.image}
                       alt={it.name}
-                      className="size-12 rounded-lg object-cover bg-[#faf6f0] border border-[#e2d4c0] shrink-0"
+                      className="size-12 rounded-lg object-cover bg-[#faf6f0]   shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-fg truncate">{it.name}</p>
@@ -340,14 +340,14 @@ export function CheckoutPage() {
                       placeholder="Promo code"
                       value={promoCodeInput}
                       onChange={(e) => setPromoCodeInput(e.target.value)}
-                      className="flex-1 rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
+                      className="flex-1 rounded-xl   bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                     />
                     <Button type="submit" variant="outline" size="sm" className="rounded-xl">
                       Apply
                     </Button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between bg-[#faf6f0] border border-[#e2d4c0] text-[#2a1c12] p-2.5 rounded-xl text-xs">
+                  <div className="flex items-center justify-between bg-[#faf6f0]   text-[#2a1c12] p-2.5 rounded-xl text-xs">
                     <div className="flex items-center gap-1.5 font-medium text-[#925a27]">
                       <CheckCircle2 className="size-4 text-[#925a27] shrink-0" />
                       <span>Coupon {appliedDiscount.code} applied (-£{discountAmount.toFixed(2)})</span>
@@ -369,7 +369,7 @@ export function CheckoutPage() {
               </div>
 
               {/* Totals Calculation */}
-              <div className="space-y-2 border-t border-[#e2d4c0] pt-4 text-xs">
+              <div className="space-y-2   pt-4 text-xs">
                 <div className="flex justify-between text-muted">
                   <span>Subtotal</span>
                   <span className="font-semibold text-fg">£{subtotal.toFixed(2)}</span>
@@ -386,7 +386,7 @@ export function CheckoutPage() {
                     {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm font-bold text-fg pt-3 border-t border-[#e2d4c0]">
+                <div className="flex justify-between text-sm font-bold text-fg pt-3  ">
                   <span>Total (inc. VAT)</span>
                   <span className="text-[#925a27] text-base">£{finalTotal.toFixed(2)}</span>
                 </div>
@@ -394,7 +394,7 @@ export function CheckoutPage() {
             </div>
 
             {/* Security Guarantee Box */}
-            <div className="p-4 rounded-xl border border-[#e2d4c0] bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
+            <div className="p-4 rounded-xl   bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
               <ShieldCheck className="size-6 text-[#925a27] shrink-0" />
               <div>
                 <p className="font-semibold">256-Bit SSL Encrypted Payment</p>

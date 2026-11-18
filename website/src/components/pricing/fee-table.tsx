@@ -185,7 +185,7 @@ export function FeeTable() {
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search treatments"
               placeholder="Search treatments (e.g. check-up, whitening, crown)..."
-              className="w-full pl-10 pr-4 py-2 text-sm rounded-full border border-border bg-white shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              className="w-full pl-10 pr-4 py-2 text-sm rounded-full   bg-white shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
           </div>
         </div>
@@ -195,10 +195,10 @@ export function FeeTable() {
           {filteredCategories.map((group) => (
             <div
               key={group.category}
-              className="rounded-xl overflow-hidden border border-border/80 bg-white shadow-xs"
+              className="rounded-xl overflow-hidden   bg-white shadow-xs"
             >
               {/* Category Header Row (warm beige background matching screenshot) */}
-              <div className="flex items-center justify-between bg-[#efe5d8] px-5 py-3 border-b border-border/60">
+              <div className="flex items-center justify-between bg-[#efe5d8] px-5 py-3  ">
                 <span className="font-semibold text-sm sm:text-base text-[#693d17]">
                   {group.category}
                 </span>
@@ -208,7 +208,7 @@ export function FeeTable() {
               </div>
 
               {/* Items List */}
-              <div className="divide-y divide-border/40 text-sm">
+              <div className="  text-sm">
                 {group.items.map((item, idx) => (
                   <div
                     key={idx}

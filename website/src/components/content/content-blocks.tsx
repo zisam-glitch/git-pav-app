@@ -92,7 +92,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
       );
     case "quote":
       return (
-        <blockquote className="mt-10 border-l-4 border-[#925a27] bg-[#faf6f0] px-6 py-5 font-display text-lg leading-relaxed text-[#2a1c12]">
+        <blockquote className="mt-10 border-l-4  bg-[#faf6f0] px-6 py-5 font-display text-lg leading-relaxed text-[#2a1c12]">
           {block.text}
         </blockquote>
       );
@@ -100,13 +100,13 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
       const head = block.header ? block.rows[0] : undefined;
       const body = block.header ? block.rows.slice(1) : block.rows;
       return (
-        <div className="mt-6 overflow-x-auto rounded-xl border border-[#e2d4c0] bg-white">
+        <div className="mt-6 overflow-x-auto rounded-xl   bg-white">
           <table className="w-full min-w-[32rem] border-collapse text-left text-sm leading-relaxed text-[#4a3b2f]">
             {head && (
               <thead className="bg-[#faf6f0] text-[#2a1c12]">
                 <tr>
                   {head.map((cell, index) => (
-                    <th key={index} scope="col" className="border-b border-[#e2d4c0] px-4 py-3 font-bold">
+                    <th key={index} scope="col" className="  px-4 py-3 font-bold">
                       {cell}
                     </th>
                   ))}
@@ -115,7 +115,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
             )}
             <tbody>
               {body.map((row, rowIndex) => (
-                <tr key={rowIndex} className="border-b border-[#efe6d8] last:border-b-0">
+                <tr key={rowIndex} className="  last:border-b-0">
                   {row.map((cell, index) => (
                     <td key={index} className="px-4 py-3 align-top">
                       {cell}
@@ -147,7 +147,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
             <li key={item.href}>
               <a
                 href={item.href}
-                className="flex items-center justify-between gap-3 rounded-lg border border-[#e2d4c0] bg-white px-4 py-3 text-sm font-semibold text-[#2a1c12] hover:border-[#925a27]"
+                className="flex items-center justify-between gap-3 rounded-lg   bg-white px-4 py-3 text-sm font-semibold text-[#2a1c12] hover:border-[#925a27]"
               >
                 <span>{item.text}</span>
                 {fileType(item.href) && (
@@ -167,7 +167,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
             <li key={card.href}>
               <a
                 href={card.href}
-                className="block h-full rounded-xl border border-[#e2d4c0] bg-white p-5 shadow-sm hover:border-[#925a27]"
+                className="block h-full rounded-xl   bg-white p-5 shadow-sm hover:border-[#925a27]"
               >
                 {card.badge && (
                   <span className="mb-2 inline-block rounded-full bg-[#faf6f0] px-2.5 py-0.5 text-xs font-bold text-[#925a27]">
@@ -182,7 +182,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
         </ul>
       );
     case "image":
-      return <img src={block.src} alt={block.alt} loading="lazy" className="mt-6 w-full rounded-xl border border-[#e2d4c0]" />;
+      return <img src={block.src} alt={block.alt} loading="lazy" className="mt-6 w-full rounded-xl  " />;
   }
 }
 
@@ -205,7 +205,7 @@ export function ContentPageBody({ eyebrow, title, children }: { eyebrow?: string
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           {eyebrow && (
-            <span className="inline-block rounded-full border border-[#e2d4c0] bg-white px-4 py-1.5 text-xs font-bold uppercase text-[#925a27]">
+            <span className="inline-block rounded-full   bg-white px-4 py-1.5 text-xs font-bold uppercase text-[#925a27]">
               {eyebrow}
             </span>
           )}

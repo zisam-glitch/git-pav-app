@@ -37,7 +37,7 @@ const COLOR_FILTERS = [
 
 export function MouthguardsColour() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-12">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">

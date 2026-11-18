@@ -173,10 +173,10 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex flex-col h-full rounded-xl overflow-hidden bg-white border transition-all duration-300 shadow-sm",
+        "relative flex flex-col h-full rounded-xl overflow-hidden bg-white  transition-all duration-300 shadow-sm",
         plan.popular
-          ? "border-primary/40 shadow-md ring-1 ring-primary/10"
-          : "border-border/80 hover:border-primary/40",
+          ? " shadow-md  "
+          : " hover:border-primary/40",
         hovered && "shadow-soft -translate-y-1",
       )}
     >
@@ -252,7 +252,7 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
           variant={plan.popular ? "default" : "outline"}
           className={cn(
             "w-full rounded-lg font-semibold text-sm",
-            plan.popular ? "accent-gradient text-white" : "border-border hover:bg-surface",
+            plan.popular ? "accent-gradient text-white" : " hover:bg-surface",
           )}
         >
           <a href={BOOKING_URL}>Book Now</a>

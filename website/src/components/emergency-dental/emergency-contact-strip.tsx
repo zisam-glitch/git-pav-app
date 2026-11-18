@@ -2,12 +2,12 @@ import { MapPin, Phone, Clock } from "lucide-react";
 
 export function EmergencyContactStrip() {
   return (
-    <div className="bg-[#2a1c12] text-white py-6 sm:py-8 border-y border-[#3d2a1d]">
+    <div className="bg-[#2a1c12] text-white py-6 sm:py-8  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
           {/* Item 1 */}
           <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-xl bg-[#372418] border border-[#523825] flex items-center justify-center flex-shrink-0">
+            <div className="size-12 rounded-xl bg-[#372418]   flex items-center justify-center flex-shrink-0">
               <MapPin className="size-6 text-[#cf9448]" />
             </div>
             <div>
@@ -18,7 +18,7 @@ export function EmergencyContactStrip() {
 
           {/* Item 2 */}
           <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-xl bg-[#372418] border border-[#523825] flex items-center justify-center flex-shrink-0">
+            <div className="size-12 rounded-xl bg-[#372418]   flex items-center justify-center flex-shrink-0">
               <Phone className="size-6 text-[#cf9448]" />
             </div>
             <div>
@@ -31,7 +31,7 @@ export function EmergencyContactStrip() {
 
           {/* Item 3 */}
           <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-xl bg-[#372418] border border-[#523825] flex items-center justify-center flex-shrink-0">
+            <div className="size-12 rounded-xl bg-[#372418]   flex items-center justify-center flex-shrink-0">
               <Clock className="size-6 text-[#cf9448]" />
             </div>
             <div>

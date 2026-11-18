@@ -17,7 +17,7 @@ const STYLES = [
     id: "open-face",
     title: "Open Face / Window Cuts",
     subtitle: "Subtle distinction",
-    desc: "Frames your natural tooth with an immaculate gold border, highlighting your natural enamel while delivering bold luxury contrast.",
+    desc: "Frames your natural tooth with an immaculate gold , highlighting your natural enamel while delivering bold luxury contrast.",
     benefits: "Shows natural enamel",
     icon: Layers,
     accentColor: "#cf9448",
@@ -67,7 +67,7 @@ const STYLES = [
 
 export function GrillzStyles() {
   return (
-    <section id="styles" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="styles" className="py-20 sm:py-28 bg-[#fffdf9]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
@@ -84,7 +84,7 @@ export function GrillzStyles() {
             return (
               <div
                 key={item.id}
-                className="rounded-xl border border-[#e2d4c0] bg-white p-7 shadow-sm flex flex-col justify-between"
+                className="rounded-xl   bg-white p-7 shadow-sm flex flex-col justify-between"
               >
                 <div>
                   <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
@@ -106,7 +106,7 @@ export function GrillzStyles() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#f0e8dc]">
+                <div className="pt-4  ">
                   <Button
                     asChild
                     className="w-full rounded-full h-11 bg-white hover:bg-[#faf6f0] text-xs font-bold"

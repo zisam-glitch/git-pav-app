@@ -189,11 +189,11 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 border-b transition-[background,box-shadow,border-color] duration-200",
+        "fixed inset-x-0 top-0 z-50  transition-[background,box-shadow,border-color] duration-200",
         servicesOpen
           ? "border-transparent bg-white shadow-soft"
           : scrolled || mobileOpen
-          ? "border-border bg-white shadow-soft"
+          ? " bg-white shadow-soft"
           : "border-transparent bg-transparent",
       )}
     >
@@ -268,7 +268,7 @@ export function Header() {
                                 className="flex items-start gap-2.5 rounded-xl p-2 transition-colors hover:bg-elevated/70"
                                 onClick={() => setServicesOpen(false)}
                               >
-                                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg border border-border/60 bg-surface/80">
+                                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg   bg-surface/80">
                                   <item.icon className="size-3.5 text-primary" />
                                 </span>
                                 <span className="min-w-0">
@@ -289,7 +289,7 @@ export function Header() {
                     ))}
                   </div>
 
-                  <div className="mt-4 border-t border-border/60 pt-3">
+                  <div className="mt-4   pt-3">
                     <p className="px-2 pb-2 text-sm">
                       <a
                         href="/services"
@@ -353,7 +353,7 @@ export function Header() {
       <div
         id="mobile-menu"
         className={cn(
-          "bg-white max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border lg:hidden",
+          "bg-white max-h-[calc(100dvh-4rem)] overflow-y-auto   lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
       >
@@ -405,7 +405,7 @@ export function Header() {
             </a>
           ))}
 
-          <div className="mt-3 flex flex-col gap-2 border-t border-border/60 pt-3">
+          <div className="mt-3 flex flex-col gap-2   pt-3">
             <Button asChild className="w-full">
               <a href={BOOKING_URL} onClick={() => setMobileOpen(false)}>
                 Book Now
@@ -434,7 +434,7 @@ function MobileServiceCategory({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-border/40 last:border-0">
+    <div className="  last:border-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

@@ -48,7 +48,7 @@ export function HeroSlider() {
   return (
     <section
       id="top"
-      className="relative isolate overflow-hidden bg-[#faf6f0] border-b border-border-soft pt-16"
+      className="relative isolate overflow-hidden bg-[#faf6f0]   pt-16"
       aria-roledescription="carousel"
       aria-label="Clinic highlights"
     >
@@ -81,7 +81,7 @@ export function HeroSlider() {
               <a href="/services">Explore care</a>
             </Button>
           </div>
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-border-soft pt-5 text-sm font-medium text-muted">
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2   pt-5 text-sm font-medium text-muted">
             <li>GDC registered</li>
             <li>Same-day appointments</li>
             <li>
@@ -92,7 +92,7 @@ export function HeroSlider() {
           </ul>
         </div>
 
-        <div className="relative hidden h-[420px] overflow-hidden rounded-xl border border-border bg-white shadow-soft lg:block">
+        <div className="relative hidden h-[420px] overflow-hidden rounded-xl   bg-white shadow-soft lg:block">
           <AnimatePresence mode="wait">
             <motion.img
               key={slide.id}

@@ -2,7 +2,7 @@ import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 export function OpenApplication() {
   return (
-    <section className="py-16 sm:py-20 bg-[#faf6f0] border-t border-[#e2d4c0]">
+    <section className="py-16 sm:py-20 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
         
 
@@ -25,7 +25,7 @@ export function OpenApplication() {
 
           <a
             href="tel:08001938786"
-            className="h-12 px-6 rounded-xl border border-[#e2d4c0] bg-white text-sm font-medium text-[#2a1c12] hover:border-[#925a27] transition-colors flex items-center justify-center gap-2"
+            className="h-12 px-6 rounded-xl   bg-white text-sm font-medium text-[#2a1c12] hover:border-[#925a27] transition-colors flex items-center justify-center gap-2"
           >
             <Phone className="size-4 text-[#925a27]" />
             <span>Call: 0800 1938 786</span>

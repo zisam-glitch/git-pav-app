@@ -45,9 +45,9 @@ export function Overview() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <aside className="rounded-xl border border-border-soft bg-white p-6 shadow-soft sm:p-8">
+          <aside className="rounded-xl   bg-white p-6 shadow-soft sm:p-8">
             <h3 className="font-display text-2xl text-primary">Working Hours</h3>
-            <ul className="mt-5 divide-y divide-border text-sm">
+            <ul className="mt-5   text-sm">
               {DAYS.map((d) => (
                 <li key={d} className="flex items-center justify-between py-3">
                   <span className="text-muted">{d}</span>

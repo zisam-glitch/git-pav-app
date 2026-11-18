@@ -99,7 +99,7 @@ export function EmergencyServices() {
             return (
               <div
                 key={cond.id}
-                className="group relative rounded-xl bg-white p-7 border border-[#e8ddd0] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
+                className="group relative rounded-xl bg-white p-7   shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-5">
@@ -120,7 +120,7 @@ export function EmergencyServices() {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#f0e8dc] flex items-center justify-between text-xs">
+                <div className="mt-6 pt-4   flex items-center justify-between text-xs">
                   <span className="font-semibold text-[#925a27]">Emergency Slot</span>
                   <a
                     href="tel:07311871456"

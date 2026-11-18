@@ -7,7 +7,7 @@ export function CosmeticHero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16 border-b border-[#e8ddd0] flex items-center"
+      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16   flex items-center"
       aria-label="Cosmetic dentistry and smile design"
     >
       {/* Background layer with subtle kenburns and gradient overlay */}
@@ -45,7 +45,7 @@ export function CosmeticHero() {
               asChild
               variant="outline"
               size="lg"
-              className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
+              className="rounded-full px-7  text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
             >
               <a href="#procedures">View treatments</a>
             </Button>
@@ -57,7 +57,7 @@ export function CosmeticHero() {
           </ul>
         </div>
 
-        <div className="relative hidden h-[420px] overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-md lg:block">
+        <div className="relative hidden h-[420px] overflow-hidden rounded-xl   bg-white shadow-md lg:block">
           <img
             src="https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1200&q=85"
             alt="Modern cosmetic smile design surgery"

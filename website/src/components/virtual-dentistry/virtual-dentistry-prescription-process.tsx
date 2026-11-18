@@ -26,7 +26,7 @@ const STEPS = [
 
 export function VirtualDentistryPrescriptionProcess() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
+    <section className="py-20 sm:py-28 bg-[#faf6f0]  ">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">

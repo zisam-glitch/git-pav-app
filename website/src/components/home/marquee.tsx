@@ -16,7 +16,7 @@ export function Marquee() {
   const [paused, setPaused] = useState(false);
   const loop = [...ITEMS, ...ITEMS];
   return (
-    <div className="relative flex items-center border-y border-border bg-[#faf6f0] py-4">
+    <div className="relative flex items-center   bg-[#faf6f0] py-4">
       <div className="min-w-0 flex-1 overflow-hidden" aria-hidden="true">
         <div className="marquee-track text-sm font-medium text-muted" data-paused={paused}>
           {loop.map((t, i) => (
@@ -33,7 +33,7 @@ export function Marquee() {
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
           aria-label={paused ? "Resume services marquee" : "Pause services marquee"}
-          className="inline-flex size-8 items-center justify-center rounded-md border border-border bg-white text-fg transition-colors hover:border-primary hover:text-primary"
+          className="inline-flex size-8 items-center justify-center rounded-md   bg-white text-fg transition-colors hover:border-primary hover:text-primary"
         >
           {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
         </button>

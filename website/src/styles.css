@@ -62,8 +62,8 @@
   --color-gold: #cf9448;
   --color-gold-ink: #1a1a1a;
   --color-cream: #faf6f0;
-  --color-border: #a3876b;
-  --color-border-soft: #e2d4c0;
+  --color-border: transparent;
+  --color-border-soft: transparent;
   --color-ring: #925a27;
   --color-danger: #b42318;
 
@@ -205,14 +205,12 @@
 
 .glass {
   background: var(--color-surface);
-  border: 1px solid var(--color-border-soft);
-  box-shadow: 0 10px 32px -22px rgb(42 28 18 / 0.18);
+  box-shadow: 0 10px 32px -22px rgb(42 28 18 / 0.14);
 }
 
 .glass-dark {
   background: var(--color-fg);
-  border: 1px solid #4a3525;
-  box-shadow: 0 16px 40px -20px rgb(42 28 18 / 0.35);
+  box-shadow: 0 16px 40px -20px rgb(42 28 18 / 0.3);
 }
 
 @keyframes spin-slow {

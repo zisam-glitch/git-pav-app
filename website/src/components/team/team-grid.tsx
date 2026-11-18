@@ -21,7 +21,7 @@ export function TeamGrid() {
               <Link
                 to="/team/$slug"
                 params={{ slug: member.slug }}
-                className="group block overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-sm transition-colors hover:border-[#925a27]"
+                className="group block overflow-hidden rounded-xl   bg-white shadow-sm transition-colors hover:border-[#925a27]"
               >
                 <TeamPhoto
                   member={member}

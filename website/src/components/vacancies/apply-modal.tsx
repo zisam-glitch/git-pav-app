@@ -93,9 +93,9 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
           </div>
         ) : (
           <div>
-            <div className="border-b border-border/50 pb-4 pr-6">
+            <div className="  pb-4 pr-6">
               <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex items-center gap-1 rounded-md bg-[#faf6f0] border border-primary/25 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                <span className="inline-flex items-center gap-1 rounded-md bg-[#faf6f0]   px-2.5 py-0.5 text-[11px] font-semibold text-primary">
                   <Briefcase className="size-3" />
                   {vacancy.department}
                 </span>
@@ -122,7 +122,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="Dr. / Nurse Jane Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
 
@@ -137,7 +137,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
@@ -154,7 +154,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="+44 7311 871456"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
 
@@ -168,7 +168,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="e.g. 123456"
                     value={gdcNumber}
                     onChange={(e) => setGdcNumber(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className="w-full h-10 rounded-xl   bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
@@ -186,7 +186,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                     placeholder="https://linkedin.com/in/... or Google Drive link"
                     value={cvLink}
                     onChange={(e) => setCvLink(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] pl-9 pr-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                    className="w-full h-10 rounded-xl   bg-[#faf8f5] pl-9 pr-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
@@ -202,7 +202,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                   placeholder="Tell us about your background, clinical interests, or visa requirements..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded-xl border border-border/70 bg-[#faf8f5] p-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
+                  className="w-full rounded-xl   bg-[#faf8f5] p-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 

@@ -113,7 +113,7 @@ function Trail({ steps, accent, accentSoft }: TrailProps) {
 
                 {/* Parchment tag */}
                 <div
-                  className={`flex-1 min-w-0 px-4 py-3 bg-[#fffaf0] border border-dashed rounded-sm shadow-sm ${
+                  className={`flex-1 min-w-0 px-4 py-3 bg-[#fffaf0]  border-dashed rounded-sm shadow-sm ${
                     isRight ? "text-right -rotate-1" : "rotate-1"
                   }`}
                   style={{ borderColor: accentSoft }}
@@ -155,7 +155,7 @@ export function MouthguardsOrdering() {
 
         <div className="relative grid gap-16 md:grid-cols-2 md:gap-12">
           {/* Center divider with compass */}
-          <div className="absolute left-1/2 top-8 hidden h-[calc(100%-2rem)] w-px -translate-x-1/2 border-l-2 border-dashed border-[#d8c6a8] md:block" />
+          <div className="absolute left-1/2 top-8 hidden h-[calc(100%-2rem)] w-px -translate-x-1/2 border-l-2 border-dashed  md:block" />
 
 
           {/* Clinic trail */}

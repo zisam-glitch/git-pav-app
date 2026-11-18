@@ -200,10 +200,7 @@
 }
 
 .accent-text {
-  background-image: linear-gradient(90deg, rgb(146, 90, 39), rgb(207, 148, 72) 57%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-primary);
 }
 
 .glass {

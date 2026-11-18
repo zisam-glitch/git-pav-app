@@ -67,39 +67,37 @@ export function EmergencyHero() {
 
           {/* Right action block */}
           <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="bg-gradient-to-br from-red-600 to-[#b02a1e] rounded-xl p-8 sm:p-9 shadow-2xl border border-red-400/40 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 size-36 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-              
-              <div className="flex items-center gap-3 mb-4">
-                <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
-                  <Phone className="size-6 text-white animate-pulse" />
+            <div className="bg-[#2a1c12] rounded-xl p-8 sm:p-9 shadow-2xl border border-[#925a27] text-white relative overflow-hidden">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="size-12 rounded-xl bg-[#925a27] flex items-center justify-center">
+                  <Phone className="size-6 text-white" />
                 </div>
                 <div>
-                  <span className="text-xs uppercase text-white/80 font-bold">
-                    Emergency Hotline
+                  <span className="text-xs uppercase text-[#cf9448] font-bold">
+                    24/7 Emergency Hotline
                   </span>
-                  <p className="text-xs text-white/90">Immediate triage with our on-call clinician</p>
+                  <p className="text-xs text-[#e8ddd0]">Immediate triage with our on-call clinician</p>
                 </div>
               </div>
 
               <div className="space-y-3 mb-6">
                 <a
-                  href="tel:07311871456"
-                  className="block text-center py-3.5 px-4 rounded-xl bg-white text-red-600 font-display text-2xl font-black shadow-lg hover:bg-white/95 transition-transform active:scale-[0.98]"
+                  href="tel:08001938786"
+                  className="block text-center py-3.5 px-4 rounded-xl bg-[#cf9448] text-[#1a1a1a] font-display text-2xl font-black shadow-sm hover:bg-[#c2873d] transition-colors"
                 >
-                  07311 871456
+                  0800 1938 786
                 </a>
                 <a
-                  href="tel:08001938786"
-                  className="block text-center py-2.5 px-4 rounded-xl bg-black/25 text-white font-semibold text-sm hover:bg-black/35 transition-colors"
+                  href="tel:07311871456"
+                  className="block text-center py-2.5 px-4 rounded-xl bg-[#372418] border border-[#925a27]/60 text-white font-semibold text-sm hover:bg-[#462f20] transition-colors"
                 >
-                  Freephone: 0800 1938 786
+                  Direct / WhatsApp: 07311 871456
                 </a>
               </div>
 
               <Button
                 asChild
-                className="w-full bg-white/15 hover:bg-white/25 text-white border border-white/30 rounded-xl h-12 font-bold"
+                className="w-full rounded-xl h-12 font-bold"
               >
                 <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
                   <Calendar className="size-4" />

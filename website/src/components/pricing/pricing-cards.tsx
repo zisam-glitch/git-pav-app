@@ -74,9 +74,9 @@ const PLANS: Plan[] = [
 ];
 
 const BANNER_BG: Record<Plan["color"], string> = {
-  bronze: "bg-[#c4824d]",
-  silver: "bg-[#bdc3c7]",
-  gold: "bg-[#f5cf47]",
+  bronze: "bg-[#925a27] text-white",
+  silver: "bg-[#2a1c12] text-white",
+  gold: "bg-[#cf9448] text-[#1a1a1a]",
 };
 
 export function PricingCards() {
@@ -199,7 +199,7 @@ function PricingCard({ plan, isMonthly }: { plan: Plan; isMonthly: boolean }) {
           />
         </svg>
 
-        <div className="relative z-10 flex items-baseline justify-center text-white">
+        <div className="relative z-10 flex items-baseline justify-center">
           <span className="text-3xl font-bold mr-0.5">£</span>
           <AnimatePresence mode="popLayout">
             <motion.span

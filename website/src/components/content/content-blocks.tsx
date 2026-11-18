@@ -21,7 +21,15 @@ function fileType(href: string): string | null {
   return FILE_TYPES[extension] ?? null;
 }
 
-const isExternal = (href: string) => /^https?:\/\//.test(href) && !href.startsWith("https://www.pavdental.com");
+/** Whether a link leaves the site, so it opens in a new tab. Compares the parsed host, not a prefix. */
+function isExternal(href: string): boolean {
+  try {
+    const url = new URL(href, "https://www.pavdental.com");
+    return url.hostname !== "www.pavdental.com" && url.hostname !== "pavdental.com";
+  } catch {
+    return false;
+  }
+}
 
 function Block({ block }: { block: ContentBlock }): ReactNode {
   switch (block.kind) {

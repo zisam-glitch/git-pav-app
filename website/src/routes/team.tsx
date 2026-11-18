@@ -3,7 +3,7 @@ import { seoHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
-import { TeamPage } from "@/components/team/team-page";
+import { TeamGrid } from "@/components/team/team-grid";
 
 export const Route = createFileRoute("/team")({
   head: () => seoHead("/team"),
@@ -17,12 +17,11 @@ function TeamPageRoute() {
       <Header />
 
       {/* Spacer for fixed top header */}
-      <div className="pt-16">
-        <TeamPage />
+      <div className="pt-24">
+        <TeamGrid />
       </div>
 
       <Footer />
     </main>
   );
 }
-

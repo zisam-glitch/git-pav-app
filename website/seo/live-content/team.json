@@ -1,0 +1,60 @@
+{
+  "path": "/team",
+  "title": "Meet Our Expert Dental Team – Your Smile Specialists",
+  "h1": [],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "h2",
+      "text": "Dentists & Staff"
+    },
+    {
+      "tag": "div",
+      "text": "We have a dedicated team consisting of highly skilled dentists and staff who works relentlessly to preserve your happy smile."
+    },
+    {
+      "tag": "a",
+      "text": "Aboo Bhojani\nDirector & Dental Engineer",
+      "href": "https://www.pavdental.com/team/aboo-bhojani"
+    },
+    {
+      "tag": "a",
+      "text": "Dr Hassan Bhojani\nPrincipal Dentist & Registered Manager",
+      "href": "https://www.pavdental.com/team/dr-hassan-bhojani"
+    },
+    {
+      "tag": "a",
+      "text": "Dr Cosimo Meucci\nImplant Dentist",
+      "href": "https://www.pavdental.com/team/dr-cosimo-meucci"
+    },
+    {
+      "tag": "a",
+      "text": "Raheela Shafiq\nCompliance Manager",
+      "href": "https://www.pavdental.com/team/raheela-shafiq"
+    },
+    {
+      "tag": "a",
+      "text": "Waleed Javed\nPractice Manager",
+      "href": "https://www.pavdental.com/team/waleed-javed"
+    },
+    {
+      "tag": "a",
+      "text": "Uwais Ullah\nTrainee Dental Nurse",
+      "href": "https://www.pavdental.com/team/uwais-ullah"
+    },
+    {
+      "tag": "a",
+      "text": "Haris Bhojani\nDental Assistant & Clinical Support",
+      "href": "https://www.pavdental.com/team/haris-bhojani"
+    },
+    {
+      "tag": "a",
+      "text": "Sayed Shohag Rahman\nMarketing Manager",
+      "href": "https://www.pavdental.com/team/sayed-shohag-rahman"
+    }
+  ]
+}

@@ -15,7 +15,7 @@
 | [#204](https://github.com/zisam-glitch/git-pav-app/pull/204) | Every website form sends; real phone, email and hours beside them | Merged |
 | [#206](https://github.com/zisam-glitch/git-pav-app/pull/206) | FAQ, CCTV policy, practice documents and services pages; `/gdpr` redirects | CodeQL alert fixed; merges on green |
 
-**Live URLs covered once #206 is in: 31 of 47.** 30 are served with their live title and description, and `/gdpr` redirects. Still to do: 8 team profiles, 6 blog posts, `/services/finance` and `/services/regestration`.
+**Live URLs covered: 39 of 47** (31 once #206 landed, plus the 8 team profiles). Still to do: 6 blog posts, `/services/finance` and `/services/regestration`.
 
 ## 2. Rules for all remaining work
 
@@ -36,7 +36,7 @@
 | Step | Work | Done when | Needs |
 |---|---|---|---|
 | A1 Documents | Copy the 36 files (10.7 MB) the live site serves under `/policies`, `/forms` and `/posters` into `website/public/`, at the same paths, so the links on `/practice-policy` keep working. | All 36 return 200 on a preview | Owner's OK to download them |
-| A2 Team | `/team` lists the 8 people on the live site, and `/team/<slug>` shows each profile with the live title, description, bio and photo. The data is static, not from the app backend. Update the team rule in `website/AGENTS.md`. | 8 profile URLs return 200 with live titles | — |
+| A2 Team (done) | `/team` lists the 8 people on the live site, and `/team/<slug>` shows each profile with the live title, description, bio and photo. The data is static, not from the app backend. Update the team rule in `website/AGENTS.md`. | 8 profile URLs return 200 with live titles | — |
 | A3 Blog | The 6 live posts at `/blog/<slug>`, with their full text, listed on `/blog`. Replace the demo articles in `blog-data.ts` and their `MedicalScholarlyArticle` markup with `BlogPosting`. | 6 post URLs return 200 with titles | — |
 | A4 Finance | `/services/finance`. The live page promotes credit (0% APR, "7.9% APR representative"), but its calculator shows 9.9% APR. | Page live, or a decision recorded | Owner, with V12: the practice is not FCA-authorised to advertise finance (D-05) |
 | A5 Registration | `/services/regestration`. The live page collects NHS number, ethnicity and medical and dental history through a third-party form service. | Page live, or a decision recorded | Owner: recommended is an information page (register by phone or in the clinic), with no health questionnaire on the website |

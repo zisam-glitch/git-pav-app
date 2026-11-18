@@ -48,6 +48,7 @@ import { Route as ServicesToothExtractionRouteImport } from './routes/services.t
 import { Route as ServicesVirtualDentistryRouteImport } from './routes/services.virtual-dentistry'
 import { Route as ServicesWhiteningRouteImport } from './routes/services.whitening'
 import { Route as ShopProductSlugRouteImport } from './routes/shop_.$productSlug'
+import { Route as TeamSlugRouteImport } from './routes/team_.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -246,6 +247,11 @@ const ShopProductSlugRoute = ShopProductSlugRouteImport.update({
   path: '/shop/$productSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamSlugRoute = TeamSlugRouteImport.update({
+  id: '/team_/$slug',
+  path: '/team/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -286,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
   '/services/whitening': typeof ServicesWhiteningRoute
   '/shop/$productSlug': typeof ShopProductSlugRoute
+  '/team/$slug': typeof TeamSlugRoute
   '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -327,6 +334,7 @@ export interface FileRoutesByTo {
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
   '/services/whitening': typeof ServicesWhiteningRoute
   '/shop/$productSlug': typeof ShopProductSlugRoute
+  '/team/$slug': typeof TeamSlugRoute
   '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
@@ -369,6 +377,7 @@ export interface FileRoutesById {
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
   '/services/whitening': typeof ServicesWhiteningRoute
   '/shop_/$productSlug': typeof ShopProductSlugRoute
+  '/team_/$slug': typeof TeamSlugRoute
   '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
@@ -412,6 +421,7 @@ export interface FileRouteTypes {
     | '/services/virtual-dentistry'
     | '/services/whitening'
     | '/shop/$productSlug'
+    | '/team/$slug'
     | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -453,6 +463,7 @@ export interface FileRouteTypes {
     | '/services/virtual-dentistry'
     | '/services/whitening'
     | '/shop/$productSlug'
+    | '/team/$slug'
     | '/services'
   id:
     | '__root__'
@@ -494,6 +505,7 @@ export interface FileRouteTypes {
     | '/services/virtual-dentistry'
     | '/services/whitening'
     | '/shop_/$productSlug'
+    | '/team_/$slug'
     | '/services/'
   fileRoutesById: FileRoutesById
 }
@@ -536,6 +548,7 @@ export interface RootRouteChildren {
   ServicesVirtualDentistryRoute: typeof ServicesVirtualDentistryRoute
   ServicesWhiteningRoute: typeof ServicesWhiteningRoute
   ShopProductSlugRoute: typeof ShopProductSlugRoute
+  TeamSlugRoute: typeof TeamSlugRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
@@ -814,6 +827,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/team_/$slug': {
+      id: '/team_/$slug'
+      path: '/team/$slug'
+      fullPath: '/team/$slug'
+      preLoaderRoute: typeof TeamSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -856,6 +876,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesVirtualDentistryRoute: ServicesVirtualDentistryRoute,
   ServicesWhiteningRoute: ServicesWhiteningRoute,
   ShopProductSlugRoute: ShopProductSlugRoute,
+  TeamSlugRoute: TeamSlugRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport

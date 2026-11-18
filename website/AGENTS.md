@@ -28,7 +28,7 @@ This folder contains the public-facing marketing website and online shop for Pav
   - `npm test` (unit and integration tests)
   - `npm run build` (production build generating `.vercel/output`)
 - **No Fabricated Data**:
-  - Only real clinical team profiles (Dr. Hassan Bhojani GDC 262970, Dr. Cosimo Meucci GDC 280128).
+  - Team profiles are the eight people on the live team page, kept in `src/content/team-members.ts` and ported word for word. Clinicians show their GDC numbers (Dr Hassan Bhojani 262970, Dr Cosimo Meucci 280128). Don't add or invent people without the owner's say-so.
   - Accurate practice details: 786 Leeds Road, Bradford, BD3 9TY.
   - No fake claims, fabricated reviews, or unverified regulatory statements.
 - **SEO (same or better than the live site)**:

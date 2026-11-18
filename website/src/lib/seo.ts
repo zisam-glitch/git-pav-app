@@ -280,6 +280,33 @@ export function blogPostHead(slug: string) {
   return pageHead(path, { title: `${name} | Pav Dental Blog`, description: `${name}, from the Pav Dental blog.` });
 }
 
+/**
+ * A team profile's head: the live title and description and a canonical URL.
+ * A slug that is not a live profile gets a page kept out of search.
+ */
+export function teamProfileHead(slug: string) {
+  const path = `/team/${slug}`;
+  const page = pagesByPath[path];
+  return page ? pageHead(path, page) : noindexHead("Page not found | Pav Dental");
+}
+
+/**
+ * Structured data naming a team member and where they work (the live site has
+ * none for people). Rendered in the profile page's body, like the product and
+ * blog structured data.
+ */
+export function teamPersonJsonLd(slug: string, person: { name: string; role: string; photo: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: person.name,
+    jobTitle: person.role,
+    image: `${SITE_URL}${person.photo}`,
+    url: canonicalUrl(`/team/${slug}`),
+    worksFor: { "@id": PRACTICE_JSON_LD["@id"] },
+  };
+}
+
 /** A shop category's head, named from its URL until the shop loads categories on the server. */
 export function shopCategoryHead(slug: string) {
   const name = titleFromSlug(slug);

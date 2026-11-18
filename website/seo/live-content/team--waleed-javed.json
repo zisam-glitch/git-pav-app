@@ -1,0 +1,120 @@
+{
+  "path": "/team/waleed-javed",
+  "title": "Waleed Javed - Practice Manager | Pav Dental Team",
+  "h1": [
+    "Waleed Javed"
+  ],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "img",
+      "src": "https://www.pavdental.com/images/team/5.jpg",
+      "alt": "Waleed Javed"
+    },
+    {
+      "tag": "span",
+      "text": "PRACTICE MANAGER"
+    },
+    {
+      "tag": "h1",
+      "text": "Waleed Javed"
+    },
+    {
+      "tag": "div",
+      "text": "Waleed Javed brings a strong blend of technical expertise, healthcare knowledge and leadership experience to his role at Pav Dental. His professional qualifications include a First Class Degree in Software Engineering, CCNA qualification, Level 3 Diploma in Health and Social Care, Level 5 Diploma in Leadership and Management for Adult Care, Level 3 Award in Emergency First Aid at Work, Level 3 Safeguarding Adults, GDPR and Data Protection Certification, and Infection Prevention and Control Certification."
+    },
+    {
+      "tag": "div",
+      "text": "English, Urdu"
+    },
+    {
+      "tag": "div",
+      "text": "Monday–Friday"
+    },
+    {
+      "tag": "div",
+      "text": "hello@pavdental.com"
+    },
+    {
+      "tag": "div",
+      "text": "KEY AREAS OF FOCUS"
+    },
+    {
+      "tag": "li",
+      "text": "Providing exceptional patient care and communication"
+    },
+    {
+      "tag": "li",
+      "text": "Leading and supporting the clinical, administrative and reception teams"
+    },
+    {
+      "tag": "li",
+      "text": "Implementing digital systems to improve efficiency and patient experience"
+    },
+    {
+      "tag": "li",
+      "text": "Overseeing compliance and maintaining CQC standards"
+    },
+    {
+      "tag": "li",
+      "text": "Managing practice operations, workflow and quality assurance"
+    },
+    {
+      "tag": "li",
+      "text": "Driving continuous improvement across all areas of the practice"
+    },
+    {
+      "tag": "div",
+      "text": "PROFESSIONAL QUALIFICATIONS"
+    },
+    {
+      "tag": "li",
+      "text": "01\nFirst Class Degree in Software Engineering"
+    },
+    {
+      "tag": "li",
+      "text": "02\nCCNA qualification"
+    },
+    {
+      "tag": "li",
+      "text": "03\nLevel 3 Diploma in Health and Social Care"
+    },
+    {
+      "tag": "li",
+      "text": "04\nLevel 5 Diploma in Leadership and Management for Adult Care"
+    },
+    {
+      "tag": "li",
+      "text": "05\nLevel 3 Award in Emergency First Aid at Work"
+    },
+    {
+      "tag": "li",
+      "text": "06\nLevel 3 Safeguarding Adults"
+    },
+    {
+      "tag": "li",
+      "text": "07\nGDPR and Data Protection Certification"
+    },
+    {
+      "tag": "li",
+      "text": "08\nInfection Prevention and Control Certification"
+    },
+    {
+      "tag": "div",
+      "text": "\""
+    },
+    {
+      "tag": "blockquote",
+      "text": "At Pav Dental, the mission is simple: to deliver exceptional dental care that is accessible, comfortable and supported by innovation. The Practice Manager is proud to lead a team that puts patients at the heart of everything they do."
+    },
+    {
+      "tag": "a",
+      "text": "Back to Team",
+      "href": "https://www.pavdental.com/team"
+    }
+  ]
+}

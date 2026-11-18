@@ -5,7 +5,7 @@ const INSTRUCTIONS = [
   {
     icon: Droplets,
     title: "Bleeding Management",
-    color: "#e05252",
+    color: "#b91c1c",
     steps: [
       "Bite firmly on gauze pad for 30–45 minutes",
       "Replace gauze if soaked; repeat once",
@@ -16,7 +16,7 @@ const INSTRUCTIONS = [
   {
     icon: UtensilsCrossed,
     title: "Eating and Drinking",
-    color: "#cf9448",
+    color: "#925a27",
     steps: [
       "Wait at least 2 hours before eating",
       "Soft foods only for 24–48 hours",
@@ -102,7 +102,7 @@ export function ExtractionPostOp() {
             </div>
             <div>
               <p className="font-bold text-white text-sm">When to Seek Urgent Help</p>
-              <p className="text-xs text-white/50">
+              <p className="text-xs text-white/80">
                 Call us immediately or visit A&E if you experience any of the following:
               </p>
             </div>
@@ -117,7 +117,7 @@ export function ExtractionPostOp() {
           </ul>
           <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-4 items-center">
             <div>
-              <p className="text-xs text-white/50 mb-1">24h emergency line</p>
+              <p className="text-xs text-white/80 mb-1">24h emergency line</p>
               <p className="font-display text-xl font-bold text-white">0800 1938 786</p>
             </div>
             <a

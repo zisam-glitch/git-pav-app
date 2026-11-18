@@ -17,7 +17,7 @@ export function ShopHero({ onCategorySelect }: ShopHeroProps) {
       <div className="absolute inset-0 pointer-events-none">
         <img
           src="/media/hero-clinic.jpg"
-          alt=""
+          alt="Pav Dental Bradford clinic interior"
           className="h-full w-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#faf6f0] via-[#faf6f0]/95 to-[#faf6f0]/80" />
@@ -37,7 +37,7 @@ export function ShopHero({ onCategorySelect }: ShopHeroProps) {
           <Button
             asChild
             size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95 transition-transform active:scale-[0.98]"
+            className="bg-[#925a27] hover:bg-[#7a491e] text-white rounded-full px-8 font-bold shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
           >
             <a href="#catalog">Browse Products</a>
           </Button>
@@ -45,7 +45,7 @@ export function ShopHero({ onCategorySelect }: ShopHeroProps) {
             asChild
             variant="outline"
             size="lg"
-            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0] transition-colors"
+            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0] transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
           >
             <a href="#guarantee">Our Guarantee</a>
           </Button>

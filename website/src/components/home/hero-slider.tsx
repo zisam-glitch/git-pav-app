@@ -54,7 +54,7 @@ export function HeroSlider() {
     >
       <Spotlight />
 
-      <div className="relative z-10 mx-auto grid min-h-[540px] max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+      <div className="relative z-10 mx-auto grid min-h-[540px] max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-20">
         <div>
           <p className="mb-3 text-xs font-semibold uppercase text-primary">
             {slide.kicker}

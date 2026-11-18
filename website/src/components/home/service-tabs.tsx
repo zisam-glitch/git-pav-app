@@ -51,7 +51,7 @@ const SERVICES = [
 export function ServiceTabs() {
   return (
     <section id="services" className="py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <p className="text-xs font-medium text-primary">Care</p>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl">Six ways we look after you</h2>
@@ -91,7 +91,7 @@ export function ServiceTabs() {
                     ))}
                   </ul>
                 </div>
-                <div className="glass rounded-xl p-6">
+                <div className="rounded-xl border border-border-soft bg-white p-6 shadow-soft">
                   <p className="text-sm text-muted">Typical next step</p>
                   <p className="mt-2 font-display text-xl">
                     Book a £35 assessment or call the emergency line if you are in pain now.

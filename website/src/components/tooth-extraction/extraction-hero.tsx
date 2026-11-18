@@ -14,7 +14,7 @@ export function ExtractionHero() {
       <div className="absolute inset-0 pointer-events-none">
         <img
           src="/media/hero-clinic.jpg"
-          alt=""
+          alt="Pav Dental surgical treatment room"
           className="kenburns h-full w-full object-cover opacity-35"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/85 to-bg/30" />
@@ -22,7 +22,7 @@ export function ExtractionHero() {
 
       <Spotlight />
 
-      <div className="relative z-10 mx-auto grid w-full min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="relative z-10 mx-auto grid w-full min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:px-8 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <p className="mb-4 text-xs font-medium text-primary">
             Emergency &amp; routine oral surgery

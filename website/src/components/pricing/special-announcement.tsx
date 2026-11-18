@@ -64,7 +64,7 @@ export function SpecialAnnouncement() {
 
   return (
     <section className="py-16 sm:py-24 bg-white relative overflow-hidden border-t border-border/40">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Dynamic Admin Announcement Banner if configured */}
         {active && (
           <div className="mb-12 rounded-xl bg-amber-500/10 border border-amber-500/30 p-5 sm:p-6 text-center max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -88,7 +88,7 @@ export function SpecialAnnouncement() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-white/80 px-3.5 py-1 text-xs font-semibold text-primary mb-4 shadow-xs">
-            <Sparkles className="size-3.5 text-gold" />
+            <Sparkles className="size-3.5 text-primary" />
             <span>Patient Care & Accessibility</span>
           </div>
 

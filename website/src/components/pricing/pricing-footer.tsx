@@ -33,7 +33,7 @@ const legalLinks = [
 export function PricingFooter() {
   return (
     <footer className="accent-gradient text-white">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 items-start">
           {/* Column 1: Clinic Overview */}
           <div className="space-y-4">

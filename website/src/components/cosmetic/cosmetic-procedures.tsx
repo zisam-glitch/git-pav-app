@@ -92,7 +92,7 @@ export function CosmeticProcedures() {
                   <div className="space-y-2 mb-6">
                     {proc.benefits.map((b) => (
                       <div key={b} className="flex items-center gap-2 text-xs font-medium text-[#2a1c12]">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
+                        <Check className="size-3.5 text-[#925a27] flex-shrink-0" />
                         <span>{b}</span>
                       </div>
                     ))}
@@ -102,11 +102,11 @@ export function CosmeticProcedures() {
                 <div className="pt-4 border-t border-[#f0e8dc]">
                   <div className="grid grid-cols-2 gap-2 text-xs text-[#6b5848] mb-5">
                     <div>
-                      <span className="block text-[10px]  font-bold text-[#9a8674]">Treatment Time</span>
+                      <span className="block text-[10px] font-bold text-[#6b5848]">Treatment Time</span>
                       <span className="font-bold text-[#2a1c12]">{proc.duration}</span>
                     </div>
                     <div>
-                      <span className="block text-[10px]  font-bold text-[#9a8674]">Expected Lifespan</span>
+                      <span className="block text-[10px] font-bold text-[#6b5848]">Expected Lifespan</span>
                       <span className="font-bold text-[#2a1c12]">{proc.longevity}</span>
                     </div>
                   </div>

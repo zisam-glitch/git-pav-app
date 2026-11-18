@@ -15,16 +15,16 @@ export function EmergencyHero() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#1c120c]/95 via-[#1c120c]/85 to-[#1c120c]/70" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left card */}
           <div className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 mb-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/40 bg-[#cf9448]/15 px-4 py-1.5 mb-6">
               <span className="relative flex size-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                <span className="relative inline-flex rounded-full size-2.5 bg-red-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#cf9448] opacity-75" />
+                <span className="relative inline-flex rounded-full size-2.5 bg-[#cf9448]" />
               </span>
-              <span className="text-xs font-bold uppercase text-red-400">
+              <span className="text-xs font-bold uppercase text-[#cf9448]">
                 24/7 Immediate Response
               </span>
             </div>
@@ -32,7 +32,7 @@ export function EmergencyHero() {
             <div className="bg-white/95 rounded-xl p-8 sm:p-10 shadow-2xl border border-white/40 text-[#2a1c12]">
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-[#2a1c12] leading-[1.08]">
                 Emergency{" "}
-                <span className="text-[#c0392b]">Dentist</span>
+                <span className="text-[#925a27]">Dentist</span>
               </h1>
 
               <p className="mt-4 text-base sm:text-lg font-medium text-[#6b5848] leading-relaxed">
@@ -41,7 +41,7 @@ export function EmergencyHero() {
 
               <div className="mt-6 pt-5 border-t border-[#e2d4c0]/80 grid sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="size-9 rounded-xl bg-red-50 flex items-center justify-center text-red-600 flex-shrink-0">
+                  <div className="size-9 rounded-xl bg-[#cf9448]/15 flex items-center justify-center text-[#925a27] flex-shrink-0">
                     <Clock className="size-5" />
                   </div>
                   <div>

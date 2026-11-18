@@ -193,11 +193,11 @@ export function Header() {
         servicesOpen
           ? "border-transparent bg-white shadow-soft"
           : scrolled || mobileOpen
-          ? "border-border/70 glass shadow-soft"
+          ? "border-border bg-white shadow-soft"
           : "border-transparent bg-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <a
           href="/"
@@ -253,7 +253,7 @@ export function Header() {
                 onMouseEnter={openServices}
                 onMouseLeave={scheduleCloseServices}
               >
-                <div className="bg-[#FFF] overflow-hidden rounded-b-2xl p-4">
+                <div className="bg-[#FFF] overflow-hidden rounded-b-xl p-4">
                   <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3">
                     {SERVICE_CATEGORIES.map((category) => (
                       <div key={category.title} className="min-w-0">
@@ -353,7 +353,7 @@ export function Header() {
       <div
         id="mobile-menu"
         className={cn(
-          "glass max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border/70 lg:hidden",
+          "bg-white max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
       >

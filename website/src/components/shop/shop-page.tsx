@@ -97,7 +97,7 @@ export function ShopPage() {
   const totalItemCount = storeItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-white text-fg relative">
+    <div className="min-h-screen bg-[#fffdf9] text-fg relative">
       {/* 1. Hero Section */}
       <ShopHero />
 
@@ -125,7 +125,7 @@ export function ShopPage() {
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full accent-gradient px-4 py-3 text-white shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full bg-[#925a27] hover:bg-[#7a491e] px-4 py-3 text-white shadow-xl transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
         aria-label="View shopping bag"
       >
         <div className="relative">

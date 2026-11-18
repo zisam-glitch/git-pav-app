@@ -16,65 +16,66 @@ function PrivacyPolicyPage() {
       <Header />
 
       <div className="pt-24 pb-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[72ch]">
           <div className="mb-10 text-center">
-            <span className="inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900 uppercase">
+            <span className="inline-block rounded-full border border-[#e2d4c0] bg-[#faf6f0] px-3.5 py-1 text-xs font-semibold text-[#925a27] uppercase">
               Working Draft • Pending Legal Review
             </span>
-            <h1 className="mt-4 font-serif text-3xl font-bold text-slate-900 sm:text-4xl">
+            <h1 className="mt-4 font-display text-3xl font-bold text-[#2a1c12] sm:text-4xl">
               Patient Privacy Notice
             </h1>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-[#6b5848]">
               Last updated: 27 October 2026 • Working Compliance Draft (LG-01/LG-02)
             </p>
           </div>
 
-          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-900 mb-8 leading-relaxed">
-            <strong>Pre-Launch Notice:</strong> This privacy notice accurately reflects the technical architecture, sub-processors, and data handling of the Pav Dental software platform. It is currently undergoing formal legal, DPO, and clinical lead review (LG-01) prior to full launch.
+          <div className="rounded-xl border border-[#e2d4c0] bg-[#faf6f0] p-4 sm:p-5 text-xs text-[#2a1c12] mb-8 leading-relaxed">
+            <strong className="text-[#925a27]">Pre-Launch Notice:</strong> This privacy notice accurately reflects the technical architecture, sub-processors, and data handling of the Pav Dental software platform. It is currently undergoing formal legal, DPO, and clinical lead review (LG-01) prior to full launch.
           </div>
 
-          <div className="prose prose-slate max-w-none space-y-8 text-slate-700 leading-relaxed">
-            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl font-semibold text-slate-900">1. Data Controller Information</h2>
+          <div className="space-y-8 text-[#4a3b2f] leading-relaxed">
+            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+              <h2 className="font-display text-xl font-bold text-[#2a1c12]">1. Data Controller Information</h2>
               <p className="mt-3 text-sm">
                 Pav Dental ("we", "us", "our") is the data controller responsible for your personal information.
               </p>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm">
                 <li><strong>Practice Address:</strong> 786 Leeds Road, Bradford, BD3 9TY, United Kingdom</li>
                 <li><strong>Telephone:</strong> 0800 1938 786 / +44 7311 871456</li>
-                <li><strong>Email:</strong> <a href="mailto:hello@pavdental.com" className="text-emerald-700 underline">hello@pavdental.com</a></li>
-                <li><strong>Data Protection Officer (DPO):</strong> <a href="mailto:dpo@pavdental.com" className="text-emerald-700 underline">dpo@pavdental.com</a></li>
+                <li><strong>Email:</strong> <a href="mailto:hello@pavdental.com" className="font-semibold text-[#925a27] underline underline-offset-2 hover:text-[#6f421b] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 rounded-sm">hello@pavdental.com</a></li>
+                <li><strong>Data Protection Officer (DPO):</strong> <a href="mailto:dpo@pavdental.com" className="font-semibold text-[#925a27] underline underline-offset-2 hover:text-[#6f421b] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 rounded-sm">dpo@pavdental.com</a></li>
                 <li><strong>Clinical Lead:</strong> Dr Hassan Bhojani (GDC #262970)</li>
               </ul>
             </section>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl font-semibold text-slate-900">2. Information We Collect</h2>
+            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+              <h2 className="font-display text-xl font-bold text-[#2a1c12]">2. Information We Collect</h2>
               <p className="mt-3 text-sm">
                 To provide safe, comprehensive dental treatment and appointment scheduling, we process the following categories of information:
               </p>
               <div className="mt-4 space-y-4 text-sm">
                 <div>
-                  <h3 className="font-semibold text-slate-900">Personal & Contact Details</h3>
-                  <p className="text-slate-600">Full name, date of birth, biological sex, contact address, email address, mobile telephone number, and emergency contact details.</p>
+                  <h3 className="font-semibold text-[#2a1c12]">Personal & Contact Details</h3>
+                  <p className="text-[#6b5848]">Full name, date of birth, biological sex, contact address, email address, mobile telephone number, and emergency contact details.</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">Special Category Health & Clinical Data</h3>
-                  <p className="text-slate-600">Medical history (medications, allergies, systemic conditions), dental charts (odontograms), treatment plans, clinical notes, intraoral photographs, digital radiographs (X-rays), and signed prescriptions.</p>
+                  <h3 className="font-semibold text-[#2a1c12]">Special Category Health & Clinical Data</h3>
+                  <p className="text-[#6b5848]">Medical history (medications, allergies, systemic conditions), dental charts (odontograms), treatment plans, clinical notes, intraoral photographs, digital radiographs (X-rays), and signed prescriptions.</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">Dependants</h3>
-                  <p className="text-slate-600">Details of children under 16 booked by their parent or legal guardian for paediatric dental care.</p>
+                  <h3 className="font-semibold text-[#2a1c12]">Dependants</h3>
+                  <p className="text-[#6b5848]">Details of children under 16 booked by their parent or legal guardian for paediatric dental care.</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">Payment & Transaction Data</h3>
-                  <p className="text-slate-600">Payment card tokens, transaction amounts, and deposit receipts. Full payment card numbers are processed directly by our PCI-DSS Level 1 payment processor (Stripe) and are never stored on our servers.</p>
+                  <h3 className="font-semibold text-[#2a1c12]">Payment & Transaction Data</h3>
+                  <p className="text-[#6b5848]">Payment card tokens, transaction amounts, and deposit receipts. Full payment card numbers are processed directly by our PCI-DSS Level 1 payment processor (Stripe) and are never stored on our servers.</p>
                 </div>
               </div>
             </section>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl font-semibold text-slate-900">3. Lawful Basis for Processing</h2>
+            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+              <h2 className="font-display text-xl font-bold text-[#2a1c12]">3. Lawful Basis for Processing</h2>
               <p className="mt-3 text-sm">
                 Under the UK General Data Protection Regulation (UK GDPR) and Data Protection Act 2018:
               </p>
@@ -85,8 +86,8 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl font-semibold text-slate-900">4. Third-Party Technical Processors & Infrastructure</h2>
+            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+              <h2 className="font-display text-xl font-bold text-[#2a1c12]">4. Third-Party Technical Processors & Infrastructure</h2>
               <p className="mt-3 text-sm">
                 We never sell, rent, or trade your personal data. We utilize third-party technology providers to host, secure, and deliver the service. Formal Data Processing Agreements (DPAs) and standard contractual clauses are managed as part of pre-launch compliance onboarding (tracked in our DPA Register):
               </p>
@@ -106,8 +107,8 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl font-semibold text-slate-900">5. Retention Periods</h2>
+            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+              <h2 className="font-display text-xl font-bold text-[#2a1c12]">5. Retention Periods</h2>
               <p className="mt-3 text-sm">
                 In compliance with GDC Standards and the NHS Records Management Code of Practice:
               </p>
@@ -118,8 +119,8 @@ function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl font-semibold text-slate-900">6. Your Rights</h2>
+            <section className="rounded-xl border border-[#e2d4c0] bg-white p-6 sm:p-8 shadow-xs">
+              <h2 className="font-display text-xl font-bold text-[#2a1c12]">6. Your Rights</h2>
               <p className="mt-3 text-sm">
                 You have statutory rights under UK data protection law:
               </p>
@@ -127,9 +128,10 @@ function PrivacyPolicyPage() {
                 <li><strong>Right of Access:</strong> You can request a copy of your personal and clinical records (Subject Access Request) free of charge.</li>
                 <li><strong>Right to Rectification:</strong> You can ask us to correct inaccurate contact details or clinical records.</li>
                 <li><strong>Right to Erasure:</strong> You can request account closure and deletion of non-clinical data. (Note: Statutory regulations require clinical records to be retained for the minimum 11-year retention period).</li>
-                <li><strong>Complaints:</strong> If you are unhappy with how we have handled your data, you can contact our DPO at <a href="mailto:dpo@pavdental.com" className="text-emerald-700 underline">dpo@pavdental.com</a> or lodge a complaint with the UK Information Commissioner's Office (ICO) at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">ico.org.uk</a>.</li>
+                <li><strong>Complaints:</strong> If you are unhappy with how we have handled your data, you can contact our DPO at <a href="mailto:dpo@pavdental.com" className="font-semibold text-[#925a27] underline underline-offset-2 hover:text-[#6f421b] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 rounded-sm">dpo@pavdental.com</a> or lodge a complaint with the UK Information Commissioner's Office (ICO) at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#925a27] underline underline-offset-2 hover:text-[#6f421b] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 rounded-sm">ico.org.uk</a>.</li>
               </ul>
             </section>
+          </div>
           </div>
         </div>
       </div>

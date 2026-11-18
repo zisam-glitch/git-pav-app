@@ -3,7 +3,7 @@ import { VacanciesHero } from "./vacancies-hero";
 import { VacanciesList } from "./vacancies-list";
 import { OpenApplication } from "./open-application";
 import { ApplyModal } from "./apply-modal";
-import { VACANCIES, Vacancy } from "./vacancies-data";
+import type { Vacancy } from "./vacancies-data";
 
 export function VacanciesPage() {
   const [selectedVacancy, setSelectedVacancy] = useState<Vacancy | null>(null);

@@ -30,7 +30,7 @@ export function AestheticsSafetyBanner() {
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
             How We Keep You Safe
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-white/75 leading-relaxed">
+          <p className="mt-4 text-sm sm:text-base text-white/85 leading-relaxed">
             Medical aesthetics should always be practiced with the same uncompromising sterility and clinical governance as hospital surgery.
           </p>
         </div>
@@ -44,7 +44,7 @@ export function AestheticsSafetyBanner() {
                 <h3 className="text-base font-bold text-white mb-2">
                   {item.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
+                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -52,7 +52,7 @@ export function AestheticsSafetyBanner() {
           })}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-[#3d2a1d]/80 flex flex-wrap items-center justify-between gap-4 text-xs text-white/60">
+        <div className="mt-12 pt-8 border-t border-[#3d2a1d]/80 flex flex-wrap items-center justify-between gap-4 text-xs text-white/80">
           <p>
             <span className="font-semibold text-[#cf9448]">Age Limit:</span> Strictly 18+ only. Photographic ID required at clinical assessment.
           </p>

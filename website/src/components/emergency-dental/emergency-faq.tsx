@@ -54,10 +54,10 @@ export function EmergencyFaq() {
 
   return (
     <section className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/30 bg-[#cf9448]/10 px-4 py-1.5 mb-3">
-            <HelpCircle className="size-3.5 text-[#cf9448]" />
+            <HelpCircle className="size-3.5 text-[#925a27]" />
             <span className="text-xs font-bold uppercase text-[#925a27]">
               Common Questions
             </span>

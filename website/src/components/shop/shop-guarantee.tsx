@@ -25,7 +25,7 @@ export function ShopGuarantee() {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
+    <section id="guarantee" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
           {/* Left sticky header */}
@@ -38,7 +38,7 @@ export function ShopGuarantee() {
             </p>
             <Button
               asChild
-              className="mt-6 accent-gradient text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm hover:opacity-95"
+              className="mt-6 bg-[#925a27] hover:bg-[#7a491e] text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
             >
               <a href="#catalog" className="flex items-center gap-2">
                 Browse Products <ArrowRight className="size-3.5" />
@@ -54,8 +54,9 @@ export function ShopGuarantee() {
                 <div key={i} className="py-1">
                   <button
                     type="button"
+                    aria-expanded={isOpen}
                     onClick={() => setOpenFaq(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+                    className="w-full flex items-center justify-between gap-4 py-5 text-left group rounded-lg focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
                   >
                     <span
                       className={`font-semibold text-sm sm:text-base transition-colors duration-200 ${
@@ -69,7 +70,7 @@ export function ShopGuarantee() {
                     <span
                       className={`flex-shrink-0 size-7 rounded-full flex items-center justify-center transition-all duration-300 ${
                         isOpen
-                          ? "accent-gradient text-white rotate-180"
+                          ? "bg-[#925a27] text-white rotate-180"
                           : "bg-[#f0e8dc] text-[#925a27]"
                       }`}
                     >

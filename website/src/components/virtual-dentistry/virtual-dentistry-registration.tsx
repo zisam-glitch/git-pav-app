@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Phone, MapPin, FileText, Heart } from "lucide-react";
+import { User, Mail, MapPin, FileText, Heart } from "lucide-react";
 
 const REGISTRATION_INFO = [
   {

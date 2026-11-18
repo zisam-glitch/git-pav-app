@@ -48,7 +48,7 @@ export function ExtractionGuarantee() {
                 "Antibiotic and pain relief prescription included",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-[#2a1c12]">
-                  <CheckCircle className="size-4 text-[#cf9448] mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="size-4 text-primary mt-0.5 flex-shrink-0" />
                   {item}
                 </li>
               ))}

@@ -21,7 +21,7 @@ export function WhiteningVisualizer() {
     <section id="shade-visualizer" className="py-20 sm:py-28 bg-[#fdfaf5]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className='flex justify-between items-end'>
+        <div className="flex flex-col lg:flex-row justify-between lg:items-end gap-6">
           <div className="max-w-xl mb-14">
             <h2 className="font-display text-3xl sm:text-5xl leading-[1.1] font-semibold text-[#221c16]">
               Find your shade before your first tray
@@ -74,14 +74,14 @@ export function WhiteningVisualizer() {
         </div>
         <div className="h-px bg-[#221c16]/15 w-full" />
 
-        <div className="flex justify-between text-[11px] text-[#8a7c6c] mt-2">
+        <div className="flex justify-between text-[11px] text-[#6b5848] mt-2">
           <span>Deepest stain</span>
           <span>Brightest white</span>
         </div>
         {/* Readout */}
         <div className="mt-12 grid sm:grid-cols-[1fr_auto_1fr] gap-8 sm:gap-10 items-start">
           <div>
-            <p className="text-sm text-[#8a7c6c]">
+            <p className="text-sm text-[#6b5848]">
               Shade {shadeIndex + 1} of {VITA_SHADES.length}
             </p>
             <div className="flex items-baseline gap-2 mt-1">
@@ -100,7 +100,7 @@ export function WhiteningVisualizer() {
           <div className="hidden sm:block w-px bg-[#221c16]/10 self-stretch" />
 
           <div>
-            <p className="text-sm text-[#8a7c6c]">Recommended system</p>
+            <p className="text-sm text-[#6b5848]">Recommended system</p>
             <p className="font-display text-xl sm:text-2xl font-semibold text-[#29463b] mt-1">
               {isCustomSuite ? "Custom Home Suite" : "Home UV LED Kit"}
             </p>

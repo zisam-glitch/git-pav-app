@@ -79,6 +79,7 @@ export function DenturesFaq() {
                 <div key={i} className="py-1">
                   <button
                     type="button"
+                    aria-expanded={isOpen}
                     onClick={() => setOpenIndex(isOpen ? null : i)}
                     className="w-full flex items-center justify-between gap-4 py-5 text-left group"
                   >

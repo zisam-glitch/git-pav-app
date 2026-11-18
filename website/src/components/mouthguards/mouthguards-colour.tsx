@@ -63,7 +63,7 @@ export function MouthguardsColour() {
                   className="w-full h-full object-cover"
                   style={{ filter: color.filter }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
                   <span className="text-white text-xs font-medium">{color.name}</span>
                 </div>
               </div>

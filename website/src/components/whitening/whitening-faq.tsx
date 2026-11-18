@@ -60,6 +60,7 @@ export function WhiteningFaq() {
               <div key={i} className="py-2">
                 <button
                   type="button"
+                  aria-expanded={isOpen}
                   onClick={() => setOpen(isOpen ? null : i)}
                   className="w-full flex items-center justify-between gap-4 py-4 text-left group"
                 >

@@ -32,7 +32,7 @@ const linkClass = "font-medium transition-colors hover:text-white";
 export function Footer() {
   return (
     <footer className="py-16 accent-gradient">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
           <div className="flex flex-col gap-4">
             <a href="/" className="inline-flex w-fit items-center">

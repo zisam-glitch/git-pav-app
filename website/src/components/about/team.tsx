@@ -11,7 +11,7 @@ export function Team() {
   }));
   return (
     <section className="pb-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-medium">Meet Our Team</h2>
           <p className="mt-4 text-muted">

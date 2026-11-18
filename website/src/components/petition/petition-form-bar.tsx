@@ -45,11 +45,11 @@ export function PetitionFormBar() {
     <section
       id="sign-form"
       aria-labelledby="sign-heading"
-      className="relative overflow-hidden bg-gradient-to-r from-[#925a27] via-[#b77436] to-[#cf9448] py-12 text-white shadow-inner sm:py-14"
+      className="relative overflow-hidden accent-gradient py-12 text-white shadow-inner sm:py-14"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] opacity-10 [background-size:24px_24px]" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 id="sign-heading" className="font-display text-2xl font-bold text-white sm:text-3xl">
           {copy.heading}
         </h2>

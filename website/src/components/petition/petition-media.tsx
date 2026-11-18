@@ -14,7 +14,7 @@ export function PetitionMedia() {
 
   return (
     <section className="bg-white py-16 sm:py-24" aria-labelledby="petition-video-heading">
-      <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
         <h2
           id="petition-video-heading"
           className="font-display text-3xl font-bold text-[#844d1e] sm:text-4xl lg:text-[2.6rem]"
@@ -36,7 +36,7 @@ export function PetitionMedia() {
               <>
                 <img
                   src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
-                  alt=""
+                  alt={heading}
                   loading="lazy"
                   className="size-full object-cover"
                 />
@@ -46,7 +46,7 @@ export function PetitionMedia() {
                   aria-label={`Play the video: ${heading}`}
                   className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors hover:bg-black/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 >
-                  <span className="flex size-20 items-center justify-center rounded-full bg-[#b77436]/90 text-white shadow-2xl transition-transform duration-300 hover:scale-110 sm:size-24">
+                  <span className="flex size-20 items-center justify-center rounded-full bg-[#925a27] text-white shadow-2xl transition-transform duration-300 hover:scale-110 sm:size-24">
                     <Play className="size-8 translate-x-0.5 fill-current sm:size-10" aria-hidden="true" />
                   </span>
                 </button>

@@ -1,7 +1,7 @@
 export function InsuranceProviders() {
   return (
     <section className="py-16 sm:py-20 bg-[#f7f1e7] border-y border-border/50 relative overflow-hidden">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 text-center">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-[#844d1e]">
           We Accept All Insurance Providers
         </h2>
@@ -24,7 +24,7 @@ export function InsuranceProviders() {
           {/* Simplyhealth */}
           <div className="flex items-center justify-center h-16 px-6 rounded-xl bg-white border border-border/60 shadow-xs hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-center gap-2">
-              <div className="size-6 rounded-full bg-[#82c91e] flex items-center justify-center text-white font-black text-xs">
+              <div className="size-6 rounded-full bg-[#82c91e] flex items-center justify-center text-[#1a1a1a] font-black text-xs">
                 S
               </div>
               <span className="font-bold text-gray-800 text-sm">Simplyhealth</span>

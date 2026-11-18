@@ -16,7 +16,7 @@ const PRICE_ITEMS = [
 export function EmergencyPricing() {
   return (
     <section className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left column */}
           <div className="lg:col-span-7">
@@ -85,17 +85,17 @@ export function EmergencyPricing() {
                   {/* Top Badge */}
                   <div className="absolute top-5 left-5 right-5 text-center">
                     <div className="inline-block rounded-xl bg-white/95 px-6 py-2.5 shadow-xl border border-white">
-                      <p className="font-display text-2xl sm:text-3xl font-black text-red-600">
+                      <p className="font-display text-2xl sm:text-3xl font-black text-[#925a27]">
                         Open 24/7
                       </p>
-                      <p className="text-[11px] font-bold uppercase text-[#925a27]">
+                      <p className="text-[11px] font-bold uppercase text-[#2a1c12]">
                         All Smiles Welcome
                       </p>
                     </div>
                   </div>
 
                   {/* Bottom details banner */}
-                  <div className="absolute bottom-5 inset-x-5 glass rounded-xl p-4 text-center">
+                  <div className="absolute bottom-5 inset-x-5 bg-white/95 border border-[#e2d4c0] rounded-xl p-4 text-center shadow-lg">
                     <p className="font-display text-lg font-bold text-[#2a1c12]">
                       Dedicated On-Call Surgical Team
                     </p>
@@ -107,10 +107,10 @@ export function EmergencyPricing() {
               </div>
 
               {/* Floating accent badge */}
-              <div className="absolute -bottom-5 -right-5 rounded-xl bg-gradient-to-br from-red-600 to-[#925a27] text-white p-4 shadow-xl hidden sm:block">
-                <p className="text-xs font-bold uppercase text-white/80">Typical Wait</p>
+              <div className="absolute -bottom-5 -right-5 rounded-xl bg-[#2a1c12] border border-[#925a27] text-white p-4 shadow-xl hidden sm:block">
+                <p className="text-xs font-bold uppercase text-[#cf9448]">Typical Wait</p>
                 <p className="font-display text-2xl font-black">&lt; 30 Mins</p>
-                <p className="text-[10px] text-white/80">From arrival to triage</p>
+                <p className="text-[10px] text-white/85">From arrival to triage</p>
               </div>
             </div>
           </div>

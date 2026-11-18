@@ -144,7 +144,7 @@ export function RootCanalPricing() {
                       }`}
                     >
                       <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
+                        <Check className="size-3.5 text-primary flex-shrink-0" />
                         {t.includes[idx]}
                       </span>
                     </td>
@@ -185,7 +185,7 @@ export function RootCanalPricing() {
           </table>
         </div>
 
-        <p className="mt-8 text-center text-xs text-[#9a8674] max-w-2xl mx-auto">
+        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
           NHS Band 2 and Band 3 endodontic treatments are also provided for eligible patients based on clinical necessity. 0% APR finance available on treatments over £250.
         </p>
       </div>

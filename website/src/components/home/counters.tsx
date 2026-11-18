@@ -10,7 +10,7 @@ const stats = [
 export function Counters() {
   return (
     <section className="py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-4">
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">

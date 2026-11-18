@@ -110,7 +110,7 @@ export function AestheticsPricing() {
         </div>
 
         <div className="text-center">
-          <p className="text-xs text-[#9a8674] mb-6">
+          <p className="text-xs text-[#6b5848] mb-6">
             *Consultation fee of £30 is fully redeemable against treatment. All procedures performed by GDC-registered dental clinicians.
           </p>
           <Button

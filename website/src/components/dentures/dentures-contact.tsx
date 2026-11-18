@@ -10,7 +10,7 @@ export function DenturesContact() {
 
   return (
     <section id="contact" className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
             Contact Us
@@ -20,7 +20,7 @@ export function DenturesContact() {
           </p>
         </div>
 
-        <div className="rounded-xl bg-white border border-[#e2d4c0] p-8 sm:p-12 shadow-sm">
+        <div className="max-w-4xl mx-auto rounded-xl bg-white border border-[#e2d4c0] p-8 sm:p-12 shadow-sm">
           {enquiry.sent ? (
             <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
               <CheckCircle2 className="size-16 text-emerald-500" />

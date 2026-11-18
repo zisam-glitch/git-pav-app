@@ -159,7 +159,7 @@ export function GrillzContact() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-xs text-[#9a8674] mb-6">
+          <p className="text-xs text-[#6b5848] mb-6">
             Prefer to call us directly? Our team is available to discuss your design requirements.
           </p>
           <a

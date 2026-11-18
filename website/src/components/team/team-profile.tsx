@@ -58,7 +58,7 @@ export function TeamProfile({ member }: { member: TeamMember }) {
         // "<" is escaped so no text in the data can end the script early.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personData).replace(/</g, "\\u003c") }}
       />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Link to="/team" className="inline-flex items-center gap-2 text-sm font-semibold text-[#925a27] hover:underline">
           <ArrowLeft className="size-4" aria-hidden="true" />
           Back to Team

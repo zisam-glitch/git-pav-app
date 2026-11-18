@@ -134,7 +134,7 @@ export function GeneralDentistryExtractionPricingTable() {
                       }`}
                     >
                       <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
+                        <Check className="size-3.5 text-[#925a27] flex-shrink-0" />
                         {t.includes[idx]}
                       </span>
                     </td>
@@ -175,7 +175,7 @@ export function GeneralDentistryExtractionPricingTable() {
           </table>
         </div>
 
-        <p className="mt-8 text-center text-xs text-[#9a8674] max-w-2xl mx-auto">
+        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
           Extraction complexity determined by X-ray and clinical examination. Local anesthesia provided for all procedures. Aftercare instructions included.
         </p>
       </div>

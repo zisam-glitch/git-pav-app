@@ -1,4 +1,4 @@
-import { Briefcase, Plane, Cpu, GraduationCap, Building, Users, Sparkles } from "lucide-react";
+import { Plane, Cpu, GraduationCap, Users } from "lucide-react";
 
 export function VacanciesHero() {
   return (
@@ -17,7 +17,7 @@ export function VacanciesHero() {
       <div className="pointer-events-none absolute -left-40 -top-40 size-[500px] rounded-full bg-[#d4a574]/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-40 top-20 size-[500px] rounded-full bg-[#cf9448]/10 blur-3xl" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 h-full flex flex-col justify-center text-center">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center text-center">
         
 
         {/* Headline */}
@@ -34,22 +34,22 @@ export function VacanciesHero() {
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
           <div className=" p-4">
             <Plane className="size-6 text-[#d4a574] mx-auto mb-2" />
-            <h3 className="font-display text-sm font-bold text-white text-center">Visa Sponsorship</h3>
+            <h2 className="font-display text-sm font-bold text-white text-center">Visa Sponsorship</h2>
           </div>
 
           <div className=" p-4">
             <Cpu className="size-6 text-[#d4a574] mx-auto mb-2" />
-            <h3 className="font-display text-sm font-bold text-white text-center">Advanced Tech</h3>
+            <h2 className="font-display text-sm font-bold text-white text-center">Advanced Tech</h2>
           </div>
 
           <div className=" p-4">
             <GraduationCap className="size-6 text-[#d4a574] mx-auto mb-2" />
-            <h3 className="font-display text-sm font-bold text-white text-center">Mentorship</h3>
+            <h2 className="font-display text-sm font-bold text-white text-center">Mentorship</h2>
           </div>
 
           <div className=" p-4">
             <Users className="size-6 text-[#d4a574] mx-auto mb-2" />
-            <h3 className="font-display text-sm font-bold text-white text-center">Supportive Team</h3>
+            <h2 className="font-display text-sm font-bold text-white text-center">Supportive Team</h2>
           </div>
         </div>
 

@@ -134,7 +134,7 @@ export function GeneralDentistryRootCanalPricingTable() {
                       }`}
                     >
                       <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
+                        <Check className="size-3.5 text-[#925a27] flex-shrink-0" />
                         {t.includes[idx]}
                       </span>
                     </td>
@@ -175,7 +175,7 @@ export function GeneralDentistryRootCanalPricingTable() {
           </table>
         </div>
 
-        <p className="mt-8 text-center text-xs text-[#9a8674] max-w-2xl mx-auto">
+        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
           Root canal complexity determined by tooth type and root canal system. X-ray and examination required for accurate pricing. Crown restoration not included.
         </p>
       </div>

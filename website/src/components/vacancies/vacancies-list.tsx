@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   Clock,
   ExternalLink,
-  DollarSign,
 } from "lucide-react";
 import { VACANCIES, Vacancy } from "./vacancies-data";
 
@@ -45,7 +44,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
 
   return (
     <section id="roles" className="py-16 sm:py-24 bg-[#fffdf9]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
@@ -63,10 +62,11 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" />
             <input
               type="text"
+              aria-label="Search open positions"
               placeholder="Search roles, departments, or keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 rounded-xl border border-[#e2d4c0] bg-white pl-12 pr-4 text-sm placeholder:text-muted/60 focus:border-[#cf9448] focus:outline-none focus:ring-2 focus:ring-[#cf9448]/20 shadow-sm"
+              className="w-full h-12 rounded-xl border border-[#e2d4c0] bg-white pl-12 pr-4 text-sm placeholder:text-muted focus:border-[#925a27] focus:outline-none focus:ring-2 focus:ring-[#925a27]/20 shadow-sm"
             />
           </div>
 
@@ -80,10 +80,10 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
                 className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
                   selectedCategory === cat.id
                     ? "accent-gradient text-white shadow-md scale-105"
-                    : "bg-white text-muted border border-[#e2d4c0] hover:border-[#cf9448] hover:text-[#2a1c12]"
+                    : "bg-white text-muted border border-[#e2d4c0] hover:border-[#925a27] hover:text-[#2a1c12]"
                 }`}
               >
-                {cat.label} <span className="opacity-60">({cat.count})</span>
+                {cat.label} <span className="opacity-80">({cat.count})</span>
               </button>
             ))}
           </div>
@@ -99,14 +99,14 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
                 key={vacancy.id}
                 className={`relative overflow-hidden rounded-xl border bg-white p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                   isFeatured
-                    ? "border-[#cf9448]/50 shadow-md"
-                    : "border-[#e2d4c0] shadow-sm hover:border-[#cf9448]/50"
+                    ? "border-[#925a27]/50 shadow-md"
+                    : "border-[#e2d4c0] shadow-sm hover:border-[#925a27]/50"
                 }`}
               >
                 {/* Featured badge */}
                 {isFeatured && (
                   <div className="absolute top-4 right-4">
-                    <div className="flex items-center gap-1.5 rounded-full bg-[#cf9448]/10 px-3 py-1 text-[11px] font-bold uppercase text-[#cf9448]">
+                    <div className="flex items-center gap-1.5 rounded-full bg-[#faf6f0] border border-[#e2d4c0] px-3 py-1 text-[11px] font-bold uppercase text-[#925a27]">
                       <Sparkles className="size-3" />
                       <span>Featured</span>
                     </div>
@@ -131,11 +131,11 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
                   {/* Metadata row */}
                   <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
                     <div className="flex items-center gap-1.5">
-                      <Clock className="size-3.5 text-[#cf9448]" />
+                      <Clock className="size-3.5 text-[#925a27]" />
                       {vacancy.contractType}
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <MapPin className="size-3.5 text-[#cf9448]" />
+                      <MapPin className="size-3.5 text-[#925a27]" />
                       Bradford, BD3
                     </div>
                   </div>
@@ -147,7 +147,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
                         key={tag}
                         className="inline-flex items-center gap-1 rounded-full bg-[#faf6f0] px-2.5 py-1 text-[11px] font-medium text-[#844d1e] border border-[#e2d4c0]/50"
                       >
-                        <CheckCircle2 className="size-3 text-[#cf9448]" />
+                        <CheckCircle2 className="size-3 text-[#925a27]" />
                         {tag}
                       </span>
                     ))}
@@ -170,7 +170,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
 
                     <a
                       href={`mailto:hello@pavdental.com?subject=Application%20for%20${encodeURIComponent(vacancy.title)}`}
-                      className="h-11 rounded-xl border border-[#e2d4c0] text-sm font-medium text-muted hover:border-[#cf9448] hover:text-[#2a1c12] transition-colors flex items-center justify-center px-8 gap-2"
+                      className="h-11 rounded-xl border border-[#e2d4c0] text-sm font-medium text-muted hover:border-[#925a27] hover:text-[#2a1c12] transition-colors flex items-center justify-center px-8 gap-2"
                     >
                       <ExternalLink className="size-3.5" />
                       <span>Email Us</span>
@@ -185,7 +185,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
         {/* Empty state */}
         {filteredVacancies.length === 0 && (
           <div className="rounded-xl border-2 border-dashed border-[#e2d4c0] bg-white p-16 text-center">
-            <Briefcase className="size-12 mx-auto text-muted/40 mb-4" />
+            <Briefcase className="size-12 mx-auto text-muted mb-4" />
             <p className="font-display text-xl font-bold text-[#2a1c12]">No positions match your search</p>
             <p className="mt-2 text-sm text-muted">Try clearing your filters or searching with a different keyword.</p>
             <button

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react"
-import { Mail, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react"
+import { Mail, CheckCircle2, ShieldCheck } from "lucide-react"
 import { api } from "@/lib/api"
 
 export function NewsletterCta() {
@@ -25,7 +25,7 @@ export function NewsletterCta() {
 
   return (
     <section className="py-16 sm:py-20 bg-[#fffdf9] border-t border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl lg:px-8 text-center">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
         <div className="relative overflow-hidden rounded-xl accent-gradient p-8 sm:p-12 text-white shadow-xl">
           <div className="pointer-events-none absolute -right-20 -top-20 w-60 h-60 rounded-full bg-white/10 blur-2xl" />
           <div className="pointer-events-none absolute -left-20 -bottom-20 w-60 h-60 rounded-full bg-black/10 blur-2xl" />
@@ -52,20 +52,21 @@ export function NewsletterCta() {
             ) : (
               <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row gap-2.5 max-w-md mx-auto">
                 <div className="relative flex-1">
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 w-4 h-4 -translate-y-1/2 text-white/60" />
+                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 w-4 h-4 -translate-y-1/2 text-white/80" />
                   <input
                     required
                     type="email"
+                    aria-label="Email address"
                     placeholder="Enter your email address..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 rounded-xl bg-white/10 border border-white/25 text-white pl-10 pr-4 text-xs sm:text-sm placeholder:text-white/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/80"
+                    className="w-full h-11 rounded-xl bg-white/10 border border-white/25 text-white pl-10 pr-4 text-xs sm:text-sm placeholder:text-white/75 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/80"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="h-11 bg-white text-[#cf9448] hover:bg-white/90 font-bold text-xs sm:text-sm px-6 shrink-0 shadow-sm rounded-full transition-colors duration-150 cursor-pointer disabled:opacity-75"
+                  className="h-11 bg-white text-[#925a27] hover:bg-white/90 font-bold text-xs sm:text-sm px-6 shrink-0 shadow-sm rounded-full transition-colors duration-150 cursor-pointer disabled:opacity-75"
                 >
                   {loading ? "Subscribing..." : "Subscribe"}
                 </button>

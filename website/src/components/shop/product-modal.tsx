@@ -26,15 +26,18 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4 overflow-y-auto" onClick={onClose}>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={product.name}
         className="relative w-full max-w-2xl rounded-xl bg-white p-6 sm:p-8 shadow-2xl my-8"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 flex size-8 items-center justify-center rounded-full bg-slate-100 text-muted hover:bg-slate-200 hover:text-fg"
+          className="absolute right-4 top-4 z-10 flex size-8 items-center justify-center rounded-full bg-[#faf6f0] text-[#6b5848] hover:bg-[#e8ddd0] hover:text-[#2a1c12] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
           aria-label="Close dialog"
         >
           <X className="size-4" />
@@ -42,14 +45,14 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
           {/* Product Image */}
-          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0] border border-border/60">
+          <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#faf6f0] border border-[#e2d4c0]">
             <img
               src={product.image}
               alt={product.name}
               className="size-full object-cover"
             />
             {product.badge && (
-              <span className="absolute top-3 left-3 rounded-full bg-[#844d1e] text-white text-[11px] font-bold px-3 py-0.5 shadow-xs">
+              <span className="absolute top-3 left-3 rounded-full bg-[#925a27] text-white text-[11px] font-bold px-3 py-0.5 shadow-xs">
                 {product.badge}
               </span>
             )}
@@ -67,8 +70,8 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-2.5">
-              <span className="font-display text-2xl font-bold text-[#844d1e]">
+            <div className="flex items-baseline gap-2.5 flex-wrap">
+              <span className="font-display text-2xl font-bold text-[#925a27]">
                 £{product.price.toFixed(2)}
               </span>
               {product.originalPrice && (
@@ -76,7 +79,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                   £{product.originalPrice.toFixed(2)}
                 </span>
               )}
-              <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+              <span className="text-[11px] font-medium text-[#925a27] bg-[#faf6f0] border border-[#e2d4c0] px-2 py-0.5 rounded-md">
                 In Stock & Ready to Dispatch
               </span>
             </div>
@@ -87,7 +90,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </p>
 
             {/* Clinical Features */}
-            <div className="border-t border-border/50 pt-3 space-y-1.5">
+            <div className="border-t border-[#e2d4c0] pt-3 space-y-1.5">
               <p className="text-xs font-bold text-fg">Clinical Highlights:</p>
               {product.features.map((feat, idx) => (
                 <div key={idx} className="flex items-start gap-2 text-xs text-muted">
@@ -98,18 +101,18 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </div>
 
             {/* How to use */}
-            <div className="bg-[#faf6f0] rounded-xl p-3 text-xs text-muted">
+            <div className="bg-[#faf6f0] rounded-xl p-3 text-xs text-muted border border-[#e2d4c0]">
               <span className="font-bold text-fg block mb-0.5">Directions for Use:</span>
               <span>{product.howToUse}</span>
             </div>
 
             {/* Quantity and Add to Bag */}
             <div className="pt-2 flex items-center gap-3">
-              <div className="flex items-center rounded-xl border border-border/70 bg-[#faf8f5] px-2 py-1">
+              <div className="flex items-center rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-2 py-1">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="size-7 flex items-center justify-center text-muted hover:text-fg"
+                  className="size-7 flex items-center justify-center text-muted hover:text-fg rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
                   aria-label="Decrease quantity"
                 >
                   <Minus className="size-3.5" />
@@ -118,7 +121,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="size-7 flex items-center justify-center text-muted hover:text-fg"
+                  className="size-7 flex items-center justify-center text-muted hover:text-fg rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
                   aria-label="Increase quantity"
                 >
                   <Plus className="size-3.5" />
@@ -128,7 +131,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
               <Button
                 onClick={handleAdd}
                 size="lg"
-                className="flex-1 accent-gradient text-white text-xs sm:text-sm font-semibold shadow-xs gap-2"
+                className="flex-1 bg-[#925a27] hover:bg-[#7a491e] text-white text-xs sm:text-sm font-semibold shadow-xs gap-2 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
               >
                 <ShoppingBag className="size-4" />
                 <span>{added ? "Added to Bag!" : `Add to Bag · £${(product.price * quantity).toFixed(2)}`}</span>

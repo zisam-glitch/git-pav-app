@@ -167,7 +167,7 @@ export function FeeTable() {
 
   return (
     <section className="py-12 sm:py-16">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e]">
             Pav Dental Plans
@@ -183,6 +183,7 @@ export function FeeTable() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search treatments"
               placeholder="Search treatments (e.g. check-up, whitening, crown)..."
               className="w-full pl-10 pr-4 py-2 text-sm rounded-full border border-border bg-white shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />

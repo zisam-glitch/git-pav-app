@@ -85,7 +85,7 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-white">
             Our Products
           </h2>
-          <p className="mt-4 text-white/80 text-sm sm:text-base leading-relaxed">
+          <p className="mt-4 text-[#e8ddd0] text-sm sm:text-base leading-relaxed">
             Professional dental care products designed by our clinical team for your daily oral health routine.
           </p>
         </div>
@@ -99,10 +99,10 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-[#cf9448] focus-visible:outline-offset-2 ${
                   selectedCategory === cat.id
-                    ? "accent-gradient text-white shadow-sm"
-                    : "bg-white/10 text-white border border-white/20 hover:border-[#925a27] hover:bg-white/20"
+                    ? "bg-[#cf9448] text-[#1a1a1a] shadow-sm"
+                    : "bg-[#372418] text-white border border-[#5a4232] hover:border-[#cf9448] hover:bg-[#462e1f]"
                 }`}
               >
                 {cat.label}
@@ -113,23 +113,25 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
           {/* Search and Sort */}
           <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
             <div className="relative flex-1 md:w-56">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-white/60" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[#d8c7b6]" />
               <input
                 type="text"
+                aria-label="Search products"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-9 rounded-xl border border-white/20 bg-white/10 pl-8 pr-3 text-xs text-white placeholder:text-white/60 focus:border-[#925a27] focus:outline-none"
+                className="w-full h-9 rounded-xl border border-[#5a4232] bg-[#372418] pl-8 pr-3 text-xs text-white placeholder:text-[#c7b3a1] focus:border-[#cf9448] focus-visible:outline-2 focus-visible:outline-[#cf9448] focus-visible:outline-offset-1"
               />
             </div>
 
             <select
+              aria-label="Sort products"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="h-9 rounded-xl border border-white/20 bg-white/10 px-3 text-xs text-white font-medium focus:border-[#925a27] focus:outline-none"
+              className="h-9 rounded-xl border border-[#5a4232] bg-[#372418] px-3 text-xs text-white font-medium focus:border-[#cf9448] focus-visible:outline-2 focus-visible:outline-[#cf9448] focus-visible:outline-offset-1"
             >
               {sortOptions.map((opt) => (
-                <option key={opt.id} value={opt.id}>
+                <option key={opt.id} value={opt.id} className="bg-[#2a1c12] text-white">
                   {opt.label}
                 </option>
               ))}
@@ -161,16 +163,16 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
         </div>
 
         {isLoading ? (
-          <div className="rounded-xl border border-dashed border-white/20 bg-white/10 p-12 text-center">
+          <div className="rounded-xl border border-dashed border-[#5a4232] bg-[#372418] p-12 text-center">
             <p className="font-display text-xl font-bold text-white">Loading products...</p>
-            <p className="mt-1 text-xs text-white/60">Please wait while we fetch our dental care products.</p>
+            <p className="mt-1 text-xs text-[#e2d4c0]">Please wait while we fetch our dental care products.</p>
           </div>
         ) : filteredProducts.length === 0 && (
-          <div className="rounded-xl border border-dashed border-white/20 bg-white/10 p-12 text-center">
+          <div className="rounded-xl border border-dashed border-[#5a4232] bg-[#372418] p-12 text-center">
             <p className="font-display text-xl font-bold text-white">
               {products.length === 0 ? "No products available" : "No products found"}
             </p>
-            <p className="mt-1 text-xs text-white/60">
+            <p className="mt-1 text-xs text-[#e2d4c0]">
               {products.length === 0 
                 ? "Check back soon for new dental care products."
                 : "Try resetting your search query or selecting another category."}
@@ -183,7 +185,7 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
                   setSelectedCategory("all");
                   setSearchQuery("");
                 }}
-                className="mt-4 border-white/20 text-white hover:bg-white/20"
+                className="mt-4 border-[#cf9448] bg-[#2a1c12] text-white hover:bg-[#462e1f] focus-visible:outline-2 focus-visible:outline-[#cf9448] focus-visible:outline-offset-2"
               >
                 Show All Products
               </Button>

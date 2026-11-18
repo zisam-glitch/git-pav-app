@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { X, CheckCircle2, Briefcase, FileText, Send, Phone } from "lucide-react";
+import { X, CheckCircle2, Briefcase, FileText, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Vacancy } from "./vacancies-data";
 import { api } from "@/lib/api";
@@ -54,7 +54,12 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4-xs overflow-y-auto">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Apply for ${vacancy.title}`}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto"
+    >
       <div
         className="relative w-full max-w-lg rounded-xl bg-white p-6 sm:p-8 shadow-2xl my-8"
         onClick={(e) => e.stopPropagation()}
@@ -107,10 +112,11 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
             <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-name" className="block text-xs font-semibold text-fg/80 mb-1">
                     Full Name *
                   </label>
                   <input
+                    id="apply-name"
                     required
                     type="text"
                     placeholder="Dr. / Nurse Jane Doe"
@@ -121,10 +127,11 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-email" className="block text-xs font-semibold text-fg/80 mb-1">
                     Email Address *
                   </label>
                   <input
+                    id="apply-email"
                     required
                     type="email"
                     placeholder="you@example.com"
@@ -137,10 +144,11 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-phone" className="block text-xs font-semibold text-fg/80 mb-1">
                     Phone Number *
                   </label>
                   <input
+                    id="apply-phone"
                     required
                     type="tel"
                     placeholder="+44 7311 871456"
@@ -151,10 +159,11 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
+                  <label htmlFor="apply-gdc" className="block text-xs font-semibold text-fg/80 mb-1">
                     GDC Reg No. (if registered)
                   </label>
                   <input
+                    id="apply-gdc"
                     type="text"
                     placeholder="e.g. 123456"
                     value={gdcNumber}
@@ -165,12 +174,13 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-fg/80 mb-1">
+                <label htmlFor="apply-cv" className="block text-xs font-semibold text-fg/80 mb-1">
                   LinkedIn Profile / CV Link *
                 </label>
                 <div className="relative">
                   <FileText className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
                   <input
+                    id="apply-cv"
                     required
                     type="url"
                     placeholder="https://linkedin.com/in/... or Google Drive link"
@@ -182,10 +192,11 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-fg/80 mb-1">
+                <label htmlFor="apply-message" className="block text-xs font-semibold text-fg/80 mb-1">
                   Brief Note / Clinical Experience *
                 </label>
                 <textarea
+                  id="apply-message"
                   required
                   rows={3}
                   placeholder="Tell us about your background, clinical interests, or visa requirements..."

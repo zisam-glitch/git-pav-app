@@ -14,7 +14,7 @@ export function NotFoundPage() {
     <main className="min-h-screen bg-[#fffdf9] text-fg">
       <Header />
       <div className="pt-16">
-        <section className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
+        <section className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:px-8 sm:py-28">
           <p className="text-sm font-semibold uppercase text-primary">{NOT_FOUND.code}</p>
           <h1 className="mt-3 font-display text-4xl font-bold text-[#2a1c12] sm:text-5xl">
             {NOT_FOUND.title}

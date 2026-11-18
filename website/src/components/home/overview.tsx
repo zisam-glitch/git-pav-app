@@ -15,7 +15,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 export function Overview() {
   return (
     <section id="overview" className="py-24">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <Reveal>
           <h2 className="font-display text-3xl sm:text-4xl">
             Comprehensive Dental Services: Book Online, Specialized Care, and{" "}
@@ -38,14 +38,14 @@ export function Overview() {
               ))}
             </ul>
 
-            <div className="w-">
-              <img src="/media/gdc.png" alt="GDC" />
+            <div>
+              <img src="/media/gdc.png" alt="General Dental Council registered" />
             </div>
           </div>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <aside className="glass rounded-xl p-6 sm:p-8">
+          <aside className="rounded-xl border border-border-soft bg-white p-6 shadow-soft sm:p-8">
             <h3 className="font-display text-2xl text-primary">Working Hours</h3>
             <ul className="mt-5 divide-y divide-border text-sm">
               {DAYS.map((d) => (

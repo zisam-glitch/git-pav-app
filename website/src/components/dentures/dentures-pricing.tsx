@@ -103,7 +103,7 @@ export function DenturesPricing() {
         </div>
 
         <div className="text-center">
-          <p className="text-xs text-[#9a8674] mb-6">
+          <p className="text-xs text-[#6b5848] mb-6">
             *All new dentures include adjustment visits and 12-month structural warranty. NHS Band 3 patients: £319.10 contribution required.
           </p>
           <Button

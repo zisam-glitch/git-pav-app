@@ -103,7 +103,7 @@ export function GrillzPricing() {
         </div>
 
         <div className="text-center">
-          <p className="text-xs text-[#9a8674] mb-6">
+          <p className="text-xs text-[#6b5848] mb-6">
             *All grillz include free in-clinic impression, luxury storage box, and tight snap-fit guarantee. UK Assay certified gold.
           </p>
           <Button

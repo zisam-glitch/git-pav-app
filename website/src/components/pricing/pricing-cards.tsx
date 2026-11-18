@@ -101,7 +101,7 @@ export function PricingCards() {
 
   return (
     <section className="py-8 sm:py-12">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section title */}
         <div className="text-center mb-10">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e]">
@@ -117,6 +117,7 @@ export function PricingCards() {
               type="button"
               role="switch"
               aria-checked={!isMonthly}
+              aria-label="Toggle annual billing"
               onClick={() => setIsMonthly((v) => !v)}
               className={cn(
                 "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

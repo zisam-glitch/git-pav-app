@@ -67,7 +67,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#fffdf9] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block size-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           <p className="mt-4 text-sm text-muted">Loading product details...</p>
@@ -78,7 +78,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#fffdf9] flex items-center justify-center">
         <div className="text-center max-w-md">
           <h1 className="font-display text-2xl font-bold text-fg">Product Not Found</h1>
           <p className="mt-2 text-sm text-muted">The product you're looking for doesn't exist or has been removed.</p>
@@ -153,7 +153,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
   };
 
   return (
-    <div className="min-h-screen bg-white text-fg">
+    <div className="min-h-screen bg-[#fffdf9] text-fg">
       {/* Schema.org Structured Data */}
       <script
         type="application/ld+json"
@@ -185,7 +185,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 className="size-full object-cover transition-all duration-300"
               />
               {productData.badge && (
-                <span className="absolute top-4 left-4 rounded-full bg-[#844d1e] text-white text-xs font-bold px-4 py-1 shadow-sm">
+                <span className="absolute top-4 left-4 rounded-full bg-[#925a27] text-white text-xs font-bold px-4 py-1 shadow-sm">
                   {productData.badge}
                 </span>
               )}
@@ -199,9 +199,9 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative size-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
+                    className={`relative size-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 ${
                       selectedImageIndex === idx
-                        ? "border-[#844d1e] ring-2 ring-[#844d1e]/20"
+                        ? "border-[#925a27] ring-2 ring-[#925a27]/20"
                         : "border-[#e2d4c0] opacity-70 hover:opacity-100"
                     }`}
                   >
@@ -225,7 +225,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
             {/* Price & Stock Badge */}
             <div className="flex items-baseline gap-3 flex-wrap">
-              <span className="font-display text-3xl font-bold text-[#844d1e]">
+              <span className="font-display text-3xl font-bold text-[#925a27]">
                 £{currentPrice.toFixed(2)}
               </span>
               {productData.originalPrice && (
@@ -234,7 +234,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 </span>
               )}
               {isCurrentInStock ? (
-                <span className="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-md">
+                <span className="text-xs font-medium text-[#925a27] bg-[#faf6f0] border border-[#e2d4c0] px-3 py-1 rounded-md">
                   {currentStockQty < 10
                     ? `Low Stock · Only ${currentStockQty} left`
                     : "In Stock & Ready to Dispatch"}
@@ -249,11 +249,11 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
             {/* Variant Selector */}
             {variants.length > 0 && (
               <div className="space-y-2.5 pt-2 border-t border-[#e2d4c0]">
-                <label className="text-xs font-bold text-fg uppercase">
+                <span className="block text-xs font-bold text-fg uppercase">
                   Select Option:
-                </label>
+                </span>
                 {variantError && (
-                  <div className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-md">
+                  <div className="text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded-md">
                     {variantError}
                   </div>
                 )}
@@ -271,12 +271,12 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                         type="button"
                         onClick={() => handleVariantSelect(v.id)}
                         disabled={outOfStock}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2 ${
                           isSelected
-                            ? "border-[#844d1e] bg-[#844d1e] text-white shadow-sm"
+                            ? "border-[#925a27] bg-[#925a27] text-white shadow-sm"
                             : outOfStock
-                            ? "border-border/40 bg-muted/40 text-muted line-through cursor-not-allowed"
-                            : "border-[#e2d4c0] bg-[#faf8f5] text-fg hover:border-[#844d1e]"
+                            ? "border-[#e2d4c0] bg-[#faf6f0] text-[#6b5848] line-through cursor-not-allowed"
+                            : "border-[#e2d4c0] bg-[#faf8f5] text-fg hover:border-[#925a27]"
                         }`}
                       >
                         {label} {v.price_override ? `(+£${(parseFloat(String(v.price_override)) - parseFloat(String(product.price))).toFixed(2)})` : ""}
@@ -353,7 +353,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 onClick={handleAdd}
                 size="lg"
                 disabled={!isCurrentInStock}
-                className="flex-1 accent-gradient text-white text-sm font-semibold shadow-sm gap-2 disabled:opacity-50"
+                className="flex-1 bg-[#925a27] hover:bg-[#7a491e] text-white text-sm font-semibold shadow-sm gap-2 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
               >
                 <ShoppingBag className="size-5" />
                 <span>
@@ -379,7 +379,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 <a
                   key={rel.id}
                   href={`/shop/${rel.slug}`}
-                  className="group rounded-xl border border-[#e2d4c0] bg-[#fffdf9] p-4 transition-all hover:shadow-md hover:border-[#844d1e]"
+                  className="group rounded-xl border border-[#e2d4c0] bg-[#fffdf9] p-4 transition-all hover:shadow-md hover:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
                 >
                   <div className="aspect-square rounded-xl overflow-hidden bg-[#faf6f0] mb-3">
                     <img
@@ -392,7 +392,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                     {rel.name}
                   </h3>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-bold text-sm text-[#844d1e]">
+                    <span className="font-bold text-sm text-[#925a27]">
                       £{parseFloat(rel.price).toFixed(2)}
                     </span>
                     <span className="text-[11px] text-muted">View details →</span>

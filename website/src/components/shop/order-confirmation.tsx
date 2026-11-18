@@ -37,7 +37,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
   if (isLoading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <div className="inline-block size-8 border-2 border-[#844d1e] border-t-transparent rounded-full animate-spin" />
+        <div className="inline-block size-8 border-2 border-[#925a27] border-t-transparent rounded-full animate-spin" />
         <p className="mt-4 text-sm text-muted">Retrieving your order details...</p>
       </div>
     );
@@ -48,7 +48,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
         <h1 className="font-display text-2xl font-bold text-fg">Order Not Found</h1>
         <p className="mt-2 text-sm text-muted">Please use the link from your checkout, or sign in to the account you ordered with.</p>
-        <Button asChild className="mt-6 accent-gradient text-white">
+        <Button asChild className="mt-6 bg-[#925a27] hover:bg-[#7a491e] text-white">
           <a href="/shop">Return to Shop</a>
         </Button>
       </div>
@@ -60,7 +60,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
         {waiting && (
-          <div className="inline-block size-8 border-2 border-[#844d1e] border-t-transparent rounded-full animate-spin" />
+          <div className="inline-block size-8 border-2 border-[#925a27] border-t-transparent rounded-full animate-spin" />
         )}
         <h1 className="mt-4 font-display text-2xl font-bold text-fg">
           {waiting ? "Confirming your payment" : "This order hasn't been paid"}
@@ -70,7 +70,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
             ? "This usually takes a few seconds. If you closed the payment page without paying, you haven't been charged."
             : "You haven't been charged for this order. Your bag is still saved if you'd like to try again."}
         </p>
-        <Button asChild className="mt-6 accent-gradient text-white">
+        <Button asChild className="mt-6 bg-[#925a27] hover:bg-[#7a491e] text-white">
           <a href={waiting ? "/shop" : "/checkout"}>{waiting ? "Return to Shop" : "Return to Checkout"}</a>
         </Button>
       </div>
@@ -95,7 +95,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Success Header */}
         <div className="text-center bg-white rounded-xl border border-[#e2d4c0] p-8 shadow-xs">
-          <div className="size-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+          <div className="size-16 rounded-full bg-[#faf6f0] border border-[#e2d4c0] text-[#925a27] flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="size-10" />
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg">Thank You for Your Order!</h1>
@@ -105,7 +105,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
           </p>
           <div className="mt-4 inline-flex items-center gap-2 bg-[#faf6f0] px-4 py-2 rounded-full border border-[#e2d4c0] text-xs">
             <span className="text-muted">Order ID:</span>
-            <span className="font-mono font-bold text-[#844d1e]">{order.id}</span>
+            <span className="font-mono font-bold text-[#925a27]">{order.id}</span>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
               <Calendar className="size-4" />
               <span>Placed on {new Date(order.created_at).toLocaleDateString("en-GB", { dateStyle: "long" })}</span>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 capitalize">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#faf6f0] text-[#925a27] border border-[#e2d4c0] capitalize">
               Status: {order.status}
             </span>
           </div>
@@ -124,7 +124,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
           {/* Delivery destination */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
             <div className="flex items-start gap-3">
-              <MapPin className="size-5 text-[#844d1e] shrink-0 mt-0.5" />
+              <MapPin className="size-5 text-[#925a27] shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-fg">Delivery Address</p>
                 <p className="text-muted mt-1">
@@ -137,7 +137,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
             </div>
 
             <div className="flex items-start gap-3">
-              <Truck className="size-5 text-[#844d1e] shrink-0 mt-0.5" />
+              <Truck className="size-5 text-[#925a27] shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-fg">Fulfillment & Tracking</p>
                 <p className="text-muted mt-1">
@@ -180,7 +180,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
               <span className="font-semibold text-fg">£{parseFloat(order.subtotal || "0").toFixed(2)}</span>
             </div>
             {parseFloat(order.discount_amount || "0") > 0 && (
-              <div className="flex justify-between text-emerald-700">
+              <div className="flex justify-between text-[#925a27] font-medium">
                 <span>Discount Applied</span>
                 <span>-£{parseFloat(order.discount_amount).toFixed(2)}</span>
               </div>
@@ -193,14 +193,14 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
             </div>
             <div className="flex justify-between text-base font-bold text-fg pt-3 border-t border-[#e2d4c0]">
               <span>Total Paid</span>
-              <span className="text-[#844d1e]">£{parseFloat(String(orderTotal)).toFixed(2)}</span>
+              <span className="text-[#925a27]">£{parseFloat(String(orderTotal)).toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {/* Back to Shop */}
         <div className="text-center">
-          <Button asChild className="accent-gradient text-white px-8 h-11 gap-2">
+          <Button asChild className="bg-[#925a27] hover:bg-[#7a491e] text-white px-8 h-11 gap-2">
             <a href="/shop">
               <span>Continue Shopping</span>
               <ArrowRight className="size-4" />

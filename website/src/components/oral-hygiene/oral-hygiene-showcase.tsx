@@ -28,7 +28,7 @@ export function OralHygieneShowcase() {
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-white">
             Hygiene Procedures in Action
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-white/60 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-white/80 leading-relaxed">
             See our professional dental hygiene treatments and learn about the importance of maintaining optimal oral health.
           </p>
         </div>
@@ -54,7 +54,8 @@ export function OralHygieneShowcase() {
                       <button
                         type="button"
                         onClick={() => setActiveVideo(null)}
-                        className="absolute top-4 right-4 z-20 size-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black"
+                        aria-label="Close video"
+                        className="absolute top-4 right-4 z-20 size-8 rounded-full bg-black/75 text-white flex items-center justify-center hover:bg-black"
                       >
                         <X className="size-4" />
                       </button>
@@ -73,7 +74,7 @@ export function OralHygieneShowcase() {
                         <button
                           type="button"
                           onClick={() => setActiveVideo(demo.id)}
-                          className="size-16 rounded-full bg-[#cf9448]/90 text-white flex items-center justify-center shadow-xl hover:scale-110 hover:bg-[#cf9448] transition-transform"
+                          className="size-16 rounded-full bg-[#cf9448] text-[#1a1a1a] flex items-center justify-center shadow-xl hover:scale-110 hover:bg-[#d8a258] transition-transform"
                           aria-label={`Play ${demo.title}`}
                         >
                           <Play className="size-7 fill-current translate-x-0.5" />
@@ -87,7 +88,7 @@ export function OralHygieneShowcase() {
                   <h3 className="font-display text-xl font-bold text-white">
                     {demo.title}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-white/60 leading-relaxed">
+                  <p className="mt-2 text-xs sm:text-sm text-white/80 leading-relaxed">
                     {demo.desc}
                   </p>
                 </div>

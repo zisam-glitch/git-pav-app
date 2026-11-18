@@ -42,7 +42,7 @@ export function ContactForm() {
 
   return (
     <section id="contact" className="py-24">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:px-8 lg:grid-cols-[0.9fr_1.1fr]">
         <Reveal>
           <p className="text-xs font-medium text-primary">Visit</p>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl">Get in touch</h2>
@@ -74,7 +74,7 @@ export function ContactForm() {
 
         <Reveal delay={0.1}>
           {sent ? (
-            <div className="glass rounded-xl p-8">
+            <div className="rounded-xl border border-border-soft bg-white p-8 shadow-soft">
               <h3 className="font-display text-2xl">Message received</h3>
               <p className="mt-3 text-muted">
                 Thank you. A member of the team will reply during clinic hours. For pain now, call
@@ -85,7 +85,7 @@ export function ContactForm() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={onSubmit} className="grid gap-5 rounded-xl glass p-6 sm:p-8">
+            <form onSubmit={onSubmit} className="grid gap-5 rounded-xl border border-border-soft bg-white p-6 shadow-soft sm:p-8">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Full name</Label>
@@ -115,7 +115,7 @@ export function ContactForm() {
                 <Label htmlFor="message">Message</Label>
                 <Textarea id="message" name="message" required placeholder="How can we help?" />
               </div>
-              {error && <p className="text-sm font-medium text-red-500">{error}</p>}
+              {error && <p className="text-sm font-medium text-red-600">{error}</p>}
               <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={loading}>
                 {loading ? "Sending..." : "Send message"}
               </Button>

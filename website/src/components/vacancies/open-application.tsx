@@ -1,9 +1,9 @@
-import { Mail, Phone, MapPin, Send, Sparkles } from "lucide-react";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 export function OpenApplication() {
   return (
     <section className="py-16 sm:py-20 bg-[#faf6f0] border-t border-[#e2d4c0]">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
         
 
         <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-[#2a1c12]">
@@ -25,9 +25,9 @@ export function OpenApplication() {
 
           <a
             href="tel:08001938786"
-            className="h-12 px-6 rounded-xl border border-[#e2d4c0] bg-white text-sm font-medium text-[#2a1c12] hover:border-[#cf9448] transition-colors flex items-center justify-center gap-2"
+            className="h-12 px-6 rounded-xl border border-[#e2d4c0] bg-white text-sm font-medium text-[#2a1c12] hover:border-[#925a27] transition-colors flex items-center justify-center gap-2"
           >
-            <Phone className="size-4 text-[#cf9448]" />
+            <Phone className="size-4 text-[#925a27]" />
             <span>Call: 0800 1938 786</span>
           </a>
         </div>
@@ -35,13 +35,13 @@ export function OpenApplication() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-8 text-sm text-muted">
           <a
             href="mailto:hello@pavdental.com"
-            className="flex items-center gap-2 hover:text-[#cf9448] transition-colors"
+            className="flex items-center gap-2 hover:text-[#925a27] transition-colors"
           >
-            <Mail className="size-4 text-[#cf9448]" />
+            <Mail className="size-4 text-[#925a27]" />
             <span>hello@pavdental.com</span>
           </a>
           <div className="flex items-center gap-2">
-            <MapPin className="size-4 text-[#cf9448]" />
+            <MapPin className="size-4 text-[#925a27]" />
             <span>786 Leeds Road, Bradford, BD3 9TY</span>
           </div>
         </div>

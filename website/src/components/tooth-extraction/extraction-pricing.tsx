@@ -110,7 +110,7 @@ export function ExtractionPricing() {
                   {TIERS.map((t) => (
                     <td key={t.id} className={`py-4 px-6 ${t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800" : "text-[#2a1c12]"}`}>
                       <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
+                        <Check className="size-3.5 text-primary flex-shrink-0" />
                         {t.includes[idx]}
                       </span>
                     </td>
@@ -139,7 +139,7 @@ export function ExtractionPricing() {
           </table>
         </div>
 
-        <p className="mt-8 text-center text-xs text-[#9a8674] max-w-2xl mx-auto">
+        <p className="mt-8 text-center text-xs text-[#6b5848] max-w-2xl mx-auto">
           Prices may vary with complexity assessed at consultation. NHS eligibility subject to clinical need. 0% APR finance on treatments over £250.
         </p>
       </div>

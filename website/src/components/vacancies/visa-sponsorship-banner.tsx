@@ -1,4 +1,4 @@
-import { Plane, CheckCircle2, Globe, ArrowRight, ShieldCheck } from "lucide-react";
+import { Plane, CheckCircle2, ArrowRight, ShieldCheck } from "lucide-react";
 
 interface VisaSponsorshipBannerProps {
   onApplySponsorship: () => void;
@@ -13,7 +13,7 @@ export function VisaSponsorshipBanner({ onApplySponsorship }: VisaSponsorshipBan
           <div className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full bg-[#d4a574]/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-32 -left-32 size-80 rounded-full bg-[#cf9448]/10 blur-2xl" />
 
-          <div className="relative grid mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24 grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="relative grid mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left: Overseas Dentist Invitation */}
             <div className="lg:col-span-8 space-y-5">
             

@@ -14,7 +14,7 @@ export function PetitionContact() {
 
   return (
     <section className="border-t border-border/40 bg-white py-16 sm:py-24" aria-labelledby="touch-heading">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
           <h2 id="touch-heading" className="font-display text-3xl font-bold text-[#844d1e] sm:text-4xl">
             {copy.heading}

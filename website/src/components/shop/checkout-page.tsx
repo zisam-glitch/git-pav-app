@@ -141,7 +141,7 @@ export function CheckoutPage() {
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
         <h1 className="font-display text-2xl font-bold text-fg">Your Bag is Empty</h1>
         <p className="mt-2 text-sm text-muted">Add clinical oral care products before checking out.</p>
-        <Button asChild className="mt-6 accent-gradient text-white">
+        <Button asChild className="mt-6 bg-[#925a27] hover:bg-[#7a491e] text-white">
           <a href="/shop">Browse Store</a>
         </Button>
       </div>
@@ -172,25 +172,27 @@ export function CheckoutPage() {
                 <span>1. Contact Information</span>
               </h2>
               <div>
-                <label className="text-xs font-semibold text-fg">Email Address *</label>
+                <label htmlFor="checkout-email" className="text-xs font-semibold text-fg">Email Address *</label>
                 <input
+                  id="checkout-email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.co.uk"
-                  className="mt-1 w-full rounded-xl border border-border/70 bg-[#faf8f5] px-3.5 py-2 text-xs text-fg focus:border-[#844d1e] focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
                 <p className="text-[11px] text-muted mt-1">We'll send your receipt and tracking updates here.</p>
               </div>
               <div>
-                <label className="text-xs font-semibold text-fg">Phone Number (Optional)</label>
+                <label htmlFor="checkout-phone" className="text-xs font-semibold text-fg">Phone Number (Optional)</label>
                 <input
+                  id="checkout-phone"
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+44 7123 456789"
-                  className="mt-1 w-full rounded-xl border border-border/70 bg-[#faf8f5] px-3.5 py-2 text-xs text-fg focus:border-[#844d1e] focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
               </div>
             </div>
@@ -199,49 +201,53 @@ export function CheckoutPage() {
             <div className="bg-white rounded-xl border border-[#e2d4c0] p-6 shadow-xs space-y-4">
               <h2 className="font-display text-lg font-bold text-fg">2. Shipping Address</h2>
               <div>
-                <label className="text-xs font-semibold text-fg">Full Name *</label>
+                <label htmlFor="checkout-name" className="text-xs font-semibold text-fg">Full Name *</label>
                 <input
+                  id="checkout-name"
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Dr. Jane Smith"
-                  className="mt-1 w-full rounded-xl border border-border/70 bg-[#faf8f5] px-3.5 py-2 text-xs text-fg focus:border-[#844d1e] focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-fg">Address Line 1 *</label>
+                <label htmlFor="checkout-address" className="text-xs font-semibold text-fg">Address Line 1 *</label>
                 <input
+                  id="checkout-address"
                   type="text"
                   required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Street address or P.O. Box"
-                  className="mt-1 w-full rounded-xl border border-border/70 bg-[#faf8f5] px-3.5 py-2 text-xs text-fg focus:border-[#844d1e] focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-fg">Town / City *</label>
+                  <label htmlFor="checkout-city" className="text-xs font-semibold text-fg">Town / City *</label>
                   <input
+                    id="checkout-city"
                     type="text"
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="Bradford, Leeds, London..."
-                    className="mt-1 w-full rounded-xl border border-border/70 bg-[#faf8f5] px-3.5 py-2 text-xs text-fg focus:border-[#844d1e] focus:outline-none"
+                    className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-fg">Postcode *</label>
+                  <label htmlFor="checkout-zip" className="text-xs font-semibold text-fg">Postcode *</label>
                   <input
+                    id="checkout-zip"
                     type="text"
                     required
                     value={zip}
                     onChange={(e) => setZip(e.target.value)}
                     placeholder="e.g. BD1 1AA"
-                    className="mt-1 w-full rounded-xl border border-border/70 bg-[#faf8f5] px-3.5 py-2 text-xs text-fg uppercase focus:border-[#844d1e] focus:outline-none"
+                    className="mt-1 w-full rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3.5 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                   />
                 </div>
               </div>
@@ -264,8 +270,8 @@ export function CheckoutPage() {
                         key={m.id}
                         className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                           isSelected
-                            ? "border-[#844d1e] bg-[#faf6f0] ring-1 ring-[#844d1e]"
-                            : "border-[#e2d4c0] bg-white hover:border-[#844d1e]"
+                            ? "border-[#925a27] bg-[#faf6f0] ring-1 ring-[#925a27]"
+                            : "border-[#e2d4c0] bg-white hover:border-[#925a27]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -274,7 +280,7 @@ export function CheckoutPage() {
                             name="shippingMethod"
                             checked={isSelected}
                             onChange={() => setShippingMethodId(m.id)}
-                            className="text-[#844d1e] focus:ring-[#844d1e]"
+                            className="text-[#925a27] focus:ring-[#925a27]"
                           />
                           <div>
                             <p className="text-xs font-semibold text-fg">{m.name}</p>
@@ -294,7 +300,7 @@ export function CheckoutPage() {
             <Button
               type="submit"
               disabled={submitting}
-              className="w-full h-12 accent-gradient text-white font-semibold text-sm rounded-xl shadow-md gap-2"
+              className="w-full h-12 bg-[#925a27] hover:bg-[#7a491e] text-white font-semibold text-sm rounded-xl shadow-md gap-2 focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-2"
             >
               <Lock className="size-4" />
               <span>{submitting ? "Securing Order..." : `Proceed to Secure Payment · £${finalTotal.toFixed(2)}`}</span>
@@ -330,32 +336,33 @@ export function CheckoutPage() {
                   <form onSubmit={handleApplyDiscount} className="flex gap-2">
                     <input
                       type="text"
+                      aria-label="Promo code"
                       placeholder="Promo code"
                       value={promoCodeInput}
                       onChange={(e) => setPromoCodeInput(e.target.value)}
-                      className="flex-1 rounded-xl border border-border/70 bg-[#faf8f5] px-3 py-2 text-xs uppercase focus:border-[#844d1e] focus:outline-none"
+                      className="flex-1 rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                     />
                     <Button type="submit" variant="outline" size="sm" className="rounded-xl">
                       Apply
                     </Button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-xs">
-                    <div className="flex items-center gap-1.5 font-medium">
-                      <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <div className="flex items-center justify-between bg-[#faf6f0] border border-[#e2d4c0] text-[#2a1c12] p-2.5 rounded-xl text-xs">
+                    <div className="flex items-center gap-1.5 font-medium text-[#925a27]">
+                      <CheckCircle2 className="size-4 text-[#925a27] shrink-0" />
                       <span>Coupon {appliedDiscount.code} applied (-£{discountAmount.toFixed(2)})</span>
                     </div>
                     <button
                       type="button"
                       onClick={removeDiscount}
-                      className="text-xs text-muted hover:text-fg underline ml-2 font-semibold"
+                      className="text-xs text-muted hover:text-fg underline ml-2 font-semibold focus-visible:outline-2 focus-visible:outline-[#925a27] rounded"
                     >
                       Remove
                     </button>
                   </div>
                 )}
                 {promoMessage && !appliedDiscount && (
-                  <p className={`text-[11px] mt-1.5 ${promoMessage.type === "success" ? "text-emerald-700" : "text-red-600"}`}>
+                  <p className={`text-[11px] mt-1.5 ${promoMessage.type === "success" ? "text-[#925a27]" : "text-red-700"}`}>
                     {promoMessage.text}
                   </p>
                 )}
@@ -368,7 +375,7 @@ export function CheckoutPage() {
                   <span className="font-semibold text-fg">£{subtotal.toFixed(2)}</span>
                 </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-medium">
+                  <div className="flex justify-between text-[#925a27] font-medium">
                     <span>Promo Discount</span>
                     <span>-£{discountAmount.toFixed(2)}</span>
                   </div>
@@ -381,17 +388,17 @@ export function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-sm font-bold text-fg pt-3 border-t border-[#e2d4c0]">
                   <span>Total (inc. VAT)</span>
-                  <span className="text-[#844d1e] text-base">£{finalTotal.toFixed(2)}</span>
+                  <span className="text-[#925a27] text-base">£{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
             {/* Security Guarantee Box */}
-            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 text-emerald-900 text-xs flex items-center gap-3">
-              <ShieldCheck className="size-6 text-emerald-700 shrink-0" />
+            <div className="p-4 rounded-xl border border-[#e2d4c0] bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
+              <ShieldCheck className="size-6 text-[#925a27] shrink-0" />
               <div>
                 <p className="font-semibold">256-Bit SSL Encrypted Payment</p>
-                <p className="text-[11px] text-emerald-800/80">Authorized clinical dispenser. 30-day money back guarantee.</p>
+                <p className="text-[11px] text-[#6b5848]">Authorized clinical dispenser. 30-day money back guarantee.</p>
               </div>
             </div>
           </div>

@@ -30,7 +30,7 @@ export function GeneralDentistryRootCanalConsent() {
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-white leading-tight">
             Informed Consent for Root Canal Treatment
           </h2>
-          <p className="mt-4 text-white/60 max-w-2xl text-sm sm:text-base leading-relaxed">
+          <p className="mt-4 text-white/80 max-w-2xl text-sm sm:text-base leading-relaxed">
             Before proceeding with root canal treatment, we ensure you fully understand the procedure, risks, and benefits of saving your natural tooth.
           </p>
         </div>
@@ -49,6 +49,7 @@ export function GeneralDentistryRootCanalConsent() {
                 />
                 <button
                   type="button"
+                  aria-label="Close root canal consent overview"
                   onClick={() => setIsPlaying(false)}
                   className="absolute top-4 right-4 z-20 size-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black"
                 >
@@ -69,7 +70,7 @@ export function GeneralDentistryRootCanalConsent() {
                   <button
                     type="button"
                     onClick={() => setIsPlaying(true)}
-                    className="relative flex size-20 sm:size-24 items-center justify-center rounded-full bg-[#cf9448]/90 text-white shadow-xl hover:scale-110 hover:bg-[#cf9448] transition-all duration-300"
+                    className="relative flex size-20 sm:size-24 items-center justify-center rounded-full bg-[#cf9448] text-[#1a1a1a] shadow-xl hover:scale-110 hover:bg-[#c2873d] transition-all duration-300"
                     aria-label="Play root canal consent overview"
                   >
                     <span className="absolute inset-0 rounded-full bg-[#cf9448] animate-ping opacity-20" />

@@ -10,13 +10,13 @@ export function PetitionHero() {
       <div className="pointer-events-none absolute -left-40 -top-40 size-[500px] rounded-full bg-primary/[0.05] blur-3xl" />
       <div className="pointer-events-none absolute -right-40 top-20 size-[500px] rounded-full bg-gold/[0.05] blur-3xl" />
 
-      <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
         <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase text-[#d9383a] sm:text-sm">
           <HeartHandshake className="size-4" aria-hidden="true" />
           <span>{PETITION.eyebrow}</span>
         </p>
 
-        <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] text-[#2a1c12] sm:text-5xl lg:text-6xl">
+        <h1 className="mx-auto mt-4 max-w-4xl font-display text-4xl font-bold leading-[1.12] text-[#2a1c12] sm:text-5xl lg:text-6xl">
           {PETITION.title}
         </h1>
 

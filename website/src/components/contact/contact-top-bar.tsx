@@ -2,8 +2,8 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 export function ContactTopBar() {
   return (
-    <div className="bg-[#b77436] text-white text-xs py-2 px-4 sm:px-6">
-      <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-2.5">
+    <div className="bg-[#925a27] text-white text-xs py-2">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-2.5">
         {/* Left info: Email, Phone, WhatsApp */}
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-6 text-white/95">
           <a

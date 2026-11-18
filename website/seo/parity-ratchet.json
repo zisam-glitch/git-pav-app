@@ -76,7 +76,7 @@
     "fails": []
   },
   "/services": {
-    "coverage": 1,
+    "coverage": 0.87,
     "fails": []
   },
   "/services/aesthetics": {

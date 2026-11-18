@@ -59,7 +59,7 @@ export function CartPage() {
         <p className="mt-2 text-sm text-muted max-w-sm">
           Explore our clinician-curated dental care solutions.
         </p>
-        <Button asChild className="mt-6 accent-gradient text-white px-8 h-11">
+        <Button asChild className="mt-6 bg-[#925a27] hover:bg-[#7a491e] text-white px-8 h-11">
           <a href="/shop">Start Shopping</a>
         </Button>
       </div>
@@ -90,7 +90,7 @@ export function CartPage() {
           </div>
           <div className="h-2 w-full bg-[#faf6f0] rounded-full overflow-hidden border border-[#e2d4c0]">
             <div
-              className="h-full accent-gradient transition-all duration-300"
+              className="h-full bg-[#925a27] transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -111,7 +111,7 @@ export function CartPage() {
                     <a href={`/shop/${it.slug}`} className="text-sm font-semibold text-fg hover:text-primary transition-colors line-clamp-1">
                       {it.name}
                     </a>
-                    <p className="text-xs font-bold text-[#844d1e] mt-0.5">£{it.unitPrice.toFixed(2)}</p>
+                    <p className="text-xs font-bold text-[#925a27] mt-0.5">£{it.unitPrice.toFixed(2)}</p>
                   </div>
                 </div>
 
@@ -121,7 +121,7 @@ export function CartPage() {
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity - 1)}
-                      className="size-7 flex items-center justify-center text-muted hover:text-fg"
+                      className="size-7 flex items-center justify-center text-muted hover:text-fg rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
                       aria-label="Decrease quantity"
                     >
                       <Minus className="size-3.5" />
@@ -130,7 +130,7 @@ export function CartPage() {
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity + 1)}
-                      className="size-7 flex items-center justify-center text-muted hover:text-fg"
+                      className="size-7 flex items-center justify-center text-muted hover:text-fg rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
                       aria-label="Increase quantity"
                     >
                       <Plus className="size-3.5" />
@@ -144,7 +144,7 @@ export function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(it.id)}
-                    className="text-muted hover:text-destructive transition-colors p-1"
+                    className="text-muted hover:text-destructive transition-colors p-1 rounded focus-visible:outline-2 focus-visible:outline-[#925a27]"
                     aria-label="Remove item"
                   >
                     <Trash2 className="size-4" />
@@ -165,29 +165,30 @@ export function CartPage() {
                   <form onSubmit={handleApplyPromo} className="flex gap-2">
                     <input
                       type="text"
+                      aria-label="Promo code"
                       placeholder="Promo code"
                       value={promoCodeInput}
                       onChange={(e) => setPromoCodeInput(e.target.value)}
-                      className="flex-1 rounded-xl border border-border/70 bg-[#faf8f5] px-3 py-2 text-xs uppercase focus:border-[#844d1e] focus:outline-none"
+                      className="flex-1 rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-3 py-2 text-xs text-fg uppercase placeholder:text-[#6b5848] focus:border-[#925a27] focus-visible:outline-2 focus-visible:outline-[#925a27] focus-visible:outline-offset-1"
                     />
                     <Button type="submit" variant="outline" size="sm" className="rounded-xl">
                       Apply
                     </Button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-xs">
-                    <span>Coupon {appliedDiscount.code} applied</span>
+                  <div className="flex items-center justify-between bg-[#faf6f0] border border-[#e2d4c0] text-[#2a1c12] p-2.5 rounded-xl text-xs">
+                    <span className="font-medium text-[#925a27]">Coupon {appliedDiscount.code} applied</span>
                     <button
                       type="button"
                       onClick={removeDiscount}
-                      className="text-xs text-muted hover:text-fg font-semibold underline"
+                      className="text-xs text-muted hover:text-fg font-semibold underline focus-visible:outline-2 focus-visible:outline-[#925a27] rounded"
                     >
                       Remove
                     </button>
                   </div>
                 )}
                 {promoMessage && !appliedDiscount && (
-                  <p className={`text-[11px] mt-1.5 ${promoMessage.type === "success" ? "text-emerald-700" : "text-red-600"}`}>
+                  <p className={`text-[11px] mt-1.5 ${promoMessage.type === "success" ? "text-[#925a27]" : "text-red-700"}`}>
                     {promoMessage.text}
                   </p>
                 )}
@@ -200,7 +201,7 @@ export function CartPage() {
                   <span className="font-semibold text-fg">£{subtotal.toFixed(2)}</span>
                 </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-medium">
+                  <div className="flex justify-between text-[#925a27] font-medium">
                     <span>Discount</span>
                     <span>-£{discountAmount.toFixed(2)}</span>
                   </div>
@@ -213,11 +214,11 @@ export function CartPage() {
                 </div>
                 <div className="flex justify-between text-base font-bold text-fg pt-3 border-t border-[#e2d4c0]">
                   <span>Total</span>
-                  <span className="text-[#844d1e]">£{total.toFixed(2)}</span>
+                  <span className="text-[#925a27]">£{total.toFixed(2)}</span>
                 </div>
               </div>
 
-              <Button asChild className="w-full h-12 accent-gradient text-white text-sm font-semibold rounded-xl shadow-md gap-2">
+              <Button asChild className="w-full h-12 bg-[#925a27] hover:bg-[#7a491e] text-white text-sm font-semibold rounded-xl shadow-md gap-2">
                 <a href="/checkout">
                   <span>Proceed to Checkout</span>
                   <ArrowRight className="size-4" />
@@ -225,11 +226,11 @@ export function CartPage() {
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 text-emerald-900 text-xs flex items-center gap-3">
-              <ShieldCheck className="size-6 text-emerald-700 shrink-0" />
+            <div className="p-4 rounded-xl border border-[#e2d4c0] bg-[#faf6f0] text-[#2a1c12] text-xs flex items-center gap-3">
+              <ShieldCheck className="size-6 text-[#925a27] shrink-0" />
               <div>
                 <p className="font-semibold">Clinical Guarantee</p>
-                <p className="text-[11px] text-emerald-800/80">30-day returns and free advice from registered dentists.</p>
+                <p className="text-[11px] text-[#6b5848]">30-day returns and free advice from registered dentists.</p>
               </div>
             </div>
           </div>

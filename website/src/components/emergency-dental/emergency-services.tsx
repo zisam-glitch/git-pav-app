@@ -79,9 +79,9 @@ const EMERGENCY_CONDITIONS = [
 export function EmergencyServices() {
   return (
     <section className="py-20 sm:py-28 bg-[#fbf8f4]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="text-xs font-bold uppercase text-[#cf9448] mb-3">
+          <p className="text-xs font-bold uppercase text-[#925a27] mb-3">
             Comprehensive Triage
           </p>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12]">
@@ -103,16 +103,10 @@ export function EmergencyServices() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-5">
-                    <div
-                      className="size-14 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
-                      style={{ backgroundColor: `${cond.color}15` }}
-                    >
-                      <Icon className="size-7" style={{ color: cond.color }} />
+                    <div className="size-14 rounded-xl bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center transition-transform group-hover:scale-110">
+                      <Icon className="size-7" />
                     </div>
-                    <span
-                      className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full text-white"
-                      style={{ backgroundColor: cond.color }}
-                    >
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-[#925a27] text-white">
                       {cond.tag}
                     </span>
                   </div>
@@ -130,7 +124,7 @@ export function EmergencyServices() {
                   <span className="font-semibold text-[#925a27]">Emergency Slot</span>
                   <a
                     href="tel:07311871456"
-                    className="font-bold text-red-600 hover:underline flex items-center gap-1"
+                    className="font-bold text-[#925a27] hover:underline flex items-center gap-1"
                   >
                     Call Now &rarr;
                   </a>

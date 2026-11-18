@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ShieldCheck, X } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { loadAnalyticsIfConsented } from "@/lib/analytics";
 

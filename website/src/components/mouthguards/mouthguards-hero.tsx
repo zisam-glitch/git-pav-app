@@ -14,7 +14,7 @@ export function MouthguardsHero() {
       <div className="absolute inset-0 pointer-events-none">
         <img
           src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=1200&q=85"
-          alt=""
+          alt="Athlete wearing protective sports gear"
           className="kenburns h-full w-full object-cover opacity-35"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
@@ -22,7 +22,7 @@ export function MouthguardsHero() {
 
       <Spotlight />
 
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 flex flex-col justify-center items-center text-center">
+      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center">
         <p className="mb-4 text-xs font-medium text-primary">
           Custom Protection
         </p>

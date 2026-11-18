@@ -28,7 +28,7 @@ export function DenturesShowcase() {
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-white">
             Dentures Craftsmanship
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-white/60 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-white/80 leading-relaxed">
             See how modern materials and precision engineering produce lightweight, comfortable, and lifelike prosthetics.
           </p>
         </div>
@@ -53,6 +53,7 @@ export function DenturesShowcase() {
                       />
                       <button
                         type="button"
+                        aria-label={`Close ${demo.title}`}
                         onClick={() => setActiveVideo(null)}
                         className="absolute top-4 right-4 z-20 size-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black"
                       >
@@ -80,7 +81,7 @@ export function DenturesShowcase() {
                         <button
                           type="button"
                           onClick={() => setActiveVideo(demo.id)}
-                          className="size-16 rounded-full bg-[#cf9448]/90 text-white flex items-center justify-center shadow-xl hover:scale-110 hover:bg-[#cf9448] transition-transform"
+                          className="size-16 rounded-full bg-[#cf9448] text-[#1a1a1a] flex items-center justify-center shadow-xl hover:scale-110 hover:bg-[#c2873d] transition-transform"
                           aria-label={`Play ${demo.title}`}
                         >
                           <Play className="size-7 fill-current translate-x-0.5" />
@@ -94,7 +95,7 @@ export function DenturesShowcase() {
                   <h3 className="font-display text-xl font-bold text-white">
                     {demo.title}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-white/60 leading-relaxed">
+                  <p className="mt-2 text-xs sm:text-sm text-white/80 leading-relaxed">
                     {demo.desc}
                   </p>
                 </div>

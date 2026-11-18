@@ -11,7 +11,7 @@ const THEMES = {
     section: "py-24",
     heading: "font-display text-3xl sm:text-4xl",
     intro: "mt-4 text-muted",
-    card: "glass h-full rounded-xl p-8",
+    card: "h-full rounded-xl border border-border-soft bg-white p-8 shadow-soft",
     title: "font-display text-lg text-fg",
     text: "mt-3 text-sm leading-relaxed text-muted",
   },
@@ -36,7 +36,7 @@ export function TestimonialsSection({
   const columns = testimonials.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2";
   return (
     <section className={t.section} aria-labelledby="testimonials-heading">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 id="testimonials-heading" className={t.heading}>
             {TESTIMONIALS_HEADING}

@@ -12,11 +12,11 @@ export function AestheticsPremium() {
               Exclusively Utilizing Premium Medical-Grade Products
             </h2>
 
-            <p className="mt-5 text-white/70 text-sm sm:text-base leading-relaxed">
+            <p className="mt-5 text-white/85 text-sm sm:text-base leading-relaxed">
               At Pav Dental Aesthetics, your safety and natural outcome are paramount. We never compromise with unverified grey-market imports or low-grade substitutes. All injectable products are sourced exclusively from licensed UK pharmacies and FDA/CE-cleared global leaders including Juvéderm®, Botox®, and Profhilo®.
             </p>
 
-            <p className="mt-4 text-white/70 text-sm sm:text-base leading-relaxed">
+            <p className="mt-4 text-white/85 text-sm sm:text-base leading-relaxed">
               Because all aesthetic procedures are performed by GDC-registered dental surgeons, our clinicians possess five-plus years of rigorous university training in head and neck anatomy, vascular mapping, and sterile injection protocols.
             </p>
           </div>
@@ -31,7 +31,7 @@ export function AestheticsPremium() {
                   </div>
                   <div>
                     <p className="font-display text-lg font-bold">CareQuality</p>
-                    <p className="text-[10px] uppercase text-white/60">Commission</p>
+                    <p className="text-[10px] uppercase text-white/80">Commission</p>
                   </div>
                 </div>
                 <Lock className="size-4 text-[#cf9448]" />
@@ -44,12 +44,12 @@ export function AestheticsPremium() {
                 <h3 className="font-display text-xl sm:text-2xl font-bold leading-snug">
                   Regulated Medical Aesthetics Practice
                 </h3>
-                <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                <p className="text-xs text-white/80 mt-2 leading-relaxed">
                   Pav Dental is registered and monitored by the Care Quality Commission (CQC), guaranteeing that our infection control, clinician competence, and emergency readiness meet England's strictest healthcare standards.
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/60">
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/80">
                 <span>Location: Bradford, West Yorkshire</span>
                 <span className="font-bold text-emerald-400">Status: Registered</span>
               </div>

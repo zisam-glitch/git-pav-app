@@ -143,7 +143,7 @@ function ContactHero() {
         }}
       />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-2 lg:gap-20">
           {/* ---- Left column: headline + contact info ---- */}
           <Reveal>
@@ -297,7 +297,7 @@ function ContactHero() {
                             onChange={(e) =>
                               setFormData({ ...formData, firstName: e.target.value })
                             }
-                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-subtle/50 transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
                           />
                         </div>
                         <div className="space-y-2">
@@ -311,7 +311,7 @@ function ContactHero() {
                             onChange={(e) =>
                               setFormData({ ...formData, lastName: e.target.value })
                             }
-                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-subtle/50 transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
                           />
                         </div>
                       </div>
@@ -322,7 +322,7 @@ function ContactHero() {
                           Your email
                         </Label>
                         <div className="relative">
-                          <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-subtle/50" />
+                          <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
                           <Input
                             id="email"
                             type="email"
@@ -332,7 +332,7 @@ function ContactHero() {
                             onChange={(e) =>
                               setFormData({ ...formData, email: e.target.value })
                             }
-                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] pl-10 text-sm shadow-sm placeholder:text-subtle/50 transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                            className="h-11 rounded-xl border-border/50 bg-[#fdfcfa] pl-10 text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
                           />
                         </div>
                       </div>
@@ -354,7 +354,7 @@ function ContactHero() {
                             onChange={(e) =>
                               setFormData({ ...formData, phone: e.target.value })
                             }
-                            className="h-11 flex-1 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-subtle/50 transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                            className="h-11 flex-1 rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
                           />
                         </div>
                       </div>
@@ -373,7 +373,7 @@ function ContactHero() {
                           onChange={(e) =>
                             setFormData({ ...formData, message: e.target.value })
                           }
-                          className="min-h-[7rem] rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-subtle/50 transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                          className="min-h-[7rem] rounded-xl border-border/50 bg-[#fdfcfa] text-sm shadow-sm placeholder:text-muted transition-all duration-200 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
                         />
                       </div>
 
@@ -405,7 +405,7 @@ function ContactHero() {
                         )}
                       </Button>
 
-                      <p className="text-center text-[11px] leading-relaxed text-subtle/80">
+                      <p className="text-center text-[11px] leading-relaxed text-muted">
                         By contacting us, you agree to our{" "}
                         <a
                           href="#"
@@ -439,7 +439,7 @@ function ContactHero() {
 function DepartmentCards() {
   return (
     <section className="relative bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <Reveal>
           <div className="mb-12 max-w-lg">
@@ -493,7 +493,7 @@ function FaqSection() {
       {/* Background decoration */}
       <div className="pointer-events-none absolute left-0 top-1/2 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary/[0.04] to-transparent blur-[100px]" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
           {/* Left: heading + question prompt */}
           <Reveal>
@@ -514,11 +514,12 @@ function FaqSection() {
               {/* Quick email input */}
               <div className="mt-8 flex items-center gap-2.5">
                 <div className="relative flex-1">
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-subtle/50" />
+                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
                   <input
                     type="email"
+                    aria-label="Email address"
                     placeholder="Enter your email"
-                    className="h-12 w-full rounded-xl border border-border/50 bg-white pl-10 pr-4 text-sm text-fg shadow-sm placeholder:text-subtle/50 transition-all duration-200 focus:border-primary/40 focus:outline-none focus:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
+                    className="h-12 w-full rounded-xl border border-border/50 bg-white pl-10 pr-4 text-sm text-fg shadow-sm placeholder:text-muted transition-all duration-200 focus:border-primary/40 focus:outline-none focus:shadow-[0_0_0_3px_rgba(146,90,39,0.08)]"
                   />
                 </div>
                 <Button size="lg" className="shrink-0 text-sm font-semibold px-6">
@@ -591,7 +592,7 @@ function FaqSection() {
 function MapSection() {
   return (
     <section className="bg-white py-20 sm:py-28">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-[#faf8f5] px-3 py-1 text-xs font-semibold uppercase text-primary shadow-sm">
@@ -714,7 +715,7 @@ function MapSection() {
 function CtaBanner() {
   return (
     <section className="bg-[#faf8f5] py-16 sm:py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="relative isolate overflow-hidden rounded-xl accent-gradient px-6 py-14 text-center text-white sm:px-16 sm:py-20">
             {/* Layered decorative elements */}

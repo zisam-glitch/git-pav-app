@@ -269,15 +269,35 @@ export function titleFromSlug(slug: string): string {
 }
 
 /**
- * A blog post's head. The live posts are in PAGES; any other post is named
- * from its URL until the blog loads posts on the server.
+ * A blog post's head: the live post's title and description, written from its
+ * text because the live page had neither, and a canonical URL. A post that is
+ * not one of the live posts gets a page kept out of search.
  */
 export function blogPostHead(slug: string) {
   const path = `/blog/${slug}`;
   const known = pagesByPath[path];
-  if (known) return pageHead(path, known);
-  const name = titleFromSlug(slug);
-  return pageHead(path, { title: `${name} | Pav Dental Blog`, description: `${name}, from the Pav Dental blog.` });
+  return known ? pageHead(path, known) : noindexHead("Page not found | Pav Dental");
+}
+
+/**
+ * Structured data for a blog post (the live site has none): its headline,
+ * date, author and cover image, and the practice as publisher. Rendered in the
+ * post page's body, like the team and product structured data.
+ */
+export function blogPostingJsonLd(post: { slug: string; title: string; date: string; author: string; image: string }) {
+  const path = `/blog/${post.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: pagesByPath[path]?.description,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: { "@type": "Person", name: post.author },
+    publisher: { "@id": PRACTICE_JSON_LD["@id"] },
+    image: post.image,
+    mainEntityOfPage: canonicalUrl(path),
+  };
 }
 
 /**

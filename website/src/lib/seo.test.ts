@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   blogPostHead,
+  blogPostingJsonLd,
   MOVED_PATHS,
   noindexHead,
   PAGES,
@@ -95,10 +96,33 @@ describe("head tags", () => {
     assert.deepEqual(seoHead("/").links, [{ rel: "canonical", href: "https://www.pavdental.com/" }]);
   });
 
-  it("uses a live blog post's title, and names other posts and products from their URL", () => {
+  it("gives a live blog post its title and a canonical URL, and keeps other posts out of search results", () => {
     const live = "can-you-whiten-just-one-tooth-what-causes-single-tooth-discolouration";
-    assert.equal(blogPostHead(live).meta[0].title, PAGES[`/blog/${live}`].title);
-    assert.equal(blogPostHead("caring-for-new-dentures").meta[0].title, "Caring For New Dentures | Pav Dental Blog");
+    const head = blogPostHead(live) as { meta: Array<Record<string, any>>; links?: unknown };
+    assert.equal(head.meta[0].title, PAGES[`/blog/${live}`].title);
+    assert.deepEqual(head.links, [{ rel: "canonical", href: `https://www.pavdental.com/blog/${live}` }]);
+    const unknown = blogPostHead("caring-for-new-dentures") as { meta: Array<Record<string, any>> };
+    assert.deepEqual(unknown.meta[1], { name: "robots", content: "noindex" });
+  });
+
+  it("describes a blog post to search engines with the practice as publisher", () => {
+    const live = "can-you-whiten-just-one-tooth-what-causes-single-tooth-discolouration";
+    const data = blogPostingJsonLd({
+      slug: live,
+      title: "Can You Whiten Just One Tooth?",
+      date: "2026-09-22",
+      author: "Dr Bhojani",
+      image: "https://images.ctfassets.net/example/cover.png",
+    });
+    assert.equal(data["@type"], "BlogPosting");
+    assert.equal(data.datePublished, "2026-09-22");
+    assert.equal(data.author.name, "Dr Bhojani");
+    assert.equal(data.publisher["@id"], PRACTICE_JSON_LD["@id"]);
+    assert.equal(data.mainEntityOfPage, `https://www.pavdental.com/blog/${live}`);
+    assert.equal(data.description, PAGES[`/blog/${live}`].description);
+  });
+
+  it("names shop products from their URL until the shop loads them on the server", () => {
     assert.equal(productHead("whitening-strips").meta[0].title, "Whitening Strips | Pav Dental Shop");
     assert.equal(titleFromSlug("electric-toothbrushes"), "Electric Toothbrushes");
   });

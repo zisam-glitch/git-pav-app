@@ -29,7 +29,7 @@ function textsOf(member: (typeof TEAM_MEMBERS)[number]): string[] {
   for (const value of [member.languages, member.availability, member.contact]) if (value) texts.push(value);
   for (const block of member.blocks) {
     if (block.kind === "heading" || block.kind === "paragraph" || block.kind === "quote") texts.push(block.text);
-    if (block.kind === "list") texts.push(...block.items);
+    if (block.kind === "list") texts.push(...block.items.map((item) => (typeof item === "string" ? item : item.text)));
   }
   return texts;
 }

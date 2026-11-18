@@ -19,10 +19,10 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 17 | 0 | 0 | 0 | 2 |
 | S2 | [Service: Dentures](pages/service-dentures.md) | `/services/dentures` | 7 | 7 | 0 | 0 | 0 | 2 |
 | S2 | [Service: Mouthguards](pages/service-mouthguards.md) | `/services/mouthguards` | 7 | 7 | 0 | 0 | 0 | 1 |
-| S3 | [Service: Aesthetics](pages/service-aesthetics.md) | `/services/aesthetics` | 9 | 0 | 0 | 9 | 0 | 0 |
-| S3 | [Service: Cosmetic](pages/service-cosmetic.md) | `/services/cosmetic` | 9 | 0 | 0 | 9 | 0 | 0 |
-| S3 | [Service: Custom grillz](pages/service-custom-grillz.md) | `/services/custom-grillz` | 7 | 0 | 0 | 7 | 0 | 0 |
-| S3 | [Service: Whitening](pages/service-whitening.md) | `/services/whitening` | 5 | 0 | 0 | 5 | 0 | 0 |
+| S3 | [Service: Aesthetics](pages/service-aesthetics.md) | `/services/aesthetics` | 9 | 9 | 0 | 0 | 0 | 2 |
+| S3 | [Service: Cosmetic](pages/service-cosmetic.md) | `/services/cosmetic` | 9 | 9 | 0 | 0 | 0 | 3 |
+| S3 | [Service: Custom grillz](pages/service-custom-grillz.md) | `/services/custom-grillz` | 7 | 7 | 0 | 0 | 0 | 2 |
+| S3 | [Service: Whitening](pages/service-whitening.md) | `/services/whitening` | 5 | 5 | 0 | 0 | 0 | 4 |
 | S4 | [Contact us](pages/contact.md) | `/contact-us` | 2 | 0 | 0 | 2 | 0 | 0 |
 | S4 | [Pricing](pages/pricing.md) | `/pricing` | 6 | 0 | 0 | 6 | 0 | 0 |
 | S4 | [Service: Mobile dentistry](pages/service-mobile-dentistry.md) | `/services/mobile-dentistry` | 6 | 0 | 0 | 6 | 0 | 0 |
@@ -35,7 +35,7 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
 | SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **174** | **83** | **0** | **91** | **0** | **18** |
+| | **Total** | | **174** | **113** | **0** | **61** | **0** | **29** |
 
 ## Service: Emergency dental
 
@@ -189,15 +189,15 @@ Group S3 · `/services/aesthetics` · [page file](pages/service-aesthetics.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | aesthetics faq | — | todo |  |  |  |  |
-| 2 | aesthetics hero | — | todo |  |  |  |  |
-| 3 | aesthetics page (page composition) | — | todo |  |  |  |  |
-| 4 | aesthetics premium | — | todo |  |  |  |  |
-| 5 | aesthetics pricing | — | todo |  |  |  |  |
-| 6 | aesthetics safety banner | — | todo |  |  |  |  |
-| 7 | aesthetics safety | — | todo |  |  |  |  |
-| 8 | aesthetics treatments | — | todo |  |  |  |  |
-| 9 | aesthetics values | — | todo |  |  |  |  |
+| 1 | aesthetics faq | — (skipped: not on live page) | verified | ok | ok | same | Live `/services/aesthetics` has no FAQ section; previous 8 FAQs were unverified repo copy (cosmetic teeth, not facial aesthetics). Component returns `null` and is omitted from `AestheticsPage` |
+| 2 | aesthetics hero | Hims treatment split hero; https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97 | verified | [shot](shots/aesthetics/1440-hero.png) | [shot](shots/aesthetics/390-hero.png) | same | Preserved live H1 + subtitle verbatim; temporarily wired `/images/generated/home-facial-aesthetics.jpg` |
+| 3 | aesthetics page (page composition) | Hims service page rhythm + `TestimonialsSection` (`theme="warm"`) + `CtaBand` | verified | [shot](shots/aesthetics/1440-testimonials.png) | ok | same | Alternates `white` / `cream` / `brown` / `sand`; omits unverified `AestheticsFaq`; includes `AestheticsSafety` form |
+| 4 | aesthetics premium | Hims dark `brown` `SplitFeature` | verified | ok | ok | same | Restored live "We exclusively utilise premium-grade products of exceptional quality" copy + `tone="brown" className="bg-white/10"` Media |
+| 5 | aesthetics pricing | Hims fee tables in white rounded panels; https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb | verified | [shot](shots/aesthetics/1440-pricing.png) | ok | same | Replaced wrong repo prices with exact live prices (Dermal Fillers £100–£450, Botox £180–£400, Profhilo £249, Sosum £160) |
+| 6 | aesthetics safety banner | Hims `sand` bento tiles | verified | [shot](shots/aesthetics/1440-safety.png) | ok | same | Restored live "1. Age Limit", "2. Things to Know", and "3. How We are Keeping You Safe" (with live CQC statement) |
+| 7 | aesthetics safety | Hims lead-capture card | verified | [shot](shots/aesthetics/1440-contact.png) | ok | reworded | Uses `@/components/ui/select`, `useEnquiry`, `BOOKING_URL`, `PRACTICE_PHONE`; live treatments in `<Select>` |
+| 8 | aesthetics treatments | Hims `Tile` 3-col grid | verified | ok | ok | same | Restored all 6 live treatments (Microneedling, Botox, Dermal fillers, Chemical peels, Lip enhancement, Skin Rejuvenation) |
+| 9 | aesthetics values | Hims numbered `Tile` grid | verified | ok | ok | same | Restored all 3 live values (Wholehearted Commitment, Expert Guidance, Quality Assurance) |
 
 ## Service: Cosmetic
 
@@ -205,15 +205,15 @@ Group S3 · `/services/cosmetic` · [page file](pages/service-cosmetic.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | cosmetic about | — | todo |  |  |  |  |
-| 2 | cosmetic benefits | — | todo |  |  |  |  |
-| 3 | cosmetic contact | — | todo |  |  |  |  |
-| 4 | cosmetic faq | — | todo |  |  |  |  |
-| 5 | cosmetic financing | — | todo |  |  |  |  |
-| 6 | cosmetic hero | — | todo |  |  |  |  |
-| 7 | cosmetic page (page composition) | — | todo |  |  |  |  |
-| 8 | cosmetic procedures | — | todo |  |  |  |  |
-| 9 | cosmetic showcase | — | todo |  |  |  |  |
+| 1 | cosmetic about | Hims SplitFeature on cream; https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90 | verified | ok | ok | same | Replaced Unsplash/video and invented 3-step copy with live "What is Cosmetic Dentistry?" copy + Media slot |
+| 2 | cosmetic benefits | Hims cream tile grid | verified | ok | ok | same | Restored all 5 verbatim live benefits in numbered white tiles |
+| 3 | cosmetic contact | Hims lead-capture card | verified | [shot](shots/cosmetic/1440-contact.png) | ok | same | Uses `@/components/ui/select`, `useEnquiry`, `BOOKING_URL`, `PRACTICE_PHONE`; wired into `cosmetic-page.tsx` |
+| 4 | cosmetic faq | Hims FaqList; https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb | verified | [shot](shots/cosmetic/1440-faq.png) | ok | reworded | Restored all 12 live Q&As verbatim inside `FaqList` |
+| 5 | cosmetic financing | Hims cream panel + numbered tiles | verified | [shot](shots/cosmetic/1440-financing.png) | ok | same | Replaced invented price/APR table with live "Costs and Financing" + "How to Choose a General Dentist" |
+| 6 | cosmetic hero | Hims treatment split hero; https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97 | verified | [shot](shots/cosmetic/1440-hero.png) | [shot](shots/cosmetic/390-hero.png) | reworded | Preserved live H1 + lead verbatim; `BookButton` + `CallButton` + Media placeholder |
+| 7 | cosmetic page (page composition) | Hims service page rhythm + `CtaBand` | verified | ok | ok | same | Alternates `white` / `cream` / `brown`; includes `CosmeticContact` and closing `CtaBand` |
+| 8 | cosmetic procedures | Hims `Carousel` of `Tile` cards; https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb | verified | [shot](shots/cosmetic/1440-procedures.png) | ok | same | All 5 live procedures (Tooth Contouring, Teeth Whitening, Porcelain Veneers, Dental Implants, Dental Bonding) |
+| 9 | cosmetic showcase | Hims dark `brown` `SplitFeature` + glass list | verified | ok | ok | same | Uses `tone="brown" className="bg-white/10"` placeholder + live Procedures links |
 
 ## Service: Custom grillz
 
@@ -221,13 +221,13 @@ Group S3 · `/services/custom-grillz` · [page file](pages/service-custom-grillz
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | grillz contact | — | todo |  |  |  |  |
-| 2 | grillz faq | — | todo |  |  |  |  |
-| 3 | grillz hero | — | todo |  |  |  |  |
-| 4 | grillz page (page composition) | — | todo |  |  |  |  |
-| 5 | grillz pricing | — | todo |  |  |  |  |
-| 6 | grillz process | — | todo |  |  |  |  |
-| 7 | grillz styles | — | todo |  |  |  |  |
+| 1 | grillz contact | Hims lead-capture card (capture y11900) | verified | [shot](shots/custom-grillz/1440-contact.png) | ok | same | Rebuilt with Hims rounded cream card, shared Input/Textarea/Label/Select, and `useEnquiry("Custom grillz")` |
+| 2 | grillz faq | Hims FAQ accordion ([Mobbin](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb)) | verified | ok | ok | same | Omitted from page (returns null): live page has no FAQ section; repo-only FAQs logged below |
+| 3 | grillz hero | Hims split hero ([Mobbin](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90), [Mobbin](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97)) | verified | [shot](shots/custom-grillz/1440-hero.png) | [shot](shots/custom-grillz/390-hero.png) | same | Split hero with live copy verbatim; removed Unsplash URL, Spotlight, and kenburns |
+| 4 | grillz page (page composition) | Hims service page flow | verified | ok | ok | same | Composes Hero, Styles, Process, Guarantee/Delivery, Contact, and navy CtaBand |
+| 5 | grillz pricing | Hims dark brown feature band (capture y540) | verified | [shot](shots/custom-grillz/1440-pricing.png) | ok | same | Removed invented price tables (£95–£780); rebuilt around live One Year Guarantee & Worldwide Delivery |
+| 6 | grillz process | Hims numbered cream tiles | verified | ok | ok | same | Rebuilt as 4 numbered cream tiles for live "Why Choose Pav Dental Grillz?" points |
+| 7 | grillz styles | Hims treatment details ([Mobbin](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb)) | verified | [shot](shots/custom-grillz/1440-styles.png) | ok | same | Replaced invented style specs with live Gold, Silver, Diamond, and Perfect Fit tiles verbatim |
 
 ## Service: Whitening
 
@@ -235,11 +235,11 @@ Group S3 · `/services/whitening` · [page file](pages/service-whitening.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | whitening comparison | — | todo |  |  |  |  |
-| 2 | whitening faq | — | todo |  |  |  |  |
-| 3 | whitening page (page composition) | — | todo |  |  |  |  |
-| 4 | whitening products | — | todo |  |  |  |  |
-| 5 | whitening visualizer | — | todo |  |  |  |  |
+| 1 | whitening comparison | Hims treatment pricing/info card ([Mobbin](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb)) | verified | [shot](shots/whitening/1440-comparison.png) | ok | same | Desktop table + mobile stacked cards comparing the 3 live ranges (£65, £295, £495) |
+| 2 | whitening faq | Hims FAQ accordion ([Mobbin](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb)) | verified | [shot](shots/whitening/1440-faq.png) | ok | same | Replaced invented FAQs with the 10 distinct verbatim live Q&As |
+| 3 | whitening page (page composition) | Hims split hero ([Mobbin](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90), [Mobbin](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97)) | verified | [shot](shots/whitening/1440-hero.png) | [shot](shots/whitening/390-hero.png) | same | Added Hims split hero, Informed Consent for Tooth Whitening panel, and Get In Touch CtaBand |
+| 4 | whitening products | Hims treatment details ([Mobbin](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97)) | verified | ok | ok | same | Rebuilt with Award Winning Whitening heading and 3 live products (£65, £295, £495) verbatim |
+| 5 | whitening visualizer | Hims cream tile & pill controls | verified | [shot](shots/whitening/1440-visualizer.png) | ok | reworded | Kept interactive VITA shade fan deck; removed invented £99 UV kit & shade-lift promises |
 
 ## Contact us
 

@@ -1,189 +1,70 @@
-import React from "react";
-import { ArrowRight, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
 
-const TIERS = [
+const CHOOSING_FACTORS = [
   {
-    id: "bonding",
-    label: "Composite Bonding",
-    price: "From £150",
-    monthly: "From £35/mo (0% APR)",
-    description:
-      "Direct aesthetic composite sculpting for chipped edges, black triangles, and minor shape corrections in a single visit.",
-    includes: [
-      "No enamel reduction",
-      "Single-visit completion",
-      "Full polish & shade match",
-      "12-month treatment review",
-    ],
-    highlight: false,
+    title: "Experience and Qualifications:",
+    desc: "Look for a dentist with specialized training and a portfolio of before-and-after cases.",
   },
   {
-    id: "veneers",
-    label: "Porcelain Veneers",
-    price: "From £595",
-    monthly: "From £59/mo (0% APR)",
-    description:
-      "Bespoke laboratory-crafted E.max or feldspathic ceramic veneers for permanent symmetry, stain resistance, and high-gloss vitality.",
-    includes: [
-      "Digital 3D smile scan",
-      "Trial smile physical mock-up",
-      "Master ceramist layering",
-      "15–20+ year expected lifespan",
-    ],
-    highlight: true,
+    title: "Technology:",
+    desc: "Opt for a clinic that uses the latest technology for more precise and effective treatments.",
   },
   {
-    id: "implants",
-    label: "Dental Implants",
-    price: "From £1,850",
-    monthly: "From £115/mo (0% APR)",
-    description:
-      "Permanent replacement for single or multiple missing teeth with titanium osseointegrated fixture and precision ceramic crown.",
-    includes: [
-      "3D CBCT radiological scan",
-      "Computer-guided placement",
-      "Zirconia / porcelain crown",
-      "Lifetime implant guarantee",
-    ],
-    highlight: false,
+    title: "Reviews and Testimonials:",
+    desc: "Customer reviews can provide valuable insights into patient satisfaction and quality of service.",
   },
-];
+  {
+    title: "Consultation:",
+    desc: "A thorough initial consultation is a good sign of a dentist’s professionalism and concern for your needs.",
+  },
+] as const;
 
 export function CosmeticFinancing() {
   return (
-    <section id="financing" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Transparent Fees &amp; 0% APR Financing
-          </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Spread the cost of your smile transformation with 0% interest-free monthly instalments over 12 to 24 months. No deposit required on qualifying plans.
-          </p>
+    <Section id="financing" theme="white" aria-labelledby="cosmetic-financing-heading">
+      <div className="rounded-xl bg-tile-cream p-6 md:p-10">
+        <div className="grid items-center gap-6 md:grid-cols-[1.4fr_auto]">
+          <div>
+            <div id="cosmetic-financing-heading">
+              <Heading size="h2-md" accent="Financing" tone="terracotta" inline>
+                Costs and
+              </Heading>
+            </div>
+            <p className="mt-4 max-w-3xl text-lead text-muted">
+              The cost of cosmetic dentistry varies widely depending on the type of procedure, the
+              expertise of the dentist, and geographic location. While many cosmetic procedures are
+              not covered by dental insurance, financing options are often available.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 md:justify-end">
+            <BookButton>Book Appointment</BookButton>
+            <ButtonLink to="/pricing" variant="outline">
+              View Pricing
+            </ButtonLink>
+          </div>
         </div>
-
-        {/* Pricing & Financing Table */}
-        <div className="overflow-x-auto rounded-xl border border-[#e2d4c0] bg-white shadow-sm">
-          <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
-            <thead>
-              <tr className="border-b border-[#e2d4c0] text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
-                <th className="py-5 px-6 bg-white w-1/4">Treatment</th>
-                {TIERS.map((t) => (
-                  <th
-                    key={t.id}
-                    className={`py-5 px-6 w-1/4 ${
-                      t.highlight
-                        ? "bg-[#faf6f0] border-x border-[#e2d4c0] text-[#925a27] relative"
-                        : "bg-white"
-                    }`}
-                  >
-                    {t.highlight && (
-                      <div className="inline-block bg-[#925a27] text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                        Most Popular
-                      </div>
-                    )}
-                    <div>{t.label}</div>
-                    <div
-                      className={`text-base sm:text-lg font-display font-bold mt-0.5 ${
-                        t.highlight ? "text-[#925a27]" : "text-[#2a1c12]"
-                      }`}
-                    >
-                      {t.price}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#e8ddd0]/70 text-[#2a1c12]">
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">0% APR Plan</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 font-medium text-[#6b5848] ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0] text-[#925a27] font-bold" : ""
-                    }`}
-                  >
-                    {t.monthly}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Description</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 text-[#6b5848] text-xs leading-relaxed ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""
-                    }`}
-                  >
-                    {t.description}
-                  </td>
-                ))}
-              </tr>
-              {[0, 1, 2, 3].map((idx) => (
-                <tr key={idx}>
-                  <td className="py-4 px-6 font-bold text-[#2a1c12]">
-                    {idx === 0 ? "Includes" : ""}
-                  </td>
-                  {TIERS.map((t) => (
-                    <td
-                      key={t.id}
-                      className={`py-4 px-6 ${
-                        t.highlight
-                          ? "bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800"
-                          : "text-[#2a1c12]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
-                        {t.includes[idx]}
-                      </span>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-              <tr className="bg-[#fffdf9]">
-                <td className="py-5 px-6 font-bold text-[#2a1c12]">Action</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-5 px-6 ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""
-                    }`}
-                  >
-                    {t.highlight ? (
-                      <Button
-                        asChild
-                        className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95"
-                      >
-                        <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
-                          Book Consultation <ArrowRight className="size-3.5" />
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
-                      >
-                        <a href={BOOKING_URL}>Book Consultation</a>
-                      </Button>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p className="mt-8 text-center text-xs text-[#9a8674] max-w-2xl mx-auto">
-          Written quotes provided at clinical assessment. 0% APR finance subject to status and FCA regulation. Zero upfront deposit on approved plans.
-        </p>
       </div>
-    </section>
+
+      <div className="mt-14">
+        <div className="max-w-2xl">
+          <Heading as="h3" size="h3" accent="General Dentist" tone="terracotta" inline>
+            How to Choose a
+          </Heading>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {CHOOSING_FACTORS.map((factor, index) => (
+            <Tile key={factor.title} tone="cream" className="p-6">
+              <span className="text-small font-medium text-terracotta tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <p className="mt-3 text-body text-muted">
+                <strong className="font-medium text-fg">{factor.title}</strong> {factor.desc}
+              </p>
+            </Tile>
+          ))}
+        </div>
+      </div>
+    </Section>
   );
 }

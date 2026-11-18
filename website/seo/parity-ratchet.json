@@ -1,10 +1,10 @@
 {
   "/": {
-    "coverage": 0.458,
+    "coverage": 0.875,
     "fails": []
   },
   "/about": {
-    "coverage": 0.16,
+    "coverage": 0.76,
     "fails": []
   },
   "/blog": {
@@ -44,7 +44,7 @@
     "fails": []
   },
   "/contact-us": {
-    "coverage": 0.333,
+    "coverage": 1,
     "fails": []
   },
   "/cookie-policy": {
@@ -68,7 +68,7 @@
     "fails": []
   },
   "/pricing": {
-    "coverage": 0.297,
+    "coverage": 0.953,
     "fails": []
   },
   "/privacy-policy": {
@@ -80,23 +80,23 @@
     "fails": []
   },
   "/services/aesthetics": {
-    "coverage": 0.34,
+    "coverage": 1,
     "fails": []
   },
   "/services/cosmetic": {
-    "coverage": 0.071,
+    "coverage": 1,
     "fails": []
   },
   "/services/custom-grillz": {
-    "coverage": 0,
+    "coverage": 0.889,
     "fails": []
   },
   "/services/dentures": {
-    "coverage": 0.026,
+    "coverage": 0.868,
     "fails": []
   },
   "/services/emergency-dental": {
-    "coverage": 0.05,
+    "coverage": 0.88,
     "fails": []
   },
   "/services/finance": {
@@ -104,19 +104,19 @@
     "fails": []
   },
   "/services/general-dentistry": {
-    "coverage": 0.571,
+    "coverage": 0.802,
     "fails": []
   },
   "/services/mobile-dentistry": {
-    "coverage": 0.706,
+    "coverage": 0.941,
     "fails": []
   },
   "/services/mouthguards": {
-    "coverage": 0.868,
+    "coverage": 1,
     "fails": []
   },
   "/services/oral-hygiene": {
-    "coverage": 0.164,
+    "coverage": 1,
     "fails": []
   },
   "/services/regestration": {
@@ -124,19 +124,19 @@
     "fails": []
   },
   "/services/root-canal": {
-    "coverage": 0.111,
+    "coverage": 1,
     "fails": []
   },
   "/services/tooth-extraction": {
-    "coverage": 0.029,
+    "coverage": 1,
     "fails": []
   },
   "/services/virtual-dentistry": {
-    "coverage": 0.534,
+    "coverage": 0.904,
     "fails": []
   },
   "/services/whitening": {
-    "coverage": 0.036,
+    "coverage": 1,
     "fails": []
   },
   "/shop": {
@@ -180,7 +180,7 @@
     "fails": []
   },
   "/terms-and-condition": {
-    "coverage": 0.01,
+    "coverage": 0,
     "fails": []
   },
   "/vacancies": {

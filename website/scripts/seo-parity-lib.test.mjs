@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  chromeLinks,
   comparePage,
   coverage,
   decodeEntities,
@@ -168,6 +169,34 @@ describe("comparePage", () => {
     const exception = { minCoverage: 0, reason: "keeps the reviewed text" };
     assert.equal(codes(run({ cover, exception, minCoverage: 0 }), "note").includes("coverage"), false);
     assert.deepEqual(codes(run({ cover, exception: { minCoverage: 0.5 }, minCoverage: 0.5 }), "fail"), ["coverage"]);
+  });
+
+  it("finds the links the live site carries on nearly every page", () => {
+    const pages = [
+      { internalLinks: ["/a", "/b", "/c"] },
+      { internalLinks: ["/a", "/b"] },
+      { internalLinks: ["/a", "/b", "/d"] },
+      { internalLinks: ["/a", "/b"] },
+    ];
+    assert.deepEqual(chromeLinks(pages), ["/a", "/b"]);
+    assert.deepEqual(chromeLinks(pages, 0.2), ["/a", "/b", "/c", "/d"]);
+  });
+
+  it("fails on a missing header or footer link, and only notes any other missing link", () => {
+    const withLinks = (links) => ({ ...page, internalLinks: links });
+    const result = run({ page: withLinks(["/"]), chrome: ["/blog"] });
+    assert.deepEqual(codes(result, "fail"), ["chrome-links"]);
+    assert.deepEqual(result.find((issue) => issue.code === "chrome-links").detail, ["/blog"]);
+    assert.deepEqual(codes(run({ page: withLinks(["/"]), chrome: [] }), "fail"), []);
+    const note = run({ page: withLinks(["/", "/blog"]), chrome: [] }).find((issue) => issue.code === "links");
+    assert.deepEqual(note.detail, ["/pricing"]);
+  });
+
+  it("does not count a link to a page the owner approved leaving out", () => {
+    const withLinks = (links) => ({ ...page, internalLinks: links });
+    const exceptions = { "/blog": { missing: true }, "/pricing": { redirect: "/cost" } };
+    assert.deepEqual(codes(run({ page: withLinks(["/"]), chrome: ["/blog", "/pricing"], exceptions }), "fail"), ["chrome-links"]);
+    assert.deepEqual(codes(run({ page: withLinks(["/", "/cost"]), chrome: ["/blog", "/pricing"], exceptions }), "fail"), []);
   });
 
   it("expects the canonical on www, with a trailing slash only for the home page", () => {

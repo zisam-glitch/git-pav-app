@@ -2,8 +2,6 @@ import {
   AlertCircle,
   ChevronDown,
   ChevronRight,
-  ClipboardList,
-  CreditCard,
   Crown,
   Gem,
   Menu,
@@ -22,6 +20,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { NAV_LINKS } from "@/content/site-links";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 type LinkItem = {
@@ -35,18 +34,6 @@ type ServiceCategory = {
   title: string;
   items: LinkItem[];
 };
-
-const NAV_LINKS = [
-  { href: "#top", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/contact-us", label: "Contact" },
-  { href: "/team", label: "Team" },
-  { href: "/shop", label: "Shop" },
-  { href: "/petition", label: "Petition" },
-  { href: "/vacancies", label: "Vacancies" },
-  { href: "/blog", label: "Blogs" },
-];
 
 const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
@@ -152,23 +139,6 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
       },
     ],
   },
-  {
-    title: "Patient Support",
-    items: [
-      {
-        title: "Finance",
-        href: "#services",
-        description: "Flexible payment options",
-        icon: CreditCard,
-      },
-      {
-        title: "Registration",
-        href: "#services",
-        description: "New patient registration",
-        icon: ClipboardList,
-      },
-    ],
-  },
 ];
 
 export function Header() {
@@ -230,17 +200,17 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* Logo */}
         <a
-          href="#top"
+          href="/"
           className="flex shrink-0 items-center gap-2 font-medium"
           onClick={() => setMobileOpen(false)}
         >
-          <img className="h-8 w-auto" src="https://res.cloudinary.com/db1i46uiv/image/upload/v1723411040/PAV_LOGO_2-01_r2ecmh.png" alt="" />
+          <img className="h-8 w-auto" src="https://res.cloudinary.com/db1i46uiv/image/upload/v1723411040/PAV_LOGO_2-01_r2ecmh.png" alt="Pav Dental" />
         </a>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
           <a
-            href="#top"
+            href="/"
             className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
           >
             Home
@@ -320,6 +290,15 @@ export function Header() {
                   </div>
 
                   <div className="mt-4 border-t border-border/60 pt-3">
+                    <p className="px-2 pb-2 text-sm">
+                      <a
+                        href="/services"
+                        className="font-medium text-fg underline-offset-2 hover:underline"
+                        onClick={() => setServicesOpen(false)}
+                      >
+                        View all services
+                      </a>
+                    </p>
                     <p className="px-2 text-sm text-muted">
                       Not sure which service you need?{" "}
                       <a
@@ -342,7 +321,7 @@ export function Header() {
               href={l.href}
               className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
             >
-              {l.label}
+              {l.name}
             </a>
           ))}
         </nav>
@@ -380,7 +359,7 @@ export function Header() {
       >
         <div className="flex flex-col gap-1 px-4 py-3">
           <a
-            href="#top"
+            href="/"
             className="rounded-xl px-3 py-2.5 text-sm font-medium"
             onClick={() => setMobileOpen(false)}
           >
@@ -399,6 +378,13 @@ export function Header() {
             <p className="mb-1 px-3 text-[11px] font-semibold text-subtle">
               Services
             </p>
+            <a
+              href="/services"
+              className="block rounded-xl px-3 py-2 text-sm font-medium"
+              onClick={() => setMobileOpen(false)}
+            >
+              View all services
+            </a>
             {SERVICE_CATEGORIES.map((category) => (
               <MobileServiceCategory
                 key={category.title}
@@ -415,7 +401,7 @@ export function Header() {
               className="rounded-xl px-3 py-2.5 text-sm font-medium"
               onClick={() => setMobileOpen(false)}
             >
-              {l.label}
+              {l.name}
             </a>
           ))}
 

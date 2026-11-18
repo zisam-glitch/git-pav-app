@@ -1,27 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { blogPostHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
-import { BlogDetail } from "@/components/blog/blog-detail";
+import { BlogPostPage } from "@/components/blog/blog-post-page";
+import { findBlogPost } from "@/content/blog-posts";
 
+// "blog_" keeps this a sibling of /blog rather than a child of it, so /blog does
+// not need to render an Outlet.
 export const Route = createFileRoute("/blog_/$slug")({
+  loader: ({ params }) => {
+    const post = findBlogPost(params.slug);
+    if (!post) throw notFound();
+    return post;
+  },
   head: ({ params }) => blogPostHead(params.slug),
-  component: BlogDetailRoute,
+  component: BlogPostRoute,
 });
 
-function BlogDetailRoute() {
-  const { slug } = Route.useParams();
+function BlogPostRoute() {
+  const post = Route.useLoaderData();
 
   return (
     <main className="min-h-screen bg-[#fffdf9] text-fg">
       <ScrollProgress />
       <Header />
-      <div className="pt-16">
-        <BlogDetail slug={slug} />
-      </div>
+      <BlogPostPage post={post} />
       <Footer />
     </main>
   );
 }
-

@@ -136,10 +136,12 @@ export function proxyFromEnv(env = process.env) {
 
 /**
  * Runs inside the page. The page's content as blocks in reading order, for
- * porting it word for word: headings, paragraphs, list items, links, buttons
- * and images with their alt text. The site header and footer are left out,
- * and so is nothing else: text hidden in a collapsed accordion (FAQ answers)
- * is kept, because search engines read it too.
+ * porting it word for word: headings, paragraphs, list items, links, buttons,
+ * tables (with their rows) and images with their alt text. A block that holds
+ * links inside its text lists them in `links`, with the text each one wraps,
+ * so a ported paragraph keeps its internal links. The site header and footer
+ * are left out, and so is nothing else: text hidden in a collapsed accordion
+ * (FAQ answers) is kept, because search engines read it too.
  */
 export function extractContentBlocks() {
   const CHROME = "header, footer, .st-site-header, .st-site-footer, script, style, noscript, svg, template";
@@ -170,6 +172,15 @@ export function extractContentBlocks() {
       if (src) blocks.push({ tag: "img", src: new URL(src, location.href).href, alt: el.getAttribute("alt") });
       continue;
     }
+    if (el.tagName === "TABLE") {
+      const rows = Array.from(el.rows, (row) => Array.from(row.cells, (cell) => textOf(cell).replace(/\n/g, " ")));
+      if (rows.length > 0) {
+        taken.add(el);
+        const header = Boolean(el.tHead) || Array.from(el.rows[0]?.cells ?? []).every((cell) => cell.tagName === "TH");
+        blocks.push({ tag: "table", header, rows });
+      }
+      continue;
+    }
     const ownText = Array.from(el.childNodes).some((node) => node.nodeType === 3 && node.textContent.trim());
     if (!ownText && !BLOCK.test(el.tagName)) continue;
     const text = textOf(el);
@@ -177,6 +188,13 @@ export function extractContentBlocks() {
     taken.add(el);
     const block = { tag: el.tagName.toLowerCase(), text };
     if (el.tagName === "A" && el.getAttribute("href")) block.href = new URL(el.getAttribute("href"), location.href).href;
+    if (el.tagName !== "A") {
+      const links = Array.from(el.querySelectorAll("a[href]"), (a) => ({
+        text: textOf(a).replace(/\n/g, " "),
+        href: new URL(a.getAttribute("href"), location.href).href,
+      })).filter((link) => link.text);
+      if (links.length > 0) block.links = links;
+    }
     blocks.push(block);
   }
   return blocks;

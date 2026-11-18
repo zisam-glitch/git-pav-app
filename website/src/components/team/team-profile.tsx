@@ -11,24 +11,28 @@ const LINK_CLASS = "font-semibold text-[#925a27] underline underline-offset-2 ho
 
 /** Turns the practice's phone number and email inside a line of text into links, and leaves the rest as written. */
 function withContactLinks(text: string): ReactNode[] {
-  const pattern = new RegExp(`(${PRACTICE_PHONE.replace(/ /g, "\\s")}|${PRACTICE_EMAIL.replace(/\./g, "\\.")})`);
-  return text.split(pattern).map((part, index) => {
-    if (part === PRACTICE_PHONE) {
-      return (
-        <a key={index} href={PRACTICE_PHONE_HREF} className={LINK_CLASS}>
-          {part}
-        </a>
-      );
+  const parts: ReactNode[] = [];
+  let rest = text;
+  while (rest) {
+    // The nearest of the two, found by plain text search (no pattern is built from them).
+    const hits = [PRACTICE_PHONE, PRACTICE_EMAIL]
+      .map((token) => ({ token, at: rest.indexOf(token) }))
+      .filter((hit) => hit.at !== -1);
+    if (hits.length === 0) {
+      parts.push(rest);
+      break;
     }
-    if (part === PRACTICE_EMAIL) {
-      return (
-        <a key={index} href={`mailto:${PRACTICE_EMAIL}`} className={LINK_CLASS}>
-          {part}
-        </a>
-      );
-    }
-    return part;
-  });
+    const first = hits.reduce((nearest, hit) => (hit.at < nearest.at ? hit : nearest));
+    if (first.at > 0) parts.push(rest.slice(0, first.at));
+    const href = first.token === PRACTICE_PHONE ? PRACTICE_PHONE_HREF : `mailto:${PRACTICE_EMAIL}`;
+    parts.push(
+      <a key={parts.length} href={href} className={LINK_CLASS}>
+        {first.token}
+      </a>,
+    );
+    rest = rest.slice(first.at + first.token.length);
+  }
+  return parts;
 }
 
 function Fact({ icon: Icon, label, children }: { icon: typeof Clock; label: string; children: ReactNode }) {

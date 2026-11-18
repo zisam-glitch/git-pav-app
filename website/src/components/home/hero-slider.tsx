@@ -1,143 +1,159 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Spotlight } from "./spotlight";
-import { BOOKING_URL, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+import { ChevronRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { BookButton, ButtonLink, CallButton, Heading, Media, Section } from "@/components/hims";
+import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+import { ACCENT_TEXT } from "@/components/hims/tones";
 
-const SLIDES = [
+const CATEGORY_TILES = [
   {
-    id: "check",
-    kicker: "Accessible smiles",
-    title: "Complete dental check-up from £35",
-    body: "Only £7.60 more than the NHS fee — with same-day access and premium care in Bradford.",
-    image: "/media/hero.jpg",
-    cta: "Book check-up",
-    href: BOOKING_URL,
+    title: "Mobile",
+    accent: "Dentistry",
+    accentTone: "terracotta" as const,
+    to: "/services/mobile-dentistry" as const,
+    mediaAlt: "Portable dental equipment for mobile home visits",
   },
   {
-    id: "emergency",
-    kicker: "Open every hour",
-    title: "24/7 emergency dentistry",
-    body: "Pain, trauma, or a lost restoration — our team is on call including bank holidays.",
-    image: "/media/hero1.jpg",
-    cta: "Call now",
-    href: PRACTICE_PHONE_HREF,
+    title: "Facial",
+    accent: "Aesthetics",
+    accentTone: "copper" as const,
+    to: "/services/aesthetics" as const,
+    mediaAlt: "Facial aesthetics consultation suite at Pav Dental",
   },
   {
-    id: "smile",
-    kicker: "Aesthetics",
-    title: "Whitening, veneers, and calm cosmetic care",
-    body: "Digital imaging and considered treatment plans — never rushed, never upsold.",
-    image: "/media/hero2.jpg",
-    cta: "View services",
-    href: "/services",
+    title: "Tooth",
+    accent: "Extraction",
+    accentTone: "terracotta" as const,
+    to: "/services/tooth-extraction" as const,
+    mediaAlt: "Gentle oral surgery and extraction instruments",
+  },
+  {
+    title: "Teeth",
+    accent: "Whitening",
+    accentTone: "terracotta" as const,
+    to: "/services/whitening" as const,
+    mediaAlt: "Professional teeth whitening kit on cream surface",
   },
 ];
 
 export function HeroSlider() {
-  const [index, setIndex] = useState(0);
-  const slide = SLIDES[index]!;
-
-  useEffect(() => {
-    const t = window.setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, 7000);
-    return () => window.clearInterval(t);
-  }, []);
-
   return (
-    <section
-      id="top"
-      className="relative isolate min-h-[100svh] overflow-hidden bg-bg pt-16"
-      aria-roledescription="carousel"
-      aria-label="Clinic highlights"
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={slide.id}
-          className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+    <Section id="top" theme="white" space="none" className="pt-6 pb-8 md:pt-8 md:pb-12">
+      <div className="max-w-3xl">
+        <Heading as="h1" size="hero" accent="that you can rely on" tone="terracotta">
+          Exceptional dentistry
+        </Heading>
+        <p className="mt-4 text-lead text-muted">
+          24-hour private and emergency dental care in Bradford — complete check-ups from £35,
+          cosmetic care, and same-day urgent access.
+        </p>
+      </div>
+
+      {/* Featured Tiles Row: 2 large rounded-xl tiles with tight 4px (gap-1) Hims bento gap */}
+      <div className="mt-6 grid grid-cols-2 gap-1 md:mt-8">
+        <a
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ backgroundImage: "linear-gradient(to right, #492C00, #7B5720)" }}
+          className="group relative flex min-h-[227px] flex-col justify-between overflow-hidden rounded-xl p-4 text-white t-lift md:min-h-[199px] md:p-6"
         >
-          <img
-            src={slide.image}
-            alt=""
-            className="kenburns h-full w-full object-cover opacity-55"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/80 to-bg/25" />
-        </motion.div>
-      </AnimatePresence>
-
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div>
-          <p className="mb-4 text-xs font-medium text-primary">
-            {slide.kicker}
-          </p>
-          <AnimatePresence mode="wait">
-            <motion.h1
-              key={slide.title}
-              initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.45 }}
-              className="max-w-xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl"
-            >
-              {slide.title.replace("£35", "")}
-              {slide.title.includes("£35") ? <span className="text-primary">£35</span> : null}
-            </motion.h1>
-          </AnimatePresence>
-          <p className="mt-5 max-w-md text-base text-muted sm:text-lg">{slide.body}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <a href={slide.href}>{slide.cta}</a>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <a href="#services">Explore care</a>
-            </Button>
+          <div>
+            <p className="text-caption text-white/80">ACCESSIBLE SMILES</p>
+            <h2 className="mt-1.5 text-h4 text-white">
+              Complete Dental Check-Up <span className="text-gold">£35</span>
+            </h2>
+            <p className="mt-2 hidden text-small text-white/80 sm:block">
+              Only £7.60 more than the NHS fee (£27.40), with faster access and premium service
+            </p>
           </div>
-          <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-            <li>GDC registered</li>
-            <li>Same-day appointments</li>
-            <li>West Yorkshire & Mobile Clinic</li>
-          </ul>
-        </div>
-
-        <div className="relative hidden h-[420px] overflow-hidden rounded-2xl glass shadow-lg lg:block">
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={slide.id}
-              src={slide.image}
-              alt=""
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full w-full object-cover"
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <span className="text-label text-gold">Book - £35</span>
+            <ChevronRight
+              aria-hidden
+              className="size-5 shrink-0 text-white transition-transform duration-200 group-hover:translate-x-0.5"
             />
-          </AnimatePresence>
-        </div>
+          </div>
+        </a>
+
+        <Link
+          to="/services/emergency-dental"
+          className="group relative flex min-h-[227px] flex-col justify-between overflow-hidden rounded-xl bg-navy-deep p-4 text-white t-lift md:min-h-[199px] md:p-6"
+        >
+          <div>
+            <p className="text-caption text-white/70">24/7 URGENT CARE</p>
+            <h2 className="mt-1.5 text-h4 text-white">
+              Emergency <span className="text-butter">Dentist</span>
+            </h2>
+            <p className="mt-2 hidden text-small text-white/70 sm:block">
+              Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
+            </p>
+            <p className="mt-1.5 text-caption text-white/80 sm:text-small">
+              £45 consultation · £90* out-of-hours consultation
+            </p>
+          </div>
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <span className="text-label text-butter">Emergency Dental</span>
+            <ChevronRight
+              aria-hidden
+              className="size-5 shrink-0 text-white transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </div>
+        </Link>
       </div>
 
-      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3">
-        <div className="flex gap-2" role="tablist" aria-label="Slides">
-          {SLIDES.map((s, i) => (
-            <button
-              key={s.id}
-              role="tab"
-              aria-selected={i === index}
-              aria-label={`Slide ${i + 1}`}
-              className={`h-2 rounded-full transition-[width,background-color] duration-250 ${
-                i === index ? "w-8 bg-primary" : "w-2 bg-muted"
-              }`}
-              onClick={() => setIndex(i)}
-            />
-          ))}
+      {/* Category Tiles Row: 4 compact horizontal bg-tile-cream tiles */}
+      <div className="mt-1 grid grid-cols-1 gap-1 lg:grid-cols-4">
+        {CATEGORY_TILES.map((tile, idx) => (
+          <Link
+            key={tile.to}
+            to={tile.to}
+            className="group flex h-[80px] items-center justify-between gap-3 overflow-hidden rounded-xl bg-tile-cream px-4 t-lift lg:h-[100px]"
+          >
+            <span className="text-h4 text-fg">
+              {tile.title} <span className={ACCENT_TEXT[tile.accentTone]}>{tile.accent}</span>
+            </span>
+            <span className="flex shrink-0 items-center gap-2">
+              <span className="t-zoom block w-16 overflow-hidden rounded-md lg:w-20">
+                <Media
+                  src={idx === 0 ? "/media/hero.jpg" : undefined}
+                  alt={tile.mediaAlt}
+                  ratio="4 / 3"
+                  tone="sand"
+                  priority={idx === 0}
+                  className="rounded-md"
+                />
+              </span>
+              <ChevronRight
+                aria-hidden
+                className="size-4 shrink-0 text-fg transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </span>
+          </Link>
+        ))}
+      </div>
+
+      {/* Verbatim live hero offers & quick actions */}
+      <div className="mt-6 flex flex-col justify-between gap-4 rounded-xl bg-sand p-5 md:flex-row md:items-center md:px-6">
+        <div className="space-y-1">
+          <p className="text-caption text-muted">FACIAL AESTHETICS &amp; GENERAL DENTISTRY</p>
+          <p className="text-body font-medium text-fg">
+            Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments
+          </p>
+          <p className="text-small text-muted">
+            Complete Dental Check-Up: £35 Only £7.60 more than the NHS fee (£27.40), with faster
+            access and premium service · General Dentistry &amp; Emergency Dental
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <BookButton size="sm">Book Online</BookButton>
+          <CallButton size="sm" variant="outline" href={PRACTICE_PHONE_HREF}>
+            Call us Now · {PRACTICE_PHONE}
+          </CallButton>
+          <ButtonLink to="/services/aesthetics" size="sm" variant="ghost">
+            Learn more
+          </ButtonLink>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

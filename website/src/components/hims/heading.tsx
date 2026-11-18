@@ -46,7 +46,10 @@ export function Heading({
             <span className={ACCENT_TEXT[tone]}>{accent}</span>
           </>
         ) : (
-          <span className={cn("block", ACCENT_TEXT[tone])}>{accent}</span>
+          <>
+            {" "}
+            <span className={cn("block", ACCENT_TEXT[tone])}>{accent}</span>
+          </>
         )
       ) : null}
     </Tag>

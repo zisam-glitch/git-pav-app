@@ -10,8 +10,8 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 
 | Group | Page | Route(s) | Sections | verified | built | todo | blocked | Images to make |
 |---|---|---|---|---|---|---|---|---|
-| F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 0 | 0 | 6 | 0 | 0 |
-| A1 | [Home](pages/home.md) | `/` | 14 | 0 | 0 | 14 | 0 | 0 |
+| F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 6 | 0 | 0 | 0 | 0 |
+| A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 5 |
 | S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 0 | 0 | 17 | 0 | 0 |
 | S1 | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 0 | 0 | 8 | 0 | 0 |
 | S1 | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 0 | 0 | 7 | 0 | 0 |
@@ -35,7 +35,7 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
 | SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **172** | **0** | **0** | **172** | **0** | **0** |
+| | **Total** | | **174** | **22** | **0** | **152** | **0** | **5** |
 
 ## Site shell: header, footer, cookie banner, 404
 
@@ -43,12 +43,12 @@ Group F1 · `every page` · [page file](pages/shell.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | header | — | todo |  |  |  |  |
-| 2 | footer | — | todo |  |  |  |  |
-| 3 | cookie consent | — | todo |  |  |  |  |
-| 4 | scroll progress | — | todo |  |  |  |  |
-| 5 | not found page (page composition) | — | todo |  |  |  |  |
-| 6 | account link layout | — | todo |  |  |  |  |
+| 1 | header | Hims capture header + [Mobbin header](https://mobbin.com/sites/sections/9ade11e2-61a0-4e63-a2c8-a093c9bd3ac0) | verified | [ok](shots/shell/01-header-1440.png) | [ok](shots/shell/01-header-390.png) | same | 44px `bg-lime` strip (`24/7 dental care in Bradford` + `PRACTICE_PHONE` pill) + sticky 49px `rounded-t-header` bar + `BookButton size="sm"` + 42px menu button + 547px `inert` right drawer ([drawer 1440](../shots/shell/01-drawer-1440.png), [drawer 390](../shots/shell/01-drawer-390.png)) with all `NAV_LINKS` & `SERVICE_PAGES` in SSR HTML, focus trap & Escape. |
+| 2 | footer | Hims capture footer + [Mobbin footer 1](https://mobbin.com/sites/sections/c04c5d1d-2267-48ba-a767-8668014e7ed0) + [Mobbin footer 2](https://mobbin.com/sites/sections/572867f5-c7e0-47e1-bb03-8668014e7ed0) | verified | [ok](shots/shell/02-footer-1440.png) | [ok](shots/shell/02-footer-390.png) | same | `bg-black text-white rounded-t-xl`, `FOOTER.about` in `text-h3`, 430px `bg-white/11` Connect panel (`PRACTICE_HOURS`, address, email, phones, `SOCIAL_LINKS`), 3 link columns (`FOOTER.quickLinks`, `SERVICE_PAGES`, `FOOTER.policyLinks`), legal row `text-white/66`, giant bottom wordmark `text-white/17`. |
+| 3 | cookie consent | Hims card/pill tokens | verified | [ok](shots/shell/03-cookie-1440.png) | [ok](shots/shell/03-cookie-390.png) | same | Restyled to `rounded-xl shadow-card bg-white` (`p-4 md:p-5`) + `bg-cream` icon badge + Hims `sm` pill buttons; GA consent logic untouched; dismisses cleanly on Decline/Accept. |
+| 4 | scroll progress | Hims capture (none) | verified | ok | ok | same | Returns `null` with exported `ScrollProgress` signature preserved. |
+| 5 | not found page (page composition) | Hims `Section`, `Heading`, `BookButton`, `CallButton`, `bg-tile-cream` | verified | [ok](shots/shell/05-not-found-1440.png) | ok | same | Returns HTTP 404; white band with `Heading` (`terracotta` accent), `BookButton` + `CallButton`, 8-tile `NOT_FOUND.links` grid, cream emergency callout with `PRACTICE_PHONE`. |
+| 6 | account link layout | Hims `bg-cream`, `rounded-xl`, `rounded-pill` | verified | ok | ok | same | Restyled to `bg-cream`, `wrap-prose`, `rounded-xl border-border shadow-card`, `text-h3-md`, and `rounded-pill bg-black` `OpenAppLink`. |
 
 ## Home
 
@@ -56,20 +56,22 @@ Group A1 · `/` · [page file](pages/home.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | contact form | — | todo |  |  |  |  |
-| 2 | counters | — | todo |  |  |  |  |
-| 3 | hero canvas | — | todo |  |  |  |  |
-| 4 | hero scene | — | todo |  |  |  |  |
-| 5 | hero slider | — | todo |  |  |  |  |
-| 6 | marquee | — | todo |  |  |  |  |
-| 7 | overview | — | todo |  |  |  |  |
-| 8 | reveal | — | todo |  |  |  |  |
-| 9 | service tabs | — | todo |  |  |  |  |
-| 10 | spotlight | — | todo |  |  |  |  |
-| 11 | tilt card | — | todo |  |  |  |  |
-| 12 | video section | — | todo |  |  |  |  |
-| 13 | testimonials section | — | todo |  |  |  |  |
-| 14 | counting number | — | todo |  |  |  |  |
+| 1 | contact form | Hims lead-capture card (`wrap-max`, `rounded-xl`, `p-[60px]`) | verified | [ok](shots/home/01-contact-form-1440.png) | [ok](shots/home/01-contact-form-390.png) | same | Restyled with Hims `Input`/`Textarea`/`Label` and full-width black pill submit |
+| 2 | counters | Hims ethos split + `Stat` row | verified | [ok](shots/home/02-counters-1440.png) | ok | same | Live ethos text + `2` Doctors / Dentist, `5` Staffs, `25+` Years of experience, `500+` Happy Patients |
+| 3 | hero canvas | — | verified | ok | ok | same | Unused on redesigned `/` (Three.js orb removed); kept untouched for safety |
+| 4 | hero scene | — | verified | ok | ok | same | Unused on redesigned `/` (Three.js scene); kept untouched for safety |
+| 5 | hero slider | Hims homepage hero + 2 featured tiles (`gap-1`) + 4 category tiles | verified | [ok](shots/home/05-hero-1440.png) | [ok](shots/home/05-hero-390.png) | reworded | H1 + 2 featured tiles (£35 check-up, Emergency Dentist) + 4 category tiles (`tone="sand"` placeholders) + `bg-sand` quick-action strip |
+| 6 | marquee | Hims `TrustStrip` marquee with pause button | verified | [ok](shots/home/06-marquee-1440.png) | ok | same | Replaced `.marquee-track` with `TrustStrip` |
+| 7 | overview | Hims split services list + white `Working Hours` tile | verified | [ok](shots/home/07-overview-1440.png) | ok | same | Live copy, 6 `+` items, GDC mark, `00:00 – 24:00` Mon–Sun |
+| 8 | reveal | — | verified | ok | ok | same | Stopped using on `/` and testimonials; kept untouched for unconverted pages |
+| 9 | service tabs | — | verified | ok | ok | same | Replaced on `/` by Hero category tiles + `HomeEmergency`; kept untouched without deleting |
+| 10 | spotlight | — | verified | ok | ok | same | Stopped using on `/`; kept untouched for unconverted service heroes |
+| 11 | tilt card | — | verified | ok | ok | same | Unused on `/`; kept untouched without deleting |
+| 12 | video section | Hims light rounded video frame (`What causes cavities?`) | verified | [ok](shots/home/12-video-1440.png) | ok | reworded | `aspect-video` uncropped frame; copy, alt & aria-label aligned to `"What causes cavities?"` video |
+| 13 | testimonials section | Hims navy `Carousel` quote cards (`bg-navy`, `bg-white/7`) | verified | [ok](shots/home/13-testimonials-1440.png) | [ok](shots/home/13-testimonials-390.png) | same | Strictly `HOME_TESTIMONIALS` verbatim, zero stars/ratings; `text-h4` title + `text-lead` quote body |
+| 14 | counting number | Hims `tabular-nums` stat counter | verified | ok | ok | same | Static `tabular-nums` display matching Hims numerals (`2`, `5`, `25+`, `500+`) with zero mid-count lag |
+| 15 | emergency feature | Hims dark brown bento (`bg-brown`, `wrap-bento`, `bg-brown-deep`) | verified | [ok](shots/home/15-emergency-1440.png) | ok | same | Live 24/7 Emergency Dental Services in Bradford copy + £45 / £90* tiles + gold/glass CTAs + soft `bg-white/7` media placeholder |
+| 16 | team trust carousel | Hims "The best care by the best in medicine" trust `Carousel` | verified | [ok](shots/home/16-team-carousel-1440.png) | ok | reworded | Real `TEAM_MEMBERS` cards with GDC numbers for clinicians linking to `/team/$slug` + [CTA band](../shots/home/17-cta-band-1440.png) |
 
 ## Service: General dentistry
 

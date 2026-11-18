@@ -1,4 +1,4 @@
-import { Reveal } from "@/components/home/reveal";
+import { Carousel, Heading, Section } from "@/components/hims";
 import { TESTIMONIALS_HEADING, TESTIMONIALS_INTRO, type Testimonial } from "@/content/testimonials";
 
 /**
@@ -6,57 +6,73 @@ import { TESTIMONIALS_HEADING, TESTIMONIALS_INTRO, type Testimonial } from "@/co
  * which are the ones the live site publishes. No names, ratings, star rows or counts: the
  * live site has none, and none may be added here.
  */
-const THEMES = {
-  home: {
-    section: "py-24",
-    heading: "font-display text-3xl sm:text-4xl",
-    intro: "mt-4 text-muted",
-    card: "glass h-full rounded-2xl p-8",
-    title: "font-display text-lg text-fg",
-    text: "mt-3 text-sm leading-relaxed text-muted",
-  },
-  warm: {
-    section: "bg-[#fffdf9] py-20 sm:py-28",
-    heading: "font-display text-3xl font-bold text-[#2a1c12] sm:text-5xl",
-    intro: "mt-3 text-sm leading-relaxed text-[#6b5848] sm:text-base",
-    card: "h-full rounded-2xl border border-[#e2d4c0] bg-white p-8",
-    title: "font-display text-lg font-bold text-[#2a1c12]",
-    text: "mt-3 text-sm leading-relaxed text-[#6b5848]",
-  },
-} as const;
-
 export function TestimonialsSection({
   testimonials,
   theme = "home",
 }: {
   testimonials: readonly Testimonial[];
-  theme?: keyof typeof THEMES;
+  theme?: "home" | "warm" | "navy";
 }) {
-  const t = THEMES[theme];
-  const columns = testimonials.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2";
-  return (
-    <section className={t.section} aria-labelledby="testimonials-heading">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 id="testimonials-heading" className={t.heading}>
+  if (theme === "warm") {
+    return (
+      <Section theme="cream" space="default" aria-labelledby="testimonials-heading">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 id="testimonials-heading" className="text-h2-md text-fg">
             {TESTIMONIALS_HEADING}
           </h2>
-          <p className={t.intro}>{TESTIMONIALS_INTRO}</p>
-        </Reveal>
+          <p className="mt-4 text-lead text-muted">{TESTIMONIALS_INTRO}</p>
+        </div>
 
-        <ul className={`mt-12 grid list-none gap-6 ${columns}`}>
-          {testimonials.map((item, index) => (
-            <li key={item.title}>
-              <Reveal delay={index * 0.06} className="h-full">
-                <article className={t.card}>
-                  <h3 className={t.title}>{item.title}</h3>
-                  <p className={t.text}>{item.text}</p>
-                </article>
-              </Reveal>
-            </li>
+        <Carousel label={TESTIMONIALS_HEADING} className="mt-10">
+          {testimonials.map((item) => (
+            <article
+              key={item.title}
+              className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 md:p-8"
+            >
+              <p className="text-body leading-relaxed text-fg">{item.text}</p>
+              <h3 className="mt-6 text-small font-medium text-fg">{item.title}</h3>
+            </article>
           ))}
-        </ul>
+        </Carousel>
+      </Section>
+    );
+  }
+
+  return (
+    <Section
+      theme="white"
+      width="max"
+      space="sm"
+      className="px-2 md:px-4"
+      aria-labelledby="testimonials-heading"
+    >
+      <div className="rounded-xl bg-navy py-14 text-white md:py-[7.5rem]">
+        <div className="wrap-bento">
+          <div className="max-w-2xl">
+            <div id="testimonials-heading">
+              <Heading as="h2" size="hero" accent="say?" tone="butter" inline>
+                What people
+              </Heading>
+            </div>
+            <p className="mt-4 text-lead text-white/80">{TESTIMONIALS_INTRO}</p>
+          </div>
+
+          <Carousel label={TESTIMONIALS_HEADING} arrows="dark" className="mt-10">
+            {testimonials.map((item) => (
+              <article
+                key={item.title}
+                className="flex h-full flex-col justify-between rounded-xl bg-white/7 p-6 md:px-6 md:py-9"
+              >
+                <div>
+                  <h3 className="text-h4 text-white">{item.title}</h3>
+                  <p className="mt-3 text-lead text-white/75">{item.text}</p>
+                </div>
+                <p className="mt-6 text-small text-butter">Patient feedback</p>
+              </article>
+            ))}
+          </Carousel>
+        </div>
       </div>
-    </section>
+    </Section>
   );
 }

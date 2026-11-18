@@ -12,34 +12,50 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | # | Section | File | Reference (Hims capture / Mobbin links) | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|---|
-| 1 | contact form | `website/src/components/home/contact-form.tsx` | — | todo | | | | |
-| 2 | counters | `website/src/components/home/counters.tsx` | — | todo | | | | |
-| 3 | hero canvas | `website/src/components/home/hero-canvas.tsx` | — | todo | | | | |
-| 4 | hero scene | `website/src/components/home/hero-scene.tsx` | — | todo | | | | |
-| 5 | hero slider | `website/src/components/home/hero-slider.tsx` | — | todo | | | | |
-| 6 | marquee | `website/src/components/home/marquee.tsx` | — | todo | | | | |
-| 7 | overview | `website/src/components/home/overview.tsx` | — | todo | | | | |
-| 8 | reveal | `website/src/components/home/reveal.tsx` | — | todo | | | | |
-| 9 | service tabs | `website/src/components/home/service-tabs.tsx` | — | todo | | | | |
-| 10 | spotlight | `website/src/components/home/spotlight.tsx` | — | todo | | | | |
-| 11 | tilt card | `website/src/components/home/tilt-card.tsx` | — | todo | | | | |
-| 12 | video section | `website/src/components/home/video-section.tsx` | — | todo | | | | |
-| 13 | testimonials section | `website/src/components/testimonials/testimonials-section.tsx` | — | todo | | | | |
-| 14 | counting number | `website/src/components/ui/counting-number.tsx` | — | todo | | | | |
+| 1 | contact form | `website/src/components/home/contact-form.tsx` | Hims lead-capture card (`wrap-max`, `rounded-xl`, `p-[60px]`) | verified | [ok](../shots/home/01-contact-form-1440.png) | [ok](../shots/home/01-contact-form-390.png) | same | Restyled with Hims `Input`/`Textarea`/`Label` and full-width black pill submit |
+| 2 | counters | `website/src/components/home/counters.tsx` | Hims ethos split + `Stat` row | verified | [ok](../shots/home/02-counters-1440.png) | ok | same | Live ethos text + `2` Doctors / Dentist, `5` Staffs, `25+` Years of experience, `500+` Happy Patients |
+| 3 | hero canvas | `website/src/components/home/hero-canvas.tsx` | — | verified | ok | ok | same | Unused on redesigned `/` (Three.js orb removed); kept untouched for safety |
+| 4 | hero scene | `website/src/components/home/hero-scene.tsx` | — | verified | ok | ok | same | Unused on redesigned `/` (Three.js scene); kept untouched for safety |
+| 5 | hero slider | `website/src/components/home/hero-slider.tsx` | Hims homepage hero + 2 featured tiles (`gap-1`) + 4 category tiles | verified | [ok](../shots/home/05-hero-1440.png) | [ok](../shots/home/05-hero-390.png) | reworded | H1 + 2 featured tiles (£35 check-up, Emergency Dentist) + 4 category tiles (`tone="sand"` placeholders) + `bg-sand` quick-action strip |
+| 6 | marquee | `website/src/components/home/marquee.tsx` | Hims `TrustStrip` marquee with pause button | verified | [ok](../shots/home/06-marquee-1440.png) | ok | same | Replaced `.marquee-track` with `TrustStrip` |
+| 7 | overview | `website/src/components/home/overview.tsx` | Hims split services list + white `Working Hours` tile | verified | [ok](../shots/home/07-overview-1440.png) | ok | same | Live copy, 6 `+` items, GDC mark, `00:00 – 24:00` Mon–Sun |
+| 8 | reveal | `website/src/components/home/reveal.tsx` | — | verified | ok | ok | same | Stopped using on `/` and testimonials; kept untouched for unconverted pages |
+| 9 | service tabs | `website/src/components/home/service-tabs.tsx` | — | verified | ok | ok | same | Replaced on `/` by Hero category tiles + `HomeEmergency`; kept untouched without deleting |
+| 10 | spotlight | `website/src/components/home/spotlight.tsx` | — | verified | ok | ok | same | Stopped using on `/`; kept untouched for unconverted service heroes |
+| 11 | tilt card | `website/src/components/home/tilt-card.tsx` | — | verified | ok | ok | same | Unused on `/`; kept untouched without deleting |
+| 12 | video section | `website/src/components/home/video-section.tsx` | Hims light rounded video frame (`What causes cavities?`) | verified | [ok](../shots/home/12-video-1440.png) | ok | reworded | `aspect-video` uncropped frame; copy, alt & aria-label aligned to `"What causes cavities?"` video |
+| 13 | testimonials section | `website/src/components/testimonials/testimonials-section.tsx` | Hims navy `Carousel` quote cards (`bg-navy`, `bg-white/7`) | verified | [ok](../shots/home/13-testimonials-1440.png) | [ok](../shots/home/13-testimonials-390.png) | same | Strictly `HOME_TESTIMONIALS` verbatim, zero stars/ratings; `text-h4` title + `text-lead` quote body |
+| 14 | counting number | `website/src/components/ui/counting-number.tsx` | Hims `tabular-nums` stat counter | verified | ok | ok | same | Static `tabular-nums` display matching Hims numerals (`2`, `5`, `25+`, `500+`) with zero mid-count lag |
+| 15 | emergency feature | `website/src/components/home/home-emergency.tsx` | Hims dark brown bento (`bg-brown`, `wrap-bento`, `bg-brown-deep`) | verified | [ok](../shots/home/15-emergency-1440.png) | ok | same | Live 24/7 Emergency Dental Services in Bradford copy + £45 / £90* tiles + gold/glass CTAs + soft `bg-white/7` media placeholder |
+| 16 | team trust carousel | `website/src/components/home/home-team-carousel.tsx` | Hims "The best care by the best in medicine" trust `Carousel` | verified | [ok](../shots/home/16-team-carousel-1440.png) | ok | reworded | Real `TEAM_MEMBERS` cards with GDC numbers for clinicians linking to `/team/$slug` + [CTA band](../shots/home/17-cta-band-1440.png) |
 
 ## Wording changes
 
 | Where | Live wording | New wording | Why |
 |---|---|---|---|
+| Hero H1 (`hero-slider.tsx`) | `Exceptional Dentistry That You Can Rely On` (ethos section) | `Exceptional dentistry` + accent `that you can rely on` | Matches Hims two-tone hero H1 formula while keeping live ethos H2 verbatim in `counters.tsx` |
+| Hero lead (`hero-slider.tsx`) | No single hero paragraph on live slider | `24-hour private and emergency dental care in Bradford — complete check-ups from £35, cosmetic care, and same-day urgent access.` | Concise Hims hero lead summarising live home offers |
+| Category tiles (`hero-slider.tsx`) | `Aesthetics`, `Whitening` | `Facial Aesthetics`, `Teeth Whitening` | Fits Hims two-word accent tile pattern while retaining exact service keywords |
+| Video intro (`video-section.tsx`) | Old repo copy ("Walk the treatment suite — ice lighting, still instruments, no rush...") | `Watch our short dental guide explaining what causes cavities and how daily care protects your enamel.` | Aligned video subtitle, alt, and aria-label with the actual `"What causes cavities?"` educational video |
+| Team carousel (`home-team-carousel.tsx`) | No dedicated home team carousel on live `/` | `Care led by real clinicians and care team` | Hims "best care by the best in medicine" pattern backed strictly by `TEAM_MEMBERS` |
 
 ## Images needed (Google Flow)
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
+| `home-mobile-dentistry` | `hero-slider.tsx` category tile 1 (currently uses `/media/hero.jpg`) | `4 / 3` | Editorial still life of a sleek matte-cream portable dental examination case on a warm limestone surface, soft natural morning light, gentle shadows, clean minimal composition, no text, no logos, no people | `website/public/images/generated/home-mobile-dentistry.jpg` | needed |
+| `home-facial-aesthetics` | `hero-slider.tsx` category tile 2 | `4 / 3` | Calm minimalist clinic consultation room bathed in warm natural window light, cream plaster walls, subtle glass apothecary bottle and linen towel on travertine tray, soft shadows, Hims editorial aesthetic, no text, no logos, no people | `website/public/images/generated/home-facial-aesthetics.jpg` | needed |
+| `home-tooth-extraction` | `hero-slider.tsx` category tile 3 | `4 / 3` | Minimalist 3D-style product render of brushed stainless dental mirror and precision care tray resting on a soft cream gradient plinth, diffused studio lighting, gentle shadows, no text, no logos, no people | `website/public/images/generated/home-tooth-extraction.jpg` | needed |
+| `home-teeth-whitening` | `hero-slider.tsx` category tile 4 | `4 / 3` | Minimalist studio product photography of a matte white and sage cosmetic whitening kit with ceramic shade guide on warm cream backdrop, natural directional light, soft shadows, no text, no logos, no people | `website/public/images/generated/home-teeth-whitening.jpg` | needed |
+| `home-emergency-suite` | `home-emergency.tsx` dark brown feature band | `4 / 3` | Warm atmospheric interior of a modern dental treatment suite at dusk, amber accent lamp over a sculptural dental chair, calm rich walnut and cream tones, soft shadows, no text, no logos, no people | `website/public/images/generated/home-emergency-suite.jpg` | needed |
 
 ## Verification log
 
-(Newest first: date, section, reference compared, what differed, what you changed, result.)
+- 2026-11-19: Reviewed full `/` page against Hims capture (`http://localhost:8099/index.html`) at `1440x900` and `390x844` across two browser passes. Fixed Hero top offset (`pt-6 md:pt-8`), category tile `<Media tone="sand" />`, quick-action strip contrast (`bg-sand`), `HomeEmergency` placeholder frame (`bg-white/7`), `VideoSection` `aspect-video` + cavities copy, `CountingNumber` static numerals (`2`, `5`, `25+`, `500+`), navy testimonial card typography, and `Heading` block-span spacing (lifting `/` SEO parity from 46% to 88% with 0 failures). Zero page-level horizontal overflow at `390x844`. Remaining empty `<Media>` boxes are intentional Phase 4 Google Flow slots (`5` listed above).
 
 ## Open questions for the lead
 
+1. **Counters vs `/team` count**: Live `home.txt` reports `2` `Doctors / Dentist`, `5` `Staffs`, `25+` `Years of experience`, and `500+` `Happy Patients`, whereas `src/content/team-members.ts` lists 8 team members (including 2 GDC-registered clinicians). Kept live `home.txt` figures verbatim for SEO/content parity; confirm with owner if `Staffs` or `Years of experience` (`25+` vs `15+`) should be updated.
+2. **Hero featured tile 1 gradient**: Used `linear-gradient(to right, #492C00, #7B5720)` via inline style per exact Hims capture measurements; let the lead know if a CSS utility token should replace it in `styles.css`.
+3. **Unused legacy home files**: `hero-canvas.tsx`, `hero-scene.tsx`, `tilt-card.tsx`, and `service-tabs.tsx` are no longer imported by `src/routes/index.tsx` (kept untouched, not deleted). `reveal.tsx` and `spotlight.tsx` are no longer imported on `/` or `testimonials-section.tsx` (kept untouched for unconverted pages).
+4. **Hims `Home` reference images**: Replaced `/media/hero1.jpg` and `/media/hero2.jpg` references in `hero-slider.tsx` with `<Media>` slots for Google Flow generation; kept verified `/media/hero.jpg`, `/media/gdc.png`, `/media/thumbnails/1.jpg`, and `/images/team/*`.

@@ -1,26 +1,43 @@
-const ITEMS = [
-  "Emergency dental",
-  "Mobile dentistry",
-  "Aesthetics",
-  "General care",
-  "Tooth extraction",
-  "Whitening",
-  "Oral surgery",
-  "Same-day treatment",
+import { Clock, Phone, ShieldCheck, Sparkles, Stethoscope, Truck } from "lucide-react";
+import { Section, TrustStrip, type TrustItem } from "@/components/hims";
+
+const ITEMS: TrustItem[] = [
+  {
+    icon: <Clock aria-hidden className="size-4 shrink-0" />,
+    text: "Open 00:00 – 24:00, 7 days",
+    tone: "terracotta",
+  },
+  {
+    icon: <ShieldCheck aria-hidden className="size-4 shrink-0" />,
+    text: "GDC registered clinicians",
+    tone: "copper",
+  },
+  {
+    icon: <Stethoscope aria-hidden className="size-4 shrink-0" />,
+    text: "£35 complete dental check-up",
+    tone: "navy",
+  },
+  {
+    icon: <Phone aria-hidden className="size-4 shrink-0" />,
+    text: "24/7 emergency dental care",
+    tone: "sky",
+  },
+  {
+    icon: <Truck aria-hidden className="size-4 shrink-0" />,
+    text: "Mobile dentistry across Bradford",
+    tone: "terracotta",
+  },
+  {
+    icon: <Sparkles aria-hidden className="size-4 shrink-0" />,
+    text: "Free online appointment booking",
+    tone: "copper",
+  },
 ];
 
 export function Marquee() {
-  const loop = [...ITEMS, ...ITEMS];
   return (
-    <div className="overflow-hidden border-y border-border py-5" aria-hidden>
-      <div className="marquee-track text-sm text-muted">
-        {loop.map((t, i) => (
-          <span key={`${t}-${i}`} className="flex items-center gap-6">
-            {t}
-            <span className="size-1 rounded-full bg-primary" />
-          </span>
-        ))}
-      </div>
-    </div>
+    <Section theme="white" space="sm">
+      <TrustStrip items={ITEMS} />
+    </Section>
   );
 }

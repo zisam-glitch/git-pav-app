@@ -8,6 +8,7 @@ export type ContentBlock =
   | { kind: "heading"; text: string; level?: 2 | 3 }
   | { kind: "paragraph"; text: string }
   | { kind: "list"; items: string[] }
+  | { kind: "quote"; text: string }
   | { kind: "link"; text: string; href: string }
   | { kind: "documents"; items: Array<{ text: string; href: string }> }
   | { kind: "cards"; items: Array<{ title: string; text: string; href: string; badge?: string }> }
@@ -48,6 +49,12 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
             <li key={item}>{item}</li>
           ))}
         </ul>
+      );
+    case "quote":
+      return (
+        <blockquote className="mt-10 border-l-4 border-[#925a27] bg-[#faf6f0] px-6 py-5 font-display text-lg leading-relaxed text-[#2a1c12]">
+          {block.text}
+        </blockquote>
       );
     case "link":
       return (

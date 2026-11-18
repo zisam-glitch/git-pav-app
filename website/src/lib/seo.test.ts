@@ -12,6 +12,8 @@ import {
   redirectTarget,
   seoHead,
   sitemapXml,
+  teamPersonJsonLd,
+  teamProfileHead,
   titleFromSlug,
 } from "./seo.ts";
 
@@ -99,6 +101,30 @@ describe("head tags", () => {
     assert.equal(blogPostHead("caring-for-new-dentures").meta[0].title, "Caring For New Dentures | Pav Dental Blog");
     assert.equal(productHead("whitening-strips").meta[0].title, "Whitening Strips | Pav Dental Shop");
     assert.equal(titleFromSlug("electric-toothbrushes"), "Electric Toothbrushes");
+  });
+
+  it("gives a team profile its live title and a canonical URL", () => {
+    const head = teamProfileHead("dr-cosimo-meucci") as { meta: Array<Record<string, any>>; links?: unknown };
+    assert.equal(head.meta[0].title, PAGES["/team/dr-cosimo-meucci"].title);
+    assert.deepEqual(head.links, [{ rel: "canonical", href: "https://www.pavdental.com/team/dr-cosimo-meucci" }]);
+  });
+
+  it("names a team member and the practice they work for in structured data", () => {
+    const person = teamPersonJsonLd("dr-cosimo-meucci", {
+      name: "Dr Cosimo Meucci",
+      role: "Implant Dentist",
+      photo: "/images/team/3.jpg",
+    });
+    assert.equal(person["@type"], "Person");
+    assert.equal(person.jobTitle, "Implant Dentist");
+    assert.equal(person.image, "https://www.pavdental.com/images/team/3.jpg");
+    assert.equal(person.url, "https://www.pavdental.com/team/dr-cosimo-meucci");
+    assert.equal(person.worksFor["@id"], PRACTICE_JSON_LD["@id"]);
+  });
+
+  it("keeps a profile that does not exist out of search results", () => {
+    const head = teamProfileHead("nobody") as { meta: Array<Record<string, any>> };
+    assert.deepEqual(head.meta[1], { name: "robots", content: "noindex" });
   });
 
   it("keeps the cart and checkout out of search results", () => {

@@ -1,0 +1,104 @@
+{
+  "path": "/team/dr-cosimo-meucci",
+  "title": "Dr Cosimo Meucci - Implant Dentist | Pav Dental Team",
+  "h1": [
+    "Dr Cosimo Meucci"
+  ],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "img",
+      "src": "https://www.pavdental.com/images/team/3.jpg",
+      "alt": "Dr Cosimo Meucci"
+    },
+    {
+      "tag": "span",
+      "text": "IMPLANT DENTIST"
+    },
+    {
+      "tag": "h1",
+      "text": "Dr Cosimo Meucci"
+    },
+    {
+      "tag": "div",
+      "text": "Dr Cosimo Meucci is Pav Dental’s visiting implantologist, providing patients with advanced dental implant care and surgical expertise. With extensive experience in implant placement, bone grafting, and full-mouth rehabilitation, Dr Meucci combines surgical precision with a patient-focused approach to achieve long-lasting, natural results."
+    },
+    {
+      "tag": "div",
+      "text": "English, Italian"
+    },
+    {
+      "tag": "div",
+      "text": "Fridays and select Saturdays (by referral and appointment)"
+    },
+    {
+      "tag": "div",
+      "text": "Book an implant consultation — 0800 1938 786 or hello@pavdental.com"
+    },
+    {
+      "tag": "div",
+      "text": "PROFESSIONAL BACKGROUND"
+    },
+    {
+      "tag": "p",
+      "text": "Dr Meucci qualified as a dentist in Italy and later advanced his training in oral implantology and restorative dentistry through postgraduate education in the UK. His calm, methodical approach and deep understanding of bone and soft-tissue management make him an invaluable part of Pav Dental’s multidisciplinary team."
+    },
+    {
+      "tag": "div",
+      "text": "SPECIAL INTERESTS"
+    },
+    {
+      "tag": "li",
+      "text": "Dental implant placement and restoration"
+    },
+    {
+      "tag": "li",
+      "text": "Bone grafting and sinus lift procedures"
+    },
+    {
+      "tag": "li",
+      "text": "Full-arch and All-on-X implant rehabilitation"
+    },
+    {
+      "tag": "li",
+      "text": "Digital implant planning and guided surgery"
+    },
+    {
+      "tag": "li",
+      "text": "Management of failing or missing teeth"
+    },
+    {
+      "tag": "div",
+      "text": "QUALIFICATIONS AND MEMBERSHIP"
+    },
+    {
+      "tag": "li",
+      "text": "01\nDDS, University of Valencia, Spain"
+    },
+    {
+      "tag": "li",
+      "text": "02\nMSc in Implantology, Spain"
+    },
+    {
+      "tag": "li",
+      "text": "03\nGDC-registered dentist"
+    },
+    {
+      "tag": "div",
+      "text": "\""
+    },
+    {
+      "tag": "blockquote",
+      "text": "Every patient deserves a confident smile that feels and functions naturally. I focus on precision, comfort, and clear communication at every stage of implant treatment."
+    },
+    {
+      "tag": "a",
+      "text": "Back to Team",
+      "href": "https://www.pavdental.com/team"
+    }
+  ]
+}

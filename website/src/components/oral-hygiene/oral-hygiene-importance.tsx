@@ -1,61 +1,45 @@
-import React from "react";
+import { Plus } from "lucide-react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const BENEFITS = [
-  {
-    title: "Prevent Gum Disease",
-    desc: "Regular professional cleaning removes plaque and tartar that cause gingivitis and periodontal disease.",
-  },
-  {
-    title: "Stop Bleeding & Swollen Gums",
-    desc: "Treat inflammation early to prevent gum recession and maintain healthy gum tissue.",
-  },
-  {
-    title: "Reduce Bad Breath",
-    desc: "Professional cleaning removes bacteria and food particles that cause persistent bad breath.",
-  },
-  {
-    title: "Remove Plaque & Hard Tartar",
-    desc: "Scale and polish treatments remove buildup that brushing alone cannot eliminate.",
-  },
-  {
-    title: "Improve Overall Health",
-    desc: "Good oral health is linked to better heart health, diabetes management, and reduced infection risks.",
-  },
-  {
-    title: "Protect Dental Work",
-    desc: "Regular hygiene care extends the life of crowns, implants, bridges, and other dental restorations.",
-  },
+  "Prevent gum disease",
+  "Stop bleeding and swollen gums",
+  "Reduce bad breath",
+  "Remove plaque and hard tartar",
+  "Improve overall health",
+  "Protect dental work like crowns and implants",
 ];
 
 export function OralHygieneImportance() {
   return (
-    <section id="importance" className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Why Your Oral Hygiene Matters
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Good hygiene care helps to maintain optimal oral health and protect your overall wellbeing. Poor gum health has been linked to heart disease, diabetes complications, pregnancy risks, and infections.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {BENEFITS.map((b, i) => (
-            <div key={b.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                0{i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {b.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {b.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section id="importance" theme="cream" space="default">
+      <div className="max-w-2xl">
+        <Heading as="h2" size="h2-md" accent="Matters" tone="terracotta" inline>
+          Why Your Oral Hygiene
+        </Heading>
+        <p className="mt-4 text-lead text-muted">Good hygiene care helps to:</p>
       </div>
-    </section>
+
+      <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {BENEFITS.map((benefit, index) => (
+          <Tile key={benefit} as="li" tone="white" className="flex items-start gap-4 p-6">
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-cream text-small font-medium text-terracotta tabular-nums">
+              0{index + 1}
+            </span>
+            <div className="flex items-start gap-2 pt-0.5">
+              <Plus aria-hidden className="mt-1 size-4 shrink-0 text-terracotta" />
+              <h3 className="text-h4 text-fg">{benefit}</h3>
+            </div>
+          </Tile>
+        ))}
+      </ul>
+
+      <Tile tone="white" className="mt-6 p-6 md:p-8">
+        <p className="max-w-3xl text-lead text-fg">
+          Poor gum health has been linked to heart disease, diabetes complications, pregnancy risks,
+          and infections. Regular dental hygiene visits keep your smile and your health protected.
+        </p>
+      </Tile>
+    </Section>
   );
 }

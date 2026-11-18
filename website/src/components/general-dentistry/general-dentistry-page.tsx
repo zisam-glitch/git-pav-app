@@ -1,20 +1,20 @@
-import { GeneralDentistryHero } from "./general-dentistry-hero";
+import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { GeneralDentistryCavities } from "./general-dentistry-cavities";
-import { GeneralDentistryServices } from "./general-dentistry-services";
-import { GeneralDentistryImportance } from "./general-dentistry-importance";
-import { GeneralDentistryPricing } from "./general-dentistry-pricing";
-import { GeneralDentistryFillingPricingTable } from "./general-dentistry-filling-pricing-table";
-import { GeneralDentistryExtractionPricingTable } from "./general-dentistry-extraction-pricing-table";
-import { GeneralDentistryRootCanalPricingTable } from "./general-dentistry-root-canal-pricing-table";
-import { GeneralDentistryRootCanalConsent } from "./general-dentistry-root-canal-consent";
-import { GeneralDentistryExtractionConsent } from "./general-dentistry-extraction-consent";
-import { GeneralDentistryShowcase } from "./general-dentistry-showcase";
 import { GeneralDentistryChoosing } from "./general-dentistry-choosing";
+import { GeneralDentistryExtractionConsent } from "./general-dentistry-extraction-consent";
+import { GeneralDentistryExtractionPricingTable } from "./general-dentistry-extraction-pricing-table";
 import { GeneralDentistryFaq } from "./general-dentistry-faq";
+import { GeneralDentistryFillingPricingTable } from "./general-dentistry-filling-pricing-table";
+import { GeneralDentistryHero } from "./general-dentistry-hero";
+import { GeneralDentistryImportance } from "./general-dentistry-importance";
+import { GeneralDentistryRootCanalConsent } from "./general-dentistry-root-canal-consent";
+import { GeneralDentistryRootCanalPricingTable } from "./general-dentistry-root-canal-pricing-table";
+import { GeneralDentistryServices } from "./general-dentistry-services";
+import { GeneralDentistryShowcase } from "./general-dentistry-showcase";
 
 export function GeneralDentistryPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-bg">
       <GeneralDentistryHero />
       <GeneralDentistryCavities />
       <GeneralDentistryRootCanalPricingTable />
@@ -27,6 +27,20 @@ export function GeneralDentistryPage() {
       <GeneralDentistryChoosing />
       <GeneralDentistryShowcase />
       <GeneralDentistryFaq />
+      <CtaBand
+        theme="brown"
+        title="Get In"
+        accent="Touch"
+        tone="gold"
+        actions={
+          <>
+            <BookButton variant="gold">Book Appointment</BookButton>
+            <CallButton variant="glass" />
+          </>
+        }
+      >
+        Ready to take control of your dental health? Contact us to book your appointment today!
+      </CtaBand>
     </main>
   );
 }

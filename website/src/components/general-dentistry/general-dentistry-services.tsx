@@ -1,14 +1,6 @@
-import React from "react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const SERVICES = [
-  {
-    title: "Preventative Care",
-    desc: "General dentistry aims to prevent oral health problems before they become severe. This includes advice on proper brushing techniques, flossing, and diet.",
-  },
-  {
-    title: "Gum Disease Treatment",
-    desc: "Treatment for gum diseases like gingivitis and periodontitis is another crucial aspect of general dentistry.",
-  },
   {
     title: "Dental Crowns and Bridges",
     desc: "These are used to restore and replace damaged or missing teeth, improving the function and appearance of your smile.",
@@ -25,37 +17,36 @@ const SERVICES = [
     title: "Tooth Extractions",
     desc: "Sometimes a tooth may need to be removed due to decay, disease, or crowding. General dentists can perform simple extractions.",
   },
-];
+  {
+    title: "Preventative Care",
+    desc: "General dentistry aims to prevent oral health problems before they become severe. This includes advice on proper brushing techniques, flossing, and diet.",
+  },
+  {
+    title: "Gum Disease Treatment",
+    desc: "Treatment for gum diseases like gingivitis and periodontitis is another crucial aspect of general dentistry.",
+  },
+] as const;
 
 export function GeneralDentistryServices() {
   return (
-    <section id="services" className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Services Offered in General Dentistry
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Comprehensive dental care services designed to maintain and improve your oral health for the entire family.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {SERVICES.map((service, i) => (
-            <div key={service.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {service.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {service.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section id="services" theme="cream">
+      <div className="max-w-2xl">
+        <Heading size="h2-md" accent="General Dentistry" tone="terracotta" inline>
+          Services Offered in
+        </Heading>
       </div>
-    </section>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {SERVICES.map((service, i) => (
+          <Tile key={service.title} tone="white" className="p-6 md:p-7">
+            <span className="text-small font-medium tabular-nums text-terracotta">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <h3 className="mt-3 text-h4 text-fg">{service.title}</h3>
+            <p className="mt-2 text-body text-muted">{service.desc}</p>
+          </Tile>
+        ))}
+      </div>
+    </Section>
   );
 }

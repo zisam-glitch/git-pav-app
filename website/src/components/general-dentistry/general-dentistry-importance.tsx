@@ -1,4 +1,4 @@
-import React from "react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const IMPORTANCE_POINTS = [
   {
@@ -17,37 +17,41 @@ const IMPORTANCE_POINTS = [
     title: "Family Care",
     desc: "General dentistry caters to the dental needs of the entire family, from children to seniors.",
   },
-];
+] as const;
 
 export function GeneralDentistryImportance() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Why General Dentistry is Important?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            General dentistry forms the foundation of good oral health, providing essential care that prevents problems before they start and ensures your smile stays healthy for life.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {IMPORTANCE_POINTS.map((point, i) => (
-            <div key={point.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {point.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {point.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section theme="white">
+      <div className="max-w-2xl">
+        <Heading size="h2-md" accent="Important?" tone="terracotta" inline>
+          Why General Dentistry is
+        </Heading>
       </div>
-    </section>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {IMPORTANCE_POINTS.map((point, i) => (
+          <Tile key={point.title} tone="cream" className="p-6">
+            <span className="text-small font-medium tabular-nums text-terracotta">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p className="mt-3 text-body text-muted">
+              <strong className="font-medium text-fg">
+                {i + 1}. {point.title}:
+              </strong>{" "}
+              {point.desc}
+            </p>
+          </Tile>
+        ))}
+      </div>
+
+      <div className="mt-6 rounded-xl bg-tile-cream p-6 md:p-8">
+        <h3 className="text-h4 text-fg">Cost and Insurance</h3>
+        <p className="mt-2 max-w-3xl text-body text-muted">
+          The cost of general dentistry services varies depending on the treatment and location.
+          Many dental insurance plans cover the cost of preventative care treatments like regular
+          check-ups and cleanings.
+        </p>
+      </div>
+    </Section>
   );
 }

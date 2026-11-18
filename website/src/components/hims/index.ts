@@ -9,4 +9,7 @@ export { CtaBand } from "./cta-band";
 export { SplitFeature } from "./split-feature";
 export { Stat } from "./stat";
 export { Media } from "./media";
+export { FeeTable, type FeeTier } from "./fee-table";
+export { PricingTiles, type PricingTier } from "./pricing-tiles";
+export { ConsentPanel, type ConsentItem } from "./consent-panel";
 export { ACCENT_TEXT, type AccentTone } from "./tones";

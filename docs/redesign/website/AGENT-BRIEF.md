@@ -9,7 +9,7 @@ The owner's words, so you hold the intent: use Hims exactly how they apply it (s
 1. `docs/redesign/website/hims-design-system.md`: tokens, type scale, recipes, mapping, rules. **This is the contract.**
 2. `website/AGENTS.md` (repo rules for the website) and the root `AGENTS.md`.
 3. Your page files in `docs/redesign/website/pages/`.
-4. The kit: `website/src/components/hims/*` (Section, Heading, ButtonLink/BookButton/CallButton, Tile/TileLink, Carousel, TrustStrip, FaqList, CtaBand, SplitFeature, Stat, Media) and `website/src/components/ui/button.tsx`. Import with `import { Section, Heading, ... } from "@/components/hims";`.
+4. The kit: `website/src/components/hims/*` (Section, Heading, ButtonLink/BookButton/CallButton, Tile/TileLink, Carousel, TrustStrip, FaqList, CtaBand, SplitFeature, Stat, Media, FeeTable, PricingTiles, ConsentPanel) and `website/src/components/ui/button.tsx`. Import with `import { Section, Heading, ... } from "@/components/hims";`.
 5. The live words for your pages: `website/seo/live-text/<page>.txt` (what is on www.pavdental.com today).
 
 ## 2. What is already running (do not start, stop or change servers)

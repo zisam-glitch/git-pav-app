@@ -10,11 +10,11 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 
 | Group | Page | Route(s) | Sections | verified | built | todo | blocked | Images to make |
 |---|---|---|---|---|---|---|---|---|
+| S1-B | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 8 | 0 | 0 | 0 | 2 |
+| S1-B | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 7 | 0 | 0 | 0 | 1 |
 | F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 6 | 0 | 0 | 0 | 0 |
 | A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 7 |
-| S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 0 | 0 | 17 | 0 | 0 |
-| S1 | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 0 | 0 | 8 | 0 | 0 |
-| S1 | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 0 | 0 | 7 | 0 | 0 |
+| S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 17 | 0 | 0 | 0 | 2 |
 | S2 | [Service: Dentures](pages/service-dentures.md) | `/services/dentures` | 7 | 0 | 0 | 7 | 0 | 0 |
 | S2 | [Service: Emergency dental](pages/service-emergency-dental.md) | `/services/emergency-dental` | 8 | 0 | 0 | 8 | 0 | 0 |
 | S2 | [Service: Mouthguards](pages/service-mouthguards.md) | `/services/mouthguards` | 7 | 0 | 0 | 7 | 0 | 0 |
@@ -35,7 +35,36 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
 | SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **174** | **22** | **0** | **152** | **0** | **7** |
+| | **Total** | | **174** | **54** | **0** | **120** | **0** | **12** |
+
+## Service: Oral hygiene
+
+Group S1-B · `/services/oral-hygiene` · [page file](pages/service-oral-hygiene.md)
+
+| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | oral hygiene consent | Hims dark brown bento (`Section theme="brown" width="bento"`) | verified | [ok](shots/oral-hygiene/01-consent-1440.png) | ok | same | Preserved `CONSENT_ITEMS` and intro word-for-word, added live `Oral Hygiene and Gum Care Advice` + Part 1–3 interactive tabs + `oral-hygiene-showcase.jpg` poster |
+| 2 | oral hygiene faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | ok | ok | same | Replaced 8 repo-only FAQs with all 6 verbatim Q&As from `services--oral-hygiene.txt` using `FaqList` |
+| 3 | oral hygiene hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) & [treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [ok](shots/oral-hygiene/03-hero-1440.png) | [ok](shots/oral-hygiene/03-hero-390.png) | same | Verbatim H1 `Pav Dental Oral Hygiene Care` and both live paragraphs; `BookButton`, `ButtonLink`, `CallButton`; wired `/images/generated/oral-hygiene-hero.jpg` (`priority`) |
+| 4 | oral hygiene importance | Hims cream numbered tiles (`Section theme="cream"`) | verified | ok | ok | same | Verbatim heading, `Good hygiene care helps to:` + 6 items + closing heart/diabetes/pregnancy risk paragraph |
+| 5 | oral hygiene page (page composition) | Hims alternating page rhythm + `ContactForm` + `CtaBand` | verified | ok | ok | same | Alternates white/cream/brown bands; added shared `ContactForm` and closing `CtaBand` |
+| 6 | oral hygiene pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [ok](shots/oral-hygiene/06-pricing-1440.png) | ok | same | Uses promoted `PricingTiles` (`@/components/hims`) with exact live tiers (£45, £65, £75) |
+| 7 | oral hygiene showcase | [Mobbin split treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [ok](shots/oral-hygiene/07-showcase-1440.png) | ok | reworded | Restyled with `SplitFeature` + `<Media src="/images/generated/oral-hygiene-showcase.jpg" />` + interactive `/media/clinic-reel.mp4` player |
+| 8 | oral hygiene who needs | Hims symptom grid (`Tile tone="cream"`) + `sage` note | verified | ok | ok | same | Verbatim heading, intro, 7 live symptom items, and dental-work closing line |
+
+## Service: Tooth extraction
+
+Group S1-B · `/services/tooth-extraction` · [page file](pages/service-tooth-extraction.md)
+
+| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | extraction book | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [ok](shots/tooth-extraction/01-book-1440.png) | ok | same | Verbatim `Book Your Appointment Today`, paragraph, and all 4 `Why Choose PavDental?` bullets; uses `PRACTICE_PHONE` and `PRACTICE_HOURS` |
+| 2 | extraction faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | [ok](shots/tooth-extraction/02-faq-1440.png) | ok | same | Replaced 8 rewritten FAQs with all 10 verbatim Q&As from `services--tooth-extraction.txt` using `FaqList` |
+| 3 | extraction guarantee | Hims dark brown bento (`Section theme="brown" width="bento"`) | verified | ok | ok | same | Verbatim `Guaranteed Tooth Extraction Same Day Treatment` heading and both live paragraphs |
+| 4 | extraction hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) & [treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [ok](shots/tooth-extraction/04-hero-1440.png) | [ok](shots/tooth-extraction/04-hero-390.png) | same | Verbatim H1 `Pav Dental: Same day Tooth Extraction` and live lead; wired `/images/generated/tooth-extraction-hero.jpg` (`priority`) |
+| 5 | extraction page (page composition) | Hims alternating page rhythm + `ContactForm` + `CtaBand` | verified | ok | ok | same | Alternates white/brown/white/cream/white/cream/brown bands; added shared `ContactForm` and closing `CtaBand` |
+| 6 | extraction postop | Hims cream checklist tiles + navy complication alert (`Tile tone="navy"`) | verified | [ok](shots/tooth-extraction/06-postop-1440.png) | ok | same | Verbatim `Post Operative Instructions`, `Reminder:`, all 10 care sections, and `Watch for Complications:` alert with interactive filter tabs |
+| 7 | extraction pricing | [Mobbin treatment pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [ok](shots/tooth-extraction/07-pricing-1440.png) | ok | same | Uses promoted `PricingTiles` (`@/components/hims`) with all 4 live tiers (£95–£295) + `Informed Consent for Tooth Extraction` callout |
 
 ## Site shell: header, footer, cookie banner, 404
 
@@ -79,52 +108,23 @@ Group S1 · `/services/general-dentistry` · [page file](pages/service-general-d
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | general dentistry cavities | — | todo |  |  |  |  |
-| 2 | general dentistry choosing | — | todo |  |  |  |  |
-| 3 | general dentistry extraction consent | — | todo |  |  |  |  |
-| 4 | general dentistry extraction pricing table | — | todo |  |  |  |  |
-| 5 | general dentistry extraction pricing | — | todo |  |  |  |  |
-| 6 | general dentistry faq | — | todo |  |  |  |  |
-| 7 | general dentistry filling pricing table | — | todo |  |  |  |  |
-| 8 | general dentistry filling pricing | — | todo |  |  |  |  |
-| 9 | general dentistry hero | — | todo |  |  |  |  |
-| 10 | general dentistry importance | — | todo |  |  |  |  |
-| 11 | general dentistry page (page composition) | — | todo |  |  |  |  |
-| 12 | general dentistry pricing | — | todo |  |  |  |  |
-| 13 | general dentistry root canal consent | — | todo |  |  |  |  |
-| 14 | general dentistry root canal pricing table | — | todo |  |  |  |  |
-| 15 | general dentistry root canal pricing | — | todo |  |  |  |  |
-| 16 | general dentistry services | — | todo |  |  |  |  |
-| 17 | general dentistry showcase | — | todo |  |  |  |  |
-
-## Service: Oral hygiene
-
-Group S1 · `/services/oral-hygiene` · [page file](pages/service-oral-hygiene.md)
-
-| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
-|---|---|---|---|---|---|---|---|
-| 1 | oral hygiene consent | — | todo |  |  |  |  |
-| 2 | oral hygiene faq | — | todo |  |  |  |  |
-| 3 | oral hygiene hero | — | todo |  |  |  |  |
-| 4 | oral hygiene importance | — | todo |  |  |  |  |
-| 5 | oral hygiene page (page composition) | — | todo |  |  |  |  |
-| 6 | oral hygiene pricing | — | todo |  |  |  |  |
-| 7 | oral hygiene showcase | — | todo |  |  |  |  |
-| 8 | oral hygiene who needs | — | todo |  |  |  |  |
-
-## Service: Tooth extraction
-
-Group S1 · `/services/tooth-extraction` · [page file](pages/service-tooth-extraction.md)
-
-| # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
-|---|---|---|---|---|---|---|---|
-| 1 | extraction book | — | todo |  |  |  |  |
-| 2 | extraction faq | — | todo |  |  |  |  |
-| 3 | extraction guarantee | — | todo |  |  |  |  |
-| 4 | extraction hero | — | todo |  |  |  |  |
-| 5 | extraction page (page composition) | — | todo |  |  |  |  |
-| 6 | extraction postop | — | todo |  |  |  |  |
-| 7 | extraction pricing | — | todo |  |  |  |  |
+| 1 | general dentistry cavities | Hims capture (`Section`, `Media`, `Heading`) | verified | [ok](shots/general-dentistry/01-cavities-1440.png) | ok | same | Wired `/media/thumbnails/1.jpg` poster + `/media/clinic-reel.mp4` toggle; dropped repo-only subtitle |
+| 2 | general dentistry choosing | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | same | 4-col `Tile` grid on `cream`; inline verbatim live sentences for Qualifications, Location, Services Offered, Insurance |
+| 3 | general dentistry extraction consent | Hims capture (`wrap-prose`, `bg-white` / `bg-cream` panel) | verified | ok | ok | same | Uses promoted `ConsentPanel` (`@/components/hims`); renders consent heading, intro, and all 3 `CONSENT_ITEMS` verbatim |
+| 4 | general dentistry extraction pricing table | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | ok | ok | same | Uses promoted `FeeTable` (`@/components/hims`); restored live heading `Our Tooth Extraction Prices` |
+| 5 | general dentistry extraction pricing | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | ok | ok | same | Restyled compact card in Hims tokens (`border-border`, `tabular-nums`); unused by `GeneralDentistryPage` |
+| 6 | general dentistry faq | [Mobbin FAQ accordion](https://mobbin.com/sites/sections/2c994fe8-510e-4cda-a1d8-95fa7ffc9cbb) | verified | ok | ok | same | Uses `FaqList` with sticky `Heading` + `BookButton`; restored all 12 live FAQ answers verbatim |
+| 7 | general dentistry filling pricing table | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | ok | ok | same | Uses promoted `FeeTable` (`@/components/hims`); restored live heading `Our White Filling Prices` |
+| 8 | general dentistry filling pricing | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | ok | ok | same | Restyled compact card in Hims tokens; unused by `GeneralDentistryPage` |
+| 9 | general dentistry hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · [Mobbin details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [ok](shots/general-dentistry/09-hero-1440.png) | [ok](shots/general-dentistry/09-hero-390.png) | reworded | `SplitFeature` with `text-hero` `<h1>` + terracotta accent, live lead, `BookButton` + `CallButton`, and `4 / 3` `<Media src="/images/generated/general-dentistry-hero.jpg" priority />` |
+| 10 | general dentistry importance | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | same | 4-col `Tile` grid + verbatim `Cost and Insurance` callout block |
+| 11 | general dentistry page (page composition) | Hims capture (`CtaBand`, alternating `white`/`cream`/`brown` bands) | verified | ok | ok | same | Alternates `white`/`cream`/`brown` sections and closes with `CtaBand` (`Get In Touch`) |
+| 12 | general dentistry pricing | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | ok | ok | same | Restyled with `Section`, `Heading`, `BookButton`; currently unused by `GeneralDentistryPage` |
+| 13 | general dentistry root canal consent | Hims capture (`wrap-prose`, `bg-white` / `bg-cream` panel) | verified | ok | ok | same | Uses promoted `ConsentPanel` (`@/components/hims`); renders consent heading, intro, and all 3 `CONSENT_ITEMS` verbatim |
+| 14 | general dentistry root canal pricing table | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [ok](shots/general-dentistry/14-root-canal-prices-1440.png) | ok | same | Uses promoted `FeeTable` (`@/components/hims`); restored live heading `Our Root Canal Prices` |
+| 15 | general dentistry root canal pricing | [Mobbin pricing card](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | ok | ok | same | Restyled compact card in Hims tokens; unused by `GeneralDentistryPage` |
+| 16 | general dentistry services | [Mobbin treatment details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | same | 3-col `Tile` grid (`tone="white"`) on `cream`; all 6 live service descriptions verbatim |
+| 17 | general dentistry showcase | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · Hims brown band | verified | ok | ok | same | `Section theme="brown" space="lg"` + `SplitFeature` with `<Media src="/images/generated/general-dentistry-showcase.jpg" ratio="4 / 3" tone="brown" />` and the 5 live `Procedures` links |
 
 ## Service: Dentures
 

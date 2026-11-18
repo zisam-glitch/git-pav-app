@@ -11,7 +11,7 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | Group | Page | Route(s) | Sections | verified | built | todo | blocked | Images to make |
 |---|---|---|---|---|---|---|---|---|
 | F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 6 | 0 | 0 | 0 | 0 |
-| A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 5 |
+| A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 1 |
 | S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 0 | 0 | 17 | 0 | 0 |
 | S1 | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 0 | 0 | 8 | 0 | 0 |
 | S1 | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 0 | 0 | 7 | 0 | 0 |
@@ -35,7 +35,7 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
 | SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **174** | **22** | **0** | **152** | **0** | **5** |
+| | **Total** | | **174** | **22** | **0** | **152** | **0** | **1** |
 
 ## Site shell: header, footer, cookie banner, 404
 
@@ -60,7 +60,7 @@ Group A1 · `/` · [page file](pages/home.md)
 | 2 | counters | Hims ethos split + `Stat` row | verified | [ok](shots/home/02-counters-1440.png) | ok | same | Live ethos text + `2` Doctors / Dentist, `5` Staffs, `25+` Years of experience, `500+` Happy Patients |
 | 3 | hero canvas | — | verified | ok | ok | same | Unused on redesigned `/` (Three.js orb removed); kept untouched for safety |
 | 4 | hero scene | — | verified | ok | ok | same | Unused on redesigned `/` (Three.js scene); kept untouched for safety |
-| 5 | hero slider | [Mobbin hero](https://mobbin.com/sites/sections/4036afc5-93be-4d95-9b06-9b27cae97ebb) + [Mobbin cards](https://mobbin.com/sites/sections/81c02fb1-3cbc-4f4c-b0c1-f9c82804928d) | verified | [ok](shots/home/05-hero-1440.png) | [ok](shots/home/05-hero-390.png) | reworded | H1 + 2 featured tiles (`gap-1`, £35 check-up, Emergency Dentist) + 4 single-line `text-nav-lg` category tiles (`tone="sand"` placeholders) + `bg-sand` quick-action strip |
+| 5 | hero slider | [Mobbin hero](https://mobbin.com/sites/sections/4036afc5-93be-4d95-9b06-9b27cae97ebb) + [Mobbin cards](https://mobbin.com/sites/sections/81c02fb1-3cbc-4f4c-b0c1-f9c82804928d) | verified | [ok](shots/home/05-hero-1440.png) | [ok](shots/home/05-hero-390.png) | reworded | H1 + `Book Online` / `Call us Now` pills + 2 `216px` split-photo featured cards (`/media/hero1.jpg`, `/media/hero-night.jpg`) + 4 `bg-tile-cream` photo cards (`/media/hero2.jpg`, `/media/hero-clinic.jpg`, `/media/hero-smile.jpg`, `/media/hero.jpg`) + 3-pill bottom tier |
 | 6 | marquee | Hims `TrustStrip` marquee with pause button | verified | [ok](shots/home/06-marquee-1440.png) | ok | same | Replaced `.marquee-track` with `TrustStrip` |
 | 7 | overview | Hims split services list + white `Working Hours` tile | verified | [ok](shots/home/07-overview-1440.png) | ok | same | Live copy, 6 `+` items, GDC mark, `00:00 – 24:00` Mon–Sun |
 | 8 | reveal | — | verified | ok | ok | same | Stopped using on `/` and testimonials; kept untouched for unconverted pages |

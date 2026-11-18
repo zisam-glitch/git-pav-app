@@ -18,6 +18,7 @@ This folder contains the public-facing marketing website and online shop for Pav
 - `src/content/live-pages.ts`: text pages ported word for word from the live site (FAQ, CCTV policy, practice documents, services index), shown by `LiveContentPage`.
 - `src/content/team-members.ts` and `src/content/blog-posts.ts`: the eight team profiles and the six blog posts, ported word for word and checked against the recorded live pages by their tests.
 - `src/content/testimonials.ts` and `src/content/petition.ts`: the patient comments under "What people say?" (home and aesthetics) and the petition page's words, ported word for word and checked against the recorded live pages by their tests.
+- Booking: every Book or appointment link uses `BOOKING_URL` from `src/lib/enquiry.ts`, the practice's Setmore page, as on the live site; `/booking` redirects there. `src/content/booking-links.test.ts` fails on any other target. Do not add a booking form to the site.
 - `src/components/`: Reusable UI components grouped by feature (`home/`, `about/`, `shop/`, `team/`, etc.).
 - `src/lib/`: Utilities, analytics, the account-link helpers (`app-account.ts`), query provider.
 - `public/`: Static assets (favicons, images, logos).

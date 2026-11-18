@@ -167,16 +167,6 @@ export interface PricingData {
   announcements: Announcement[];
 }
 
-export interface BookingFormData {
-  patient_name: string;
-  patient_email: string;
-  patient_phone?: string;
-  service_type: string;
-  preferred_date?: string;
-  preferred_time?: string;
-  message?: string;
-}
-
 export interface ContactFormData {
   name: string;
   email: string;
@@ -276,11 +266,6 @@ export const api = {
     list: () => apiFetch<Announcement[]>("/api/v1/announcements"),
   },
   forms: {
-    submitBooking: (data: BookingFormData) =>
-      apiFetch<{ success: boolean; id: string }>("/api/v1/bookings", {
-        method: "POST",
-        body: JSON.stringify(data),
-      }),
     submitContact: (data: ContactFormData) =>
       apiFetch<{ success: boolean; id: string }>("/api/v1/forms/contact", {
         method: "POST",

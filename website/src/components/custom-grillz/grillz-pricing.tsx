@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const SINGLE_TOOTH = [
   { service: "Single Tooth Cap (10k Solid Gold)", price: "from £95" },
@@ -109,7 +110,7 @@ export function GrillzPricing() {
             asChild
             className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
           >
-            <a href="#contact" className="flex items-center gap-2">
+            <a href={BOOKING_URL} className="flex items-center gap-2">
               Book Impression Appointment <ArrowRight className="size-4" />
             </a>
           </Button>

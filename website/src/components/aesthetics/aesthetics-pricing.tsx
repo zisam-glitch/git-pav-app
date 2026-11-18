@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const ANTI_WRINKLE = [
   { service: "1 Area (e.g. Frown Lines or Crow's Feet)", price: "£130" },
@@ -116,7 +117,7 @@ export function AestheticsPricing() {
             asChild
             className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-sm hover:opacity-95"
           >
-            <a href="#safety" className="flex items-center gap-2">
+            <a href={BOOKING_URL} className="flex items-center gap-2">
               Book Your Aesthetics Assessment <ArrowRight className="size-4" />
             </a>
           </Button>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Spotlight } from "@/components/home/spotlight";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function CosmeticHero() {
   return (
@@ -38,7 +39,7 @@ export function CosmeticHero() {
               size="lg"
               className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
             >
-              <a href="#contact">Book consultation</a>
+              <a href={BOOKING_URL}>Book consultation</a>
             </Button>
             <Button
               asChild

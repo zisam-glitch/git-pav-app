@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Spotlight } from "@/components/home/spotlight";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function VirtualDentistryHero() {
   return (
@@ -37,7 +38,7 @@ export function VirtualDentistryHero() {
             size="lg"
             className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
           >
-            <a href="#services">Book appointment</a>
+            <a href={BOOKING_URL}>Book appointment</a>
           </Button>
         </div>
         <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">

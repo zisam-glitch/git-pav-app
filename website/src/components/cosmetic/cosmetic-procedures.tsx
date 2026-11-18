@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight, Layers, Gem, Smile, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const PROCEDURES = [
   {
@@ -114,7 +115,7 @@ export function CosmeticProcedures() {
                     asChild
                     className="w-full rounded-full h-11 bg-white hover:bg-[#faf6f0] text-xs font-bold"
                   >
-                    <a href="#contact" className="flex items-center justify-center gap-2">
+                    <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
                       Book Consultation <ArrowRight className="size-3.5" />
                     </a>
                   </Button>

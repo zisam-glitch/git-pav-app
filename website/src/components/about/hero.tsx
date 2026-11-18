@@ -1,4 +1,5 @@
 import { Hero05 } from "@/components/ui/hero-05";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function Hero() {
   return (
@@ -12,7 +13,7 @@ export function Hero() {
       primaryCTA={{
         ctaEnabled: true,
         text: "Book Appointment",
-        link: "#contact",
+        link: BOOKING_URL,
         variant: "default",
       }}
       secondaryCTA={{

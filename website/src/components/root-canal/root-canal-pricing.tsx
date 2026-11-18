@@ -1,6 +1,7 @@
 import React from "react";
 import { Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const TIERS = [
   {
@@ -164,7 +165,7 @@ export function RootCanalPricing() {
                         asChild
                         className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95"
                       >
-                        <a href="#contact" className="flex items-center justify-center gap-2">
+                        <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
                           Book Treatment <ArrowRight className="size-3.5" />
                         </a>
                       </Button>
@@ -174,7 +175,7 @@ export function RootCanalPricing() {
                         variant="outline"
                         className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
                       >
-                        <a href="#contact">Book Treatment</a>
+                        <a href={BOOKING_URL}>Book Treatment</a>
                       </Button>
                     )}
                   </td>

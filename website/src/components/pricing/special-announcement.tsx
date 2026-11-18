@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 const ANNOUNCEMENTS = [
   {
@@ -78,7 +79,7 @@ export function SpecialAnnouncement() {
             </div>
             {active.cta_text && (
               <Button asChild size="sm" className="bg-[#844d1e] text-white shrink-0">
-                <a href={active.cta_url || "/booking"}>{active.cta_text}</a>
+                <a href={active.cta_url || BOOKING_URL}>{active.cta_text}</a>
               </Button>
             )}
           </div>
@@ -167,7 +168,7 @@ export function SpecialAnnouncement() {
           {/* Action buttons */}
           <div className="flex items-center gap-3 w-full sm:w-auto justify-center">
             <Button asChild size="default" className="accent-gradient text-white font-semibold text-xs h-10 px-5 gap-1.5">
-              <a href="#contact">
+              <a href={BOOKING_URL}>
                 Book Free Consultation
                 <ArrowRight className="size-3.5" />
               </a>

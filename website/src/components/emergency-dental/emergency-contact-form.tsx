@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/api";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export function EmergencyContactForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -177,7 +178,7 @@ export function EmergencyContactForm() {
             asChild
             className="accent-gradient rounded-full px-12 h-14 text-base text-white font-bold shadow-xl hover:opacity-95 transition-all"
           >
-            <a href="/contact-us">
+            <a href={BOOKING_URL}>
               <CalendarDays className="mr-2.5 size-5" />
               Book Appointment
             </a>

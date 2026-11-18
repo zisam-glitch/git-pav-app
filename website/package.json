@@ -16,7 +16,7 @@
     "preview:stop": "node scripts/preview.mjs stop",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run lint -- --max-warnings=80 && npm test",
-    "test": "node --experimental-strip-types --test src/lib/analytics.test.ts src/components/team/team-data.test.ts src/lib/app-account.test.ts src/lib/seo.test.ts src/content/blog-posts.test.ts src/lib/enquiry.test.ts scripts/seo-snapshot-lib.test.mjs",
+    "test": "node --experimental-strip-types --test src/lib/analytics.test.ts src/content/team-members.test.ts src/lib/app-account.test.ts src/lib/seo.test.ts src/content/blog-posts.test.ts src/lib/enquiry.test.ts scripts/seo-snapshot-lib.test.mjs",
     "seo:snapshot": "node scripts/seo-snapshot.mjs",
     "seo:sitemap": "node --experimental-strip-types scripts/write-sitemap.mjs",
     "lint": "eslint .",

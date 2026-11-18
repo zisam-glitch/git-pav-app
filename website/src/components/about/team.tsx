@@ -1,10 +1,14 @@
 import { TeamShowcase } from "@/components/ui/team-showcase";
-import { useDoctors } from "@/components/team/use-doctors";
+import { TEAM_MEMBERS } from "@/content/team-members";
 
-// The dentists staff show on the website (dashboard: Dentist profiles).
+// The people on the team page, as on the live site.
 export function Team() {
-  const { doctors } = useDoctors();
-  const members = doctors.map((d) => ({ id: d.id, name: d.name, role: d.role, image: d.photo }));
+  const members = TEAM_MEMBERS.map((member) => ({
+    id: member.slug,
+    name: member.name,
+    role: member.role,
+    image: member.photo.src,
+  }));
   return (
     <section className="pb-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">

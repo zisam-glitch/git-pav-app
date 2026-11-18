@@ -13,6 +13,7 @@ export type ContentBlock =
   | { kind: "heading"; text: string; level?: 2 | 3 }
   | { kind: "paragraph"; text: string; links?: InlineLink[] }
   | { kind: "list"; items: Array<string | RichText> }
+  | { kind: "quote"; text: string }
   | { kind: "table"; header?: boolean; rows: string[][] }
   | { kind: "link"; text: string; href: string }
   | { kind: "documents"; items: Array<{ text: string; href: string }> }
@@ -88,6 +89,12 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
             return <li key={rich.text}>{renderText(rich.text, "links" in rich ? rich.links : undefined)}</li>;
           })}
         </ul>
+      );
+    case "quote":
+      return (
+        <blockquote className="mt-10 border-l-4 border-[#925a27] bg-[#faf6f0] px-6 py-5 font-display text-lg leading-relaxed text-[#2a1c12]">
+          {block.text}
+        </blockquote>
       );
     case "table": {
       const head = block.header ? block.rows[0] : undefined;

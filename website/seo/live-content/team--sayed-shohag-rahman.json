@@ -1,0 +1,68 @@
+{
+  "path": "/team/sayed-shohag-rahman",
+  "title": "Sayed Shohag Rahman - Marketing Manager | Pav Dental Team",
+  "h1": [
+    "Sayed Shohag Rahman"
+  ],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "img",
+      "src": "https://www.pavdental.com/images/team/8.jpg",
+      "alt": "Sayed Shohag Rahman"
+    },
+    {
+      "tag": "span",
+      "text": "MARKETING MANAGER"
+    },
+    {
+      "tag": "h1",
+      "text": "Sayed Shohag Rahman"
+    },
+    {
+      "tag": "div",
+      "text": "Sayed oversees Pav Dental’s communications, website, seo and community outreach. He makes booking simple, keeps patients informed about offers and late-opening slots, and ensures our messages are clear and accessible"
+    },
+    {
+      "tag": "div",
+      "text": "English, Bangla"
+    },
+    {
+      "tag": "div",
+      "text": "Mon–Fri (with campaign monitoring out of hours)"
+    },
+    {
+      "tag": "div",
+      "text": "hello@pavdental.com (or preferred alias)"
+    },
+    {
+      "tag": "div",
+      "text": "WHAT SAYED HANDLES"
+    },
+    {
+      "tag": "li",
+      "text": "Website, social media, seo and patient information materials"
+    },
+    {
+      "tag": "li",
+      "text": "Promotions, membership plan comms, referral campaigns"
+    },
+    {
+      "tag": "li",
+      "text": "Brand consistency, photography/graphics coordination"
+    },
+    {
+      "tag": "li",
+      "text": "Patient feedback surveys and service improvement loops"
+    },
+    {
+      "tag": "a",
+      "text": "Back to Team",
+      "href": "https://www.pavdental.com/team"
+    }
+  ]
+}

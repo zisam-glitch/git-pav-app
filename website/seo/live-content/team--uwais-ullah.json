@@ -1,0 +1,80 @@
+{
+  "path": "/team/uwais-ullah",
+  "title": "Uwais Ullah - Trainee Dental Nurse | Pav Dental Team",
+  "h1": [
+    "Uwais Ullah"
+  ],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "img",
+      "src": "https://www.pavdental.com/images/team/6.jpg",
+      "alt": "Uwais Ullah"
+    },
+    {
+      "tag": "span",
+      "text": "TRAINEE DENTAL NURSE"
+    },
+    {
+      "tag": "h1",
+      "text": "Uwais Ullah"
+    },
+    {
+      "tag": "div",
+      "text": "Uwais is currently training as a dental nurse and is an integral part of the Pav Dental team. His calm and focused approach helps ensure every procedure runs smoothly and safely. Under the supervision of Dr. Hassan Bhojani, Uwais assists in clinical procedures, maintains infection control standards, and supports patients throughout their treatment journey."
+    },
+    {
+      "tag": "div",
+      "text": "English, Urdu"
+    },
+    {
+      "tag": "div",
+      "text": "Monday – Saturday"
+    },
+    {
+      "tag": "div",
+      "text": "Support queries — hello@pavdental.com"
+    },
+    {
+      "tag": "div",
+      "text": "WHAT UWAIS HELPS WITH"
+    },
+    {
+      "tag": "li",
+      "text": "Chairside assistance during dental treatments and surgeries"
+    },
+    {
+      "tag": "li",
+      "text": "Preparing and sterilising instruments in compliance with HTM 01-05"
+    },
+    {
+      "tag": "li",
+      "text": "Maintaining surgery cleanliness and patient comfort"
+    },
+    {
+      "tag": "li",
+      "text": "Recording treatment notes and supporting digital workflows"
+    },
+    {
+      "tag": "li",
+      "text": "Assisting with stock management and clinical setup"
+    },
+    {
+      "tag": "div",
+      "text": "\""
+    },
+    {
+      "tag": "blockquote",
+      "text": "Uwais is passionate about learning and providing the highest standard of patient care. He brings enthusiasm, reliability, and a strong commitment to developing his clinical skills within Pav Dental’s patient-centred environment."
+    },
+    {
+      "tag": "a",
+      "text": "Back to Team",
+      "href": "https://www.pavdental.com/team"
+    }
+  ]
+}

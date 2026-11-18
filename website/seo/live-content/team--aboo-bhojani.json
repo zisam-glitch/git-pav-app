@@ -1,0 +1,92 @@
+{
+  "path": "/team/aboo-bhojani",
+  "title": "Aboo Bhojani - Director & Dental Engineer | Pav Dental Team",
+  "h1": [
+    "Aboo Bhojani"
+  ],
+  "blocks": [
+    {
+      "tag": "a",
+      "text": "Book Now",
+      "href": "https://pavdental.setmore.com/"
+    },
+    {
+      "tag": "img",
+      "src": "https://www.pavdental.com/images/team/1.jpg",
+      "alt": "Aboo Bhojani"
+    },
+    {
+      "tag": "span",
+      "text": "DIRECTOR & DENTAL ENGINEER"
+    },
+    {
+      "tag": "h1",
+      "text": "Aboo Bhojani"
+    },
+    {
+      "tag": "div",
+      "text": "Aboo Bhojani serves as Director and Dental Engineer at Pav Dental, bringing together technical expertise and financial governance. With a professional background as a former Tax Inspector and advanced Avensys certification in dental engineering, Aboo plays a vital role in ensuring Pav Dental operates with precision, transparency, and full compliance — both clinically and financially."
+    },
+    {
+      "tag": "div",
+      "text": "PROFESSIONAL BACKGROUND"
+    },
+    {
+      "tag": "p",
+      "text": "Aboo’s experience spans the public and healthcare sectors. His time as a Tax Inspector with HMRC provided him with a deep understanding of taxation law, financial accountability, and auditing processes. This experience directly informs his role at Pav Dental, where he oversees the clinic’s compliance with HMRC regulations, including payroll systems, VAT submissions, expense management, and corporation tax filings. Complementing his financial expertise, Aboo also completed the Avensys Dental Engineering course, equipping him with practical skills in maintaining, testing, and certifying dental equipment under HTM and CQC guidelines."
+    },
+    {
+      "tag": "div",
+      "text": "RESPONSIBILITIES"
+    },
+    {
+      "tag": "li",
+      "text": "Overseeing HMRC compliance, tax returns, and payroll accuracy"
+    },
+    {
+      "tag": "li",
+      "text": "Managing financial governance and business reporting for Mars Purifier Ltd"
+    },
+    {
+      "tag": "li",
+      "text": "Supervising dental equipment maintenance and certification (autoclaves, compressors, suction systems)"
+    },
+    {
+      "tag": "li",
+      "text": "Ensuring full adherence to CQC, HTM 01-05, and infection control standards"
+    },
+    {
+      "tag": "li",
+      "text": "Supporting the Registered Manager in audits, risk assessments, and quality assurance"
+    },
+    {
+      "tag": "div",
+      "text": "QUALIFICATIONS AND TRAINING"
+    },
+    {
+      "tag": "li",
+      "text": "01\nAvensys Biomedical & Dental Engineering Course (Completed)"
+    },
+    {
+      "tag": "li",
+      "text": "02\nFormer HMRC Tax Inspector"
+    },
+    {
+      "tag": "li",
+      "text": "03\nCertified in Health & Safety, Infection Control, and Equipment Maintenance."
+    },
+    {
+      "tag": "div",
+      "text": "\""
+    },
+    {
+      "tag": "blockquote",
+      "text": "Integrity and compliance are the backbone of sustainable healthcare. My goal is to ensure Pav Dental operates to the highest standard — clinically, technically, and financially — with full accountability to our patients and regulators."
+    },
+    {
+      "tag": "a",
+      "text": "Back to Team",
+      "href": "https://www.pavdental.com/team"
+    }
+  ]
+}

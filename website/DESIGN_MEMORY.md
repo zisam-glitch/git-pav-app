@@ -1,37 +1,24 @@
 # Design Memory & User Preferences
 
-## Core User Directives & Style Principles
-- **No Glassmorphism / No Glass Effects**:
-  - Never use `.glass`, `.glass-dark`, or `backdrop-blur-*` classes.
-  - Rely on solid opaque backgrounds (`#fffdf9`, `#faf6f0`, `#ffffff`, `#2a1c12`) with solid structural borders (`#e2d4c0`, `#e8ddd0`).
-- **No Italic Fonts**:
-  - Never apply `italic` or `italic` font styles to headings or body text.
-  - Use clean upright serif typography for editorial titles (`font-display font-bold`) and crisp sans-serif typography for body copy.
-- **No Tracking Classes**:
-  - Do not use artificial tracking modifiers (`tracking-tight`, `tracking-tighter`, `tracking-wide`, `tracking-wider`, `tracking-widest`).
-  - Rely on the font's natural, readable spacing for both uppercase labels and narrative text.
-- **Clinical Rigour & Transparency**:
-  - Users prefer concrete clinical proof (e.g. 0.0% enamel demineralization, GDC registration, laboratory custom tray seals, ACP remineralization) over vague marketing claims.
-  - Side-by-side comparison tables and interactive visualizers (such as the VITA 8-shade guide simulator) drive strong engagement and clarity.
-- **Architectural Radii (No rounded-2xl / rounded-3xl Everywhere)**:
-  - Avoid bubbly rounded-2xl and rounded-3xl classes across cards, stats, and imagery.
-  - Use crisp, structural `rounded-lg`, `rounded-xl`, or `rounded-md` corners for precision and restraint.
-- **Unified Section Width (`max-w-6xl`)**:
-  - All content sections and component wrappers must use `mx-auto max-w-6xl px-4 sm:px-6 lg:px-8` to maintain strict visual alignment across the entire page.
+> **Direction changed on 18 Nov 2026.** The owner asked for the whole site to follow Hims (hims.com) exactly as Hims applies it: same colours, font, type sizes, transitions and widths, with Pav Dental's own words and data from the live site. The contract is [docs/redesign/website/hims-design-system.md](../docs/redesign/website/hims-design-system.md); progress is in [docs/redesign/website/tracking.md](../docs/redesign/website/tracking.md). Where this file and that contract disagree, the contract wins. What still stands from the list below is marked **kept**.
 
-## Color Palette & Design Tokens
-- **Primary Brand Gold**: `#925a27` (Text, primary buttons, borders)
-- **Warm Gold Accent**: `#cf9448` (Highlights, icons, active indicators)
-- **Deep Espresso Dark**: `#2a1c12` (Dark contrast sections, video modules, footer)
-- **Subtle Dark Card**: `#372418` / `#3d2a1d`
-- **Soft Light Canvas**: `#fffdf9` (Main page background)
-- **Warm Cream Accent**: `#faf6f0` (Section backgrounds, interactive wells)
-- **Solid Warm Border**: `#e2d4c0` (Card borders, dividers)
-- **Muted Division Line**: `#e8ddd0` (Subtle dividers, table rows)
-- **Body Text**: `#2a1c12` (Headings and high-emphasis text)
-- **Muted Body Text**: `#6b5848` (Secondary explanations, subtitles)
+## Still binding (kept)
 
-## Layout & Navigation Integrity
-- Always mount the global `<Header />` and `<Footer />` on pages.
-- Ensure all interactive elements include accessible labels and high-contrast focus/hover states.
+- **No glass or backdrop blur.** Solid surfaces only.
+- **No italics.**
+- **Clinical rigour and transparency.** Concrete, verifiable statements; nothing the live site does not say.
+- **The global `<Header />` and `<Footer />` on every page**, with accessible labels and visible focus and hover states.
 
+## Superseded by the Hims direction
+
+| Old pin | Now |
+|---|---|
+| No `tracking-*` classes | The Hims type classes (`text-hero`, `text-h2`, ...) carry the measured tracking. Do not add `tracking-*` on top |
+| Upright serif titles (`font-display font-bold`) with a sans body | One sans, CareSans, everywhere. No serif |
+| `rounded-md`, `rounded-lg`, `rounded-xl` only | Hims radii: 24px tiles (`rounded-xl`), 48px pills (`rounded-pill`), 16 to 20px small cards, 14px form fields |
+| Sections `mx-auto max-w-6xl px-4 sm:px-6 lg:px-8` | Hims widths: `wrap` 1392, `wrap-inner` 1328, `wrap-bento` 1132, `wrap-prose` 736, `wrap-max` 1728 |
+| Palette: primary `#925a27`, gold `#cf9448`, espresso `#2a1c12`, canvas `#fffdf9`, cream `#faf6f0` | Hims palette in `src/styles.css`: white page, cream `#faf8f2` tiles, brown `#453421` and navy `#1c3e56` feature sections, gold `#ffc671`, butter `#ecd880`, black pills |
+
+## Licence note for the owner
+
+CareSans (the Hims typeface, file taken from the owner's capture) is licensed to Hims. A licence for hims.com almost certainly does not cover this site. Figtree (SIL OFL) is already in `public/fonts/figtree/` as the licence-safe stand-in: put `"Figtree"` first in `--font-sans` in `src/styles.css` to switch (and set heading tracking to -0.02em).

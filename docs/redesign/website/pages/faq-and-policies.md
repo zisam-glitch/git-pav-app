@@ -12,8 +12,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | # | Section | File | Reference (Hims capture / Mobbin links) | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|---|
-| 1 | content blocks | `website/src/components/content/content-blocks.tsx` | — | todo | | | | |
-| 2 | live content page (page composition) | `website/src/components/content/live-content-page.tsx` | — | todo | | | | |
+| 1 | content blocks | `website/src/components/content/content-blocks.tsx` | Hims design system prose, table & tile tokens | verified | [shot](../shots/policies/1440-privacy.png) | ok | same | Replaced legacy brown hex colours and `font-display`/`max-w-3xl` with Hims tokens (`Section`, `Heading`, `Tile`, `Media`, `wrap-prose`, `bg-tile-cream`, `text-terracotta`). Preserved `ContentBlock` type export for `team-profile.tsx`. |
+| 2 | live content page (page composition) | `website/src/components/content/live-content-page.tsx` | Hims `FaqList` + `ContentPageBody` + `CtaBand` | verified | [shot](../shots/faq/1440-faq.png) | ok | same | `/faq` renders two-column sticky header + Hims `FaqList` (all 5 Q&As verbatim in HTML) + `CtaBand`; `/cctv-policy` and `/practice-policy` render via `ContentPageBody`. Inline legal routes (`privacy-policy`, `terms-and-condition`, `cookie-policy`, `complaints-policy`) restyled with `ContentPageBody` and Hims borders/typography, zero wording changes. |
 
 ## Wording changes
 
@@ -27,7 +27,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 ## Verification log
 
-(Newest first: date, section, reference compared, what differed, what you changed, result.)
+- 2026-11-19: Verified `/faq` and all 6 policy routes (`/privacy-policy`, `/complaints-policy`, `/practice-policy`, `/cctv-policy`, `/terms-and-condition`, `/cookie-policy`) in Chromium at `1440x900` and `390x844` (HTTP 200, single H1, FAQ accordion toggle verified, 0 legacy brown/amber classes, 0 horizontal overflow), confirmed `/faq` and `/cctv-policy` at 100% SEO parity (0 failures across all 7 routes), and saved shots in `docs/redesign/website/shots/{faq,policies}/`. Marked both rows `verified`.
 
 ## Open questions for the lead
 
+- Adding the visible `<h2>Your questions, answered</h2>` heading on `/faq` keeps heading hierarchy strictly `h1 -> h2 -> h3` (since `FaqList` renders `<h3>` buttons); confirm if preferred over a hidden heading.

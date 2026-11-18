@@ -1,7 +1,12 @@
-import { useCartStore } from "@/lib/cart-store";
-import { Trash2, Plus, Minus, ArrowRight, ShieldCheck, Truck, ShoppingBag } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Minus, Plus, ShieldCheck, ShoppingBag, Trash2 } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { useCartStore } from "@/lib/cart-store";
+import { cn } from "@/lib/utils";
+import { ShopMedia } from "./shop-media";
 
 const FREE_SHIPPING_THRESHOLD = 40;
 
@@ -21,9 +26,11 @@ export function CartPage() {
   } = useCartStore();
 
   const [promoCodeInput, setPromoCodeInput] = useState("");
-  const [promoMessage, setPromoMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [promoMessage, setPromoMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  // Sync cart with API on mount
   useEffect(() => {
     syncCart();
   }, [syncCart]);
@@ -37,7 +44,7 @@ export function CartPage() {
   const amountNeededForFree = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
   const progressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
 
-  const handleApplyPromo = async (e: React.FormEvent) => {
+  const handleApplyPromo = async (e: FormEvent) => {
     e.preventDefault();
     if (!promoCodeInput.trim()) return;
     const res = await applyDiscount(promoCodeInput.trim());
@@ -51,191 +58,213 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <div className="size-20 rounded-full bg-[#faf6f0] border border-[#e2d4c0] flex items-center justify-center mb-4 text-muted">
-          <ShoppingBag className="size-10" />
+      <Section theme="white" className="min-h-[65vh]">
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="grid size-20 place-items-center rounded-pill bg-cream text-muted">
+            <ShoppingBag aria-hidden className="size-9" />
+          </div>
+          <Heading as="h1" size="h2-md" accent="is Empty" tone="terracotta" inline className="mt-6">
+            Your Shopping Bag
+          </Heading>
+          <p className="mt-3 max-w-sm text-body text-muted">
+            Explore our clinician-curated dental care solutions.
+          </p>
+          <div className="mt-8">
+            <ButtonLink to="/shop">Start Shopping</ButtonLink>
+          </div>
         </div>
-        <h1 className="font-display text-3xl font-bold text-fg">Your Shopping Bag is Empty</h1>
-        <p className="mt-2 text-sm text-muted max-w-sm">
-          Explore our clinician-curated dental care solutions.
-        </p>
-        <Button asChild className="mt-6 accent-gradient text-white px-8 h-11">
-          <a href="/shop">Start Shopping</a>
-        </Button>
-      </div>
+      </Section>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center justify-between border-b border-[#e2d4c0] pb-6">
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg">Shopping Bag</h1>
+    <Section theme="white">
+      <div className="space-y-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+          <Heading as="h1" size="h2-md">
+            Shopping Bag
+          </Heading>
           <button
             type="button"
             onClick={clearCart}
-            className="text-xs text-muted hover:text-destructive transition-colors font-semibold"
+            className="text-small font-medium text-subtle underline underline-offset-4 t-colors hover:text-danger"
           >
             Clear Bag
           </button>
         </div>
 
         {/* Free Shipping Progress bar */}
-        <div className="bg-white rounded-2xl border border-[#e2d4c0] p-4 shadow-xs">
-          <div className="flex items-center justify-between text-xs mb-2">
-            <span className="font-semibold text-fg">
-              {isFreeShipping ? "🎉 You've unlocked FREE UK Delivery!" : `Add £${amountNeededForFree.toFixed(2)} more for FREE UK Delivery`}
+        <Tile tone="cream" className="p-5">
+          <div className="mb-2.5 flex items-center justify-between gap-2 text-small">
+            <span className="font-medium text-fg">
+              {isFreeShipping
+                ? "You've unlocked FREE UK Delivery!"
+                : `Add £${amountNeededForFree.toFixed(2)} more for FREE UK Delivery`}
             </span>
-            <span className="text-muted font-medium">{progressPercent}%</span>
+            <span className="font-medium text-muted tabular-nums">{progressPercent}%</span>
           </div>
-          <div className="h-2 w-full bg-[#faf6f0] rounded-full overflow-hidden border border-[#e2d4c0]">
+          <div className="h-2 w-full overflow-hidden rounded-pill bg-black/10">
             <div
-              className="h-full accent-gradient transition-all duration-300"
+              className="h-full rounded-pill bg-brown transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-        </div>
+        </Tile>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-10">
           {/* Items Table Left */}
-          <div className="lg:col-span-8 bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs divide-y divide-[#e2d4c0]">
+          <Tile tone="white" className="divide-y divide-border p-6 lg:col-span-8">
             {items.map((it) => (
-              <div key={it.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <img
+              <div
+                key={it.id}
+                className="flex flex-col items-start justify-between gap-4 py-5 first:pt-0 last:pb-0 sm:flex-row sm:items-center"
+              >
+                <div className="flex min-w-0 flex-1 items-center gap-4">
+                  <ShopMedia
                     src={it.image}
                     alt={it.name}
-                    className="size-16 rounded-xl object-cover bg-[#faf6f0] border border-[#e2d4c0] shrink-0"
+                    tone="cream"
+                    className="size-16 shrink-0 rounded-lg border border-border"
                   />
                   <div className="min-w-0">
-                    <a href={`/shop/${it.slug}`} className="text-sm font-semibold text-fg hover:text-primary transition-colors line-clamp-1">
+                    <Link
+                      to="/shop/$productSlug"
+                      params={{ productSlug: it.slug }}
+                      className="line-clamp-1 text-label text-fg t-colors hover:text-terracotta"
+                    >
                       {it.name}
-                    </a>
-                    <p className="text-xs font-bold text-[#844d1e] mt-0.5">£{it.unitPrice.toFixed(2)}</p>
+                    </Link>
+                    <p className="mt-1 text-small font-medium text-muted tabular-nums">
+                      £{it.unitPrice.toFixed(2)}
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-6">
-                  {/* Quantity selector */}
-                  <div className="flex items-center rounded-xl border border-[#e2d4c0] bg-[#faf8f5] px-2 py-1">
+                <div className="flex w-full items-center justify-between gap-6 sm:w-auto sm:justify-end">
+                  <div className="inline-flex items-center rounded-pill border border-border-strong bg-cream px-2 py-1">
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity - 1)}
-                      className="size-7 flex items-center justify-center text-muted hover:text-fg"
+                      className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
                       aria-label="Decrease quantity"
                     >
-                      <Minus className="size-3.5" />
+                      <Minus aria-hidden className="size-3.5" />
                     </button>
-                    <span className="w-8 text-center text-xs font-semibold">{it.quantity}</span>
+                    <span className="w-8 text-center text-small font-medium tabular-nums text-fg">
+                      {it.quantity}
+                    </span>
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity + 1)}
-                      className="size-7 flex items-center justify-center text-muted hover:text-fg"
+                      className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
                       aria-label="Increase quantity"
                     >
-                      <Plus className="size-3.5" />
+                      <Plus aria-hidden className="size-3.5" />
                     </button>
                   </div>
 
-                  <span className="text-sm font-bold text-fg w-16 text-right">
+                  <span className="w-20 text-right text-label tabular-nums text-fg">
                     £{it.itemTotal.toFixed(2)}
                   </span>
 
                   <button
                     type="button"
                     onClick={() => removeItem(it.id)}
-                    className="text-muted hover:text-destructive transition-colors p-1"
-                    aria-label="Remove item"
+                    className="grid size-9 place-items-center rounded-pill text-subtle t-colors hover:bg-cream hover:text-danger"
+                    aria-label={`Remove ${it.name}`}
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 aria-hidden className="size-4" />
                   </button>
                 </div>
               </div>
             ))}
-          </div>
+          </Tile>
 
           {/* Right Summary Column */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-2xl border border-[#e2d4c0] p-6 shadow-xs space-y-5">
-              <h2 className="font-display text-lg font-bold text-fg">Summary</h2>
+          <div className="space-y-4 lg:col-span-4">
+            <Tile tone="cream" className="space-y-6 p-6 md:p-8">
+              <h2 className="text-h4 text-fg">Summary</h2>
 
-              {/* Promo Code Input */}
               <div>
                 {!appliedDiscount ? (
                   <form onSubmit={handleApplyPromo} className="flex gap-2">
-                    <input
+                    <Input
                       type="text"
+                      aria-label="Promo code"
                       placeholder="Promo code"
                       value={promoCodeInput}
                       onChange={(e) => setPromoCodeInput(e.target.value)}
-                      className="flex-1 rounded-xl border border-border/70 bg-[#faf8f5] px-3 py-2 text-xs uppercase focus:border-[#844d1e] focus:outline-none"
+                      className="h-12 flex-1 uppercase"
                     />
-                    <Button type="submit" variant="outline" size="sm" className="rounded-xl">
+                    <Button type="submit" variant="outline" className="px-5">
                       Apply
                     </Button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-xs">
+                  <div className="flex items-center justify-between rounded-lg bg-sage px-3.5 py-2.5 text-small text-fg">
                     <span>Coupon {appliedDiscount.code} applied</span>
                     <button
                       type="button"
                       onClick={removeDiscount}
-                      className="text-xs text-muted hover:text-fg font-semibold underline"
+                      className="text-caption font-medium text-fg underline underline-offset-4"
                     >
                       Remove
                     </button>
                   </div>
                 )}
-                {promoMessage && !appliedDiscount && (
-                  <p className={`text-[11px] mt-1.5 ${promoMessage.type === "success" ? "text-emerald-700" : "text-red-600"}`}>
+                {promoMessage && !appliedDiscount ? (
+                  <p
+                    className={cn(
+                      "mt-2 text-caption",
+                      promoMessage.type === "success" ? "text-fg" : "text-danger",
+                    )}
+                  >
                     {promoMessage.text}
                   </p>
-                )}
+                ) : null}
               </div>
 
-              {/* Cost breakdown */}
-              <div className="space-y-2 border-t border-[#e2d4c0] pt-4 text-xs">
+              <div className="space-y-2.5 border-t border-border pt-4 text-small">
                 <div className="flex justify-between text-muted">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-fg">£{subtotal.toFixed(2)}</span>
+                  <span className="font-medium text-fg tabular-nums">£{subtotal.toFixed(2)}</span>
                 </div>
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-medium">
+                {discountAmount > 0 ? (
+                  <div className="flex justify-between text-fg">
                     <span>Discount</span>
-                    <span>-£{discountAmount.toFixed(2)}</span>
+                    <span className="tabular-nums">-£{discountAmount.toFixed(2)}</span>
                   </div>
-                )}
+                ) : null}
                 <div className="flex justify-between text-muted">
                   <span>Delivery Estimate</span>
-                  <span className="font-semibold text-fg">
+                  <span className="font-medium text-fg tabular-nums">
                     {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-bold text-fg pt-3 border-t border-[#e2d4c0]">
+                <div className="flex justify-between border-t border-border pt-3 text-h4 text-fg">
                   <span>Total</span>
-                  <span className="text-[#844d1e]">£{total.toFixed(2)}</span>
+                  <span className="tabular-nums">£{total.toFixed(2)}</span>
                 </div>
               </div>
 
-              <Button asChild className="w-full h-12 accent-gradient text-white text-sm font-semibold rounded-xl shadow-md gap-2">
-                <a href="/checkout">
-                  <span>Proceed to Checkout</span>
-                  <ArrowRight className="size-4" />
-                </a>
-              </Button>
-            </div>
+              <ButtonLink to="/checkout" className="w-full">
+                <span>Proceed to Checkout</span>
+                <ArrowRight aria-hidden className="size-4" />
+              </ButtonLink>
+            </Tile>
 
-            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 text-emerald-900 text-xs flex items-center gap-3">
-              <ShieldCheck className="size-6 text-emerald-700 shrink-0" />
+            <Tile tone="sage" className="flex items-start gap-3 p-5">
+              <ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-fg" />
               <div>
-                <p className="font-semibold">Clinical Guarantee</p>
-                <p className="text-[11px] text-emerald-800/80">30-day returns and free advice from registered dentists.</p>
+                <p className="text-label text-fg">Clinical Guarantee</p>
+                <p className="mt-1 text-small text-muted">
+                  Dispatched from our registered dental clinic in Bradford.
+                </p>
               </div>
-            </div>
+            </Tile>
           </div>
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
-

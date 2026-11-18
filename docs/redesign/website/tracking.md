@@ -31,11 +31,11 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 | P1 | [Petition](pages/petition.md) | `/petition` | 5 | 5 | 0 | 0 | 0 | 1 |
 | P1 | [Team and team profiles](pages/team.md) | `/team`, `/team/$slug` | 3 | 3 | 0 | 0 | 0 | 0 |
 | P1 | [Vacancies](pages/vacancies.md) | `/vacancies` | 6 | 6 | 0 | 0 | 0 | 2 |
-| C1 | [Blog and posts](pages/blog.md) | `/blog`, `/blog/$slug` | 3 | 0 | 0 | 3 | 0 | 0 |
-| C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 0 | 0 | 2 | 0 | 0 |
-| C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 0 | 0 | 2 | 0 | 0 |
-| SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 0 | 0 | 11 | 0 | 0 |
-| | **Total** | | **174** | **156** | **0** | **18** | **0** | **42** |
+| C1 | [Blog and posts](pages/blog.md) | `/blog`, `/blog/$slug` | 3 | 3 | 0 | 0 | 0 | 6 |
+| C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 2 | 0 | 0 | 0 | 0 |
+| C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 2 | 0 | 0 | 0 | 0 |
+| SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 11 | 0 | 0 | 0 | 1 |
+| | **Total** | | **174** | **174** | **0** | **0** | **0** | **49** |
 
 ## Service: Emergency dental
 
@@ -346,9 +346,9 @@ Group C1 · `/blog`, `/blog/$slug` · [page file](pages/blog.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | blog index | — | todo |  |  |  |  |
-| 2 | blog post page (page composition) | — | todo |  |  |  |  |
-| 3 | newsletter cta | — | todo |  |  |  |  |
+| 1 | blog index | Hims "Popular reads" card grid (`Tile` + `Media`) | verified | [shot](shots/blog/1440-index.png) | [shot](shots/blog/390-index.png) | same | Cream hero + 3-column Hims `bg-tile-cream` cards with `t-lift`, `t-zoom`, and `<Media>` placeholders (replacing external Contentful URLs until local generated covers are supplied). |
+| 2 | blog post page (page composition) | Hims prose article + sticky `Tile` sidebar + `CtaBand` | verified | [shot](shots/blog/1440-post.png) | ok | same | Cream article header (`Back to Blog`, `Heading size="hero"`, byline), `wrap` 2-column prose (`46rem`) + sticky `Recent Posts` cream `Tile`, Previous/Next tile links, and closing `CtaBand`. |
+| 3 | newsletter cta | Hims lead-capture card (`Input` + `Button`) | verified | [shot](shots/blog/1440-newsletter.png) | ok | same | Restyled on `Section theme="cream"` with white `rounded-xl` card, Hims `Heading`, `Input`, `Button`, accessible `<Label>`, and `Tile tone="sage"` confirmation state. |
 
 ## FAQ and policy pages
 
@@ -356,8 +356,8 @@ Group C1 · `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/ter
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | content blocks | — | todo |  |  |  |  |
-| 2 | live content page (page composition) | — | todo |  |  |  |  |
+| 1 | content blocks | Hims design system prose, table & tile tokens | verified | [shot](shots/policies/1440-privacy.png) | ok | same | Replaced legacy brown hex colours and `font-display`/`max-w-3xl` with Hims tokens (`Section`, `Heading`, `Tile`, `Media`, `wrap-prose`, `bg-tile-cream`, `text-terracotta`). Preserved `ContentBlock` type export for `team-profile.tsx`. |
+| 2 | live content page (page composition) | Hims `FaqList` + `ContentPageBody` + `CtaBand` | verified | [shot](shots/faq/1440-faq.png) | ok | same | `/faq` renders two-column sticky header + Hims `FaqList` (all 5 Q&As verbatim in HTML) + `CtaBand`; `/cctv-policy` and `/practice-policy` render via `ContentPageBody`. Inline legal routes (`privacy-policy`, `terms-and-condition`, `cookie-policy`, `complaints-policy`) restyled with `ContentPageBody` and Hims borders/typography, zero wording changes. |
 
 ## Services hub
 
@@ -365,8 +365,8 @@ Group C1 · `/services` · [page file](pages/services-hub.md)
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | content blocks | — | todo |  |  |  |  |
-| 2 | live content page (page composition) | — | todo |  |  |  |  |
+| 1 | content blocks | Hims design system prose & tile tokens | verified | ok | ok | same | Restyled `ContentBlocks` and `ContentPageBody` in Hims tokens (`Section`, `Heading`, `Tile`, `Media`, `text-*`, `bg-tile-cream`). |
+| 2 | services hub (page composition) | Hims capture category `TileLink` grid + `CtaBand` | verified | [grid](shots/services/1440-grid.png) · [bottom](shots/services/1440-bottom.png) | [shot](shots/services/390-grid.png) | same | Hero + 3-column `TileLink` grid of the 13 built services plus `Finance` (`/pricing`) and `Registration` (`/contact-us`) = 15 tiles, `"Coming soon"` pills on Mobile & Virtual Dentistry, and closing `CtaBand`. |
 
 ## Shop: catalogue, product, category, cart, checkout, order
 
@@ -374,15 +374,15 @@ Group SH · `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkou
 
 | # | Section | Reference | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|
-| 1 | cart drawer | — | todo |  |  |  |  |
-| 2 | cart page (page composition) | — | todo |  |  |  |  |
-| 3 | checkout page (page composition) | — | todo |  |  |  |  |
-| 4 | order confirmation | — | todo |  |  |  |  |
-| 5 | product detail | — | todo |  |  |  |  |
-| 6 | product modal | — | todo |  |  |  |  |
-| 7 | shop catalog | — | todo |  |  |  |  |
-| 8 | shop guarantee | — | todo |  |  |  |  |
-| 9 | shop hero | — | todo |  |  |  |  |
-| 10 | shop page (page composition) | — | todo |  |  |  |  |
-| 11 | product reveal card | — | todo |  |  |  |  |
+| 1 | cart drawer | Hims 547px right drawer (`bg-black/44` curtain, `ease-smooth`, Escape/focus) | verified | [shot](shots/shop/1440-drawer.png) | ok | reworded | Rebuilt 547px Hims drawer (`bg-white`, `md:rounded-l-xl`, `shadow-card`), removed `backdrop-blur-xs` and `alert()`, uses `Input`/`Button`/`ButtonLink`/`ShopMedia`, wired `onClearCart` |
+| 2 | cart page (page composition) | Hims split layout + `Tile` panels (`cream` / `sage` / `white`) | verified | [shot](shots/shop/1440-cart.png) | ok | reworded | Rebuilt with `Section`, `Heading`, `Tile`, `Input`, `Button`, `ButtonLink`, `ShopMedia`; kept cart sync, quantity +/-/remove, clear bag, shipping progress, and promo code flow (populated state awaits `:3001` API) |
+| 3 | checkout page (page composition) | Hims form cards (`Input`, `Label`, `Tile`, `Button`) | verified | [shot](shots/shop/1440-checkout.png) | ok | reworded | Preserved every field, label, validation, shipping radio selection, promo code, and Stripe checkout session submit; empty-bag guard verified in browser (full checkout form awaits `:3001` API product) |
+| 4 | order confirmation | Hims `Section` (`width="prose"`) + `Tile` confirmation panels | verified | ok | ok | same | Preserved loading, not-found, awaiting-payment polling, `clearCart` on paid status, and receipt breakdown using `Tile`, `Heading`, `ButtonLink`, and `ShopMedia` |
+| 5 | product detail | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · [Mobbin product details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | ok | ok | same | Rebuilt with `Section`, `Heading`, `Tile`, `ShopMedia`, variant pills, quantity stepper, JSON-LD (no ratings), and complementary products grid; not-found fallback verified |
+| 6 | product modal | Hims modal card (`bg-black/44` overlay, `rounded-xl`) | verified | ok | ok | same | Removed `backdrop-blur-xs` and raw hex; added Escape key close, `role="dialog"`, Hims `Button`/`Tile`/`ShopMedia` (currently unused by `shop-page.tsx`) |
+| 7 | shop catalog | [Mobbin product & pricing cards](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) | verified | [shot](shots/shop/1440-catalog.png) | ok | same | Rebuilt on `Section theme="white"` with category pills (desktop), `Select` for category (mobile) and sort, `Input` search, and 3-col grid of `ProductRevealCard` (`0` stars) |
+| 8 | shop guarantee | Hims `FaqList` + sticky left header on `Section theme="sand"` | verified | ok | ok | same | Replaced custom accordion with shared `FaqList`, `Heading`, and `ButtonLink`; kept 4 shop FAQs (flagged clinical/shipping/returns claims for owner sign-off) |
+| 9 | shop hero | [Mobbin split hero](https://mobbin.com/sites/sections/16099344-b64f-488f-b102-4723982d0e90) · [Mobbin product details](https://mobbin.com/screens/dc314ee4-e77b-4226-a64e-fdd7e7ec3a97) | verified | [shot](shots/shop/1440-hero.png) | [shot](shots/shop/390-hero.png) | reworded | Rebuilt as `SplitFeature` on `Section theme="cream"` with `Heading`, `ButtonLink`, and `4 / 3` `<Media>` placeholder (`shop-hero`); dropped unverified `"100% satisfaction guarantee"` bullet |
+| 10 | shop page (page composition) | Hims alternating sections (`cream` / `white` / `sand`) + floating bag pill | verified | ok | ok | same | Composes `ShopHero`, `ShopCatalog`, `ShopGuarantee`, `CartDrawer`, and Hims black pill bag trigger; removed Unsplash fallback |
+| 11 | product reveal card | [Mobbin product & pricing cards](https://mobbin.com/screens/fceeec4f-4a84-4d2c-800b-aa43b48a07bb) · Hims cream product tile with `+` button | verified | ok | ok | same | Rebuilt as `bg-tile-cream` Hims tile with `t-lift`, `t-zoom`, `ShopMedia`, price (`tabular-nums`), and round `+`/`Check` button; removed `backdrop-blur-xl` and dark blur overlay |
 

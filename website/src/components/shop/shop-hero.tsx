@@ -1,62 +1,45 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
+import { ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
 
 interface ShopHeroProps {
   onCategorySelect?: (category: string) => void;
 }
 
-export function ShopHero({ onCategorySelect }: ShopHeroProps) {
+export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps) {
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden bg-[#faf6f0] border-b border-[#e2d4c0] py-20 sm:py-28"
-      aria-label="Shop dental products"
-    >
-      {/* Background layer with subtle gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="/media/hero-clinic.jpg"
-          alt=""
-          className="h-full w-full object-cover opacity-20"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#faf6f0] via-[#faf6f0]/95 to-[#faf6f0]/80" />
-      </div>
-
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
-       <div className='pt-16'></div>
-        <h1 className="max-w-2xl mx-auto font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-          Designed by <span className="text-[#925a27]">Dentists</span>
-        </h1>
-        <p className="mt-5 max-w-xl mx-auto text-base text-[#6b5848] sm:text-lg leading-relaxed">
-          Elevate your daily smile routine with professional teeth whitening, acoustic sonic brushes, and custom at-home impression kits delivered directly from our clinic in Bradford.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95 transition-transform active:scale-[0.98]"
-          >
-            <a href="#catalog">Browse Products</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0] transition-colors"
-          >
-            <a href="#guarantee">Our Guarantee</a>
-          </Button>
+    <Section id="top" theme="cream" aria-label="Shop dental products">
+      <SplitFeature
+        reverse
+        media={
+          <Media
+            alt="Curated dental care products arranged on a warm surface"
+            ratio="4 / 3"
+            tone="sand"
+            priority
+          />
+        }
+      >
+        <div>
+          <Heading as="h1" size="hero" accent="Dentists" tone="terracotta" inline>
+            Designed by
+          </Heading>
+          <p className="mt-5 max-w-xl text-lead text-muted">
+            Elevate your daily smile routine with professional teeth whitening, acoustic sonic
+            brushes, and custom at-home impression kits delivered directly from our clinic in
+            Bradford.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink href="#catalog">Browse Products</ButtonLink>
+            <ButtonLink href="#guarantee" variant="outline">
+              Our Guarantee
+            </ButtonLink>
+          </div>
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-small text-muted">
+            <li>Dentist-formulated</li>
+            <li>Bradford clinic dispatch</li>
+            <li>UK tracked delivery</li>
+          </ul>
         </div>
-        
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-[#6b5848]">
-          <li className="hover:text-[#925a27] transition-colors">Free UK delivery</li>
-          <li className="hover:text-[#925a27] transition-colors">Dentist-formulated</li>
-          <li className="hover:text-[#925a27] transition-colors">100% satisfaction guarantee</li>
-        </ul>
-      </div>
-    </section>
+      </SplitFeature>
+    </Section>
   );
 }

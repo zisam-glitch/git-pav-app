@@ -1,43 +1,50 @@
-import { useState, useMemo } from "react";
-import { Search } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ProductRevealCard } from "@/components/ui/product-reveal-card";
+import { Select } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import type { Product } from "./shop-data";
 
 interface ShopCatalogProps {
   products?: Product[];
   isLoading?: boolean;
   onQuickView?: (product: Product) => void;
-  onAddToCart: (product: Product, quantity?: number, variant?: any) => void;
+  onAddToCart: (product: Product, quantity?: number, variant?: unknown) => void;
+  hideHeading?: boolean;
 }
 
-export function ShopCatalog({ products = [], isLoading = false, onQuickView, onAddToCart }: ShopCatalogProps) {
+const SORT_OPTIONS = [
+  { id: "featured", label: "Sort: Featured" },
+  { id: "price_asc", label: "Price: Low to High" },
+  { id: "price_desc", label: "Price: High to Low" },
+] as const;
+
+export function ShopCatalog({
+  products = [],
+  isLoading = false,
+  onQuickView,
+  onAddToCart,
+  hideHeading = false,
+}: ShopCatalogProps) {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("featured");
-  const [searchQuery, setSearchQuery] = useState<string>("" );
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
-  // Extract unique categories from products
   const categories = useMemo(() => {
-    const uniqueCategories = new Set(products.map(p => p.category));
-    const categoryList = Array.from(uniqueCategories).map(cat => ({
+    const uniqueCategories = new Set(products.map((p) => p.category));
+    const categoryList = Array.from(uniqueCategories).map((cat) => ({
       id: cat,
-      label: products.find(p => p.category === cat)?.categoryLabel || cat
+      label: products.find((p) => p.category === cat)?.categoryLabel || cat,
     }));
-    return [
-      { id: "all", label: "All Products" },
-      ...categoryList
-    ];
+    return [{ id: "all", label: "All Products" }, ...categoryList];
   }, [products]);
-
-  const sortOptions = [
-    { id: "featured", label: "Sort: Featured" },
-    { id: "price_asc", label: "Price: Low to High" },
-    { id: "price_desc", label: "Price: High to Low" },
-  ];
 
   const filteredProducts = useMemo(() => {
     const list = products.filter((p) => {
@@ -78,120 +85,156 @@ export function ShopCatalog({ products = [], isLoading = false, onQuickView, onA
     });
   };
 
+  const handleQuickView = (product: Product) => {
+    if (onQuickView) {
+      onQuickView(product);
+      return;
+    }
+    navigate({ to: "/shop/$productSlug", params: { productSlug: product.slug } });
+  };
+
   return (
-    <section id="catalog" className="py-20 sm:py-28 bg-[#2a1c12] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white">
-            Our Products
-          </h2>
-          <p className="mt-4 text-white/80 text-sm sm:text-base leading-relaxed">
-            Professional dental care products designed by our clinical team for your daily oral health routine.
+    <Section id="catalog" theme="white" aria-label="Product catalogue">
+      {!hideHeading ? (
+        <div className="max-w-2xl">
+          <Heading as="h2" size="h2" accent="Products" tone="terracotta" inline>
+            Our
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            Professional dental care products designed by our clinical team for your daily oral
+            health routine.
           </p>
         </div>
+      ) : null}
 
-        {/* Filter Controls Row */}
-        <div className="flex flex-col md:flex-row items-start justify-between gap-4 mb-8">
-          {/* Category tabs */}
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
-                  selectedCategory === cat.id
-                    ? "accent-gradient text-white shadow-sm"
-                    : "bg-white/10 text-white border border-white/20 hover:border-[#925a27] hover:bg-white/20"
-                }`}
+      {/* Filter Controls Row */}
+      <div
+        className={cn(
+          "flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between",
+          !hideHeading && "mt-10",
+        )}
+      >
+        {categories.length > 1 ? (
+          <>
+            <div className="sm:hidden">
+              <Select
+                aria-label="Filter by category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                {cat.label}
-              </button>
-            ))}
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="hidden flex-wrap items-center gap-2 sm:flex">
+              {categories.map((cat) => {
+                const active = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    aria-pressed={active}
+                    className={cn(
+                      "rounded-pill border px-4 py-2 text-small font-medium t-colors",
+                      active
+                        ? "border-black bg-black text-white"
+                        : "border-border bg-cream text-fg hover:border-black",
+                    )}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <div />
+        )}
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-60">
+            <Search
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-subtle"
+            />
+            <Input
+              type="search"
+              aria-label="Search products"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-12 pl-10"
+            />
           </div>
 
-          {/* Search and Sort */}
-          <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
-            <div className="relative flex-1 md:w-56">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-white/60" />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-9 rounded-xl border border-white/20 bg-white/10 pl-8 pr-3 text-xs text-white placeholder:text-white/60 focus:border-[#925a27] focus:outline-none"
-              />
-            </div>
-
-            <select
+          <div className="w-full sm:w-52">
+            <Select
+              aria-label="Sort products"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="h-9 rounded-xl border border-white/20 bg-white/10 px-3 text-xs text-white font-medium focus:border-[#925a27] focus:outline-none"
+              className="h-12 leading-[2.75rem]"
             >
-              {sortOptions.map((opt) => (
+              {SORT_OPTIONS.map((opt) => (
                 <option key={opt.id} value={opt.id}>
                   {opt.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </div>
-
-        {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-4">
-          {filteredProducts.map((product) => {
-            const isAdded = justAddedId === product.id;
-            const isFavorite = favorites.has(product.id);
-
-            return (
-              <ProductRevealCard
-                key={product.id}
-                product={product}
-                isFavorite={isFavorite}
-                isJustAdded={isAdded}
-                onAdd={() => handleAdd(product)}
-                onFavorite={() => handleFavorite(product.id)}
-                onQuickView={() => {
-                  // Navigate to product detail page using slug
-                  navigate({ to: "/shop/$productSlug", params: { productSlug: product.slug } });
-                }}
-              />
-            );
-          })}
-        </div>
-
-        {isLoading ? (
-          <div className="rounded-xl border border-dashed border-white/20 bg-white/10 p-12 text-center">
-            <p className="font-display text-xl font-bold text-white">Loading products...</p>
-            <p className="mt-1 text-xs text-white/60">Please wait while we fetch our dental care products.</p>
-          </div>
-        ) : filteredProducts.length === 0 && (
-          <div className="rounded-xl border border-dashed border-white/20 bg-white/10 p-12 text-center">
-            <p className="font-display text-xl font-bold text-white">
-              {products.length === 0 ? "No products available" : "No products found"}
-            </p>
-            <p className="mt-1 text-xs text-white/60">
-              {products.length === 0 
-                ? "Check back soon for new dental care products."
-                : "Try resetting your search query or selecting another category."}
-            </p>
-            {products.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSelectedCategory("all");
-                  setSearchQuery("");
-                }}
-                className="mt-4 border-white/20 text-white hover:bg-white/20"
-              >
-                Show All Products
-              </Button>
-            )}
-          </div>
-        )}
       </div>
-    </section>
+
+      {/* Product Grid */}
+      {isLoading ? (
+        <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
+          <p className="text-h4 text-fg">Loading products...</p>
+          <p className="mt-2 text-small text-muted">
+            Please wait while we fetch our dental care products.
+          </p>
+        </Tile>
+      ) : filteredProducts.length === 0 ? (
+        <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
+          <p className="text-h4 text-fg">
+            {products.length === 0 ? "No products available" : "No products found"}
+          </p>
+          <p className="mt-2 text-small text-muted">
+            {products.length === 0
+              ? "Check back soon for new dental care products."
+              : "Try resetting your search query or selecting another category."}
+          </p>
+          {products.length > 0 ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setSelectedCategory("all");
+                setSearchQuery("");
+              }}
+              className="mt-6"
+            >
+              Show All Products
+            </Button>
+          ) : null}
+        </Tile>
+      ) : (
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredProducts.map((product) => (
+            <ProductRevealCard
+              key={product.id}
+              product={product}
+              isFavorite={favorites.has(product.id)}
+              isJustAdded={justAddedId === product.id}
+              onAdd={() => handleAdd(product)}
+              onFavorite={() => handleFavorite(product.id)}
+              onQuickView={() => handleQuickView(product)}
+            />
+          ))}
+        </div>
+      )}
+    </Section>
   );
 }
-

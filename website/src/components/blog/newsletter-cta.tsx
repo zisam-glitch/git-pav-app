@@ -1,85 +1,90 @@
-import { useState, type FormEvent } from "react"
-import { Mail, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react"
-import { api } from "@/lib/api"
+import { CheckCircle2, ShieldCheck } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { Heading, Section, Tile } from "@/components/hims";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { api } from "@/lib/api";
 
 export function NewsletterCta() {
-  const [email, setEmail] = useState("")
-  const [subscribed, setSubscribed] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    if (!email.trim()) return
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    if (!email.trim()) return;
+    setError(null);
+    setLoading(true);
     try {
-      await api.forms.subscribeNewsletter({ email: email.trim() })
-      setSubscribed(true)
-    } catch (err: any) {
-      setError(err?.message || "Could not subscribe. Please check your email and try again.")
+      await api.forms.subscribeNewsletter({ email: email.trim() });
+      setSubscribed(true);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : undefined;
+      setError(msg || "Could not subscribe. Please check your email and try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <section className="py-16 sm:py-20 bg-[#fffdf9] border-t border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl lg:px-8 text-center">
-        <div className="relative overflow-hidden rounded-xl accent-gradient p-8 sm:p-12 text-white shadow-xl">
-          <div className="pointer-events-none absolute -right-20 -top-20 w-60 h-60 rounded-full bg-white/10 blur-2xl" />
-          <div className="pointer-events-none absolute -left-20 -bottom-20 w-60 h-60 rounded-full bg-black/10 blur-2xl" />
+    <Section theme="cream" width="wide" space="default">
+      <div className="grid items-center gap-8 rounded-xl border border-border bg-white p-6 md:p-12 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+        <div>
+          <Heading as="h2" size="h2-md" accent="to Your Inbox" tone="terracotta">
+            Get Smile Advice Delivered
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            Join our patient community across West Yorkshire for monthly dental hygiene tips,
+            cosmetic guides, and exclusive clinic treatment offers.
+          </p>
+        </div>
 
-          <div className="relative max-w-xl mx-auto space-y-3">
-            
-
-            <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold">
-              Get Smile Advice Delivered to Your Inbox
-            </h2>
-
-            <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-light">
-              Join our patient community across West Yorkshire for monthly dental hygiene tips, cosmetic guides, and exclusive clinic treatment offers.
-            </p>
-
-            {subscribed ? (
-              <div className="mt-6 rounded-xl bg-white/15 border border-white/30 p-5">
-                <CheckCircle2 className="w-8 h-8 mx-auto text-white mb-2" />
-                <p className="text-sm font-bold">You're Subscribed!</p>
-                <p className="text-xs text-white/85 mt-1">
-                  Thank you. We'll send you our latest guides and advice once a month.
-                </p>
+        <div>
+          {subscribed ? (
+            <Tile tone="sage" className="p-6">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-fg" aria-hidden="true" />
+                <div>
+                  <p className="text-label text-fg">You&apos;re Subscribed!</p>
+                  <p className="mt-1 text-small text-muted">
+                    Thank you. We&apos;ll send you our latest guides and advice once a month.
+                  </p>
+                </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row gap-2.5 max-w-md mx-auto">
-                <div className="relative flex-1">
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 w-4 h-4 -translate-y-1/2 text-white/60" />
-                  <input
+            </Tile>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="flex-1">
+                  <Label htmlFor="newsletter-email" className="sr-only">
+                    Email address
+                  </Label>
+                  <Input
+                    id="newsletter-email"
                     required
                     type="email"
+                    autoComplete="email"
                     placeholder="Enter your email address..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 rounded-xl bg-white/10 border border-white/25 text-white pl-10 pr-4 text-xs sm:text-sm placeholder:text-white/60 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/80"
                   />
                 </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="h-11 bg-white text-[#cf9448] hover:bg-white/90 font-bold text-xs sm:text-sm px-6 shrink-0 shadow-sm rounded-full transition-colors duration-150 cursor-pointer disabled:opacity-75"
-                >
+                <Button type="submit" disabled={loading} className="h-14 px-7">
                   {loading ? "Subscribing..." : "Subscribe"}
-                </button>
-              </form>
-            )}
-            {error && <p className="text-xs text-red-200 mt-2 font-medium">{error}</p>}
+                </Button>
+              </div>
+              {error ? <p className="text-small font-medium text-danger">{error}</p> : null}
+            </form>
+          )}
 
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-white/80 pt-2">
-              <ShieldCheck className="w-3 h-3" />
-              <span>Zero spam. Unsubscribe at any time with one click.</span>
-            </div>
-          </div>
+          <p className="mt-4 flex items-center gap-2 text-caption text-muted">
+            <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+            <span>Zero spam. Unsubscribe at any time with one click.</span>
+          </p>
         </div>
       </div>
-    </section>
-  )
+    </Section>
+  );
 }

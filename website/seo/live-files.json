@@ -1,0 +1,268 @@
+{
+  "capturedAt": "2026-11-18T07:29:04+00:00",
+  "source": "https://www.pavdental.com",
+  "note": "Copied byte for byte from the live site into website/public at the same paths. Do not edit; replace a file by copying it again and updating its entry.",
+  "files": [
+    {
+      "path": "/policies/CCTV Policy.pdf",
+      "bytes": 133847,
+      "sha256": "c0f13172831bd7e14853f78128bb74e6ab7284e400a95186d4bae2b9565cc6bd",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/policies/Complaints Policy.pdf",
+      "bytes": 134149,
+      "sha256": "e04ccfd82ae566e8020561b32a6b44f25dc9209ac771df7ce0d75ce4d1e353b9",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/policies/CQC Statement of Purpose Policy.pdf",
+      "bytes": 122520,
+      "sha256": "67c6aa33658c26ce837087c51d6dd0085eb610e2fe0a2708f8c450aeb0a56254",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/policies/Herpes Simplex Guidance.pdf",
+      "bytes": 83023,
+      "sha256": "4a0403f0889d4301540bf2e18e904b0ccaae126b28e417b1310ba5544f1fd934",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/policies/Privacy Notice for Patients including children.pdf",
+      "bytes": 146064,
+      "sha256": "60884a989627a553c34aa7b5e2b8427393d538ee7bce7d3b4839b5c8fcc533cd",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/policies/Quality Assurance Statement.pdf",
+      "bytes": 94183,
+      "sha256": "8cc16742ed93ee0a80b3f4d997e7b0efdba36160391909dd2340f82d5fc23d5a",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/policies/Zero Tolerance Policy.pdf",
+      "bytes": 89745,
+      "sha256": "3feeeb7076becba8db5e609de9e039b8684a27ddd1de5ddcc6189ec57e3a018e",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/forms/Consent form - Bridges.docx",
+      "bytes": 18864,
+      "sha256": "6eb3d7e5817239818903103718f7c5de32997bb5a1f6be605279e7b4fcd7cf36",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Composite Bonding.docx",
+      "bytes": 19603,
+      "sha256": "9f9d00bcd31fc10d6db89975bc8e31a8f7887b301d35783593f2b5d62ad8e572",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Crowns.docx",
+      "bytes": 19914,
+      "sha256": "6848798b674bebbec95d6fc64cafa2e5a0c2dcd6ed0104a2596c145f00e7b27a",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Denture.docx",
+      "bytes": 20639,
+      "sha256": "16ec7b4cf493d71422fcb7c7a5fb54201e788e0917facb11fd7ae68df9d7455b",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Direct access.docx",
+      "bytes": 17923,
+      "sha256": "e1b33563c6aca9e5922ceb807813a367d4e31284d21e7f590709d4dd7182be98",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Extraction.docx",
+      "bytes": 19596,
+      "sha256": "c6adbe062f4a72c95872292f9b0ab781946714cca999ff9cec6189ecbc19e4de",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Filling Restoration.docx",
+      "bytes": 19902,
+      "sha256": "05a6ec92d839adcee929300ba0dab1942a46570c3ce14238a48b78413e94332a",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Implant.docx",
+      "bytes": 20169,
+      "sha256": "e1f6d011985089a6be642c3d322e53cf3a318e998c502a3897615a120faff2fa",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - IV Sedation.docx",
+      "bytes": 19372,
+      "sha256": "4297a61ec8cdb959f2a14a7c15c08d9e2d9a2d76f4e3e984ea9f04a8ff7934e7",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Nightguards.docx",
+      "bytes": 18500,
+      "sha256": "b4de2c1df04789da7756deba79602a90337df8fce74a9c58906748695bc60d5a",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Periodontal Treatment.docx",
+      "bytes": 20201,
+      "sha256": "9b109d43956f030651eb2cfc850131d5d994f3890494c20087c53db5bef05543",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Photography.docx",
+      "bytes": 18443,
+      "sha256": "e3c9726102c7a6c6e511ec8d46d187a04584e906dd634b021c656c18a1837a8c",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Refusal of Consent form.docx",
+      "bytes": 17994,
+      "sha256": "fca0283674e1de96662673c0f94c5119c0e32cc6b3d96b3ffa90a69f714ad49d",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Root Canal Treatment.docx",
+      "bytes": 22537,
+      "sha256": "f3685b79e8b08259c541ab2af19c2c0cd7f72f7ae67205baf207fac68ccf5597",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Sharing Records to Secondary Care.docx",
+      "bytes": 16891,
+      "sha256": "2e8c171dd8c177b10f6afa511c0e2a511d6e8781c01017a3e15168efe9315a1a",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Third Party Request.docx",
+      "bytes": 17136,
+      "sha256": "c0d5cf2a48f5025dd45e70bca1e00f7fcc8be5d52353b00bb4658da897f282f0",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/forms/Consent form - Whitening.docx",
+      "bytes": 21068,
+      "sha256": "f0f88e281cc38425321fcf97c6f4711a1d3f5fd815c7e83d6b457853cd020972",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/posters/COSHH Chemicals Poster.pdf",
+      "bytes": 1899549,
+      "sha256": "336191da5c406fa62ae54d68e5950e770759a58ac4852149d6ef13b14c2e2190",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/posters/Domestic Abuse.pdf",
+      "bytes": 700899,
+      "sha256": "d4a7be868d23e461f87a8579035155153db3c025586bdd2abfa90ddb33dfb784",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/posters/Domestic Violence.pdf",
+      "bytes": 1378261,
+      "sha256": "a1509d64d6d953233aa298881f2be0756e46b760db94e3a535699ffe81f9dd2c",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/posters/Free dental treatment poster A3.pdf",
+      "bytes": 3329756,
+      "sha256": "1866c4fe2ec0b5dd04fc1a0f7a7f73913f554b31010ea8478afa14735da5f94e",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/posters/GDC Standards.pdf",
+      "bytes": 34945,
+      "sha256": "96c3d15e1c4d8ec75d756906b7db0c068c1711c339b78ab5c5c14d01dca94dbc",
+      "contentType": "application/pdf"
+    },
+    {
+      "path": "/posters/Safeguarding flow chart.docx",
+      "bytes": 49978,
+      "sha256": "0627de20fda3abd5e6fbb75510de438d0252793f74882d8be276a88cd732e2c9",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+      "path": "/posters/Sepsis Trust Dentist Campaign Poster.jpg",
+      "bytes": 2150813,
+      "sha256": "e0a4242d91c2f43a5b99679bc2a4c286a58023fcf70110168520d5ccb44dc78a",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/1.jpg",
+      "bytes": 54303,
+      "sha256": "5968d7d90d34f0bbdcec538b4f67fa32b37cced7c46c6aa0509216624126d909",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/2.jpg",
+      "bytes": 144052,
+      "sha256": "3c8e38a715c364d53530608b3248f3a06eb4fc586c558ae0cf614590fe11af20",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/3.jpg",
+      "bytes": 552557,
+      "sha256": "79c231fad21face513cca971c72c5ca6669cd80c6e1c3260e146a03c9b7531e4",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/4.jpeg",
+      "bytes": 77740,
+      "sha256": "7df3c75902457603e42c35098bcf6ecbeb1343dbe1a597c9118521663099250c",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/5.jpg",
+      "bytes": 103920,
+      "sha256": "3b4cc0dc30fb2fd72c4cf39abc135e6999ffe4032e999e7d2349af25742dce26",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/6.jpg",
+      "bytes": 111294,
+      "sha256": "b1238656bfa6493f3d590a434448cc93b24feaf62070560a1ae068de1ae4de9c",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/7.jpg",
+      "bytes": 803630,
+      "sha256": "9c6787c776d76fa78af9d23401b04686ca39917aadae3f8e5a22d47a3d5c6c42",
+      "contentType": "image/jpeg"
+    },
+    {
+      "path": "/images/team/8.jpg",
+      "bytes": 265574,
+      "sha256": "fba9c62af593d5333cc07f7d00bc2da04ea02ca4d8e67dbb8f9b8a0f26b1bfb4",
+      "contentType": "image/jpeg"
+    }
+  ],
+  "missingOnLive": [
+    {
+      "path": "/policies/Was Not Brought Implementation Guide.pdf",
+      "title": "Was Not Brought Implementation Guide",
+      "reason": "The live site answers this address with its own web page (status 200), not a file, so the link on the live page is dead."
+    },
+    {
+      "path": "/forms/Consent form - Permission to book appointment.docx",
+      "title": "Consent Form - Permission to Book Appointment",
+      "reason": "The live site answers this address with its own web page (status 200), not a file, so the link on the live page is dead."
+    },
+    {
+      "path": "/forms/Consent form - Photograph usage for teaching.docx",
+      "title": "Consent Form - Photograph Usage for Teaching",
+      "reason": "The live site answers this address with its own web page (status 200), not a file, so the link on the live page is dead."
+    },
+    {
+      "path": "/forms/Consent form - Rad exposure on Pregnancy.docx",
+      "title": "Consent Form - Rad Exposure on Pregnancy",
+      "reason": "The live site answers this address with its own web page (status 200), not a file, so the link on the live page is dead."
+    },
+    {
+      "path": "/posters/Hand Hygiene.png",
+      "title": "Hand Hygiene",
+      "reason": "The live site answers this address with its own web page (status 200), not a file, so the link on the live page is dead."
+    }
+  ]
+}

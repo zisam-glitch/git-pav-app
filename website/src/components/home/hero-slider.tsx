@@ -11,8 +11,8 @@ const CATEGORY_CARDS = [
     accentTone: "copper" as const,
     subtitle: "Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments",
     to: "/services/aesthetics" as const,
-    imgSrc: "/media/hero2.jpg",
-    imgAlt: "Pav Dental facial aesthetics consultation suite",
+    imgSrc: "/images/generated/home-facial-aesthetics.jpg",
+    imgAlt: "Minimalist amber serum bottle and ceramic bowl in warm studio light",
   },
   {
     title: "General",
@@ -20,8 +20,8 @@ const CATEGORY_CARDS = [
     accentTone: "terracotta" as const,
     subtitle: "Check-ups, hygiene, fillings and preventive family care",
     to: "/services/general-dentistry" as const,
-    imgSrc: "/media/hero-clinic.jpg",
-    imgAlt: "Pav Dental modern dental surgery suite",
+    imgSrc: "/images/generated/home-general-dentistry.jpg",
+    imgAlt: "Matte cream dental mirror and ultrasonic care instrument on a smooth plinth",
   },
   {
     title: "Teeth",
@@ -29,8 +29,8 @@ const CATEGORY_CARDS = [
     accentTone: "terracotta" as const,
     subtitle: "Clinician-led whitening tailored to your smile",
     to: "/services/whitening" as const,
-    imgSrc: "/media/hero-smile.jpg",
-    imgAlt: "Bright natural smile after whitening care",
+    imgSrc: "/images/generated/home-teeth-whitening.jpg",
+    imgAlt: "Matte cream whitening applicator pen with pastel sage case on warm cream",
   },
   {
     title: "Mobile",
@@ -38,8 +38,8 @@ const CATEGORY_CARDS = [
     accentTone: "copper" as const,
     subtitle: "Dental care delivered directly to your door",
     to: "/services/mobile-dentistry" as const,
-    imgSrc: "/media/hero.jpg",
-    imgAlt: "Pav Dental mobile dentistry visit",
+    imgSrc: "/images/generated/home-mobile-dentistry.jpg",
+    imgAlt: "Compact matte sand portable dental care case with brushed clasp",
   },
 ] as const;
 
@@ -89,8 +89,8 @@ export function HeroSlider() {
           </div>
           <div className="relative h-full min-h-[190px] overflow-hidden">
             <img
-              src="/media/hero1.jpg"
-              alt="Pav Dental treatment room for routine dental check-ups"
+              src="/images/generated/home-checkup.jpg"
+              alt="Minimalist matte-cream dental mirror and care tray on warm walnut"
               fetchPriority="high"
               className="t-zoom absolute inset-0 size-full object-cover object-center"
             />
@@ -125,8 +125,8 @@ export function HeroSlider() {
           </div>
           <div className="relative h-full min-h-[190px] overflow-hidden">
             <img
-              src="/media/hero-night.jpg"
-              alt="Pav Dental reception lit at night for 24/7 emergency access"
+              src="/images/generated/home-emergency-night.jpg"
+              alt="Serene modern dental suite lit warmly at night in midnight navy frame"
               fetchPriority="high"
               className="t-zoom absolute inset-0 size-full object-cover object-center"
             />

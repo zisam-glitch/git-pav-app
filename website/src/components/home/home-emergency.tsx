@@ -31,10 +31,10 @@ export function HomeEmergency() {
             </div>
 
             <Media
-              alt="Pav Dental emergency dental suite ready for same-day urgent care"
+              src="/images/generated/home-emergency-suite.jpg"
+              alt="Warm sunlit modern dental treatment suite with cream chair and walnut cabinetry"
               ratio="4 / 3"
               tone="brown"
-              className="bg-white/7"
             />
           </div>
 

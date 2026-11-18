@@ -2,6 +2,7 @@ import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from "@tansta
 import { QueryProvider } from "@/lib/query-provider";
 import { PAGES, PRACTICE_JSON_LD, redirectTarget, SITE_URL } from "@/lib/seo";
 import { CookieConsent } from "@/components/home/cookie-consent";
+import { NotFoundPage } from "@/components/not-found/not-found-page";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -11,12 +12,13 @@ export const Route = createRootRoute({
     const target = redirectTarget(location.pathname);
     if (target) throw redirect({ href: `${target}${location.searchStr}`, statusCode: 301 });
   },
+  notFoundComponent: NotFoundPage,
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      // Defaults for a page without its own tags, such as the not-found page.
-      // Every other page sets these through seoHead, and its values win.
+      // Defaults for a page without its own tags. Every page sets these through
+      // seoHead (or noindexHead), and its values win.
       { title: "Pav Dental" },
       { name: "description", content: PAGES["/"].description },
       { name: "theme-color", content: "#f6f1ea" },

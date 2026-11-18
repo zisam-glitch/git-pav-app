@@ -19,6 +19,7 @@ This folder contains the public-facing marketing website and online shop for Pav
 - `src/content/team-members.ts` and `src/content/blog-posts.ts`: the eight team profiles and the six blog posts, ported word for word and checked against the recorded live pages by their tests.
 - `src/content/testimonials.ts` and `src/content/petition.ts`: the patient comments under "What people say?" (home and aesthetics) and the petition page's words, ported word for word and checked against the recorded live pages by their tests.
 - Booking: every Book or appointment link uses `BOOKING_URL` from `src/lib/enquiry.ts`, the practice's Setmore page, as on the live site; `/booking` redirects there. `src/content/booking-links.test.ts` fails on any other target. Do not add a booking form to the site.
+- Not found: an address that is no page is a real 404 with the branded `NotFoundPage` and `noindex`. The catch-all route `src/routes/$.tsx` does it for unknown addresses; a route whose loader can throw `notFound()` (blog, team) must also set `notFoundComponent: NotFoundPage`, or the router skips that route's `head` and the page gets no `noindex`. Links on the page are checked by `src/content/not-found.test.ts`.
 - `src/components/`: Reusable UI components grouped by feature (`home/`, `about/`, `shop/`, `team/`, etc.).
 - `src/lib/`: Utilities, analytics, the account-link helpers (`app-account.ts`), query provider.
 - `public/`: Static assets (favicons, images, logos).

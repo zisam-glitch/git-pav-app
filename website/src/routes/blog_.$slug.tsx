@@ -4,6 +4,7 @@ import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { BlogPostPage } from "@/components/blog/blog-post-page";
+import { NotFoundPage } from "@/components/not-found/not-found-page";
 import { findBlogPost } from "@/content/blog-posts";
 
 // "blog_" keeps this a sibling of /blog rather than a child of it, so /blog does
@@ -15,6 +16,9 @@ export const Route = createFileRoute("/blog_/$slug")({
     return post;
   },
   head: ({ params }) => blogPostHead(params.slug),
+  // Its own not-found page, so that this route's head (noindex) applies. When only the root has
+  // one, the router skips the child's head.
+  notFoundComponent: NotFoundPage,
   component: BlogPostRoute,
 });
 

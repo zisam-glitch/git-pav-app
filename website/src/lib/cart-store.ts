@@ -78,8 +78,8 @@ export const useCartStore = create<CartState>()(
         const unitPrice = variant?.price_override
           ? parseFloat(variant.price_override)
           : typeof product.price === "string"
-          ? parseFloat(product.price)
-          : product.price;
+            ? parseFloat(product.price)
+            : product.price;
 
         const displayName = variant?.attributes
           ? `${product.name} (${Object.values(variant.attributes).join(", ")})`
@@ -87,7 +87,8 @@ export const useCartStore = create<CartState>()(
 
         // Optimistic update
         const existingIdx = state.items.findIndex(
-          (it) => it.productId === product.id && (variant ? it.variantId === variant.id : !it.variantId)
+          (it) =>
+            it.productId === product.id && (variant ? it.variantId === variant.id : !it.variantId),
         );
 
         const nextItems = [...state.items];
@@ -106,7 +107,7 @@ export const useCartStore = create<CartState>()(
             variantId: variant?.id || null,
             name: displayName,
             slug: product.slug,
-            image: product.image || "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=85",
+            image: product.image || "",
             unitPrice,
             quantity,
             itemTotal: unitPrice * quantity,
@@ -123,7 +124,7 @@ export const useCartStore = create<CartState>()(
             quantity,
             sessionId: sid,
           });
-          
+
           // If successful, sync the cart to get the real item ID
           if (result.success) {
             await state.syncCart();
@@ -141,9 +142,7 @@ export const useCartStore = create<CartState>()(
         }
 
         const nextItems = state.items.map((it) =>
-          it.id === itemId
-            ? { ...it, quantity, itemTotal: it.unitPrice * quantity }
-            : it
+          it.id === itemId ? { ...it, quantity, itemTotal: it.unitPrice * quantity } : it,
         );
         set({ items: nextItems });
 
@@ -249,7 +248,7 @@ export const useCartStore = create<CartState>()(
         const disc = state.appliedDiscount;
         if (!disc) return 0;
         if (disc.type === "percentage") {
-          return Math.round((subtotal * disc.value) / 100 * 100) / 100;
+          return Math.round(((subtotal * disc.value) / 100) * 100) / 100;
         }
         return Math.min(subtotal, disc.value);
       },
@@ -260,7 +259,6 @@ export const useCartStore = create<CartState>()(
         const discount = state.getDiscountAmount();
         return Math.max(0, Math.round((subtotal - discount + shippingCost) * 100) / 100);
       },
-
     }),
     {
       name: "pavdental_cart_storage",
@@ -270,7 +268,6 @@ export const useCartStore = create<CartState>()(
         appliedDiscount: state.appliedDiscount,
         selectedShippingMethodId: state.selectedShippingMethodId,
       }),
-    }
-  )
+    },
+  ),
 );
-

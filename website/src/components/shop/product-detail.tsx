@@ -23,7 +23,17 @@ interface ProductDetailProps {
 }
 
 function hasUsableImage(src?: string): src is string {
-  return Boolean(src && !src.includes("images.unsplash.com"));
+  if (!src) return false;
+  if (src.startsWith("/")) return true;
+  try {
+    const url = new URL(src);
+    return (
+      (url.protocol === "https:" || url.protocol === "http:") &&
+      url.hostname !== "images.unsplash.com"
+    );
+  } catch {
+    return false;
+  }
 }
 
 export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) {

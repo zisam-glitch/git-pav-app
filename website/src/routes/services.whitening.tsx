@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
+import { Header } from "@/components/home/header";
 import { WhiteningPage } from "@/components/whitening/whitening-page";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/whitening")({
   head: () => seoHead("/services/whitening"),
@@ -11,11 +11,9 @@ export const Route = createFileRoute("/services/whitening")({
 
 function Page() {
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg">
+    <div className="min-h-screen bg-white text-fg">
       <Header />
-      <div className="pt-16">
-        <WhiteningPage />
-      </div>
+      <WhiteningPage />
       <Footer />
     </div>
   );

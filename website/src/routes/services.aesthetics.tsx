@@ -11,7 +11,7 @@ export const Route = createFileRoute("/services/aesthetics")({
 
 function Page() {
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg">
+    <div className="min-h-screen bg-white text-fg">
       <Header />
       <AestheticsPage />
       <Footer />

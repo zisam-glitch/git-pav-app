@@ -1,66 +1,46 @@
-import React from "react";
-import { Calendar, MessageCircle, FileText, Truck } from "lucide-react";
+import { Building2, Calendar, FileText, MessageCircle } from "lucide-react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const STEPS = [
-  {
-    icon: Calendar,
-    title: "Book Appointment",
-    desc: "Schedule your virtual consultation at your convenience",
-  },
-  {
-    icon: MessageCircle,
-    title: "Speak With Dentist",
-    desc: "Connect with a qualified dentist via video call",
-  },
-  {
-    icon: FileText,
-    title: "Generate Prescription",
-    desc: "Receive your prescription online if needed",
-  },
-  {
-    icon: Truck,
-    title: "Get Your Prescription Filled",
-    desc: "Collect from your local pharmacy or home delivery",
-  },
-];
+  { icon: Calendar, title: "Book Appointment" },
+  { icon: MessageCircle, title: "Speak With Dentist" },
+  { icon: FileText, title: "Generate Prescription" },
+  { icon: Building2, title: "Get Your Prescription Filled At Your Pharmacy" },
+] as const;
 
 export function VirtualDentistryPrescriptionProcess() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            How Online Prescription Service Works?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Simple 4-step process to get your dental prescription online without leaving your home.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {STEPS.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.title} className="text-center">
-                <div className="relative inline-block mb-6">
-                  <div className="size-20 rounded-full bg-[#cf9448]/15 text-[#925a27] flex items-center justify-center mx-auto">
-                    <Icon className="size-10" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 size-8 rounded-full bg-[#925a27] text-white flex items-center justify-center font-bold text-sm">
-                    {i + 1}
-                  </div>
-                </div>
-                <h3 className="font-display text-lg font-bold text-[#2a1c12] mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-[#6b5848] leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+    <Section theme="cream" space="default">
+      <div className="max-w-2xl">
+        <Heading as="h2" size="h2-md" accent="Service Works?" tone="terracotta" inline>
+          How Online Prescription
+        </Heading>
       </div>
-    </section>
+
+      <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {STEPS.map((step, index) => {
+          const Icon = step.icon;
+          return (
+            <Tile
+              key={step.title}
+              as="li"
+              tone="white"
+              lift
+              className="flex flex-col justify-between gap-6 p-6"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="grid size-11 place-items-center rounded-lg bg-cream text-terracotta">
+                  <Icon aria-hidden className="size-5" />
+                </span>
+                <span className="text-caption font-medium text-muted tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h3 className="text-h4 text-fg">{step.title}</h3>
+            </Tile>
+          );
+        })}
+      </ol>
+    </Section>
   );
 }

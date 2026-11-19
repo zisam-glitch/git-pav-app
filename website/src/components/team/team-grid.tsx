@@ -1,44 +1,69 @@
 import { Link } from "@tanstack/react-router";
+import { BookButton, CallButton, CtaBand, Heading, Section } from "@/components/hims";
 import { TEAM_MEMBERS } from "@/content/team-members";
 import { TeamPhoto } from "./team-photo";
 
 /** The team page: one card per person, each linking to their own profile page. */
 export function TeamGrid() {
   return (
-    <div className="bg-[#fffdf9] pb-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <header className="mx-auto max-w-2xl text-center">
-          <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">Dentists &amp; Staff</h1>
-          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6b5848]">
-            We have a dedicated team consisting of highly skilled dentists and staff who works relentlessly to preserve your
-            happy smile.
+    <>
+      <Section theme="white" space="default">
+        <div className="mx-auto max-w-2xl text-center">
+          <Heading as="h1" size="hero" accent="& Staff" tone="terracotta" inline>
+            Dentists
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            We have a dedicated team consisting of highly skilled dentists and staff who works
+            relentlessly to preserve your happy smile.
           </p>
-        </header>
+        </div>
 
-        <ul className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+        <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {TEAM_MEMBERS.map((member, index) => (
             <li key={member.slug}>
               <Link
                 to="/team/$slug"
                 params={{ slug: member.slug }}
-                className="group block overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-sm transition-colors hover:border-[#925a27]"
+                className="group flex h-full flex-col rounded-xl bg-tile-cream p-4 t-lift"
               >
-                <TeamPhoto
-                  member={member}
-                  priority={index < 4}
-                  className="aspect-[4/5] w-full bg-[#faf6f0] object-cover object-top"
-                />
-                <span className="block p-3 sm:p-5">
-                  <span className="block font-display text-base sm:text-lg font-bold text-[#2a1c12] group-hover:text-[#925a27]">
-                    {member.name}
-                  </span>
-                  <span className="mt-1 block text-xs sm:text-sm text-[#6b5848]">{member.role}</span>
-                </span>
+                <div className="aspect-[4/5] overflow-hidden rounded-lg bg-sand">
+                  <TeamPhoto
+                    member={member}
+                    priority={index < 4}
+                    className="size-full object-cover object-top t-zoom"
+                  />
+                </div>
+                <div className="mt-4 flex flex-1 flex-col justify-between">
+                  <div>
+                    <h2 className="text-h4 text-fg">{member.name}</h2>
+                    <p className="mt-1 text-small text-muted">{member.role}</p>
+                  </div>
+                  {member.gdc ? (
+                    <p className="mt-3 text-caption font-medium text-terracotta">
+                      GDC: {member.gdc}
+                    </p>
+                  ) : null}
+                </div>
               </Link>
             </li>
           ))}
         </ul>
-      </div>
-    </div>
+      </Section>
+
+      <CtaBand
+        theme="brown"
+        title="Ready to book"
+        accent="with our team?"
+        tone="gold"
+        actions={
+          <>
+            <BookButton variant="gold">Book Now</BookButton>
+            <CallButton variant="glass" />
+          </>
+        }
+      >
+        786 Leeds Road, Bradford, BD3 9TY · Open 24 hours, 7 days a week.
+      </CtaBand>
+    </>
   );
 }

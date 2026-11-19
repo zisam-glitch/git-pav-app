@@ -1,10 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { teamProfileHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
-import { TeamProfile } from "@/components/team/team-profile";
+import { Header } from "@/components/home/header";
 import { NotFoundPage } from "@/components/not-found/not-found-page";
+import { TeamProfile } from "@/components/team/team-profile";
 import { findTeamMember } from "@/content/team-members";
+import { teamProfileHead } from "@/lib/seo";
 
 // "team_" keeps this a sibling of /team rather than a child of it, so /team does
 // not need to render an Outlet.
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/team_/$slug")({
 function TeamProfileRoute() {
   const member = Route.useLoaderData();
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <Header />
       <TeamProfile member={member} />
       <Footer />

@@ -1,143 +1,216 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Spotlight } from "./spotlight";
-import { BOOKING_URL, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+import { ArrowRight, ChevronRight, Phone } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
+import { ACCENT_TEXT } from "@/components/hims/tones";
+import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
-const SLIDES = [
+const CATEGORY_CARDS = [
   {
-    id: "check",
-    kicker: "Accessible smiles",
-    title: "Complete dental check-up from £35",
-    body: "Only £7.60 more than the NHS fee — with same-day access and premium care in Bradford.",
-    image: "/media/hero.jpg",
-    cta: "Book check-up",
-    href: BOOKING_URL,
+    title: "Facial",
+    accent: "Aesthetics",
+    accentTone: "copper" as const,
+    subtitle: "Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments",
+    to: "/services/aesthetics" as const,
+    imgSrc: "/images/generated/home-facial-aesthetics.jpg",
+    imgAlt: "Minimalist amber serum bottle and ceramic bowl in warm studio light",
   },
   {
-    id: "emergency",
-    kicker: "Open every hour",
-    title: "24/7 emergency dentistry",
-    body: "Pain, trauma, or a lost restoration — our team is on call including bank holidays.",
-    image: "/media/hero1.jpg",
-    cta: "Call now",
-    href: PRACTICE_PHONE_HREF,
+    title: "General",
+    accent: "Dentistry",
+    accentTone: "terracotta" as const,
+    subtitle: "Check-ups, hygiene, fillings and preventive family care",
+    to: "/services/general-dentistry" as const,
+    imgSrc: "/images/generated/home-general-dentistry.jpg",
+    imgAlt: "Matte cream dental mirror and ultrasonic care instrument on a smooth plinth",
   },
   {
-    id: "smile",
-    kicker: "Aesthetics",
-    title: "Whitening, veneers, and calm cosmetic care",
-    body: "Digital imaging and considered treatment plans — never rushed, never upsold.",
-    image: "/media/hero2.jpg",
-    cta: "View services",
-    href: "/services",
+    title: "Teeth",
+    accent: "Whitening",
+    accentTone: "terracotta" as const,
+    subtitle: "Clinician-led whitening tailored to your smile",
+    to: "/services/whitening" as const,
+    imgSrc: "/images/generated/home-teeth-whitening.jpg",
+    imgAlt: "Matte cream whitening applicator pen with pastel sage case on warm cream",
   },
-];
+  {
+    title: "Mobile",
+    accent: "Dentistry",
+    accentTone: "copper" as const,
+    subtitle: "Dental care delivered directly to your door",
+    to: "/services/mobile-dentistry" as const,
+    imgSrc: "/images/generated/home-mobile-dentistry.jpg",
+    imgAlt: "Compact matte sand portable dental care case with brushed clasp",
+  },
+] as const;
 
 export function HeroSlider() {
-  const [index, setIndex] = useState(0);
-  const slide = SLIDES[index]!;
-
-  useEffect(() => {
-    const t = window.setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, 7000);
-    return () => window.clearInterval(t);
-  }, []);
-
   return (
-    <section
-      id="top"
-      className="relative isolate min-h-[100svh] overflow-hidden bg-bg pt-16"
-      aria-roledescription="carousel"
-      aria-label="Clinic highlights"
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={slide.id}
-          className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <img
-            src={slide.image}
-            alt=""
-            className="kenburns h-full w-full object-cover opacity-55"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/80 to-bg/25" />
-        </motion.div>
-      </AnimatePresence>
-
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div>
-          <p className="mb-4 text-xs font-medium text-primary">
-            {slide.kicker}
+    <Section id="top" theme="white" space="none" className="pt-6 pb-8 md:pt-9 md:pb-12">
+      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div className="max-w-2xl">
+          <Heading as="h1" size="hero" accent="that you can rely on" tone="terracotta">
+            Exceptional dentistry
+          </Heading>
+          <p className="mt-3 text-lead text-muted">
+            24-hour private, cosmetic, and emergency dental care in Bradford.
           </p>
-          <AnimatePresence mode="wait">
-            <motion.h1
-              key={slide.title}
-              initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.45 }}
-              className="max-w-xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl"
-            >
-              {slide.title.replace("£35", "")}
-              {slide.title.includes("£35") ? <span className="text-primary">£35</span> : null}
-            </motion.h1>
-          </AnimatePresence>
-          <p className="mt-5 max-w-md text-base text-muted sm:text-lg">{slide.body}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <a href={slide.href}>{slide.cta}</a>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <a href="#services">Explore care</a>
-            </Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <BookButton>Book Online</BookButton>
+          <CallButton variant="outline">Call us Now · {PRACTICE_PHONE}</CallButton>
+        </div>
+      </div>
+
+      {/* Featured Hero Pair: tall tactile Hims cards with real clinic photography */}
+      <div className="mt-7 grid gap-2 md:grid-cols-2">
+        <a
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative grid min-h-[212px] md:h-[216px] grid-cols-[1.15fr_0.85fr] overflow-hidden rounded-xl bg-gradient-to-r from-brown-deep via-brown to-copper text-white t-lift"
+        >
+          <div className="flex flex-col justify-between p-5 md:p-6">
+            <div>
+              <p className="text-caption text-gold">ACCESSIBLE SMILES</p>
+              <h2 className="mt-1.5 text-h4 text-white">
+                Complete Dental Check-Up <span className="text-gold">£35</span>
+              </h2>
+              <p className="mt-2 text-small text-white/85">
+                Only £7.60 more than the NHS fee (£27.40), with faster access and premium service
+              </p>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-label text-gold">
+              <span>Book - £35</span>
+              <ChevronRight
+                aria-hidden
+                className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </div>
           </div>
-          <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-            <li>GDC registered</li>
-            <li>Same-day appointments</li>
-            <li>West Yorkshire & Mobile Clinic</li>
-          </ul>
-        </div>
-
-        <div className="relative hidden h-[420px] overflow-hidden rounded-2xl glass shadow-lg lg:block">
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={slide.id}
-              src={slide.image}
-              alt=""
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full w-full object-cover"
+          <div className="relative h-full min-h-[190px] overflow-hidden">
+            <img
+              src="/images/generated/home-checkup.jpg"
+              alt="Minimalist matte-cream dental mirror and care tray on warm walnut"
+              fetchPriority="high"
+              className="t-zoom absolute inset-0 size-full object-cover object-center"
             />
-          </AnimatePresence>
-        </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-copper/60 via-transparent to-transparent" />
+          </div>
+        </a>
+
+        <Link
+          to="/services/emergency-dental"
+          className="group relative grid min-h-[212px] md:h-[216px] grid-cols-[1.15fr_0.85fr] overflow-hidden rounded-xl bg-navy-deep text-white t-lift"
+        >
+          <div className="flex flex-col justify-between p-5 md:p-6">
+            <div>
+              <p className="text-caption text-butter">24/7 URGENT CARE</p>
+              <h2 className="mt-1.5 text-h4 text-white">
+                Emergency <span className="text-butter">Dentist</span>
+              </h2>
+              <p className="mt-2 text-small text-white/80">
+                Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
+              </p>
+              <p className="mt-1.5 text-caption text-white/90">
+                £45 consultation · £90* out-of-hours consultation
+              </p>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-label text-butter">
+              <span>Emergency Dental</span>
+              <ChevronRight
+                aria-hidden
+                className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </div>
+          </div>
+          <div className="relative h-full min-h-[190px] overflow-hidden">
+            <img
+              src="/images/generated/home-emergency-night.jpg"
+              alt="Serene modern dental suite lit warmly at night in midnight navy frame"
+              fetchPriority="high"
+              className="t-zoom absolute inset-0 size-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/75 via-navy-deep/20 to-transparent" />
+          </div>
+        </Link>
       </div>
 
-      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3">
-        <div className="flex gap-2" role="tablist" aria-label="Slides">
-          {SLIDES.map((s, i) => (
-            <button
-              key={s.id}
-              role="tab"
-              aria-selected={i === index}
-              aria-label={`Slide ${i + 1}`}
-              className={`h-2 rounded-full transition-[width,background-color] duration-250 ${
-                i === index ? "w-8 bg-primary" : "w-2 bg-muted"
-              }`}
-              onClick={() => setIndex(i)}
-            />
-          ))}
-        </div>
+      {/* Four Hims-style visual category cards */}
+      <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {CATEGORY_CARDS.map((card) => (
+          <Link
+            key={card.to}
+            to={card.to}
+            className="group flex flex-col justify-between overflow-hidden rounded-xl bg-tile-cream p-4 t-lift md:p-5"
+          >
+            <div>
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-nav-lg font-[470] text-fg">
+                  {card.title} <span className={ACCENT_TEXT[card.accentTone]}>{card.accent}</span>
+                </span>
+                <ChevronRight
+                  aria-hidden
+                  className="mt-0.5 size-4 shrink-0 text-fg transition-transform duration-200 group-hover:translate-x-0.5"
+                />
+              </div>
+              <p className="mt-1.5 text-small text-muted">{card.subtitle}</p>
+            </div>
+            <div className="t-zoom mt-4 aspect-[16/10] overflow-hidden rounded-lg bg-sand">
+              <img
+                src={card.imgSrc}
+                alt={card.imgAlt}
+                loading="eager"
+                className="size-full object-cover object-center"
+              />
+            </div>
+          </Link>
+        ))}
       </div>
-    </section>
+
+      {/* Bottom slim action row matching Mobbin Hims hero second tier */}
+      <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <Link
+          to="/services/tooth-extraction"
+          className="group flex items-center justify-between rounded-xl bg-tile-cream px-5 py-4 t-lift"
+        >
+          <span className="text-nav-lg font-[470] text-fg">
+            Tooth <span className="text-terracotta">Extraction</span>
+          </span>
+          <ChevronRight
+            aria-hidden
+            className="size-4 text-fg transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </Link>
+
+        <a
+          href={PRACTICE_PHONE_HREF}
+          className="group flex items-center justify-between rounded-xl bg-tile-cream px-5 py-4 t-lift"
+        >
+          <span className="flex items-center gap-2 text-nav-lg font-[470] text-fg">
+            <Phone aria-hidden className="size-4 text-terracotta" />
+            <span>
+              Call <span className="text-terracotta">{PRACTICE_PHONE}</span>
+            </span>
+          </span>
+          <ChevronRight
+            aria-hidden
+            className="size-4 text-fg transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </a>
+
+        <Link
+          to="/services"
+          className="group flex items-center justify-between rounded-xl bg-tile-cream px-5 py-4 t-lift"
+        >
+          <span className="text-nav-lg font-[470] text-fg">
+            Explore all <span className="text-copper">treatments</span>
+          </span>
+          <ArrowRight
+            aria-hidden
+            className="size-4 text-fg transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </Link>
+      </div>
+    </Section>
   );
 }

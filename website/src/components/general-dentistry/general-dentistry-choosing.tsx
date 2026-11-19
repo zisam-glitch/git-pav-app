@@ -1,13 +1,13 @@
-import React from "react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const CHOOSING_FACTORS = [
   {
     title: "Qualifications",
-    desc: "Make sure the dentist is board-certified and has good reviews from current patients.",
+    desc: "Make sure the dentist is board-certified and has good reviews.",
   },
   {
     title: "Location",
-    desc: "A conveniently located clinic will make regular visits easier and more consistent.",
+    desc: "A conveniently located clinic will make regular visits easier.",
   },
   {
     title: "Services Offered",
@@ -15,39 +15,31 @@ const CHOOSING_FACTORS = [
   },
   {
     title: "Insurance",
-    desc: "Check if the dental practice accepts your insurance and offers flexible payment options.",
+    desc: "Check if the dental practice accepts your insurance.",
   },
-];
+] as const;
 
 export function GeneralDentistryChoosing() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            How to Choose a General Dentist
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Finding the right dentist is important for your long-term oral health. Consider these key factors when making your choice.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {CHOOSING_FACTORS.map((factor, i) => (
-            <div key={factor.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {factor.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {factor.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section theme="cream">
+      <div className="max-w-2xl">
+        <Heading size="h2-md" accent="General Dentist" tone="terracotta" inline>
+          How to Choose a
+        </Heading>
       </div>
-    </section>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {CHOOSING_FACTORS.map((factor, i) => (
+          <Tile key={factor.title} tone="white" className="p-6">
+            <span className="text-small font-medium tabular-nums text-terracotta">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p className="mt-3 text-body text-muted">
+              <strong className="font-medium text-fg">{factor.title}:</strong> {factor.desc}
+            </p>
+          </Tile>
+        ))}
+      </div>
+    </Section>
   );
 }

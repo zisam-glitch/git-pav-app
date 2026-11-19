@@ -1,120 +1,128 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BookButton, Heading, Section, Tile } from "@/components/hims";
+
+const COMPARISON_COLUMNS = [
+  {
+    id: "whitening-strips",
+    name: "Whitening Strips",
+    price: "£65",
+    options: "Professional Whitening Strips · Dissolving Whitening Strips",
+    contents: "14 applications (28 strips)",
+    formula: "Mint-flavored dissolving whitening strips with an advanced enamel-safe formula",
+    application: "Short application time, no strips to remove, non-slip technology",
+    bestFor: "On-the-go touch-ups and ongoing smile maintenance",
+    buttonVariant: "outline" as const,
+  },
+  {
+    id: "home-teeth-whitening",
+    name: "Home Teeth Whitening",
+    price: "£295",
+    options: "Day Whitening Kits · Night Whitening Kits",
+    contents: "4 x 3ml syringes and a 30ml pre-polishing paste",
+    formula:
+      "UK-made teeth whitening gel infused with potassium nitrate, calcium, and fluoride (hydrogen peroxide or carbamide peroxide options)",
+    application: "Day or night kit options crafted by dentists",
+    bestFor: "Optimum results with minimized sensitivity",
+    buttonVariant: "default" as const,
+  },
+  {
+    id: "home-in-office-whitening",
+    name: "Home & In Office Whitening",
+    price: "£495",
+    options: "BEAM In-Office Whitening Gel · BEAM Professional Whitening Kit",
+    contents: "In-office whitening session with pre-whitening varnish, plus at-home kit",
+    formula: "Unique hybrid dual-action 6% Hydrogen Peroxide + PAP formula",
+    application: "In-office priming varnish and whitening session, continued at home",
+    bestFor: "In-office whitening with continued at-home treatment",
+    buttonVariant: "outline" as const,
+  },
+] as const;
+
+const ROWS: Array<{
+  label: string;
+  key: "options" | "contents" | "formula" | "application" | "bestFor";
+}> = [
+  { label: "Options", key: "options" },
+  { label: "Pack / Session", key: "contents" },
+  { label: "Formula", key: "formula" },
+  { label: "Use", key: "application" },
+  { label: "Best suited for", key: "bestFor" },
+];
 
 export function WhiteningComparison() {
   return (
-    <section id="comparison-matrix" className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Compare Our 3 Whitening Treatments
-          </h2>
-          <p className="text-sm sm:text-base text-[#6b5848] mt-3 leading-relaxed">
-            Side-by-side comparison of formulation, shade lift, tray design, and clinical indications.
-          </p>
-        </div>
-
-        {/* Solid Table Card with crisp rounded-xl */}
-        <div className="overflow-x-auto rounded-xl border border-[#e2d4c0] bg-white shadow-sm">
-          <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
-            <thead>
-              <tr className="border-b border-[#e2d4c0] text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
-                <th className="py-5 px-6 bg-white w-1/4">Treatment Metric</th>
-                <th className="py-5 px-6 bg-white w-1/4">
-                  <div>Whitening Strips</div>
-                  <div className="text-base sm:text-lg font-display text-[#2a1c12] font-bold mt-1">£25</div>
-                </th>
-                <th className="py-5 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] w-1/4 text-[#925a27] relative">
-                  <div className="inline-block bg-[#925a27] text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                    Dentist Choice
-                  </div>
-                  <div>Custom Home Suite</div>
-                  <div className="text-base sm:text-lg font-display text-[#925a27] font-bold mt-0.5">£295</div>
-                </th>
-                <th className="py-5 px-6 bg-white w-1/4">
-                  <div>Home UV LED Kit</div>
-                  <div className="text-base sm:text-lg font-display text-[#2a1c12] font-bold mt-1">£99</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#e8ddd0]/70 text-[#2a1c12]">
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Maximum Shade Lift</td>
-                <td className="py-4 px-6 text-[#6b5848]">Up to 5 Shades</td>
-                <td className="py-4 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-[#925a27]">
-                  Up to 10 Shades
-                </td>
-                <td className="py-4 px-6 text-[#6b5848]">Up to 7 Shades</td>
-              </tr>
-
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Tray / Delivery System</td>
-                <td className="py-4 px-6 text-[#6b5848]">Adhesive Dry-Fit Strips</td>
-                <td className="py-4 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800">
-                  Laboratory 3D Custom Sculpted
-                </td>
-                <td className="py-4 px-6 text-[#6b5848]">Universal Silicone Mouthpiece</td>
-              </tr>
-
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Active Enamel Protection</td>
-                <td className="py-4 px-6 text-[#6b5848]">Organic Coconut Oil Buffer</td>
-                <td className="py-4 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800">
-                  ACP Hydroxyapatite Serum Included
-                </td>
-                <td className="py-4 px-6 text-[#6b5848]">PAP+ Remineralizing Formula</td>
-              </tr>
-
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Treatment Protocol</td>
-                <td className="py-4 px-6 text-[#6b5848]">14 days (30 mins daily)</td>
-                <td className="py-4 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] font-semibold text-[#2a1c12]">
-                  2–3 weeks (1 hr daily or overnight)
-                </td>
-                <td className="py-4 px-6 text-[#6b5848]">7 days (16 mins daily)</td>
-              </tr>
-
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Clinical Suitability</td>
-                <td className="py-4 px-6 text-[#6b5848]">Everyday maintenance &amp; light stains</td>
-                <td className="py-4 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] font-semibold text-[#2a1c12]">
-                  Deep coffee, tea, smoking &amp; age stains
-                </td>
-                <td className="py-4 px-6 text-[#6b5848]">Fast turnaround before events</td>
-              </tr>
-
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">GDC Clinical Review</td>
-                <td className="py-4 px-6 text-[#6b5848]">Self-applied</td>
-                <td className="py-4 px-6 bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800">
-                  Included (Impressions + Shade Check)
-                </td>
-                <td className="py-4 px-6 text-[#6b5848]">Online guidance included</td>
-              </tr>
-
-              <tr className="bg-[#fffdf9]">
-                <td className="py-5 px-6 font-bold text-[#2a1c12]">Action</td>
-                <td className="py-5 px-6">
-                  <Button asChild variant="outline" className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]">
-                    <a href="/shop">Select Strips</a>
-                  </Button>
-                </td>
-                <td className="py-5 px-6 bg-[#faf6f0] border-x border-[#e2d4c0]">
-                  <Button asChild className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95">
-                    <a href={BOOKING_URL}>Book Custom Suite</a>
-                  </Button>
-                </td>
-                <td className="py-5 px-6">
-                  <Button asChild variant="outline" className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]">
-                    <a href="/shop">Select UV Kit</a>
-                  </Button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <Section id="comparison-matrix" theme="sand">
+      <div className="max-w-2xl">
+        <Heading size="h2-md" accent="Whitening Ranges" tone="terracotta" inline>
+          Compare Our
+        </Heading>
+        <p className="mt-4 text-lead text-muted">
+          Side-by-side overview of our three whitening options, formulas, and what is included.
+        </p>
       </div>
-    </section>
+
+      {/* Desktop comparison table */}
+      <div className="mt-10 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
+        <table className="w-full border-collapse text-left">
+          <thead>
+            <tr className="border-b border-border bg-cream">
+              <th className="w-1/4 px-6 py-5 text-small font-medium text-muted">Feature</th>
+              {COMPARISON_COLUMNS.map((col) => (
+                <th key={col.id} className="w-1/4 px-6 py-5 align-top">
+                  <div className="text-h4 text-fg">{col.name}</div>
+                  <div className="mt-1 text-h3-md text-fg tabular-nums">{col.price}</div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border text-body">
+            {ROWS.map((row) => (
+              <tr key={row.key}>
+                <td className="px-6 py-4 align-top text-label text-fg">{row.label}</td>
+                {COMPARISON_COLUMNS.map((col) => (
+                  <td key={col.id} className="px-6 py-4 align-top text-small text-muted">
+                    {col[row.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            <tr>
+              <td className="px-6 py-5 text-label text-fg">Appointment</td>
+              {COMPARISON_COLUMNS.map((col) => (
+                <td key={col.id} className="px-6 py-5">
+                  <BookButton size="sm" variant={col.buttonVariant} className="w-full">
+                    Book Now
+                  </BookButton>
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile stacked comparison cards */}
+      <div className="mt-8 grid gap-4 md:hidden">
+        {COMPARISON_COLUMNS.map((col) => (
+          <Tile key={col.id} as="article" tone="white" className="p-6">
+            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-4">
+              <h3 className="text-h4 text-fg">{col.name}</h3>
+              <span className="text-h3-md text-fg tabular-nums">{col.price}</span>
+            </div>
+            <dl className="mt-4 divide-y divide-border">
+              {ROWS.map((row) => (
+                <div key={row.key} className="py-3">
+                  <dt className="text-caption font-medium text-muted">{row.label}</dt>
+                  <dd className="mt-1 text-small text-fg">{col[row.key]}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-4">
+              <BookButton variant={col.buttonVariant} className="w-full">
+                Book Now
+              </BookButton>
+            </div>
+          </Tile>
+        ))}
+      </div>
+    </Section>
   );
 }

@@ -1,0 +1,438 @@
+style blocks: 3, css bytes: 353047
+
+=== @font-face families (family | weight | style -> first src) ===
+IvarSoft | weight 400 | normal -> /css/fonts/IvarSoftRegular-latin-extended-additional.woff2
+IvarSoft | weight 400 | italic -> /css/fonts/IvarSoftItalic-latin-extended-additional.woff2
+CareSans | weight 400 700 | normal -> /css/fonts/caresans/v1/CareSans-VF-Roman-subset.woff2
+CareSans | weight 400 700 | italic -> /css/fonts/caresans/v1/CareSans-VF-Italic-subset.woff2
+"Roboto Mono" | weight 400 | normal -> /css/fonts/roboto-mono/RobotoMono-Regular-latin.woff2
+"sofia-pro" | weight 400 700 | normal -> /css/fonts/caresans/v1/CareSans-VF-Roman-subset.woff2
+"sofia-pro" | weight 400 700 | italic -> /css/fonts/caresans/v1/CareSans-VF-Italic-subset.woff2
+
+=== font-family ===
+   42 CareSans,Helvetica,Arial,sans-serif
+   12 IvarSoft
+    2 CareSans
+    2 monospace,monospace
+    2 "sofia-pro"
+    1 "Roboto Mono"
+    1 inherit
+
+=== font-size ===
+   36 calc(var(--font-size) * 1px)
+   34 calc(var(--font-size) * var(--scale))
+   19 0.75rem
+   18 0.875rem
+   12 1rem
+    7 1.25rem
+    5 1.125rem
+    4 var(--btn-font-size)
+    4 calc(0.875rem + (2 * (100vw - 1440px) / 1119))
+    4 0.6875rem
+    2 4rem
+    2 calc(0.75rem + (2 * (100vw - 1440px) / 1119))
+    2 0
+    2 1.5625rem
+    2 3.5625rem
+    2 1.375rem
+    2 0.8125rem
+    2 1.75rem
+    2 calc(22 * 100cqw / 368)
+    2 calc(27 * 100cqw / 751)
+    2 calc(38 * 100cqw / 1261)
+    2 1em
+    2 100%
+    2 2.6875rem
+    2 11px
+    2 13px
+    1 1.0625rem
+    1 0.645em
+    1 2.0625rem
+    1 inherit
+
+=== font-weight ===
+   88 400
+   40 500
+   14 max(410,calc(530 - 2.5 * var(--font-size)))
+    4 400 700
+    4 600
+    4 var(--btn-weight)
+    1 inherit
+    1 bold
+    1 450
+    1 474
+
+=== line-height ===
+   37 1.15
+   17 1
+   14 max(1em,max(calc((1.300000 - 0.00625000 * var(--font-size)) * 1em),calc((1.300000 - 0.00625000 * var(--font-size)) * 1em)))
+   13 max(calc((1.425000 - 0.00937500 * var(--font-size)) * 1em),calc((1.350000 - 0.00625000 * var(--font-size)) * 1em))
+    9 max(calc((1.300000 - 0.00625000 * var(--font-size)) * 1em),calc((1.300000 - 0.00625000 * var(--font-size)) * 1em))
+    5 1.5rem
+    4 1rem
+    3 0.9375rem
+    3 0.875rem
+    2 1.4
+    2 1.0625rem
+    2 1.1375rem
+    2 0
+    2 1.17
+    2 1.1
+    2 1.2
+    2 31.5px
+    2 13.54px
+    2 16.94px
+    1 1.35
+
+=== letter-spacing ===
+   35 -0.0625em
+   23 max(-0.01em,min(calc((0.007500 - 0.00031250 * var(--font-size)) * 1em),calc((0.010000 - 0.00041667 * var(--font-size)) * 1em)))
+   13 max(-0.01em,min(calc((0.027500 - 0.00031250 * var(--font-size)) * 1em),calc((0.035000 - 0.00062500 * var(--font-size)) * 1em)))
+    4 normal
+    2 0.125em
+    2 -0.007em
+    2 -0.04em
+    2 -0.047px
+    2 0.045px
+    2 0.305px
+    1 -0.125rem
+    1 -0.011em
+    1 0.1875rem
+    1 0.125rem
+    1 -0.003em
+
+=== border-radius ===
+   12 var(--border-radius)
+   10 var(--btn-radius)
+   10 30px
+    8 1.5rem
+    6 24px
+    6 var(--borderRadius)
+    5 3rem
+    5 100%
+    5 1.25rem
+    4 1rem
+    4 var(--tile-padding)
+    3 6.25rem
+    3 0.5rem
+    2 0.625rem
+    2 var(--borderRadius) var(--borderRadius) 0 0
+
+=== transition ===
+   24 opacity 200ms linear
+    5 none
+    5 color 400ms ease
+    5 opacity 400ms ease
+    3 transform 1800ms var(--bounce-in)
+    3 color 300ms ease-out 0s
+    2 all 100ms ease-in
+    2 background-color 300ms ease-in 0s
+    2 padding-inline 0.3s ease-in-out
+    2 fill 300ms ease-in-out
+    2 opacity 200ms linear, transform 300ms cubic-bezier(0.29,0.36,0.04,0.99)
+    2 opacity var(--disclaimer--transition-duration) linear
+    2 transform 200ms ease-in-out
+    2 transform 200ms
+    2 border 300ms linear 0s
+    1 opacity 120ms linear
+    1 transform 200ms cubic-bezier(0.33,0,0,1)
+    1 border-color 150ms linear
+    1 transform 0.3s ease
+    1 opacity 300ms ease-in-out
+
+=== transition-timing-function ===
+   12 linear
+    4 ease
+    4 ease-in-out
+    3 cubic-bezier(0.72,0,0.45,1)
+    2 ease-in
+
+=== max-width ===
+   70 359px)
+   15 739px)
+   11 1023px)
+   10 767px)
+    7 108rem
+    6 100%
+    6 none
+    6 1091px)
+    3 487px)
+    3 26.875rem
+    2 28rem
+    2 28.75rem
+    2 87rem
+    2 11.25rem
+    2 1132px
+    2 18.75rem
+    2 22.5rem
+    2 31.25rem
+    2 16.625rem
+    1 calc(var(--grid-max-width) * 1px)
+
+=== box-shadow ===
+   12 none
+    2 0 2px 16px rgba(0,0,0,.05)
+    1 0rem 0.5rem 0rem rgba(0,0,0,0)
+    1 0rem 0.5rem var(--box-shadow-spread) rgba(0,0,0,0.12)
+    1 0 calc(-1 * var(--border-radius)) 0 0 #E4FF8B
+    1 0 0.25rem 0.5rem rgba(0,0,0,0.08)
+    1 0 0.3125rem 0.625rem rgba(0,0,0,.05)
+    1 0 2px 10px rgba(0,0,0,.05)
+
+=== padding (top 15) ===
+   49 0
+   10 0 10px
+    4 calc(1rem + 2px) 1rem calc(1rem - 2px) 1rem
+    4 0 var(--btn-padding)
+    4 0 0.5rem 0 1rem
+    4 1.1875rem 0.5625rem 0.5625rem 1.5rem
+    4 0 0.5625rem 0 1.5rem
+    4 0.25rem 0.625rem
+    3 0 var(--bentoHorizPadding)
+    3 0 1rem
+    3 2.5rem
+    2 4px 0.75rem 0 0.9rem
+    2 1rem
+    2 0.1875rem 0.5rem
+    2 2rem 0
+
+=== gap (top 12) ===
+    8 0.5rem
+    8 0.25rem
+    6 1rem
+    6 0
+    5 0.75rem
+    4 1.5rem
+    3 1.25rem
+    3 var(--bentoGap)
+    3 0.375rem
+    2 2.5rem
+    2 var(--unit-u016,1rem)
+    2 0.625rem
+
+=== top colours ===
+   53 rgba(255,255,255,1)
+   30 #ffffff
+   20 rgba(255,255,255,0)
+   13 rgba(255,255,255,0.51)
+   12 rgba(0,0,0,1)
+   12 #f4f1e6
+   12 #faf8f2
+   12 #e4eee6
+   12 #f2f9f4
+   11 rgba(0,0,0,0.54)
+   11 rgba(255,255,255,0.22)
+   10 rgba(0,0,0,0.89)
+   10 rgba(0,0,0,0.33)
+   10 #000000
+   10 #f2ede5
+    8 rgba(0,0,0,0.06)
+    8 rgba(0,0,0,0.12)
+    8 #1b3745
+    8 #ecd880
+    6 rgba(255,255,255,0.11)
+    5 rgba(255,255,255,0.17)
+    5 rgba(0,0,0,.05)
+    5 rgba(255,255,255,0.07)
+    5 #754b3d
+    5 #5c8cb5
+    4 rgba(255,255,255,0.8)
+    4 #8a3a34
+    4 rgba(0,0,0,0.03)
+    4 rgba(0,0,0,.88)
+    4 rgba(150,100,74,1)
+    4 rgba(0,0,0,0)
+    4 rgba(255,255,255,0.94)
+    3 #ffc671
+    3 #ad6e4b
+    3 rgba(255,255,255,0.9)
+    3 rgba(255,255,255,0.34)
+    2 #2e3f43
+    2 rgba(0,0,0,0.65)
+    2 rgba(0,0,0,0.19)
+    2 rgba(255,255,255,0.1)
+
+=== custom properties: 113 unique (first 120) ===
+--base-font-size : 16
+--max-font-size : 50
+--max-letter-spacing : calc(0.0625 * -1em)
+--max-viewport-size : calc(1392 - 360)
+--min-variant-font-size : 14
+--max-variant-font-size : 16
+--font-size : calc( ( (var(--max-variant-font-size) - var(--min-variant-font-size)) * var(--scale) ) + v
+--scale : calc(100vw / 360)
+--scrollbar-width : 15
+--grid-column-count : 4
+--grid-gap : 8
+--grid-max-width : calc( 360 - var(--scrollbar-width) )
+--grid-column-margin : calc(var(--grid-gap) * 4)
+--grid-column-width : calc( ( ( var(--grid-max-width) - (var(--grid-gap) * (var(--grid-column-count) - 1)) - var
+--grid-content-max-width : calc( (var(--grid-max-width) - var(--grid-column-margin)) * 1px )
+--column-margin : var(--grid-column-margin)
+--max-width : var(--grid-max-width)
+--unit-u002 : 0.125rem
+--unit-u004 : 0.25rem
+--unit-u006 : 0.375rem
+--unit-u008 : 0.5rem
+--unit-u010 : 0.625rem
+--unit-u012 : 0.75rem
+--unit-u014 : 0.875rem
+--unit-u016 : 1rem
+--unit-u018 : 1.125rem
+--unit-u020 : 1.25rem
+--unit-u022 : 1.375rem
+--unit-u024 : 1.5rem
+--unit-u028 : 1.75rem
+--unit-u032 : 2rem
+--unit-u036 : 2.25rem
+--unit-u040 : 2.5rem
+--unit-u044 : 2.75rem
+--unit-u048 : 3rem
+--unit-u056 : 3.5rem
+--unit-u064 : 4rem
+--spacing-s025 : 1.5625rem
+--spacing-s050 : 3.125rem
+--spacing-s075 : 4.6875rem
+--spacing-s100 : 6.25rem
+--bounce-in : cubic-bezier(0.31,-0.18,0.36,1.39)
+--digit-delay : 40ms
+--digit-position : 0
+--duration : 1000ms
+--offset-bottom : 10px
+--icon-size : 1.25rem
+--height : 2.6875rem
+--border-width : 0.125rem
+--border-radius : 1.0625rem
+--padding : 0.9375rem
+--input-offset : 0.125rem
+--btn-height : 3rem
+--btn-font-size : 0.875rem
+--btn-weight : 400
+--btn-border-width : 2px
+--btn-padding : calc(var(--btn-height) / 2)
+--btn-radius : 3rem
+--btn-blur : 2.5rem
+--gridColumn : calc( (100vw - (1.5rem * 2)) / 13 )
+--gridGutter : 1.5rem
+--sectionBottomMargin : 1.5rem
+--box-shadow-spread : 1.875rem
+--box-shadow-visible-room : calc(var(--box-shadow-spread) + 10px)
+--per-view : 3.4
+--scrollbar-height : 1.5rem
+--spacing : 16px
+--tile-padding : 1.5rem
+--tile-width : calc( ( (var(--max-width) * 1px) - (var(--column-margin) * 1px) - (var(--spacing) * var(--
+--primary-tile-height : 12.4375rem
+--secondary-tile-height : 5rem
+--secondary-tile-height-desktop : 6.25rem
+--mobile-first-tile-height : 8.75rem
+--desktop-tile-min-width : 16.625rem
+--imageContainerWidth : 4.5rem
+--tileBgGradientHims : linear-gradient( 167deg, #f4f1e6 0%, #faf8f2 38%, #faf8f2 84%, #f4f1e6 100% )
+--tileBgGradientHers : linear-gradient( 167deg, #e4eee6 0%, #f2f9f4 38%, #f2f9f4 84%, #e4eee6 100% )
+--disclaimer--text-color : rgba(0,0,0,0.65)
+--disclaimer--toggle-color : rgba(0,0,0,0.74)
+--disclaimer--transition-duration : 450ms
+--borderRadius : 1rem
+--bentoGap : 0.25rem
+--bentoVertPadding : 2.25rem
+--bentoHorizPadding : 0.5rem
+--heroOverlap : 3rem
+--z-index : 1
+--bento-section-padding-h : 3.125rem
+--bento-section-padding-v : 2.5rem
+--index : 0
+--carousel-item-width : auto
+--carousel-item-min-width : auto
+--carousel-item-max-width : auto
+--duration-quicker : 0.01ms
+--duration-quick : 0.01ms
+--duration-fast : 0.01ms
+--duration-default : 0.01ms
+--duration-medium : 0.01ms
+--trt-content-inset : 1.5625rem
+--wl--bento-bg-color : #453421
+--wl--module-bg-color : #41301b
+--wl--cta-color : #FFC671
+--wl--cta-hover-color : #c99547
+--wl-hero--offset : 9.375rem
+--promoHeight : 0px
+--promoHeightOffset : 0px
+--headerOffset : calc( var(--headerHeight,0px) + var(--promoHeight,0px) + var(--stickyHeight,0px) )
+--global-nav-header-row-height : 3rem
+--headerHeight : var(--global-nav-header-row-height)
+--nav-shadow-one : rgba(0,0,0,.05)
+--nav-shadow-two : rgba(0,0,0,.08)
+--gutter : var(--gridColumn,1rem)
+--tabSize : 1rem
+--standardGap : var(--unit-u024,1.5rem)
+
+=== title === Hims | Men’s Telehealth for Hair, ED, Weight Loss & Mental Health | Hims
+
+=== headings (57, first 80) ===
+h1: Your best starts here
+h3: Start your weight loss today
+h3: Now available Injectable TRT
+h2: Your weight loss breakthrough is here
+h3: Access our wide GLP-1 lineup
+h4: Wegovy ® Pill
+h4: Zepbound ® KwikPen ®
+h4: Foundayo ®
+h4: Wegovy ® Pen
+h4: Wegovy ® Pill Microdosing Plan
+h4: Zepbound ® Vial
+h4: Ozempic ® Pill
+h4: Ozempic ®
+h3: All-new app, all you need
+h3: Effortlessly connected
+h2: There’s something for everyone
+h3: Paul, 59
+h3: Sex Rx + Climax Control
+h3: Brandon, 42
+h3: Generic Viagra
+h3: Jonathan, 46
+h3: Sex Rx + Testosterone Support
+h3: Remington, 41
+h3: Tadalafil
+h2: Testosterone, built for you
+h3: Explore treatment options for low T
+h4: Injectable TRT
+h4: Testosterone Rx+
+h4: Oral TRT
+h4: Generic Testosterone Cypionate ‡
+h3: Test your T, boost your levels, optimize your output.
+h3: Measure to see if you have low T
+h3: Treat with a personalized plan
+h3: Optimize and fine-tune
+h3: labs by
+h2: Get your labs.
+h2: Go for your optimal.
+h3: Find your
+h3: baseline
+h3: Plan your
+h3: breakthrough
+h3: Test 130+ biomarkers
+h3: Screen for 50+ types of cancer
+h2: The best care by the best in medicine
+h3: Head of Weight Loss, Hims & Hers Metabolic Health
+h3: Head of Men’s Sexual Health & Urology Men’s Health Metabolic Health
+h3: Head of Medical Affairs, Hims & Hers Inflammation & Stress Liver & Kidney Health Immune Defense Nutrients & Bl
+h3: Endocrinology Advisor Thyroid Health
+h3: Cardiology Advisor Heart Health
+h3: Total care.
+h3: Totally different.
+h3: Learn
+h3: Tools
+h3: Popular
+h3: Hims
+h3: Careers
+h3: Connect
+
+=== landmark/section tags (7, first 80) ===
+nav Global Navigation
+section 
+section 
+section trt-section
+section 
+section 
+footer 

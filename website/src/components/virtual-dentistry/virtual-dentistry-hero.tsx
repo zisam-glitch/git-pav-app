@@ -1,53 +1,56 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BookButton, CallButton, Heading, Media, Section, Tile } from "@/components/hims";
 
 export function VirtualDentistryHero() {
   return (
-    <section
+    <Section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16 border-b border-[#e8ddd0] flex items-center"
+      theme="white"
+      space="sm"
+      className="pt-6 md:pt-10"
       aria-label="Virtual dentistry services"
     >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85"
-          alt=""
-          className="kenburns h-full w-full object-cover opacity-35"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
-      </div>
-
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 flex flex-col justify-center items-center text-center">
-        <div className="inline-block bg-[#925a27] text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-          No Appointment Or Insurance Required
-        </div>
-        <h1 className="max-w-2xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-          Affordable <span className="text-primary">Healthcare Services</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base text-muted sm:text-lg leading-relaxed">
-          £35 Consultation Fee and £25 Prescription Cost. Quality medical advice and prescriptions at budget-friendly prices to ensure your health needs are met without breaking the bank.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
+      <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <p className="text-label text-terracotta">Virtual Dental Consultations</p>
+          <Heading
+            as="h1"
+            size="hero"
+            accent="Healthcare Services"
+            tone="terracotta"
+            className="mt-3"
           >
-            <a href={BOOKING_URL}>Book appointment</a>
-          </Button>
+            Affordable
+          </Heading>
+          <p className="mt-5 max-w-xl text-lead text-muted">
+            £35 Consultation Fee and £25 Prescription Cost. Quality medical advice and prescriptions
+            at budget-friendly prices to ensure your health needs are met without breaking the bank.
+          </p>
+
+          <div className="mt-6 grid max-w-md grid-cols-2 gap-3">
+            <Tile tone="cream" className="p-4">
+              <p className="text-caption font-medium text-muted">Consultation Fee</p>
+              <p className="mt-1 text-h3 text-fg tabular-nums">£35</p>
+            </Tile>
+            <Tile tone="sage" className="p-4">
+              <p className="text-caption font-medium text-muted">Prescription Cost</p>
+              <p className="mt-1 text-h3 text-fg tabular-nums">£25</p>
+            </Tile>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <BookButton>Book appointment</BookButton>
+            <CallButton variant="outline" />
+          </div>
         </div>
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <li>Virtual consultations</li>
-          <li>Online prescriptions</li>
-          <li>24/7 availability</li>
-          <li>Home delivery options</li>
-        </ul>
+
+        <Media
+          src="/images/generated/virtual-dentistry-hero.jpg"
+          ratio="4 / 3"
+          tone="cream"
+          alt="Virtual dental video consultation on a tablet in warm natural light"
+          priority
+        />
       </div>
-    </section>
+    </Section>
   );
 }

@@ -1,130 +1,76 @@
-import React, { useState } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
 
-const FAQS = [
+const FAQS: FaqItem[] = [
   {
     q: "How do I schedule a virtual consultation with Pav Dental?",
-    a: "To schedule a virtual consultation with Pav Dental, simply log into your account on the Pav Dental website or mobile app and select the virtual consultation option. From there, you will be able to choose a convenient time and date for your appointment.",
+    a: "To schedule a virtual consultation with Pav Dental, simply log into your account on the Pav Dental website or mobile app and select the virtual consultation option. From there, you will be able to choose a convenient time and date for your appointment",
   },
   {
     q: "Do I need to have any specific technology to use the virtual consultation service?",
-    a: "You need a device with a camera and microphone (computer, smartphone, or tablet) and a stable internet connection. Our platform works on most modern browsers and devices.",
+    a: "You can access the service from any device with an internet connection and a camera, such as a smartphone, tablet, or computer.",
   },
   {
     q: "How does the virtual consultation work?",
-    a: "After booking, you'll receive a link to join the video consultation at your scheduled time. You'll connect with a qualified dentist who can assess your dental concerns and provide advice or prescriptions as needed.",
+    a: "The virtual consultation works by connecting you with a licensed dentist through video conferencing. The dentist will be able to see and hear you, and you will be able to see and hear the dentist. During the consultation, the dentist will assess your dental needs and discuss your treatment options.",
   },
   {
     q: "What happens after the virtual consultation?",
-    a: "After the consultation, you may receive professional advice, an online prescription sent to your pharmacy, coordination for a home visit if needed, or planning for an in-clinic appointment depending on your dental needs.",
+    a: "Following the virtual consultation, if deemed necessary prior to an in-person visit or primary care, the dentist will issue an electronic prescription for any required treatments or medications. This prescription will be transmitted to your preferred pharmacy, allowing you to conveniently retrieve it.",
   },
   {
     q: "How long does it take to receive a prescription after the virtual consultation?",
-    a: "Prescriptions are typically generated immediately after the consultation if deemed necessary by the dentist and can be sent directly to your chosen pharmacy.",
+    a: "After your virtual consultation with the dentist, they will promptly e-file your prescription with your preferred pharmacy. Its availability to retrieve from your preferred pharmacy may depend on their stock and business hours.",
   },
   {
     q: "How much does a prescription cost?",
-    a: "Prescription cost is £25, and the consultation fee is £35. These are affordable rates to ensure quality dental care is accessible to everyone.",
+    a: "Flat rate £25.",
   },
   {
     q: "What is a virtual video consultation?",
-    a: "A virtual video consultation is a remote dental appointment where you connect with a dentist via video call to discuss your dental concerns, receive advice, and potentially get prescriptions without visiting a clinic.",
+    a: "A virtual video dental consultation is a way for you to connect with a dentist via video call. During the consultation, you can discuss your oral health concerns and treatment plan, and get any questions answered.",
   },
   {
     q: "How do I book a virtual video consultation?",
-    a: "You can book through our website or mobile app by selecting the virtual consultation option, choosing your preferred time slot, and confirming your appointment.",
+    a: "You can book a virtual video dental consultation through Pav Dental's platform, either as a subscriber or on a pay-as-you-go basis. Simply select the type of appointment you need, choose a date and time, and you will be connected with a qualified dentist.",
   },
   {
     q: "What type of services can I receive during a virtual video dental consultation?",
-    a: "You can receive dental advice, diagnosis for common issues, prescription services, treatment planning, and referrals for in-person care when necessary.",
+    a: "During a virtual video dental consultation, you can receive a wide range of services, including preventive care, smile correction, night guards, remineralization trays, sleep apnea devices, electronic prescriptions, free specialist referrals, and more.",
   },
   {
     q: "What equipment do I need for a virtual video dental consultation?",
-    a: "You need a device with camera and microphone, stable internet connection, and good lighting. A quiet, private space is also recommended for the consultation.",
+    a: "All you need for a virtual video dental consultation is a device with a camera, such as a smartphone, tablet, or computer, and a reliable internet connection.",
   },
   {
     q: "Can I receive a diagnosis and treatment plan during a virtual video dental consultation?",
-    a: "Yes, our dentists can provide diagnoses for many common dental issues and create treatment plans. For complex cases requiring physical examination, we may recommend an in-person visit.",
+    a: "Yes, you can receive a diagnosis and treatment plan during a virtual video dental consultation. Your dentist will assess your oral health, answer any questions you have, and provide you with a personalized treatment plan.",
   },
   {
     q: "How long does a virtual video dental consultation typically last?",
-    a: "Consultations typically last 15-30 minutes depending on the complexity of your dental concerns and the discussion required.",
+    a: "Virtual video dental consultations typically last 30 minutes. You will have ample time to discuss your oral health concerns and receive a diagnosis and treatment plan from your dentist.",
   },
 ];
 
 export function VirtualDentistryFaq() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-14 items-start">
-          {/* Left sticky header */}
-          <div className="lg:sticky lg:top-24">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#2a1c12]">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-sm text-[#6b5848] leading-relaxed">
-              Everything you need to know about virtual dental consultations, online prescriptions, and remote dental care.
-            </p>
-            <Button
-              asChild
-              className="mt-6 accent-gradient text-white rounded-full px-6 h-10 text-xs font-bold shadow-sm hover:opacity-95"
-            >
-              <a href={BOOKING_URL} className="flex items-center gap-2">
-                Book Consultation <ArrowRight className="size-3.5" />
-              </a>
-            </Button>
-          </div>
-
-          {/* Right accordion */}
-          <div className="divide-y divide-[#e8ddd0]">
-            {FAQS.map((faq, i) => {
-              const isOpen = openIndex === i;
-              return (
-                <div key={i} className="py-1">
-                  <button
-                    type="button"
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-                  >
-                    <span
-                      className={`font-semibold text-sm sm:text-base transition-colors duration-200 ${
-                        isOpen
-                          ? "text-[#925a27]"
-                          : "text-[#2a1c12] group-hover:text-[#925a27]"
-                      }`}
-                    >
-                      {faq.q}
-                    </span>
-                    <span
-                      className={`flex-shrink-0 size-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isOpen
-                          ? "accent-gradient text-white rotate-180"
-                          : "bg-[#f0e8dc] text-[#925a27]"
-                      }`}
-                    >
-                      <ChevronDown className="size-4" />
-                    </span>
-                  </button>
-
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <p className="pb-5 text-sm text-[#6b5848] leading-relaxed max-w-2xl">
-                      {faq.a}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+    <Section theme="white" space="default">
+      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
+        <div className="lg:sticky lg:top-24">
+          <Heading as="h2" size="h2-md" accent="Question" tone="terracotta">
+            Frequently Asked
+          </Heading>
+          <p className="mt-4 max-w-sm text-lead text-muted">
+            Common questions about booking a video consultation, technology needed, and online
+            prescriptions.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <BookButton>Book appointment</BookButton>
+            <CallButton variant="outline" />
           </div>
         </div>
+
+        <FaqList items={FAQS} />
       </div>
-    </section>
+    </Section>
   );
 }

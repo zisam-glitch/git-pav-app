@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
-import { Footer } from "@/components/home/footer";
-import { ScrollProgress } from "@/components/home/scroll-progress";
 import { BlogIndex } from "@/components/blog/blog-index";
+import { Footer } from "@/components/home/footer";
+import { Header } from "@/components/home/header";
+import { ScrollProgress } from "@/components/home/scroll-progress";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog")({
   head: () => seoHead("/blog"),
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/blog")({
 
 function BlogsRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
       <BlogIndex />

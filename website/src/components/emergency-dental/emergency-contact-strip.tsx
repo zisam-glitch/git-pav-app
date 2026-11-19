@@ -1,46 +1,53 @@
-import { MapPin, Phone, Clock } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { Section, Tile } from "@/components/hims";
+import { PRACTICE_EMAIL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 export function EmergencyContactStrip() {
   return (
-    <div className="bg-[#b52618] text-white py-6 sm:py-8 border-y border-red-800">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
-          {/* Item 1 */}
-          <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
-              <MapPin className="size-6 text-white" />
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-widest text-red-200 font-bold">Address</p>
-              <p className="text-sm font-semibold text-white">786 Leeds Road, Bradford, BD3 9TY</p>
-            </div>
+    <Section theme="cream" space="sm">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Tile tone="white" className="flex items-start gap-4 p-6">
+          <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">
+            <MapPin aria-hidden className="size-4" />
           </div>
+          <div>
+            <p className="text-caption font-medium text-muted">Address</p>
+            <p className="mt-1 text-body font-medium text-fg">
+              HUB – 786 Leeds Road, Bradford, BD3 9TY
+            </p>
+          </div>
+        </Tile>
 
-          {/* Item 2 */}
-          <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
-              <Phone className="size-6 text-white" />
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-widest text-red-200 font-bold">24/7 Phone</p>
-              <a href="tel:07311871456" className="text-sm font-bold text-white hover:underline">
-                07311 871456 / 0800 1938 786
-              </a>
-            </div>
+        <Tile tone="white" className="flex items-start gap-4 p-6">
+          <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">
+            <Phone aria-hidden className="size-4" />
           </div>
+          <div>
+            <p className="text-caption font-medium text-muted">Phone</p>
+            <a
+              href={PRACTICE_PHONE_HREF}
+              className="mt-1 block text-body font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              {PRACTICE_PHONE}
+            </a>
+          </div>
+        </Tile>
 
-          {/* Item 3 */}
-          <div className="flex items-center justify-center sm:justify-start gap-4">
-            <div className="size-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
-              <Clock className="size-6 text-white" />
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-widest text-red-200 font-bold">Opening Hours</p>
-              <p className="text-sm font-semibold text-white">Open 24/7 · 365 Days a Year</p>
-            </div>
+        <Tile tone="white" className="flex items-start gap-4 p-6">
+          <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">
+            <Mail aria-hidden className="size-4" />
           </div>
-        </div>
+          <div>
+            <p className="text-caption font-medium text-muted">Email</p>
+            <a
+              href={`mailto:${PRACTICE_EMAIL}`}
+              className="mt-1 block text-body font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              {PRACTICE_EMAIL}
+            </a>
+          </div>
+        </Tile>
       </div>
-    </div>
+    </Section>
   );
 }

@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { ApplyModal } from "./apply-modal";
+import { OpenApplication } from "./open-application";
+import { VACANCIES, type Vacancy } from "./vacancies-data";
 import { VacanciesHero } from "./vacancies-hero";
 import { VacanciesList } from "./vacancies-list";
-import { OpenApplication } from "./open-application";
-import { ApplyModal } from "./apply-modal";
-import { VACANCIES, Vacancy } from "./vacancies-data";
+import { VisaSponsorshipBanner } from "./visa-sponsorship-banner";
 
 export function VacanciesPage() {
   const [selectedVacancy, setSelectedVacancy] = useState<Vacancy | null>(null);
@@ -14,18 +15,15 @@ export function VacanciesPage() {
     setIsApplyModalOpen(true);
   };
 
+  const sponsorshipVacancy =
+    VACANCIES.find((v) => v.category === "sponsorship") ?? VACANCIES[VACANCIES.length - 1];
+
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg">
-      {/* 1. Hero Section with Culture & Perks */}
+    <div className="bg-white text-fg">
       <VacanciesHero />
-
-      {/* 2. Vacancies List with Category Filters & Search */}
       <VacanciesList onApply={handleApply} />
-
-      {/* 3. Speculative Inquiries & Recruitment Details */}
+      <VisaSponsorshipBanner onApplySponsorship={() => handleApply(sponsorshipVacancy)} />
       <OpenApplication />
-
-      {/* Interactive Application Modal */}
       <ApplyModal
         vacancy={selectedVacancy}
         isOpen={isApplyModalOpen}
@@ -34,4 +32,3 @@ export function VacanciesPage() {
     </div>
   );
 }
-

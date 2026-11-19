@@ -1,59 +1,67 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
+import { BookButton, ButtonLink, CallButton, Heading, Media, Section } from "@/components/hims";
 
 export function OralHygieneHero() {
   return (
-    <section
+    <Section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16 border-b border-[#e8ddd0] flex items-center"
-      aria-label="Professional dental hygiene services"
+      theme="white"
+      space="sm"
+      className="pt-6 md:pt-10"
+      aria-label="Pav Dental Oral Hygiene Care"
     >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1200&q=85"
-          alt=""
-          className="kenburns h-full w-full object-cover opacity-35"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
-      </div>
-
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 flex flex-col justify-center items-center text-center">
-        <p className="mb-4 text-xs font-medium text-primary">
-          Professional dental hygiene
-        </p>
-        <h1 className="max-w-2xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-          Keep your smile <span className="text-primary">healthy & bright</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base text-muted sm:text-lg leading-relaxed">
-          Comprehensive dental hygiene services including professional cleaning, scaling, polishing, and preventative care to maintain optimal oral health.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
+      <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <p className="text-label text-terracotta">Preventative Hygiene Care</p>
+          <Heading
+            as="h1"
+            size="hero"
+            accent="Oral Hygiene Care"
+            tone="terracotta"
+            className="mt-3"
           >
-            <a href="#importance">Learn more</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
-          >
-            <a href="#pricing">View prices</a>
-          </Button>
+            Pav Dental
+          </Heading>
+          <p className="mt-5 max-w-xl text-lead text-muted">
+            Healthy gums and a clean mouth are essential for a confident smile, fresh breath, and
+            long lasting teeth. At Pav Dental, our professional hygiene care focuses on preventing
+            gum disease, stopping bleeding gums, reducing bad breath, and maintaining strong oral
+            health for life.
+          </p>
+          <p className="mt-4 max-w-xl text-body text-muted">
+            We combine gentle hygiene treatment with education and tailored advice, so every patient
+            understands how to look after their teeth at home.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <BookButton>Make an Appointment</BookButton>
+            <ButtonLink to="/contact-us" variant="outline">
+              Contact us
+            </ButtonLink>
+            <CallButton variant="ghost" />
+          </div>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-small text-muted">
+            <a
+              href="#pricing"
+              className="underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              Our Hygiene Services (£45 – £75)
+            </a>
+            <a
+              href="#importance"
+              className="underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              Why Your Oral Hygiene Matters
+            </a>
+          </div>
         </div>
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <li>Professional cleaning</li>
-          <li>Gum disease prevention</li>
-          <li>Oral health education</li>
-        </ul>
+
+        <Media
+          src="/images/generated/oral-hygiene-hero.jpg"
+          alt="Warm sunlit Pav Dental oral hygiene treatment room with gentle scaling and polishing instruments"
+          ratio="4 / 3"
+          tone="cream"
+          priority
+        />
       </div>
-    </section>
+    </Section>
   );
 }

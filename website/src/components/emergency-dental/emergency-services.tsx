@@ -1,145 +1,57 @@
 import {
   Activity,
-  AlertOctagon,
-  Sparkles,
-  Shield,
-  Zap,
+  AlertCircle,
   Droplets,
   Flame,
-  HelpCircle,
+  Shield,
+  Sparkles,
+  Wrench,
+  Zap,
 } from "lucide-react";
+import { CallButton, Heading, Section, Tile } from "@/components/hims";
+import { PRACTICE_PHONE } from "@/lib/enquiry";
 
 const EMERGENCY_CONDITIONS = [
-  {
-    id: "toothache",
-    title: "Severe Toothache",
-    desc: "Unbearable, throbbing, or sharp pain that prevents sleeping, eating, or concentrating.",
-    icon: Zap,
-    color: "#d9383a",
-    tag: "Immediate Relief",
-  },
-  {
-    id: "swelling",
-    title: "Facial Swelling",
-    desc: "Visible swelling of the cheek, jawline, or neck requiring urgent antibiotic and drainage care.",
-    icon: Flame,
-    color: "#cf711f",
-    tag: "Urgent",
-  },
-  {
-    id: "broken-tooth",
-    title: "Broken / Chipped Tooth",
-    desc: "Fractured teeth with sharp exposed edges, causing cuts to tongue or exposing sensitive nerves.",
-    icon: Sparkles,
-    color: "#925a27",
-    tag: "Same-day repair",
-  },
-  {
-    id: "lost-filling",
-    title: "Lost Filling or Crown",
-    desc: "Dislodged crowns, inlays or large fillings leaving exposed sensitive dentin to food and cold air.",
-    icon: Shield,
-    color: "#5b7fa6",
-    tag: "Re-cementing",
-  },
-  {
-    id: "abscess",
-    title: "Dental Abscess",
-    desc: "Pus-filled gum boil, bad taste, and localized infection that can spread rapidly if untreated.",
-    icon: AlertOctagon,
-    color: "#c0392b",
-    tag: "Infection Care",
-  },
-  {
-    id: "bleeding",
-    title: "Bleeding Gums",
-    desc: "Uncontrolled bleeding after trauma or extraction that won't stop with gentle biting pressure.",
-    icon: Droplets,
-    color: "#b02a1e",
-    tag: "Coagulation Care",
-  },
-  {
-    id: "knocked-out",
-    title: "Knocked Out Tooth",
-    desc: "Dental avulsion from sports or accidents. Keep the tooth in milk and arrive within 60 minutes.",
-    icon: Activity,
-    color: "#27ae60",
-    tag: "Time Critical (60m)",
-  },
-  {
-    id: "wisdom-pain",
-    title: "Wisdom Tooth Pain",
-    desc: "Pericoronitis, lockjaw, or intense pain radiating to ear and neck from impacted wisdom teeth.",
-    icon: HelpCircle,
-    color: "#cf9448",
-    tag: "Surgical Relief",
-  },
-];
+  { id: "toothache", title: "Toothache", icon: Zap },
+  { id: "sensitivity", title: "Sensitivity", icon: Activity },
+  { id: "broken-filling", title: "Broken Filling Tooth", icon: Sparkles },
+  { id: "swelling-abscess", title: "Swelling/Abscess", icon: Flame },
+  { id: "denture-adjustment", title: "Denture Adjustment", icon: Wrench },
+  { id: "recement-crowns", title: "Re-cement Crowns", icon: Shield },
+  { id: "dental-trauma", title: "Dental Trauma", icon: AlertCircle },
+  { id: "painful-gums", title: "Painful Gums", icon: Droplets },
+] as const;
 
 export function EmergencyServices() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fbf8f4]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#cf9448] mb-3">
-            Comprehensive Triage
-          </p>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
-            Our Emergency Dentist Can Help With{" "}
-            <span className="accent-text italic">The Following</span>
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-base leading-relaxed">
-            From sudden accidents to escalating infections, we treat every kind of urgent oral crisis with gentle, pain-free techniques.
-          </p>
+    <Section id="services" theme="white" space="default">
+      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div className="max-w-2xl">
+          <Heading as="h2" size="h2-md" accent="The Following" tone="terracotta">
+            Our Emergency Dentist Can Help With
+          </Heading>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {EMERGENCY_CONDITIONS.map((cond) => {
-            const Icon = cond.icon;
-            return (
-              <div
-                key={cond.id}
-                className="group relative rounded-3xl bg-white p-7 border border-[#e8ddd0] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-5">
-                    <div
-                      className="size-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110"
-                      style={{ backgroundColor: `${cond.color}15` }}
-                    >
-                      <Icon className="size-7" style={{ color: cond.color }} />
-                    </div>
-                    <span
-                      className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full text-white"
-                      style={{ backgroundColor: cond.color }}
-                    >
-                      {cond.tag}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display text-lg font-bold text-[#2a1c12] group-hover:text-[#925a27] transition-colors">
-                    {cond.title}
-                  </h3>
-
-                  <p className="mt-2 text-xs sm:text-sm text-[#6b5848] leading-relaxed">
-                    {cond.desc}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-[#f0e8dc] flex items-center justify-between text-xs">
-                  <span className="font-semibold text-[#925a27]">Emergency Slot</span>
-                  <a
-                    href="tel:07311871456"
-                    className="font-bold text-red-600 hover:underline flex items-center gap-1"
-                  >
-                    Call Now &rarr;
-                  </a>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
       </div>
-    </section>
+
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {EMERGENCY_CONDITIONS.map((cond) => {
+          const Icon = cond.icon;
+          return (
+            <Tile
+              key={cond.id}
+              tone="cream"
+              lift
+              className="flex flex-col justify-between gap-6 p-6"
+            >
+              <div className="grid size-10 place-items-center rounded-full border border-border bg-white text-terracotta">
+                <Icon aria-hidden className="size-4" />
+              </div>
+              <h3 className="text-h4 text-fg">{cond.title}</h3>
+            </Tile>
+          );
+        })}
+      </div>
+    </Section>
   );
 }

@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
+import { Header } from "@/components/home/header";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { VacanciesPage } from "@/components/vacancies/vacancies-page";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/vacancies")({
   head: () => seoHead("/vacancies"),
@@ -12,19 +12,11 @@ export const Route = createFileRoute("/vacancies")({
 
 function VacanciesRoute() {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
-      {/* Single Unified Header */}
       <Header />
-
-      {/* Spacer for fixed header */}
-      <div className="pt-16">
-        <VacanciesPage />
-      </div>
-
-      {/* Single Unified Footer */}
+      <VacanciesPage />
       <Footer />
     </main>
   );
 }
-

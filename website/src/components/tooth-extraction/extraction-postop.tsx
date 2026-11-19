@@ -1,134 +1,206 @@
-import React from "react";
-import { Droplets, UtensilsCrossed, BedDouble, AlertTriangle } from "lucide-react";
+import {
+  AlertTriangle,
+  BedDouble,
+  CalendarCheck,
+  CigaretteOff,
+  Droplets,
+  Info,
+  Pill,
+  ShieldCheck,
+  Snowflake,
+  Sparkles,
+  UtensilsCrossed,
+} from "lucide-react";
+import { useState } from "react";
+import { BookButton, CallButton, Heading, Section, Tile } from "@/components/hims";
+import { Button } from "@/components/ui/button";
+
+type Category = "all" | "first-24h" | "recovery";
 
 const INSTRUCTIONS = [
   {
-    icon: Droplets,
-    title: "Bleeding Management",
-    color: "#e05252",
+    title: "Pain Management:",
+    category: "first-24h" as const,
+    icon: Pill,
     steps: [
-      "Bite firmly on gauze pad for 30–45 minutes",
-      "Replace gauze if soaked; repeat once",
-      "Avoid rinsing for the first 24 hours",
-      "If bleeding persists beyond 2 hours, call us",
+      "Use over-the-counter pain relievers like ibuprofen or acetaminophen as directed.",
+      "If prescribed pain medication, take as instructed.",
     ],
   },
   {
-    icon: UtensilsCrossed,
-    title: "Eating and Drinking",
-    color: "#cf9448",
+    title: "Swelling and Bruising:",
+    category: "first-24h" as const,
+    icon: Snowflake,
     steps: [
-      "Wait at least 2 hours before eating",
-      "Soft foods only for 24–48 hours",
-      "Avoid hot drinks for the first day",
-      "No straws — they dislodge the blood clot",
+      "Apply an ice pack to the cheek near the extraction site for 10 minutes on, then 10 minutes off, during the first 24 hours.",
     ],
   },
   {
+    title: "Rest:",
+    category: "first-24h" as const,
     icon: BedDouble,
-    title: "Swelling",
-    color: "#925a27",
     steps: [
-      "Apply ice pack 20 mins on / 20 mins off for 24h",
-      "Keep head elevated — extra pillow at night",
-      "Some swelling is normal for 2–3 days",
-      "Take prescribed anti-inflammatory as directed",
+      "Relax for at least 24 hours after the extraction.",
+      "Avoid strenuous activities for 2-3 days to reduce bleeding and help the healing process.",
     ],
+  },
+  {
+    title: "Oral Hygiene:",
+    category: "recovery" as const,
+    icon: Sparkles,
+    steps: [
+      "Do not rinse your mouth for the first 24 hours.",
+      "After 24 hours, gently rinse with warm salt water (1/2 teaspoon of salt in a cup of water) after meals and before bed.",
+    ],
+  },
+  {
+    title: "Bleeding Management:",
+    category: "first-24h" as const,
+    icon: Droplets,
+    steps: [
+      "Bite on a gauze pad firmly for 30-60 minutes after the extraction.",
+      "If bleeding continues, replace the gauze and bite down for another 30 minutes.",
+    ],
+  },
+  {
+    title: "Eating and Drinking:",
+    category: "first-24h" as const,
+    icon: UtensilsCrossed,
+    steps: [
+      "Start with soft foods and liquids.",
+      "Avoid using a straw for the first few days to prevent dislodging the blood clot.",
+      "Avoid hot liquids and alcoholic beverages in the first 24 hours.",
+    ],
+  },
+  {
+    title: "Smoking:",
+    category: "recovery" as const,
+    icon: CigaretteOff,
+    steps: [
+      "Avoid smoking for as long as possible after the extraction, ideally for at least 48 hours.",
+    ],
+  },
+  {
+    title: "Protect the Clot:",
+    category: "recovery" as const,
+    icon: ShieldCheck,
+    steps: ["Avoid spitting or rinsing forcefully.", "Chew on the opposite side of your mouth."],
+  },
+  {
+    title: "Medications:",
+    category: "recovery" as const,
+    icon: Pill,
+    steps: ["Take any prescribed antibiotics as directed to prevent infection."],
+  },
+  {
+    title: "Follow-Up:",
+    category: "recovery" as const,
+    icon: CalendarCheck,
+    steps: ["Keep any follow-up appointments with your dentist or oral surgeon."],
   },
 ];
 
-const RED_FLAGS = [
-  "Heavy bleeding not controlled by biting on gauze",
-  "Severe or worsening pain after 72 hours",
-  "High temperature or fever",
-  "Numbness or tingling that doesn't wear off",
-  "Signs of dry socket — throbbing, bad taste, visible bone",
+const FILTERS: Array<{ id: Category; label: string }> = [
+  { id: "all", label: "All instructions" },
+  { id: "first-24h", label: "First 24 hours" },
+  { id: "recovery", label: "Care & follow-up" },
 ];
 
 export function ExtractionPostOp() {
+  const [filter, setFilter] = useState<Category>("all");
+
+  const visible =
+    filter === "all" ? INSTRUCTIONS : INSTRUCTIONS.filter((item) => item.category === filter);
+
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Post-Operative Instructions
-          </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base">
-            Follow these guidelines carefully for fast, complication-free
-            healing after your extraction.
+    <Section id="post-op" theme="cream" space="default">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div className="max-w-2xl">
+          <Heading as="h2" size="h2-md" accent="Instructions" tone="terracotta" inline>
+            Post Operative
+          </Heading>
+        </div>
+
+        <div
+          className="flex flex-wrap gap-2"
+          role="tablist"
+          aria-label="Filter post-op instructions"
+        >
+          {FILTERS.map((item) => {
+            const active = filter === item.id;
+            return (
+              <Button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                variant={active ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(item.id)}
+              >
+                {item.label}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      <Tile tone="white" className="mt-8 flex items-start gap-4 p-6">
+        <Info aria-hidden className="mt-1 size-5 shrink-0 text-terracotta" />
+        <div>
+          <h3 className="text-h4 text-fg">Reminder:</h3>
+          <p className="mt-2 text-body text-muted">
+            Remember, these are general guidelines. Always adhere to the specific instructions given
+            by your healthcare provider, as they may have additional or different recommendations
+            based on your individual case and health history.
           </p>
         </div>
+      </Tile>
 
-        {/* Instruction cards */}
-        <div className="grid sm:grid-cols-3 gap-5 mb-10">
-          {INSTRUCTIONS.map((section) => (
-            <div
-              key={section.title}
-              className="bg-white rounded-xl p-7 flex flex-col gap-5 border border-[#e2d4c0] shadow-sm"
-            >
-              <div
-                className="size-11 rounded-lg flex items-center justify-center"
-                style={{ background: `${section.color}22` }}
-              >
-                <section.icon className="size-5" style={{ color: section.color }} />
-              </div>
-
-              <div>
-                <p className="font-bold text-[#2a1c12] mb-3">{section.title}</p>
-                <ol className="space-y-2.5">
-                  {section.steps.map((step, i) => (
-                    <li key={step} className="flex gap-2.5 text-sm text-[#6b5848]">
-                      <span
-                        className="flex-shrink-0 size-5 rounded-md text-white flex items-center justify-center text-[10px] font-bold mt-0.5"
-                        style={{ background: section.color }}
-                      >
-                        {i + 1}
-                      </span>
-                      {step}
-                    </li>
-                  ))}
-                </ol>
-              </div>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {visible.map((section) => (
+          <Tile key={section.title} as="article" tone="white" className="flex flex-col gap-4 p-6">
+            <div className="flex items-center gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-cream text-terracotta">
+                <section.icon aria-hidden className="size-5" />
+              </span>
+              <h3 className="text-h4 text-fg">{section.title}</h3>
             </div>
-          ))}
-        </div>
+            <p className="space-y-2 text-body text-muted">
+              {section.steps.map((step, idx) => (
+                <span key={step} className="flex items-start gap-2">
+                  {idx > 0 ? " " : null}
+                  <span className="shrink-0 font-medium text-terracotta">- </span>
+                  <span>{step}</span>
+                </span>
+              ))}
+            </p>
+          </Tile>
+        ))}
+      </div>
 
-        {/* Red flags panel — solid dark */}
-        <div className="bg-[#2a1c12] rounded-xl p-7 sm:p-10 max-w-6xl mx-auto border border-[#3d2a1d]">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="size-10 rounded-lg bg-red-900/40 flex items-center justify-center">
-              <AlertTriangle className="size-5 text-red-400" />
-            </div>
+      <Tile tone="navy" className="mt-6 p-6 md:p-10">
+        <div className="grid items-center gap-6 md:grid-cols-[1.4fr_1fr]">
+          <div className="flex items-start gap-4">
+            <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-white/7 text-butter">
+              <AlertTriangle aria-hidden className="size-5" />
+            </span>
             <div>
-              <p className="font-bold text-white text-sm">When to Seek Urgent Help</p>
-              <p className="text-xs text-white/50">
-                Call us immediately or visit A&E if you experience any of the following:
+              <h3 className="text-h3-md text-white">Watch for Complications:</h3>
+              <p className="mt-2 text-body text-white/80">
+                - Look out for signs of infection like fever, severe pain, or swelling that worsens
+                after a few days. Also, be aware of dry socket, a condition where the blood clot
+                fails to develop or is dislodged, leading to delayed healing.
               </p>
             </div>
           </div>
-          <ul className="grid sm:grid-cols-2 gap-3">
-            {RED_FLAGS.map((flag) => (
-              <li key={flag} className="flex items-start gap-2.5 text-sm text-white/75">
-                <AlertTriangle className="size-4 text-red-400 flex-shrink-0 mt-0.5" />
-                {flag}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-4 items-center">
-            <div>
-              <p className="text-xs text-white/50 mb-1">24h emergency line</p>
-              <p className="font-display text-xl font-bold text-white">0800 1938 786</p>
-            </div>
-            <a
-              href="/contact-us"
-              className="ml-auto inline-flex items-center gap-2 rounded-full accent-gradient px-6 h-10 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-            >
-              Contact the Clinic
-            </a>
+
+          <div className="flex flex-wrap gap-3 md:justify-end">
+            <CallButton variant="butter" />
+            <BookButton variant="glass">Make an Appointment</BookButton>
           </div>
         </div>
-      </div>
-    </section>
+      </Tile>
+    </Section>
   );
 }

@@ -1,80 +1,58 @@
-import React from "react";
-import { Check } from "lucide-react";
+import { BookButton, ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
 import { PRODUCTS_DATA } from "./whitening-data";
 
 export function WhiteningProducts() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="text-center mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Detailed Product Specifications
-          </h2>
-          <p className="mt-3 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            From daily maintenance to dental-chair transformation, discover our clinically engineered solutions.
-          </p>
-        </div>
+    <Section id="products" theme="cream">
+      <div className="max-w-2xl">
+        <Heading size="h2-md" accent="Whitening" tone="terracotta" inline>
+          Award Winning
+        </Heading>
+        <p className="mt-4 text-lead text-muted">
+          Experience our award-winning whitening treatments for a brilliantly radiant smile.
+          Discover the difference of our acclaimed whitening services today.
+        </p>
+      </div>
 
-        {/* Product rows */}
-        <div className="space-y-16 sm:space-y-24">
-          {PRODUCTS_DATA.map((product, i) => {
-            const flip = i % 2 === 1;
-            return (
-              <div
-                key={product.id}
-                className={`grid lg:grid-cols-2 gap-10 lg:gap-14 items-center ${
-                  flip ? "lg:flex-row-reverse" : ""
-                }`}
-              >
-                {/* Image side */}
-                <div className={`relative ${flip ? "lg:order-2" : "lg:order-1"}`}>
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[#e2d4c0] shadow-sm bg-white">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="size-full object-cover"
-                    />
-                  </div>
+      <div className="mt-10 space-y-6">
+        {PRODUCTS_DATA.map((product, i) => (
+          <article
+            key={product.id}
+            className="rounded-xl border border-border bg-white p-6 md:p-10"
+          >
+            <SplitFeature
+              reverse={i % 2 === 1}
+              media={<Media src={product.image} alt={product.alt} ratio="4 / 3" tone="cream" />}
+            >
+              <div>
+                <div className="flex flex-wrap gap-2">
+                  {product.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-pill border border-border bg-cream px-3 py-1 text-caption font-medium text-fg"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
 
-                {/* Text side */}
-                <div className={`${flip ? "lg:order-1" : "lg:order-2"} pt-4 lg:pt-0`}>
-                 
+                <h3 className="mt-4 text-h3-md text-fg">
+                  {product.name} - <span className="tabular-nums">{product.price}</span>
+                </h3>
 
-                  <h3 className="font-display text-2xl sm:text-4xl font-bold text-[#2a1c12]">
-                    {product.name}
-                  </h3>
+                <p className="mt-4 text-body text-muted">{product.description}</p>
 
-                  <div className="mt-2 flex items-baseline gap-3">
-                    <p className="font-display text-3xl sm:text-4xl font-extrabold text-[#925a27]">
-                      {product.price}
-                    </p>
-                  </div>
-
-                  <p className="mt-4 text-sm sm:text-base text-[#6b5848] leading-relaxed">
-                    {product.description}
-                  </p>
-
-                  {/* Benefits with solid icons */}
-                  <ul className="mt-6 space-y-2.5">
-                    {product.benefits.map((b) => (
-                      <li key={b} className="flex items-center gap-3 text-xs sm:text-sm text-[#2a1c12]">
-                        <span className="size-5 rounded-md bg-[#faf6f0] border border-[#cf9448]/40 text-[#925a27] flex items-center justify-center flex-shrink-0">
-                          <Check className="size-3 stroke-[3]" />
-                        </span>
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <BookButton>Appointment</BookButton>
+                  <ButtonLink href="#comparison-matrix" variant="outline">
+                    Compare options
+                  </ButtonLink>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </SplitFeature>
+          </article>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }

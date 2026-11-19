@@ -23,7 +23,12 @@ export function TeamPhoto({
 
   useEffect(() => {
     const element = image.current;
-    if (element && element.complete && element.naturalWidth === 0 && !element.src.endsWith(PHOTO_PENDING)) {
+    if (
+      element &&
+      element.complete &&
+      element.naturalWidth === 0 &&
+      !element.src.endsWith(PHOTO_PENDING)
+    ) {
       element.src = PHOTO_PENDING;
     }
   }, []);

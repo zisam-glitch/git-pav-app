@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Search } from "lucide-react";
+import { useState } from "react";
+import { Heading, Section } from "@/components/hims";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 
 interface TreatmentItem {
@@ -17,129 +20,127 @@ const CATEGORIES: TreatmentCategory[] = [
   {
     category: "Examination",
     items: [
-      { name: "Routine Dental Examination", fee: "£35" },
-      { name: "New Patient Examination", fee: "£45" },
-      { name: "Small Digital X-Ray (per film)", fee: "£10" },
-      { name: "Full Mouth Panoramic OPG X-Ray", fee: "£45" },
-      { name: "Emergency Dental Consultation", fee: "£45" },
+      { name: "Off Peak (Pre-Booked)", fee: "£35" },
+      { name: "Peak Hours (Same Day)", fee: "£55" },
+      { name: "After Hours (18:00 / 20:00)", fee: "£150" },
+      { name: "Late Night (After 23:00)", fee: "£200" },
+      { name: "Sunday (All Day + Night)", fee: "£200" },
     ],
   },
   {
     category: "Hygiene",
     items: [
-      { name: "Scale & Polish", fee: "£45" },
-      { name: "Airflow Stain Removal", fee: "£65" },
-      { name: "Periodontal Deep Clean (per quadrant)", fee: "£75" },
+      { name: "Basic (Polish only)", fee: "£45" },
+      { name: "Intermediate (Scale only)", fee: "£65" },
+      { name: "Advanced (Scale and Polish with/without Topical Anesthesia)", fee: "£75" },
     ],
   },
   {
-    category: "White Fillings",
+    category: "Fillings / Bonding",
     items: [
-      { name: "Simple White Filling (1 surface)", fee: "£75" },
-      { name: "Medium White Filling (2 surfaces)", fee: "£95" },
-      { name: "Complex White Filling (3+ surfaces)", fee: "£125" },
+      { name: "Basic Composite (white) Fillings", fee: "£95" },
+      { name: "Intermediate Composite (white) Fillings", fee: "£145" },
+      { name: "Advanced Composite (white) Fillings", fee: "£195" },
     ],
   },
   {
     category: "Root Canal Treatment",
     items: [
-      { name: "Single Root Tooth (Incisor / Canine)", fee: "£250" },
-      { name: "Premolar Tooth (Two roots)", fee: "£325" },
-      { name: "Molar Tooth (Multi-rooted)", fee: "£425" },
-      { name: "Emergency Pain Relief & Dressing", fee: "£65" },
+      { name: "Simple Root Canal Treatment", fee: "£195" },
+      { name: "Intermediate Root Canal Treatment", fee: "£295" },
+      { name: "Advanced Root canal Treatment", fee: "£395" },
+      { name: "Surgical Root canal Treatment", fee: "£495" },
     ],
   },
   {
     category: "Extractions",
     items: [
-      { name: "Simple Tooth Extraction", fee: "£75" },
-      { name: "Surgical / Complex Extraction", fee: "£135" },
-      { name: "Wisdom Tooth Extraction", fee: "£175" },
-      { name: "Socket Preservation", fee: "£95" },
-      { name: "Emergency Out of Hours Extraction", fee: "£145" },
+      { name: "Simple Extraction", fee: "£95" },
+      { name: "Intermediate Extraction", fee: "£145" },
+      { name: "Advanced Extraction", fee: "£195" },
+      { name: "Surgical Extraction", fee: "£295" },
+      { name: "Treatment of Dry Socket", fee: "£35" },
     ],
   },
   {
-    category: "Crowns & Bridges",
+    category: "Crown & Bridge",
     items: [
-      { name: "Porcelain Bonded Crown", fee: "£350" },
-      { name: "All-Ceramic / Zirconia Crown", fee: "£450" },
-      { name: "Full Gold Crown", fee: "£495" },
-      { name: "Bridge (per unit)", fee: "£350" },
-      { name: "Recement Crown / Bridge", fee: "£45" },
+      { name: "Metal crown", fee: "£395" },
+      { name: "Porcelain Crown/ Veneer", fee: "£495" },
+      { name: "Precious Metal (Gold)", fee: "£695" },
+      { name: "Inlay/ Onlay Composite", fee: "£295" },
+      { name: "crown/ bridge recementation", fee: "£60" },
     ],
   },
   {
     category: "Dentures",
     items: [
-      { name: "Acrylic Full Denture (Single Arch)", fee: "£450" },
-      { name: "Acrylic Complete Set (Upper & Lower)", fee: "£750" },
-      { name: "Chrome Cobalt Metal Denture", fee: "£650" },
-      { name: "Denture Repair / Addition", fee: "£65" },
+      { name: "Acrylic Denture", fee: "£495" },
+      { name: "Valplast Denture (flexible)", fee: "£795" },
+      { name: "Chrome Denture", fee: "£1195" },
     ],
   },
   {
-    category: "Dental Implants",
+    category: "Prevention",
     items: [
-      { name: "Implant Consultation", fee: "Free" },
-      { name: "Single Dental Implant (including crown)", fee: "From £1,500" },
-      { name: "Bone Grafting", fee: "From £350" },
-      { name: "Sinus Lift", fee: "From £450" },
+      { name: "X-Ray per film", fee: "Free" },
+      { name: "Fissure Sealants per tooth", fee: "£10" },
+      { name: "Fluoride Varnish Application", fee: "£5" },
     ],
   },
   {
     category: "Teeth Whitening",
     items: [
-      { name: "Home Whitening Kit (custom trays)", fee: "£195" },
-      { name: "In-Surgery Laser Whitening", fee: "£350" },
-      { name: "Combined Home & Laser Whitening", fee: "£450" },
-      { name: "Top-up Syringes (pack of 2)", fee: "£45" },
-      { name: "Internal Bleaching (per tooth)", fee: "£95" },
+      { name: "Home Teeth Whitening with Trays", fee: "£295" },
+      { name: "In Office Teeth Whitening", fee: "£295" },
+      { name: "Combined Home and In Office", fee: "£495" },
+      { name: "Top Up Syringes (Single)", fee: "£45" },
+      { name: "Top Up Syringes (Pack of 4)", fee: "£95" },
+      { name: "Whitening Strips (14 day)", fee: "£65" },
     ],
   },
   {
-    category: "Orthodontics",
+    category: "Other Items",
     items: [
-      { name: "Orthodontic Consultation", fee: "Free" },
-      { name: "Clear Aligners (Mild)", fee: "From £1,200" },
-      { name: "Clear Aligners (Moderate)", fee: "From £1,800" },
-      { name: "Clear Aligners (Comprehensive)", fee: "From £2,500" },
-      { name: "Retainers (per arch)", fee: "£95" },
+      { name: "Bite Guard", fee: "£145" },
+      { name: "Sports Guard", fee: "£145" },
+      { name: "antibiotic prescription", fee: "£25" },
+      { name: "Clear aligners", fee: "£1995" },
     ],
   },
   {
-    category: "Facial Aesthetics",
+    category: "Aesthetics Dermal Fillers",
     items: [
-      { name: "Anti-wrinkle Injections (1 area)", fee: "£120" },
-      { name: "Anti-wrinkle Injections (2 areas)", fee: "£175" },
-      { name: "Anti-wrinkle Injections (3 areas)", fee: "£225" },
-      { name: "Dermal Fillers (0.5ml)", fee: "£135" },
-      { name: "Dermal Fillers (1.0ml)", fee: "£195" },
-      { name: "Lip Enhancement", fee: "£165" },
+      { name: "0.5ML", fee: "£100" },
+      { name: "0.7ML", fee: "£150" },
+      { name: "1ML", fee: "£250" },
+      { name: "2ML", fee: "£350" },
+      { name: "3ML", fee: "£400" },
+      { name: "4ML", fee: "£450" },
     ],
   },
   {
-    category: "Special Services",
+    category: "Aesthetics Botox",
     items: [
-      { name: "Mobile Dentistry Call-out", fee: "£95" },
-      { name: "Virtual Consultation", fee: "Free" },
-      { name: "Sports Mouthguard (Custom)", fee: "£65" },
-      { name: "Nightguard (Anti-Bruxism)", fee: "£95" },
+      { name: "1 AREA", fee: "£180" },
+      { name: "2 AREAS", fee: "£240" },
+      { name: "3 AREAS", fee: "£300" },
+      { name: "4 AREAS", fee: "£400" },
     ],
   },
   {
-    category: "Emergency Services",
+    category: "Other Aesthetics",
     items: [
-      { name: "Day Emergency Appointment", fee: "£45" },
-      { name: "Evening / Weekend Emergency", fee: "£75" },
-      { name: "Bank Holiday Emergency", fee: "£95" },
-      { name: "Prescription Dispensing", fee: "Included in urgent" },
+      { name: "PROFHILO FIRST DOSE", fee: "£249" },
+      { name: "SOSUM BOOSTER", fee: "£160" },
+      { name: "GRILLZ", fee: "Available on request" },
     ],
   },
 ];
 
 export function FeeTable() {
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const { data } = useQuery({
     queryKey: ["fee-schedule"],
@@ -154,83 +155,139 @@ export function FeeTable() {
         }))
       : CATEGORIES;
 
+  const query = search.trim().toLowerCase();
   const filteredCategories = activeCategories
+    .filter((cat) => selectedCategory === "All" || cat.category === selectedCategory)
     .map((cat) => ({
       ...cat,
       items: (cat.items || []).filter(
         (item) =>
-          (item.name || "").toLowerCase().includes(search.toLowerCase()) ||
-          (cat.category || "").toLowerCase().includes(search.toLowerCase()),
+          !query ||
+          (item.name || "").toLowerCase().includes(query) ||
+          (cat.category || "").toLowerCase().includes(query),
       ),
     }))
     .filter((cat) => cat.items.length > 0);
 
   return (
-    <section className="py-12 sm:py-16">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <div className="text-center mb-8">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#844d1e]">
-            Pav Dental Plans
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-muted">
-            Complete treatment and fee schedule for all general, restorative, and cosmetic services.
+    <Section id="fees" theme="cream" width="bento" aria-labelledby="fee-schedule-heading">
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl">
+          <p className="text-small font-medium text-muted">Pav Dental Plans</p>
+          <Heading
+            as="h2"
+            size="h2-md"
+            accent="Fee Schedule"
+            tone="terracotta"
+            inline
+            className="mt-2"
+          >
+            <span id="fee-schedule-heading">Treatment</span>
+          </Heading>
+          <p className="mt-3 text-lead text-muted">
+            Complete treatment and fee schedule across examinations, hygiene, restorative care,
+            whitening, and aesthetics.
           </p>
-
-          {/* Quick search input */}
-          <div className="mt-6 max-w-md mx-auto relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search treatments (e.g. check-up, whitening, crown)..."
-              className="w-full pl-10 pr-4 py-2 text-sm rounded-full border border-border bg-white shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-            />
-          </div>
         </div>
 
-        {/* Treatment fee tables */}
-        <div className="space-y-6">
-          {filteredCategories.map((group) => (
-            <div
-              key={group.category}
-              className="rounded-xl overflow-hidden border border-border/80 bg-white shadow-xs"
-            >
-              {/* Category Header Row (warm beige background matching screenshot) */}
-              <div className="flex items-center justify-between bg-[#efe5d8] px-5 py-3 border-b border-border/60">
-                <span className="font-semibold text-sm sm:text-base text-[#693d17]">
-                  {group.category}
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-[#693d17] uppercase tracking-wider">
-                  Fee
-                </span>
-              </div>
-
-              {/* Items List */}
-              <div className="divide-y divide-border/40 text-sm">
-                {group.items.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between px-5 py-3 hover:bg-surface/50 transition-colors"
-                  >
-                    <span className="text-fg/90 font-medium pr-4">{item.name}</span>
-                    <span className="text-[#844d1e] font-semibold shrink-0 text-right">
-                      {item.fee}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          {filteredCategories.length === 0 && (
-            <div className="text-center py-12 text-muted">
-              No treatments match "{search}". Try searching for another service.
-            </div>
-          )}
+        <div className="relative w-full md:max-w-sm">
+          <label htmlFor="fee-search" className="sr-only">
+            Search treatments
+          </label>
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted"
+          />
+          <Input
+            id="fee-search"
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search treatments (e.g. hygiene, whitening, crown)..."
+            className="h-12 rounded-pill pl-11"
+          />
         </div>
       </div>
-    </section>
+
+      {/* Category filter pills */}
+      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Treatment categories">
+        <Button
+          type="button"
+          role="tab"
+          aria-selected={selectedCategory === "All"}
+          variant={selectedCategory === "All" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setSelectedCategory("All")}
+        >
+          All ({activeCategories.length})
+        </Button>
+        {activeCategories.map((cat) => {
+          const active = selectedCategory === cat.category;
+          return (
+            <Button
+              key={cat.category}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              variant={active ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCategory(cat.category)}
+            >
+              {cat.category}
+            </Button>
+          );
+        })}
+      </div>
+
+      {/* Treatment fee tables in Hims white rounded panels */}
+      <div className="mt-8 space-y-6">
+        {filteredCategories.map((group) => (
+          <div
+            key={group.category}
+            className="overflow-hidden rounded-xl border border-border bg-white"
+          >
+            <div className="flex items-center justify-between border-b border-border bg-sand/50 px-5 py-4 md:px-8">
+              <h3 className="text-h4 text-fg">{group.category}</h3>
+              <span className="text-small font-medium text-muted">Price</span>
+            </div>
+
+            <div className="divide-y divide-border">
+              {group.items.map((item, idx) => (
+                <div
+                  key={`${group.category}-${item.name}-${idx}`}
+                  className="flex items-center justify-between gap-6 px-5 py-4 md:px-8"
+                >
+                  <span className="text-body text-fg">{item.name}</span>
+                  <span className="shrink-0 text-right text-lead font-medium text-fg tabular-nums">
+                    {item.fee}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {filteredCategories.length === 0 && (
+          <div className="rounded-xl border border-border bg-white p-10 text-center">
+            <p className="text-lead text-muted">
+              No treatments match &ldquo;{search}&rdquo;. Try searching for another service or reset
+              the category filter.
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={() => {
+                setSearch("");
+                setSelectedCategory("All");
+              }}
+            >
+              Show all treatments
+            </Button>
+          </div>
+        )}
+      </div>
+    </Section>
   );
 }
-

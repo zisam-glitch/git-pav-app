@@ -1,469 +1,245 @@
-import {
-  AlertCircle,
-  ChevronDown,
-  ChevronRight,
-  Crown,
-  Gem,
-  Menu,
-  Paintbrush,
-  Phone,
-  Scissors,
-  Shield,
-  Smile,
-  Sparkles,
-  Syringe,
-  Truck,
-  Video,
-  X,
-  type LucideIcon,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Menu, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BookButton, CallButton } from "@/components/hims";
 import { Button } from "@/components/ui/button";
+import { NAV_LINKS, SERVICE_PAGES } from "@/content/site-links";
+import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
-import { NAV_LINKS } from "@/content/site-links";
-import { BOOKING_URL } from "@/lib/enquiry";
 
-type LinkItem = {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-  description?: string;
-};
+const TOP_SERVICES = [
+  { label: "Urgent care", title: "Emergency Dental", href: "/services/emergency-dental" },
+  { label: "Cosmetic", title: "Whitening", href: "/services/whitening" },
+  { label: "Facial aesthetics", title: "Aesthetics", href: "/services/aesthetics" },
+] as const;
 
-type ServiceCategory = {
-  title: string;
-  items: LinkItem[];
-};
-
-const SERVICE_CATEGORIES: ServiceCategory[] = [
-  {
-    title: "Cosmetic & Aesthetic",
-    items: [
-      {
-        title: "Whitening",
-        href: "/services/whitening",
-        description: "Brighten your smile safely",
-        icon: Sparkles,
-      },
-      {
-        title: "Cosmetic",
-        href: "/services/cosmetic",
-        description: "Enhance your natural beauty",
-        icon: Paintbrush,
-      },
-      {
-        title: "Aesthetics",
-        href: "/services/aesthetics",
-        description: "Doctor-led facial aesthetics",
-        icon: Crown,
-      },
-      {
-        title: "Custom Grillz",
-        href: "/services/custom-grillz",
-        description: "Personalized gold & diamond grillz",
-        icon: Gem,
-      },
-    ],
-  },
-  {
-    title: "Restorative Treatments",
-    items: [
-      {
-        title: "Tooth Extraction",
-        href: "/services/tooth-extraction",
-        description: "Safe and comfortable extractions",
-        icon: Scissors,
-      },
-      {
-        title: "Root Canal",
-        href: "/services/root-canal",
-        description: "Save your natural tooth",
-        icon: Syringe,
-      },
-      {
-        title: "Dentures",
-        href: "/services/dentures",
-        description: "Custom-fitted dentures & repairs",
-        icon: Smile,
-      },
-    ],
-  },
-  {
-    title: "Emergency & Urgent",
-    items: [
-      {
-        title: "Emergency Dental",
-        href: "/services/emergency-dental",
-        description: "Immediate care when you need it most",
-        icon: AlertCircle,
-      },
-    ],
-  },
-  {
-    title: "Preventive Care",
-    items: [
-      {
-        title: "Oral Hygiene",
-        href: "/services/oral-hygiene",
-        description: "Professional cleaning & prevention",
-        icon: Sparkles,
-      },
-      {
-        title: "General Dentistry",
-        href: "/services/general-dentistry",
-        description: "Complete dental care for all ages",
-        icon: Smile,
-      },
-      {
-        title: "Mouthguards",
-        href: "/services/mouthguards",
-        description: "Custom sports & night guards",
-        icon: Shield,
-      },
-    ],
-  },
-  {
-    title: "Special Services",
-    items: [
-      {
-        title: "Mobile Dentistry",
-        href: "/services/mobile-dentistry",
-        description: "We come to you",
-        icon: Truck,
-      },
-      {
-        title: "Virtual Dentistry",
-        href: "/services/virtual-dentistry",
-        description: "Online consultations & advice",
-        icon: Video,
-      },
-    ],
-  },
-];
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  const wasOpenRef = useRef(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
   }, []);
 
   useEffect(() => {
-    if (mobileOpen) {
+    if (menuOpen) {
+      wasOpenRef.current = true;
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+      const frame = window.requestAnimationFrame(() => {
+        closeButtonRef.current?.focus();
+      });
+      return () => {
+        window.cancelAnimationFrame(frame);
+        document.body.style.overflow = "";
+      };
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
+
+    document.body.style.overflow = "";
+    if (wasOpenRef.current) {
+      wasOpenRef.current = false;
+      menuButtonRef.current?.focus();
+    }
+    return undefined;
+  }, [menuOpen]);
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
+    if (!menuOpen) return undefined;
+
+    function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        setServicesOpen(false);
-        setMobileOpen(false);
+        e.preventDefault();
+        closeMenu();
+        return;
+      }
+
+      if (e.key !== "Tab" || !drawerRef.current) return;
+      const focusables = Array.from(
+        drawerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (!first || !last) return;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
       }
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
-  const openServices = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setServicesOpen(true);
-  };
-
-  const scheduleCloseServices = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
-  };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen, closeMenu]);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 border-b transition-[background,box-shadow,border-color] duration-200",
-        servicesOpen
-          ? "border-transparent bg-white shadow-soft"
-          : scrolled || mobileOpen
-          ? "border-border/70 glass shadow-soft"
-          : "border-transparent bg-transparent",
-      )}
-    >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-        {/* Logo */}
-        <a
-          href="/"
-          className="flex shrink-0 items-center gap-2 font-medium"
-          onClick={() => setMobileOpen(false)}
-        >
-          <img className="h-8 w-auto" src="https://res.cloudinary.com/db1i46uiv/image/upload/v1723411040/PAV_LOGO_2-01_r2ecmh.png" alt="Pav Dental" />
-        </a>
-
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+    <>
+      <div className="bg-lime px-4 pt-2.5 pb-[27px] -mb-[17px] text-black">
+        <div className="wrap flex min-h-[24px] items-center justify-center gap-2.5 px-0 text-center">
+          <p className="text-body leading-tight text-black">24/7 dental care in Bradford</p>
           <a
-            href="/"
-            className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
+            href={PRACTICE_PHONE_HREF}
+            className="inline-flex shrink-0 items-center rounded-pill bg-black/6 px-2.5 py-1 text-small leading-none font-medium text-black t-colors hover:bg-black/12"
           >
-            Home
+            {PRACTICE_PHONE}
           </a>
-          <a
-            href="/about"
-            className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
-          >
-            About
-          </a>
-
-          {/* Services trigger + mega menu */}
-          <div
-            className="relative"
-            onMouseEnter={openServices}
-            onMouseLeave={scheduleCloseServices}
-          >
-            <button
-              type="button"
-              className={cn(
-                "inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm transition-colors duration-150",
-                servicesOpen ? "text-fg" : "text-muted hover:text-fg",
-              )}
-              aria-expanded={servicesOpen}
-              aria-haspopup="true"
-              onClick={() => setServicesOpen((v) => !v)}
-            >
-              Services
-              <ChevronDown
-                className={cn(
-                  "size-4 mt-0.5 transition-transform duration-200",
-                  servicesOpen && "rotate-180",
-                )}
-              />
-            </button>
-
-            {servicesOpen && (
-              <div
-                className="absolute left-1/2 top-full z-[60] mt-[15px] w-[min(720px,calc(100vw-2rem))] -translate-x-1/2"
-                onMouseEnter={openServices}
-                onMouseLeave={scheduleCloseServices}
-              >
-                <div className="bg-[#FFF] overflow-hidden rounded-b-2xl p-4">
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3">
-                    {SERVICE_CATEGORIES.map((category) => (
-                      <div key={category.title} className="min-w-0">
-                        <p className="mb-2 px-2 text-[11px] font-semibold text-subtle">
-                          {category.title}
-                        </p>
-                        <ul className="space-y-0.5">
-                          {category.items.map((item) => (
-                            <li key={item.title}>
-                              <a
-                                href={item.href}
-                                className="flex items-start gap-2.5 rounded-xl p-2 transition-colors hover:bg-elevated/70"
-                                onClick={() => setServicesOpen(false)}
-                              >
-                                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg border border-border/60 bg-surface/80">
-                                  <item.icon className="size-3.5 text-primary" />
-                                </span>
-                                <span className="min-w-0">
-                                  <span className="block text-sm font-medium leading-tight text-fg">
-                                    {item.title}
-                                  </span>
-                                  {item.description && (
-                                    <span className="mt-0.5 block text-[11px] leading-snug text-muted line-clamp-1">
-                                      {item.description}
-                                    </span>
-                                  )}
-                                </span>
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 border-t border-border/60 pt-3">
-                    <p className="px-2 pb-2 text-sm">
-                      <a
-                        href="/services"
-                        className="font-medium text-fg underline-offset-2 hover:underline"
-                        onClick={() => setServicesOpen(false)}
-                      >
-                        View all services
-                      </a>
-                    </p>
-                    <p className="px-2 text-sm text-muted">
-                      Not sure which service you need?{" "}
-                      <a
-                        href={BOOKING_URL}
-                        className="font-medium text-fg underline-offset-2 hover:underline"
-                        onClick={() => setServicesOpen(false)}
-                      >
-                        Book a free consultation
-                      </a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {NAV_LINKS.slice(2).map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="rounded-full px-3 py-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
-            >
-              {l.name}
-            </a>
-          ))}
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          
-          <Button asChild size="sm">
-            <a href={BOOKING_URL}>Book Now</a>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-            onClick={() => {
-              setMobileOpen((v) => !v);
-              setServicesOpen(false);
-            }}
-          >
-            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-          </Button>
         </div>
       </div>
 
-      {/* Mobile panel */}
+      <header className="sticky top-0 z-50 h-[49px] rounded-t-header bg-white shadow-nav">
+        <div className="wrap flex h-full items-center justify-between gap-3">
+          <a
+            href="/"
+            aria-label="Pav Dental home"
+            className="inline-flex shrink-0 items-center rounded-pill py-1 text-nav-lg leading-none font-semibold text-fg t-colors hover:text-muted"
+            onClick={closeMenu}
+          >
+            Pav Dental
+          </a>
+
+          <div className="flex items-center gap-2">
+            <BookButton size="sm" />
+            <Button
+              ref={menuButtonRef}
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="site-nav-drawer"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <Menu className="size-5" aria-hidden="true" />
+            </Button>
+          </div>
+        </div>
+      </header>
+
       <div
-        id="mobile-menu"
         className={cn(
-          "glass max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border/70 lg:hidden",
-          mobileOpen ? "block" : "hidden",
+          "fixed inset-0 z-[70] bg-black/44 transition-opacity duration-300 ease-smooth",
+          menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+        )}
+        aria-hidden="true"
+        onClick={closeMenu}
+      />
+
+      <aside
+        ref={drawerRef}
+        id="site-nav-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        aria-hidden={!menuOpen}
+        inert={!menuOpen}
+        className={cn(
+          "fixed inset-y-0 right-0 z-[71] flex w-full max-w-[547px] flex-col bg-white shadow-card transition-transform duration-300 ease-smooth md:rounded-l-xl",
+          menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="flex flex-col gap-1 px-4 py-3">
-          <a
-            href="/"
-            className="rounded-xl px-3 py-2.5 text-sm font-medium"
-            onClick={() => setMobileOpen(false)}
+        <div className="flex h-[49px] shrink-0 items-center justify-between px-6">
+          <span className="text-caption font-medium text-subtle">Menu</span>
+          <Button
+            ref={closeButtonRef}
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Close menu"
+            onClick={closeMenu}
           >
-            Home
-          </a>
-          <a
-            href="/about"
-            className="rounded-xl px-3 py-2.5 text-sm font-medium"
-            onClick={() => setMobileOpen(false)}
-          >
-            About
-          </a>
+            <X className="size-5" aria-hidden="true" />
+          </Button>
+        </div>
 
-          {/* Nested services accordion */}
-          <div className="mt-1">
-            <p className="mb-1 px-3 text-[11px] font-semibold text-subtle">
-              Services
-            </p>
-            <a
-              href="/services"
-              className="block rounded-xl px-3 py-2 text-sm font-medium"
-              onClick={() => setMobileOpen(false)}
-            >
-              View all services
-            </a>
-            {SERVICE_CATEGORIES.map((category) => (
-              <MobileServiceCategory
-                key={category.title}
-                category={category}
-                onNavigate={() => setMobileOpen(false)}
-              />
-            ))}
+        <div className="flex-1 overflow-y-auto px-6 py-4">
+          <nav aria-label="Primary navigation">
+            <p className="mb-2 text-caption font-medium text-subtle">Explore</p>
+            <ul className="space-y-0.5">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    onClick={closeMenu}
+                    className="group flex items-center justify-between rounded-md py-2.5 text-nav-lg text-fg t-colors hover:text-muted"
+                  >
+                    <span>{link.name}</span>
+                    <ArrowRight
+                      className="size-4 shrink-0 text-subtle transition-transform duration-200 group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="mt-8">
+            <p className="mb-3 text-caption font-medium text-subtle">Top services</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {TOP_SERVICES.map((service) => (
+                <a
+                  key={service.href}
+                  href={service.href}
+                  onClick={closeMenu}
+                  className="group flex flex-col justify-between gap-4 rounded-xl bg-tile-cream p-4 t-lift hover:bg-white"
+                >
+                  <div>
+                    <span className="block text-caption text-subtle">{service.label}</span>
+                    <span className="mt-1 block text-label text-fg">{service.title}</span>
+                  </div>
+                  <ArrowRight
+                    className="size-4 text-subtle transition-transform duration-200 group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </a>
+              ))}
+            </div>
           </div>
 
-          {NAV_LINKS.slice(2).map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="rounded-xl px-3 py-2.5 text-sm font-medium"
-              onClick={() => setMobileOpen(false)}
-            >
-              {l.name}
-            </a>
-          ))}
+          <nav aria-label="Services" className="mt-8">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-caption font-medium text-subtle">All services</p>
+              <a
+                href="/services"
+                onClick={closeMenu}
+                className="text-caption font-medium text-fg underline underline-offset-4 hover:text-muted"
+              >
+                View all
+              </a>
+            </div>
+            <ul className="space-y-0.5">
+              {SERVICE_PAGES.map((service) => (
+                <li key={service.href}>
+                  <a
+                    href={service.href}
+                    onClick={closeMenu}
+                    className="group flex items-center justify-between rounded-md py-2 text-nav-lg text-fg t-colors hover:text-muted"
+                  >
+                    <span>{service.name}</span>
+                    <ArrowRight
+                      className="size-4 shrink-0 text-subtle transition-transform duration-200 group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          <div className="mt-3 flex flex-col gap-2 border-t border-border/60 pt-3">
-            <Button asChild className="w-full">
-              <a href={BOOKING_URL} onClick={() => setMobileOpen(false)}>
-                Book Now
-              </a>
-            </Button>
-            <Button asChild variant="ghost" className="w-full">
-              <a href="tel:08001938786" onClick={() => setMobileOpen(false)}>
-                <Phone className="size-4" />
-                0800 1938 786
-              </a>
-            </Button>
+          <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6">
+            <BookButton className="w-full" />
+            <CallButton variant="outline" className="w-full" />
           </div>
         </div>
-      </div>
-    </header>
-  );
-}
-
-function MobileServiceCategory({
-  category,
-  onNavigate,
-}: {
-  category: ServiceCategory;
-  onNavigate: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="border-b border-border/40 last:border-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors hover:bg-elevated/50"
-        aria-expanded={open}
-      >
-        <span>{category.title}</span>
-        <ChevronRight
-          className={cn(
-            "size-4 text-muted transition-transform duration-200",
-            open && "rotate-90",
-          )}
-        />
-      </button>
-      {open && (
-        <div className="space-y-0.5 pb-2 pl-2">
-          {category.items.map((item) => (
-            <a
-              key={item.title}
-              href={item.href}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-elevated/60 hover:text-fg"
-              onClick={onNavigate}
-            >
-              <item.icon className="size-4 shrink-0 text-primary" />
-              <span>{item.title}</span>
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
+      </aside>
+    </>
   );
 }

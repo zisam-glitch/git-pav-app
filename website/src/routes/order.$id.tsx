@@ -23,7 +23,7 @@ function OrderRoute() {
   const { access } = Route.useSearch();
 
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
       <OrderConfirmation orderId={id} access={access} />
@@ -31,4 +31,3 @@ function OrderRoute() {
     </main>
   );
 }
-

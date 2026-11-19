@@ -1,69 +1,42 @@
-import React from "react";
+import { Heading, Section, Tile } from "@/components/hims";
 
 const BENEFITS = [
-  {
-    title: "Unique mobile dental service",
-    desc: "Bringing comprehensive dental care directly to your doorstep with modern equipment.",
-  },
-  {
-    title: "Working with care homes",
-    desc: "Specialized services designed for care home residents and their specific needs.",
-  },
-  {
-    title: "CQC-compliant oral health",
-    desc: "Help make your home oral-health services fully compliant with CQC standards.",
-  },
-  {
-    title: "NHS partners",
-    desc: "We work with NHS to provide accessible dental care for eligible patients.",
-  },
-  {
-    title: "Latest mobile dental equipment",
-    desc: "State-of-the-art technology and equipment for the best possible care.",
-  },
-  {
-    title: "Hundreds of satisfied patients",
-    desc: "Proven track record with many happy patients across the UK.",
-  },
-  {
-    title: "Attract more residents",
-    desc: "Quality dental services can help attract more residents to your care home.",
-  },
-  {
-    title: "Engage carers and improve staff retention",
-    desc: "Better dental care leads to improved carer engagement and staff satisfaction.",
-  },
-];
+  "Unique mobile dental service",
+  "Working with care homes",
+  "Make your home oral-health CQC-compliant",
+  "NHS partners",
+  "The very latest mobile dental equipment",
+  "Hundreds of satisfied patients",
+  "Attract more residents",
+  "Engage carers and improve staff retention",
+] as const;
 
 export function MobileDentistryBenefits() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Concerned about your residents' dental needs?
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            We Are The Dentists That Come To You. Our mobile dental service brings comprehensive care to your doorstep.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {BENEFITS.map((benefit, i) => (
-            <div key={benefit.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {benefit.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {benefit.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section theme="cream" space="default">
+      <div className="max-w-2xl">
+        <Heading as="h2" size="h2-md" accent="dental needs?" tone="terracotta" inline>
+          Concerned about your residents&apos;
+        </Heading>
+        <p className="mt-4 text-lead text-muted">We Are The Dentists That Come To You.</p>
       </div>
-    </section>
+
+      <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {BENEFITS.map((benefit, index) => (
+          <Tile
+            key={benefit}
+            as="li"
+            tone="white"
+            lift
+            className="flex flex-col justify-between gap-6 p-6"
+          >
+            <span className="text-caption font-medium text-terracotta tabular-nums">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <h3 className="text-h4 text-fg">{benefit}</h3>
+          </Tile>
+        ))}
+      </ol>
+    </Section>
   );
 }

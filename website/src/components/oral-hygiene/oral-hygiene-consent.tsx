@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Play, X, FileText, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { AlertCircle, CheckCircle2, FileText, Play, X } from "lucide-react";
+import { useState } from "react";
+import { Heading, Media, Section, Tile } from "@/components/hims";
+import { Button } from "@/components/ui/button";
 
 const CONSENT_ITEMS = [
   {
@@ -19,68 +21,111 @@ const CONSENT_ITEMS = [
   },
 ];
 
+const CONSENT_VIDEOS = [
+  { id: "part-1", label: "Informed Consent - Gum Disease Part 1" },
+  { id: "part-2", label: "Informed Consent - Gum Disease Part 2" },
+  { id: "part-3", label: "Informed Consent - Gum Disease Part 3" },
+];
+
 export function OralHygieneConsent() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [activePart, setActivePart] = useState(CONSENT_VIDEOS[0].id);
+
+  const currentVideo = CONSENT_VIDEOS.find((v) => v.id === activePart) ?? CONSENT_VIDEOS[0];
 
   return (
-    <section className="py-20 sm:py-28 bg-[#2a1c12] border-b border-[#3d2a1d]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-12">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white leading-tight">
-            Understanding Informed Consent
-          </h2>
-          <p className="mt-4 text-white/60 max-w-2xl text-sm sm:text-base leading-relaxed">
-            Before proceeding with any dental hygiene treatment, we ensure you fully understand the procedure, risks, and benefits. Your comfort and understanding are our priorities.
-          </p>
-        </div>
+    <Section theme="brown" width="bento" space="lg">
+      <div className="max-w-2xl">
+        <p className="text-label text-gold">Oral Hygiene and Gum Care Advice</p>
+        <Heading as="h2" size="hero" accent="Informed Consent" tone="gold" className="mt-3">
+          Understanding
+        </Heading>
+        <p className="mt-4 text-lead text-white/80">
+          Before proceeding with any dental hygiene treatment, we ensure you fully understand the
+          procedure, risks, and benefits. Your comfort and understanding are our priorities.
+        </p>
+      </div>
 
-        {/* Video Player */}
-        <div className="rounded-xl overflow-hidden border border-[#523825] shadow-xl">
-          <div className="relative aspect-video sm:aspect-[21/9] bg-[#2a1c12] group">
-            {isPlaying ? (
-              <div className="relative size-full">
-                <video
-                  src="/media/clinic-reel.mp4"
-                  autoPlay
-                  controls
-                  loop
-                  className="size-full object-cover"
-                />
+      <div className="mt-8 grid gap-4 md:grid-cols-3">
+        {CONSENT_ITEMS.map((item) => (
+          <Tile key={item.title} tone="glass" className="flex flex-col gap-3 p-6">
+            <item.icon aria-hidden className="size-5 text-gold" />
+            <h3 className="text-h4 text-white">{item.title}</h3>
+            <p className="text-body text-white/80">{item.desc}</p>
+          </Tile>
+        ))}
+      </div>
+
+      <div
+        className="mt-8 flex flex-wrap gap-2"
+        role="tablist"
+        aria-label="Informed consent advice"
+      >
+        {CONSENT_VIDEOS.map((video) => {
+          const selected = video.id === activePart;
+          return (
+            <Button
+              key={video.id}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              variant={selected ? "gold" : "glass"}
+              size="sm"
+              onClick={() => setActivePart(video.id)}
+            >
+              {video.label}
+            </Button>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 overflow-hidden rounded-xl bg-brown-deep">
+        <div className="relative aspect-video">
+          {isPlaying ? (
+            <div className="relative size-full">
+              <video
+                src="/media/clinic-reel.mp4"
+                autoPlay
+                controls
+                loop
+                aria-label={currentVideo.label}
+                className="size-full object-cover"
+              />
+              <Button
+                type="button"
+                variant="light"
+                size="icon"
+                onClick={() => setIsPlaying(false)}
+                aria-label="Close informed consent video"
+                className="absolute top-4 right-4 z-20"
+              >
+                <X aria-hidden className="size-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="relative size-full">
+              <Media
+                src="/images/generated/oral-hygiene-showcase.jpg"
+                alt={currentVideo.label}
+                ratio="16 / 9"
+                tone="brown"
+                className="size-full rounded-none"
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40 p-6 text-center">
                 <button
                   type="button"
-                  onClick={() => setIsPlaying(false)}
-                  className="absolute top-4 right-4 z-20 size-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black"
+                  onClick={() => setIsPlaying(true)}
+                  className="flex size-20 items-center justify-center rounded-full bg-gold text-brown shadow-card t-colors hover:bg-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:size-24"
+                  aria-label={`Play ${currentVideo.label}`}
                 >
-                  <X className="size-4" />
+                  <Play aria-hidden className="size-8 translate-x-0.5 fill-current" />
                 </button>
+                <p className="text-label text-white">{currentVideo.label}</p>
               </div>
-            ) : (
-              <>
-                <img
-                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1600&q=85"
-                  alt="Dental hygiene consultation and consent process"
-                  className="size-full object-cover object-center opacity-70"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
-
-                {/* Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsPlaying(true)}
-                    className="relative flex size-20 sm:size-24 items-center justify-center rounded-full bg-[#cf9448]/90 text-white shadow-xl hover:scale-110 hover:bg-[#cf9448] transition-all duration-300"
-                    aria-label="Play informed consent overview"
-                  >
-                    <span className="absolute inset-0 rounded-full bg-[#cf9448] animate-ping opacity-20" />
-                    <Play className="size-8 sm:size-10 fill-current translate-x-1" />
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

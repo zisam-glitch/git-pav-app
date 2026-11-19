@@ -5,16 +5,18 @@ import { Footer } from "@/components/home/footer";
 /** A centred card for the pages email links open (verify email, set password). */
 export function AccountLinkLayout({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <div className="flex min-h-screen flex-col bg-cream text-fg">
       <Header />
-      <div className="px-4 pt-28 pb-20 sm:px-6">
-        <div className="mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
-          <h1 className="font-serif text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
-          <div className="mt-4 space-y-4 text-sm leading-relaxed text-slate-700">{children}</div>
+      <main className="section-y flex-1">
+        <div className="wrap-prose">
+          <div className="mx-auto max-w-md rounded-xl border border-border bg-white p-6 shadow-card sm:p-8">
+            <h1 className="text-h3-md text-fg">{title}</h1>
+            <div className="mt-4 space-y-4 text-body text-muted">{children}</div>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
-    </main>
+    </div>
   );
 }
 
@@ -23,7 +25,7 @@ export function OpenAppLink() {
   return (
     <a
       href="pavdental://"
-      className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-5 py-3 font-semibold text-sm text-white hover:bg-slate-800"
+      className="inline-flex h-12 w-full items-center justify-center rounded-pill bg-black px-6 text-label text-white t-colors hover:bg-black/80"
     >
       Open the Pav Dental app
     </a>

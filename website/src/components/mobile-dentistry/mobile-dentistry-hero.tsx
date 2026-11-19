@@ -1,61 +1,49 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/home/spotlight";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { BookButton, ButtonLink, CallButton, Heading, Media, Section } from "@/components/hims";
 
 export function MobileDentistryHero() {
   return (
-    <section
+    <Section
       id="top"
-      className="relative isolate min-h-[100svh] min-h-screen overflow-hidden bg-bg pt-16 border-b border-[#e8ddd0] flex items-center"
+      theme="white"
+      space="sm"
+      className="pt-6 md:pt-10"
       aria-label="Mobile dental care"
     >
-      {/* Background layer with subtle kenburns and gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1588776864544-9b2a4a7d2a4c?auto=format&fit=crop&w=1200&q=85"
-          alt=""
-          className="kenburns h-full w-full object-cover opacity-35"
+      <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <span className="inline-flex items-center rounded-pill bg-cream px-3.5 py-1 text-small font-medium text-terracotta">
+            Coming Soon
+          </span>
+          <Heading as="h1" size="hero" accent="at Doorstep" tone="terracotta" className="mt-4">
+            Mobile dental care
+          </Heading>
+          <p className="mt-5 max-w-xl text-lead text-fg">
+            Experience Convenient Mobile Dental Care with Comprehensive Dentistry Delivered to Your
+            Doorstep.
+          </p>
+          <p className="mt-4 max-w-xl text-body text-muted">
+            Pav Dental Mobile is a unique dental service that enables our patients to access a full
+            range of dental services from the comfort of their own home. With many combined years of
+            dental experience in both traditional and mobile dentistry along with the latest
+            technology and equipment we guarantee our patients the upmost satisfactory service.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <BookButton>Make an Appointment</BookButton>
+            <ButtonLink href="#contact" variant="outline">
+              Contact us
+            </ButtonLink>
+            <CallButton variant="ghost" />
+          </div>
+        </div>
+
+        <Media
+          src="/images/generated/mobile-dentistry-hero.jpg"
+          alt="Pav Dental mobile dentistry equipment in warm natural light"
+          ratio="4 / 3"
+          tone="cream"
+          priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/40" />
       </div>
-
-      <Spotlight />
-
-      <div className="relative z-10 mx-auto w-full min-h-[calc(100svh-4rem)] max-w-6xl px-4 py-12 sm:px-6 flex flex-col justify-center items-center text-center">
-        <div className="inline-block bg-[#925a27] text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-          Coming Soon
-        </div>
-        <h1 className="max-w-2xl font-display text-4xl font-medium sm:text-5xl lg:text-6xl text-[#2a1c12]">
-          Mobile Dental Care at <span className="text-primary">Doorstep</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base text-muted sm:text-lg leading-relaxed">
-          Experience Convenient Mobile Dental Care with Comprehensive Dentistry Delivered to Your Doorstep. Pav Dental Mobile brings quality dental services to your home.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="accent-gradient text-white rounded-full px-8 font-bold shadow-sm hover:opacity-95"
-          >
-            <a href={BOOKING_URL}>Make an Appointment</a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="rounded-full px-7 border-[#925a27] text-[#925a27] bg-white text-sm font-semibold hover:bg-[#faf6f0]"
-          >
-            <a href="#contact">Contact us</a>
-          </Button>
-        </div>
-        <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <li>Home visits</li>
-          <li>Care home services</li>
-          <li>Full dental services</li>
-          <li>NHS partners</li>
-        </ul>
-      </div>
-    </section>
+    </Section>
   );
 }

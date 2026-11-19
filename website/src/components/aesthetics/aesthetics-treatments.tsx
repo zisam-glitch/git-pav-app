@@ -1,103 +1,77 @@
-import React from "react";
-import { ArrowRight, Droplets, Sparkle, Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
 
 const TREATMENTS = [
   {
-    id: "fillers",
-    title: "Dermal Fillers",
-    subtitle: "Precision volume restoration & lip shaping",
-    desc: "Premium cross-linked hyaluronic acid gels sculpt, define, and replenish lost facial volume with microscopic precision. Tailored for natural lip enhancement, cheekbone definition, and smoothing smile lines.",
-    targetAreas: "Lips, Cheeks, Jawline, Marionette Lines",
-    longevity: "9–18 Months",
-    icon: Droplets,
-    accentColor: "#925a27",
-    tag: "Subtle Plumping",
+    id: "microneedling",
+    title: "Microneedling",
+    desc: "We offer microneedling as a safe and effective treatment to help improve the overall health and appearance of your skin.",
   },
   {
-    id: "anti-wrinkle",
-    title: "Anti-Wrinkle Injections",
-    subtitle: "Targeted smoothing of dynamic expression lines",
-    desc: "Doctor-prescribed neuromodulators gently relax underlying hyperactive facial muscles to soften forehead creases, frown lines, and crow's feet while preserving genuine facial expressions.",
-    targetAreas: "Forehead, Glabella, Eyes, Masseter (Jaw Slimming)",
-    longevity: "3–5 Months",
-    icon: Sparkle,
-    accentColor: "#cf9448",
-    tag: "Expression Preserving",
+    id: "botox",
+    title: "Botox",
+    desc: "Botox is a non-surgical treatment that smooths out wrinkles and fine lines, giving you a more youthful appearance.",
   },
   {
-    id: "skin-boosters",
-    title: "Skin Boosters & Profhilo",
-    subtitle: "Bio-remodeling & cellular hydration",
-    desc: "High-concentration ultra-pure hyaluronic acid (Profhilo) stimulated directly into skin layers to trigger intense elastin synthesis, tightening lax skin and imparting luminous vitality.",
-    targetAreas: "Face, Neck, Décolletage, Hands",
-    longevity: "6–9 Months",
-    icon: Shield,
-    accentColor: "#4a7c59",
-    tag: "Deep Collagen Boost",
+    id: "dermal-fillers",
+    title: "Dermal fillers",
+    desc: "Dermal fillers are used to add volume and fullness to areas of the face that have lost volume due to aging or other factors.",
   },
-];
+  {
+    id: "chemical-peels",
+    title: "Chemical peels",
+    desc: "Chemical peels are an effective way to rejuvenate the skin by removing dead skin cells and promoting the growth of new, healthy skin.",
+  },
+  {
+    id: "lip-enhancement",
+    title: "Lip enhancement",
+    desc: "Our lip enhancement treatments are designed to add volume and definition to your lips, giving you a fuller and more youthful appearance.",
+  },
+  {
+    id: "skin-rejuvenation",
+    title: "Skin Rejuvenation",
+    desc: "Our skin rejuvenation treatments are designed to reduce the appearance of fine lines, wrinkles, and other signs of aging.",
+  },
+] as const;
 
 export function AestheticsTreatments() {
   return (
-    <section id="treatments" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Signature Aesthetics Treatments
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[#6b5848] leading-relaxed">
-            Every procedure is customized to honor your natural facial anatomy, ensuring balanced, refined, and never overdone results.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TREATMENTS.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={item.id}
-                className="rounded-xl border border-[#e2d4c0] bg-white p-7 shadow-sm flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-[#2a1c12]">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs font-bold text-[#925a27]  mt-1 mb-3">
-                    {item.subtitle}
-                  </p>
-
-                  <p className="text-sm text-[#6b5848] leading-relaxed mb-6">
-                    {item.desc}
-                  </p>
-
-                  <div className="space-y-2 mb-6 text-xs text-[#2a1c12]">
-                    <div>
-                      <span className="font-bold text-[#925a27]">Target Areas: </span>
-                      <span>{item.targetAreas}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-[#925a27]">Longevity: </span>
-                      <span>{item.longevity}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-[#f0e8dc]">
-                  <Button
-                    asChild
-                    className="w-full rounded-full h-11 bg-white hover:bg-[#faf6f0] text-xs font-bold"
-                  >
-                    <a href="#pricing" className="flex items-center justify-center gap-2">
-                      View Pricing <ArrowRight className="size-3.5" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+    <Section id="treatments" theme="cream" aria-labelledby="aesthetics-treatments-heading">
+      <div className="max-w-2xl">
+        <div id="aesthetics-treatments-heading">
+          <Heading size="h2-md" accent="Treatments" tone="terracotta" inline>
+            Aesthetics
+          </Heading>
         </div>
       </div>
-    </section>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {TREATMENTS.map((item, index) => (
+          <Tile
+            key={item.id}
+            as="article"
+            tone="white"
+            lift
+            className="flex flex-col justify-between gap-6 p-6 md:p-7"
+          >
+            <div>
+              <span className="text-small font-medium text-terracotta tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-3 text-h4 text-fg">{item.title}</h3>
+              <p className="mt-3 text-body text-muted">{item.desc}</p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+              <BookButton variant="outline" size="sm">
+                Book Now
+              </BookButton>
+              <ButtonLink href="#pricing" variant="ghost" size="sm">
+                Price List
+              </ButtonLink>
+            </div>
+          </Tile>
+        ))}
+      </div>
+    </Section>
   );
 }

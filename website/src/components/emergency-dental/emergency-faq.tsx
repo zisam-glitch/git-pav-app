@@ -1,142 +1,174 @@
-import { useState } from "react";
-import { ChevronDown, HelpCircle, PhoneCall } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { PRACTICE_PHONE } from "@/lib/enquiry";
 
-const FAQS = [
+const FAQS: FaqItem[] = [
   {
-    q: "What is an Emergency Dentist?",
-    a: "An emergency dentist provides rapid, same-day assessment and urgent treatment for acute dental problems that cannot wait for a regular scheduled check-up. This includes unbearable toothache, dental trauma from sports or falls, rapidly spreading facial swelling, uncontrolled bleeding, broken teeth exposing nerves, and severe dental abscesses.",
+    q: "Who are 24hr Emergency Dentist?",
+    a: "We are a professional and experienced dental team that provides Emergency Dental Service covering Bradford area.",
   },
   {
-    q: "When should I call an emergency dentist?",
-    a: "You should call us immediately if you have constant throbbing tooth pain that over-the-counter painkillers don't relieve, visible swelling in your cheek or jaw, trauma that knocked a tooth out or loosened it, or bleeding following an extraction that does not subside within an hour.",
+    q: "What can you expect?",
+    a: (
+      <div className="space-y-3">
+        <p>
+          Accidents and sudden issues can be dental nightmares. Patients ill be seen on the same day
+          and as soon as possible by a Qualified Dentist &amp; Dental nurse.
+        </p>
+        <p>
+          An initial diagnosis will be carried out to determine your dental emergency &amp; we will
+          provide you with treatment options.
+        </p>
+        <p>
+          Whether it is a chipped tooth, a loose filling, or bad toothache, we will help so you can
+          quickly get back to your normal self again
+        </p>
+      </div>
+    ),
   },
   {
-    q: "What counts as a dental emergency?",
-    a: "True dental emergencies fall into three key categories: severe pain (such as pulpitis or nerve inflammation), uncontrolled infection or swelling (which can pose systemic risks if left untreated), and physical trauma (fractured or avulsed teeth where early re-implantation within 60 minutes is critical).",
+    q: "Where is it?",
+    a: "The practice is in Bradford , West Yorkshire. We are situated about 10 minutes from central Bradford, which has access routes to Leeds and surrounding cities. Leeds Road, Bradford. Or we come to you",
   },
   {
-    q: "What if I have facial swelling or fever?",
-    a: "Facial swelling accompanied by fever, difficulty swallowing, or eye swelling is an urgent medical priority. It usually indicates an aggressive spreading bacterial infection. Call our emergency hotline (07311 871456) right away so we can prescribe targeted antibiotics, drain the infection, and relieve pressure.",
+    q: "How does it work?",
+    a: "Once you’ve called us or booked via our online booking system, we will get a member of our dental team to call you back within the hour. We will then arrange an emergency dental appointment with one of our Dentists.",
   },
   {
-    q: "Can I get treatment on the same day?",
-    a: "Yes. Pav Dental keeps dedicated daily emergency slots specifically for walk-ins and same-day phone bookings. In over 95% of cases, we diagnose, numb the area, and initiate immediate pain-relieving treatment during your first visit.",
+    q: "What will happen during this emergency dental appointment?",
+    a: "During this dental appointment, the Dentist will do their best to treat the dental issue in one appointment. However, if this isn’t possible you may be advised to have a follow-up appointment. We will advise you on what you should do to ease the pain until you can see your dentist.",
   },
   {
-    q: "How much will emergency treatment cost?",
-    a: "Our emergency triage consultation begins from £50. Any procedure needed (such as a temporary dressing, extraction, or nerve extirpation) will be quoted upfront before starting so you have total cost transparency. NHS Band 1 (£26.80 emergency rate) is also accessible for eligible NHS patients.",
+    q: "I have a toothache and I’m in pain?",
+    a: "If you’re experiencing pain in your teeth or mouth, please contact us at 24hr Emergency Dentist Leeds today. We offer a same-day, out-of-hours emergency dental appointments, so you should be able to see someone relatively quickly.",
   },
   {
-    q: "Can I get emergency dental care for my child?",
-    a: "Yes. We treat children and teens for dental injuries, playground tooth avulsions, and acute abscesses. Our compassionate pediatric-trained clinicians ensure young patients feel safe, calm, and pain-free.",
+    q: "Nervous or Anxious about seeing the dentist?",
+    a: "Dental phobia exists, this can result in anxiety, panic attacks, difficulty breathing, nausea, and fainting. Our dental team have over 20 years of experience dealing with patients concerns. As we understand that avoiding or delaying treatment will have an overall impact on your oral health. Please contact us today to help with your dental emergency.",
   },
   {
-    q: "Do you offer sedation for nervous or anxious patients?",
-    a: "Yes. We understand dental emergencies can feel overwhelming, especially if you have dental anxiety. We offer gentle conscious sedation options and modern painless local anaesthetic techniques.",
+    q: "Are you registering new patients?",
+    a: (
+      <div className="space-y-3">
+        <p>
+          We only really see dental emergencies, and we always send patients back to their own
+          registered dentist. Most dentists would be upset if we were to register the patients we
+          have seen out of hours.
+        </p>
+        <p>
+          If you don’t have a dentist and want to be seen the dentist will still be able to treat
+          any further issues however we don’t operate as normal dental practices and request you are
+          seen every 6 months. Any time you want to book an appointment to see one of the dentists
+          you can do so any time. Book online or Call us. The responsibility lies with you as when
+          you want to be seen.
+        </p>
+      </div>
+    ),
   },
   {
-    q: "What if my emergency happens late at night or on a Sunday?",
-    a: "We operate 24 hours a day, 7 days a week including Sunday evenings and Bank Holidays. Our on-call surgical team can be reached at 07311 871456 to triage you and open our surgery when needed.",
+    q: "Some home methods to treat tooth if you cant access a dentist",
+    a: (
+      <div className="space-y-3">
+        <p>
+          Try over the counter painkillers like paracetamol or ibuprofen. Only take the medications
+          if you are normally ok taking them. Occasionally it will reduce the pain slightly until
+          you can get to the dentist. This is only a temporary measure but sometimes it helps if you
+          have no other alternative.
+        </p>
+        <p>
+          Hot salt water mouth washes are very useful if you have a swelling or some sort of
+          infection. Salt water is a natural anti septic and can reduce pain.
+        </p>
+      </div>
+    ),
   },
   {
-    q: "Will I receive antibiotics during my emergency visit?",
-    a: "If our clinical assessment confirms a bacterial infection with systemic signs (such as fever, swollen lymph nodes, or spreading cellulitis), we will dispense or prescribe the appropriate antibiotics immediately.",
+    q: "Why is tooth ache worse at night time?",
+    a: (
+      <div className="space-y-3">
+        <p>
+          Many people suffer with dental pain at night time. A lot of the time the pain makes it
+          unbearable to sleep. A lot of pain at night time is due to the position of you lying down,
+          blood rushing to the head and the pain or swelling inside the tooth increase.
+        </p>
+        <p>
+          Before getting to this level of pain we always advise a visit to the dentist so to avoid
+          such dilemmas. The dentist will take x rays and check which tooth is causing the pain. So
+          many times the pain spreads top and bottom unable to locate the pain. Thus the x ray is
+          one of the best tests to elicit where the pain is coming from.
+        </p>
+      </div>
+    ),
   },
   {
-    q: "Can emergency treatment save a knocked-out tooth?",
-    a: "Yes — timing is everything! Handle the tooth only by the crown (never the root), do not scrape it, place it in a cup of cold milk or in your cheek, and come directly to Pav Dental within 60 minutes for the highest chance of successful re-implantation.",
+    q: "If I go to A and E with tooth ache will they treat me?",
+    a: (
+      <div className="space-y-3">
+        <p>
+          Unfortunately, toothache is not classed as an emergency or an accident and as it is not
+          life-threatening, they will not be able to treat you.
+        </p>
+        <p>
+          If you have facial swelling that is affecting your ability to breathe then we advise you
+          to go to A and E.
+        </p>
+      </div>
+    ),
+  },
+  {
+    q: "How to get emergency dental treatment on the NHS?",
+    a: (
+      <div className="space-y-3">
+        <p>
+          If you are registered with an NHS dentist you may be able to get a dentist appointment at
+          your own dentist, however it may not be on the same day. Dental practices generally close
+          at 5 pm so to get an NHS emergency dentist appointment may be difficult.
+        </p>
+        <p>
+          Out of hours NHS do provide emergency appointments but have very strict criteria such as
+          persistent bleeding and unable to breathe or swallow due to swelling.
+        </p>
+        <p>
+          If this is the case your NHS dentist should have an alternate local number for you to call
+          in the case of emergency.
+        </p>
+        <p>
+          Emergency247Dentist provides private treatment and promises to see you on the same day.
+          You can contact one of the reception staff members or book online and get an appointment
+          immediately.
+        </p>
+      </div>
+    ),
+  },
+  {
+    q: "I am not registered does that matter?",
+    a: "No, you don’t have to be registered with anyone to see us.",
+  },
+  {
+    q: "Will the dentist hurt me?",
+    a: "No, the dentist and the team aim to make your experience as peaceful and enjoyable as possible. We like to take our time and make sure you are comfortable. Read our reviews no one has once complained of pain!",
+  },
+  {
+    q: "I’m really nervous? What can you do?",
+    a: "We are an emergency dental service. So most of the time we see nervous patients. No one likes coming to the dentist. Once you speak to us on the phone we will reassure you and guarantee you won’t have to be nervous about anything. We work very relaxed and all of our patients (well most) really enjoy their time with us.",
   },
 ];
 
 export function EmergencyFaq() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/30 bg-[#cf9448]/10 px-4 py-1.5 mb-3">
-            <HelpCircle className="size-3.5 text-[#cf9448]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#925a27]">
-              Common Questions
-            </span>
+    <Section theme="cream" space="default">
+      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
+        <div className="lg:sticky lg:top-24">
+          <Heading as="h2" size="h2-md" accent="Question" tone="terracotta">
+            Frequently Asked
+          </Heading>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+            <BookButton variant="outline">Book Online</BookButton>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
-            Frequently Asked <span className="accent-text italic">Questions</span>
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-[#6b5848]">
-            Essential guidance on triage protocols, fees, night care, and what to do in a dental crisis.
-          </p>
         </div>
 
-        <div className="space-y-3">
-          {FAQS.map((faq, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div
-                key={faq.q}
-                className={`rounded-2xl transition-all duration-200 border ${
-                  isOpen
-                    ? "bg-[#844d1e] text-white border-[#844d1e] shadow-lg"
-                    : "bg-white text-[#2a1c12] border-[#e8ddd0] hover:border-[#cf9448]/60"
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left"
-                  aria-expanded={isOpen}
-                >
-                  <span
-                    className={`font-display text-base sm:text-lg font-bold ${
-                      isOpen ? "text-white" : "text-[#2a1c12]"
-                    }`}
-                  >
-                    {faq.q}
-                  </span>
-                  <span
-                    className={`size-8 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300 ${
-                      isOpen
-                        ? "bg-white/20 text-white rotate-180"
-                        : "bg-[#f5ede0] text-[#925a27]"
-                    }`}
-                  >
-                    <ChevronDown className="size-4" />
-                  </span>
-                </button>
-
-                {isOpen && (
-                  <div className="px-5 pb-6 sm:px-6 text-sm sm:text-base leading-relaxed text-white/90 border-t border-white/15 pt-4">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom CTA block */}
-        <div className="mt-14 rounded-3xl bg-[#faf6f0] border border-[#e2d4c0] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-          <div>
-            <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-              Still dealing with unbearable pain?
-            </h3>
-            <p className="text-xs sm:text-sm text-[#6b5848] mt-1">
-              Do not wait for it to get worse. Speak directly with our on-call dental nurse right now.
-            </p>
-          </div>
-          <Button
-            asChild
-            className="accent-gradient rounded-full px-8 h-12 text-white font-bold shadow-md hover:opacity-95 whitespace-nowrap"
-          >
-            <a href="tel:07311871456">
-              <PhoneCall className="mr-2 size-4" />
-              Call 07311 871456
-            </a>
-          </Button>
-        </div>
+        <FaqList items={FAQS} tone="light" defaultOpen={0} />
       </div>
-    </section>
+    </Section>
   );
 }

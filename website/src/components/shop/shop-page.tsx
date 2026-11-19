@@ -1,28 +1,27 @@
-import { useState, useEffect } from "react";
 import { ShoppingBag } from "lucide-react";
-import type { Product, CartItem } from "./shop-data";
-import { ShopHero } from "./shop-hero";
+import { useEffect, useState } from "react";
+import { api, type Product as ApiProduct } from "@/lib/api";
+import { useCartStore } from "@/lib/cart-store";
+import { CartDrawer } from "./cart-drawer";
+import type { CartItem, Product } from "./shop-data";
 import { ShopCatalog } from "./shop-catalog";
 import { ShopGuarantee } from "./shop-guarantee";
-import { CartDrawer } from "./cart-drawer";
-import { api } from "@/lib/api";
-import { useCartStore } from "@/lib/cart-store";
+import { ShopHero } from "./shop-hero";
 
 export function ShopPage() {
-  const [apiProducts, setApiProducts] = useState<any[]>([]);
+  const [apiProducts, setApiProducts] = useState<ApiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      api.products.list()
+    if (typeof window !== "undefined") {
+      api.products
+        .list()
         .then((data) => {
           setApiProducts(data);
           setIsLoading(false);
         })
         .catch((err) => {
-          console.error('Error fetching products:', err);
-          setError(err as Error);
+          console.error("Error fetching products:", err);
           setIsLoading(false);
         });
     }
@@ -42,9 +41,7 @@ export function ShopPage() {
               ? parseFloat(p.original_price)
               : p.original_price
             : undefined,
-          image:
-            p.image ||
-            "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=85",
+          image: p.image || "",
           shortDesc: p.short_desc || "",
           fullDesc: p.full_desc || "",
           features: Array.isArray(p.features) ? p.features : [],
@@ -75,7 +72,7 @@ export function ShopPage() {
     quantity: it.quantity,
   }));
 
-  const handleAddToCart = (product: Product, quantity: number = 1, variant?: any) => {
+  const handleAddToCart = (product: Product, quantity: number = 1, variant?: unknown) => {
     addItem(product, quantity, variant);
     setIsCartOpen(true);
   };
@@ -97,21 +94,17 @@ export function ShopPage() {
   const totalItemCount = storeItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-white text-fg relative">
-      {/* 1. Hero Section */}
+    <div className="relative bg-white text-fg">
       <ShopHero />
 
-      {/* 2. Product Catalog */}
       <ShopCatalog
         products={productsToDisplay}
         isLoading={isLoading}
         onAddToCart={handleAddToCart}
       />
 
-      {/* 3. Guarantees & FAQs */}
       <ShopGuarantee />
 
-      {/* Slide-over Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -121,26 +114,22 @@ export function ShopPage() {
         onClearCart={clearCart}
       />
 
-      {/* Floating Cart Button */}
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full accent-gradient px-4 py-3 text-white shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"
-        aria-label="View shopping bag"
+        className="fixed right-6 bottom-6 z-40 inline-flex h-12 items-center gap-2.5 rounded-pill bg-black px-5 text-label text-white shadow-card t-colors hover:bg-black/85"
+        aria-label={`View shopping bag (${totalItemCount} items)`}
       >
         <div className="relative">
-          <ShoppingBag className="size-5" />
-          {totalItemCount > 0 && (
-            <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-white text-primary text-[10px] font-bold shadow-xs">
+          <ShoppingBag aria-hidden className="size-5" />
+          {totalItemCount > 0 ? (
+            <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-pill bg-gold text-caption font-medium text-brown tabular-nums">
               {totalItemCount}
             </span>
-          )}
+          ) : null}
         </div>
-        <span className="text-xs font-semibold hidden sm:inline">
-          View Bag ({totalItemCount})
-        </span>
+        <span className="hidden sm:inline">View Bag ({totalItemCount})</span>
       </button>
     </div>
   );
 }
-

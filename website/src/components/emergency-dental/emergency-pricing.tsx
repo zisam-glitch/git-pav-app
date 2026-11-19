@@ -1,121 +1,89 @@
-import { Check, ShieldAlert, PhoneCall } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BookButton, CallButton, Heading, Section, Tile } from "@/components/hims";
+import { PRACTICE_PHONE } from "@/lib/enquiry";
 
-const PRICE_ITEMS = [
-  { item: "Emergency Consultation & Diagnosis", price: "from £50" },
-  { item: "Digital Diagnostic X-rays", price: "Included" },
-  { item: "Prescription & Antibiotic Dispensing", price: "from £35" },
-  { item: "Pain Relief Dressing / Temporary Filling", price: "from £60" },
-  { item: "Simple Tooth Extraction (Same Day)", price: "from £75" },
-  { item: "Emergency Abscess Drainage", price: "from £90" },
-  { item: "Surgical / Broken Tooth Removal", price: "from £195" },
-  { item: "Re-cementing Loose Crown or Bridge", price: "from £60" },
-  { item: "Emergency Root Canal Extirpation (Nerve Relief)", price: "from £180" },
-];
+const TREATMENT_FEES = [
+  { name: "Tooth Extraction", price: "from £95" },
+  { name: "Filling", price: "from £95" },
+  { name: "Antibiotics", price: "£25" },
+  { name: "Irrigation/cleaning of gums &/or wisdom tooth", price: "£75" },
+  { name: "Dry socket", price: "£60" },
+  { name: "Accessing & dressing a tooth", price: "from £170" },
+  { name: "Surgical drainage of abscess", price: "£160" },
+  { name: "Recement bridge/crown/veneer", price: "from £60" },
+  { name: "Re-fixing a tooth loosened by trauma", price: "£195" },
+] as const;
 
 export function EmergencyPricing() {
   return (
-    <section className="py-20 sm:py-28 bg-[#fffdf9]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left column */}
-          <div className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#cf9448]/30 bg-[#cf9448]/10 px-4 py-1.5 mb-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#925a27]">
-                Clear &amp; Transparent
-              </span>
-            </div>
+    <Section id="pricing" theme="cream" space="default">
+      <div className="max-w-2xl">
+        <Heading as="h2" size="h2-md" accent="cost?" tone="terracotta" inline>
+          How much does it
+        </Heading>
+        <p className="mt-4 text-lead text-muted">
+          Consultation (include exam, X-rays and diagnosis) appointment fee:
+        </p>
+      </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a1c12] tracking-tight">
-              How much does it <span className="accent-text italic">cost?</span>
-            </h2>
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <Tile tone="white" lift className="flex flex-col justify-between gap-4 p-6 md:p-8">
+          <div>
+            <p className="text-caption font-medium text-muted">Standard Hours</p>
+            <p className="mt-2 text-h3 text-fg tabular-nums">£45</p>
+            <p className="mt-2 text-body text-muted">Monday to Friday between 9am – 5pm</p>
+          </div>
+          <CallButton variant="default" className="w-full sm:w-auto">
+            Call us Now · {PRACTICE_PHONE}
+          </CallButton>
+        </Tile>
 
-            <p className="mt-4 text-[#6b5848] text-base leading-relaxed">
-              We believe emergency healthcare should never come with hidden surprises. Before any treatment begins, our dentist conducts a thorough triage examination, explains your options, and gives you an exact upfront price.
+        <Tile tone="sage" lift className="flex flex-col justify-between gap-4 p-6 md:p-8">
+          <div>
+            <p className="text-caption font-medium text-muted">Out of Hours</p>
+            <p className="mt-2 text-h3 text-fg tabular-nums">£90</p>
+            <p className="mt-2 text-body text-muted">
+              Out of Hours – Weekends 9am – 8pm and Weekdays 5pm – 8pm
             </p>
+          </div>
+          <BookButton variant="outline" className="w-full sm:w-auto">
+            Book Online
+          </BookButton>
+        </Tile>
+      </div>
 
-            <div className="mt-8 rounded-3xl border border-[#e2d4c0] bg-[#faf6f0] p-6 sm:p-8 shadow-sm">
-              <ul className="divide-y divide-[#e2d4c0]/70">
-                {PRICE_ITEMS.map((row) => (
-                  <li key={row.item} className="py-3 sm:py-3.5 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <span className="size-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
-                        <Check className="size-3.5 stroke-[2.5]" />
-                      </span>
-                      <span className="text-sm font-medium text-[#2a1c12]">{row.item}</span>
-                    </div>
-                    <span className="text-sm sm:text-base font-bold text-[#925a27] font-display whitespace-nowrap">
-                      {row.price}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <div className="mt-6 space-y-2 text-body text-muted">
+        <p className="font-medium text-fg">Contact us for prices and appointments after 8pm</p>
+        <p>
+          All patients receive an individual treatment plan with clearly illustrated costs prior to
+          undergoing emergency dental treatment.
+        </p>
+      </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <Button
-                asChild
-                className="accent-gradient text-white rounded-full px-7 h-12 font-semibold shadow-md hover:opacity-95"
-              >
-                <a href="tel:07311871456">
-                  <PhoneCall className="mr-2 size-4" />
-                  Call For Immediate Pricing Quote
-                </a>
-              </Button>
-              <span className="text-xs text-[#6b5848] flex items-center gap-1.5">
-                <ShieldAlert className="size-4 text-emerald-600" />
-                NHS Bands 1 &amp; 2 available for eligible patients
+      <div className="mt-8 overflow-hidden rounded-xl border border-border bg-white">
+        <ul className="divide-y divide-border">
+          {TREATMENT_FEES.map((item) => (
+            <li
+              key={item.name}
+              className="flex items-center justify-between gap-4 px-5 py-4 md:px-8 md:py-5"
+            >
+              <span className="text-body font-medium text-fg">{item.name}</span>
+              <span className="shrink-0 text-lead font-medium text-fg tabular-nums">
+                {item.price}
               </span>
-            </div>
-          </div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-          {/* Right column: Image with "Open 24/7" badge */}
-          <div className="lg:col-span-5">
-            <div className="relative mx-auto max-w-md lg:max-w-none">
-              {/* Outer decorative card */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white">
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1000&q=85"
-                    alt="Pav Dental Emergency Team on Duty"
-                    className="size-full object-cover object-top"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-
-                  {/* Top Badge */}
-                  <div className="absolute top-5 left-5 right-5 text-center">
-                    <div className="inline-block rounded-2xl bg-white/95 backdrop-blur-md px-6 py-2.5 shadow-xl border border-white">
-                      <p className="font-display text-2xl sm:text-3xl font-black text-red-600 tracking-tight">
-                        Open 24/7
-                      </p>
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-[#925a27]">
-                        All Smiles Welcome
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Bottom details banner */}
-                  <div className="absolute bottom-5 inset-x-5 glass rounded-2xl p-4 text-center">
-                    <p className="font-display text-lg font-bold text-[#2a1c12]">
-                      Dedicated On-Call Surgical Team
-                    </p>
-                    <p className="text-xs text-[#6b5848] mt-0.5">
-                      Fully equipped for extractions, infections, and trauma relief.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating accent badge */}
-              <div className="absolute -bottom-5 -right-5 rounded-2xl bg-gradient-to-br from-red-600 to-[#925a27] text-white p-4 shadow-xl hidden sm:block">
-                <p className="text-xs font-bold uppercase tracking-wider text-white/80">Typical Wait</p>
-                <p className="font-display text-2xl font-black">&lt; 30 Mins</p>
-                <p className="text-[10px] text-white/80">From arrival to triage</p>
-              </div>
-            </div>
-          </div>
+      <div className="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-white p-6 md:flex-row md:items-center md:p-8">
+        <p className="text-body text-muted">
+          Anyone can book an appointment online with a dentist 24 hours a day, 7 days a week.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+          <BookButton variant="outline">Book Online</BookButton>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

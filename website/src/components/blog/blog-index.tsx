@@ -1,53 +1,88 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
+import { Heading, Media, Section } from "@/components/hims";
 import { BLOG_POSTS } from "@/content/blog-posts";
 import { NewsletterCta } from "./newsletter-cta";
+
+const BLOG_COVERS: Record<string, string> = {
+  "can-a-dentist-assess-a-dental-problem-through-a-video-call-what-can-and-cant-be-checked":
+    "/images/generated/blog-video-consultation.jpg",
+  "tooth-extraction-in-bradford-when-is-removing-a-tooth-the-best-option":
+    "/images/generated/blog-tooth-extraction.jpg",
+  "24-hour-emergency-dentist-bradford-when-to-call-why-it-matters-and-how-to-get-seen":
+    "/images/generated/blog-emergency-bradford.jpg",
+  "botox-vs-dermal-fillers-finding-the-right-facial-aesthetics-treatment-in-bradford":
+    "/images/generated/blog-botox-vs-fillers.jpg",
+  "can-you-whiten-just-one-tooth-what-causes-single-tooth-discolouration":
+    "/images/generated/blog-single-tooth-whitening.jpg",
+  "24-hour-emergency-dentist-in-leeds-how-quickly-can-you-get-seen":
+    "/images/generated/blog-emergency-leeds.jpg",
+};
 
 /** The blog page: one card per post, newest first, as on the live site. */
 export function BlogIndex() {
   return (
-    <div className="bg-[#fffdf9] pt-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-20">
-        <header className="mx-auto max-w-2xl text-center">
-          <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">Read Latest Articles</h1>
-          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6b5848]">
-            Discover the latest news and insights on oral health, cosmetic dentistry, and more at Pav Dental's blog. Stay
-            informed and improve your smile!
+    <>
+      <Section theme="cream" width="wide" space="sm">
+        <div className="max-w-2xl">
+          <Heading as="h1" size="hero" accent="Articles" tone="terracotta" inline>
+            Read Latest
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            Discover the latest news and insights on oral health, cosmetic dentistry, and more at
+            Pav Dental&apos;s blog. Stay informed and improve your smile!
           </p>
-        </header>
+        </div>
+      </Section>
 
-        <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {BLOG_POSTS.map((post, index) => (
-            <li key={post.slug}>
-              <article className="h-full">
-                <Link
-                  to="/blog/$slug"
-                  params={{ slug: post.slug }}
-                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#e2d4c0] bg-white shadow-sm transition-colors hover:border-[#925a27]"
-                >
-                  <img
-                    src={post.image.src}
-                    alt={post.image.alt}
-                    loading={index < 3 ? "eager" : "lazy"}
-                    className="aspect-[16/10] w-full bg-[#faf6f0] object-cover"
-                  />
-                  <span className="flex flex-1 flex-col p-5">
-                    <span className="flex flex-wrap items-center gap-x-3 text-xs text-[#6b5848]">
-                      <time dateTime={post.date}>{post.dateLabel}</time>
-                      <span>Posted by: {post.author}</span>
+      <Section theme="white" width="wide" space="default">
+        <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {BLOG_POSTS.map((post, index) => {
+            const localCover =
+              BLOG_COVERS[post.slug] ??
+              (post.image.src.startsWith("/") ? post.image.src : undefined);
+            return (
+              <li key={post.slug} className="flex">
+                <article className="flex w-full">
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: post.slug }}
+                    className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-transparent bg-tile-cream p-4 t-lift hover:border-border hover:bg-white md:p-[18px]"
+                  >
+                    <div className="t-zoom overflow-hidden rounded-xl">
+                      <Media
+                        src={localCover}
+                        alt={localCover ? post.title : ""}
+                        ratio="16 / 10"
+                        tone={index % 2 === 0 ? "sand" : "sage"}
+                        priority={index === 0}
+                      />
+                    </div>
+                    <span className="mt-4 flex flex-1 flex-col">
+                      <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-muted">
+                        <time dateTime={post.date}>{post.dateLabel}</time>
+                        <span>Posted by: {post.author}</span>
+                      </span>
+                      <h2 className="mt-2 text-h4 text-fg t-colors group-hover:text-terracotta">
+                        {post.title}
+                      </h2>
+                      <span className="mt-2 block flex-1 text-small text-muted">
+                        {post.excerpt}
+                      </span>
+                      <span className="mt-4 inline-flex items-center gap-1.5 text-label text-fg">
+                        Read More
+                        <ArrowRight className="size-4" aria-hidden="true" />
+                      </span>
                     </span>
-                    <h2 className="mt-3 font-display text-lg font-bold leading-snug text-[#2a1c12] group-hover:text-[#925a27]">
-                      {post.title}
-                    </h2>
-                    <span className="mt-2 block text-sm leading-relaxed text-[#6b5848]">{post.excerpt}</span>
-                    <span className="mt-4 text-sm font-semibold text-[#925a27]">Read More</span>
-                  </span>
-                </Link>
-              </article>
-            </li>
-          ))}
+                  </Link>
+                </article>
+              </li>
+            );
+          })}
         </ul>
-      </div>
+      </Section>
+
       <NewsletterCta />
-    </div>
+    </>
   );
 }

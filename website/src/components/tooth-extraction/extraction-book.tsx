@@ -1,70 +1,69 @@
-import React from "react";
-import { CalendarDays, Phone, MapPin, Clock, ArrowRight, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { Check, Clock, MapPin, Phone } from "lucide-react";
+import { BookButton, CallButton, Heading, Section, Tile } from "@/components/hims";
+import { PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 const REASONS = [
-  "GDC-registered surgical team with 15+ years experience",
-  "Sedation available for anxious patients",
-  "Same-day emergency slots, 7 days a week",
-  "Full aftercare and 30-day follow-up included",
-  "0% finance on treatments over £250",
+  "Experienced and Compassionate Team",
+  "State-of-the-Art Facilities",
+  "Patient-Centric Approach",
+  "Affordable and Transparent Pricing",
 ];
 
 export function ExtractionBook() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <div>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-              Book Your Appointment Today
-            </h2>
-            <p className="mt-5 text-[#6b5848] leading-relaxed max-w-md text-sm sm:text-base">
-              Dental pain should never be put off. Our team is ready to see
-              you today — call or book online to secure your slot.
-            </p>
+    <Section theme="white" space="default">
+      <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <Heading as="h2" size="h2-md" accent="Today" tone="terracotta">
+            Book Your Appointment
+          </Heading>
+          <p className="mt-4 max-w-xl text-lead text-muted">
+            Don&rsquo;t let tooth pain hold you back. Contact PavDental now for a consultation and
+            experience swift, professional care that puts your needs first
+          </p>
 
-            <ul className="mt-6 space-y-2.5 mb-8">
-              {REASONS.map((r) => (
-                <li key={r} className="flex items-start gap-3 text-sm text-[#2a1c12]">
-                  <span className="size-5 rounded-md accent-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="size-3 text-white stroke-[3]" />
-                  </span>
-                  {r}
-                </li>
-              ))}
-            </ul>
-
-            {/* Contact info */}
-            <div className="space-y-3 mb-8">
-              {[
-                { icon: Phone, label: "0800 1938 786" },
-                { icon: MapPin, label: "786 Leeds Road, Bradford, BD3 9TY" },
-                { icon: Clock, label: "Mon–Sat 8:00am – 7:00pm · Sun 10:00am – 4:00pm" },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-3">
-                  <div className="size-8 rounded-lg bg-[#f0e8dc] flex items-center justify-center">
-                    <Icon className="size-4 text-[#925a27]" />
-                  </div>
-                  <span className="text-sm text-[#2a1c12] font-medium">{label}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button
-              asChild
-              className="accent-gradient rounded-full px-10 h-12 text-white font-bold hover:opacity-90 transition-opacity shadow-sm"
-            >
-              <a href={BOOKING_URL} className="flex items-center gap-2">
-                <CalendarDays className="size-4" />
-                Book Appointment Now
-                <ArrowRight className="size-4" />
+          <ul className="mt-8 space-y-3 text-body">
+            <li className="flex items-center gap-3">
+              <Phone aria-hidden className="size-5 shrink-0 text-terracotta" />
+              <a
+                href={PRACTICE_PHONE_HREF}
+                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+              >
+                {PRACTICE_PHONE}
               </a>
-            </Button>
+            </li>
+            <li className="flex items-center gap-3 text-fg">
+              <MapPin aria-hidden className="size-5 shrink-0 text-terracotta" />
+              <span>786 Leeds Road, Bradford, BD3 9TY</span>
+            </li>
+            <li className="flex items-center gap-3 text-fg">
+              <Clock aria-hidden className="size-5 shrink-0 text-terracotta" />
+              <span>{PRACTICE_HOURS}</span>
+            </li>
+          </ul>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <BookButton>Book Now</BookButton>
+            <CallButton variant="outline" />
           </div>
         </div>
+
+        <Tile tone="cream" className="p-6 md:p-8">
+          <Heading as="h3" size="h3-md">
+            Why Choose PavDental?
+          </Heading>
+          <ul className="mt-6 divide-y divide-border">
+            {REASONS.map((reason) => (
+              <li key={reason} className="flex items-center gap-3 py-4 text-lead text-fg">
+                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white text-terracotta">
+                  <Check aria-hidden className="size-4" />
+                </span>
+                <span>{reason}</span>
+              </li>
+            ))}
+          </ul>
+        </Tile>
       </div>
-    </section>
+    </Section>
   );
 }

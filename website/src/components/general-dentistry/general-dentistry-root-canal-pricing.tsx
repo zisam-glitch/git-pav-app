@@ -1,5 +1,3 @@
-import React from "react";
-
 const ROOT_CANAL = [
   {
     service: "Basic Root Canal",
@@ -16,28 +14,25 @@ const ROOT_CANAL = [
     price: "£395",
     desc: "This is for the most complex root canal treatments, typically involving molars, which have multiple roots and a more complex root canal system. These procedures are often more time-consuming and require advanced techniques and equipment, justifying the higher price.",
   },
-];
+] as const;
 
 export function GeneralDentistryRootCanalPricing() {
   return (
-    <div className="rounded-xl bg-white border border-[#e2d4c0] p-6 shadow-sm">
-      <div className="mb-5 pb-4 border-b border-[#e8ddd0]">
-        <h3 className="font-display text-xl font-bold text-[#2a1c12]">Root Canal</h3>
-        <p className="text-xs text-[#925a27] font-semibold mt-1">Save your natural tooth</p>
+    <div className="rounded-xl border border-border bg-white p-6">
+      <div className="border-b border-border pb-4">
+        <h3 className="text-h4 text-fg">Our Root Canal Prices</h3>
       </div>
 
-      <div className="space-y-4">
+      <div className="divide-y divide-border">
         {ROOT_CANAL.map((row) => (
-          <div key={row.service} className="pb-4 border-b border-[#e8ddd0]/50 last:border-0">
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <span className="text-sm sm:text-base font-semibold text-[#2a1c12]">{row.service}</span>
-              <span className="text-base sm:text-lg font-bold text-[#925a27] font-display whitespace-nowrap">
+          <div key={row.service} className="py-4 last:pb-0">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-label text-fg">{row.service}</span>
+              <span className="text-lead font-medium tabular-nums text-fg whitespace-nowrap">
                 {row.price}
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-[#6b5848] leading-relaxed">
-              {row.desc}
-            </p>
+            <p className="mt-2 text-small text-muted">{row.desc}</p>
           </div>
         ))}
       </div>

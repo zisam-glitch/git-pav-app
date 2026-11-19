@@ -1,8 +1,12 @@
-import { useState, type FormEvent } from "react";
-import { X, CheckCircle2, Briefcase, FileText, Send, Phone } from "lucide-react";
+import { CheckCircle2, Send, X } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { Vacancy } from "./vacancies-data";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
+import { PRACTICE_EMAIL } from "@/lib/enquiry";
+import type { Vacancy } from "./vacancies-data";
 
 interface ApplyModalProps {
   vacancy: Vacancy | null;
@@ -19,6 +23,29 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const handleResetAndClose = () => {
+    setSubmitted(false);
+    setName("");
+    setEmail("");
+    setPhone("");
+    setGdcNumber("");
+    setCvLink("");
+    setMessage("");
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSubmitted(false);
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !vacancy) return null;
 
@@ -42,184 +69,144 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
     }
   };
 
-  const handleResetAndClose = () => {
-    setSubmitted(false);
-    setName("");
-    setEmail("");
-    setPhone("");
-    setGdcNumber("");
-    setCvLink("");
-    setMessage("");
-    onClose();
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="apply-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
+      onClick={handleResetAndClose}
+    >
       <div
-        className="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl my-8"
+        className="relative my-8 w-full max-w-lg rounded-xl bg-white p-6 shadow-card md:p-8"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={handleResetAndClose}
-          className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full bg-slate-100 text-muted hover:bg-slate-200 hover:text-fg"
+          className="absolute top-4 right-4"
           aria-label="Close dialog"
         >
-          <X className="size-4" />
-        </button>
+          <X className="size-5" aria-hidden="true" />
+        </Button>
 
         {submitted ? (
-          <div className="py-8 text-center">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-sm">
-              <CheckCircle2 className="size-8" />
+          <div className="py-6 text-center">
+            <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-pill bg-sage text-fg">
+              <CheckCircle2 className="size-7" aria-hidden="true" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-fg">
+            <h2 id="apply-modal-title" className="text-h3-md text-fg">
               Application Received
-            </h3>
-            <p className="mt-2 text-sm text-muted max-w-sm mx-auto leading-relaxed">
-              Thank you, <strong>{name}</strong>. Your application for <strong>{vacancy.title}</strong> has been forwarded directly to our Practice Principal and HR recruitment team.
+            </h2>
+            <p className="mx-auto mt-3 max-w-sm text-body text-muted">
+              Thank you, <strong>{name}</strong>. Your application for{" "}
+              <strong>{vacancy.title}</strong> has been forwarded to our recruitment team.
             </p>
-            <p className="mt-2 text-xs text-muted">
-              We typically review clinical applications within 48 hours.
-            </p>
-            <Button onClick={handleResetAndClose} className="mt-6" size="sm">
+            <Button type="button" onClick={handleResetAndClose} className="mt-6">
               Close Window
             </Button>
           </div>
         ) : (
           <div>
-            <div className="border-b border-border/50 pb-4 pr-6">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex items-center gap-1 rounded-md bg-[#faf6f0] border border-primary/25 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
-                  <Briefcase className="size-3" />
-                  {vacancy.department}
-                </span>
-                <span className="text-xs text-muted">{vacancy.contractType}</span>
-              </div>
-              <h2 className="font-display text-2xl font-bold text-fg">
+            <div className="border-b border-border pb-4 pr-10">
+              <p className="text-small font-medium text-terracotta">{vacancy.department}</p>
+              <h2 id="apply-modal-title" className="mt-1 text-h3-md text-fg">
                 Apply for {vacancy.title}
               </h2>
-              <p className="text-xs text-muted mt-1">
-                PavDental · 786 Leeds Road, Bradford, BD3 9TY
-              </p>
+              <p className="mt-1 text-small text-muted">{vacancy.location}</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
-                    Full Name *
-                  </label>
-                  <input
+            <form onSubmit={handleSubmit} className="mt-5 grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="apply-name">Full Name *</Label>
+                  <Input
+                    id="apply-name"
                     required
                     type="text"
                     placeholder="Dr. / Nurse Jane Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
-                    Email Address *
-                  </label>
-                  <input
+                <div className="grid gap-1.5">
+                  <Label htmlFor="apply-email">Email Address *</Label>
+                  <Input
+                    id="apply-email"
                     required
                     type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
-                    Phone Number *
-                  </label>
-                  <input
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="apply-phone">Phone Number *</Label>
+                  <Input
+                    id="apply-phone"
                     required
                     type="tel"
                     placeholder="+44 7311 871456"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-fg/80 mb-1">
-                    GDC Reg No. (if registered)
-                  </label>
-                  <input
+                <div className="grid gap-1.5">
+                  <Label htmlFor="apply-gdc">GDC Reg No. (if registered)</Label>
+                  <Input
+                    id="apply-gdc"
                     type="text"
                     placeholder="e.g. 123456"
                     value={gdcNumber}
                     onChange={(e) => setGdcNumber(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] px-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-fg/80 mb-1">
-                  LinkedIn Profile / CV Link *
-                </label>
-                <div className="relative">
-                  <FileText className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
-                  <input
-                    required
-                    type="url"
-                    placeholder="https://linkedin.com/in/... or Google Drive link"
-                    value={cvLink}
-                    onChange={(e) => setCvLink(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-border/70 bg-[#faf8f5] pl-9 pr-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
-                  />
-                </div>
+              <div className="grid gap-1.5">
+                <Label htmlFor="apply-cv">LinkedIn Profile / CV Link *</Label>
+                <Input
+                  id="apply-cv"
+                  required
+                  type="url"
+                  placeholder="https://linkedin.com/in/... or Google Drive link"
+                  value={cvLink}
+                  onChange={(e) => setCvLink(e.target.value)}
+                />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-fg/80 mb-1">
-                  Brief Note / Clinical Experience *
-                </label>
-                <textarea
+              <div className="grid gap-1.5">
+                <Label htmlFor="apply-message">Brief Note / Clinical Experience *</Label>
+                <Textarea
+                  id="apply-message"
                   required
                   rows={3}
                   placeholder="Tell us about your background, clinical interests, or visa requirements..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded-xl border border-border/70 bg-[#faf8f5] p-3 text-xs sm:text-sm focus:border-primary focus:outline-none"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                 <a
-                  href="mailto:hello@pavdental.com?subject=Direct%20Application%20Inquiry"
-                  className="text-xs text-muted hover:text-primary underline"
+                  href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Direct Application: ${vacancy.title}`)}`}
+                  className="text-small text-muted underline underline-offset-4 t-colors hover:text-fg"
                 >
                   Or email CV directly
                 </a>
 
-                <div className="flex gap-2.5">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleResetAndClose}
-                  >
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" onClick={handleResetAndClose}>
                     Cancel
                   </Button>
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    size="sm"
-                    className="accent-gradient text-white gap-1.5 shadow-sm"
-                  >
-                    {loading ? "Submitting..." : "Submit Application"}
-                    <Send className="size-3.5" />
+                  <Button type="submit" disabled={loading}>
+                    <span>{loading ? "Submitting..." : "Submit Application"}</span>
+                    <Send aria-hidden="true" />
                   </Button>
                 </div>
               </div>
@@ -230,4 +217,3 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
     </div>
   );
 }
-

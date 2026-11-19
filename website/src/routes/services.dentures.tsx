@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
-import { Footer } from "@/components/home/footer";
 import { DenturesPage } from "@/components/dentures/dentures-page";
+import { Footer } from "@/components/home/footer";
+import { Header } from "@/components/home/header";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/dentures")({
   head: () => seoHead("/services/dentures"),
@@ -11,10 +11,10 @@ export const Route = createFileRoute("/services/dentures")({
 
 function Page() {
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg">
+    <>
       <Header />
       <DenturesPage />
       <Footer />
-    </div>
+    </>
   );
 }

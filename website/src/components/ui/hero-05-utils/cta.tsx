@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { BookButton, ButtonLink } from "@/components/hims";
+import { BOOKING_URL } from "@/lib/enquiry";
 
 export interface CtaProps {
   ctaEnabled: boolean;
@@ -10,17 +11,13 @@ export interface CtaProps {
 export function Cta({ cta, cta: { text, link, variant = "default" } }: { cta: CtaProps }) {
   if (!cta.ctaEnabled) return null;
 
-  if (variant === "link") {
-    return (
-      <a href={link} className="text-sm font-medium text-primary hover:underline">
-        {text}
-      </a>
-    );
+  if (link === BOOKING_URL) {
+    return <BookButton variant={variant === "link" ? "outline" : "default"}>{text}</BookButton>;
   }
 
   return (
-    <Button asChild>
-      <a href={link}>{text}</a>
-    </Button>
+    <ButtonLink href={link} variant={variant === "link" ? "outline" : "default"}>
+      {text}
+    </ButtonLink>
   );
 }

@@ -1,11 +1,11 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { blogPostHead } from "@/lib/seo";
-import { Header } from "@/components/home/header";
-import { Footer } from "@/components/home/footer";
-import { ScrollProgress } from "@/components/home/scroll-progress";
 import { BlogPostPage } from "@/components/blog/blog-post-page";
+import { Footer } from "@/components/home/footer";
+import { Header } from "@/components/home/header";
+import { ScrollProgress } from "@/components/home/scroll-progress";
 import { NotFoundPage } from "@/components/not-found/not-found-page";
 import { findBlogPost } from "@/content/blog-posts";
+import { blogPostHead } from "@/lib/seo";
 
 // "blog_" keeps this a sibling of /blog rather than a child of it, so /blog does
 // not need to render an Outlet.
@@ -26,7 +26,7 @@ function BlogPostRoute() {
   const post = Route.useLoaderData();
 
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
       <BlogPostPage post={post} />

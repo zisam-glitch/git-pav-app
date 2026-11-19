@@ -1,189 +1,47 @@
-import React from "react";
-import { ArrowRight, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { BOOKING_URL } from "@/lib/enquiry";
+import { PricingTiles, type PricingTier } from "@/components/hims";
 
-const TIERS = [
+const SERVICES: readonly PricingTier[] = [
   {
-    id: "scale-polish",
-    label: "Scale & Polish",
-    price: "From £45",
-    monthly: "NHS Available",
+    id: "basic",
+    eyebrow: "Basic – Polish Only (£45)",
+    price: "£45",
+    name: "Basic – Polish Only",
     description:
-      "Professional removal of plaque and tartar buildup followed by polishing to remove surface stains and leave teeth smooth and clean.",
-    includes: [
-      "Plaque & tartar removal",
-      "Teeth polishing",
-      "Oral health assessment",
-      "Hygiene advice",
-    ],
-    highlight: true,
+      "A gentle professional polish to remove surface stains and plaque build-up. Ideal for patients who maintain good oral hygiene and simply want fresher breath and a brighter smile. This treatment focuses on improving appearance and smoothness of the teeth but does not include deep stain or tartar removal.",
+    bestFor: "Best for: light staining from tea, coffee, or smoking.",
+    tone: "cream",
   },
   {
-    id: "routine-hygiene",
-    label: "Routine Hygiene",
-    price: "From £55",
-    monthly: "NHS Available",
+    id: "intermediate",
+    eyebrow: "Intermediate – Scale Only (£65)",
+    price: "£65",
+    name: "Intermediate – Scale Only",
     description:
-      "Comprehensive oral health assessment including cleaning, examination, and personalized advice for maintaining optimal dental hygiene.",
-    includes: [
-      "Full oral health check",
-      "Professional cleaning",
-      "Gum examination",
-      "Personalized care plan",
-    ],
-    highlight: false,
+      "A professional scale to remove hardened plaque and tartar from around the teeth and gumline. This treatment focuses on improving gum health by removing deposits that cannot be cleaned at home. It helps reduce inflammation, bleeding gums, and bad breath.",
+    bestFor: "Best for: patients with noticeable tartar build-up or early gum concerns.",
+    tone: "cream",
   },
   {
-    id: "gum-treatment",
-    label: "Gum Treatment",
-    price: "From £75",
-    monthly: "Specialist Care",
+    id: "advanced",
+    eyebrow: "Advanced – Scale & Polish (£75)",
+    price: "£75",
+    name: "Advanced – Scale & Polish",
     description:
-      "Specialized treatment for gingivitis and periodontal disease to prevent gum recession, bone loss, and maintain healthy gum tissue.",
-    includes: [
-      "Periodontal assessment",
-      "Deep cleaning",
-      "Gum disease treatment",
-      "Follow-up care",
-    ],
-    highlight: false,
+      "A comprehensive clean combining full scaling and polishing for optimal oral health and aesthetics. Tartar and plaque are thoroughly removed from above and just below the gumline, followed by polishing to smooth the teeth and enhance shine. Topical anaesthesia can be used for added comfort if you have sensitive gums.",
+    bestFor:
+      "Best for: moderate build-up, gum inflammation, or patients wanting the most complete clean and refresh.",
+    tone: "sage",
   },
 ];
 
 export function OralHygienePricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-[#fffdf9] border-b border-[#e8ddd0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12]">
-            Transparent Fees &amp; NHS Options
-          </h2>
-          <p className="mt-4 text-[#6b5848] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Affordable dental hygiene services with NHS options available for eligible patients. Clear pricing with no hidden charges.
-          </p>
-        </div>
-
-        {/* Pricing Table */}
-        <div className="overflow-x-auto rounded-xl border border-[#e2d4c0] bg-white shadow-sm">
-          <table className="w-full text-left text-xs sm:text-sm border-collapse min-w-[650px]">
-            <thead>
-              <tr className="border-b border-[#e2d4c0] text-[#925a27] font-bold uppercase text-[11px] sm:text-xs">
-                <th className="py-5 px-6 bg-white w-1/4">Treatment</th>
-                {TIERS.map((t) => (
-                  <th
-                    key={t.id}
-                    className={`py-5 px-6 w-1/4 ${
-                      t.highlight
-                        ? "bg-[#faf6f0] border-x border-[#e2d4c0] text-[#925a27] relative"
-                        : "bg-white"
-                    }`}
-                  >
-                    {t.highlight && (
-                      <div className="inline-block bg-[#925a27] text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                        Most Popular
-                      </div>
-                    )}
-                    <div>{t.label}</div>
-                    <div
-                      className={`text-base sm:text-lg font-display font-bold mt-0.5 ${
-                        t.highlight ? "text-[#925a27]" : "text-[#2a1c12]"
-                      }`}
-                    >
-                      {t.price}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#e8ddd0]/70 text-[#2a1c12]">
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">NHS Options</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 font-medium text-[#6b5848] ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0] text-[#925a27] font-bold" : ""
-                    }`}
-                  >
-                    {t.monthly}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="py-4 px-6 font-bold text-[#2a1c12]">Description</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-4 px-6 text-[#6b5848] text-xs leading-relaxed ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""
-                    }`}
-                  >
-                    {t.description}
-                  </td>
-                ))}
-              </tr>
-              {[0, 1, 2, 3].map((idx) => (
-                <tr key={idx}>
-                  <td className="py-4 px-6 font-bold text-[#2a1c12]">
-                    {idx === 0 ? "Includes" : ""}
-                  </td>
-                  {TIERS.map((t) => (
-                    <td
-                      key={t.id}
-                      className={`py-4 px-6 ${
-                        t.highlight
-                          ? "bg-[#faf6f0] border-x border-[#e2d4c0] font-bold text-emerald-800"
-                          : "text-[#2a1c12]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <Check className="size-3.5 text-[#cf9448] flex-shrink-0" />
-                        {t.includes[idx]}
-                      </span>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-              <tr className="bg-[#fffdf9]">
-                <td className="py-5 px-6 font-bold text-[#2a1c12]">Action</td>
-                {TIERS.map((t) => (
-                  <td
-                    key={t.id}
-                    className={`py-5 px-6 ${
-                      t.highlight ? "bg-[#faf6f0] border-x border-[#e2d4c0]" : ""
-                    }`}
-                  >
-                    {t.highlight ? (
-                      <Button
-                        asChild
-                        className="w-full accent-gradient text-white rounded-full text-xs font-bold shadow hover:opacity-95"
-                      >
-                        <a href={BOOKING_URL} className="flex items-center justify-center gap-2">
-                          Book Appointment <ArrowRight className="size-3.5" />
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="w-full rounded-full border-[#925a27] text-[#925a27] text-xs font-bold hover:bg-[#faf6f0]"
-                      >
-                        <a href={BOOKING_URL}>Book Appointment</a>
-                      </Button>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p className="mt-8 text-center text-xs text-[#9a8674] max-w-2xl mx-auto">
-          NHS Band 1 prices apply for eligible patients. Private options available for enhanced treatments and specialist care. Written quotes provided at clinical assessment.
-        </p>
-      </div>
-    </section>
+    <PricingTiles
+      title="Our Hygiene"
+      accent="Services"
+      tiers={SERVICES}
+      columns={3}
+      ctaLabel="Make an Appointment"
+    />
   );
 }

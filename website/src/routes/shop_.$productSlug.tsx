@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { productHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
 import { ProductDetail } from "@/components/shop/product-detail";
 import type { Product } from "@/components/shop/shop-data";
+import type { ProductVariant } from "@/lib/api";
 import { useState } from "react";
-
 import { useCartStore } from "@/lib/cart-store";
 
 export const Route = createFileRoute("/shop_/$productSlug")({
@@ -17,23 +17,34 @@ export const Route = createFileRoute("/shop_/$productSlug")({
 function ProductDetailRoute() {
   const { productSlug } = Route.useParams();
   const { addItem } = useCartStore();
+  const [bagNotice, setBagNotice] = useState(false);
 
-  const handleAddToCart = (product: Product, quantity: number = 1, variant?: any) => {
+  const handleAddToCart = (
+    product: Product,
+    quantity: number = 1,
+    variant?: ProductVariant | null,
+  ) => {
     addItem(product, quantity, variant);
-    
-    // Show success notification
-    const notification = document.createElement("div");
-    notification.className = "fixed bottom-4 right-4 bg-[#844d1e] text-white px-5 py-3 rounded-xl shadow-xl z-50 text-xs font-semibold flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2";
-    notification.innerHTML = `<span>Added to bag!</span> <a href="/cart" class="underline hover:opacity-80">View Bag</a>`;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3500);
+    setBagNotice(true);
+    setTimeout(() => setBagNotice(false), 3500);
   };
 
   return (
-    <main className="min-h-screen bg-[#fffdf9] text-fg">
+    <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
       <ProductDetail productSlug={productSlug} onAddToCart={handleAddToCart} />
+      {bagNotice ? (
+        <div
+          role="status"
+          className="fixed right-6 bottom-6 z-50 flex items-center gap-3 rounded-pill bg-black px-5 py-3 text-small font-medium text-white shadow-card"
+        >
+          <span>Added to bag!</span>
+          <Link to="/cart" className="underline underline-offset-4 hover:text-gold">
+            View Bag
+          </Link>
+        </div>
+      ) : null}
       <Footer />
     </main>
   );

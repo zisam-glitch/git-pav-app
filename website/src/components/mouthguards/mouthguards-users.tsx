@@ -1,21 +1,9 @@
-import React from "react";
+import { Carousel, Heading, Section, Tile } from "@/components/hims";
 
 const USER_TYPES = [
   {
-    title: "Rugby Players",
-    desc: "Shields teeth and gums during high-contact tackles and scrums.",
-  },
-  {
-    title: "Hockey Players",
-    desc: "Protects against sticks, pucks, and high-speed on-ice collisions.",
-  },
-  {
-    title: "Boxers",
-    desc: "Minimizes jaw impact and prevents oral injuries during intense boxing sessions.",
-  },
-  {
-    title: "Athletes",
-    desc: "Provides strong impact protection during training and competitive sports.",
+    title: "Anyone needing extra protection",
+    desc: "Ideal for anyone who grinds teeth, plays sports, or needs added oral safety.",
   },
   {
     title: "Adults",
@@ -26,40 +14,45 @@ const USER_TYPES = [
     desc: "Keeps growing teeth safe during play, sports, and daily activities.",
   },
   {
-    title: "Anyone Needing Extra Protection",
-    desc: "Ideal for anyone who grinds teeth, plays sports, or needs added oral safety.",
+    title: "Athletes",
+    desc: "Provides strong impact protection during training and competitive sports.",
   },
-];
+  {
+    title: "Boxers",
+    desc: "Minimizes jaw impact and prevents oral injuries during intense boxing sessions.",
+  },
+  {
+    title: "Rugby players",
+    desc: "Shields teeth and gums during high-contact tackles and scrums.",
+  },
+  {
+    title: "Hockey players",
+    desc: "Protects against sticks, pucks, and high-speed on-ice collisions.",
+  },
+] as const;
 
 export function MouthguardsUsers() {
   return (
-    <section className="py-20 sm:py-28 bg-[#faf6f0] border-b border-[#e2d4c0]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">
-            Who Can Use Our Mouthguards
-          </h2>
-          <p className="mt-4 text-[#6b5848] text-sm sm:text-base leading-relaxed">
-            Our custom mouthguards are designed for everyone - from professional athletes to children needing everyday protection.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-[#e2d4c0]">
-          {USER_TYPES.map((user, i) => (
-            <div key={user.title} className="flex flex-col">
-              <span className="font-mono text-xs font-bold text-[#925a27] mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-display text-xl font-bold text-[#2a1c12]">
-                {user.title}
-              </h3>
-              <p className="mt-2 text-sm text-[#6b5848] leading-relaxed">
-                {user.desc}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section theme="cream">
+      <div className="max-w-2xl">
+        <Heading size="h2-md" accent="Our Mouthguards" tone="terracotta" inline>
+          Who Can Use
+        </Heading>
       </div>
-    </section>
+
+      <Carousel label="Who can use our mouthguards" className="mt-8">
+        {USER_TYPES.map((user, i) => (
+          <Tile key={user.title} tone="white" className="flex h-full flex-col justify-between p-6">
+            <div>
+              <span className="text-small font-medium tabular-nums text-muted">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-3 text-h4 text-fg">{user.title}</h3>
+              <p className="mt-2 text-body text-muted">{user.desc}</p>
+            </div>
+          </Tile>
+        ))}
+      </Carousel>
+    </Section>
   );
 }

@@ -1,4 +1,7 @@
+import { Link, type LinkProps } from "@tanstack/react-router";
+import { ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
+import { Heading, Media, Section, Tile } from "@/components/hims";
 
 /**
  * One piece of a page's text in reading order, as captured from the live site
@@ -20,7 +23,14 @@ export type ContentBlock =
   | { kind: "cards"; items: Array<{ title: string; text: string; href: string; badge?: string }> }
   | { kind: "image"; src: string; alt: string };
 
-const FILE_TYPES: Record<string, string> = { pdf: "PDF", doc: "Word", docx: "Word", png: "Image", jpg: "Image", jpeg: "Image" };
+const FILE_TYPES: Record<string, string> = {
+  pdf: "PDF",
+  doc: "Word",
+  docx: "Word",
+  png: "Image",
+  jpg: "Image",
+  jpeg: "Image",
+};
 
 /** "PDF", "Word" or "Image", from the file name, so people know what a download opens. */
 function fileType(href: string): string | null {
@@ -38,7 +48,8 @@ function isExternal(href: string): boolean {
   }
 }
 
-const TEXT_LINK_CLASS = "font-semibold text-[#925a27] underline underline-offset-2 hover:text-[#6f421b]";
+const TEXT_LINK_CLASS =
+  "font-medium text-terracotta underline underline-offset-4 t-colors hover:text-rust";
 
 /**
  * The text with the words of each link turned into that link. Links are matched
@@ -73,40 +84,50 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
   switch (block.kind) {
     case "heading":
       return block.level === 3 ? (
-        <h3 className="mt-8 font-display text-xl font-bold text-[#2a1c12]">{block.text}</h3>
+        <h3 className="mt-8 text-h4 text-fg">{block.text}</h3>
       ) : (
-        <h2 className="mt-10 font-display text-2xl sm:text-3xl font-bold text-[#2a1c12]">{block.text}</h2>
+        <h2 className="mt-10 text-h3-md text-fg">{block.text}</h2>
       );
     case "paragraph":
       return (
-        <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#4a3b2f]">{renderText(block.text, block.links)}</p>
+        <p className="mt-4 text-body leading-relaxed text-fg">
+          {renderText(block.text, block.links)}
+        </p>
       );
     case "list":
       return (
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm sm:text-base leading-relaxed text-[#4a3b2f]">
+        <ul className="mt-4 list-disc space-y-2.5 pl-5 text-body leading-relaxed text-fg">
           {block.items.map((item) => {
             const rich = typeof item === "string" ? { text: item } : item;
-            return <li key={rich.text}>{renderText(rich.text, "links" in rich ? rich.links : undefined)}</li>;
+            return (
+              <li key={rich.text}>
+                {renderText(rich.text, "links" in rich ? rich.links : undefined)}
+              </li>
+            );
           })}
         </ul>
       );
     case "quote":
       return (
-        <blockquote className="mt-10 border-l-4 border-[#925a27] bg-[#faf6f0] px-6 py-5 font-display text-lg leading-relaxed text-[#2a1c12]">
-          {block.text}
-        </blockquote>
+        <Tile tone="cream" as="aside" className="mt-8 p-6 md:p-8">
+          <blockquote className="text-h4 text-fg">{block.text}</blockquote>
+        </Tile>
       );
     case "table": {
       const head = block.header ? block.rows[0] : undefined;
       const body = block.header ? block.rows.slice(1) : block.rows;
       return (
-        <div className="mt-6 overflow-x-auto rounded-xl border border-[#e2d4c0] bg-white">
-          <table className="w-full min-w-[32rem] border-collapse text-left text-sm leading-relaxed text-[#4a3b2f]">
+        <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-white">
+          <table className="w-full min-w-[32rem] border-collapse text-left text-body text-fg">
             {head && (
-              <thead className="bg-[#faf6f0] text-[#2a1c12]">
+              <thead className="bg-cream text-fg">
                 <tr>
                   {head.map((cell, index) => (
-                    <th key={index} scope="col" className="border-b border-[#e2d4c0] px-4 py-3 font-bold">
+                    <th
+                      key={index}
+                      scope="col"
+                      className="border-b border-border px-4 py-3 text-label"
+                    >
                       {cell}
                     </th>
                   ))}
@@ -115,9 +136,9 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
             )}
             <tbody>
               {body.map((row, rowIndex) => (
-                <tr key={rowIndex} className="border-b border-[#efe6d8] last:border-b-0">
+                <tr key={rowIndex} className="border-b border-border last:border-b-0">
                   {row.map((cell, index) => (
-                    <td key={index} className="px-4 py-3 align-top">
+                    <td key={index} className="px-4 py-3 align-top text-small text-muted">
                       {cell}
                     </td>
                   ))}
@@ -133,7 +154,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
         <p className="mt-4">
           <a
             href={block.href}
-            className="font-semibold text-[#925a27] underline underline-offset-2 hover:text-[#6f421b]"
+            className={TEXT_LINK_CLASS}
             {...(isExternal(block.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           >
             {block.text}
@@ -142,22 +163,28 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
       );
     case "documents":
       return (
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-          {block.items.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className="flex items-center justify-between gap-3 rounded-lg border border-[#e2d4c0] bg-white px-4 py-3 text-sm font-semibold text-[#2a1c12] hover:border-[#925a27]"
-              >
-                <span>{item.text}</span>
-                {fileType(item.href) && (
-                  <span className="shrink-0 rounded-full bg-[#faf6f0] px-2.5 py-0.5 text-xs font-bold text-[#925a27]">
-                    {fileType(item.href)}
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+          {block.items.map((item) => {
+            const typeLabel = fileType(item.href);
+            return (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className="flex h-full items-center justify-between gap-3 rounded-xl border border-transparent bg-tile-cream px-4 py-3.5 text-label text-fg t-lift hover:border-border hover:bg-white"
+                >
+                  <span>{item.text}</span>
+                  <span className="flex shrink-0 items-center gap-2">
+                    {typeLabel ? (
+                      <span className="rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption font-medium text-terracotta">
+                        {typeLabel}
+                      </span>
+                    ) : null}
+                    <ChevronRight aria-hidden className="size-4 text-muted" />
                   </span>
-                )}
-              </a>
-            </li>
-          ))}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       );
     case "cards":
@@ -165,31 +192,40 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {block.items.map((card) => (
             <li key={card.href}>
-              <a
-                href={card.href}
-                className="block h-full rounded-xl border border-[#e2d4c0] bg-white p-5 shadow-sm hover:border-[#925a27]"
+              <Link
+                to={card.href as LinkProps["to"]}
+                className="group flex h-full flex-col justify-between rounded-xl border border-transparent bg-tile-cream p-5 t-lift hover:border-border hover:bg-white"
               >
-                {card.badge && (
-                  <span className="mb-2 inline-block rounded-full bg-[#faf6f0] px-2.5 py-0.5 text-xs font-bold text-[#925a27]">
+                <div>
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="text-h4 text-fg">{card.title}</span>
+                    <ChevronRight aria-hidden className="mt-1 size-5 shrink-0 text-fg" />
+                  </span>
+                  <span className="mt-2 block text-small text-muted">{card.text}</span>
+                </div>
+                {card.badge ? (
+                  <span className="mt-3 inline-flex w-fit rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-fg">
                     {card.badge}
                   </span>
-                )}
-                <span className="block font-display text-lg font-bold text-[#2a1c12]">{card.title}</span>
-                <span className="mt-1 block text-sm leading-relaxed text-[#6b5848]">{card.text}</span>
-              </a>
+                ) : null}
+              </Link>
             </li>
           ))}
         </ul>
       );
     case "image":
-      return <img src={block.src} alt={block.alt} loading="lazy" className="mt-6 w-full rounded-xl border border-[#e2d4c0]" />;
+      return (
+        <div className="mt-6">
+          <Media src={block.src} alt={block.alt} ratio="16 / 9" tone="cream" />
+        </div>
+      );
   }
 }
 
 /** A page's ported content, in the site's type styles. */
 export function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
   return (
-    <div>
+    <div className="[&>*:first-child]:mt-0">
       {/* Blocks are static text in a fixed order, so the position is a stable key. */}
       {blocks.map((block, index) => (
         <Block key={index} block={block} />
@@ -198,19 +234,49 @@ export function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
   );
 }
 
-/** The frame for a text page: a heading band and a readable column, between the site header and footer. */
-export function ContentPageBody({ eyebrow, title, children }: { eyebrow?: string; title: string; children: ReactNode }) {
+/** The frame for a text page: a cream heading band and a readable prose column, between header and footer. */
+export function ContentPageBody({
+  eyebrow,
+  title,
+  subtitle,
+  notice,
+  actions,
+  children,
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: ReactNode;
+  notice?: ReactNode;
+  actions?: ReactNode;
+  children: ReactNode;
+}) {
   return (
-    <div className="pt-24 pb-20 bg-[#fffdf9]">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        {eyebrow && (
-          <span className="inline-block rounded-full border border-[#e2d4c0] bg-white px-4 py-1.5 text-xs font-bold uppercase text-[#925a27]">
+    <>
+      <Section theme="cream" width="prose" space="sm">
+        {eyebrow ? (
+          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
             {eyebrow}
           </span>
-        )}
-        <h1 className="mt-4 font-display text-3xl sm:text-5xl font-bold text-[#2a1c12] leading-tight">{title}</h1>
-        <div className="mt-6">{children}</div>
-      </div>
-    </div>
+        ) : null}
+        <Heading as="h1" size="hero" className={eyebrow ? "mt-4" : undefined}>
+          {title}
+        </Heading>
+        {subtitle ? <p className="mt-3 text-lead text-muted">{subtitle}</p> : null}
+        {actions ? <div className="mt-6 flex flex-wrap gap-3">{actions}</div> : null}
+      </Section>
+
+      <Section theme="white" width="prose" space="default">
+        {notice ? (
+          <Tile
+            tone="cream"
+            as="aside"
+            className="mb-8 p-5 text-small leading-relaxed text-fg md:p-6"
+          >
+            {notice}
+          </Tile>
+        ) : null}
+        {children}
+      </Section>
+    </>
   );
 }

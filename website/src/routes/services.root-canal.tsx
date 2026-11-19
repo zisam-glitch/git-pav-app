@@ -11,7 +11,7 @@ export const Route = createFileRoute("/services/root-canal")({
 
 function Page() {
   return (
-    <div className="min-h-screen bg-[#fffdf9] text-fg">
+    <div className="min-h-screen bg-white text-fg">
       <Header />
       <RootCanalPage />
       <Footer />

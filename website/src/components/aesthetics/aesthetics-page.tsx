@@ -1,17 +1,17 @@
-import { AestheticsHero } from "./aesthetics-hero";
-import { AestheticsTreatments } from "./aesthetics-treatments";
-import { AestheticsPremium } from "./aesthetics-premium";
-import { AestheticsValues } from "./aesthetics-values";
-import { AestheticsPricing } from "./aesthetics-pricing";
-import { AestheticsFaq } from "./aesthetics-faq";
-import { AestheticsSafetyBanner } from "./aesthetics-safety-banner";
-import { AestheticsSafety } from "./aesthetics-safety";
+import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { TestimonialsSection } from "@/components/testimonials/testimonials-section";
 import { AESTHETICS_TESTIMONIALS } from "@/content/testimonials";
+import { AestheticsHero } from "./aesthetics-hero";
+import { AestheticsPremium } from "./aesthetics-premium";
+import { AestheticsPricing } from "./aesthetics-pricing";
+import { AestheticsSafety } from "./aesthetics-safety";
+import { AestheticsSafetyBanner } from "./aesthetics-safety-banner";
+import { AestheticsTreatments } from "./aesthetics-treatments";
+import { AestheticsValues } from "./aesthetics-values";
 
 export function AestheticsPage() {
   return (
-    <main className="bg-[#fffdf9]">
+    <main className="bg-bg">
       <AestheticsHero />
       <AestheticsTreatments />
       <AestheticsPremium />
@@ -19,7 +19,22 @@ export function AestheticsPage() {
       <AestheticsPricing />
       <TestimonialsSection testimonials={AESTHETICS_TESTIMONIALS} theme="warm" />
       <AestheticsSafetyBanner />
-      <AestheticsFaq />
+      <AestheticsSafety />
+      <CtaBand
+        theme="brown"
+        title="Book"
+        accent="Appointment"
+        tone="gold"
+        actions={
+          <>
+            <BookButton variant="gold">Book Now</BookButton>
+            <CallButton variant="glass" />
+          </>
+        }
+      >
+        Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
+        check-ups, and advanced technologies like digital imaging and laser dentistry.
+      </CtaBand>
     </main>
   );
 }

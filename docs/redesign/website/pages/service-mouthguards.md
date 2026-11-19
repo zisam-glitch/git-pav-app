@@ -28,7 +28,7 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `mouthguards-hero` | `mouthguards-hero.tsx` | `4 / 3` | Editorial Hims-style product still life on warm cream: matte custom sports mouthguard and minimalist travel case on travertine surface in soft natural sunlight, gentle shadows, no text or logos | `website/public/images/generated/mouthguards-hero.jpg` | needed |
+| `mouthguards-hero` | `mouthguards-hero.tsx` | `4 / 3` | Editorial Hims-style product still life on warm cream: matte custom sports mouthguard and minimalist travel case on travertine surface in soft natural sunlight, gentle shadows, no text or logos | `website/public/images/generated/mouthguards-hero.jpg` | done |
 
 ## Verification log
 

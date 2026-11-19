@@ -6,6 +6,7 @@ export function CosmeticAbout() {
       <SplitFeature
         media={
           <Media
+            src="/images/generated/cosmetic-about.jpg"
             alt="Bright minimalist dental consultation suite prepared for smile aesthetic planning"
             ratio="4 / 3"
             tone="sand"

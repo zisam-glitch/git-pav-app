@@ -30,9 +30,9 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `about-hero` | `about/hero.tsx` hero media | `4 / 3` | Editorial photograph of a bright, minimalist dental clinic room in warm natural morning light, cream travertine counter, soft oak accents, calm architectural composition, no text or people | `website/public/images/generated/about-hero.jpg` | needed |
-| `about-legacy` | `about/our-story.tsx` brown feature band | `4 / 3` | Moody golden-hour editorial interior photo of a modern dental studio with warm walnut cabinetry, brushed brass lamp, and soft amber reflections, calm dignified atmosphere, no text or people | `website/public/images/generated/about-legacy.jpg` | needed |
-| `about-future` | `about/our-story.tsx` mobile & app split | `4 / 3` | Hims-style 3D studio still life on warm cream surface: sleek matte-sand mobile dental kit case beside a minimalist ceramic tray in soft natural sunlight, no text or logos | `website/public/images/generated/about-future.jpg` | needed |
+| `about-hero` | `about/hero.tsx` hero media | `4 / 3` | Editorial photograph of a bright, minimalist dental clinic room in warm natural morning light, cream travertine counter, soft oak accents, calm architectural composition, no text or people | `website/public/images/generated/about-hero.jpg` | done |
+| `about-legacy` | `about/our-story.tsx` brown feature band | `4 / 3` | Moody golden-hour editorial interior photo of a modern dental studio with warm walnut cabinetry, brushed brass lamp, and soft amber reflections, calm dignified atmosphere, no text or people | `website/public/images/generated/about-legacy.jpg` | done |
+| `about-future` | `about/our-story.tsx` mobile & app split | `4 / 3` | Hims-style 3D studio still life on warm cream surface: sleek matte-sand mobile dental kit case beside a minimalist ceramic tray in soft natural sunlight, no text or logos | `website/public/images/generated/about-future.jpg` | done |
 
 ## Verification log
 

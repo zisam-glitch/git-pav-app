@@ -29,8 +29,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `vacancies-hero` | `vacancies/vacancies-hero.tsx` | `4 / 3` | Editorial interior photo of a calm, sunlit modern dental clinic reception and consultation lounge in warm cream and oak tones, clean minimalist styling, no text or people | `website/public/images/generated/vacancies-hero.jpg` | needed |
-| `vacancies-sponsorship` | `vacancies/visa-sponsorship-banner.tsx` | `4 / 3` | Moody warm-lit editorial architectural photo of a modern dental treatment suite with travertine surfaces and warm walnut cabinetry, calm refined atmosphere, no text or people | `website/public/images/generated/vacancies-sponsorship.jpg` | needed |
+| `vacancies-hero` | `vacancies/vacancies-hero.tsx` | `4 / 3` | Editorial interior photo of a calm, sunlit modern dental clinic reception and consultation lounge in warm cream and oak tones, clean minimalist styling, no text or people | `website/public/images/generated/vacancies-hero.jpg` | done |
+| `vacancies-sponsorship` | `vacancies/visa-sponsorship-banner.tsx` | `4 / 3` | Moody warm-lit editorial architectural photo of a modern dental treatment suite with travertine surfaces and warm walnut cabinetry, calm refined atmosphere, no text or people | `website/public/images/generated/vacancies-sponsorship.jpg` | done |
 
 ## Verification log
 

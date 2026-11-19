@@ -7,6 +7,7 @@ export function VacanciesHero() {
         reverse
         media={
           <Media
+            src="/images/generated/vacancies-hero.jpg"
             alt="Modern dental clinic workspace at Pav Dental in Bradford"
             ratio="4 / 3"
             tone="cream"

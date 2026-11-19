@@ -35,9 +35,9 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `virtual-dentistry-hero` | `virtual-dentistry-hero.tsx` | `4 / 3` | Editorial studio still life on warm cream surface: sleek frameless tablet resting beside a matte-ceramic mug and soft sage linen cloth in morning sunlight, warm shadows, no text or logos | `website/public/images/generated/virtual-dentistry-hero.jpg` | needed |
-| `virtual-dentistry-benefits` | `virtual-dentistry-benefits.tsx` | `4 / 3` | Warm minimalist 3D render on deep espresso-brown backdrop: unbranded matte-cream prescription vial and pastel-sage oral care box lit by soft golden side light, no text or labels | `website/public/images/generated/virtual-dentistry-benefits.jpg` | needed |
-| `virtual-dentistry-services` | `virtual-dentistry-services.tsx` | `4 / 3` | Calm architectural clinic desk still life in warm natural daylight: smartphone on a travertine stand beside a ceramic tray and dental mirror, soft shadows, no text or people | `website/public/images/generated/virtual-dentistry-services.jpg` | needed |
+| `virtual-dentistry-hero` | `virtual-dentistry-hero.tsx` | `4 / 3` | Editorial studio still life on warm cream surface: sleek frameless tablet resting beside a matte-ceramic mug and soft sage linen cloth in morning sunlight, warm shadows, no text or logos | `website/public/images/generated/virtual-dentistry-hero.jpg` | done |
+| `virtual-dentistry-benefits` | `virtual-dentistry-benefits.tsx` | `4 / 3` | Warm minimalist 3D render on deep espresso-brown backdrop: unbranded matte-cream prescription vial and pastel-sage oral care box lit by soft golden side light, no text or labels | `website/public/images/generated/virtual-dentistry-benefits.jpg` | done |
+| `virtual-dentistry-services` | `virtual-dentistry-services.tsx` | `4 / 3` | Calm architectural clinic desk still life in warm natural daylight: smartphone on a travertine stand beside a ceramic tray and dental mirror, soft shadows, no text or people | `website/public/images/generated/virtual-dentistry-services.jpg` | done |
 
 ## Verification log
 

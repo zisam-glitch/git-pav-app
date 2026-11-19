@@ -4,6 +4,21 @@ import { Heading, Media, Section } from "@/components/hims";
 import { BLOG_POSTS } from "@/content/blog-posts";
 import { NewsletterCta } from "./newsletter-cta";
 
+const BLOG_COVERS: Record<string, string> = {
+  "can-a-dentist-assess-a-dental-problem-through-a-video-call-what-can-and-cant-be-checked":
+    "/images/generated/blog-video-consultation.jpg",
+  "tooth-extraction-in-bradford-when-is-removing-a-tooth-the-best-option":
+    "/images/generated/blog-tooth-extraction.jpg",
+  "24-hour-emergency-dentist-bradford-when-to-call-why-it-matters-and-how-to-get-seen":
+    "/images/generated/blog-emergency-bradford.jpg",
+  "botox-vs-dermal-fillers-finding-the-right-facial-aesthetics-treatment-in-bradford":
+    "/images/generated/blog-botox-vs-fillers.jpg",
+  "can-you-whiten-just-one-tooth-what-causes-single-tooth-discolouration":
+    "/images/generated/blog-single-tooth-whitening.jpg",
+  "24-hour-emergency-dentist-in-leeds-how-quickly-can-you-get-seen":
+    "/images/generated/blog-emergency-leeds.jpg",
+};
+
 /** The blog page: one card per post, newest first, as on the live site. */
 export function BlogIndex() {
   return (
@@ -23,7 +38,9 @@ export function BlogIndex() {
       <Section theme="white" width="wide" space="default">
         <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {BLOG_POSTS.map((post, index) => {
-            const localCover = post.image.src.startsWith("/") ? post.image.src : undefined;
+            const localCover =
+              BLOG_COVERS[post.slug] ??
+              (post.image.src.startsWith("/") ? post.image.src : undefined);
             return (
               <li key={post.slug} className="flex">
                 <article className="flex w-full">

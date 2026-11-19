@@ -30,9 +30,9 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `mobile-dentistry-hero` | `mobile-dentistry-hero.tsx` | `4 / 3` | Editorial product photography on warm cream stone: compact matte-white portable dental handpiece case and ceramic rinse cup in soft morning sunlight, gentle shadows, no text or logos | `website/public/images/generated/mobile-dentistry-hero.jpg` | needed |
-| `mobile-dentistry-service` | `mobile-dentistry-service.tsx` | `4 / 3` | Warm architectural interior photography of a calm modern mobile dental treatment suite with cream upholstery, brushed brass instrument tray, and natural daylight through frosted glass, no people or text | `website/public/images/generated/mobile-dentistry-service.jpg` | needed |
-| `mobile-dentistry-location` | `mobile-dentistry-location.tsx` | `4 / 3` | Minimalist studio still life on pale sand background: clean matte-white mobile medical care kit beside a folded linen towel in warm diffused light, soft shadows, no text or logos | `website/public/images/generated/mobile-dentistry-location.jpg` | needed |
+| `mobile-dentistry-hero` | `mobile-dentistry-hero.tsx` | `4 / 3` | Editorial product photography on warm cream stone: compact matte-white portable dental handpiece case and ceramic rinse cup in soft morning sunlight, gentle shadows, no text or logos | `website/public/images/generated/mobile-dentistry-hero.jpg` | done |
+| `mobile-dentistry-service` | `mobile-dentistry-service.tsx` | `4 / 3` | Warm architectural interior photography of a calm modern mobile dental treatment suite with cream upholstery, brushed brass instrument tray, and natural daylight through frosted glass, no people or text | `website/public/images/generated/mobile-dentistry-service.jpg` | done |
+| `mobile-dentistry-location` | `mobile-dentistry-location.tsx` | `4 / 3` | Minimalist studio still life on pale sand background: clean matte-white mobile medical care kit beside a folded linen towel in warm diffused light, soft shadows, no text or logos | `website/public/images/generated/mobile-dentistry-location.jpg` | done |
 
 ## Verification log
 

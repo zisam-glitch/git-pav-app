@@ -29,8 +29,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `custom-grillz-hero` | `grillz-hero.tsx` (Hero) | `4 / 3` | Luxury editorial still life of polished gold and diamond-accented dental grillz resting on warm cream travertine stone with soft natural daylight and crisp studio shadows, Hims aesthetic, no text, no logos, no people | `website/public/images/generated/custom-grillz-hero.jpg` | needed |
-| `custom-grillz-craft` | `grillz-pricing.tsx` (One Year Guarantee dark brown feature) | `4 / 3` | Close-up editorial product composition of an open bespoke jewelry presentation box lined in dark espresso suede holding a custom gold grill piece under warm directional light, Hims aesthetic, no text, no logos, no people | `website/public/images/generated/custom-grillz-craft.jpg` | needed |
+| `custom-grillz-hero` | `grillz-hero.tsx` (Hero) | `4 / 3` | Luxury editorial still life of polished gold and diamond-accented dental grillz resting on warm cream travertine stone with soft natural daylight and crisp studio shadows, Hims aesthetic, no text, no logos, no people | `website/public/images/generated/custom-grillz-hero.jpg` | done |
+| `custom-grillz-craft` | `grillz-pricing.tsx` (One Year Guarantee dark brown feature) | `4 / 3` | Close-up editorial product composition of an open bespoke jewelry presentation box lined in dark espresso suede holding a custom gold grill piece under warm directional light, Hims aesthetic, no text, no logos, no people | `website/public/images/generated/custom-grillz-craft.jpg` | done |
 
 ## Verification log
 

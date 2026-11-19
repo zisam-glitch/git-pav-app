@@ -32,9 +32,9 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `cosmetic-hero` | `website/src/components/cosmetic/cosmetic-hero.tsx` | `4 / 3` | Editorial studio photograph of a porcelain tooth shade guide, stainless dental mirror, and warm ceramic tray on a soft cream stone surface in warm natural morning light with gentle shadows, Hims-style clinical calm, no text, no logos, no people | `website/public/images/generated/cosmetic-hero.jpg` | needed |
-| `cosmetic-about` | `website/src/components/cosmetic/cosmetic-about.tsx` | `4 / 3` | Minimalist sunlit private cosmetic dental consultation room with warm oak cabinetry, linen upholstery, and soft natural daylight, calm editorial photography, no text, no logos, no people | `website/public/images/generated/cosmetic-about.jpg` | needed |
-| `cosmetic-showcase` | `website/src/components/cosmetic/cosmetic-showcase.tsx` | `4 / 3` | Close-up studio 3D-style product composition of translucent porcelain dental models and precision instruments on a deep espresso-brown surface with warm golden rim light, no text, no logos, no people | `website/public/images/generated/cosmetic-showcase.jpg` | needed |
+| `cosmetic-hero` | `website/src/components/cosmetic/cosmetic-hero.tsx` | `4 / 3` | Editorial studio photograph of a porcelain tooth shade guide, stainless dental mirror, and warm ceramic tray on a soft cream stone surface in warm natural morning light with gentle shadows, Hims-style clinical calm, no text, no logos, no people | `website/public/images/generated/cosmetic-hero.jpg` | done |
+| `cosmetic-about` | `website/src/components/cosmetic/cosmetic-about.tsx` | `4 / 3` | Minimalist sunlit private cosmetic dental consultation room with warm oak cabinetry, linen upholstery, and soft natural daylight, calm editorial photography, no text, no logos, no people | `website/public/images/generated/cosmetic-about.jpg` | done |
+| `cosmetic-showcase` | `website/src/components/cosmetic/cosmetic-showcase.tsx` | `4 / 3` | Close-up studio 3D-style product composition of translucent porcelain dental models and precision instruments on a deep espresso-brown surface with warm golden rim light, no text, no logos, no people | `website/public/images/generated/cosmetic-showcase.jpg` | done |
 
 ## Verification log
 

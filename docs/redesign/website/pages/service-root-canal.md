@@ -31,8 +31,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `root-canal-hero` | `root-canal-hero.tsx` | `4 / 3` | Minimalist editorial photograph of a serene modern dental suite in warm natural sunlight with cream stone, brushed steel dental mirror, and soft shadows | `website/public/images/generated/root-canal-hero.jpg` | needed |
-| `root-canal-how` | `root-canal-how.tsx` | `16 / 9` | Atmospheric editorial photograph of a calm modern dental room in warm amber architectural lighting ready for endodontic care, soft shadows, no text or logos | `website/public/images/generated/root-canal-how.jpg` | needed |
+| `root-canal-hero` | `root-canal-hero.tsx` | `4 / 3` | Minimalist editorial photograph of a serene modern dental suite in warm natural sunlight with cream stone, brushed steel dental mirror, and soft shadows | `website/public/images/generated/root-canal-hero.jpg` | done |
+| `root-canal-how` | `root-canal-how.tsx` | `16 / 9` | Atmospheric editorial photograph of a calm modern dental room in warm amber architectural lighting ready for endodontic care, soft shadows, no text or logos | `website/public/images/generated/root-canal-how.jpg` | done |
 
 ## Verification log
 

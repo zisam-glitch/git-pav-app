@@ -21,7 +21,7 @@ export function AestheticsHero() {
         reverse
         media={
           <Media
-            src="/images/generated/home-facial-aesthetics.jpg"
+            src="/images/generated/aesthetics-hero.jpg"
             alt="Warm sunlit facial aesthetics consultation room at Pav Dental in Bradford"
             ratio="4 / 3"
             tone="cream"

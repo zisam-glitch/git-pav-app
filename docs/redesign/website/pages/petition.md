@@ -27,7 +27,7 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `petition-hero` | `petition/petition-hero.tsx` | `4 / 3` | Warm sunlit editorial photograph of a welcoming modern dental clinic exterior and street-level entrance in northern England, warm cream stone and soft daylight, calm community atmosphere, no text or people | `website/public/images/generated/petition-hero.jpg` | needed |
+| `petition-hero` | `petition/petition-hero.tsx` | `4 / 3` | Warm sunlit editorial photograph of a welcoming modern dental clinic exterior and street-level entrance in northern England, warm cream stone and soft daylight, calm community atmosphere, no text or people | `website/public/images/generated/petition-hero.jpg` | done |
 
 ## Verification log
 

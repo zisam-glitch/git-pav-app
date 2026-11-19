@@ -43,6 +43,7 @@ export function RootCanalHero() {
         </div>
 
         <Media
+          src="/images/generated/root-canal-hero.jpg"
           alt="Warm sunlit Pav Dental treatment room prepared for root canal care"
           ratio="4 / 3"
           tone="cream"

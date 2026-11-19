@@ -21,6 +21,7 @@ export function CosmeticHero() {
         reverse
         media={
           <Media
+            src="/images/generated/cosmetic-hero.jpg"
             alt="Cosmetic dentistry shade guide and porcelain dental mirror in warm natural studio light"
             ratio="4 / 3"
             tone="cream"

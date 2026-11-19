@@ -29,7 +29,7 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `pricing-hero` | `pricing-hero.tsx` | `4 / 3` | Editorial studio still life on warm cream: sunlit dental consultation desk with matte-cream treatment folder, ceramic cup, and warm soft shadows, no text or logos | `website/public/images/generated/pricing-hero.jpg` | needed |
+| `pricing-hero` | `pricing-hero.tsx` | `4 / 3` | Editorial studio still life on warm cream: sunlit dental consultation desk with matte-cream treatment folder, ceramic cup, and warm soft shadows, no text or logos | `website/public/images/generated/pricing-hero.jpg` | done |
 
 ## Verification log
 

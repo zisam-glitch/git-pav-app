@@ -13,6 +13,7 @@ export function VisaSponsorshipBanner({ onApplySponsorship }: VisaSponsorshipBan
         reverse
         media={
           <Media
+            src="/images/generated/vacancies-sponsorship.jpg"
             alt="Clinical dental environment welcoming international dental professionals"
             ratio="4 / 3"
             tone="brown"

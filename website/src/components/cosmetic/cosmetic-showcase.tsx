@@ -16,6 +16,7 @@ export function CosmeticShowcase() {
       <SplitFeature
         media={
           <Media
+            src="/images/generated/cosmetic-showcase.jpg"
             alt="Cosmetic dental ceramic models and porcelain shade tabs in warm studio light"
             ratio="4 / 3"
             tone="brown"

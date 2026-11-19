@@ -10,32 +10,32 @@ Status meaning: `todo` not started, `built` redesigned but not yet compared with
 
 | Group | Page | Route(s) | Sections | verified | built | todo | blocked | Images to make |
 |---|---|---|---|---|---|---|---|---|
-| S2-A | [Service: Emergency dental](pages/service-emergency-dental.md) | `/services/emergency-dental` | 8 | 8 | 0 | 0 | 0 | 1 |
-| S4-B | [Service: Mobile dentistry](pages/service-mobile-dentistry.md) | `/services/mobile-dentistry` | 6 | 6 | 0 | 0 | 0 | 3 |
-| S1-B | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 8 | 0 | 0 | 0 | 2 |
-| S2-A | [Service: Root canal](pages/service-root-canal.md) | `/services/root-canal` | 7 | 7 | 0 | 0 | 0 | 2 |
-| S1-B | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 7 | 0 | 0 | 0 | 1 |
-| S4-B | [Service: Virtual dentistry](pages/service-virtual-dentistry.md) | `/services/virtual-dentistry` | 8 | 8 | 0 | 0 | 0 | 3 |
+| S2-A | [Service: Emergency dental](pages/service-emergency-dental.md) | `/services/emergency-dental` | 8 | 8 | 0 | 0 | 0 | 0 |
+| S4-B | [Service: Mobile dentistry](pages/service-mobile-dentistry.md) | `/services/mobile-dentistry` | 6 | 6 | 0 | 0 | 0 | 0 |
+| S1-B | [Service: Oral hygiene](pages/service-oral-hygiene.md) | `/services/oral-hygiene` | 8 | 8 | 0 | 0 | 0 | 0 |
+| S2-A | [Service: Root canal](pages/service-root-canal.md) | `/services/root-canal` | 7 | 7 | 0 | 0 | 0 | 0 |
+| S1-B | [Service: Tooth extraction](pages/service-tooth-extraction.md) | `/services/tooth-extraction` | 7 | 7 | 0 | 0 | 0 | 0 |
+| S4-B | [Service: Virtual dentistry](pages/service-virtual-dentistry.md) | `/services/virtual-dentistry` | 8 | 8 | 0 | 0 | 0 | 0 |
 | F1 | [Site shell: header, footer, cookie banner, 404](pages/shell.md) | `every page` | 6 | 6 | 0 | 0 | 0 | 0 |
-| A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 7 |
-| S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 17 | 0 | 0 | 0 | 2 |
-| S2 | [Service: Dentures](pages/service-dentures.md) | `/services/dentures` | 7 | 7 | 0 | 0 | 0 | 2 |
-| S2 | [Service: Mouthguards](pages/service-mouthguards.md) | `/services/mouthguards` | 7 | 7 | 0 | 0 | 0 | 1 |
-| S3 | [Service: Aesthetics](pages/service-aesthetics.md) | `/services/aesthetics` | 9 | 9 | 0 | 0 | 0 | 2 |
-| S3 | [Service: Cosmetic](pages/service-cosmetic.md) | `/services/cosmetic` | 9 | 9 | 0 | 0 | 0 | 3 |
-| S3 | [Service: Custom grillz](pages/service-custom-grillz.md) | `/services/custom-grillz` | 7 | 7 | 0 | 0 | 0 | 2 |
-| S3 | [Service: Whitening](pages/service-whitening.md) | `/services/whitening` | 5 | 5 | 0 | 0 | 0 | 4 |
+| A1 | [Home](pages/home.md) | `/` | 16 | 16 | 0 | 0 | 0 | 0 |
+| S1 | [Service: General dentistry](pages/service-general-dentistry.md) | `/services/general-dentistry` | 17 | 17 | 0 | 0 | 0 | 0 |
+| S2 | [Service: Dentures](pages/service-dentures.md) | `/services/dentures` | 7 | 7 | 0 | 0 | 0 | 0 |
+| S2 | [Service: Mouthguards](pages/service-mouthguards.md) | `/services/mouthguards` | 7 | 7 | 0 | 0 | 0 | 0 |
+| S3 | [Service: Aesthetics](pages/service-aesthetics.md) | `/services/aesthetics` | 9 | 9 | 0 | 0 | 0 | 0 |
+| S3 | [Service: Cosmetic](pages/service-cosmetic.md) | `/services/cosmetic` | 9 | 9 | 0 | 0 | 0 | 0 |
+| S3 | [Service: Custom grillz](pages/service-custom-grillz.md) | `/services/custom-grillz` | 7 | 7 | 0 | 0 | 0 | 0 |
+| S3 | [Service: Whitening](pages/service-whitening.md) | `/services/whitening` | 5 | 5 | 0 | 0 | 0 | 0 |
 | S4 | [Contact us](pages/contact.md) | `/contact-us` | 2 | 2 | 0 | 0 | 0 | 0 |
-| S4 | [Pricing](pages/pricing.md) | `/pricing` | 6 | 6 | 0 | 0 | 0 | 1 |
-| P1 | [About](pages/about.md) | `/about` | 7 | 7 | 0 | 0 | 0 | 3 |
-| P1 | [Petition](pages/petition.md) | `/petition` | 5 | 5 | 0 | 0 | 0 | 1 |
+| S4 | [Pricing](pages/pricing.md) | `/pricing` | 6 | 6 | 0 | 0 | 0 | 0 |
+| P1 | [About](pages/about.md) | `/about` | 7 | 7 | 0 | 0 | 0 | 0 |
+| P1 | [Petition](pages/petition.md) | `/petition` | 5 | 5 | 0 | 0 | 0 | 0 |
 | P1 | [Team and team profiles](pages/team.md) | `/team`, `/team/$slug` | 3 | 3 | 0 | 0 | 0 | 0 |
-| P1 | [Vacancies](pages/vacancies.md) | `/vacancies` | 6 | 6 | 0 | 0 | 0 | 2 |
-| C1 | [Blog and posts](pages/blog.md) | `/blog`, `/blog/$slug` | 3 | 3 | 0 | 0 | 0 | 6 |
+| P1 | [Vacancies](pages/vacancies.md) | `/vacancies` | 6 | 6 | 0 | 0 | 0 | 0 |
+| C1 | [Blog and posts](pages/blog.md) | `/blog`, `/blog/$slug` | 3 | 3 | 0 | 0 | 0 | 0 |
 | C1 | [FAQ and policy pages](pages/faq-and-policies.md) | `/faq`, `/practice-policy`, `/cctv-policy`, `/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy` | 2 | 2 | 0 | 0 | 0 | 0 |
 | C1 | [Services hub](pages/services-hub.md) | `/services` | 2 | 2 | 0 | 0 | 0 | 0 |
-| SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 11 | 0 | 0 | 0 | 1 |
-| | **Total** | | **174** | **174** | **0** | **0** | **0** | **49** |
+| SH | [Shop: catalogue, product, category, cart, checkout, order](pages/shop.md) | `/shop`, `/shop/$productSlug`, `/category/$slug`, `/cart`, `/checkout`, `/order/$id` | 11 | 11 | 0 | 0 | 0 | 0 |
+| | **Total** | | **174** | **174** | **0** | **0** | **0** | **0** |
 
 ## Service: Emergency dental
 

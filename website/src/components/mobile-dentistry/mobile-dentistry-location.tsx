@@ -6,6 +6,7 @@ export function MobileDentistryLocation() {
       <SplitFeature
         media={
           <Media
+            src="/images/generated/mobile-dentistry-location.jpg"
             ratio="4 / 3"
             tone="cream"
             alt="Pav Dental Mobile outreach vehicle serving patients across the UK"

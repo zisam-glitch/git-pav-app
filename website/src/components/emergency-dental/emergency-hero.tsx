@@ -51,7 +51,7 @@ export function EmergencyHero() {
         </div>
 
         <Media
-          src="/images/generated/home-emergency-night.jpg"
+          src="/images/generated/emergency-dental-hero.jpg"
           alt="Pav Dental emergency dental clinic in Bradford ready for 24-hour urgent dental care"
           ratio="4 / 3"
           tone="navy"

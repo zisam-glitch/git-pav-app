@@ -11,6 +11,7 @@ export function DenturesShowcase() {
       <SplitFeature
         media={
           <Media
+            src="/images/generated/dentures-showcase.jpg"
             ratio="4 / 3"
             tone="brown"
             className="bg-white/10"

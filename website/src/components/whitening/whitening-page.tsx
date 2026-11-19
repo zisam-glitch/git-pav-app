@@ -48,6 +48,7 @@ export function WhiteningPage() {
           reverse
           media={
             <Media
+              src="/images/generated/whitening-hero.jpg"
               alt="Bright minimalist teeth whitening consultation room and care vessels in warm sunlight"
               ratio="4 / 3"
               tone="cream"

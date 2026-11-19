@@ -21,6 +21,7 @@ export function GrillzHero() {
         reverse
         media={
           <Media
+            src="/images/generated/custom-grillz-hero.jpg"
             alt="Custom gold and diamond dental grillz presented on a warm cream stone surface"
             ratio="4 / 3"
             tone="cream"

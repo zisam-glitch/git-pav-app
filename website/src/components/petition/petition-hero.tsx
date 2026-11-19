@@ -18,6 +18,7 @@ export function PetitionHero() {
         reverse
         media={
           <Media
+            src="/images/generated/petition-hero.jpg"
             alt="Bradford community supporting accessible NHS dental care"
             ratio="4 / 3"
             tone="cream"

@@ -7,6 +7,7 @@ export function PricingHero() {
         reverse
         media={
           <Media
+            src="/images/generated/pricing-hero.jpg"
             alt="Warm sunlit dental consultation desk with treatment guide and ceramic cup on cream surface"
             ratio="4 / 3"
             tone="cream"

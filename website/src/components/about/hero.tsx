@@ -7,6 +7,7 @@ export function Hero() {
         reverse
         media={
           <Media
+            src="/images/generated/about-hero.jpg"
             alt="Warm sunlit Pav Dental treatment room in Bradford"
             ratio="4 / 3"
             tone="cream"

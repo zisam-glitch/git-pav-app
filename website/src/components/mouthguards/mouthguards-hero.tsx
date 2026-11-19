@@ -7,6 +7,7 @@ export function MouthguardsHero() {
         reverse
         media={
           <Media
+            src="/images/generated/mouthguards-hero.jpg"
             ratio="4 / 3"
             tone="cream"
             priority

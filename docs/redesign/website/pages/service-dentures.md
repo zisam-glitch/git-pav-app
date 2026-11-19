@@ -29,8 +29,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `dentures-hero` | `dentures-hero.tsx` | `4 / 3` | Editorial Hims-style studio still life on warm cream: matte-cream ceramic tray holding a sculpted prosthetic dental arch model in soft morning sunlight, gentle shadows, no text or logos | `website/public/images/generated/dentures-hero.jpg` | needed |
-| `dentures-showcase` | `dentures-showcase.tsx` | `4 / 3` | Atmospheric Hims-style product macro on warm dark walnut surface: precision acrylic and flexible dental prosthetic models in soft directional warm studio lighting, no text or logos | `website/public/images/generated/dentures-showcase.jpg` | needed |
+| `dentures-hero` | `dentures-hero.tsx` | `4 / 3` | Editorial Hims-style studio still life on warm cream: matte-cream ceramic tray holding a sculpted prosthetic dental arch model in soft morning sunlight, gentle shadows, no text or logos | `website/public/images/generated/dentures-hero.jpg` | done |
+| `dentures-showcase` | `dentures-showcase.tsx` | `4 / 3` | Atmospheric Hims-style product macro on warm dark walnut surface: precision acrylic and flexible dental prosthetic models in soft directional warm studio lighting, no text or logos | `website/public/images/generated/dentures-showcase.jpg` | done |
 
 ## Verification log
 

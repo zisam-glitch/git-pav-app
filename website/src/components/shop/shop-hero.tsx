@@ -11,6 +11,7 @@ export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps)
         reverse
         media={
           <Media
+            src="/images/generated/shop-hero.jpg"
             alt="Curated dental care products arranged on a warm surface"
             ratio="4 / 3"
             tone="sand"

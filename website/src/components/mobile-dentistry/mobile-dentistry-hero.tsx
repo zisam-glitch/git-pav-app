@@ -37,7 +37,7 @@ export function MobileDentistryHero() {
         </div>
 
         <Media
-          src="/images/generated/home-mobile-dentistry.jpg"
+          src="/images/generated/mobile-dentistry-hero.jpg"
           alt="Pav Dental mobile dentistry equipment in warm natural light"
           ratio="4 / 3"
           tone="cream"

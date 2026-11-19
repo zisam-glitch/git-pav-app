@@ -7,6 +7,7 @@ export function MobileDentistryService() {
         reverse
         media={
           <Media
+            src="/images/generated/mobile-dentistry-service.jpg"
             ratio="4 / 3"
             tone="brown"
             className="bg-white/10"

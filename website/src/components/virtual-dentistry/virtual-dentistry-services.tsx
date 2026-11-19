@@ -14,7 +14,12 @@ export function VirtualDentistryServices() {
     <Section id="services" theme="white" space="default">
       <SplitFeature
         media={
-          <Media ratio="4 / 3" tone="cream" alt="24/7 emergency and virtual dental care support" />
+          <Media
+            src="/images/generated/virtual-dentistry-services.jpg"
+            ratio="4 / 3"
+            tone="cream"
+            alt="24/7 emergency and virtual dental care support"
+          />
         }
       >
         <div>

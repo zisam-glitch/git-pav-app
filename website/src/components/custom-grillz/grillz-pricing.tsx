@@ -15,6 +15,7 @@ export function GrillzPricing() {
       <SplitFeature
         media={
           <Media
+            src="/images/generated/custom-grillz-craft.jpg"
             alt="Custom-crafted dental grillz presentation box in warm studio light"
             ratio="4 / 3"
             tone="brown"

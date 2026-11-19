@@ -51,6 +51,7 @@ export function VirtualDentistryBenefits() {
         ))}
 
         <Media
+          src="/images/generated/virtual-dentistry-benefits.jpg"
           ratio="4 / 3"
           tone="brown"
           className="h-full bg-white/10"

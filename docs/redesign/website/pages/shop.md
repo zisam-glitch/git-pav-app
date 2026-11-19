@@ -37,7 +37,7 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `shop-hero` | `shop-hero.tsx` | `4 / 3` | Editorial studio still life on warm cream stone: minimalist matte-cream and soft-sage oral care bottles, ceramic cup, and bamboo toothbrush in warm natural morning light with soft shadows, no text or logos | `website/public/images/generated/shop-hero.jpg` | needed |
+| `shop-hero` | `shop-hero.tsx` | `4 / 3` | Editorial studio still life on warm cream stone: minimalist matte-cream and soft-sage oral care bottles, ceramic cup, and bamboo toothbrush in warm natural morning light with soft shadows, no text or logos | `website/public/images/generated/shop-hero.jpg` | done |
 
 ## Verification log
 

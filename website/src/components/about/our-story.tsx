@@ -69,6 +69,7 @@ export function OurStory() {
           reverse
           media={
             <Media
+              src="/images/generated/about-legacy.jpg"
               alt="Serene dental suite in golden light honouring Dr. Pav's vision"
               ratio="4 / 3"
               tone="brown"
@@ -121,6 +122,7 @@ export function OurStory() {
         <SplitFeature
           media={
             <Media
+              src="/images/generated/about-future.jpg"
               alt="Pav Dental App alongside our Bradford Hub and Mobile clinic"
               ratio="4 / 3"
               tone="cream"

@@ -32,7 +32,7 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `emergency-dental-hero` | `emergency-hero.tsx` | `4 / 3` | Editorial photograph of a calm modern emergency dental treatment room at dusk with warm ambient lighting, cream cabinetry, and brushed steel instruments | `website/public/images/generated/emergency-dental-hero.jpg` | needed (currently using existing `/images/generated/home-emergency-night.jpg`) |
+| `emergency-dental-hero` | `emergency-hero.tsx` | `4 / 3` | Editorial photograph of a calm modern emergency dental treatment room at dusk with warm ambient lighting, cream cabinetry, and brushed steel instruments | `website/public/images/generated/emergency-dental-hero.jpg` | done |
 
 ## Verification log
 

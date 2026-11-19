@@ -31,8 +31,8 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | Slot | Used in | Aspect | Prompt | File to create | Status |
 |---|---|---|---|---|---|
-| `aesthetics-hero` | `website/src/components/aesthetics/aesthetics-hero.tsx` | `4 / 3` | Serene architectural photograph of a modern facial aesthetics clinic room in warm natural morning light, cream linen chair, frosted glass skincare bottles on a travertine counter, soft shadows, no text, no logos, no people | `website/public/images/generated/aesthetics-hero.jpg` | needed |
-| `aesthetics-premium` | `website/src/components/aesthetics/aesthetics-premium.tsx` | `4 / 3` | Hims-style studio product still life of amber and frosted glass medical skincare vials on a dark espresso-brown ceramic tray with warm golden side light, clean minimal shadows, no text, no logos, no people | `website/public/images/generated/aesthetics-premium.jpg` | needed |
+| `aesthetics-hero` | `website/src/components/aesthetics/aesthetics-hero.tsx` | `4 / 3` | Serene architectural photograph of a modern facial aesthetics clinic room in warm natural morning light, cream linen chair, frosted glass skincare bottles on a travertine counter, soft shadows, no text, no logos, no people | `website/public/images/generated/aesthetics-hero.jpg` | done |
+| `aesthetics-premium` | `website/src/components/aesthetics/aesthetics-premium.tsx` | `4 / 3` | Hims-style studio product still life of amber and frosted glass medical skincare vials on a dark espresso-brown ceramic tray with warm golden side light, clean minimal shadows, no text, no logos, no people | `website/public/images/generated/aesthetics-premium.jpg` | done |
 
 ## Verification log
 

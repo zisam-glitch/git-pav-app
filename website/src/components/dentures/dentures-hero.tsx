@@ -7,6 +7,7 @@ export function DenturesHero() {
         reverse
         media={
           <Media
+            src="/images/generated/dentures-hero.jpg"
             ratio="4 / 3"
             tone="cream"
             priority

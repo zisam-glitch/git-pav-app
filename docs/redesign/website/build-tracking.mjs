@@ -25,7 +25,7 @@ const pages = readdirSync(pagesDir)
     const count = (s) => rows.filter((r) => r[4] === s).length;
     const images = ((text.split(/^## Images needed \(Google Flow\)$/m)[1] || "").split(/^## /m)[0] || "")
       .split("\n")
-      .filter((l) => l.startsWith("|") && !/^\|[-| ]+\|$/.test(l) && !/^\| Slot /.test(l)).length;
+      .filter((l) => l.startsWith("|") && !/^\|[-| ]+\|$/.test(l) && !/^\| Slot /.test(l) && !/\|\s*done\s*\|\s*$/i.test(l)).length;
     return { file, slug: file.replace(/\.md$/, ""), title, group, routes, rows, images, n: { todo: count("todo"), built: count("built"), verified: count("verified"), blocked: count("blocked") } };
   })
   .sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group) || a.title.localeCompare(b.title));

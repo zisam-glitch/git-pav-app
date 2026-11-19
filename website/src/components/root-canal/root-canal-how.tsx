@@ -45,6 +45,7 @@ export function RootCanalHow() {
               ) : (
                 <div className="relative size-full">
                   <Media
+                    src="/images/generated/root-canal-how.jpg"
                     alt="Pav Dental clinical room prepared for root canal treatment"
                     ratio="16 / 9"
                     tone="brown"

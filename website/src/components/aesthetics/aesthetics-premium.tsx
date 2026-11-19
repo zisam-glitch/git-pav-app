@@ -7,6 +7,7 @@ export function AestheticsPremium() {
         reverse
         media={
           <Media
+            src="/images/generated/aesthetics-premium.jpg"
             alt="Curated aesthetic skincare vials and clinical ceramic tray in warm studio light"
             ratio="4 / 3"
             tone="brown"

@@ -44,6 +44,7 @@ export function VirtualDentistryHero() {
         </div>
 
         <Media
+          src="/images/generated/virtual-dentistry-hero.jpg"
           ratio="4 / 3"
           tone="cream"
           alt="Virtual dental video consultation on a tablet in warm natural light"

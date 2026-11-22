@@ -5,7 +5,6 @@ import { Counters } from "@/components/home/counters";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
 import { HeroSlider } from "@/components/home/hero-slider";
-import { HomeEmergency } from "@/components/home/home-emergency";
 import { HomeTeamCarousel } from "@/components/home/home-team-carousel";
 import { Marquee } from "@/components/home/marquee";
 import { Overview } from "@/components/home/overview";
@@ -29,9 +28,7 @@ function Home() {
       <HeroSlider />
       <Marquee />
       <ServiceTabs />
-      <HomeEmergency />
       <Overview />
-      <HomeEmergency />
       <VideoSection />
       <Counters />
       <HomeTeamCarousel />

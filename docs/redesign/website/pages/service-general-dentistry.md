@@ -66,3 +66,13 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 4. **Local reusable patterns for possible promotion to `components/hims/`:**
    - `GeneralDentistryFeePanel` (`general-dentistry-fee-panel.tsx`): white `rounded-xl` price-list panel with `divide-y divide-border`, `tabular-nums` right-aligned prices, and `BookButton`.
    - `GeneralDentistryConsentPanel` (`general-dentistry-consent-panel.tsx`): `wrap-prose` / `rounded-xl` clinical consent callout list with icon badges and `divide-y divide-border`.
+
+## Pass 2
+
+- **Capture used:** `/testosterone.html` (condition page) and the PDP bands (`/weight-loss/wegovy-pill.html`) per [treatment-page-recipe](../hims-patterns/treatment-page-recipe.md).
+- **Differences found:** split hero with eyebrow pill; navy video band; three price tables as one divided panel; tile grids with 01/02 counters and eyebrow pills; cream `FaqList`; CtaBand with no form (live ends with the Get In Touch form).
+- **Rebuilt:** hero (`TreatmentHero`, facts are live tier names with prices), cavities video (rounded card, button restyled), the three price tables (`general-dentistry-tier-cards.tsx`: sand cards, H3 keeps "Basic Root Canal (£195)"), services (`BenefitCards`), importance and choosing (`IncludedList`, rows keep the live "1. Early Diagnosis: ..." sentences), FAQ (`FaqSection`), closing (`general-dentistry-contact.tsx`, the live form). Consent blocks untouched (`ConsentPanel`, words verbatim). Showcase kept (dark band) minus its pill and counters. Section order kept as before (extraction before filling), SEO.
+- **Wording changes:** none.
+- **Removed (repo-only, not on the live page):** eyebrow pills "Preventative & Restorative Care", "Patient Education", "Clinical Treatments", "Preventative Approach", "Choosing Your Clinic", "Explore Treatments", "Patient Guidance". The closing CtaBand H2 is now the live "Get In Touch" form heading.
+- **Images needed:** none new.
+- **Open questions:** live shows filling prices before extraction prices; the page keeps the pre-pass-2 order. Unused files: `general-dentistry-fee-panel.tsx` and the four older pricing summaries.

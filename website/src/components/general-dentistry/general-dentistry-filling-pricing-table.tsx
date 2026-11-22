@@ -1,6 +1,6 @@
-import { GeneralDentistryFeePanel, type FeeTier } from "./general-dentistry-fee-panel";
+import { GeneralDentistryTierCards, type TierCard } from "./general-dentistry-tier-cards";
 
-const TIERS: readonly FeeTier[] = [
+const TIERS: readonly TierCard[] = [
   {
     id: "basic-composite",
     label: "Basic Composite",
@@ -26,7 +26,7 @@ const TIERS: readonly FeeTier[] = [
 
 export function GeneralDentistryFillingPricingTable() {
   return (
-    <GeneralDentistryFeePanel
+    <GeneralDentistryTierCards
       theme="cream"
       title="Our White Filling"
       accent="Prices"

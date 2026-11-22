@@ -14,17 +14,13 @@ export function GrillzContact() {
     <Section id="contact" theme="cream" aria-labelledby="grillz-contact-heading">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-[460px]">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Bespoke Design Enquiry
-          </span>
-          <div id="grillz-contact-heading" className="mt-4">
+          <div id="grillz-contact-heading">
             <Heading as="h2" size="h2-md" accent="Touch" tone="terracotta" inline>
               Get In
             </Heading>
           </div>
           <p className="mt-4 text-lead text-muted">
-            Ready to take control of your dental health? Contact us to book your appointment
-            today!
+            Ready to take control of your dental health? Contact us to book your appointment today!
           </p>
 
           <ul className="mt-8 divide-y divide-border border-y border-border text-body">
@@ -32,7 +28,7 @@ export function GrillzContact() {
             <li className="py-3">
               <a
                 href={PRACTICE_PHONE_HREF}
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
               >
                 {PRACTICE_PHONE}
               </a>
@@ -40,7 +36,7 @@ export function GrillzContact() {
             <li className="py-3">
               <a
                 href="tel:+447311871456"
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
               >
                 44 7311 871456
               </a>
@@ -48,7 +44,7 @@ export function GrillzContact() {
             <li className="py-3">
               <a
                 href={`mailto:${PRACTICE_EMAIL}`}
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
               >
                 {PRACTICE_EMAIL}
               </a>

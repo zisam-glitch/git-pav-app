@@ -14,10 +14,7 @@ export function ExtractionBook() {
     <Section theme="white" space="default">
       <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Same-Day Appointments
-          </p>
-          <Heading as="h2" size="h2-md" accent="Today" tone="terracotta" className="mt-4">
+          <Heading as="h2" size="h2-md" accent="Today" tone="terracotta">
             Book Your Appointment
           </Heading>
           <p className="mt-4 max-w-xl text-lead text-muted">
@@ -62,7 +59,7 @@ export function ExtractionBook() {
             Why Choose PavDental?
           </Heading>
           <ul className="mt-6 divide-y divide-border">
-            {REASONS.map((reason, index) => (
+            {REASONS.map((reason) => (
               <li
                 key={reason}
                 className="flex items-center justify-between gap-3 py-4 text-lead text-fg"
@@ -72,9 +69,6 @@ export function ExtractionBook() {
                     <Check aria-hidden className="size-4" />
                   </span>
                   <span>{reason}</span>
-                </span>
-                <span className="rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium text-muted tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
                 </span>
               </li>
             ))}

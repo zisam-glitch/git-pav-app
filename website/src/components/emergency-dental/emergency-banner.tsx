@@ -1,21 +1,19 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { ClosingBand } from "@/components/hims/closing-band";
 import { PRACTICE_PHONE } from "@/lib/enquiry";
 
 export function EmergencyBanner() {
   return (
-    <CtaBand
-      theme="brown"
+    <ClosingBand
       title="Say Goodbye TO"
-      accent="Your Dental Pain!"
-      tone="gold"
+      highlight="Your Dental Pain!"
+      lead="Book An Emergency Dental Appointment With US TODAY!"
       actions={
         <>
-          <CallButton variant="gold">Call us Now · {PRACTICE_PHONE}</CallButton>
+          <CallButton variant="butter">Call us Now · {PRACTICE_PHONE}</CallButton>
           <BookButton variant="glass">Book Now</BookButton>
         </>
       }
-    >
-      Book An Emergency Dental Appointment With US TODAY!
-    </CtaBand>
+    />
   );
 }

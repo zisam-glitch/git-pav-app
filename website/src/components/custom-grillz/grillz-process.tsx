@@ -1,57 +1,36 @@
-import { Heading, Section, Tile } from "@/components/hims";
+import { Section } from "@/components/hims";
+import { SectionHeader } from "@/components/hims/section-header";
 
 const REASONS = [
-  {
-    title: "Worldwide Reach",
-    desc: "No matter your location, our grillz are just a scan away.",
-  },
-  {
-    title: "Expert Craftsmanship",
-    desc: "With attention to detail and quality, we create pieces that are as unique as you.",
-  },
-  {
-    title: "Personalized Experience",
-    desc: "From design to delivery, your preferences are our priority.",
-  },
-  {
-    title: "Peace of Mind",
-    desc: "Our 1-year guarantee means your investment is protected.",
-  },
+  ["Worldwide Reach:", "No matter your location, our grillz are just a scan away."],
+  [
+    "Expert Craftsmanship:",
+    "With attention to detail and quality, we create pieces that are as unique as you.",
+  ],
+  ["Personalized Experience:", "From design to delivery, your preferences are our priority."],
+  ["Peace of Mind:", "Our 1-year guarantee means your investment is protected."],
 ] as const;
 
+/** Hims key-line rows (see `KeyLineList`), with the title and its sentence in one paragraph as on the live page. */
 export function GrillzProcess() {
   return (
-    <Section id="why-pav" theme="white" aria-labelledby="grillz-why-pav-heading">
-      <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-          Clinical Craftsmanship
-        </span>
-        <div id="grillz-why-pav-heading" className="mt-4">
-          <Heading size="h2-md" accent="Pav Dental Grillz?" tone="terracotta" inline>
-            Why Choose
-          </Heading>
-        </div>
-      </div>
-
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {REASONS.map((item, i) => (
-          <Tile
-            key={item.title}
-            tone={i % 2 === 1 ? "sage" : "cream"}
-            lift
-            className="flex flex-col justify-between border border-border/60 p-6 md:p-7"
-          >
-            <div>
-              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-terracotta tabular-nums">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <p className="mt-4 border-t border-border pt-4 text-body leading-relaxed text-muted">
-                <strong className="mb-2 block text-h4 text-fg">{`${item.title}:`}</strong>
-                {item.desc}
+    <Section id="why-pav" theme="cream">
+      <div className="grid items-start gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-28">
+        <SectionHeader title="Why Choose" accent="Pav Dental Grillz?" size="h3" />
+        <ul className="space-y-6">
+          {REASONS.map(([title, text]) => (
+            <li key={title} className="flex gap-5">
+              <span
+                aria-hidden
+                className="mx-1.5 w-2 shrink-0 rounded-[10px] bg-linear-to-b from-terracotta via-clay to-copper"
+              />
+              <p className="py-0.5">
+                <span className="block text-h3-md text-fg">{title}</span>
+                <span className="mt-2 block text-body text-muted">{text}</span>
               </p>
-            </div>
-          </Tile>
-        ))}
+            </li>
+          ))}
+        </ul>
       </div>
     </Section>
   );

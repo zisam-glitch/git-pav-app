@@ -1,6 +1,6 @@
-import { GeneralDentistryFeePanel, type FeeTier } from "./general-dentistry-fee-panel";
+import { GeneralDentistryTierCards, type TierCard } from "./general-dentistry-tier-cards";
 
-const TIERS: readonly FeeTier[] = [
+const TIERS: readonly TierCard[] = [
   {
     id: "basic-root-canal",
     label: "Basic Root Canal",
@@ -26,9 +26,9 @@ const TIERS: readonly FeeTier[] = [
 
 export function GeneralDentistryRootCanalPricingTable() {
   return (
-    <GeneralDentistryFeePanel
+    <GeneralDentistryTierCards
       id="pricing"
-      theme="white"
+      theme="cream"
       title="Our Root Canal"
       accent="Prices"
       tiers={TIERS}

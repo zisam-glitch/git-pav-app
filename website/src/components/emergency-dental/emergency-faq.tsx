@@ -1,14 +1,17 @@
-import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { FaqSection } from "@/components/hims/faq-section";
+import type { InfoAccordionItem } from "@/components/hims/info-accordion";
 import { PRACTICE_PHONE } from "@/lib/enquiry";
 
-const FAQS: FaqItem[] = [
+const FAQS: readonly InfoAccordionItem[] = [
   {
-    q: "Who are 24hr Emergency Dentist?",
-    a: "We are a professional and experienced dental team that provides Emergency Dental Service covering Bradford area.",
+    title: "Who are 24hr Emergency Dentist?",
+    content:
+      "We are a professional and experienced dental team that provides Emergency Dental Service covering Bradford area.",
   },
   {
-    q: "What can you expect?",
-    a: (
+    title: "What can you expect?",
+    content: (
       <div className="space-y-3">
         <p>
           Accidents and sudden issues can be dental nightmares. Patients ill be seen on the same day
@@ -26,28 +29,33 @@ const FAQS: FaqItem[] = [
     ),
   },
   {
-    q: "Where is it?",
-    a: "The practice is in Bradford , West Yorkshire. We are situated about 10 minutes from central Bradford, which has access routes to Leeds and surrounding cities. Leeds Road, Bradford. Or we come to you",
+    title: "Where is it?",
+    content:
+      "The practice is in Bradford , West Yorkshire. We are situated about 10 minutes from central Bradford, which has access routes to Leeds and surrounding cities. Leeds Road, Bradford. Or we come to you",
   },
   {
-    q: "How does it work?",
-    a: "Once you’ve called us or booked via our online booking system, we will get a member of our dental team to call you back within the hour. We will then arrange an emergency dental appointment with one of our Dentists.",
+    title: "How does it work?",
+    content:
+      "Once you’ve called us or booked via our online booking system, we will get a member of our dental team to call you back within the hour. We will then arrange an emergency dental appointment with one of our Dentists.",
   },
   {
-    q: "What will happen during this emergency dental appointment?",
-    a: "During this dental appointment, the Dentist will do their best to treat the dental issue in one appointment. However, if this isn’t possible you may be advised to have a follow-up appointment. We will advise you on what you should do to ease the pain until you can see your dentist.",
+    title: "What will happen during this emergency dental appointment?",
+    content:
+      "During this dental appointment, the Dentist will do their best to treat the dental issue in one appointment. However, if this isn’t possible you may be advised to have a follow-up appointment. We will advise you on what you should do to ease the pain until you can see your dentist.",
   },
   {
-    q: "I have a toothache and I’m in pain?",
-    a: "If you’re experiencing pain in your teeth or mouth, please contact us at 24hr Emergency Dentist Leeds today. We offer a same-day, out-of-hours emergency dental appointments, so you should be able to see someone relatively quickly.",
+    title: "I have a toothache and I’m in pain?",
+    content:
+      "If you’re experiencing pain in your teeth or mouth, please contact us at 24hr Emergency Dentist Leeds today. We offer a same-day, out-of-hours emergency dental appointments, so you should be able to see someone relatively quickly.",
   },
   {
-    q: "Nervous or Anxious about seeing the dentist?",
-    a: "Dental phobia exists, this can result in anxiety, panic attacks, difficulty breathing, nausea, and fainting. Our dental team have over 20 years of experience dealing with patients concerns. As we understand that avoiding or delaying treatment will have an overall impact on your oral health. Please contact us today to help with your dental emergency.",
+    title: "Nervous or Anxious about seeing the dentist?",
+    content:
+      "Dental phobia exists, this can result in anxiety, panic attacks, difficulty breathing, nausea, and fainting. Our dental team have over 20 years of experience dealing with patients concerns. As we understand that avoiding or delaying treatment will have an overall impact on your oral health. Please contact us today to help with your dental emergency.",
   },
   {
-    q: "Are you registering new patients?",
-    a: (
+    title: "Are you registering new patients?",
+    content: (
       <div className="space-y-3">
         <p>
           We only really see dental emergencies, and we always send patients back to their own
@@ -65,8 +73,8 @@ const FAQS: FaqItem[] = [
     ),
   },
   {
-    q: "Some home methods to treat tooth if you cant access a dentist",
-    a: (
+    title: "Some home methods to treat tooth if you cant access a dentist",
+    content: (
       <div className="space-y-3">
         <p>
           Try over the counter painkillers like paracetamol or ibuprofen. Only take the medications
@@ -82,8 +90,8 @@ const FAQS: FaqItem[] = [
     ),
   },
   {
-    q: "Why is tooth ache worse at night time?",
-    a: (
+    title: "Why is tooth ache worse at night time?",
+    content: (
       <div className="space-y-3">
         <p>
           Many people suffer with dental pain at night time. A lot of the time the pain makes it
@@ -100,8 +108,8 @@ const FAQS: FaqItem[] = [
     ),
   },
   {
-    q: "If I go to A and E with tooth ache will they treat me?",
-    a: (
+    title: "If I go to A and E with tooth ache will they treat me?",
+    content: (
       <div className="space-y-3">
         <p>
           Unfortunately, toothache is not classed as an emergency or an accident and as it is not
@@ -115,8 +123,8 @@ const FAQS: FaqItem[] = [
     ),
   },
   {
-    q: "How to get emergency dental treatment on the NHS?",
-    a: (
+    title: "How to get emergency dental treatment on the NHS?",
+    content: (
       <div className="space-y-3">
         <p>
           If you are registered with an NHS dentist you may be able to get a dentist appointment at
@@ -140,38 +148,34 @@ const FAQS: FaqItem[] = [
     ),
   },
   {
-    q: "I am not registered does that matter?",
-    a: "No, you don’t have to be registered with anyone to see us.",
+    title: "I am not registered does that matter?",
+    content: "No, you don’t have to be registered with anyone to see us.",
   },
   {
-    q: "Will the dentist hurt me?",
-    a: "No, the dentist and the team aim to make your experience as peaceful and enjoyable as possible. We like to take our time and make sure you are comfortable. Read our reviews no one has once complained of pain!",
+    title: "Will the dentist hurt me?",
+    content:
+      "No, the dentist and the team aim to make your experience as peaceful and enjoyable as possible. We like to take our time and make sure you are comfortable. Read our reviews no one has once complained of pain!",
   },
   {
-    q: "I’m really nervous? What can you do?",
-    a: "We are an emergency dental service. So most of the time we see nervous patients. No one likes coming to the dentist. Once you speak to us on the phone we will reassure you and guarantee you won’t have to be nervous about anything. We work very relaxed and all of our patients (well most) really enjoy their time with us.",
+    title: "I’m really nervous? What can you do?",
+    content:
+      "We are an emergency dental service. So most of the time we see nervous patients. No one likes coming to the dentist. Once you speak to us on the phone we will reassure you and guarantee you won’t have to be nervous about anything. We work very relaxed and all of our patients (well most) really enjoy their time with us.",
   },
 ];
 
 export function EmergencyFaq() {
   return (
-    <Section theme="sand" space="default">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Patient Guidance
-          </p>
-          <Heading as="h2" size="h2-md" accent="Question" tone="terracotta" className="mt-4">
-            Frequently Asked
-          </Heading>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
-            <BookButton variant="outline">Book Online</BookButton>
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
-    </Section>
+    <FaqSection
+      theme="sand"
+      title="Frequently Asked"
+      accent="Question"
+      actions={
+        <>
+          <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+          <BookButton variant="outline">Book Online</BookButton>
+        </>
+      }
+      items={FAQS}
+    />
   );
 }

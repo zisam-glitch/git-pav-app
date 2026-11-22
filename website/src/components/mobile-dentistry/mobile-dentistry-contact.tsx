@@ -13,23 +13,19 @@ export function MobileDentistryContact() {
     <Section id="contact" theme="cream" aria-labelledby="mobile-contact-heading">
       <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
         <div className="max-w-[460px]">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Enquire
-          </span>
-          <div id="mobile-contact-heading" className="mt-4">
+          <div id="mobile-contact-heading">
             <Heading as="h2" size="h2-md" accent="Touch" tone="terracotta" inline>
               Get In
             </Heading>
           </div>
           <p className="mt-4 text-lead text-muted">
-            Ready to take control of your dental health? Contact us to book your appointment
-            today!
+            Ready to take control of your dental health? Contact us to book your appointment today!
           </p>
           <ul className="mt-8 divide-y divide-border border-y border-border text-body">
             <li className="py-3 text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
             <li className="py-3">
               <a
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 href={PRACTICE_PHONE_HREF}
               >
                 {PRACTICE_PHONE}
@@ -37,7 +33,7 @@ export function MobileDentistryContact() {
             </li>
             <li className="py-3">
               <a
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 href="tel:+447311871456"
               >
                 44 7311 871456
@@ -45,7 +41,7 @@ export function MobileDentistryContact() {
             </li>
             <li className="py-3">
               <a
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 href={`mailto:${PRACTICE_EMAIL}`}
               >
                 {PRACTICE_EMAIL}
@@ -66,8 +62,7 @@ export function MobileDentistryContact() {
                 Message received
               </Heading>
               <p className="mt-3 text-body text-muted">
-                Thank you. Your message has reached the practice, and the team will get back to
-                you.
+                Thank you. Your message has reached the practice, and the team will get back to you.
               </p>
               <Button className="mt-6" onClick={enquiry.reset}>
                 Send another message

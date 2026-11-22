@@ -44,3 +44,13 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - `mouthguards-personalisation.tsx`: Repo-only descriptions (`"Add your name for easy identification"`, `"Personalize with your initials"`, `"Show your team pride"`, `"Add your player number"`, `"Add your team or club logo"`).
    - `mouthguards-users.tsx`: Repo-only subtitle `"Our custom mouthguards are designed for everyone - from professional athletes to children needing everyday protection."`.
 2. **Generated image pending quota reset:** `mouthguards-hero.jpg` was not generated due to `429 RESOURCE_EXHAUSTED`; `<Media>` renders a clean Hims-tinted placeholder without `src` until generated.
+
+## Pass 2
+
+- Capture used: `/testosterone.html` and `/hair-loss/minoxidil.html` ("How to apply" band) via `treatment-page-recipe.md`.
+- Differences found: split hero with invented fact tiles ("32 Colour Swatches"), eyebrow pills on every section, tile grids with per-card book buttons, a clinic or home toggle that only highlighted a card.
+- Rebuilt: hero (`TreatmentHero`), ordering (two soft step cards with `NumberedList`; the toggle is gone because both pathways are always shown), why choose (brown band, new `TitleCards` dark), colour and personalisation (still working, headers via `SectionHeader`, eyebrows removed), who can use (`BenefitCards`, icons, seven H3s), closing (`ClosingBand`). The shared `ContactForm` (H2 "Get In Touch") is untouched.
+- Wording changes (2): hero badge is the live line "Designed for comfort, accuracy and full protection"; fact rows are live fragments ("Digital or mould kit options", "Choose Your Colour", "Fast turnaround").
+- Removed (repo-only): eyebrows "Athletic & Everyday Oral Protection", "32-Colour Custom Configurator", "Two Ordering Pathways", "Clinical Fit & Protection", "Bespoke Markings", "Tailored for Every Discipline", "Custom Inscription"; badges "In-Clinic Digital Scan", "Postal Impression Kit"; the "32 Colour Swatches" fact.
+- Images needed: none new.
+- Open questions: "NHS partners" is live wording and kept; owner to confirm it is still true.

@@ -53,3 +53,25 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 6. **Removed repo-only benefit intro (`virtual-dentistry-benefits.tsx`)**: Dropped `"Experience the future of dental care with our virtual consultation services designed for your convenience and health."` and restored exact live benefit sentences.
 7. **Restored 12 live FAQ answers (`virtual-dentistry-faq.tsx`)**: Previous repo component had rewritten almost all 12 answers (for example replacing `"Flat rate £25."` and `"typically last 30 minutes"` with `"15-30 minutes"` and extra claims). Restored verbatim answers from `services--virtual-dentistry.txt`.
 8. **Removed 5 repo-only service cards (`virtual-dentistry-services.tsx`)**: Dropped `"Video Consultations"`, `"Online Prescriptions"`, `"Home Visit Coordination"`, `"General Dental Advice"`, and `"Treatment Planning"` with their invented descriptions; `services--virtual-dentistry.txt` only lists `"24 x 7 Emergency Dentists"` / `"Round the clock we help people to connect with Dentists"` under `"Choose Type of Services"`.
+
+
+## Pass 2
+
+- Capture used: Hims condition and product pages (`/testosterone.html`, `/hair-loss/minoxidil.html`, `/weight-loss/wegovy-pill.html`) via `hims-patterns/treatment-page-recipe.md`.
+- Differences and what was rebuilt:
+- Hero: split hero with price tiles and a repo-only `24 x 7 Support` tile. Prescription pathway, how it works, benefits (dark glass), FAQ (`FaqList`), registration tiles, services.
+- Rebuilt: hero (`TreatmentHero`, facts `£35 Consultation Fee`, `£25 Prescription Cost`, `24 x 7 Emergency Dentists` are live; no booking form), prescription pathway (`BenefitCards` numbered, icons), how it works (`Steps`, four live steps, the wired benefits picture), benefits (`BenefitCards`), FAQ (`FaqSection`, 12 questions), registration (heading and live paragraphs left, five H3 rows right), services (pills removed), closing (`ClosingBand`).
+- Fingerprint WARN-free. Parity runner shows `coverage` unchanged at 93% (same sentences as the baseline).
+- Wording changes (repo-only labels removed, no live wording changed):
+
+| Where | Was | Now | Why |
+|---|---|---|---|
+| `virtual-dentistry-hero.tsx` | `Availability 24 x 7 Support`, pill `Virtual Dental Consultations`, links | removed (live: `24 x 7 Emergency Dentists`) | repo-only |
+| `virtual-dentistry-faq.tsx` | lead `Common questions about booking a video consultation...`, pill `FAQs` | removed | repo-only |
+| `virtual-dentistry-services.tsx` | pills `Round-the-Clock Access`, `£35 Consultation · £25 Prescription` | removed | repo-only |
+| `virtual-dentistry-*` other | pills `Step-by-Step Guide`, `4-Step E-Prescription Pathway`, `Quick Online Onboarding`, step badges `01 · Schedule` | removed | repo-only |
+
+- Images needed: None (the wired pictures stay; the benefits picture now sits in the steps band).
+
+- Open questions for the owner: the live emergency and virtual FAQ text contains typos (`Ajdustment`, `servies`, `peoble`) and `BD3 8TY`; earlier passes normalised them. The triage and benefit cards have no body copy because the live page has none.
+- Checks: tsc, eslint and `npm test` (121) pass; fingerprint 0 FAIL; parity coverage not below baseline.

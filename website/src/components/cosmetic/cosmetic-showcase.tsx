@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
-import { Heading, Media, Section, SplitFeature } from "@/components/hims";
+import { Heading, Section } from "@/components/hims";
 
 const PROCEDURES = [
   { label: "Painless Dental Care | Pav Dental", to: "/services/general-dentistry" as const },
@@ -12,51 +12,28 @@ const PROCEDURES = [
 
 export function CosmeticShowcase() {
   return (
-    <Section theme="brown" space="lg" aria-labelledby="cosmetic-showcase-heading">
-      <SplitFeature
-        media={
-          <Media
-            src="/images/generated/cosmetic-showcase.jpg"
-            alt="Cosmetic dental ceramic models and porcelain shade tabs in warm studio light"
-            ratio="4 / 3"
-            tone="brown"
-            className="bg-white/10 ring-1 ring-white/15"
-          />
-        }
-      >
-        <div>
-          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
-            Treatment Guides
-          </span>
-          <div id="cosmetic-showcase-heading" className="mt-4">
-            <Heading size="h2" tone="gold">
-              Procedures
-            </Heading>
-          </div>
-
-          <ul className="mt-8 flex flex-col gap-3">
-            {PROCEDURES.map((procedure, index) => (
-              <li key={procedure.label}>
-                <Link
-                  to={procedure.to}
-                  className="group flex items-center justify-between gap-4 rounded-xl border border-white/15 bg-white/7 px-5 py-4 text-lead text-white t-colors hover:border-gold/40 hover:bg-white/15"
-                >
-                  <span className="flex items-center gap-4">
-                    <span className="text-caption font-medium text-gold tabular-nums">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span>{procedure.label}</span>
-                  </span>
-                  <ChevronRight
-                    aria-hidden
-                    className="size-5 shrink-0 text-gold transition-transform duration-200 group-hover:translate-x-0.5"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </SplitFeature>
+    <Section theme="brown" space="lg">
+      <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-28">
+        <Heading as="h2" size="h2-md" tone="gold">
+          Procedures
+        </Heading>
+        <ul className="grid gap-3">
+          {PROCEDURES.map((procedure) => (
+            <li key={procedure.label}>
+              <Link
+                to={procedure.to}
+                className="group flex min-h-16 items-center justify-between gap-4 rounded-lg bg-white/7 px-6 py-4 text-label text-white t-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+              >
+                <span>{procedure.label}</span>
+                <ChevronRight
+                  aria-hidden
+                  className="size-5 shrink-0 text-gold transition-transform duration-200 group-hover:translate-x-0.5"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </Section>
   );
 }

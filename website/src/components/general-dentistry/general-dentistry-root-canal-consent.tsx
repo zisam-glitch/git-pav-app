@@ -22,7 +22,7 @@ const CONSENT_ITEMS: readonly ConsentItem[] = [
 export function GeneralDentistryRootCanalConsent() {
   return (
     <GeneralDentistryConsentPanel
-      theme="cream"
+      theme="white"
       title="Informed Consent for"
       accent="Root Canal Treatment"
       intro="Before proceeding with root canal treatment, we ensure you fully understand the procedure, risks, and benefits of saving your natural tooth."

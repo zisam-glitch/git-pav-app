@@ -49,3 +49,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 3. **Removed repo-only FAQs (`extraction-faq.tsx`)**: Replaced rewritten FAQs (including `6 hours` IV sedation fast, `3 months` implant wait, `NHS Band 2 £73.50`) with the 10 verbatim FAQs from `services--tooth-extraction.txt`.
 4. **Stopped importing `spotlight.tsx`**: `extraction-hero.tsx` no longer imports `home/spotlight.tsx`.
 5. **Reusable patterns built locally**: `extraction-postop.tsx` uses a filterable instruction-card grid + dark navy alert tile (`PostOpChecklist` pattern), and `oral-hygiene-pricing.tsx` / `extraction-pricing.tsx` use a multi-column `Tile` pricing grid (`PricingTiles` pattern) that could be promoted to `components/hims/` after S1.
+
+## Pass 2
+
+- **Capture used:** `/testosterone.html` and the PDP bands, per [treatment-page-recipe](../hims-patterns/treatment-page-recipe.md).
+- **Differences found:** split hero with two repo-only fact tiles and three buttons; brown guarantee band with eyebrows and counters; pricing footer with invented consent paraphrase; post-op cards with counters and category badges; `FaqList`.
+- **Rebuilt:** hero (`TreatmentHero`, fact rows are fragments of live sentences); guarantee (eyebrows and counters out); pricing (`PricingTiles` and a separate `ConsentPanel`); post-op (Hims card, filter tabs kept); book block (counters out); FAQ (`FaqSection`); closing (`ClosingBand`, same H2 words). Contact form left alone.
+- **Wording changes:** none. Consent items now use the practice's own extraction consent words from `general-dentistry-extraction-consent.tsx` (verbatim); the old page had a paraphrase ("Your clinician explains ...") that is gone. "Informed Consent for Tooth Extraction" is now an H2 (live has it as H2; before it was an H3, so the fingerprint WARNs).
+- **Removed (repo-only):** pills "Urgent & Surgical Care", "Immediate Relief", "SAME-DAY CARE", "ONGOING GUIDANCE", "Clinical Transparency", "Aftercare & Healing Guide", "Same-Day Appointments", "Patient Guidance"; fact tiles "Same-Day Relief" and "Local anaesthetic comfort & comprehensive aftercare"; FAQ lead; "Book Consultation" button.
+- **Images needed:** none new.

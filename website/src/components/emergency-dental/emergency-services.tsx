@@ -26,19 +26,14 @@ export function EmergencyServices() {
   return (
     <Section id="services" theme="navy" space="lg">
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div className="max-w-2xl">
-          <p className="inline-flex items-center rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-butter">
-            Same-Day Clinical Care
-          </p>
-          <Heading as="h2" size="h2-md" accent="The Following" tone="butter" className="mt-4">
-            Our Emergency Dentist Can Help With
-          </Heading>
-        </div>
+        <Heading as="h2" size="hero" accent="The Following" tone="butter" className="max-w-3xl">
+          Our Emergency Dentist Can Help With
+        </Heading>
         <CallButton variant="butter">Call us Now · {PRACTICE_PHONE}</CallButton>
       </div>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {EMERGENCY_CONDITIONS.map((cond, index) => {
+      <div className="mt-10 grid gap-2 md:mt-14 md:gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {EMERGENCY_CONDITIONS.map((cond) => {
           const Icon = cond.icon;
           return (
             <Tile
@@ -46,15 +41,10 @@ export function EmergencyServices() {
               tone="glass"
               className="flex flex-col justify-between gap-6 border border-white/12 p-6 t-colors hover:bg-white/12"
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className="grid size-10 place-items-center rounded-full bg-white/10 text-butter">
-                  <Icon aria-hidden className="size-4" />
-                </div>
-                <span className="rounded-pill bg-white/10 px-2.5 py-0.5 text-caption font-medium text-butter tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+              <div className="grid size-10 place-items-center rounded-full bg-white/10 text-butter">
+                <Icon aria-hidden className="size-4" />
               </div>
-              <h3 className="border-t border-white/12 pt-4 text-h4 text-white">{cond.title}</h3>
+              <h3 className="text-h4 text-white">{cond.title}</h3>
             </Tile>
           );
         })}

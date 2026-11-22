@@ -43,3 +43,31 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 - Removed all repo-only prices and guarantees from `grillz-pricing.tsx` (none appear in `services--custom-grillz.txt`): `"Single Tooth Cap (10k Solid Gold) from £95"`, `"14k from £145"`, `"18k from £195"`, `"Open Face / Window Cut Cap from £120"`, `"Extended Canine / Vampire Fang from £110"`, `"Diamond Dust / Stippled Finish from £130"`, `"Iced-Out VVS Diamond Pave Cap from £450"`, `"Full 6-Tooth Set (Top or Bottom, 10k) from £520"`, `"Full 6-Tooth Set (Top or Bottom, 14k) from £780"`, `"free in-clinic impression, luxury storage box, and tight snap-fit guarantee"`, `"UK Assay certified gold"`. Please confirm if the owner wants any verified pricing published on `/services/custom-grillz`.
 - Omitted `grillz-faq.tsx` output (`return null`): `services--custom-grillz.txt` contains zero FAQ items, and the 9 previous FAQs made unverified claims (`"10k, 14k, and 18k gold"`, `"7 to 10 working days"`, `"express 3 to 5-day priority rush service"`, `"VVS1–VVS2 clarity, F/G color, F/G round brilliant cut diamonds"`, `"online mold kit"` comparison).
 - Removed `"14k Yellow Gold (Most Popular)"`, specific karat labels (`10k`/`14k`/`18k`), and placeholder `"Marcus Vance"` from `grillz-contact.tsx`, replacing select options with live metal/gem options (`Gold Grillz`, `Silver Grillz`, `Diamond Grillz`, `Tooth Gems`, `Yellow/White/Rose Gold`).
+
+
+## Pass 2
+
+- Capture used: Hims condition and product pages (`/testosterone.html`, `/hair-loss/minoxidil.html`, `/weight-loss/wegovy-pill.html`) via `hims-patterns/treatment-page-recipe.md`.
+- Differences and what was rebuilt:
+- Hero: split hero with three repo-only tiles. Styles: white tiles with repo-only badges and buttons. Why: tiles. Guarantee: dark split with badges.
+- Rebuilt: hero (`TreatmentHero`, facts cut from live sentences, `Tailored Elegance` heading and paragraph under the buttons), styles (`BenefitCards` with a picture slot per style; `Custom Grillz Procedures` label kept in the lead), why-choose (page-local key-line rows, title and sentence in one paragraph as live), guarantee (dark feature, badges and the extra quote buttons removed), closing (`ClosingBand`).
+- Left alone: contact form (eyebrow pill removed, links 44px). The page still has no FAQ (live has none).
+- Wording changes (repo-only labels removed, no live wording changed):
+
+| Where | Was | Now | Why |
+|---|---|---|---|
+| `grillz-hero.tsx` | pills `Bespoke Dental Jewellery`, tile labels `Custom Digital Scan`, `Metals & Gems` | removed; facts are live fragments | repo-only |
+| `grillz-styles.tsx` | badges (`Yellow, White & Rose Karats`, ...), `Book Consultation`/`Design enquiry` buttons | removed | repo-only |
+| `grillz-process.tsx`, `grillz-pricing.tsx`, `grillz-contact.tsx` | pills `Clinical Craftsmanship`, `Protected Craftsmanship`, `Worldwide Delivery`, `Bespoke Design Consultation`, `Bespoke Design Enquiry`, button `Get a design quote` | removed | repo-only |
+
+- Images needed: 
+
+| Slot | Used in | Aspect | Prompt (Google Flow) |
+|---|---|---|---|
+| `custom-grillz-gold` | `grillz-styles.tsx` card 1 | 1 / 1 | Editorial still life of a gold dental grillz on a warm cream stone surface, soft natural light, shallow depth, no text, no logos, no people |
+| `custom-grillz-silver` | card 2 | 1 / 1 | A polished silver dental grillz on pale linen, soft window light, cream background, no text, no people |
+| `custom-grillz-diamond` | card 3 | 1 / 1 | A diamond-set dental grillz catching soft light on a sage-tinted surface, macro still life, no text, no people |
+| `custom-grillz-fit` | card 4 | 1 / 1 | A dental impression tray and fitting tools arranged on cream stone, warm light, no text, no people |
+
+- Open questions for the owner: the live emergency and virtual FAQ text contains typos (`Ajdustment`, `servies`, `peoble`) and `BD3 8TY`; earlier passes normalised them. The triage and benefit cards have no body copy because the live page has none.
+- Checks: tsc, eslint and `npm test` (121) pass; fingerprint 0 FAIL; parity coverage not below baseline.

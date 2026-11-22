@@ -1,6 +1,6 @@
-import { GeneralDentistryFeePanel, type FeeTier } from "./general-dentistry-fee-panel";
+import { GeneralDentistryTierCards, type TierCard } from "./general-dentistry-tier-cards";
 
-const TIERS: readonly FeeTier[] = [
+const TIERS: readonly TierCard[] = [
   {
     id: "simple-extraction",
     label: "Simple Extraction",
@@ -26,8 +26,8 @@ const TIERS: readonly FeeTier[] = [
 
 export function GeneralDentistryExtractionPricingTable() {
   return (
-    <GeneralDentistryFeePanel
-      theme="sand"
+    <GeneralDentistryTierCards
+      theme="cream"
       title="Our Tooth Extraction"
       accent="Prices"
       tiers={TIERS}

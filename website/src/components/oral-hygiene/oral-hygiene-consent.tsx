@@ -1,9 +1,10 @@
 import { AlertCircle, CheckCircle2, FileText, Play, X } from "lucide-react";
 import { useState } from "react";
-import { Heading, Media, Section, Tile } from "@/components/hims";
+import { BookButton, ConsentPanel, Media, Section, type ConsentItem } from "@/components/hims";
+import { SectionHeader } from "@/components/hims/section-header";
 import { Button } from "@/components/ui/button";
 
-const CONSENT_ITEMS = [
+const CONSENT_ITEMS: readonly ConsentItem[] = [
   {
     title: "Treatment Understanding",
     desc: "I understand the nature of the dental hygiene treatment, including the procedures to be performed and the expected outcomes.",
@@ -27,48 +28,19 @@ const CONSENT_VIDEOS = [
   { id: "part-3", label: "Informed Consent - Gum Disease Part 3" },
 ];
 
-export function OralHygieneConsent() {
+function OralHygieneConsentVideo() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activePart, setActivePart] = useState(CONSENT_VIDEOS[0].id);
 
   const currentVideo = CONSENT_VIDEOS.find((v) => v.id === activePart) ?? CONSENT_VIDEOS[0];
 
   return (
-    <Section theme="brown" width="bento" space="lg">
-      <div className="max-w-2xl">
-        <p className="inline-flex rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-gold">
-          Oral Hygiene and Gum Care Advice
-        </p>
-        <Heading as="h2" size="hero" accent="Informed Consent" tone="gold" className="mt-4">
-          Understanding
-        </Heading>
-        <p className="mt-4 text-lead text-white/80">
-          Before proceeding with any dental hygiene treatment, we ensure you fully understand the
-          procedure, risks, and benefits. Your comfort and understanding are our priorities.
-        </p>
-      </div>
-
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        {CONSENT_ITEMS.map((item, index) => (
-          <Tile
-            key={item.title}
-            tone="glass"
-            className="flex flex-col gap-4 border border-white/12 p-6"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <span className="grid size-9 place-items-center rounded-full bg-white/10 text-gold">
-                <item.icon aria-hidden className="size-4" />
-              </span>
-              <span className="rounded-pill bg-white/10 px-2.5 py-0.5 text-caption font-medium text-gold tabular-nums">
-                0{index + 1}
-              </span>
-            </div>
-            <h3 className="border-t border-white/12 pt-4 text-h4 text-white">{item.title}</h3>
-            <p className="text-body text-white/80">{item.desc}</p>
-          </Tile>
-        ))}
-      </div>
-
+    <Section theme="white">
+      <SectionHeader
+        title="Oral Hygiene and Gum Care"
+        accent="Advice"
+        action={<BookButton>Book Now</BookButton>}
+      />
       <div
         className="mt-8 flex flex-wrap gap-2"
         role="tablist"
@@ -82,9 +54,12 @@ export function OralHygieneConsent() {
               type="button"
               role="tab"
               aria-selected={selected}
-              variant={selected ? "gold" : "glass"}
+              variant={selected ? "default" : "outline"}
               size="sm"
-              onClick={() => setActivePart(video.id)}
+              onClick={() => {
+                setActivePart(video.id);
+                setIsPlaying(false);
+              }}
             >
               {video.label}
             </Button>
@@ -92,7 +67,7 @@ export function OralHygieneConsent() {
         })}
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl bg-brown-deep">
+      <div className="mt-6 overflow-hidden rounded-[2rem] bg-tile-sage">
         <div className="relative aspect-video">
           {isPlaying ? (
             <div className="relative size-full">
@@ -121,24 +96,41 @@ export function OralHygieneConsent() {
                 src="/images/generated/oral-hygiene-showcase.jpg"
                 alt={currentVideo.label}
                 ratio="16 / 9"
-                tone="brown"
+                tone="sage"
                 className="size-full rounded-none"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40 p-6 text-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/25 p-6 text-center">
                 <button
                   type="button"
                   onClick={() => setIsPlaying(true)}
-                  className="flex size-20 items-center justify-center rounded-full bg-gold text-brown shadow-card t-colors hover:bg-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:size-24"
+                  className="grid size-20 place-items-center rounded-full bg-white text-black shadow-card t-colors hover:bg-white/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:size-24"
                   aria-label={`Play ${currentVideo.label}`}
                 >
                   <Play aria-hidden className="size-8 translate-x-0.5 fill-current" />
                 </button>
-                <p className="text-label text-white">{currentVideo.label}</p>
+                <p className="rounded-pill bg-black/60 px-4 py-2 text-label text-white">
+                  {currentVideo.label}
+                </p>
               </div>
             </div>
           )}
         </div>
       </div>
     </Section>
+  );
+}
+
+export function OralHygieneConsent() {
+  return (
+    <>
+      <ConsentPanel
+        theme="white"
+        title="Understanding"
+        accent="Informed Consent"
+        intro="Before proceeding with any dental hygiene treatment, we ensure you fully understand the procedure, risks, and benefits. Your comfort and understanding are our priorities."
+        items={CONSENT_ITEMS}
+      />
+      <OralHygieneConsentVideo />
+    </>
   );
 }

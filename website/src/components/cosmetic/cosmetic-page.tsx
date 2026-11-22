@@ -1,4 +1,5 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { ClosingBand } from "@/components/hims/closing-band";
 import { CosmeticAbout } from "./cosmetic-about";
 import { CosmeticBenefits } from "./cosmetic-benefits";
 import { CosmeticContact } from "./cosmetic-contact";
@@ -10,7 +11,7 @@ import { CosmeticShowcase } from "./cosmetic-showcase";
 
 export function CosmeticPage() {
   return (
-    <main className="bg-bg">
+    <main>
       <CosmeticHero />
       <CosmeticAbout />
       <CosmeticProcedures />
@@ -19,21 +20,17 @@ export function CosmeticPage() {
       <CosmeticShowcase />
       <CosmeticFaq />
       <CosmeticContact />
-      <CtaBand
-        theme="brown"
+      <ClosingBand
         title="Book"
-        accent="Appointment"
-        tone="gold"
+        highlight="Appointment"
+        lead="Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine check-ups, and advanced technologies like digital imaging and laser dentistry."
         actions={
           <>
-            <BookButton variant="gold">Book Now</BookButton>
+            <BookButton variant="butter">Book Now</BookButton>
             <CallButton variant="glass" />
           </>
         }
-      >
-        Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
-        check-ups, and advanced technologies like digital imaging and laser dentistry.
-      </CtaBand>
+      />
     </main>
   );
 }

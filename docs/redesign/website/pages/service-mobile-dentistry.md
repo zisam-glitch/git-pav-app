@@ -47,3 +47,26 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 5. **Removed repo-only service copy & floating badge (`mobile-dentistry-service.tsx`)**: Dropped `"Our state-of-the-art mobile dental unit brings comprehensive dental services directly to your doorstep."` and the overlay badge `"Mobile Surgery"` / `"Fully equipped for comprehensive dental care"`.
 6. **Removed repo-only location cards (`mobile-dentistry-location.tsx`)**: Dropped `"UK-Wide Service"`, `"Easy Booking"`, and `"Contact Us"` cards with their invented descriptions, keeping only the live `Location` heading and `"Pav Dental Mobile visits patients across the UK. Your Smile with Convenient Dental Care Right at Your Doorstep."`.
 7. **Wired `MobileDentistryContact` into `MobileDentistryPage`**: The existing `mobile-dentistry-page.tsx` imported `MobileDentistryContact` without rendering it, leaving the hero `#contact` link broken and omitting the live `Get In Touch` form. Rendered it above the closing `CtaBand`.
+
+
+## Pass 2
+
+- Capture used: Hims condition and product pages (`/testosterone.html`, `/hair-loss/minoxidil.html`, `/weight-loss/wegovy-pill.html`) via `hims-patterns/treatment-page-recipe.md`.
+- Differences and what was rebuilt:
+- Hero: split hero with three repo-only tiles. Benefits: numbered white tiles. Service and location: pills and repo-only glass tiles.
+- Rebuilt: hero (`TreatmentHero`, `Coming Soon` is a live label so it is the badge; facts are live fragments; the live paragraph sits under the buttons), benefits (`BenefitCards`, eight H3 titles with icons, no body copy because the live page has none), service and location (pills and repo-only tiles removed, live sentence kept), closing (`ClosingBand`).
+- Left alone: contact form (pill removed, links 44px).
+- Fingerprint WARN `words 520 -> 463 (-11%)`: only repo-only text came out (tile labels such as `CQC-Compliant Care`, `Visits Across the UK`, pills, `Doorstep Clinical Care` and `Base & Coverage` blurbs). Live coverage stays 100%.
+- Wording changes (repo-only labels removed, no live wording changed):
+
+| Where | Was | Now | Why |
+|---|---|---|---|
+| `mobile-dentistry-hero.tsx` | tiles `Care Homes / CQC-Compliant Care`, `Clinical Setup / Mobile Surgery`, `Reach / Visits Across the UK`, links to sections | removed; facts are live fragments | repo-only |
+| `mobile-dentistry-service.tsx` | pill `Fully Equipped Mobile Surgery`; tile `Full range of dental services delivered directly to residential homes and care facilities...` | removed | repo-only claim |
+| `mobile-dentistry-location.tsx` | pill `Nationwide Outreach`; tile `786 Leeds Road ... Serving patients and care homes across the UK.` | removed | repo-only |
+| `mobile-dentistry-benefits.tsx` | pill `Care Homes & Residential Visits` | removed | repo-only |
+
+- Images needed: None (the three wired pictures stay).
+
+- Open questions for the owner: the live emergency and virtual FAQ text contains typos (`Ajdustment`, `servies`, `peoble`) and `BD3 8TY`; earlier passes normalised them. The triage and benefit cards have no body copy because the live page has none.
+- Checks: tsc, eslint and `npm test` (121) pass; fingerprint 0 FAIL; parity coverage not below baseline.

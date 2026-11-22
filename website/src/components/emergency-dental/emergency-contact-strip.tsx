@@ -26,7 +26,7 @@ export function EmergencyContactStrip() {
             <p className="text-caption font-medium text-muted">Phone</p>
             <a
               href={PRACTICE_PHONE_HREF}
-              className="mt-1 block text-body font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+              className="mt-1 inline-flex min-h-11 items-center text-body font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
             >
               {PRACTICE_PHONE}
             </a>
@@ -41,7 +41,7 @@ export function EmergencyContactStrip() {
             <p className="text-caption font-medium text-muted">Email</p>
             <a
               href={`mailto:${PRACTICE_EMAIL}`}
-              className="mt-1 block text-body font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+              className="mt-1 inline-flex min-h-11 items-center text-body font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
             >
               {PRACTICE_EMAIL}
             </a>

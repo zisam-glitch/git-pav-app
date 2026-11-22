@@ -51,7 +51,14 @@ export function EmergencyContactForm() {
             <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
               Urgent Enquiry
             </p>
-            <Heading as="h2" size="h2-md" accent="a message" tone="terracotta" inline className="mt-4">
+            <Heading
+              as="h2"
+              size="h2-md"
+              accent="a message"
+              tone="terracotta"
+              inline
+              className="mt-4"
+            >
               Send us
             </Heading>
             <p className="mt-4 text-lead text-muted">
@@ -64,7 +71,7 @@ export function EmergencyContactForm() {
               <li>
                 <a
                   href={PRACTICE_PHONE_HREF}
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 >
                   {PRACTICE_PHONE}
                 </a>
@@ -72,7 +79,7 @@ export function EmergencyContactForm() {
               <li>
                 <a
                   href={`mailto:${PRACTICE_EMAIL}`}
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 >
                   {PRACTICE_EMAIL}
                 </a>

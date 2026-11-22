@@ -6,7 +6,6 @@ import {
   Media,
   Section,
   SplitFeature,
-  Tile,
 } from "@/components/hims";
 
 export function MobileDentistryService() {
@@ -25,10 +24,7 @@ export function MobileDentistryService() {
         }
       >
         <div>
-          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
-            Fully Equipped Mobile Surgery
-          </span>
-          <div id="mobile-service-heading" className="mt-4">
+          <div id="mobile-service-heading">
             <Heading as="h2" size="hero" accent="to You" tone="gold">
               We Come
             </Heading>
@@ -37,14 +33,6 @@ export function MobileDentistryService() {
             We have a modern, well-equipped mobile surgery that allows us to visit you in the
             comfort of your own home.
           </p>
-
-          <Tile tone="glass" className="mt-6 border border-white/15 p-5">
-            <p className="text-caption font-medium text-gold">Doorstep Clinical Care</p>
-            <p className="mt-1 text-body text-white/80">
-              Full range of dental services delivered directly to residential homes and care
-              facilities with our latest mobile dental equipment.
-            </p>
-          </Tile>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <BookButton variant="gold">Make an Appointment</BookButton>

@@ -1,0 +1,15 @@
+{
+  "_note": "The 10 products on the live shop (www.pavdental.com/shop), as recorded 18 Nov 2026 in website/seo/live-text/shop.txt. Price = the second price on the live page, as the owner chose on 23 Nov 2026. original_price is left empty: the live page's first price is lower, so it cannot be a 'was' price. Enter these in the dashboard's Products page (or via the staff API), then add SKUs and stock. No star ratings are imported.",
+  "products": [
+    { "name": "Fluoride-Free Toothpaste with Hydroxyapatite", "slug": "fluoride-free-toothpaste-with-hydroxyapatite", "price": 18, "original_price": null },
+    { "name": "Mineral Mouthwash with Hydroxyapatite - Fresh Mint", "slug": "mineral-mouthwash-with-hydroxyapatite-fresh-mint", "price": 30, "original_price": null },
+    { "name": "Mineral Mouthwash with Hydroxyapatite - Sweet Orange", "slug": "mineral-mouthwash-with-hydroxyapatite-sweet-orange", "price": 30, "original_price": null },
+    { "name": "Natural Whitening Strips", "slug": "natural-whitening-strips", "price": 40, "original_price": null },
+    { "name": "Puffy Floss 3-Pack", "slug": "puffy-floss-3-pack", "price": 15, "original_price": null },
+    { "name": "Generation B - Soft Bamboo Toothbrush", "slug": "generation-b-soft-bamboo-toothbrush", "price": 3.55, "original_price": null },
+    { "name": "Generation X Smart Electric Toothbrush", "slug": "generation-x-smart-electric-toothbrush", "price": 120, "original_price": null },
+    { "name": "Brushing for Life Baby & Toddler Training Toothbrush", "slug": "brushing-for-life-baby-toddler-training-toothbrush", "price": 3.55, "original_price": null },
+    { "name": "Mars Dental Kids' Toothbrush (Ages 3-6 Years)", "slug": "mars-dental-kids-toothbrush-ages-3-6", "price": 3.55, "original_price": null },
+    { "name": "Mars Dental Baby Finger Brush (For Newborns & Infants)", "slug": "mars-dental-baby-finger-brush", "price": 3.55, "original_price": null }
+  ]
+}

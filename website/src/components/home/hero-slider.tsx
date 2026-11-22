@@ -282,7 +282,7 @@ export function HeroSlider() {
           className="absolute inset-0 bg-gradient-to-r from-brown-deep/95 via-brown-deep/80 to-brown-deep/20 transition-opacity duration-200 ease-linear group-hover:opacity-95"
         />
 
-        <div className="relative z-10 grid items-end gap-8 p-6 sm:p-10 md:min-h-[380px] md:grid-cols-[1.25fr_0.75fr] md:p-12 lg:p-14">
+        <div className="relative z-10 grid items-end gap-8 p-6 sm:p-10 md:min-h-[480px] md:grid-cols-[1.25fr_0.75fr] md:p-12 lg:p-14">
           <div className="max-w-xl">
             <p className="text-caption font-medium text-gold">ACCESSIBLE SMILES</p>
             <h2 className="mt-2 text-h2 text-white">

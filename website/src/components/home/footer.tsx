@@ -40,7 +40,7 @@ const footerLinkClass = "text-nav text-white/90 t-colors hover:text-white";
  */
 export function Footer() {
   return (
-    <footer className="rounded-t-xl bg-black p-6 text-white md:p-[53px] md:pb-[60px]">
+    <footer className="rounded-t-xl bg-black p-6 text-white md:p-[60px]">
       <div className="mx-auto w-full max-w-[var(--container-wide)]">
         <p className="max-w-4xl text-h3 text-white">{FOOTER.about}</p>
 
@@ -104,7 +104,7 @@ export function Footer() {
 
           <div className="grid gap-8 sm:grid-cols-3">
             <nav aria-label="Quick links">
-              <h2 className="mb-4 text-small font-medium text-white/70">
+              <h2 className="mb-4 text-caption font-medium text-white/50">
                 {FOOTER.quickLinksHeading}
               </h2>
               <ul className="space-y-2.5">
@@ -119,7 +119,7 @@ export function Footer() {
             </nav>
 
             <nav aria-label="Services">
-              <h2 className="mb-4 text-small font-medium text-white/70">
+              <h2 className="mb-4 text-caption font-medium text-white/50">
                 {FOOTER.servicesHeading}
               </h2>
               <ul className="space-y-2.5">
@@ -134,7 +134,7 @@ export function Footer() {
             </nav>
 
             <nav aria-label="Policies">
-              <h2 className="mb-4 text-small font-medium text-white/70">Policies</h2>
+              <h2 className="mb-4 text-caption font-medium text-white/50">Policies</h2>
               <ul className="space-y-2.5">
                 {FOOTER.policyLinks.map((link) => (
                   <li key={link.href}>

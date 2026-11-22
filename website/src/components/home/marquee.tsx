@@ -1,4 +1,4 @@
-import { Clock, Phone, ShieldCheck, Sparkles, Stethoscope, Truck } from "lucide-react";
+import { Clock, Phone, Sparkles, Stethoscope, Truck } from "lucide-react";
 import { Section, TrustStrip, type TrustItem } from "@/components/hims";
 
 const ITEMS: TrustItem[] = [
@@ -6,11 +6,6 @@ const ITEMS: TrustItem[] = [
     icon: <Clock aria-hidden className="size-4 shrink-0" />,
     text: "Open 00:00 – 24:00, 7 days",
     tone: "terracotta",
-  },
-  {
-    icon: <ShieldCheck aria-hidden className="size-4 shrink-0" />,
-    text: "GDC registered clinicians",
-    tone: "copper",
   },
   {
     icon: <Stethoscope aria-hidden className="size-4 shrink-0" />,

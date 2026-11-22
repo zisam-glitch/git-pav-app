@@ -176,7 +176,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
                 <p className="mt-1 text-muted">
                   {order.shipping?.trackingNumber
                     ? `Tracking: ${order.shipping.trackingNumber}`
-                    : "Preparing dispatch from clinical dispensary."}
+                    : "Your tracking number will appear here once your order ships."}
                 </p>
               </div>
             </div>
@@ -232,7 +232,7 @@ export function OrderConfirmation({ orderId, access }: { orderId: string; access
               </div>
             ) : null}
             <div className="flex justify-between text-muted">
-              <span>UK Delivery</span>
+              <span>Delivery</span>
               <span className="font-medium text-fg tabular-nums">
                 {parseFloat(order.shipping_cost || "0") === 0
                   ? "FREE"

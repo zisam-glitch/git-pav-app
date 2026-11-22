@@ -66,3 +66,16 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 **Wording changes**: none beyond removals. Empty-state text "clinician-selected" dropped. **Images needed**: none (shop and category tiles reuse wired pictures).
 
 **Unused now**: `components/shop/shop-guarantee.tsx`. **Open questions**: product copy in `shop-catalog-data.ts` (not mine) still has clinical claims ("Clinician Pick", PAP+ ...); the product page has no gallery pictures beyond what the data gives.
+
+### Pass 2: cart, checkout, order (agent E)
+
+**Reference**: design system (547px right drawer, lead-capture card forms, cream summary tile); no saved Hims cart or checkout exists. Fingerprint compare: `/cart` words 185 -> 188, `/checkout` 186 -> 186 (OK, 0 FAIL, 0 WARN). The Stripe test-mode flow, every field, validation and shipping and promo logic are unchanged (walked add to bag, bag, cart, checkout on :8180, stopped before payment).
+
+| Page | Change |
+|---|---|
+| Cart drawer (`cart-drawer.tsx`) | Quantity and remove buttons 44px, Clear and Remove links 44px tall, visible focus rings; "Secure Checkout" now "Checkout"; Truck icon and "Free UK Tracked Delivery" now "free UK delivery"; removed footer line "Encrypted checkout · Bradford clinic dispatch"; empty text "clinical dental care products" shortened |
+| Cart page (`cart-page.tsx`) | Same 44px controls and focus rings; removed the "Clinical Guarantee / Dispatched from our registered dental clinic in Bradford" tile; "FREE UK Delivery" and "Delivery Estimate" simplified; empty text no longer says "clinician-curated" |
+| Checkout (`checkout-page.tsx`) | Removed the "Secure Checkout / processed securely via Stripe" tile; receipt note no longer promises tracking updates; 44px Remove link, 20px radio; "UK Delivery" row now "Delivery" |
+| Order (`order-confirmation.tsx`) | "Preparing dispatch from clinical dispensary." now "Your tracking number will appear here once your order ships."; "UK Delivery" row now "Delivery" |
+
+**Finance and registration**: pass 1 build already matches the kit (split hero, cream bento, brown band, FAQ list; registration form in a card). Checked at 390 (no horizontal scroll); fingerprint compare 867 -> 867 and 897 -> 897 words; parity 0% (was 0%). No change.

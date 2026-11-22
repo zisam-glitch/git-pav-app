@@ -1,8 +1,8 @@
 import { BookButton, ButtonLink, CallButton, Heading, Media, Section } from "@/components/hims";
 
-export function HomeEmergency() {
+export function HomeEmergency({ id }: { id?: string } = {}) {
   return (
-    <Section id="emergency" theme="white" width="max" space="sm" className="px-2 md:px-4">
+    <Section id={id} theme="white" width="max" space="sm" className="px-2 md:px-4">
       <div className="rounded-xl bg-brown py-14 text-white md:py-[7.5rem]">
         <div className="wrap-bento">
           <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">

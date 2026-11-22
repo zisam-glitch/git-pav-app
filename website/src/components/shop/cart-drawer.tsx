@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Minus, Plus, Shield, ShoppingBag, Trash2, Truck, X } from "lucide-react";
+import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ButtonLink } from "@/components/hims";
 import { Button } from "@/components/ui/button";
@@ -135,7 +135,7 @@ export function CartDrawer({
               <button
                 type="button"
                 onClick={onClearCart}
-                className="text-caption font-medium text-subtle underline underline-offset-4 t-colors hover:text-fg"
+                className="inline-flex min-h-11 items-center px-2 text-small font-medium text-muted underline underline-offset-4 t-colors hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg"
               >
                 Clear
               </button>
@@ -158,12 +158,11 @@ export function CartDrawer({
           <div className="border-b border-border bg-cream px-6 py-3.5 text-small">
             <div className="mb-2 flex items-center justify-between gap-2 font-medium text-fg">
               <span className="flex items-center gap-2">
-                <Truck aria-hidden className="size-4 text-terracotta" />
                 {isFreeShipping ? (
-                  <span>You&apos;ve unlocked Free UK Tracked Delivery!</span>
+                  <span>You&apos;ve unlocked free UK delivery</span>
                 ) : (
                   <span>
-                    Add £{amountNeededForFreeShipping.toFixed(2)} more for Free UK Delivery
+                    Add £{amountNeededForFreeShipping.toFixed(2)} more for free UK delivery
                   </span>
                 )}
               </span>
@@ -187,7 +186,7 @@ export function CartDrawer({
               </div>
               <p className="mt-4 text-h4 text-fg">Your bag is empty</p>
               <p className="mt-2 max-w-xs text-small text-muted">
-                Explore our clinical dental care products to begin your smile routine.
+                Add a product from the shop to get started.
               </p>
               <Button type="button" onClick={onClose} variant="outline" className="mt-6">
                 Browse Products
@@ -213,22 +212,22 @@ export function CartDrawer({
                       </p>
 
                       <div className="mt-3 flex items-center justify-between">
-                        <div className="inline-flex items-center rounded-pill border border-border-strong bg-cream px-1.5 py-0.5">
+                        <div className="inline-flex items-center rounded-pill border border-border-strong bg-white">
                           <button
                             type="button"
                             onClick={() => onUpdateQuantity(itemKey, item.quantity - 1)}
-                            className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
+                            className="grid size-11 place-items-center rounded-pill text-muted t-colors hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg"
                             aria-label="Decrease quantity"
                           >
                             <Minus aria-hidden className="size-3.5" />
                           </button>
-                          <span className="w-7 text-center text-small font-medium tabular-nums text-fg">
+                          <span className="w-8 text-center text-small font-medium tabular-nums text-fg">
                             {item.quantity}
                           </span>
                           <button
                             type="button"
                             onClick={() => onUpdateQuantity(itemKey, item.quantity + 1)}
-                            className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
+                            className="grid size-11 place-items-center rounded-pill text-muted t-colors hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg"
                             aria-label="Increase quantity"
                           >
                             <Plus aria-hidden className="size-3.5" />
@@ -238,7 +237,7 @@ export function CartDrawer({
                         <button
                           type="button"
                           onClick={() => onRemoveItem(itemKey)}
-                          className="grid size-8 place-items-center rounded-pill text-subtle t-colors hover:bg-cream hover:text-danger"
+                          className="grid size-11 place-items-center rounded-pill text-muted t-colors hover:bg-cream hover:text-danger focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg"
                           aria-label={`Remove ${item.product.name}`}
                         >
                           <Trash2 aria-hidden className="size-4" />
@@ -264,9 +263,9 @@ export function CartDrawer({
                     placeholder="Discount code"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
-                    className="h-11 flex-1"
+                    className="h-12 flex-1"
                   />
-                  <Button type="submit" variant="outline" className="h-11 px-5">
+                  <Button type="submit" variant="outline" className="px-5">
                     Apply
                   </Button>
                 </form>
@@ -285,7 +284,7 @@ export function CartDrawer({
                     setDiscountPercent(0);
                     setPromoCode("");
                   }}
-                  className="text-caption font-medium text-fg underline underline-offset-4"
+                  className="inline-flex min-h-11 items-center px-2 text-small font-medium text-fg underline underline-offset-4"
                 >
                   Remove
                 </button>
@@ -306,7 +305,7 @@ export function CartDrawer({
               ) : null}
 
               <div className="flex justify-between">
-                <span>UK Delivery</span>
+                <span>Delivery</span>
                 <span className="font-medium text-fg tabular-nums">
                   {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                 </span>
@@ -323,14 +322,9 @@ export function CartDrawer({
                 View Bag
               </ButtonLink>
               <Button type="button" onClick={handleCheckout} className="flex-1">
-                <span>Secure Checkout</span>
+                <span>Checkout</span>
                 <ArrowRight aria-hidden className="size-4" />
               </Button>
-            </div>
-
-            <div className="flex items-center justify-center gap-1.5 text-caption text-subtle">
-              <Shield aria-hidden className="size-3.5" />
-              <span>Encrypted checkout · Bradford clinic dispatch</span>
             </div>
           </div>
         ) : null}

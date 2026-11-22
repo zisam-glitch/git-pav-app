@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Minus, Plus, ShieldCheck, ShoppingBag, Trash2 } from "lucide-react";
+import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
@@ -67,7 +67,7 @@ export function CartPage() {
             Your Shopping Bag
           </Heading>
           <p className="mt-3 max-w-sm text-body text-muted">
-            Explore our clinician-curated dental care solutions.
+            Add a product from the shop to get started.
           </p>
           <div className="mt-8">
             <ButtonLink to="/shop">Start Shopping</ButtonLink>
@@ -87,7 +87,7 @@ export function CartPage() {
           <button
             type="button"
             onClick={clearCart}
-            className="text-small font-medium text-subtle underline underline-offset-4 t-colors hover:text-danger"
+            className="inline-flex min-h-11 items-center px-2 text-small font-medium text-muted underline underline-offset-4 t-colors hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg"
           >
             Clear Bag
           </button>
@@ -98,8 +98,8 @@ export function CartPage() {
           <div className="mb-2.5 flex items-center justify-between gap-2 text-small">
             <span className="font-medium text-fg">
               {isFreeShipping
-                ? "You've unlocked FREE UK Delivery!"
-                : `Add £${amountNeededForFree.toFixed(2)} more for FREE UK Delivery`}
+                ? "You've unlocked free UK delivery"
+                : `Add £${amountNeededForFree.toFixed(2)} more for free UK delivery`}
             </span>
             <span className="font-medium text-muted tabular-nums">{progressPercent}%</span>
           </div>
@@ -141,11 +141,11 @@ export function CartPage() {
                 </div>
 
                 <div className="flex w-full items-center justify-between gap-6 sm:w-auto sm:justify-end">
-                  <div className="inline-flex items-center rounded-pill border border-border-strong bg-cream px-2 py-1">
+                  <div className="inline-flex items-center rounded-pill border border-border-strong bg-white">
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity - 1)}
-                      className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
+                      className="grid size-11 place-items-center rounded-pill text-muted t-colors hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg"
                       aria-label="Decrease quantity"
                     >
                       <Minus aria-hidden className="size-3.5" />
@@ -156,7 +156,7 @@ export function CartPage() {
                     <button
                       type="button"
                       onClick={() => updateQuantity(it.id, it.quantity + 1)}
-                      className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
+                      className="grid size-11 place-items-center rounded-pill text-muted t-colors hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg"
                       aria-label="Increase quantity"
                     >
                       <Plus aria-hidden className="size-3.5" />
@@ -170,7 +170,7 @@ export function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(it.id)}
-                    className="grid size-9 place-items-center rounded-pill text-subtle t-colors hover:bg-cream hover:text-danger"
+                    className="grid size-11 place-items-center rounded-pill text-muted t-colors hover:bg-cream hover:text-danger focus-visible:outline focus-visible:outline-2 focus-visible:outline-fg"
                     aria-label={`Remove ${it.name}`}
                   >
                     <Trash2 aria-hidden className="size-4" />
@@ -206,7 +206,7 @@ export function CartPage() {
                     <button
                       type="button"
                       onClick={removeDiscount}
-                      className="text-caption font-medium text-fg underline underline-offset-4"
+                      className="inline-flex min-h-11 items-center px-2 text-small font-medium text-fg underline underline-offset-4"
                     >
                       Remove
                     </button>
@@ -236,7 +236,7 @@ export function CartPage() {
                   </div>
                 ) : null}
                 <div className="flex justify-between text-muted">
-                  <span>Delivery Estimate</span>
+                  <span>Delivery</span>
                   <span className="font-medium text-fg tabular-nums">
                     {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                   </span>
@@ -251,16 +251,6 @@ export function CartPage() {
                 <span>Proceed to Checkout</span>
                 <ArrowRight aria-hidden className="size-4" />
               </ButtonLink>
-            </Tile>
-
-            <Tile tone="sage" className="flex items-start gap-3 p-5">
-              <ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-fg" />
-              <div>
-                <p className="text-label text-fg">Clinical Guarantee</p>
-                <p className="mt-1 text-small text-muted">
-                  Dispatched from our registered dental clinic in Bradford.
-                </p>
-              </div>
             </Tile>
           </div>
         </div>

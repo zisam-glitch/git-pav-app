@@ -32,7 +32,7 @@ export function CtaBand({
   className?: string;
 }) {
   return (
-    <section className={cn("wrap section-y", className)}>
+    <section className={cn("wrap pt-10 pb-0 md:pt-20", className)}>
       <div
         className={cn(
           "grid items-center gap-8 rounded-xl px-6 py-12 md:grid-cols-[1.3fr_1fr] md:gap-12 md:px-14 md:py-16",

@@ -103,18 +103,18 @@ export function Header() {
           <a
             href="/"
             aria-label="Pav Dental home"
-            className="inline-flex shrink-0 items-center rounded-pill py-1 text-nav-lg leading-none font-semibold text-fg t-colors hover:text-muted"
+            className="inline-flex shrink-0 items-center rounded-pill py-1 max-md:min-h-11 text-nav-lg leading-none font-semibold text-fg t-colors hover:text-muted"
             onClick={closeMenu}
           >
             Pav Dental
           </a>
 
           <div className="flex items-center gap-2">
-            <BookButton size="sm" />
+            <BookButton size="sm" className="max-md:min-h-11" />
             <a
               href="/cart"
               aria-label={cartCount > 0 ? `Shopping bag (${cartCount} items)` : "Shopping bag"}
-              className="relative inline-flex size-9 items-center justify-center rounded-pill text-fg t-colors hover:bg-cream"
+              className="relative inline-flex size-9 max-md:size-11 items-center justify-center rounded-pill text-fg t-colors hover:bg-cream"
             >
               <ShoppingBag className="size-5" aria-hidden="true" />
               {cartCount > 0 ? (
@@ -128,6 +128,7 @@ export function Header() {
               type="button"
               variant="ghost"
               size="icon"
+              className="max-md:size-11"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               aria-controls="site-nav-drawer"

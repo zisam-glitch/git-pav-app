@@ -40,6 +40,7 @@ export function GeneralDentistryCavities() {
                 src="/media/thumbnails/1.jpg"
                 ratio="16 / 9"
                 tone="sage"
+                priority
                 alt="How dental cavities form - visual overview"
                 className="size-full rounded-none"
               />

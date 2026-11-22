@@ -34,6 +34,7 @@ export function VirtualDentistryHowItWorks() {
           alt="Digital dental e-prescription care in warm natural light"
           ratio="4 / 3"
           tone="sand"
+          priority
         />
       }
     />

@@ -6,6 +6,7 @@ import { CartDrawer } from "./cart-drawer";
 import { mapApiProduct, SHOP_CATALOG_PRODUCTS } from "./shop-catalog-data";
 import type { CartItem, Product } from "./shop-data";
 import { ShopCatalog } from "./shop-catalog";
+import { ShopGuarantee } from "./shop-guarantee";
 import { ShopHero } from "./shop-hero";
 
 export function ShopPage() {
@@ -92,6 +93,8 @@ export function ShopPage() {
         unavailable={false}
         onAddToCart={handleAddToCart}
       />
+
+      <ShopGuarantee />
 
       <CartDrawer
         isOpen={isCartOpen}

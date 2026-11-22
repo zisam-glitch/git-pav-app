@@ -67,3 +67,17 @@ Remove or reword repo-only claims (D4), apply the live-site check pass against w
 ## Order of work
 
 Phase 0 decisions can run in parallel with phase 1. Phase 1 first (fast, visible on every page). Phase 2 next, in one sitting per group so styles match. Phase 3 after the new pictures are in. Phases 4 and 5 last.
+
+## Phase 1 results (23 Nov 2026)
+
+Done and pushed: footer seam (24 px strip, no 80 px gap, no corner slivers; measured on /, /faq, /pricing), footer intro text smaller, header controls 44 px tall on phones, cookie card shorter on phones.
+
+Checked and not changed, with the reason:
+- **H-019 desktop navigation:** the live Hims home header is logo, login and menu only, like ours. No change.
+- **O-047 blog headings:** measured on the saved Hims blog: index and all-articles H1 87 px, article H1 62 px. Ours already match. Audit row was wrong.
+- **O-005, O-063, H-011, H-015 page titles and heading wording:** changing them breaks the "SEO stays 100% the same" rule (titles, meta and H1/H2 words are fixed). Not changed.
+- **O-061 policy text:** body is already 16 px (`text-body`); the 19 px measured is the subtitle. No change.
+- **H-012 home H2 sizes:** the 57 px and 48 px steps are the design system's two H2 tiers (main and secondary), so they are intended. No change.
+- **O-007 / O-041 about and vacancies H1 82 px:** uses the display-m style; not yet compared with a Hims about page measurement. Left for phase 3.
+
+Still open from phase 1: the shared kit swaps (TreatmentHero, ClosingBand, InfoAccordion). These are tied to the picture and layout work, so they move into phases 2 and 3.

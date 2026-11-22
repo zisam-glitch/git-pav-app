@@ -31,6 +31,7 @@ function Home() {
       <ServiceTabs />
       <HomeEmergency />
       <Overview />
+      <HomeEmergency />
       <VideoSection />
       <Counters />
       <HomeTeamCarousel />

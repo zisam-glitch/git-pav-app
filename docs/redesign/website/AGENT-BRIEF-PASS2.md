@@ -73,6 +73,14 @@ Do not generate, download or fetch any picture. Pictures already wired stay wire
 
 Keep the `tracking.md` rows true: re-verify a row you changed and set its Reference column to the capture you used. At the end of each of your page files add a section `## Pass 2` with: the capture used, differences found, sections rebuilt, wording changes (live wording, new wording, why), images needed, open questions for the owner. Do not run `build-tracking.mjs` (the lead does).
 
+## Decisions after wave 1 (these win over the sections above)
+
+- **Repo-only headings and text.** A heading or paragraph that the current page has but the live page does not (check `website/seo/live-text/<page>.txt`) is repo-only. If it makes a claim (regulatory, clinical, awards, numbers, guarantees, "24/7 support", a price the live page lacks) it comes out, and the fingerprint will WARN about it: list each one in your report. If it is harmless wording (a call-to-action heading, a step title that paraphrases a live answer) keep it so SEO stays identical. A heading that is on the live page always stays.
+- **Pictures that are the only content of a link** (service tiles, product cards) need real alt text naming the subject, not `alt=""`; only purely decorative pictures get an empty alt. Wave 1's hub tiles use `alt=""` and add a parity alt note: fix it when you touch them.
+- **Browser.** Pass `tabId` on every action inside `browser_batch` (an action without it ran on another agent's tab twice). Emulated viewport sizes reset after each `navigate`: set them again. `/about/clinical-excellence.html` is an empty shell (the real page draws itself with a script that is stripped here): read `hims-patterns/clinical-excellence.md` instead.
+- **Kit.** Wave 1 added about 29 files to `components/hims/`: read their JSDoc headers and the `hims-patterns/*-recipe.md` files before building anything similar, and reuse them. The lead exports them from `index.ts` and promotes the token requests (`text-display-s`, `text-display-m`, `text-lead-l`, band padding, card shadows).
+- **Left by wave 1:** `/about` beyond its hero, `/vacancies`, `/petition`, `/pricing`, `/shop`, the product page and `/category/$slug` (it renders API products only; fall back to `getCatalogProductsByCategory(slug)`), and the other twelve service pages (follow `treatment-page-recipe.md`).
+
 ## Pacing (the owner's plan has a limited allowance)
 
 Save as you go: the tree must compile after each section, because a run can be cut off without warning. At most two look-and-fix rounds per section. Prefer measurements (`javascript_tool`, `get_page_text`) to screenshots; screenshots at `scale: 0.5` and then `zoom` on a region. Do not read whole large files when `grep -n` finds the part you need. If you run low on budget, stop and report what is done and what is left.

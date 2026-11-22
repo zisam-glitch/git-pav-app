@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, CheckCircle2, Lock, ShieldCheck } from "lucide-react";
+import { AlertCircle, ArrowLeft, CheckCircle2, Lock } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
@@ -227,9 +227,7 @@ export function CheckoutPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.co.uk"
                 />
-                <p className="text-caption text-muted">
-                  We&apos;ll send your receipt and tracking updates here.
-                </p>
+                <p className="text-caption text-muted">We&apos;ll send your receipt here.</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="checkout-phone">Phone Number (Optional)</Label>
@@ -331,7 +329,7 @@ export function CheckoutPage() {
                             name="shippingMethod"
                             checked={isSelected}
                             onChange={() => setShippingMethodId(m.id)}
-                            className="size-4 accent-black"
+                            className="size-5 accent-black"
                           />
                           <div>
                             <p className="text-label text-fg">{m.name}</p>
@@ -411,7 +409,7 @@ export function CheckoutPage() {
                     <button
                       type="button"
                       onClick={removeDiscount}
-                      className="ml-2 text-caption font-medium text-fg underline underline-offset-4"
+                      className="ml-2 inline-flex min-h-11 items-center px-2 text-small font-medium text-fg underline underline-offset-4"
                     >
                       Remove
                     </button>
@@ -441,7 +439,7 @@ export function CheckoutPage() {
                   </div>
                 ) : null}
                 <div className="flex justify-between text-muted">
-                  <span>UK Delivery</span>
+                  <span>Delivery</span>
                   <span className="font-medium text-fg tabular-nums">
                     {shippingCost === 0 ? "FREE" : `£${shippingCost.toFixed(2)}`}
                   </span>
@@ -450,16 +448,6 @@ export function CheckoutPage() {
                   <span>Total (inc. VAT)</span>
                   <span className="tabular-nums">£{finalTotal.toFixed(2)}</span>
                 </div>
-              </div>
-            </Tile>
-
-            <Tile tone="sage" className="flex items-start gap-3 p-5">
-              <ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-fg" />
-              <div>
-                <p className="text-label text-fg">Secure Checkout</p>
-                <p className="mt-1 text-small text-muted">
-                  Payments are processed securely via Stripe.
-                </p>
               </div>
             </Tile>
           </div>

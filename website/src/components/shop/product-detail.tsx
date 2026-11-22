@@ -1,31 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import {
-  ArrowLeft,
-  Check,
-  CheckCircle2,
-  ChevronRight,
-  MapPin,
-  Minus,
-  Package,
-  Plus,
-  RotateCcw,
-  ShieldCheck,
-  ShoppingBag,
-  Truck,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronRight, Minus, Package, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { ButtonLink, FaqList, Heading, Section, Tile, type FaqItem } from "@/components/hims";
+import { ButtonLink, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { Chip } from "@/components/hims/chip";
+import { ChoiceCards } from "@/components/hims/choice-cards";
+import { ProductCard } from "@/components/hims/product-card";
+import { ProductGallery } from "@/components/hims/product-gallery";
 import { Button } from "@/components/ui/button";
 import { api, HAS_API_BASE, type ProductVariant } from "@/lib/api";
-import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
-import { cn } from "@/lib/utils";
 import {
   FREE_UK_DELIVERY_THRESHOLD,
   getCatalogProductBySlug,
   getRelatedCatalogProducts,
   mapApiProduct,
-  SHOP_DISPATCH_ADDRESS,
   STANDARD_UK_DELIVERY_FEE,
 } from "./shop-catalog-data";
 import type { Product } from "./shop-data";
@@ -165,10 +153,6 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         : false
       : resolvedProduct.inStock;
 
-  const currentStockQty = activeVariant
-    ? activeVariant.stock_qty
-    : (resolvedProduct.totalStock ?? 25);
-
   const productData: Product = {
     ...resolvedProduct,
     price: currentPrice,
@@ -183,8 +167,6 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
       setAdded(false);
     }, 2000);
   };
-
-  const qualifiesFreeDelivery = currentPrice * quantity >= FREE_UK_DELIVERY_THRESHOLD;
 
   const accordionItems: FaqItem[] = [
     ...(productData.features.length > 0 || (productData.whatsIncluded?.length ?? 0) > 0
@@ -235,23 +217,11 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
     {
       q: "UK Delivery & Returns",
       a: (
-        <div className="space-y-3 text-small leading-relaxed text-muted">
-          <p>
-            <strong className="font-medium text-fg">UK Tracked Delivery:</strong> Free on orders
-            over £{FREE_UK_DELIVERY_THRESHOLD}. Orders under £{FREE_UK_DELIVERY_THRESHOLD} ship via
-            Royal Mail Tracked for £{STANDARD_UK_DELIVERY_FEE.toFixed(2)}. Orders placed before 2 PM
-            Monday–Friday are dispatched the same working day from {SHOP_DISPATCH_ADDRESS}.
-          </p>
-          <p>
-            <strong className="font-medium text-fg">Clinic Click &amp; Collect:</strong> Free
-            collection directly from Pav Dental Bradford, 786 Leeds Road, BD3 9TY.
-          </p>
-          <p>
-            <strong className="font-medium text-fg">14-Day UK Returns:</strong> Return any unopened,
-            sealed oral hygiene product or unused device within 14 days of delivery for a full
-            refund in line with UK distance-selling regulations.
-          </p>
-        </div>
+        <p className="text-small leading-relaxed text-muted">
+          <strong className="font-medium text-fg">UK Tracked Delivery:</strong> Free on orders over
+          £{FREE_UK_DELIVERY_THRESHOLD}. Orders under £{FREE_UK_DELIVERY_THRESHOLD} ship via Royal
+          Mail Tracked for £{STANDARD_UK_DELIVERY_FEE.toFixed(2)}.
+        </p>
       ),
     },
   ];
@@ -260,9 +230,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
     "@context": "https://schema.org/",
     "@type": "Product",
     name: productData.name,
-    image: images.map((img) =>
-      img.startsWith("/") ? `https://www.pavdental.com${img}` : img,
-    ),
+    image: images.map((img) => (img.startsWith("/") ? `https://www.pavdental.com${img}` : img)),
     description: productData.shortDesc || productData.fullDesc,
     brand: {
       "@type": "Brand",
@@ -314,81 +282,31 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         </nav>
       </Section>
 
-      {/* Hims Split PDP Stage (Mobbin 43693059 + 16099344) */}
-      <Section theme="white">
-        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
-          {/* Left: Full-bleed Warm Cream Product Stage with Bottom-Centered Circular Thumbnails */}
-          <div className="lg:sticky lg:top-24 lg:col-span-6">
-            <div className="relative overflow-hidden rounded-xl border border-border/70 bg-tile-cream p-5 sm:p-8">
-              <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white">
-                <ShopMedia
-                  src={images[selectedImageIndex]}
-                  alt={productData.name}
-                  tone="cream"
-                  priority
-                  className="size-full rounded-xl"
-                />
-                {productData.badge ? (
-                  <span className="absolute top-4 left-4 rounded-pill bg-brown px-4 py-1 text-caption font-medium text-white">
-                    {productData.badge}
-                  </span>
-                ) : null}
-              </div>
+      {/* Hims PDP hero (shop-pdp-notes.md): gallery 889 left, side rail 389 right, 66px gutter */}
+      <Section theme="white" space="none" className="py-8 md:py-[60px]">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,889fr)_minmax(0,389fr)] lg:gap-[66px]">
+          <ProductGallery
+            images={images}
+            alt={productData.name}
+            badge={productData.badge ? <Chip tone="rust">{productData.badge}</Chip> : undefined}
+          />
 
-              {images.length > 1 ? (
-                <div className="mt-5 flex justify-center">
-                  <div
-                    role="tablist"
-                    aria-label="Product views"
-                    className="inline-flex items-center gap-2.5 rounded-pill border border-border bg-white px-3 py-2 shadow-soft"
-                  >
-                    {images.map((img, idx) => {
-                      const active = selectedImageIndex === idx;
-                      return (
-                        <button
-                          key={img + idx}
-                          type="button"
-                          role="tab"
-                          aria-selected={active}
-                          onClick={() => setSelectedImageIndex(idx)}
-                          aria-label={`View image ${idx + 1} of ${images.length}`}
-                          className={cn(
-                            "relative size-11 shrink-0 overflow-hidden rounded-full border-2 t-colors",
-                            active
-                              ? "border-black ring-2 ring-black/15"
-                              : "border-border opacity-70 hover:opacity-100",
-                          )}
-                        >
-                          <img
-                            src={img}
-                            alt={`${productData.name} view ${idx + 1}`}
-                            className="size-full object-cover"
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          </div>
-
-          {/* Right: Editorial Details, Option Cards, Full-Width Black Pill CTA, Clinical Callout & Hairline Accordions */}
-          <div className="space-y-6 lg:col-span-6">
+          <div className="flex min-w-0 flex-col gap-5">
             <div>
               <Link
                 to="/category/$slug"
                 params={{ slug: productData.category }}
-                className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-fg t-colors hover:border-fg"
+                className="inline-flex rounded-pill"
               >
-                {productData.categoryLabel}
+                <Chip tone="gold">{productData.categoryLabel}</Chip>
               </Link>
               <Heading as="h1" size="h2-md" className="mt-3">
                 {productData.name}
               </Heading>
             </div>
 
-            {/* Price & Stock Pill */}
+            <p className="text-lead text-muted">{productData.fullDesc || productData.shortDesc}</p>
+
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-h3 text-fg tabular-nums">£{currentPrice.toFixed(2)}</span>
               {productData.originalPrice ? (
@@ -396,268 +314,111 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                   £{productData.originalPrice.toFixed(2)}
                 </span>
               ) : null}
-              {isCurrentInStock ? (
-                <span className="rounded-pill bg-sage px-3.5 py-1 text-caption font-medium text-fg">
-                  {currentStockQty < 10
-                    ? `Low Stock · Only ${currentStockQty} left`
-                    : "In Stock · Ready to Dispatch"}
-                </span>
-              ) : (
-                <span className="rounded-pill bg-sand px-3.5 py-1 text-caption font-medium text-rust">
-                  Out of Stock
-                </span>
-              )}
+              {!isCurrentInStock ? <Chip tone="sand">Out of Stock</Chip> : null}
             </div>
 
-            {/* Clinical Description */}
-            <p className="text-body leading-relaxed text-muted">
-              {productData.fullDesc || productData.shortDesc}
-            </p>
-
-            {/* Hims Selectable Option / Variant Cards (Mobbin 43693059) */}
             {variants.length > 0 ? (
-              <div className="space-y-3 border-t border-border pt-5">
-                <div className="flex items-center justify-between">
-                  <p className="text-small font-medium text-fg">Choose Option</p>
-                  {activeVariant?.sku ? (
-                    <span className="font-mono text-caption text-subtle">{activeVariant.sku}</span>
-                  ) : null}
-                </div>
-                {variantError ? (
-                  <p role="alert" className="rounded-lg bg-sand px-3.5 py-2 text-small text-danger">
-                    {variantError}
-                  </p>
-                ) : null}
-                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                  {variants.map((v) => {
-                    const isSelected = activeVariant?.id === v.id;
-                    const label =
-                      Object.values(v.attributes || {}).join(" · ") || v.sku;
-                    const attrKey = Object.keys(v.attributes || {})[0];
-                    const optionPrice = v.price_override
-                      ? parseFloat(String(v.price_override))
-                      : resolvedProduct.price;
-                    const outOfStock = v.stock_qty <= 0;
-
-                    return (
-                      <button
-                        key={v.id}
-                        type="button"
-                        onClick={() => handleVariantSelect(v.id)}
-                        disabled={outOfStock}
-                        aria-pressed={isSelected}
-                        className={cn(
-                          "flex items-start justify-between gap-3 rounded-xl border-2 p-4 text-left t-colors",
-                          isSelected
-                            ? "border-black bg-cream"
-                            : outOfStock
-                              ? "cursor-not-allowed border-border bg-cream/50 text-subtle opacity-60"
-                              : "border-border bg-white hover:border-border-strong",
-                        )}
-                      >
-                        <div className="flex items-start gap-3">
-                          <span
-                            aria-hidden
-                            className={cn(
-                              "mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border-2 t-colors",
-                              isSelected
-                                ? "border-black bg-black text-white"
-                                : "border-border-strong bg-white",
-                            )}
-                          >
-                            {isSelected ? <Check className="size-3" /> : null}
-                          </span>
-                          <div>
-                            {attrKey ? (
-                              <span className="block text-caption text-subtle">{attrKey}</span>
-                            ) : null}
-                            <span className="block text-small font-medium text-fg">{label}</span>
-                            <span className="mt-0.5 block text-caption text-muted">
-                              {outOfStock ? "Out of stock" : "In stock"}
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-small font-medium text-fg tabular-nums">
-                          £{optionPrice.toFixed(2)}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <ChoiceCards
+                legend="Choose Option"
+                name="product-option"
+                value={activeVariant?.id ?? null}
+                onChange={handleVariantSelect}
+                error={variantError}
+                options={variants.map((v) => {
+                  const optionPrice = v.price_override
+                    ? parseFloat(String(v.price_override))
+                    : resolvedProduct.price;
+                  return {
+                    value: v.id,
+                    title: Object.values(v.attributes || {}).join(" · ") || v.sku,
+                    detail: `£${optionPrice.toFixed(2)}${v.stock_qty <= 0 ? " · Out of stock" : ""}`,
+                    disabled: v.stock_qty <= 0,
+                  };
+                })}
+              />
             ) : null}
 
-            {/* Clean Delivery & Dispatch Summary Strip */}
-            <div className="rounded-xl border border-border bg-cream p-4">
-              <div className="grid grid-cols-1 gap-3 text-small sm:grid-cols-2">
-                <div className="flex items-start gap-2.5">
-                  <Truck aria-hidden className="mt-0.5 size-4 shrink-0 text-terracotta" />
-                  <div>
-                    <p className="font-medium text-fg">
-                      {qualifiesFreeDelivery
-                        ? "Qualifies for Free UK Delivery"
-                        : `Free UK Delivery over £${FREE_UK_DELIVERY_THRESHOLD}`}
-                    </p>
-                    <p className="text-caption text-muted">
-                      £{STANDARD_UK_DELIVERY_FEE.toFixed(2)} standard Royal Mail Tracked
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <RotateCcw aria-hidden className="mt-0.5 size-4 shrink-0 text-terracotta" />
-                  <div>
-                    <p className="font-medium text-fg">14-Day UK Returns</p>
-                    <p className="text-caption text-muted">On unopened hygiene items</p>
-                  </div>
-                </div>
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-label">Quantity</span>
+              <div className="inline-flex h-12 items-center rounded-pill border border-black/19 bg-white px-2">
+                <button
+                  type="button"
+                  disabled={!isCurrentInStock || quantity <= 1}
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="grid size-10 place-items-center rounded-pill text-muted t-colors hover:text-fg disabled:opacity-40"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus aria-hidden className="size-4" />
+                </button>
+                <span className="w-10 text-center text-label tabular-nums text-fg">{quantity}</span>
+                <button
+                  type="button"
+                  disabled={!isCurrentInStock}
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="grid size-10 place-items-center rounded-pill text-muted t-colors hover:text-fg disabled:opacity-40"
+                  aria-label="Increase quantity"
+                >
+                  <Plus aria-hidden className="size-4" />
+                </button>
               </div>
             </div>
 
-            {/* Quantity & Full-Width Black Pill CTA */}
-            <div className="space-y-3 pt-1">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-small font-medium text-fg">Quantity</span>
-                <div className="inline-flex h-11 items-center rounded-pill border-2 border-border-strong bg-white px-2">
-                  <button
-                    type="button"
-                    disabled={!isCurrentInStock || quantity <= 1}
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="grid size-8 place-items-center rounded-pill text-muted t-colors hover:text-fg disabled:opacity-40"
-                    aria-label="Decrease quantity"
-                  >
-                    <Minus aria-hidden className="size-4" />
-                  </button>
-                  <span className="w-10 text-center text-label tabular-nums text-fg">
-                    {quantity}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={!isCurrentInStock}
-                    onClick={() => setQuantity((q) => q + 1)}
-                    className="grid size-8 place-items-center rounded-pill text-muted t-colors hover:text-fg disabled:opacity-40"
-                    aria-label="Increase quantity"
-                  >
-                    <Plus aria-hidden className="size-4" />
-                  </button>
-                </div>
-              </div>
+            <Button
+              type="button"
+              onClick={handleAdd}
+              disabled={!isCurrentInStock}
+              className="h-12 w-full rounded-pill text-body"
+            >
+              {!isCurrentInStock
+                ? "Out of Stock"
+                : added
+                  ? "Added to Bag"
+                  : `Add to Bag · £${(currentPrice * quantity).toFixed(2)}`}
+            </Button>
 
-              <Button
-                type="button"
-                onClick={handleAdd}
-                disabled={!isCurrentInStock}
-                className="h-14 w-full text-label"
-              >
-                <ShoppingBag aria-hidden className="size-4" />
-                <span>
-                  {!isCurrentInStock
-                    ? "Out of Stock"
-                    : added
-                      ? "Added to Bag"
-                      : `Add to Bag · £${(currentPrice * quantity).toFixed(2)}`}
-                </span>
-              </Button>
-            </div>
-
-            {/* Clinical Care Callout Card (Mobbin 43693059) */}
-            <Tile tone="sage" className="border border-border/60 p-5">
-              <div className="flex items-start gap-3.5">
-                <div className="grid size-10 shrink-0 place-items-center rounded-pill bg-white text-fg">
-                  <ShieldCheck aria-hidden className="size-5" />
-                </div>
-                <div className="text-small">
-                  <p className="font-medium text-fg">Clinician-Selected &amp; Bradford Dispatched</p>
-                  <p className="mt-1 leading-relaxed text-muted">
-                    Checked and packed at Pav Dental ({SHOP_DISPATCH_ADDRESS}). Unsure whether this
-                    suits your teeth or gums? Call{" "}
-                    <a
-                      href={PRACTICE_PHONE_HREF}
-                      className="font-medium text-fg underline underline-offset-4 hover:text-terracotta"
-                    >
-                      {PRACTICE_PHONE}
-                    </a>{" "}
-                    or book a{" "}
-                    <Link
-                      to="/services/virtual-dentistry"
-                      className="font-medium text-fg underline underline-offset-4 hover:text-terracotta"
-                    >
-                      virtual dental consultation
-                    </Link>
-                    .
-                  </p>
-                </div>
-              </div>
-            </Tile>
-
-            {/* Stacked Hims Hairline Accordions (Mobbin 16099344) */}
-            <div className="pt-2">
-              <FaqList items={accordionItems} defaultOpen={0} />
-            </div>
+            <FaqList items={accordionItems} defaultOpen={0} />
           </div>
         </div>
       </Section>
 
-      {/* Hims Clinical Spec Summary Card on Warm Sand (Mobbin fceeec4f) */}
       {productData.clinicalSpec ? (
-        <Section theme="sand" aria-label="Clinical specification summary">
-          <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-4">
-              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-fg">
-                Clinical Specification
-              </span>
-              <Heading as="h2" size="h3-md" accent="at a glance" tone="terracotta" className="mt-4">
-                Product details
-              </Heading>
-              <p className="mt-3 text-small leading-relaxed text-muted">
-                Key formulation, suitability, and Bradford dispensary details reviewed by our
-                dental team.
-              </p>
-            </div>
-
-            <Tile tone="cream" className="border border-border p-6 md:p-8 lg:col-span-8">
-              <dl className="divide-y divide-border">
-                <div className="grid grid-cols-1 gap-1 py-4 first:pt-0 sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-small font-medium text-subtle">Key Ingredients / Build</dt>
-                  <dd className="text-small text-fg sm:col-span-2">
-                    {productData.clinicalSpec.activeIngredient}
-                  </dd>
+        <Section
+          theme="cream"
+          space="none"
+          className="py-8 md:py-[60px]"
+          aria-label="Product specification"
+        >
+          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:gap-28">
+            <Heading as="h2" size="h3-md" accent="at a glance" tone="terracotta">
+              Product details
+            </Heading>
+            <dl className="m-0">
+              {[
+                ["Key Ingredients / Build", productData.clinicalSpec.activeIngredient],
+                ["Format", productData.clinicalSpec.format],
+                ["Pack Contents", productData.clinicalSpec.packSize],
+                ["Clinical Suitability", productData.clinicalSpec.suitability],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="grid gap-1 border-b border-border py-[18px] first:pt-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] sm:gap-6"
+                >
+                  <dt className="text-label">{label}</dt>
+                  <dd className="m-0 text-body text-muted">{value}</dd>
                 </div>
-                <div className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-small font-medium text-subtle">Format</dt>
-                  <dd className="text-small text-fg sm:col-span-2">
-                    {productData.clinicalSpec.format}
-                  </dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-small font-medium text-subtle">Pack Contents</dt>
-                  <dd className="text-small text-fg sm:col-span-2">
-                    {productData.clinicalSpec.packSize}
-                  </dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-small font-medium text-subtle">Clinical Suitability</dt>
-                  <dd className="text-small text-fg sm:col-span-2">
-                    {productData.clinicalSpec.suitability}
-                  </dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-4 last:pb-0 sm:grid-cols-3 sm:gap-4">
-                  <dt className="flex items-center gap-1.5 text-small font-medium text-subtle">
-                    <MapPin aria-hidden className="size-3.5 text-terracotta" />
-                    <span>Dispatched From</span>
-                  </dt>
-                  <dd className="text-small text-fg sm:col-span-2">
-                    Pav Dental Clinic, {productData.clinicalSpec.dispatchOrigin}
-                  </dd>
-                </div>
-              </dl>
-            </Tile>
+              ))}
+            </dl>
           </div>
         </Section>
       ) : null}
 
-      {/* Complementary Oral Care Related Products Strip */}
       {relatedProducts.length > 0 ? (
-        <Section theme="cream" aria-label="Complementary oral care products">
+        <Section
+          theme="white"
+          space="none"
+          className="py-8 md:py-[60px]"
+          aria-label="Complementary oral care products"
+        >
           <div className="flex flex-wrap items-end justify-between gap-4">
             <Heading as="h2" size="h3-md" accent="Oral Care" tone="terracotta" inline>
               Complementary
@@ -669,35 +430,39 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
               View all products
             </Link>
           </div>
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {relatedProducts.map((rel) => (
-              <Link
+              <ProductCard
                 key={rel.id}
-                to="/shop/$productSlug"
-                params={{ productSlug: rel.slug }}
-                className="group flex flex-col justify-between rounded-xl border border-border/70 bg-white p-4 t-lift"
-              >
-                <div>
-                  <ShopMedia
-                    src={rel.image}
-                    alt={rel.name}
-                    ratio="4 / 3"
-                    tone="cream"
-                    className="rounded-lg"
-                    imgClassName="t-zoom"
-                  />
-                  <p className="mt-3 text-caption text-subtle">{rel.categoryLabel}</p>
-                  <h3 className="mt-1 line-clamp-2 text-label text-fg">{rel.name}</h3>
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                  <span className="text-label text-fg tabular-nums">
-                    £{parseFloat(String(rel.price)).toFixed(2)}
-                  </span>
-                  <span className="text-caption font-medium text-muted group-hover:text-terracotta">
-                    View details →
-                  </span>
-                </div>
-              </Link>
+                media={
+                  <Link
+                    to="/shop/$productSlug"
+                    params={{ productSlug: rel.slug }}
+                    aria-label={`View ${rel.name}`}
+                    className="block"
+                  >
+                    <ShopMedia
+                      src={rel.image}
+                      alt={rel.name}
+                      ratio="4 / 3"
+                      tone="sand"
+                      className="rounded-md"
+                    />
+                  </Link>
+                }
+                title={
+                  <Link
+                    to="/shop/$productSlug"
+                    params={{ productSlug: rel.slug }}
+                    className="t-colors hover:text-terracotta"
+                  >
+                    {rel.name}
+                  </Link>
+                }
+                meta={
+                  <span className="tabular-nums">£{parseFloat(String(rel.price)).toFixed(2)}</span>
+                }
+              />
             ))}
           </div>
         </Section>

@@ -1,5 +1,5 @@
 import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
-import { BookButton, PricingTiles, Tile, type PricingTier } from "@/components/hims";
+import { ConsentPanel, PricingTiles, type ConsentItem, type PricingTier } from "@/components/hims";
 
 const TIERS: readonly PricingTier[] = [
   {
@@ -40,69 +40,41 @@ const TIERS: readonly PricingTier[] = [
   },
 ];
 
-const CONSENT_POINTS = [
+const CONSENT_ITEMS: readonly ConsentItem[] = [
   {
     title: "Treatment Understanding",
-    desc: "Your clinician explains the tooth removal process and expected recovery time before treatment.",
+    desc: "I understand the nature of the tooth extraction procedure, including the removal process and expected recovery time.",
     icon: FileText,
   },
   {
     title: "Risks and Benefits",
-    desc: "We talk through potential bleeding, healing guidance, and restorative alternatives to extraction.",
+    desc: "I have been informed of the potential risks and benefits, including possible bleeding, infection, and alternatives to extraction.",
     icon: AlertCircle,
   },
   {
     title: "Voluntary Participation",
-    desc: "Your participation is voluntary, with time to ask questions at every stage of your appointment.",
+    desc: "I understand that my participation in this treatment is voluntary and I may withdraw consent at any time.",
     icon: CheckCircle2,
   },
-] as const;
+];
 
 export function ExtractionPricing() {
   return (
-    <PricingTiles
-      title="Our Tooth"
-      accent="Extraction Prices"
-      tiers={TIERS}
-      columns={4}
-      ctaLabel="Make an Appointment"
-      footer={
-        <Tile tone="cream" className="border border-border p-6 md:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="inline-flex rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
-                Clinical Transparency
-              </p>
-              <h3 className="mt-3 text-h3-md text-fg">Informed Consent for Tooth Extraction</h3>
-              <p className="mt-1 text-body text-muted">
-                Your clinician will talk through your procedure, alternatives, and aftercare before
-                any treatment begins.
-              </p>
-            </div>
-            <BookButton variant="outline">Book Consultation</BookButton>
-          </div>
-
-          <ul className="mt-6 grid gap-4 border-t border-border pt-6 md:grid-cols-3">
-            {CONSENT_POINTS.map((point) => {
-              const Icon = point.icon;
-              return (
-                <li
-                  key={point.title}
-                  className="flex items-start gap-3.5 rounded-xl border border-border bg-white p-4"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
-                    <Icon aria-hidden className="size-4" />
-                  </span>
-                  <div>
-                    <p className="text-label text-fg">{point.title}</p>
-                    <p className="mt-1 text-small text-muted">{point.desc}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Tile>
-      }
-    />
+    <>
+      <PricingTiles
+        title="Our Tooth"
+        accent="Extraction Prices"
+        tiers={TIERS}
+        columns={4}
+        ctaLabel="Make an Appointment"
+      />
+      <ConsentPanel
+        theme="cream"
+        title="Informed Consent for"
+        accent="Tooth Extraction"
+        intro="Before proceeding with tooth extraction, we ensure you fully understand the procedure, risks, and benefits of removing your tooth."
+        items={CONSENT_ITEMS}
+      />
+    </>
   );
 }

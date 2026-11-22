@@ -45,3 +45,15 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 2. **Repo-only sponsorship claims dropped from `visa-sponsorship-banner.tsx`**: `"PavDental holds an official UK Home Office sponsor licence. We provide full Skilled Worker Visa sponsorship, relocation support, and dedicated mentoring..."`, `"Certificate of Sponsorship (CoS) provided"`, `"Relocation & housing support"`, `"GDC & Performer Number guidance"`, `"Licensed Home Office sponsor"`. Replaced with verbatim live `Foreign Visa and Sponsorship` copy.
 3. **Repo-only SLA dropped from `apply-modal.tsx`**: `"We typically review clinical applications within 48 hours."` and `"forwarded directly to our Practice Principal and HR recruitment team"`.
 4. **Hero perks grid dropped from `vacancies-hero.tsx`**: Previous hero listed 4 repo-only perk tiles (`Visa Sponsorship`, `Advanced Tech`, `Mentorship`, `Supportive Team`) not present on `live-text/vacancies.txt`.
+
+## Pass 2
+
+**Capture used.** `/benefits.html`: stacked flow (heading left, list right), partner rows ([benefits.md](../hims-patterns/benefits.md)). Recipe: [people-recipe.md](../hims-patterns/people-recipe.md).
+
+**Rebuilt (done, 22 Nov 2026).** `vacancies-hero.tsx`: centred `DISPLAY_M` H1 "Vacancies at Pav Dental" (same words), View Open Positions + Call, wired picture at 16 / 9, jump links without numbers; chip "Careers in Bradford · 7 Open Roles" and the invented lead are gone. `vacancies-list.tsx`: `StackedFlow` with the H2 "Open Positions", search and category pills on the left (sticky), one `RowCard` per role on the right (H3 title, live description, Apply Now, Email Us); department, contract chips, tags, location line, the numbers and the invented lead and eyebrow are removed. `visa-sponsorship-banner.tsx`: live H2 and paragraph, Apply Now, wired picture; the three pillar cards and the eyebrow are removed. `apply-modal.tsx`: department line above the title removed (the modal still opens, validates and closes). The apply modal, the search and the open application band work as before.
+
+**Checks.** Fingerprint: 0 FAIL, 1 WARN pair, expected: H3 removed "Skilled Worker Sponsorship", "GDC & Clinical Mentorship", "Long-Term Career Growth" (the repo-only pillars) and words 820 to 593 (the repo-only chips and tags). Parity 93% (unchanged). tsc, eslint, tests pass. 1440 and 390 looked at, no horizontal scroll.
+
+**Left as is.** `open-application.tsx` still has the CTA heading "Don't see your perfect role?" (harmless call to action) and the line "We welcome applications ... 786 Leeds Road, Bradford, BD3 9TY or via hello@pavdental.com" (the address and email are live elsewhere; the sentence is repo-only: owner to confirm). `vacancies-data.ts` still holds `tags`, `department`, `contractType` and `salaryNote` (not displayed any more).
+
+**Wording changes.** None. **Images needed.** None new.

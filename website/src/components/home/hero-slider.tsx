@@ -106,12 +106,18 @@ export function HeroSlider() {
   const activePhrase = HERO_PHRASES[phraseIndex] ?? HERO_PHRASES[0];
 
   return (
-    <Section id="top" theme="white" space="none" className="pt-6 pb-8 md:pt-10 md:pb-12">
-      {/* Hims rotating two-tone hero headline + subtitle + primary pills */}
+    <Section
+      id="top"
+      theme="white"
+      space="none"
+      className="pt-5 pb-8 md:pt-5 md:pb-12"
+      innerClassName="md:px-0"
+    >
+      {/* Hims rotating two-tone hero headline + subtitle + primary pills (measured on hims.com home: h1 57px, weight 410, 24px gutter; tracking stays at the token's -0.02em because Figtree is wider than CareSans) */}
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
         <div className="max-w-3xl">
           <div className="flex items-start gap-3">
-            <h1 className="text-display text-fg">
+            <h1 className="text-hero text-fg font-[410]">
               <span className={cn("block t-colors", ACCENT_TEXT[activePhrase.tone])}>
                 {activePhrase.label}
               </span>{" "}
@@ -207,12 +213,7 @@ export function HeroSlider() {
           }
 
           return (
-            <Link
-              key={tile.id}
-              to={tile.to}
-              data-hover-tone={tile.hoverTone}
-              className={tileClass}
-            >
+            <Link key={tile.id} to={tile.to} data-hover-tone={tile.hoverTone} className={tileClass}>
               {content}
             </Link>
           );
@@ -281,7 +282,7 @@ export function HeroSlider() {
           className="absolute inset-0 bg-gradient-to-r from-brown-deep/95 via-brown-deep/80 to-brown-deep/20 transition-opacity duration-200 ease-linear group-hover:opacity-95"
         />
 
-        <div className="relative z-10 grid items-end gap-8 p-6 sm:p-10 md:min-h-[380px] md:grid-cols-[1.25fr_0.75fr] md:p-12 lg:p-14">
+        <div className="relative z-10 grid items-end gap-8 p-6 sm:p-10 md:min-h-[480px] md:grid-cols-[1.25fr_0.75fr] md:p-12 lg:p-14">
           <div className="max-w-xl">
             <p className="text-caption font-medium text-gold">ACCESSIBLE SMILES</p>
             <h2 className="mt-2 text-h2 text-white">

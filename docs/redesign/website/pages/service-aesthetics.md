@@ -50,3 +50,13 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 8. **Repo-only unverified claims removed from `aesthetics-safety-banner.tsx`**: "Single-Use Sterile Micro-Cannulas", "Hyaluronidase Ready On-Site", "SMAS planes", "Photographic ID required", "Cooling-Off Protocol".
 9. **Repo-only unverified claims removed from `aesthetics-safety.tsx`**: "within 24 hours", "Allergan & IBSA authentic products", "Bocouture®", "Masseter Slimming / Bruxism".
 10. **Unused invented FAQ file (`aesthetics-faq.tsx`)**: Contained 8 repo-only FAQs about porcelain veneers, composite bonding, teeth whitening, and 10–15 year lifespans (not on `services--aesthetics.txt`). Omitted from `AestheticsPage` and turned into a no-op export.
+
+## Pass 2
+
+- Capture used: `/testosterone.html` plus `/hair-loss/minoxidil.html` cards, via `treatment-page-recipe.md`.
+- Differences found: split hero, tile grids with per-card buttons, three tinted price tiles with "From" lines, testimonial tiles with fake counters, a glass-tile safety banner.
+- Rebuilt: hero (`TreatmentHero`, two wired pictures), treatments (`BenefitCards`, six H3s), premium products (`Statement`, brown, H2 words unchanged), values (`TitleCards`), price list (three cards with `PriceList`, live prices only), patient comments (`TitleCards`, live comments word for word, no ratings), safety banner (navy, `TitleCards` dark, then the H2 and paragraph), enquiry form wrapper, closing (`ClosingBand`).
+- Wording changes (1): hero fact rows are live treatment names ("Botox", "Dermal fillers", "Skin Rejuvenation"). Finance and consent words untouched.
+- Removed (repo-only): eyebrows "Treatment Menu", "Curated Clinical Formulations", "Clinical Ethos", "Transparent Clinic Fees", "Patient Feedback", "Clinic Consultation"; price eyebrows "Volume & Contour", "Anti-Wrinkle", "Skin Boosters"; "From £100/£180/£160" lines; "CQC Regulated Clinic" badge; the "Pav Dental Aesthetics 01 / 03" card footer. "Award-Winning" stays because the live page says it.
+- Images needed: none new.
+- Open questions: "Award-Winning" (live claim, owner to verify); the safety paragraph mentions social distancing (live wording, may be dated).

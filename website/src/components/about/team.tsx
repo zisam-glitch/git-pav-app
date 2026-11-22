@@ -1,47 +1,51 @@
 import { BookButton, ButtonLink, CallButton, CtaBand, Heading, Section } from "@/components/hims";
-import { TeamShowcase } from "@/components/ui/team-showcase";
+import { LeaderCarousel } from "@/components/hims/leader-carousel";
+import { PersonCapsule } from "@/components/hims/person-capsule";
+import { TeamPhoto } from "@/components/team/team-photo";
 import { TEAM_MEMBERS } from "@/content/team-members";
 
+/**
+ * The people on `/about`: a slider of capsule portraits (live photo, name, role, GDC number), each linking to the
+ * profile, then the live "Get In Touch" band. Hims reference: the executive slider of the "Clinical excellence"
+ * capture (`docs/redesign/website/hims-patterns/clinical-excellence.md`).
+ */
 export function Team() {
-  const members = TEAM_MEMBERS.map((member) => ({
-    id: member.slug,
-    name: member.name,
-    role: member.role,
-    image: member.photo.src,
-    gdc: member.gdc,
-  }));
-
   return (
     <>
       <Section theme="white" space="default">
-        <div className="mx-auto max-w-2xl text-center">
-          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
-            Bradford Dental Team
-          </span>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Heading
             as="h2"
-            size="h2"
+            size="h2-md"
             accent="clinicians and care team"
             tone="terracotta"
-            className="mt-4"
+            className="max-w-3xl"
           >
             Care led by real
           </Heading>
-          <p className="mt-4 text-lead text-muted">
-            The dedicated dentists, compliance leads, and support team behind Pav Dental in
-            Bradford.
-          </p>
-        </div>
-
-        <div className="mt-10">
-          <TeamShowcase members={members} />
-        </div>
-
-        <div className="mt-8 flex justify-center">
           <ButtonLink to="/team" variant="outline">
             Meet our dentists
           </ButtonLink>
         </div>
+
+        <LeaderCarousel label="Pav Dental team" className="mt-10">
+          {TEAM_MEMBERS.map((member, index) => (
+            <PersonCapsule
+              key={member.slug}
+              slug={member.slug}
+              name={member.name}
+              role={member.role}
+              gdc={member.gdc}
+              photo={
+                <TeamPhoto
+                  member={member}
+                  priority={index < 4}
+                  className="size-full object-cover object-[50%_25%]"
+                />
+              }
+            />
+          ))}
+        </LeaderCarousel>
       </Section>
 
       <CtaBand

@@ -111,8 +111,7 @@ export function ApplyModal({ vacancy, isOpen, onClose }: ApplyModalProps) {
         ) : (
           <div>
             <div className="border-b border-border pb-4 pr-10">
-              <p className="text-small font-medium text-terracotta">{vacancy.department}</p>
-              <h2 id="apply-modal-title" className="mt-1 text-h3-md text-fg">
+              <h2 id="apply-modal-title" className="text-h3-md text-fg">
                 Apply for {vacancy.title}
               </h2>
               <p className="mt-1 text-small text-muted">{vacancy.location}</p>

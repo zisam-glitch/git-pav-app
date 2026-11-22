@@ -1,60 +1,51 @@
-import { ButtonLink, CallButton, Heading, Media, Section, SplitFeature } from "@/components/hims";
+import { ButtonLink, CallButton, Media, Section } from "@/components/hims";
+import { DISPLAY_M } from "@/components/hims/type-styles";
 
 const VACANCIES_JUMPS = [
-  { num: "01", label: "Open Positions", href: "#roles" },
-  { num: "02", label: "Foreign Visa & Sponsorship", href: "#sponsorship" },
-  { num: "03", label: "Open Application", href: "#open-application" },
+  { label: "Open Positions", href: "#roles" },
+  { label: "Foreign Visa & Sponsorship", href: "#sponsorship" },
+  { label: "Open Application", href: "#open-application" },
 ] as const;
 
+/**
+ * The opening of `/vacancies`: the H1, View Open Positions and Call, and the wired picture under them. Hims
+ * reference: the centred hero of the "Clinical excellence" capture
+ * (`docs/redesign/website/hims-patterns/clinical-excellence.md`, `people-recipe.md`).
+ */
 export function VacanciesHero() {
   return (
     <Section theme="white" space="default">
-      <SplitFeature
-        reverse
-        media={
-          <Media
-            src="/images/generated/vacancies-hero.jpg"
-            alt="Modern dental clinic workspace at Pav Dental in Bradford"
-            ratio="4 / 3"
-            tone="cream"
-            priority
-          />
-        }
-      >
-        <div>
-          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
-            Careers in Bradford · 7 Open Roles
-          </span>
-          <Heading as="h1" size="hero" accent="at Pav Dental" tone="terracotta" className="mt-4">
-            Vacancies
-          </Heading>
-          <p className="mt-4 text-lead text-muted">
-            Join a growing practice in Bradford across dental nursing, general dentistry, hygiene,
-            therapy, and international sponsorship.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <ButtonLink href="#roles">View Open Positions</ButtonLink>
-            <CallButton variant="outline" />
-          </div>
+      <div className="mx-auto max-w-[57rem] pt-4 text-center md:pt-10">
+        <h1 style={DISPLAY_M} className="text-balance text-fg">
+          Vacancies <span className="block text-terracotta">at Pav Dental</span>
+        </h1>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <ButtonLink href="#roles">View Open Positions</ButtonLink>
+          <CallButton variant="outline" />
         </div>
-      </SplitFeature>
+      </div>
 
-      {/* Hims "On this page" numbered jump-link rail (Mobbin a02b45d0) */}
+      <Media
+        src="/images/generated/vacancies-hero.jpg"
+        alt="Modern dental clinic workspace at Pav Dental in Bradford"
+        ratio="16 / 9"
+        tone="cream"
+        priority
+        className="mt-12 md:mt-16"
+      />
+
       <nav
         aria-label="On this page"
-        className="mt-10 flex flex-wrap items-center gap-2.5 border-t border-border pt-6"
+        className="mt-8 flex flex-wrap items-center justify-center gap-2.5"
       >
-        <span className="mr-2 text-caption font-medium text-subtle">On this page</span>
+        <span className="mr-2 text-small text-subtle">On this page</span>
         {VACANCIES_JUMPS.map((item) => (
           <a
             key={item.href}
             href={item.href}
-            className="group inline-flex items-center gap-2.5 rounded-pill border border-border bg-cream py-1.5 pr-4 pl-2 text-small font-medium text-fg t-colors hover:border-black hover:bg-white"
+            className="inline-flex h-[34px] items-center rounded-pill border border-border bg-cream px-4 text-small font-medium text-fg t-colors hover:border-black hover:bg-white"
           >
-            <span className="inline-flex size-6 items-center justify-center rounded-pill bg-white text-caption font-medium text-terracotta t-colors group-hover:bg-black group-hover:text-white">
-              {item.num}
-            </span>
-            <span>{item.label}</span>
+            {item.label}
           </a>
         ))}
       </nav>

@@ -39,3 +39,13 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 ## Open questions for the lead
 
 - `BLOG_POSTS` in `website/src/content/blog-posts.ts` references external `https://images.ctfassets.net/...` URLs (enforced by `blog-posts.test.ts`). `BlogIndex` currently renders `<Media>` placeholders for non-local URLs and logs the 6 cover slots above; once local assets are created under `website/public/images/generated/`, either map them in `blog-index.tsx` or update `blog-posts.ts` and `blog-posts.test.ts` together.
+
+## Pass 2
+
+- Captures used: `/blog.html`, `/blog/all.html`, `/blog/how-long-before-minoxidil-starts-working.html`.
+- Differences found: index content width (ours 1328 wide, Hims 1092 at x174, card pitch 372); article column 602 vs 650; author avatar 44 vs 55. Section order, type sizes (87 / 62 / 29px headings), cards, pagination and table of contents already matched.
+- Rebuilt: index container width, article column width, avatar size. Raw hex colours replaced with `bg-rust` and `from-clay to-rust`.
+- Removed repo-only text: "Reviewed by Dr Hassan Bhojani, BDS (GDC: 262970)" and its link, "Updated" line, the `4 Sources` accordion (NHS England, GDC, NICE, BDA citations), the "Editorial Standards" box, the "24/7 urgent triage" sentence, the two Related Conditions summary paragraphs, prices in the footer lists ("(£35)", "(From £95)", "(£195–£395)"), the index badges ("£35", "24/7", "Rx", "32 Colours"), and the "model portrayal" image disclaimer (index and all-articles).
+- Wording changes: none.
+- Images needed: none new.
+- Open questions: the owner may want a real "Reviewed by" row back if the live posts get one; the prices above are not on the live blog.

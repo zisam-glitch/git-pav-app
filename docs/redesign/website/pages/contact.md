@@ -37,3 +37,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - *Department cards*: `Customer Support` ("around the clock"), `Feedback & Suggestions`, `Media Inquiries` (all linked to `#` and absent from `contact-us.txt`).
    - *FAQ accordion & unmounted quick-email input*: 5 FAQs not present in `contact-us.txt`, including unverified claims (`"We typically respond within 30 minutes during business hours"`, `"free on-site car park with dedicated disabled spaces"`, `"0% interest finance plans"`, `"Bus routes 72 & 73"`), plus an unwired email `<input>` + `Submit` button.
    - Confirm with the owner if any verified parking or transit details should be added back.
+
+## Pass 2
+
+- Capture used: homepage newsletter lead-capture card (`/index.html`).
+- Differences found: form card padding (Hims 60px on desktop). Section order kept so every live and existing H2 stays.
+- Rebuilt: form card padding `lg:p-12`. Form unchanged and working.
+- Removed repo-only text: "Direct main-road access on Leeds Road with nearby parking." (parking claim).
+- Wording changes: none. Images needed: none.
+- Open questions: confirm parking details with the owner before adding them back.

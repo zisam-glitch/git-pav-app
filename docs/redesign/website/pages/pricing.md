@@ -57,3 +57,15 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - Confirm whether `api.pricing.get()` in the Admin Dashboard database is seeded with the live `pricing.txt` values rather than the old repo fallback values.
 4. **Insurance providers (`insurance-providers.tsx`)**:
    - `pricing.txt` only states `We Accept All Insurance Providers` (live site used 6 unlabeled logo images `/images/logo/1.png`–`6.png`). Kept the 6 provider names (`AXA Health`, `Simplyhealth`, `Bupa`, `Aviva`, `Denplan`, `WPA Health Insurance`) and dropped the repo-only `"Direct claim processing and hassle-free coverage with leading UK private dental insurance plans."` claim; confirm the 6 provider names and whether insurer logos should be added.
+
+## Pass 2
+
+**Status: rebuilt (agent B2).** Captures: `/weight-loss/membership.html`, `/labs/biomarkers.html`, `/hair-loss.html` (sheets in `hims-patterns/`). Fingerprint compare: 0 FAIL, 1 WARN (words 844 -> 750, -11%, from removing repo-only text below). Parity: 95% (was 94%).
+
+**Rebuilt**: hero (cream band, live finance sentence, 48px outline jump pills, picture kept); plans (`PlanCard` + `CheckList`, SILVER featured with "Most Popular"); fees (per category two-column band, `PriceList`; search and category tabs kept); insurance (cream band, tiles kept); announcement (the three reasons now render as `<strong>Title:</strong> text` lines, verbatim live wording). Section ids, both `api.pricing.get()` queries and fallbacks kept. H1/H2/H3 unchanged.
+
+**Removed (repo-only, per decisions)**: chips "Monthly & Annual Care", "Bradford Clinic · Transparent Fees", "Bradford Price Guarantee", "Dental Insurance", "Pav Dental Plans" (above fees); leads for plans, fees and insurance ("Itemised receipts..."); the Monthly / Annual switch with "Annual (Save 20%)" and the yearly prices; the not-included state (every plan line renders ticked, as the live page lists the AI scan and WhatsApp lines under all three plans); the "Prefer to pay per visit..." strip; the numbers on the jump links and "0N" badges on reasons.
+
+**Wording changes**: hero lead now the live sentence "With our 0% interest dental finance, treatments from £99 ..." (replaces a repo-only line). Finance wording and "Most Popular" left as they are, reported to the lead.
+
+**Images needed**: none. **Open questions**: the plan list has the live typo "3x hygiene visits per yer" (kept verbatim for parity); the plans have no annual option any more.

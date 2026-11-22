@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, ButtonLink, Section, Tile } from "@/components/hims";
+import { SectionHeader } from "@/components/hims/section-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,21 +23,14 @@ export function MouthguardsPersonalisation() {
     PERSONALISATION_OPTIONS[0];
 
   return (
-    <Section id="personalisation" theme="white" aria-labelledby="mouthguards-personalisation-heading">
+    <Section id="personalisation" theme="white">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            Bespoke Markings
-          </span>
-          <div id="mouthguards-personalisation-heading" className="mt-4">
-            <Heading size="h2-md" accent="Personalisation" tone="terracotta" inline>
-              Add
-            </Heading>
-          </div>
-          <p className="mt-4 text-lead text-muted">
-            Personalise your mouthguard with your name, initials, team name, number, or even a
-            custom logo if required.
-          </p>
+          <SectionHeader
+            title="Add"
+            accent="Personalisation"
+            lead="Personalise your mouthguard with your name, initials, team name, number, or even a custom logo if required."
+          />
 
           <ul className="mt-6 flex flex-wrap gap-2">
             {PERSONALISATION_OPTIONS.map((option) => (
@@ -69,12 +63,7 @@ export function MouthguardsPersonalisation() {
 
             <div className="rounded-xl border border-border bg-white px-5 py-4">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-caption font-medium text-copper">
-                  Preview ({active.label})
-                </p>
-                <span className="inline-flex items-center rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta">
-                  Custom Inscription
-                </span>
+                <p className="text-caption font-medium text-copper">Preview ({active.label})</p>
               </div>
               <p className="mt-2 text-h3-md text-fg">
                 {customText.trim() || active.placeholder.replace(/^e\.g\.\s*/, "")}

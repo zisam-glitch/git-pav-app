@@ -1,68 +1,56 @@
-import {
-  BookButton,
-  ButtonLink,
-  CallButton,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-} from "@/components/hims";
+import { Droplets, Sparkles, Syringe } from "lucide-react";
+import { BookButton, ButtonLink } from "@/components/hims";
+import { EagerTreatmentHero as TreatmentHero } from "@/components/hims/eager-treatment-hero";
 
 export function AestheticsHero() {
   return (
-    <Section
-      id="top"
-      theme="white"
-      space="sm"
-      className="pt-6 md:pt-10"
-      aria-label="Pav Dental Aesthetics"
-    >
-      <SplitFeature
-        reverse
-        media={
-          <Media
-            src="/images/generated/aesthetics-hero.jpg"
-            alt="Warm sunlit facial aesthetics consultation room at Pav Dental in Bradford"
-            ratio="4 / 3"
-            tone="cream"
-            priority
-          />
-        }
-      >
-        <div>
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            Pav Dental Aesthetics
-          </span>
-          <Heading as="h1" size="hero" accent="Perfection?" tone="terracotta" className="mt-4">
-            Seeking
-          </Heading>
-          <p className="mt-5 max-w-xl text-lead text-muted">
-            The Award-Winning Bradford Dental and Aesthetic Clinic: Excellence in Dental and
-            Aesthetic Care.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <BookButton>Book Now</BookButton>
-            <ButtonLink href="#pricing" variant="outline">
-              Aesthetics Price List
-            </ButtonLink>
-            <CallButton variant="ghost" />
-          </div>
-          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
-            <a
-              href="#treatments"
-              className="underline underline-offset-4 t-colors hover:text-terracotta"
-            >
-              Aesthetics Treatments
-            </a>
-            <a
-              href="#safety"
-              className="underline underline-offset-4 t-colors hover:text-terracotta"
-            >
-              How We are Keeping You Safe
-            </a>
-          </div>
-        </div>
-      </SplitFeature>
-    </Section>
+    <TreatmentHero
+      label="Pav Dental Aesthetics"
+      badge="Pav Dental Aesthetics"
+      title="Seeking"
+      accent="Perfection?"
+      lead="The Award-Winning Bradford Dental and Aesthetic Clinic: Excellence in Dental and Aesthetic Care."
+      facts={[
+        { icon: Syringe, text: "Botox" },
+        { icon: Droplets, text: "Dermal fillers" },
+        { icon: Sparkles, text: "Skin Rejuvenation" },
+      ]}
+      actions={
+        <>
+          <BookButton>Book Now</BookButton>
+          <ButtonLink href="#pricing" variant="outline">
+            Aesthetics Price List
+          </ButtonLink>
+        </>
+      }
+      note={
+        <span className="flex flex-wrap gap-x-6">
+          <a
+            href="#treatments"
+            className="inline-flex min-h-11 items-center underline underline-offset-4 t-colors hover:text-terracotta"
+          >
+            Aesthetics Treatments
+          </a>
+          <a
+            href="#safety"
+            className="inline-flex min-h-11 items-center underline underline-offset-4 t-colors hover:text-terracotta"
+          >
+            How We are Keeping You Safe
+          </a>
+        </span>
+      }
+      tiles={[
+        {
+          src: "/images/generated/aesthetics-hero.jpg",
+          alt: "Warm sunlit facial aesthetics consultation room at Pav Dental in Bradford",
+          tone: "cream",
+        },
+        {
+          src: "/images/generated/aesthetics-premium.jpg",
+          alt: "Curated aesthetic skincare vials and clinical ceramic tray in warm studio light",
+          tone: "brown",
+        },
+      ]}
+    />
   );
 }

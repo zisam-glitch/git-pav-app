@@ -21,10 +21,7 @@ export function PetitionMedia() {
       aria-labelledby="petition-video-heading"
     >
       <div className="mx-auto max-w-2xl text-center">
-        <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-          {PETITION.eyebrow}
-        </span>
-        <h2 id="petition-video-heading" className="mt-4 text-h2-md text-fg">
+        <h2 id="petition-video-heading" className="text-h2-md text-fg">
           {heading}
         </h2>
       </div>

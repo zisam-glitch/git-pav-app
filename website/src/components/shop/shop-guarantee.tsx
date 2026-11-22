@@ -63,7 +63,7 @@ export function ShopGuarantee() {
               <span>Clinical Standards &amp; UK Distance Selling</span>
             </span>
             <Heading as="h2" size="h2-md" accent="delivered directly" tone="gold" className="mt-5">
-              Clinic-grade care,
+              Clinic-grade care,{" "}
             </Heading>
             <p className="mt-4 text-lead text-white/80">
               Every product in our store is selected by the dental team at Pav Dental Bradford—no
@@ -83,11 +83,7 @@ export function ShopGuarantee() {
             {DELIVERY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (
-                <Tile
-                  key={pillar.title}
-                  tone="glass"
-                  className="border border-white/15 p-6 md:p-7"
-                >
+                <Tile key={pillar.title} tone="glass" className="border border-white/15 p-6 md:p-7">
                   <div className="flex items-start gap-4">
                     <div className="grid size-11 shrink-0 place-items-center rounded-pill bg-gold text-brown">
                       <Icon aria-hidden className="size-5" />
@@ -109,7 +105,7 @@ export function ShopGuarantee() {
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-14">
           <div className="lg:sticky lg:top-20">
             <Heading as="h2" size="h2-md" accent="Questions" tone="terracotta">
-              Frequently Asked
+              Frequently Asked{" "}
             </Heading>
             <p className="mt-4 text-lead text-muted">
               Clear answers on product suitability, UK tracked delivery, Bradford click &amp;

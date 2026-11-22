@@ -54,3 +54,28 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - `website/src/lib/cart-store.ts` line 109 (unowned shared file) still injects `https://images.unsplash.com/photo-1556228720-195a672e8a03?...` when adding a product without an image. Created `ShopMedia` in `components/shop/shop-media.tsx` to render `<Media>` placeholders whenever that URL appears, and recommend removing the Unsplash URL from `cart-store.ts` in the shared cleanup pass.
 4. **Unused component**:
    - `website/src/components/shop/product-modal.tsx` was redesigned to Hims tokens (no `backdrop-blur`), though `shop-page.tsx` and `category.$slug.tsx` navigate to `/shop/$productSlug` rather than opening the modal.
+
+## Pass 2
+
+**Status: rebuilt (agent B2).** Captures: `/hair-loss.html`, `/hair-loss/minoxidil.html`, `/weight-loss/wegovy-pill.html`. Fingerprint compare (0 FAIL): `/shop` words 975 -> 502, `/shop/acoustic-sonic-toothbrush` 601 -> 442, `/category/teeth-whitening` 223 -> 317 (OK). Parity: `/shop` 10% (unchanged; live is a coming-soon page).
+
+**Rebuilt**: `ProductRevealCard` on `hims/product-card` + `Chip` (category and badge chips on the picture, h3 name link, price line, Add to Bag and View details pills, `onAdd`/`isJustAdded`/`onQuickView`/out-of-stock kept); catalogue (cream band, 48px outline filter pills, 3-up cards, no repo-only lead); hero (cream split with the wired picture, H1 and Browse Products only; category tiles as picture cards, tile text is the category name); product page (`ProductGallery` 889/389 split with 66px gutter, `ChoiceCards` for variants, quantity pill, 48px black Add to Bag, `FaqList` accordion, spec as hairline rows, related products as `ProductCard`s); category route (`CategoryHero` with the one H1 and "All Categories" link; falls back to `getCatalogProductsByCategory(slug)` when the API returns nothing, done in the route component, head/loader untouched). Cart, add to bag and the Stripe test-mode flow are unchanged (add to bag checked in the browser).
+
+**Removed (repo-only)**: hero chip, lead and the three bullets; "Delivery & Returns" button; catalogue lead; the whole delivery band and FAQ (`shop-guarantee.tsx` is no longer rendered, so the H2s "Clinic-grade care, delivered directly" and "Frequently Asked Questions" and 7 H3s are gone: fingerprint WARN by design); product page "Clinician-Selected & Bradford Dispatched" callout, delivery strip, "Low Stock · Only N left" and "In Stock · Ready to Dispatch" (only "Out of Stock" stays), the spec chip "Clinical Specification", its lead, and the "Dispatched From" row; the accordion "UK Delivery & Returns" keeps only the delivery fee and threshold the checkout uses (H3 kept for SEO; same-day dispatch, click and collect and 14-day returns lines removed).
+
+**Wording changes**: none beyond removals. Empty-state text "clinician-selected" dropped. **Images needed**: none (shop and category tiles reuse wired pictures).
+
+**Unused now**: `components/shop/shop-guarantee.tsx`. **Open questions**: product copy in `shop-catalog-data.ts` (not mine) still has clinical claims ("Clinician Pick", PAP+ ...); the product page has no gallery pictures beyond what the data gives.
+
+### Pass 2: cart, checkout, order (agent E)
+
+**Reference**: design system (547px right drawer, lead-capture card forms, cream summary tile); no saved Hims cart or checkout exists. Fingerprint compare: `/cart` words 185 -> 188, `/checkout` 186 -> 186 (OK, 0 FAIL, 0 WARN). The Stripe test-mode flow, every field, validation and shipping and promo logic are unchanged (walked add to bag, bag, cart, checkout on :8180, stopped before payment).
+
+| Page | Change |
+|---|---|
+| Cart drawer (`cart-drawer.tsx`) | Quantity and remove buttons 44px, Clear and Remove links 44px tall, visible focus rings; "Secure Checkout" now "Checkout"; Truck icon and "Free UK Tracked Delivery" now "free UK delivery"; removed footer line "Encrypted checkout · Bradford clinic dispatch"; empty text "clinical dental care products" shortened |
+| Cart page (`cart-page.tsx`) | Same 44px controls and focus rings; removed the "Clinical Guarantee / Dispatched from our registered dental clinic in Bradford" tile; "FREE UK Delivery" and "Delivery Estimate" simplified; empty text no longer says "clinician-curated" |
+| Checkout (`checkout-page.tsx`) | Removed the "Secure Checkout / processed securely via Stripe" tile; receipt note no longer promises tracking updates; 44px Remove link, 20px radio; "UK Delivery" row now "Delivery" |
+| Order (`order-confirmation.tsx`) | "Preparing dispatch from clinical dispensary." now "Your tracking number will appear here once your order ships."; "UK Delivery" row now "Delivery" |
+
+**Finance and registration**: pass 1 build already matches the kit (split hero, cream bento, brown band, FAQ list; registration form in a card). Checked at 390 (no horizontal scroll); fingerprint compare 867 -> 867 and 897 -> 897 words; parity 0% (was 0%). No change.

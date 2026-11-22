@@ -1,4 +1,5 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { ClosingBand } from "@/components/hims/closing-band";
 import { ContactForm } from "@/components/home/contact-form";
 import { MouthguardsColour } from "./mouthguards-colour";
 import { MouthguardsHero } from "./mouthguards-hero";
@@ -9,7 +10,7 @@ import { MouthguardsWhyChoose } from "./mouthguards-why-choose";
 
 export function MouthguardsPage() {
   return (
-    <main className="bg-bg">
+    <main>
       <MouthguardsHero />
       <MouthguardsOrdering />
       <MouthguardsWhyChoose />
@@ -17,20 +18,17 @@ export function MouthguardsPage() {
       <MouthguardsPersonalisation />
       <MouthguardsUsers />
       <ContactForm />
-      <CtaBand
-        theme="brown"
+      <ClosingBand
         title="Make an"
-        accent="Appointment"
-        tone="gold"
+        highlight="Appointment"
+        lead="Designed for comfort, accuracy and full protection"
         actions={
           <>
-            <BookButton variant="gold">Make an Appointment</BookButton>
+            <BookButton variant="butter">Make an Appointment</BookButton>
             <CallButton variant="glass" />
           </>
         }
-      >
-        Designed for comfort, accuracy and full protection
-      </CtaBand>
+      />
     </main>
   );
 }

@@ -39,3 +39,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 1. **Header logo mark**: Replaced the external `res.cloudinary.com` logo PNGs in `header.tsx` and `footer.tsx` (per the no-external-image-URL rule) with a CareSans typographic `Pav Dental` wordmark in `header.tsx` and the bottom SVG wordmark in `footer.tsx`. Confirm whether a dedicated SVG wordmark asset should replace the text mark later.
 2. **Unconverted routes with fixed-header top spacers**: Made the 49px header bar `sticky top-0` (after the 44px flow-positioned lime announcement strip) so it never overlaps pages without top padding. Unconverted pages that still have `pt-20`/`pt-24` spacers (`about.tsx`, `pricing.tsx`, `contact-us.tsx`, etc.) will have extra top whitespace until those route groups update them.
 3. **Browser visual pass**: No browser tools are available in this subagent session; all 6 sections are marked `built` pending the lead agent's 1440/390 screenshot comparison against `http://localhost:8099/index.html`.
+
+## Pass 2
+
+- Captures used: `/index.html` and `/hair-loss.html` (header, footer; Hims's menu is closed in the stripped captures, so the drawer was not re-measured and stays as verified in pass 1).
+- Header measured at 1440: 44px strip, 49px bar, wordmark, pill and menu button all match; nothing changed.
+- Footer: outer padding 53px changed to 60px (Hims 60px); link-column headings from 14px / 70% white to the 13px caption at 50% white (Hims `Learn` style, 12px / 51%). Connect panel width (430px), link size (16px / 24px), 24px top radius and the outsized wordmark already matched.
+- Cookie banner, 404 and scroll progress: not touched (GA consent logic untouched).
+- Tokens added to `styles.css` for the kit's token requests: `text-display-m`, `text-display-s`, `text-lead-l`, `text-card-title`, `--spacing-band` (60px) and `--spacing-band-sm` (32px), `--shadow-featured`, `--shadow-thumb`. Kit files still use their inline values.
+- Wording changes: none. Images needed: none. Open questions: none.

@@ -66,3 +66,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 2. **Hero featured tile 1 gradient**: Used `linear-gradient(to right, #492C00, #7B5720)` via inline style per exact Hims capture measurements; let the lead know if a CSS utility token should replace it in `styles.css`.
 3. **Unused legacy home files**: `hero-canvas.tsx`, `hero-scene.tsx`, `tilt-card.tsx`, and `service-tabs.tsx` are no longer imported by `src/routes/index.tsx` (kept untouched, not deleted). `reveal.tsx` and `spotlight.tsx` are no longer imported on `/` or `testimonials-section.tsx` (kept untouched for unconverted pages).
 4. **Hims `Home` reference images**: Replaced `/media/hero1.jpg` and `/media/hero2.jpg` references in `hero-slider.tsx` with `<Media>` slots for Google Flow generation; kept verified `/media/hero.jpg`, `/media/gdc.png`, `/media/thumbnails/1.jpg`, and `/images/team/*`.
+
+## Pass 2
+
+- Captures used: `/index.html`. Differences found: the Hims H1 is 57px / 410 on one line, ours was 82px on two; the hero top padding was 40px where Hims is 20px.
+- Rebuilt: hero H1 now `text-hero` (57px at 1440, 40px on a phone), hero padding `pt-5`. Everything else in pass 1 already matched the capture structure (tiles, dark bento, trust strip, quotes, team carousel, lead form).
+- Fixed: `HomeEmergency` is rendered twice (as on the live page) and both carried `id="emergency"`; only the first now does (new optional `id` prop).
+- Repo-only claim removed: the trust-strip item `GDC registered clinicians` (not on the live home page). Kept: GDC numbers on team cards (real team data) and the GDC logo on the live page.
+- Wording changes: none beyond pass 1. Images needed: none new. Open questions: confirm the hero rotating labels and the home team carousel heading (`Care led by real clinicians and care team`) are acceptable; both are repo wording.
+- Not changed: phone hero tiles are a single column (the Hims phone grid was not re-measured, allowance).

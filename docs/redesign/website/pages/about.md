@@ -11,7 +11,7 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 | # | Section | File | Reference (Hims capture / Mobbin links) | Status | 1440 | 390 | Copy | Notes |
 |---|---|---|---|---|---|---|---|---|
-| 1 | hero | `website/src/components/about/hero.tsx` | Hims split hero (`Section theme="white"`, `SplitFeature`, `Heading size="hero"`, `Media` 4/3) | verified | [shot](../shots/about/1440-hero.png) | [shot](../shots/about/390-hero.png) | same | Live `A Legacy of Care and Innovation` copy verbatim (fixed `extendbeyond` typo); `BookButton` + `CallButton`; `<Media>` slot for `about-hero` |
+| 1 | hero | `website/src/components/about/hero.tsx` | Hims clinical-excellence centred hero (hims-patterns/clinical-excellence.md) | built | [shot](../shots/about/1440-hero.png) | [shot](../shots/about/390-hero.png) | same | Live `A Legacy of Care and Innovation` copy verbatim (fixed `extendbeyond` typo); `BookButton` + `CallButton`; `<Media>` slot for `about-hero` Pass 2: centred DISPLAY_M hero; 390 not yet checked. |
 | 2 | our story | `website/src/components/about/our-story.tsx` | Hims numbered bento (`Section theme="cream"`), dark brown feature (`Section theme="brown"`), split feature (`Section theme="sand"`) | verified | [shot](../shots/about/1440-story.png) | ok | same | Replaced Shadcnblocks placeholder copy with verbatim live sections: `The Dream and The Team`, `A Legacy Fulfilled`, `The Future of Dentistry` |
 | 3 | team | `website/src/components/about/team.tsx` | Hims trust carousel ("The best care by the best in medicine") + `CtaBand` | verified | [shot](../shots/about/1440-team.png) · [cta](../shots/about/1440-cta.png) | ok | reworded | Real `TEAM_MEMBERS` in `TeamShowcase` carousel with GDC numbers linking to `/team/$slug` + `CtaBand` with live `Get In Touch` intro |
 | 4 | about 3 | `website/src/components/ui/about-3.tsx` | Hims cream split + breakout `Tile` | verified | ok | ok | same | Restyled with `Section`, `Heading`, `Tile`, `Media`, `BookButton`/`ButtonLink`; removed `/media/hero-clinic.jpg`, `/media/hero-smile.jpg`, `glass`, `max-w-6xl` |
@@ -42,3 +42,21 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 1. **Replaced placeholder copy in `our-story.tsx`**: Previous `about/our-story.tsx` contained unused Shadcnblocks template copy (`"Shadcnblocks is a passionate team..."`, `"Hundreds of blocks at Shadcnblocks.com"`); replaced completely with the verbatim live `/about` story sections (`The Dream and The Team`, `A Legacy Fulfilled`, `The Future of Dentistry`).
 2. **Legacy `/media/about.png` replaced by `<Media>` slot**: Removed `/media/about.png` (an impasto illustration) from `about/hero.tsx` in favour of an atmospheric `<Media>` slot (`about-hero`) queued for Google Flow.
+
+## Pass 2
+
+**Capture used.** `/about/clinical-excellence.html` is an empty shell (the page draws itself with script; the capture holds no text or layout). Structure and values come from its saved page script and are written up in [clinical-excellence.md](../hims-patterns/clinical-excellence.md). `/benefits.html` gave the list patterns ([benefits.md](../hims-patterns/benefits.md)); the homepage trust carousel was re-checked. Recipe for this page family: [people-recipe.md](../hims-patterns/people-recipe.md).
+
+**Differences found.** Hero was a split hero (Hims: centred display headline, sub-line, one wide picture). Story sections were cards and a brown split (Hims: stacked flow with a numbered list, a dark statement sheet with commitments, an open-book band). Team was rounded cream cards (Hims: capsule leader slider).
+
+**Rebuilt (all done, 22 Nov 2026).** Hero (`about/hero.tsx`): centred `DISPLAY_M` H1, live lead, Book now + Call, wired picture at 16 / 9 (checked at 1440 and 390, no changes needed). Story (`about/our-story.tsx`): Dream as `StackedFlow` + `NumberedList` (labels keep their colon); Legacy as `Statement theme="brown" sheet`, the wired `about-legacy.jpg`, `Commitments`, the two closing paragraphs centred; Future as `OpenBook sheet` with the wired `about-future.jpg`, `KeyLineList`, Book Now and View Services. Team (`about/team.tsx`): `LeaderCarousel` of eight `PersonCapsule` (h3 names, same alts) with the `/team` button beside the H2, then the live "Get In Touch" `CtaBand`. All eyebrows and the invented lead line are gone; the H2 "Care led by real clinicians and care team" stays for the SEO baseline.
+
+**Checks.** Fingerprint: OK (words 674 to 643, the removed eyebrows and lead line). Parity: 100% (unchanged). tsc, eslint, 121 tests pass. 1440 and 390 looked at, no horizontal scroll.
+
+**Unused now (not deleted).** `components/ui/team-showcase.tsx` (no importer left), plus `ui/about-3.tsx`, `ui/hero-05.tsx`, `ui/hero-05-utils/cta.tsx`.
+
+**Wording changes.** None beyond removing invented text (eyebrow "Bradford · Our Story", numbers on jump links, "02 · Shared Vision", "03 · Clinical Mission", "04 · Hub, Mobile & App", "Bradford Dental Team", and the lead line under the team H2).
+
+**Images needed.** None new (the hero is 4 : 3 shown at 16 / 9; a 16 : 9 render of `about-hero` would crop less).
+
+**Open questions.** The H2 "Care led by real clinicians and care team" is not on the live page (kept for SEO).

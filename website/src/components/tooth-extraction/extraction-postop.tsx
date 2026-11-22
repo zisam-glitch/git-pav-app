@@ -114,17 +114,7 @@ export function ExtractionPostOp() {
     <Section id="post-op" theme="cream" space="default">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div className="max-w-2xl">
-          <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Aftercare &amp; Healing Guide
-          </p>
-          <Heading
-            as="h2"
-            size="h2-md"
-            accent="Instructions"
-            tone="terracotta"
-            inline
-            className="mt-4"
-          >
+          <Heading as="h2" size="h2-md" accent="Instructions" tone="terracotta" inline>
             Post Operative
           </Heading>
         </div>
@@ -153,7 +143,7 @@ export function ExtractionPostOp() {
         </div>
       </div>
 
-      <Tile tone="white" className="mt-8 flex items-start gap-4 p-6">
+      <Tile tone="white" className="mt-8 flex items-start gap-4 p-5 md:p-[25px]">
         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
           <Info aria-hidden className="size-5" />
         </span>
@@ -168,43 +158,36 @@ export function ExtractionPostOp() {
       </Tile>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {INSTRUCTIONS.map((section, index) => {
+        {INSTRUCTIONS.map((section) => {
           const matches = filter === "all" || section.category === filter;
           return (
-            <Tile
+            <article
               key={section.title}
-              as="article"
-              tone="white"
-              lift
               hidden={!matches}
-              className={cn("flex flex-col justify-between gap-5 p-6", !matches && "hidden")}
+              className={cn(
+                "flex flex-col gap-4 rounded-md bg-white p-5 md:p-[25px]",
+                !matches && "hidden",
+              )}
             >
-              <div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
-                    <section.icon aria-hidden className="size-5" />
-                  </span>
-                  <span className="rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3 className="mt-4 border-t border-border pt-4 text-h4 text-fg">
-                  {section.title}
-                </h3>
-                <p className="mt-3 space-y-2 text-body text-muted">
-                  {section.steps.map((step, idx) => (
-                    <span key={step} className="flex items-start gap-2">
-                      {idx > 0 ? " " : null}
-                      <span className="shrink-0 font-medium text-terracotta">- </span>
-                      <span>{step}</span>
-                    </span>
-                  ))}
-                </p>
-              </div>
-              <span className="inline-flex w-fit rounded-pill bg-sand px-3 py-1 text-caption font-medium text-muted">
-                {section.category === "first-24h" ? "First 24 hours" : "Care & follow-up"}
+              <span
+                aria-hidden
+                className="grid size-10 place-items-center rounded-full bg-cream text-terracotta"
+              >
+                <section.icon className="size-4" />
               </span>
-            </Tile>
+              <h3 className="text-[1.125rem] leading-[1.16] font-medium md:text-[1.385rem]">
+                {section.title}
+              </h3>
+              <p className="space-y-2 text-body text-muted">
+                {section.steps.map((step, idx) => (
+                  <span key={step} className="flex items-start gap-2">
+                    {idx > 0 ? " " : null}
+                    <span className="shrink-0 font-medium text-terracotta">- </span>
+                    <span>{step}</span>
+                  </span>
+                ))}
+              </p>
+            </article>
           );
         })}
       </div>

@@ -1,67 +1,72 @@
-import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { FaqSection } from "@/components/hims/faq-section";
+import type { InfoAccordionItem } from "@/components/hims/info-accordion";
 
-const FAQS: FaqItem[] = [
+const FAQS: readonly InfoAccordionItem[] = [
   {
-    q: "What’s the difference between standard dentures and implant-retained dentures?",
-    a: "Standard dentures rely on gravity, while implant-retained dentures are secured with implants, offering a more stable and secure fit.",
+    title: "What’s the difference between standard dentures and implant-retained dentures?",
+    content:
+      "Standard dentures rely on gravity, while implant-retained dentures are secured with implants, offering a more stable and secure fit.",
   },
   {
-    q: "Can I eat normally with dentures?",
-    a: "With well-fitting dentures, you’ll enjoy a wider variety of foods, making dining a more enjoyable experience.",
+    title: "Can I eat normally with dentures?",
+    content:
+      "With well-fitting dentures, you’ll enjoy a wider variety of foods, making dining a more enjoyable experience.",
   },
   {
-    q: "How much do dentures cost?",
-    a: "Denture prices vary depending on the type. For example: * Standard dentures are £495. * Flexible dentures are £795. * Cobalt chromium dentures are £1095.",
+    title: "How much do dentures cost?",
+    content:
+      "Denture prices vary depending on the type. For example: * Standard dentures are £495. * Flexible dentures are £795. * Cobalt chromium dentures are £1095.",
   },
   {
-    q: "How do implant-retained dentures differ from regular implants?",
-    a: "Implant-retained dentures are removable and click onto implants, while standard implants are permanently fixed in place.",
+    title: "How do implant-retained dentures differ from regular implants?",
+    content:
+      "Implant-retained dentures are removable and click onto implants, while standard implants are permanently fixed in place.",
   },
   {
-    q: "How do I clean my dentures?",
-    a: "Use an antibacterial and antifungal cleaner, which you can find at most retailers like Boots or Tesco. Follow the manufacturer’s instructions for best results.",
+    title: "How do I clean my dentures?",
+    content:
+      "Use an antibacterial and antifungal cleaner, which you can find at most retailers like Boots or Tesco. Follow the manufacturer’s instructions for best results.",
   },
   {
-    q: "Can I sleep with my dentures in?",
-    a: "While it’s possible, we recommend removing them to allow your gums to breathe and avoid irritation. You can do this discreetly while showering or bathing.",
+    title: "Can I sleep with my dentures in?",
+    content:
+      "While it’s possible, we recommend removing them to allow your gums to breathe and avoid irritation. You can do this discreetly while showering or bathing.",
   },
   {
-    q: "What should I do if my dentures feel loose?",
-    a: "If your dentures feel loose, visit us for an assessment. In some cases, adjustments or relining may be required. Denture adhesives can also help for temporary fixes.",
+    title: "What should I do if my dentures feel loose?",
+    content:
+      "If your dentures feel loose, visit us for an assessment. In some cases, adjustments or relining may be required. Denture adhesives can also help for temporary fixes.",
   },
   {
-    q: "Do I need to replace my dentures over time?",
-    a: "Yes, your gums can change over time, which may affect the fit of your dentures. Regular checkups will help ensure they remain comfortable.",
+    title: "Do I need to replace my dentures over time?",
+    content:
+      "Yes, your gums can change over time, which may affect the fit of your dentures. Regular checkups will help ensure they remain comfortable.",
   },
   {
-    q: "Are there alternatives to dentures?",
-    a: "Yes, implants and bridges are alternatives to traditional dentures, providing different benefits based on your oral health needs.",
+    title: "Are there alternatives to dentures?",
+    content:
+      "Yes, implants and bridges are alternatives to traditional dentures, providing different benefits based on your oral health needs.",
   },
   {
-    q: "Can dentures help improve my speech?",
-    a: "Yes, well-made dentures can enhance your speech by providing proper support for your mouth and jaw.",
+    title: "Can dentures help improve my speech?",
+    content:
+      "Yes, well-made dentures can enhance your speech by providing proper support for your mouth and jaw.",
   },
 ];
 
 export function DenturesFaq() {
   return (
-    <Section theme="white">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Patient Guidance
-          </p>
-          <Heading size="h2-md" accent="Questions" tone="terracotta" className="mt-4">
-            Frequently Asked
-          </Heading>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <BookButton>Make an Appointment</BookButton>
-            <CallButton variant="outline" />
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
-    </Section>
+    <FaqSection
+      title="Frequently Asked"
+      accent="Questions"
+      actions={
+        <>
+          <BookButton>Make an Appointment</BookButton>
+          <CallButton variant="outline" />
+        </>
+      }
+      items={FAQS}
+    />
   );
 }

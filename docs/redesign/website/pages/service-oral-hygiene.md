@@ -45,3 +45,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 2. **Removed repo-only clinical descriptions & FAQs**: Removed invented per-item descriptions in `oral-hygiene-importance.tsx` and `oral-hygiene-who-needs.tsx`, and replaced 8 repo-only FAQs in `oral-hygiene-faq.tsx` (e.g. fissure sealants for adults, `30-45 minutes`, `45-60 minutes`, `60-90 minutes`, oral cancer screening) with the 6 verbatim FAQs from `services--oral-hygiene.txt`.
 3. **Consent video poster image (`oral-hygiene-consent.tsx`)**: Added `oral-hygiene-consent` slot (`16 / 9`) as `<Media tone="brown" />` placeholder after removing Unsplash URL.
 4. **Stopped importing `spotlight.tsx`**: `oral-hygiene-hero.tsx` no longer imports `home/spotlight.tsx`.
+
+## Pass 2
+
+- **Capture used:** `/testosterone.html` and the PDP bands, per [treatment-page-recipe](../hims-patterns/treatment-page-recipe.md).
+- **Differences found:** split hero with an eyebrow pill and three buttons; tile grids with counters and pills; a brown consent band; a showcase with per-demo tiles; `FaqList` with a repo-only lead.
+- **Rebuilt:** hero (`TreatmentHero`, facts are the three live tier names with prices); importance and who-needs (`oral-hygiene-point-list.tsx`, the Hims `IncludedList` look with each row as H3 so the point headings stay); showcase (`Steps` with the picture and video toggle); consent (`ConsentPanel` words verbatim, plus a separate video section titled with the live "Oral Hygiene and Gum Care Advice", tabs and player kept); FAQ (`FaqSection`); closing (`ClosingBand`, same H2 words). Pricing (`PricingTiles`) and the contact form left alone.
+- **Wording changes:** none.
+- **Removed (repo-only):** eyebrow pills "Preventative Hygiene Care", "Clinical Prevention", "Whole-Body Health", "When to Visit", "Restorative Care", "Gentle Clinical Care", "Patient Guidance"; FAQ lead "Common questions about hygiene visits, comfort, pregnancy care, and keeping your mouth fresh." The "Hygiene Treatment in Action" section (two demo descriptions) is not on the live page; kept as harmless wording, flag for the owner.
+- **Images needed:** none new.

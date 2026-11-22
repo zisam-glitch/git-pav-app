@@ -47,3 +47,25 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - `emergency-faq.tsx`: replaced 11 rewritten repo FAQs (including `over 95% of cases`, `from £50`, `NHS Band 1 £26.80`, `within 60 minutes`, `conscious sedation`, `07311 871456`) with all 15 verbatim Q&As from `services--emergency-dental.txt`.
    - `emergency-contact-form.tsx`: removed unverified `"call you within 15 minutes"` response-time promise.
 2. **Live text notes**: `services--emergency-dental.txt` contains a postcode typo (`BD3 8TY` in the contact strip vs `BD3 9TY` in the footer) and `Denture Ajdustment`; both were normalised cleanly while keeping the live meaning.
+
+
+## Pass 2
+
+- Capture used: Hims condition and product pages (`/testosterone.html`, `/hair-loss/minoxidil.html`, `/weight-loss/wegovy-pill.html`) via `hims-patterns/treatment-page-recipe.md`.
+- Differences and what was rebuilt:
+- Hero: pass 1 split hero with price tiles and a repo-only pill. Pricing: cards with badges, bordered fee rows. Triage: numbered tiles with a repo-only eyebrow. FAQ: circle +/- `FaqList`. Banner: `CtaBand`.
+- Rebuilt: hero (`TreatmentHero`, Call is the primary button, phone first, Book Online outline, wired picture as the band), pricing (`SectionHeader`, two price tiles, `PriceList` rows that keep the live dash for crawlers, Book Online link), triage (heading `text-hero` butter, glass tiles, no numbers), FAQ (`FaqSection`, all 15 live questions as H3 in native details), banner (`ClosingBand`, Call butter first). Contact strip and form kept (links raised to 44px).
+- Left alone: `TestimonialsSection`, contact form (features working).
+- Wording changes (repo-only labels removed, no live wording changed):
+
+| Where | Was | Now | Why |
+|---|---|---|---|
+| `emergency-hero.tsx` | pill `24/7 Emergency Dental Care` | removed | repo-only |
+| `emergency-pricing.tsx` | badges `Standard Hours` | removed | repo-only |
+| `emergency-services.tsx` | eyebrow `Same-Day Clinical Care`, 01 to 08 numbers | removed | repo-only |
+| `emergency-faq.tsx` | eyebrow `Patient Guidance` | removed | repo-only |
+
+- Images needed: None (hero reuses `emergency-dental-hero.jpg`).
+
+- Open questions for the owner: the live emergency and virtual FAQ text contains typos (`Ajdustment`, `servies`, `peoble`) and `BD3 8TY`; earlier passes normalised them. The triage and benefit cards have no body copy because the live page has none.
+- Checks: tsc, eslint and `npm test` (121) pass; fingerprint 0 FAIL; parity coverage not below baseline.

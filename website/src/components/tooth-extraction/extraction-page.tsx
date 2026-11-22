@@ -1,4 +1,5 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { ClosingBand } from "@/components/hims/closing-band";
 import { ContactForm } from "@/components/home/contact-form";
 import { ExtractionBook } from "./extraction-book";
 import { ExtractionFaq } from "./extraction-faq";
@@ -17,21 +18,17 @@ export function ToothExtractionPage() {
       <ExtractionBook />
       <ExtractionFaq />
       <ContactForm />
-      <CtaBand
-        theme="brown"
+      <ClosingBand
         title="Need urgent relief"
-        accent="or an extraction assessment?"
-        tone="gold"
+        highlight="or an extraction assessment?"
+        lead="786 Leeds Road, Bradford, BD3 9TY · Simple, intermediate, advanced, and surgical extractions."
         actions={
           <>
-            <BookButton variant="gold">Book Now</BookButton>
+            <BookButton variant="butter">Book Now</BookButton>
             <CallButton variant="glass" />
           </>
         }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Simple, intermediate, advanced, and surgical
-        extractions.
-      </CtaBand>
+      />
     </main>
   );
 }

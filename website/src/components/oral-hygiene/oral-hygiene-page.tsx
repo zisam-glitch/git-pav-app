@@ -1,4 +1,5 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
+import { ClosingBand } from "@/components/hims/closing-band";
 import { ContactForm } from "@/components/home/contact-form";
 import { OralHygieneConsent } from "./oral-hygiene-consent";
 import { OralHygieneFaq } from "./oral-hygiene-faq";
@@ -19,20 +20,17 @@ export function OralHygienePage() {
       <OralHygieneConsent />
       <OralHygieneFaq />
       <ContactForm />
-      <CtaBand
-        theme="navy"
+      <ClosingBand
         title="Ready for healthier gums"
-        accent="and a cleaner smile?"
-        tone="butter"
+        highlight="and a cleaner smile?"
+        lead="786 Leeds Road, Bradford, BD3 9TY · Gentle scale and polish appointments from £45."
         actions={
           <>
             <BookButton variant="butter">Book Now</BookButton>
             <CallButton variant="glass" />
           </>
         }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Gentle scale and polish appointments from £45.
-      </CtaBand>
+      />
     </main>
   );
 }

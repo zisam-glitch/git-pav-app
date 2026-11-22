@@ -32,3 +32,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 ## Open questions for the lead
 
 - Adding the visible `<h2>Your questions, answered</h2>` heading on `/faq` keeps heading hierarchy strictly `h1 -> h2 -> h3` (since `FaqList` renders `<h3>` buttons); confirm if preferred over a hidden heading.
+
+## Pass 2
+
+- References: no saved Hims FAQ or policy page; the pattern is the homepage `FaqList` and prose (layout only).
+- Differences found: none material in the layout of the policy pages (single H1, prose column, no overflow at 390). Legal words and route subtitles were not touched.
+- Removed repo-only text on `/faq`: the "24/7 Urgent Dental Advice" tile, "Same-day emergency appointments... 24 hours a day" and "Complete dental check-ups (£35)..." tile bodies, and the "24 hours a day" phrase in the lead.
+- Wording changes: none (one sentence shortened, not live text).
+- Images needed: none.
+- Open questions for the owner: the policy routes (`/privacy-policy`, `/terms-and-condition`, `/cookie-policy`, `/complaints-policy`) score 0% parity against the live site, so their text is not the live text (the privacy processor list names Render, Supabase, Upstash, Vercel and Stripe). Needs a legal review.

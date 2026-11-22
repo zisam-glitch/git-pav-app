@@ -1,4 +1,6 @@
-import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, ButtonLink, Heading, Section } from "@/components/hims";
+import { NumberedList } from "@/components/hims/numbered-list";
+import { StackedFlow } from "@/components/hims/stacked-flow";
 
 const CHOOSING_FACTORS = [
   {
@@ -21,56 +23,41 @@ const CHOOSING_FACTORS = [
 
 export function CosmeticFinancing() {
   return (
-    <Section id="financing" theme="sand" aria-labelledby="cosmetic-financing-heading">
-      <Tile tone="white" className="border border-border p-6 md:p-10">
-        <div className="grid items-center gap-8 md:grid-cols-[1.4fr_auto]">
-          <div>
-            <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-copper">
-              Fees & Flexible Plans
-            </span>
-            <div id="cosmetic-financing-heading" className="mt-4">
-              <Heading size="h2-md" accent="Financing" tone="terracotta" inline>
-                Costs and
-              </Heading>
-            </div>
-            <p className="mt-4 max-w-3xl text-lead leading-relaxed text-muted">
+    <Section id="financing" theme="white">
+      <StackedFlow
+        lead={
+          <>
+            <Heading as="h2" size="h2-md" accent="Financing" tone="terracotta" inline>
+              Costs and
+            </Heading>
+            <p className="mt-4 text-lead text-muted">
               The cost of cosmetic dentistry varies widely depending on the type of procedure, the
               expertise of the dentist, and geographic location. While many cosmetic procedures are
               not covered by dental insurance, financing options are often available.
             </p>
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row md:flex-col md:justify-end">
-            <BookButton className="w-full md:w-auto">Book Appointment</BookButton>
-            <ButtonLink to="/pricing" variant="outline" className="w-full md:w-auto">
-              View Pricing
-            </ButtonLink>
-          </div>
-        </div>
-      </Tile>
-
-      <div className="mt-14">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Patient Checklist
-          </span>
-          <Heading as="h3" size="h3" accent="General Dentist" tone="terracotta" inline className="mt-4">
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row [&>*]:max-sm:w-full">
+              <BookButton>Book Appointment</BookButton>
+              <ButtonLink to="/pricing" variant="outline">
+                View Pricing
+              </ButtonLink>
+            </div>
+          </>
+        }
+      >
+        <div className="rounded-[2rem] bg-tile-cream p-6 md:p-10">
+          <Heading as="h3" size="h3-md" accent="General Dentist" tone="terracotta" inline>
             How to Choose a
           </Heading>
+          <NumberedList
+            size="text"
+            className="mt-6"
+            items={CHOOSING_FACTORS.map((factor) => ({
+              title: factor.title,
+              children: factor.desc,
+            }))}
+          />
         </div>
-
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {CHOOSING_FACTORS.map((factor, index) => (
-            <Tile key={factor.title} tone="white" lift className="p-6 md:p-7">
-              <span className="inline-flex items-center rounded-pill bg-cream px-3 py-0.5 text-caption font-medium text-terracotta tabular-nums">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <p className="mt-4 border-t border-border pt-4 text-body leading-relaxed text-muted">
-                <strong className="font-medium text-fg">{factor.title}</strong> {factor.desc}
-              </p>
-            </Tile>
-          ))}
-        </div>
-      </div>
+      </StackedFlow>
     </Section>
   );
 }

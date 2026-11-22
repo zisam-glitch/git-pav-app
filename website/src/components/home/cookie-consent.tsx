@@ -37,7 +37,7 @@ export function CookieConsent() {
     <div className="fixed right-4 bottom-4 left-4 z-50 md:right-6 md:left-auto md:max-w-md">
       <div className="rounded-xl border border-border bg-white p-4 shadow-card md:p-5">
         <div className="flex items-start gap-3.5">
-          <div className="shrink-0 rounded-lg bg-cream p-2.5 text-fg">
+          <div className="hidden shrink-0 rounded-lg bg-cream p-2.5 text-fg md:block">
             <ShieldCheck className="size-5" aria-hidden="true" />
           </div>
           <div className="space-y-1">
@@ -49,7 +49,7 @@ export function CookieConsent() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-end gap-2.5">
+        <div className="mt-3 flex items-center justify-end gap-2.5 md:mt-4">
           <Button variant="outline" size="sm" onClick={handleDecline}>
             Decline
           </Button>

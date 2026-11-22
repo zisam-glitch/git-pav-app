@@ -25,24 +25,18 @@ export function GeneralDentistryShowcase() {
         }
       >
         <div>
-          <p className="inline-flex rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-gold">
-            Explore Treatments
-          </p>
-          <Heading size="h2-md" tone="gold" className="mt-4">
+          <Heading size="h2-md" tone="gold">
             Procedures
           </Heading>
 
           <ul className="mt-6 flex flex-col gap-3">
-            {PROCEDURES.map((procedure, i) => (
+            {PROCEDURES.map((procedure) => (
               <li key={procedure.label}>
                 <Link
                   to={procedure.to}
-                  className="group flex items-center justify-between gap-4 rounded-xl border border-white/12 bg-white/7 px-5 py-4 text-lead text-white t-colors hover:border-gold/40 hover:bg-white/15"
+                  className="group flex min-h-14 items-center justify-between gap-4 rounded-xl border border-white/12 bg-white/7 px-5 py-4 text-lead text-white t-colors hover:border-gold/40 hover:bg-white/15"
                 >
                   <span className="flex items-center gap-3.5">
-                    <span className="rounded-pill bg-white/10 px-2.5 py-0.5 text-caption font-medium tabular-nums text-gold">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
                     <span>{procedure.label}</span>
                   </span>
                   <ChevronRight

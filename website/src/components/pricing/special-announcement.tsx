@@ -59,10 +59,7 @@ export function SpecialAnnouncement() {
       )}
 
       <div className="max-w-3xl">
-        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-          Bradford Price Guarantee
-        </span>
-        <Heading as="h2" size="h2" accent="Pav Dental" tone="gold" className="mt-4">
+        <Heading as="h2" size="h2" accent="Pav Dental" tone="gold">
           <span id="announcement-heading">Special Announcement from</span>
         </Heading>
         <p className="mt-5 text-lead text-white/80">
@@ -93,17 +90,16 @@ export function SpecialAnnouncement() {
 
       <div className="mt-10">
         <h3 className="text-h4 text-white">Choose Pav Dental for:</h3>
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
-          {REASONS.map((reason, idx) => (
-            <Tile key={reason.title} tone="glass" className="border border-white/12 p-6 md:p-8">
-              <span className="inline-flex size-8 items-center justify-center rounded-pill bg-gold/15 text-caption font-medium text-gold">
-                0{idx + 1}
-              </span>
-              <h4 className="mt-4 text-h4 text-gold">{reason.title}</h4>
-              <p className="mt-3 text-body text-white/80">{reason.description}</p>
-            </Tile>
+        <ul className="mt-5 grid gap-5 md:grid-cols-3">
+          {REASONS.map((reason) => (
+            <li key={reason.title} className="rounded-md bg-white/10 p-6 md:p-[30px]">
+              <p className="text-body text-white/80">
+                <strong className="font-medium text-gold">{reason.title}:</strong>{" "}
+                {reason.description}
+              </p>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </Section>
   );

@@ -1,12 +1,4 @@
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
 
 export function MobileDentistryLocation() {
   return (
@@ -22,10 +14,7 @@ export function MobileDentistryLocation() {
         }
       >
         <div>
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Nationwide Outreach
-          </span>
-          <div id="mobile-location-heading" className="mt-4">
+          <div id="mobile-location-heading">
             <Heading as="h2" size="h2-md" accent="coverage" tone="terracotta" inline>
               Location
             </Heading>
@@ -34,13 +23,6 @@ export function MobileDentistryLocation() {
             Pav Dental Mobile visits patients across the UK. Your Smile with Convenient Dental Care
             Right at Your Doorstep.
           </p>
-
-          <Tile tone="white" className="mt-6 border border-border p-5">
-            <p className="text-caption font-medium text-copper">Base &amp; Coverage</p>
-            <p className="mt-1 text-body text-fg">
-              786 Leeds Road, Bradford, BD3 9TY · Serving patients and care homes across the UK.
-            </p>
-          </Tile>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <BookButton>Make an Appointment</BookButton>

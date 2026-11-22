@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, ButtonLink, Section, Tile } from "@/components/hims";
+import { SectionHeader } from "@/components/hims/section-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -54,40 +55,30 @@ export function MouthguardsColour() {
   );
 
   return (
-    <Section id="colour" theme="cream" aria-labelledby="mouthguards-colour-heading">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            32-Colour Custom Configurator
-          </span>
-          <div id="mouthguards-colour-heading" className="mt-4">
-            <Heading size="h2-md" accent="Colour" tone="terracotta" inline>
-              Choose Your
-            </Heading>
+    <Section id="colour" theme="cream">
+      <SectionHeader
+        title="Choose Your"
+        accent="Colour"
+        lead="You can choose from a variety of colour options, including single colour, two colour combinations, mixed colours, or glitter and special finishes for a more unique look."
+        action={
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Finish style">
+            {FINISH_OPTIONS.map((finish) => (
+              <Button
+                key={finish}
+                type="button"
+                size="sm"
+                variant={selectedFinish === finish ? "default" : "outline"}
+                aria-pressed={selectedFinish === finish}
+                onClick={() => setSelectedFinish(finish)}
+              >
+                {finish}
+              </Button>
+            ))}
           </div>
-          <p className="mt-4 text-lead text-muted">
-            You can choose from a variety of colour options, including single colour, two colour
-            combinations, mixed colours, or glitter and special finishes for a more unique look.
-          </p>
-        </div>
+        }
+      />
 
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Finish style">
-          {FINISH_OPTIONS.map((finish) => (
-            <Button
-              key={finish}
-              type="button"
-              size="sm"
-              variant={selectedFinish === finish ? "default" : "outline"}
-              aria-pressed={selectedFinish === finish}
-              onClick={() => setSelectedFinish(finish)}
-            >
-              {finish}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <Tile tone="white" className="mt-8 border border-border p-5 md:p-7">
+      <Tile tone="white" className="mt-10 p-5 md:mt-14 md:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-5">
             <div className="size-24 shrink-0 overflow-hidden rounded-xl border border-border bg-tile-cream p-2.5">

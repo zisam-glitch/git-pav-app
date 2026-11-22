@@ -21,11 +21,11 @@ const EXPLORE_LINKS = [
 ] as const;
 
 const POPULAR_TREATMENTS = [
-  { label: "Complete Dental Check-Up", badge: "£35", href: "/services/general-dentistry" },
-  { label: "24/7 Urgent Consultation", badge: "24/7", href: "/services/emergency-dental" },
-  { label: "Combined Home & In-Office Whitening", badge: "Rx", href: "/services/whitening" },
-  { label: "Botox & Dermal Fillers", badge: "Rx", href: "/services/aesthetics" },
-  { label: "Custom Sports Mouthguards", badge: "32 Colours", href: "/services/mouthguards" },
+  { label: "Complete Dental Check-Up", href: "/services/general-dentistry" },
+  { label: "24/7 Urgent Consultation", href: "/services/emergency-dental" },
+  { label: "Combined Home & In-Office Whitening", href: "/services/whitening" },
+  { label: "Botox & Dermal Fillers", href: "/services/aesthetics" },
+  { label: "Custom Sports Mouthguards", href: "/services/mouthguards" },
 ] as const;
 
 /**
@@ -67,7 +67,7 @@ export function BlogIndex() {
       <div className="flex flex-col gap-2">
         {/* SLAB 1: Masthead + Category Pills + Featured Asymmetric 2-Column Split */}
         <section className="w-full rounded-b-[24px] bg-white pt-10 pb-12 md:pt-16 md:pb-16">
-          <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
+          <div className="mx-auto w-full max-w-[71.25rem] px-4 md:px-6">
             {/* Masthead (.kPLWQk / .eGckMQ / .ffvJCf) */}
             <div className="max-w-[41.25rem]">
               <h1 className="text-[clamp(2.5rem,calc(2.5rem+47*(100vw-22.5rem)/64.5),5.4375rem)] leading-[1] font-[410] tracking-[-0.02em] text-fg">
@@ -111,7 +111,9 @@ export function BlogIndex() {
                 aria-selected={activeCategory === "all"}
                 onClick={() => {
                   setActiveCategory("all");
-                  document.getElementById("latest-articles")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .getElementById("latest-articles")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className={cn(
                   "inline-flex h-14 shrink-0 items-center justify-center rounded-[48px] px-7 text-[14.5px] font-normal transition-all duration-200 active:scale-95",
@@ -129,11 +131,7 @@ export function BlogIndex() {
               <div className="mt-10 grid items-start gap-8 lg:mt-12 lg:grid-cols-[1.38fr_1fr] lg:gap-10">
                 {/* Left Primary Feature */}
                 <article className="min-w-0">
-                  <Link
-                    to="/blog/$slug"
-                    params={{ slug: lead.slug }}
-                    className="group block"
-                  >
+                  <Link to="/blog/$slug" params={{ slug: lead.slug }} className="group block">
                     <div className="t-zoom overflow-hidden rounded-[16px] bg-black/[0.06]">
                       <Media
                         src={lead.image.src}
@@ -181,10 +179,7 @@ export function BlogIndex() {
                   {sideStack.map((post) => {
                     const cat = categoryForPost(post.slug);
                     return (
-                      <article
-                        key={post.slug}
-                        className="py-6 first:pt-0 last:pb-0"
-                      >
+                      <article key={post.slug} className="py-6 first:pt-0 last:pb-0">
                         <Link
                           to="/blog/$slug"
                           params={{ slug: post.slug }}
@@ -232,16 +227,13 @@ export function BlogIndex() {
         </section>
 
         {/* SLAB 2: "Latest" — 3-Column Hims Borderless Editorial Cards + "See all articles" Pill */}
-        <section
-          id="latest-articles"
-          className="w-full rounded-[24px] bg-white py-12 md:py-16"
-        >
-          <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
+        <section id="latest-articles" className="w-full rounded-[24px] bg-white py-12 md:py-16">
+          <div className="mx-auto w-full max-w-[71.25rem] px-4 md:px-6">
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <h2 className="text-[clamp(2.25rem,calc(2.25rem+26*(100vw-22.5rem)/64.5),3.875rem)] leading-[1.04] font-[410] tracking-[-0.02em] text-fg">
                 {activeCategory === "all"
                   ? "Latest"
-                  : BLOG_CATEGORIES.find((c) => c.id === activeCategory)?.label ?? "Latest"}
+                  : (BLOG_CATEGORIES.find((c) => c.id === activeCategory)?.label ?? "Latest")}
               </h2>
               {activeCategory !== "all" ? (
                 <button
@@ -318,7 +310,7 @@ export function BlogIndex() {
 
         {/* SLAB 3: "Condition Guides" & "Urgent Care Guides" — Hims Curated Topic Slabs */}
         <section className="w-full rounded-[24px] bg-white py-12 md:py-16">
-          <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
+          <div className="mx-auto w-full max-w-[71.25rem] px-4 md:px-6">
             <h2 className="text-[clamp(2.25rem,calc(2.25rem+26*(100vw-22.5rem)/64.5),3.875rem)] leading-[1.04] font-[410] tracking-[-0.02em] text-fg">
               Condition Guides
             </h2>
@@ -370,7 +362,7 @@ export function BlogIndex() {
 
         {/* SLAB 4: "Emergency & Teledentistry Guides" */}
         <section className="w-full rounded-[24px] bg-white py-12 md:py-16">
-          <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
+          <div className="mx-auto w-full max-w-[71.25rem] px-4 md:px-6">
             <h2 className="text-[clamp(2.25rem,calc(2.25rem+26*(100vw-22.5rem)/64.5),3.875rem)] leading-[1.04] font-[410] tracking-[-0.02em] text-fg">
               Urgent Care &amp; Triage
             </h2>
@@ -408,17 +400,12 @@ export function BlogIndex() {
                 );
               })}
             </div>
-
-            <p className="mt-12 text-center text-[12px] text-muted">
-              *All images feature a model portrayal or clinical illustration (unless otherwise
-              noted).
-            </p>
           </div>
         </section>
 
         {/* SLAB 5: Hims Bottom 3-Column Resource Directory (Explore / Popular / Top blog resources) */}
         <section className="w-full rounded-[24px] bg-white py-14 md:py-20">
-          <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
+          <div className="mx-auto w-full max-w-[71.25rem] px-4 md:px-6">
             <div className="grid gap-10 md:grid-cols-3 md:gap-12">
               {/* Column 1: Explore */}
               <div>
@@ -449,9 +436,6 @@ export function BlogIndex() {
                       >
                         {item.label}
                       </a>
-                      <span className="inline-flex rounded-[4px] bg-black/[0.06] px-1.5 py-0.5 text-[10px] font-medium text-fg/80">
-                        {item.badge}
-                      </span>
                     </li>
                   ))}
                 </ul>

@@ -46,3 +46,13 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - `dentures-faq.tsx`: All 10 previous Q&As diverged from `services--dentures.txt` (including claims about `"5 to 8 years"`, `"within 1 to 3 hours"`, `"NHS Band 3 dentures (£319.10)"`, and `"mobile dental units"`); replaced with the 10 verbatim live FAQs.
    - `dentures-contact.tsx`: Repo-only subtitle `"Have questions about our dentures or need a consultation? Contact our prosthetics team below."` replaced with live `"Ready to take control of your dental health? Contact us to book your appointment today!"`, and unverified `<select>` items replaced with live denture options/prices.
 2. **Generated images pending quota reset:** `dentures-hero.jpg` and `dentures-showcase.jpg` were not generated due to `429 RESOURCE_EXHAUSTED`; `<Media>` renders clean Hims-tinted placeholders without `src` until generated.
+
+## Pass 2
+
+- Capture used: `/testosterone.html` (condition page) with `treatment-page-recipe.md`; worked examples `/services/root-canal`, `/services/whitening`.
+- Differences found: pass 1 hero was a split feature with price tiles and an eyebrow; solutions, showcase and pricing carried repo-only eyebrows and "best for" lines; FAQ used the pass 1 `FaqList` (circle +/-); the page ended in a `CtaBand` panel.
+- Rebuilt: hero (`TreatmentHero`, two wired pictures as a strip), solutions (`SectionHeader` + new kit `TitleCards`, H3s kept), showcase (brown band, `KeyLineList`), pricing (`PricingTiles`, live descriptions only), FAQ (`FaqSection`, 10 live questions), contact wrapper (rounded cream panel), closing (`ClosingBand`, H2 "Book your free consultation today" unchanged).
+- Wording changes (3): hero fact rows cut from live sentences (prices line, "We Are The Dentists That Come To You.", "Free consultation with GDC-registered dentists"); link "Our Denture Prices (£495 – £1195)" became "Our Denture Prices"; pricing descriptions use the live en dash.
+- Removed (repo-only, not on the live page): eyebrows "Tailored Restorations", "Prosthetic Craftsmanship", "Patient Guidance"; tiers "Standard Tier", "Popular Choice", "Precision Metal Framework"; three "best for" lines; hero tiles "Custom Fit / Digital scanning & clinic or home-visit fittings"; showcase detail lines for the two options. The fingerprint WARN (words 839 to 742, -12%) is exactly this text.
+- Images needed: none new (wired pictures moved into the hero strip, same alt strings).
+- Open questions: the live page shows Cobalt Chromium at £1195 in the price list and £1095 in the FAQ; both kept verbatim, owner to confirm.

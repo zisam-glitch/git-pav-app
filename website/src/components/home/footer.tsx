@@ -40,136 +40,138 @@ const footerLinkClass = "text-nav text-white/90 t-colors hover:text-white";
  */
 export function Footer() {
   return (
-    <footer className="rounded-t-xl bg-black p-6 text-white md:p-[53px] md:pb-[60px]">
-      <div className="mx-auto w-full max-w-[var(--container-wide)]">
-        <p className="max-w-4xl text-h3 text-white">{FOOTER.about}</p>
+    <div className="bg-white pt-6">
+      <footer className="rounded-t-xl bg-black p-6 text-white md:p-[60px]">
+        <div className="mx-auto w-full max-w-[var(--container-wide)]">
+          <p className="max-w-3xl text-lead text-white/80">{FOOTER.about}</p>
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,430px)_1fr] lg:gap-14">
-          <div className="flex flex-col justify-between gap-8 rounded-xl bg-white/11 p-6">
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-h4 text-white">Connect</h2>
-                <p className="mt-1.5 text-small text-white/75">{PRACTICE_HOURS}</p>
+          <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,430px)_1fr] lg:gap-14">
+            <div className="flex flex-col justify-between gap-8 rounded-xl bg-white/11 p-6">
+              <div className="space-y-5">
+                <div>
+                  <h2 className="text-h4 text-white">Connect</h2>
+                  <p className="mt-1.5 text-small text-white/75">{PRACTICE_HOURS}</p>
+                </div>
+
+                <ul className="space-y-3 text-nav text-white/90">
+                  <li className="flex items-start gap-3">
+                    <MapPin className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
+                    <address className="not-italic">
+                      {PRACTICE_ADDRESS[0]}
+                      <br />
+                      {PRACTICE_ADDRESS[1]}
+                    </address>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Mail className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
+                    <a href={`mailto:${PRACTICE_EMAIL}`} className={footerLinkClass}>
+                      {PRACTICE_EMAIL}
+                    </a>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Phone className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
+                    <a href={PRACTICE_PHONE_HREF} className={footerLinkClass}>
+                      {PRACTICE_PHONE}
+                    </a>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Phone className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
+                    <a href={SECOND_PHONE.href} className={footerLinkClass}>
+                      {SECOND_PHONE.text}
+                    </a>
+                  </li>
+                </ul>
               </div>
 
-              <ul className="space-y-3 text-nav text-white/90">
-                <li className="flex items-start gap-3">
-                  <MapPin className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
-                  <address className="not-italic">
-                    {PRACTICE_ADDRESS[0]}
-                    <br />
-                    {PRACTICE_ADDRESS[1]}
-                  </address>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Mail className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
-                  <a href={`mailto:${PRACTICE_EMAIL}`} className={footerLinkClass}>
-                    {PRACTICE_EMAIL}
-                  </a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Phone className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
-                  <a href={PRACTICE_PHONE_HREF} className={footerLinkClass}>
-                    {PRACTICE_PHONE}
-                  </a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Phone className="mt-1 size-4 shrink-0 text-white/75" aria-hidden="true" />
-                  <a href={SECOND_PHONE.href} className={footerLinkClass}>
-                    {SECOND_PHONE.text}
-                  </a>
-                </li>
+              <ul className="flex flex-wrap items-center gap-2.5">
+                {SOCIAL_LINKS.map((social) => {
+                  const Icon = SOCIAL_ICONS[social.name];
+                  return (
+                    <li key={social.name}>
+                      <a
+                        href={social.href}
+                        aria-label={social.name}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex size-10 items-center justify-center rounded-pill bg-white/11 text-white/90 t-colors hover:bg-white/20 hover:text-white focus-visible:ring-white focus-visible:ring-offset-0"
+                      >
+                        <Icon className="size-4" />
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
-            <ul className="flex flex-wrap items-center gap-2.5">
-              {SOCIAL_LINKS.map((social) => {
-                const Icon = SOCIAL_ICONS[social.name];
-                return (
-                  <li key={social.name}>
-                    <a
-                      href={social.href}
-                      aria-label={social.name}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex size-10 items-center justify-center rounded-pill bg-white/11 text-white/90 t-colors hover:bg-white/20 hover:text-white focus-visible:ring-white focus-visible:ring-offset-0"
-                    >
-                      <Icon className="size-4" />
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+            <div className="grid gap-8 sm:grid-cols-3">
+              <nav aria-label="Quick links">
+                <h2 className="mb-4 text-caption font-medium text-white/50">
+                  {FOOTER.quickLinksHeading}
+                </h2>
+                <ul className="space-y-2.5">
+                  {FOOTER.quickLinks.map((link) => (
+                    <li key={link.href}>
+                      <a href={link.href} className={footerLinkClass}>
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              <nav aria-label="Services">
+                <h2 className="mb-4 text-caption font-medium text-white/50">
+                  {FOOTER.servicesHeading}
+                </h2>
+                <ul className="space-y-2.5">
+                  {SERVICE_PAGES.map((link) => (
+                    <li key={link.href}>
+                      <a href={link.href} className={footerLinkClass}>
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              <nav aria-label="Policies">
+                <h2 className="mb-4 text-caption font-medium text-white/50">Policies</h2>
+                <ul className="space-y-2.5">
+                  {FOOTER.policyLinks.map((link) => (
+                    <li key={link.href}>
+                      <a href={link.href} className={footerLinkClass}>
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-3">
-            <nav aria-label="Quick links">
-              <h2 className="mb-4 text-small font-medium text-white/70">
-                {FOOTER.quickLinksHeading}
-              </h2>
-              <ul className="space-y-2.5">
-                {FOOTER.quickLinks.map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href} className={footerLinkClass}>
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+          <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-caption text-white/66 sm:flex-row sm:items-center sm:justify-between">
+            <p>Copyright {new Date().getFullYear()} Pav Dental.</p>
+            <p>786 Leeds Road, Bradford, BD3 9TY</p>
+          </div>
 
-            <nav aria-label="Services">
-              <h2 className="mb-4 text-small font-medium text-white/70">
-                {FOOTER.servicesHeading}
-              </h2>
-              <ul className="space-y-2.5">
-                {SERVICE_PAGES.map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href} className={footerLinkClass}>
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <nav aria-label="Policies">
-              <h2 className="mb-4 text-small font-medium text-white/70">Policies</h2>
-              <ul className="space-y-2.5">
-                {FOOTER.policyLinks.map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href} className={footerLinkClass}>
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+          <div className="mt-8 overflow-hidden pt-2" aria-hidden="true">
+            <svg viewBox="0 0 1200 215" className="block h-auto w-full select-none text-white/17">
+              <text
+                x="50%"
+                y="84%"
+                textAnchor="middle"
+                fill="currentColor"
+                fontFamily="var(--font-sans)"
+                fontWeight="600"
+                fontSize="215"
+                letterSpacing="-0.02em"
+              >
+                Pav Dental
+              </text>
+            </svg>
           </div>
         </div>
-
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-caption text-white/66 sm:flex-row sm:items-center sm:justify-between">
-          <p>Copyright {new Date().getFullYear()} Pav Dental.</p>
-          <p>786 Leeds Road, Bradford, BD3 9TY</p>
-        </div>
-
-        <div className="mt-8 overflow-hidden pt-2" aria-hidden="true">
-          <svg viewBox="0 0 1200 215" className="block h-auto w-full select-none text-white/17">
-            <text
-              x="50%"
-              y="84%"
-              textAnchor="middle"
-              fill="currentColor"
-              fontFamily="var(--font-sans)"
-              fontWeight="600"
-              fontSize="215"
-              letterSpacing="-0.02em"
-            >
-              Pav Dental
-            </text>
-          </svg>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 }

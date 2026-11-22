@@ -14,18 +14,10 @@ export function PetitionContact() {
   const { contact: copy } = PETITION;
 
   return (
-    <Section
-      id="petition-contact"
-      theme="sand"
-      space="default"
-      aria-labelledby="touch-heading"
-    >
+    <Section id="petition-contact" theme="sand" space="default" aria-labelledby="touch-heading">
       <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
         <div className="max-w-[460px]">
-          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-            Bradford Dental Clinic
-          </span>
-          <h2 id="touch-heading" className="mt-4 text-h2-md text-fg">
+          <h2 id="touch-heading" className="text-h2-md text-fg">
             {copy.heading}
           </h2>
           <p className="mt-4 text-lead text-muted">{copy.intro}</p>
@@ -61,7 +53,7 @@ export function PetitionContact() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-white p-6 shadow-soft md:p-10">
+        <div className="rounded-xl bg-white p-6 shadow-card md:p-[60px]">
           {enquiry.sent ? (
             <div className="max-w-[460px]" role="status">
               <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
@@ -71,8 +63,8 @@ export function PetitionContact() {
                 Message Received
               </Heading>
               <p className="mt-3 text-body text-muted">
-                Thank you. Your message has reached the practice, and the team will get back to
-                you. For urgent dental pain, call{" "}
+                Thank you. Your message has reached the practice, and the team will get back to you.
+                For urgent dental pain, call{" "}
                 <a
                   href={PRACTICE_PHONE_HREF}
                   className="font-medium text-terracotta underline underline-offset-4"
@@ -160,4 +152,3 @@ export function PetitionContact() {
     </Section>
   );
 }
-

@@ -36,3 +36,15 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 ## Open questions for the lead
 
 1. No invented or repo-only claims found on `/petition`; all copy is strictly backed by `website/src/content/petition.ts` and verified by `petition.test.ts`.
+
+## Pass 2
+
+**Capture used.** `/benefits.html` for the rows ([benefits.md](../hims-patterns/benefits.md)); homepage newsletter lead capture for the form card. Recipe: [people-recipe.md](../hims-patterns/people-recipe.md).
+
+**Rebuilt (done, 22 Nov 2026).** `petition-hero.tsx`: the two cards are now `RowCard`s (soft grey rows, icon, H2 title, live text, round jump arrow to the sign form); the H2s "Sign the Petition" and "Share with Others" are unchanged. `petition-contact.tsx`: the repo-only chip "Bradford Dental Clinic" is removed and the form card follows the Hims lead-capture card (24px radius, 60px padding from the medium breakpoint, soft shadow). `petition-form-bar.tsx` and `petition-media.tsx`: the repeated "Community Action" chips are removed (the live page shows it once, in the hero). Sign form, resident tick, lazy YouTube player and contact form work as before. No counters, no signers.
+
+**Checks.** Fingerprint OK (words 374 to 367), parity 88% (unchanged). tsc, eslint, tests pass. 1440 and 390 looked at, no horizontal scroll.
+
+**Wording changes.** None. **Images needed.** None new.
+
+**Still to review.** Placeholders "Jane Doe", "you@example.com", "NHS dental funding", "How can we help?" and the thanks text "Thank you. Your message has reached the practice, and the team will get back to you." are not on the live page.

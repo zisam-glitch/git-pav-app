@@ -50,3 +50,13 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 6. **Repo-only unverified claims removed from `cosmetic-showcase.tsx`**: "Precision Ceramic Layering & Micro-Prep (0.3mm enamel beveling)", "3D Digital Smile Simulation & Trial", Unsplash thumbnails, and `/media/clinic-reel.mp4`.
 7. **Repo-only unverified claims removed from `cosmetic-faq.tsx`**: Replaced 10 repo-invented FAQs (citing £150, £595, £35/mo, 15–20+ years, NHS Band 3, 12–24 months) with the 12 verbatim live FAQs from `services--cosmetic.txt`.
 8. **Repo-only unverified claim removed from `cosmetic-contact.tsx`**: "receive a tailored consultation plan within 24 hours".
+
+## Pass 2
+
+- Capture used: `/testosterone.html` plus `treatment-page-recipe.md`.
+- Differences found: split hero with eyebrow, carousel cards with per-card book buttons, white tile grids, a two-panel finance block, pass 1 FAQ list.
+- Rebuilt: hero (`TreatmentHero`, three wired pictures as a strip), about (`StackedFlow`), procedures (`BenefitCards`, five H3s, whitening link kept), benefits (`TitleCards`, titles keep their "1." numbers), costs and financing (`StackedFlow`, `NumberedList` for the four checklist points under the H3), procedures links (brown band rows), FAQ (`FaqSection`, 12 questions), contact wrapper, closing (`ClosingBand`).
+- Wording changes (1): hero fact rows are live procedure names ("Teeth Whitening", "Porcelain Veneers", "Dental Implants"). Finance wording left exactly as live.
+- Removed (repo-only): eyebrows "Cosmetic Dentistry", "Smile Aesthetics", "Treatment Options", "Fees & Flexible Plans", "Patient Checklist", "Treatment Guides", "Enquire", "FAQs".
+- Images needed: none new.
+- Open questions: none.

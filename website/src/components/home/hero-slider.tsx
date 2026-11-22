@@ -106,12 +106,18 @@ export function HeroSlider() {
   const activePhrase = HERO_PHRASES[phraseIndex] ?? HERO_PHRASES[0];
 
   return (
-    <Section id="top" theme="white" space="none" className="pt-5 pb-8 md:pt-5 md:pb-12">
-      {/* Hims rotating two-tone hero headline + subtitle + primary pills */}
+    <Section
+      id="top"
+      theme="white"
+      space="none"
+      className="pt-5 pb-8 md:pt-5 md:pb-12"
+      innerClassName="md:px-0"
+    >
+      {/* Hims rotating two-tone hero headline + subtitle + primary pills (measured on hims.com home: h1 57px, weight 410, tracking -0.01em, 24px gutter) */}
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
         <div className="max-w-3xl">
           <div className="flex items-start gap-3">
-            <h1 className="text-hero text-fg">
+            <h1 className="text-hero text-fg font-[410] tracking-[-0.01em]">
               <span className={cn("block t-colors", ACCENT_TEXT[activePhrase.tone])}>
                 {activePhrase.label}
               </span>{" "}

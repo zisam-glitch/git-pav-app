@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Clock, HelpCircle, Phone, ShieldCheck } from "lucide-react";
+import { HelpCircle, Phone, ShieldCheck } from "lucide-react";
 import type { ContentBlock } from "@/components/content/content-blocks";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
@@ -17,7 +17,6 @@ import {
 } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { LIVE_PAGES } from "@/content/live-pages";
-import { PRACTICE_HOURS, PRACTICE_PHONE } from "@/lib/enquiry";
 
 type FaqCategoryId = "all" | "gums" | "sensitivity" | "visits";
 
@@ -128,37 +127,16 @@ export function FaqSection() {
             <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
               Patient Guidance
             </span>
-            <Heading
-              as="h2"
-              size="h2"
-              accent="Get answers"
-              tone="terracotta"
-              className="mt-4"
-            >
+            <Heading as="h2" size="h2" accent="Get answers" tone="terracotta" className="mt-4">
               Have questions?
             </Heading>
             <p className="mt-4 text-body text-muted">
-              Select any question to read practical advice from our clinicians, or speak directly
-              with our Bradford reception team 24 hours a day.
+              Select any question to read the answer from our Bradford dental team.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <BookButton>Book Now</BookButton>
               <CallButton variant="outline" />
             </div>
-
-            <Tile tone="cream" className="mt-8 border border-border/70 p-5">
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-pill bg-white text-terracotta">
-                  <Clock className="size-4" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="text-label text-fg">24/7 Urgent Dental Advice</p>
-                  <p className="mt-1 text-small text-muted">
-                    786 Leeds Road, Bradford, BD3 9TY · {PRACTICE_HOURS} ({PRACTICE_PHONE})
-                  </p>
-                </div>
-              </div>
-            </Tile>
           </div>
 
           <div>
@@ -176,11 +154,13 @@ export function FaqSection() {
                 <Phone className="size-4" aria-hidden="true" />
               </span>
               <h3 className="mt-4 text-h4 text-fg">Emergency Dental Care</h3>
-              <p className="mt-2 text-body text-muted">
-                Same-day emergency appointments available 24 hours a day, 7 days a week in Bradford.
-              </p>
             </div>
-            <ButtonLink to="/services/emergency-dental" variant="outline" size="sm" className="w-fit">
+            <ButtonLink
+              to="/services/emergency-dental"
+              variant="outline"
+              size="sm"
+              className="w-fit"
+            >
               Emergency Dentistry
             </ButtonLink>
           </Tile>
@@ -191,11 +171,13 @@ export function FaqSection() {
                 <ShieldCheck className="size-4" aria-hidden="true" />
               </span>
               <h3 className="mt-4 text-h4 text-fg">Routine Check-Ups &amp; Hygiene</h3>
-              <p className="mt-2 text-body text-muted">
-                Complete dental check-ups (£35) and professional Airflow hygiene cleanings.
-              </p>
             </div>
-            <ButtonLink to="/services/oral-hygiene" variant="outline" size="sm" className="w-fit bg-white">
+            <ButtonLink
+              to="/services/oral-hygiene"
+              variant="outline"
+              size="sm"
+              className="w-fit bg-white"
+            >
               Oral Hygiene Care
             </ButtonLink>
           </Tile>

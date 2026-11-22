@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Minus, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { useMemo } from "react";
 import { ContentBlocks } from "@/components/content/content-blocks";
 import { BookButton, Media } from "@/components/hims";
 import { BLOG_POSTS, type BlogPost } from "@/content/blog-posts";
-import { BOOKING_URL, PRACTICE_EMAIL, PRACTICE_PHONE } from "@/lib/enquiry";
+import { BOOKING_URL } from "@/lib/enquiry";
 import { blogPostingJsonLd } from "@/lib/seo";
 import { tocEntries } from "@/components/content/heading-ids";
 import { ArticleToc } from "./article-toc";
@@ -25,38 +25,26 @@ const RELATED_CONDITIONS = [
   {
     title: "24/7 Emergency Care",
     href: "/services/emergency-dental",
-    summary:
-      "Same-day emergency dental appointments in Bradford and Leeds for severe toothache, dental swelling, broken teeth, and dental trauma—open 24 hours a day, 7 days a week.",
   },
   {
     title: "Facial Aesthetics & Restorative Care",
     href: "/services/aesthetics",
-    summary:
-      "Clinician-led Botox, dermal fillers, teeth whitening, and restorative tooth extraction or root canal treatments tailored to your facial anatomy and oral health goals.",
   },
-] as const;
-
-const CLINICAL_SOURCES = [
-  "NHS England — Urgent and emergency dental care clinical guidance and patient pathways.",
-  "General Dental Council (GDC) — Standards for the Dental Team and remote consultation governance.",
-  "National Institute for Health and Care Excellence (NICE) — Dental recall, oral health assessment, and antimicrobial prescribing guidelines.",
-  "British Dental Association (BDA) — Evidence-based patient guidance on tooth extraction, whitening safety, and restorative care.",
 ] as const;
 
 /**
  * Hims Blog Article Page (`www.hims.com/blog/how-long-before-minoxidil-starts-working.html` capture):
- * - Top terracotta promo banner (`#7c362f`) with "Get Started" white pill button + white horizontal blog category sub-navbar.
+ * - Top terracotta promo banner (`bg-rust`) with "Get Started" white pill button + white horizontal blog category sub-navbar.
  * - Recessed `rgba(0,0,0,0.03)` outer canvas with `8px` gap between white `rounded-[24px]` section slabs.
  * - Centered `650px` (`max-w-[40.625rem]`) single-column article stage:
  *   - Uppercase `12px` breadcrumb (`HOME / CATEGORY`)
  *   - Giant `62px` (`text-h2` / `clamp(38px..62px)`) H1 headline
- *   - 4-line `12px` medical review & author metadata block (`Reviewed by Dr Hassan Bhojani, BDS (GDC: 262970)`, `Written by ...`, `Published ...`, `Updated ...`)
- *   - Clean editorial prose (`ContentBlocks`) + expandable `4 Sources` accordion + soft-gray `rounded-[20px]` `EDITORIAL STANDARDS` callout + medical disclaimer
+ *   - `12px` author block (`Written by ...`, `Published ...`; Hims' reviewer, update and sources rows are left out: Pav has no such content)
+ *   - Clean editorial prose (`ContentBlocks`) + medical disclaimer
  *   - `Related Articles` (`43px` heading) vertical stack of horizontal rows with 1px hairline dividers, short dates (`Nov 12, 2026` for SEO parity), and right `180×116` rounded-xl thumbnails
- * - Lower `Related Conditions` slab with Hims warm terracotta-gradient (`linear-gradient(135deg, #c86446 0%, #7c362f 100%)`) display cards + 3-column Explore/Popular/Resources directory.
+ * - Lower `Related Conditions` slab with Hims warm terracotta-gradient (`from-clay to-rust`) display cards + 3-column Explore/Popular/Resources directory.
  */
 export function BlogPostPage({ post }: { post: BlogPost }) {
-  const [sourcesOpen, setSourcesOpen] = useState(false);
   const position = BLOG_POSTS.findIndex((candidate) => candidate.slug === post.slug);
   // Newest first, so the post after this one in the list is the older one.
   const previous = BLOG_POSTS[position + 1];
@@ -82,7 +70,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
       />
 
       {/* Hims Top Terracotta Announcement Strip (from blog-article-top.png) */}
-      <div className="bg-[#7c362f] px-4 py-2.5 text-white">
+      <div className="bg-rust px-4 py-2.5 text-white">
         <div className="mx-auto flex max-w-[var(--container-wide)] flex-wrap items-center justify-center gap-3 text-center">
           <p className="text-[14px] leading-tight text-white/95">
             Need same-day or <strong className="font-semibold text-white">24/7 dental care</strong>{" "}
@@ -100,10 +88,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
       </div>
 
       {/* Hims Blog Category Sub-Navbar (from blog-article-top.png & blog-all-top.png) */}
-      <nav
-        aria-label="Blog topics"
-        className="border-b border-black/[0.06] bg-white px-4 py-3"
-      >
+      <nav aria-label="Blog topics" className="border-b border-black/[0.06] bg-white px-4 py-3">
         <div className="no-scrollbar mx-auto flex max-w-[var(--container-wide)] items-center justify-start gap-6 overflow-x-auto md:justify-center md:gap-8">
           <Link
             to="/blog/all"
@@ -134,7 +119,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
       <div className="flex flex-col gap-2">
         {/* SLAB 1: Centered 650px Single-Column Hims Article Canvas */}
         <section className="w-full rounded-b-[24px] bg-white pt-10 pb-16 md:pt-14 md:pb-20">
-          <div className="relative mx-auto w-full max-w-[40.625rem] px-4 sm:px-6">
+          <div className="relative mx-auto w-full max-w-[43.625rem] px-4 sm:px-6">
             {/* Breadcrumb: HOME / CATEGORY */}
             <div className="flex flex-wrap items-center gap-1.5 text-[12px] tracking-[0.04em] uppercase">
               <Link to="/" className="font-medium text-fg t-colors hover:text-terracotta">
@@ -159,18 +144,9 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                 src="/images/team/2.jpg"
                 alt="Dr Hassan Bhojani"
                 loading="lazy"
-                className="mt-0.5 size-11 shrink-0 rounded-full bg-cream object-cover"
+                className="mt-0.5 size-14 shrink-0 rounded-full bg-cream object-cover"
               />
               <div>
-                <p>
-                  Reviewed by{" "}
-                  <a
-                    href="/team/dr-hassan-bhojani"
-                    className="font-normal text-fg underline decoration-black/25 underline-offset-2 hover:text-terracotta"
-                  >
-                    Dr Hassan Bhojani, BDS (GDC: 262970)
-                  </a>
-                </p>
                 <p>
                   Written by <span className="text-fg">{post.author}</span>
                 </p>
@@ -181,7 +157,6 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                     {post.dateLabel}
                   </time>
                 </p>
-                <p>Updated {post.dateLabel}</p>
               </div>
             </div>
 
@@ -205,63 +180,12 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                 <ContentBlocks blocks={post.blocks} />
               </div>
 
-              {/* Hims Expandable Sources Row (blog-article-y10500.png) */}
-              <div className="mt-12 border-t border-black/12 pt-5">
-                <button
-                  type="button"
-                  aria-expanded={sourcesOpen}
-                  onClick={() => setSourcesOpen((v) => !v)}
-                  className="flex w-full items-center justify-between py-2 text-left text-[16px] font-normal text-fg"
-                >
-                  <span>{CLINICAL_SOURCES.length} Sources</span>
-                  {sourcesOpen ? (
-                    <Minus className="size-4 text-fg" aria-hidden="true" />
-                  ) : (
-                    <Plus className="size-4 text-fg" aria-hidden="true" />
-                  )}
-                </button>
-                {sourcesOpen ? (
-                  <ol className="mt-3 list-decimal space-y-2 pl-5 text-[14px] leading-relaxed text-muted">
-                    {CLINICAL_SOURCES.map((src) => (
-                      <li key={src}>{src}</li>
-                    ))}
-                  </ol>
-                ) : null}
-              </div>
-
-              {/* Hims Soft-Gray Editorial Standards Box (blog-article-y10500.png) */}
-              <div className="mt-6 rounded-[20px] bg-black/[0.05] p-6 md:p-8">
-                <p className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[#6443c7]">
-                  Editorial Standards
-                </p>
-                <p className="mt-2.5 text-[16px] leading-[1.48] text-fg/85">
-                  Pav Dental follows{" "}
-                  <a
-                    href="/practice-policy"
-                    className="text-fg underline underline-offset-3 hover:text-terracotta"
-                  >
-                    strict clinical sourcing guidelines
-                  </a>{" "}
-                  to ensure our patient guides are accurate and current. We rely on UK dental
-                  standards, NICE guidance, and GDC-registered clinicians at our Bradford practice.
-                  See a question or update? Let us know at{" "}
-                  <a
-                    href={`mailto:${PRACTICE_EMAIL}`}
-                    className="text-fg underline underline-offset-3 hover:text-terracotta"
-                  >
-                    {PRACTICE_EMAIL}
-                  </a>
-                  !
-                </p>
-              </div>
-
               {/* Hims Fine-Print Medical Disclaimer */}
               <p className="mt-4 text-[12px] leading-[1.45] text-black/50">
                 This article is for informational purposes only and does not constitute medical or
                 dental advice. The information contained herein is not a substitute for and should
                 never be relied upon for professional clinical advice. Always talk to your dentist
-                about the risks and benefits of any treatment. Call {PRACTICE_PHONE} for 24/7 urgent
-                triage.
+                about the risks and benefits of any treatment.
               </p>
 
               {/* Hims "Related Articles" Section (blog-article-y10500.png & blog-article-y11400.png) */}
@@ -367,17 +291,13 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                 <div key={cond.href} className="text-center">
                   <a
                     href={cond.href}
-                    className="group relative flex min-h-[13.5rem] w-full items-center justify-center overflow-hidden rounded-[28px] px-8 py-10 text-center text-white transition-transform duration-300 hover:scale-[1.01]"
-                    style={{
-                      backgroundImage: "linear-gradient(135deg, #c86446 0%, #7c362f 100%)",
-                    }}
+                    className="group relative flex min-h-[13.5rem] w-full items-center justify-center overflow-hidden rounded-[28px] bg-linear-135 from-clay to-rust px-8 py-10 text-center text-white transition-transform duration-300 hover:scale-[1.01]"
                   >
                     <span className="text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-[410] tracking-[-0.02em] text-white">
                       {cond.title}
                     </span>
                   </a>
                   <p className="mx-auto mt-3 max-w-3xl text-[15px] leading-[1.45] text-fg/85">
-                    {cond.summary}{" "}
                     <a
                       href={cond.href}
                       className="font-medium text-fg underline underline-offset-3 hover:text-terracotta"
@@ -438,7 +358,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                       href="/services/general-dentistry"
                       className="text-[16px] text-fg hover:text-terracotta"
                     >
-                      Complete Check-Up (£35)
+                      Complete Check-Up
                     </a>
                   </li>
                   <li>
@@ -446,7 +366,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                       href="/services/tooth-extraction"
                       className="text-[16px] text-fg hover:text-terracotta"
                     >
-                      Same-Day Tooth Extraction (From £95)
+                      Same-Day Tooth Extraction
                     </a>
                   </li>
                   <li>
@@ -454,7 +374,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                       href="/services/root-canal"
                       className="text-[16px] text-fg hover:text-terracotta"
                     >
-                      Root Canal Treatment (£195–£395)
+                      Root Canal Treatment
                     </a>
                   </li>
                   <li>
@@ -462,7 +382,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
                       href="/services/virtual-dentistry"
                       className="text-[16px] text-fg hover:text-terracotta"
                     >
-                      Virtual Video Consultation (£35)
+                      Virtual Video Consultation
                     </a>
                   </li>
                 </ul>

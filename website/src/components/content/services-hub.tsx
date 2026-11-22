@@ -141,7 +141,7 @@ export function ServicesHub() {
                   service.image ? (
                     <Media
                       src={service.image.src}
-                      alt=""
+                      alt={`${service.leadWord}${service.accentWord ? ` ${service.accentWord}` : ""}`}
                       width={service.image.width}
                       height={service.image.height}
                       ratio="4 / 3"

@@ -177,7 +177,7 @@ function ContactLeadSection() {
         </div>
 
         <div className="rounded-xl border border-border bg-tile-cream p-3 md:p-4">
-          <div className="rounded-xl border border-border bg-white p-6 md:p-10">
+          <div className="rounded-xl border border-border bg-white p-6 md:p-10 lg:p-12">
             {sent ? (
               <div className="max-w-md py-4">
                 <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
@@ -363,9 +363,6 @@ function ContactDetailsSection() {
               </span>
             </div>
             <h3 className="mt-5 text-h4 text-fg">786 Leeds Road, Bradford, BD3 9TY</h3>
-            <p className="mt-2 text-small text-muted">
-              Direct main-road access on Leeds Road with nearby parking.
-            </p>
           </div>
           <ButtonLink href={MAPS_URL} variant="outline" size="sm" className="w-fit">
             Open in Google Maps
@@ -437,14 +434,7 @@ function ContactMapSection() {
           <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
             Directions &amp; Map
           </span>
-          <Heading
-            as="h2"
-            size="h2-md"
-            accent="Bradford"
-            tone="terracotta"
-            inline
-            className="mt-4"
-          >
+          <Heading as="h2" size="h2-md" accent="Bradford" tone="terracotta" inline className="mt-4">
             <span id="location-heading">Find Us in</span>
           </Heading>
           <p className="mt-3 text-lead text-muted">786 Leeds Road, Bradford, BD3 9TY</p>
@@ -483,4 +473,3 @@ function ContactMapSection() {
     </Section>
   );
 }
-

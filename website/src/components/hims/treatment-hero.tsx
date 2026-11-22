@@ -42,6 +42,7 @@ export function TreatmentHero({
   note,
   tiles,
   label,
+  eagerTiles = false,
 }: {
   id?: string;
   badge?: ReactNode;
@@ -54,6 +55,8 @@ export function TreatmentHero({
   note?: ReactNode;
   tiles?: readonly HeroTile[];
   label?: string;
+  /** Load every tile picture eagerly (default: only the first). */
+  eagerTiles?: boolean;
 }) {
   const count = tiles?.length ?? 0;
   const ratio = count === 1 ? "8 / 3" : count === 2 ? "16 / 9" : count === 3 ? "4 / 3" : "3 / 4";
@@ -118,7 +121,7 @@ export function TreatmentHero({
                 alt={tile.alt}
                 ratio={ratio}
                 tone={tile.tone ?? "sand"}
-                priority={index === 0}
+                priority={eagerTiles || index === 0}
                 className={count === 1 ? "max-md:!aspect-[4/3]" : undefined}
               />
             </li>

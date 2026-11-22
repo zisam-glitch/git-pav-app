@@ -1,6 +1,6 @@
 import { Clock, PoundSterling } from "lucide-react";
 import { BookButton, ButtonLink, CallButton } from "@/components/hims";
-import { TreatmentHero } from "@/components/hims/treatment-hero";
+import { EagerTreatmentHero as TreatmentHero } from "@/components/hims/eager-treatment-hero";
 import { PRACTICE_PHONE } from "@/lib/enquiry";
 
 export function EmergencyHero() {

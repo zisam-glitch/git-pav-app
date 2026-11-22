@@ -1,6 +1,6 @@
 import { PoundSterling, ShieldCheck, Smile } from "lucide-react";
 import { BookButton, ButtonLink } from "@/components/hims";
-import { TreatmentHero } from "@/components/hims/treatment-hero";
+import { EagerTreatmentHero as TreatmentHero } from "@/components/hims/eager-treatment-hero";
 
 export function DenturesHero() {
   return (

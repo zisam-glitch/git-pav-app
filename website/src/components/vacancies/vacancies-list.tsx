@@ -1,6 +1,8 @@
-import { ArrowRight, Briefcase, ExternalLink, MapPin, Search } from "lucide-react";
+import { ArrowRight, Briefcase, ExternalLink, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
+import { RowCard } from "@/components/hims/row-card";
+import { StackedFlow } from "@/components/hims/stacked-flow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,140 +57,92 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
 
   return (
     <Section id="roles" theme="cream" space="default">
-      <div className="mx-auto max-w-2xl text-center">
-        <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-          Clinical &amp; Practice Careers
-        </span>
-        <Heading as="h2" size="h2-md" accent="Positions" tone="terracotta" inline className="mt-4">
-          Open
-        </Heading>
-        <p className="mt-4 text-lead text-muted">
-          Explore current roles at 786 Leeds Road, Bradford, BD3 9TY.
-        </p>
-      </div>
+      <StackedFlow
+        sticky
+        lead={
+          <>
+            <Heading as="h2" size="h2-md" accent="Positions" tone="terracotta" inline>
+              Open
+            </Heading>
 
-      <div className="mt-10 flex flex-col gap-4 rounded-xl border border-border bg-white p-4 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:max-w-sm">
-          <Label htmlFor="vacancy-search" className="sr-only">
-            Search roles
-          </Label>
-          <Search
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-subtle"
-          />
-          <Input
-            id="vacancy-search"
-            type="text"
-            placeholder="Search roles or departments..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-11"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {categories.map((cat) => (
-            <Button
-              key={cat.id}
-              type="button"
-              size="sm"
-              variant={selectedCategory === cat.id ? "default" : "outline"}
-              onClick={() => setSelectedCategory(cat.id)}
-            >
-              {cat.label} ({cat.count})
-            </Button>
+            <div className="mt-8 rounded-xl bg-white p-4 md:p-6">
+              <Label htmlFor="vacancy-search" className="sr-only">
+                Search roles
+              </Label>
+              <div className="relative">
+                <Search
+                  aria-hidden="true"
+                  className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-subtle"
+                />
+                <Input
+                  id="vacancy-search"
+                  type="text"
+                  placeholder="Search roles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-11"
+                />
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                {categories.map((cat) => (
+                  <Button
+                    key={cat.id}
+                    type="button"
+                    size="sm"
+                    variant={selectedCategory === cat.id ? "default" : "outline"}
+                    onClick={() => setSelectedCategory(cat.id)}
+                  >
+                    {cat.label} ({cat.count})
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </>
+        }
+      >
+        <ul className="grid gap-5">
+          {filteredVacancies.map((vacancy) => (
+            <RowCard key={vacancy.id} className="md:items-start">
+              <h3 className="text-h4 text-fg">{vacancy.title}</h3>
+              <p className="mt-3 text-body text-muted">{vacancy.description}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button type="button" onClick={() => onApply(vacancy)}>
+                  <span>Apply Now</span>
+                  <ArrowRight aria-hidden="true" />
+                </Button>
+                <ButtonLink
+                  href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`}
+                  variant="outline"
+                  className="bg-white"
+                >
+                  <ExternalLink aria-hidden="true" className="size-4" />
+                  <span>Email Us</span>
+                </ButtonLink>
+              </div>
+            </RowCard>
           ))}
-        </div>
-      </div>
+        </ul>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {filteredVacancies.map((vacancy, index) => {
-          const isHighlighted = Boolean(vacancy.featured || vacancy.category === "sponsorship");
-          return (
-            <Tile
-              key={vacancy.id}
-              as="article"
-              tone={isHighlighted ? "sage" : "white"}
-              lift
-              className="flex flex-col justify-between gap-6 border border-border/70 p-6 md:p-8"
+        {filteredVacancies.length === 0 ? (
+          <Tile tone="white" className="p-12 text-center">
+            <Briefcase aria-hidden="true" className="mx-auto size-10 text-subtle" />
+            <p className="mt-4 text-h4 text-fg">No positions match your search</p>
+            <p className="mt-2 text-body text-muted">
+              Try clearing your filters or searching with a different keyword.
+            </p>
+            <Button
+              type="button"
+              className="mt-6"
+              onClick={() => {
+                setSelectedCategory("all");
+                setSearchQuery("");
+              }}
             >
-              <div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex size-7 items-center justify-center rounded-pill bg-black text-caption font-medium text-white">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
-                      {vacancy.department}
-                    </span>
-                  </div>
-                  <span className="rounded-pill border border-border bg-cream px-3 py-1 text-caption font-medium text-fg">
-                    {vacancy.contractType}
-                  </span>
-                </div>
-
-                <h3 className="mt-5 text-h3-md text-fg">{vacancy.title}</h3>
-                <p className="mt-3 text-body leading-relaxed text-muted">{vacancy.description}</p>
-
-                <ul className="mt-5 flex flex-wrap gap-2">
-                  {vacancy.tags.map((tag) => (
-                    <li
-                      key={tag}
-                      className="rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-fg"
-                    >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="border-t border-border pt-5">
-                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                  <p className="flex items-center gap-2 text-small text-subtle">
-                    <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
-                    <span>{vacancy.location}</span>
-                  </p>
-
-                  <div className="flex flex-wrap gap-2.5">
-                    <Button type="button" onClick={() => onApply(vacancy)}>
-                      <span>Apply Now</span>
-                      <ArrowRight aria-hidden="true" />
-                    </Button>
-                    <ButtonLink
-                      href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`}
-                      variant="outline"
-                      className="bg-white"
-                    >
-                      <ExternalLink aria-hidden="true" className="size-4" />
-                      <span>Email Us</span>
-                    </ButtonLink>
-                  </div>
-                </div>
-              </div>
-            </Tile>
-          );
-        })}
-      </div>
-
-      {filteredVacancies.length === 0 ? (
-        <Tile tone="white" className="mt-8 p-12 text-center">
-          <Briefcase aria-hidden="true" className="mx-auto size-10 text-subtle" />
-          <p className="mt-4 text-h4 text-fg">No positions match your search</p>
-          <p className="mt-2 text-body text-muted">
-            Try clearing your filters or searching with a different keyword.
-          </p>
-          <Button
-            type="button"
-            className="mt-6"
-            onClick={() => {
-              setSelectedCategory("all");
-              setSearchQuery("");
-            }}
-          >
-            Reset Filters
-          </Button>
-        </Tile>
-      ) : null}
+              Reset Filters
+            </Button>
+          </Tile>
+        ) : null}
+      </StackedFlow>
     </Section>
   );
 }

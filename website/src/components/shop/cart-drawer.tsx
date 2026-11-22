@@ -198,10 +198,7 @@ export function CartDrawer({
               {items.map((item) => {
                 const itemKey = item.id || item.product.id;
                 return (
-                  <div
-                    key={itemKey}
-                    className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-                  >
+                  <div key={itemKey} className="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
                     <ShopMedia
                       src={item.product.image}
                       alt={item.product.name}

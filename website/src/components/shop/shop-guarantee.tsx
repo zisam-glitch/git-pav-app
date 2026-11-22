@@ -83,11 +83,7 @@ export function ShopGuarantee() {
             {DELIVERY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (
-                <Tile
-                  key={pillar.title}
-                  tone="glass"
-                  className="border border-white/15 p-6 md:p-7"
-                >
+                <Tile key={pillar.title} tone="glass" className="border border-white/15 p-6 md:p-7">
                   <div className="flex items-start gap-4">
                     <div className="grid size-11 shrink-0 place-items-center rounded-pill bg-gold text-brown">
                       <Icon aria-hidden className="size-5" />

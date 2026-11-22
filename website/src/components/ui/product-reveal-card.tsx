@@ -1,5 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, Plus } from "lucide-react";
+import { Check } from "lucide-react";
+import type { ReactNode } from "react";
+import { Chip } from "@/components/hims/chip";
+import { ProductCard } from "@/components/hims/product-card";
 import type { Product } from "@/components/shop/shop-data";
 import { ShopMedia } from "@/components/shop/shop-media";
 import { Button } from "@/components/ui/button";
@@ -26,42 +29,42 @@ export function ProductRevealCard({
   enableAnimations: _enableAnimations = true,
   className,
 }: ProductRevealCardProps) {
-  const imageContent = (
-    <div className="relative block w-full overflow-hidden rounded-lg bg-white text-left">
-      <ShopMedia
-        src={product.image}
-        alt={product.name}
-        ratio="4 / 3"
-        tone="sand"
-        className="rounded-lg bg-white"
-        imgClassName="t-zoom"
-      />
-
-      {product.badge ? (
-        <span className="absolute top-3 left-3 rounded-pill bg-brown px-3 py-1 text-caption font-medium text-white">
-          {product.badge}
-        </span>
-      ) : null}
-    </div>
+  const media = (
+    <ShopMedia
+      src={product.image}
+      alt={product.name}
+      ratio="4 / 3"
+      tone="sand"
+      className="rounded-md"
+      imgClassName="t-zoom"
+    />
   );
 
+  const detailLink = (children: ReactNode, className?: string) =>
+    onQuickView ? (
+      <button type="button" onClick={onQuickView} className={className}>
+        {children}
+      </button>
+    ) : (
+      <Link to="/shop/$productSlug" params={{ productSlug: product.slug }} className={className}>
+        {children}
+      </Link>
+    );
+
+  const addLabel = !product.inStock ? "Out of Stock" : isJustAdded ? "Added" : "Add to Bag";
+
   return (
-    <article
-      data-slot="product-reveal-card"
-      className={cn(
-        "group flex flex-col justify-between rounded-xl border border-border/70 bg-tile-cream p-5 md:p-6 t-lift hover:bg-white",
-        className,
-      )}
-    >
-      <div>
-        {onQuickView ? (
+    <ProductCard
+      className={cn("group", className)}
+      media={
+        onQuickView ? (
           <button
             type="button"
             onClick={onQuickView}
             aria-label={`View ${product.name}`}
             className="block w-full text-left"
           >
-            {imageContent}
+            {media}
           </button>
         ) : (
           <Link
@@ -70,88 +73,58 @@ export function ProductRevealCard({
             aria-label={`View ${product.name}`}
             className="block w-full text-left"
           >
-            {imageContent}
+            {media}
           </Link>
-        )}
-
-        <div className="mt-4">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption text-subtle">
-            {product.categoryLabel}
-          </span>
-          <h3 className="mt-2.5 text-h4 text-fg">
-            {onQuickView ? (
-              <button
-                type="button"
-                onClick={onQuickView}
-                className="inline-flex items-start gap-1.5 text-left t-colors hover:text-terracotta"
-              >
-                <span>{product.name}</span>
-                <ArrowUpRight aria-hidden className="mt-1 size-4 shrink-0 text-subtle" />
-              </button>
-            ) : (
-              <Link
-                to="/shop/$productSlug"
-                params={{ productSlug: product.slug }}
-                className="inline-flex items-start gap-1.5 text-left t-colors hover:text-terracotta"
-              >
-                <span>{product.name}</span>
-                <ArrowUpRight aria-hidden className="mt-1 size-4 shrink-0 text-subtle" />
-              </Link>
-            )}
-          </h3>
-          {product.shortDesc ? (
-            <p className="mt-2 line-clamp-2 text-small text-muted">{product.shortDesc}</p>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4">
-        <div className="flex flex-col">
-          <div className="flex items-baseline gap-2">
-            <span className="text-h4 text-fg tabular-nums">£{product.price.toFixed(2)}</span>
-            {product.originalPrice ? (
-              <span className="text-small text-muted line-through tabular-nums">
-                £{product.originalPrice.toFixed(2)}
-              </span>
-            ) : null}
-          </div>
-          {product.variants && product.variants.length > 0 ? (
-            <span className="mt-0.5 text-caption text-subtle">
-              {product.variants.length} options available
+        )
+      }
+      chips={
+        <>
+          <Chip tone="white">{product.categoryLabel}</Chip>
+          {product.badge ? <Chip tone="rust">{product.badge}</Chip> : null}
+        </>
+      }
+      title={detailLink(product.name, "t-colors hover:text-terracotta")}
+      meta={
+        <>
+          <span className="tabular-nums">£{product.price.toFixed(2)}</span>
+          {product.originalPrice ? (
+            <span className="ml-2 font-normal line-through tabular-nums">
+              £{product.originalPrice.toFixed(2)}
             </span>
           ) : null}
-        </div>
-
-        <Button
-          type="button"
-          size="sm"
-          variant={isJustAdded ? "gold" : "default"}
-          disabled={!product.inStock}
-          onClick={onAdd}
-          aria-label={
-            !product.inStock
-              ? `${product.name} out of stock`
-              : isJustAdded
-                ? `${product.name} added to bag`
-                : `Add ${product.name} to bag`
-          }
-          className="h-10 px-4"
-        >
-          {isJustAdded ? (
-            <>
-              <Check aria-hidden className="size-4" />
-              <span>Added</span>
-            </>
-          ) : !product.inStock ? (
-            <span>Out of Stock</span>
-          ) : (
-            <>
-              <Plus aria-hidden className="size-4" />
-              <span>Add to Bag</span>
-            </>
+          {product.variants && product.variants.length > 0 ? (
+            <span className="ml-2 font-normal">· {product.variants.length} options</span>
+          ) : null}
+        </>
+      }
+      description={
+        product.shortDesc ? <span className="line-clamp-3">{product.shortDesc}</span> : null
+      }
+      actions={
+        <>
+          <Button
+            type="button"
+            variant={isJustAdded ? "gold" : "default"}
+            disabled={!product.inStock}
+            onClick={onAdd}
+            aria-label={
+              !product.inStock
+                ? `${product.name} out of stock`
+                : isJustAdded
+                  ? `${product.name} added to bag`
+                  : `Add ${product.name} to bag`
+            }
+            className="h-12 flex-1 rounded-pill px-6"
+          >
+            {isJustAdded ? <Check aria-hidden className="size-4" /> : null}
+            <span>{addLabel}</span>
+          </Button>
+          {detailLink(
+            <span>View details</span>,
+            "inline-flex h-12 flex-1 items-center justify-center rounded-pill border border-black/19 px-6 text-label text-fg t-colors hover:border-black",
           )}
-        </Button>
-      </div>
-    </article>
+        </>
+      }
+    />
   );
 }

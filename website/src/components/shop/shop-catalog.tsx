@@ -106,17 +106,13 @@ export function ShopCatalog({
       : undefined;
 
   return (
-    <Section id="catalog" theme="white" aria-label="Product catalogue">
+    <Section id="catalog" theme="cream" aria-label="Product catalogue">
       {!hideHeading ? (
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <Heading as="h2" size="h2" accent="Products" tone="terracotta" inline>
               Our
             </Heading>
-            <p className="mt-4 text-lead text-muted">
-              Clinician-selected oral care essentials formulated for daily enamel protection,
-              brightening, and gum health.
-            </p>
           </div>
           {!isLoading && products.length > 0 ? (
             <p className="text-small text-subtle tabular-nums">
@@ -158,10 +154,10 @@ export function ShopCatalog({
                     onClick={() => setSelectedCategory(cat.id)}
                     aria-pressed={active}
                     className={cn(
-                      "rounded-pill border px-4 py-2 text-small font-medium t-colors",
+                      "inline-flex min-h-12 items-center rounded-pill border px-6 text-label t-colors",
                       active
                         ? "border-black bg-black text-white"
-                        : "border-border bg-cream text-fg hover:border-black",
+                        : "border-black/19 bg-transparent text-fg hover:border-black",
                     )}
                   >
                     {cat.label}
@@ -247,7 +243,7 @@ export function ShopCatalog({
             {unavailable
               ? "Our online store is currently being updated. Please check back shortly or call 0800 1938 786."
               : products.length === 0
-                ? "Explore our full clinician-selected dental care catalogue."
+                ? "Explore our full dental care catalogue."
                 : "Try resetting your search query or selecting another category."}
           </p>
           {products.length > 0 ? (
@@ -265,7 +261,7 @@ export function ShopCatalog({
           ) : null}
         </Tile>
       ) : (
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((product) => (
             <ProductRevealCard
               key={product.id}

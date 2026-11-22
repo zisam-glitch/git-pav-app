@@ -1,13 +1,6 @@
 import { ArrowDownRight, HeartHandshake, PenLine, Share2 } from "lucide-react";
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
+import { RowCard } from "@/components/hims/row-card";
 import { PETITION } from "@/content/petition";
 
 const CARD_ICONS = [PenLine, Share2] as const;
@@ -54,39 +47,30 @@ export function PetitionHero() {
         </div>
       </SplitFeature>
 
-      <ul className="mt-12 grid list-none gap-6 sm:grid-cols-2">
+      <ul className="mt-12 grid list-none gap-5 sm:grid-cols-2">
         {PETITION.cards.map((card, index) => {
           const Icon = CARD_ICONS[index] ?? PenLine;
-          const isSage = index === 1;
           return (
-            <li key={card.title}>
-              <Tile
-                tone={isSage ? "sage" : "cream"}
-                lift
-                className="flex h-full flex-col justify-between gap-6 border border-border/70 p-6 md:p-8"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex size-10 items-center justify-center rounded-pill bg-white text-terracotta shadow-soft">
-                      <Icon className="size-4" aria-hidden="true" />
-                    </span>
-                    <a
-                      href="#sign-form"
-                      aria-label={card.title}
-                      className="inline-flex size-8 items-center justify-center rounded-pill border border-border bg-white text-fg t-colors hover:border-black hover:bg-black hover:text-white"
-                    >
-                      <ArrowDownRight className="size-4" aria-hidden="true" />
-                    </a>
-                  </div>
-                  <h2 className="mt-5 text-h3-md text-fg">{card.title}</h2>
-                  <p className="mt-3 text-body leading-relaxed text-muted">{card.text}</p>
-                </div>
-              </Tile>
-            </li>
+            <RowCard
+              key={card.title}
+              className="h-full md:items-start md:justify-start"
+              action={
+                <a
+                  href="#sign-form"
+                  aria-label={card.title}
+                  className="inline-flex size-10 items-center justify-center rounded-pill bg-black text-white t-colors hover:bg-black/80"
+                >
+                  <ArrowDownRight className="size-4" aria-hidden="true" />
+                </a>
+              }
+            >
+              <Icon className="size-5 text-terracotta" aria-hidden="true" />
+              <h2 className="mt-4 text-h4 text-fg">{card.title}</h2>
+              <p className="mt-2 text-body text-muted">{card.text}</p>
+            </RowCard>
           );
         })}
       </ul>
     </Section>
   );
 }
-

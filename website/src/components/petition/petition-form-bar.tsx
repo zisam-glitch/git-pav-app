@@ -44,10 +44,7 @@ export function PetitionFormBar() {
   return (
     <Section id="sign-form" theme="brown" space="lg" aria-labelledby="sign-heading">
       <div className="max-w-2xl">
-        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-          {PETITION.eyebrow}
-        </span>
-        <h2 id="sign-heading" className="mt-4 text-h2-md text-white">
+        <h2 id="sign-heading" className="text-h2-md text-white">
           Sign <span className="text-gold">the Petition</span>
         </h2>
         <p className="mt-3 text-lead text-white/80">{copy.eligibility}</p>

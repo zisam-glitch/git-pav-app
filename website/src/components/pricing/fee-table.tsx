@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { Heading, Section } from "@/components/hims";
+import { PriceList } from "@/components/hims/price-list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api, HAS_API_BASE } from "@/lib/api";
@@ -175,23 +176,9 @@ export function FeeTable() {
     <Section id="fees" theme="white" width="bento" aria-labelledby="fee-schedule-heading">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
-          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
-            Pav Dental Plans
-          </span>
-          <Heading
-            as="h2"
-            size="h2-md"
-            accent="Fee Schedule"
-            tone="terracotta"
-            inline
-            className="mt-4"
-          >
+          <Heading as="h2" size="h2-md" accent="Fee Schedule" tone="terracotta" inline>
             <span id="fee-schedule-heading">Treatment</span>
           </Heading>
-          <p className="mt-3 text-lead text-muted">
-            Complete treatment and fee schedule across examinations, hygiene, restorative care,
-            whitening, and aesthetics.
-          </p>
         </div>
 
         <div className="relative w-full md:max-w-sm">
@@ -243,36 +230,18 @@ export function FeeTable() {
         })}
       </div>
 
-      {/* Treatment fee tables in Hims cream-headed rounded panels */}
-      <div className="mt-8 space-y-6">
+      {/* Hims biomarkers.md: per category a two-column band, heading left, hairline price rows right */}
+      <div className="mt-8">
         {filteredCategories.map((group) => (
           <div
             key={group.category}
-            className="overflow-hidden rounded-xl border border-border bg-white"
+            className="grid gap-4 border-t border-border py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:gap-28 md:py-[60px]"
           >
-            <div className="flex items-center justify-between border-b border-border bg-cream px-5 py-4 md:px-8">
-              <div className="flex items-center gap-3">
-                <h3 className="text-h4 text-fg">{group.category}</h3>
-                <span className="rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption font-medium text-muted">
-                  {group.items.length}
-                </span>
-              </div>
-              <span className="text-small font-medium text-muted">Price</span>
-            </div>
-
-            <div className="divide-y divide-border">
-              {group.items.map((item, idx) => (
-                <div
-                  key={`${group.category}-${item.name}-${idx}`}
-                  className="flex items-center justify-between gap-6 px-5 py-4 t-colors hover:bg-cream/60 md:px-8"
-                >
-                  <span className="text-body text-fg">{item.name}</span>
-                  <span className="shrink-0 text-right text-lead font-medium text-fg tabular-nums">
-                    {item.fee}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <h3 className="text-h3-md">{group.category}</h3>
+            <PriceList
+              className="[&>div:first-child]:pt-0"
+              rows={group.items.map((item) => ({ label: item.name, price: item.fee }))}
+            />
           </div>
         ))}
 

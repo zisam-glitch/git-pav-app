@@ -49,23 +49,14 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 **Differences found.** Hero was a split hero (Hims: centred display headline, sub-line, one wide picture). Story sections were cards and a brown split (Hims: stacked flow with a numbered list, a dark statement sheet with commitments, an open-book band). Team was rounded cream cards (Hims: capsule leader slider).
 
-**Rebuilt (done).** Row 1, hero (`about/hero.tsx`): centred `DISPLAY_M` H1 with the key phrase on its own line, live lead, Book now and Call, the wired hero picture at 16 / 9, jump links (numbers dropped).
+**Rebuilt (all done, 22 Nov 2026).** Hero (`about/hero.tsx`): centred `DISPLAY_M` H1, live lead, Book now + Call, wired picture at 16 / 9 (checked at 1440 and 390, no changes needed). Story (`about/our-story.tsx`): Dream as `StackedFlow` + `NumberedList` (labels keep their colon); Legacy as `Statement theme="brown" sheet`, the wired `about-legacy.jpg`, `Commitments`, the two closing paragraphs centred; Future as `OpenBook sheet` with the wired `about-future.jpg`, `KeyLineList`, Book Now and View Services. Team (`about/team.tsx`): `LeaderCarousel` of eight `PersonCapsule` (h3 names, same alts) with the `/team` button beside the H2, then the live "Get In Touch" `CtaBand`. All eyebrows and the invented lead line are gone; the H2 "Care led by real clinicians and care team" stays for the SEO baseline.
 
-**Left to do (not started, in this order).**
-1. `about/our-story.tsx`, Dream: `StackedFlow` (H2 `Heading size="h2-md"` "The Dream and" + accent "The Team", live paragraph) beside `NumberedList size="md"`; keep every label with its colon ("Dream :").
-2. Same file, Legacy: `Statement theme="brown" sheet` (H2 "A Legacy" + accent "Fulfilled", first live paragraph), then a brown band with the wired `about-legacy.jpg` (keep its alt) and `Commitments tone="dark"` ("Executing :", "Inspiration and Growth :"), then the two closing live paragraphs centred.
-3. Same file, Future: `OpenBook sheet` with the wired `about-future.jpg` (keep alt) on the left; H2 "The Future of" + accent "Dentistry", the two live paragraphs, `KeyLineList size="md"` for the three app abilities, buttons Book Now and "View Services" (`/services`, keep the link).
-4. `about/team.tsx`: `LeaderCarousel` of eight `PersonCapsule` (`as="h3"`, `TeamPhoto`-style img, same alts) and the `/team` button; drop the eyebrow and the invented lead line; keep H2 "Care led by real clinicians and care team" and the `CtaBand` "Get In Touch".
-5. Re-run the fingerprint and parity for `/about`, take 1440 and 390 shots into `docs/redesign/website/shots/about/`.
-Files that become unused after step 4: `components/ui/team-showcase.tsx`. Already unused before pass 2 (nothing imports them): `components/ui/about-3.tsx`, `components/ui/hero-05.tsx`, `components/ui/hero-05-utils/cta.tsx`.
+**Checks.** Fingerprint: OK (words 674 to 643, the removed eyebrows and lead line). Parity: 100% (unchanged). tsc, eslint, 121 tests pass. 1440 and 390 looked at, no horizontal scroll.
 
-**Wording changes.**
+**Unused now (not deleted).** `components/ui/team-showcase.tsx` (no importer left), plus `ui/about-3.tsx`, `ui/hero-05.tsx`, `ui/hero-05-utils/cta.tsx`.
 
-| Where | Live wording | New wording | Why |
-|---|---|---|---|
-| Hero | none (no eyebrow on live) | eyebrow "Bradford · Our Story" removed | invented label |
-| Jump links | none | numbers 01 to 04 removed, link labels and targets unchanged | decoration |
+**Wording changes.** None beyond removing invented text (eyebrow "Bradford · Our Story", numbers on jump links, "02 · Shared Vision", "03 · Clinical Mission", "04 · Hub, Mobile & App", "Bradford Dental Team", and the lead line under the team H2).
 
-**Images needed.** None new. The hero picture is a 4 : 3 image shown at 16 / 9; a 16 : 9 render of the same room would crop less (`about-hero`).
+**Images needed.** None new (the hero is 4 : 3 shown at 16 / 9; a 16 : 9 render of `about-hero` would crop less).
 
-**Open questions.** The H2 "Care led by real clinicians and care team" and its lead line are not on the live page (they were added in pass 1); the H2 stays for the SEO baseline. Eyebrows still in `our-story.tsx` and `team.tsx` ("02 · Shared Vision", "03 · Clinical Mission", "04 · Hub, Mobile & App", "Bradford Dental Team") are invented and go with step 1 to 4. SEO check after this pass: fingerprint OK, parity 100% (unchanged).
+**Open questions.** The H2 "Care led by real clinicians and care team" is not on the live page (kept for SEO).

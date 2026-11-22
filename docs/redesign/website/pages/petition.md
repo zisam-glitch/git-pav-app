@@ -39,14 +39,12 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 
 ## Pass 2
 
-**Capture used.** `/benefits.html` for the cards and the stacked flow ([benefits.md](../hims-patterns/benefits.md)); the homepage newsletter lead capture for the form cards. Recipe: [people-recipe.md](../hims-patterns/people-recipe.md).
+**Capture used.** `/benefits.html` for the rows ([benefits.md](../hims-patterns/benefits.md)); homepage newsletter lead capture for the form card. Recipe: [people-recipe.md](../hims-patterns/people-recipe.md).
 
-**Status: not rebuilt in pass 2** (the allowance ran out). Route and components are untouched, so the sign form (`api.forms.submitPetition`, required resident tick), the lazy YouTube player and the contact form still work as in pass 1. SEO fingerprint OK, parity 88% (unchanged). No counters, no signers.
+**Rebuilt (done, 22 Nov 2026).** `petition-hero.tsx`: the two cards are now `RowCard`s (soft grey rows, icon, H2 title, live text, round jump arrow to the sign form); the H2s "Sign the Petition" and "Share with Others" are unchanged. `petition-contact.tsx`: the repo-only chip "Bradford Dental Clinic" is removed and the form card follows the Hims lead-capture card (24px radius, 60px padding from the medium breakpoint, soft shadow). `petition-form-bar.tsx` and `petition-media.tsx`: the repeated "Community Action" chips are removed (the live page shows it once, in the hero). Sign form, resident tick, lazy YouTube player and contact form work as before. No counters, no signers.
 
-**Differences found (from reading the code and the pass 1 notes; not yet compared on screen).** Hero is a split hero and the two cards are tiles with icons; the sign form is a brown band; the video sits in a framed card; the contact form is a card beside address chips. These follow the homepage patterns, so the likely work is small: restyle the two cards as `RowCard` or `KeyLineList` rows, check the form card against the Hims lead-capture card (24px radius, 60px padding), and keep every H2 ("Sign the Petition" twice, "Share with Others", "Petition for NHS Dental Funding in Bradford", "Get In Touch").
+**Checks.** Fingerprint OK (words 374 to 367), parity 88% (unchanged). tsc, eslint, tests pass. 1440 and 390 looked at, no horizontal scroll.
 
-**Left to do.** Compare at 1440 and 390, rebuild only what differs, save shots to `docs/redesign/website/shots/petition/`, re-run fingerprint and parity.
+**Wording changes.** None. **Images needed.** None new.
 
-**Possible invented labels to review.** The chip "Bradford Dental Clinic" above "Get In Touch" in `petition-contact.tsx`; the placeholders "Jane Doe", "you@example.com", "NHS dental funding", "How can we help?"; the thanks text "Thank you. Your message has reached the practice, and the team will get back to you." Everything in `PETITION` (content file) is live wording.
-
-**Wording changes.** None. **Images needed.** None new (`petition-hero` is wired).
+**Still to review.** Placeholders "Jane Doe", "you@example.com", "NHS dental funding", "How can we help?" and the thanks text "Thank you. Your message has reached the practice, and the team will get back to you." are not on the live page.

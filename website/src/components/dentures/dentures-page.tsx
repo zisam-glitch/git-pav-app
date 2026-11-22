@@ -11,8 +11,8 @@ export function DenturesPage() {
     <main className="bg-bg">
       <DenturesHero />
       <DenturesSolutions />
-      <DenturesPricing />
       <DenturesShowcase />
+      <DenturesPricing />
       <DenturesFaq />
       <DenturesContact />
       <CtaBand

@@ -3,6 +3,10 @@
     "minCoverage": 0,
     "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
   },
+  "/contact-us": {
+    "approvedDescription": true,
+    "reason": "Owner approved replacing the live GDPR meta description bug with Bradford contact copy (19 Nov 2026)."
+  },
   "/cookie-policy": {
     "minCoverage": 0,
     "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
@@ -15,13 +19,23 @@
     "minCoverage": 0,
     "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
   },
+  "/services": {
+    "approvedDescription": true,
+    "reason": "Owner approved fixing the live meta description location typo from Leeds to Bradford (19 Nov 2026)."
+  },
   "/services/finance": {
-    "missing": true,
-    "reason": "Waits for the owner and V12: the practice is not FCA-authorised to advertise finance (plan A4, decision 2)."
+    "minCoverage": 0,
+    "approvedTitle": true,
+    "approvedDescription": true,
+    "reason": "Owner approved FCA-compliant non-promotional payment options page replacing the live 0% APR credit promotion (19 Nov 2026)."
   },
   "/services/regestration": {
-    "missing": true,
-    "reason": "Waits for the owner: the live page collects health data through a third-party form (plan A5, decision 3)."
+    "minCoverage": 0,
+    "reason": "Owner approved privacy-safe patient registration page without third-party health-data web form (19 Nov 2026)."
+  },
+  "/shop": {
+    "minCoverage": 0,
+    "reason": "Owner approved launching the full clinician-curated dental care shop with products instead of the live Coming Soon gate (19 Nov 2026)."
   },
   "/terms-and-condition": {
     "minCoverage": 0,

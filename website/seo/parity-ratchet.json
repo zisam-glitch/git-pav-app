@@ -1,10 +1,10 @@
 {
   "/": {
-    "coverage": 0.875,
+    "coverage": 1,
     "fails": []
   },
   "/about": {
-    "coverage": 0.76,
+    "coverage": 1,
     "fails": []
   },
   "/blog": {
@@ -12,31 +12,31 @@
     "fails": []
   },
   "/blog/24-hour-emergency-dentist-bradford-when-to-call-why-it-matters-and-how-to-get-seen": {
-    "coverage": 0.935,
+    "coverage": 0.987,
     "fails": []
   },
   "/blog/24-hour-emergency-dentist-in-leeds-how-quickly-can-you-get-seen": {
-    "coverage": 0.923,
+    "coverage": 0.987,
     "fails": []
   },
   "/blog/botox-vs-dermal-fillers-finding-the-right-facial-aesthetics-treatment-in-bradford": {
-    "coverage": 0.927,
+    "coverage": 0.988,
     "fails": []
   },
   "/blog/can-a-dentist-assess-a-dental-problem-through-a-video-call-what-can-and-cant-be-checked": {
-    "coverage": 0.936,
+    "coverage": 0.987,
     "fails": []
   },
   "/blog/can-you-whiten-just-one-tooth-what-causes-single-tooth-discolouration": {
-    "coverage": 0.93,
+    "coverage": 0.988,
     "fails": []
   },
   "/blog/tooth-extraction-in-bradford-when-is-removing-a-tooth-the-best-option": {
-    "coverage": 0.928,
+    "coverage": 0.986,
     "fails": []
   },
   "/cctv-policy": {
-    "coverage": 1,
+    "coverage": 0.941,
     "fails": []
   },
   "/complaints-policy": {
@@ -68,7 +68,7 @@
     "fails": []
   },
   "/pricing": {
-    "coverage": 0.953,
+    "coverage": 0.938,
     "fails": []
   },
   "/privacy-policy": {
@@ -88,15 +88,15 @@
     "fails": []
   },
   "/services/custom-grillz": {
-    "coverage": 0.889,
+    "coverage": 1,
     "fails": []
   },
   "/services/dentures": {
-    "coverage": 0.868,
+    "coverage": 0.974,
     "fails": []
   },
   "/services/emergency-dental": {
-    "coverage": 0.88,
+    "coverage": 0.97,
     "fails": []
   },
   "/services/finance": {
@@ -104,11 +104,11 @@
     "fails": []
   },
   "/services/general-dentistry": {
-    "coverage": 0.802,
+    "coverage": 0.989,
     "fails": []
   },
   "/services/mobile-dentistry": {
-    "coverage": 0.941,
+    "coverage": 1,
     "fails": []
   },
   "/services/mouthguards": {
@@ -132,7 +132,7 @@
     "fails": []
   },
   "/services/virtual-dentistry": {
-    "coverage": 0.904,
+    "coverage": 0.932,
     "fails": []
   },
   "/services/whitening": {

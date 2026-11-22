@@ -29,21 +29,31 @@ const SERVICES = [
 
 export function GeneralDentistryServices() {
   return (
-    <Section id="services" theme="cream">
+    <Section id="services" theme="white">
       <div className="max-w-2xl">
-        <Heading size="h2-md" accent="General Dentistry" tone="terracotta" inline>
+        <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
+          Clinical Treatments
+        </p>
+        <Heading size="h2-md" accent="General Dentistry" tone="terracotta" inline className="mt-4">
           Services Offered in
         </Heading>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {SERVICES.map((service, i) => (
-          <Tile key={service.title} tone="white" className="p-6 md:p-7">
-            <span className="text-small font-medium tabular-nums text-terracotta">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <h3 className="mt-3 text-h4 text-fg">{service.title}</h3>
-            <p className="mt-2 text-body text-muted">{service.desc}</p>
+          <Tile
+            key={service.title}
+            tone={i % 3 === 2 ? "sage" : "cream"}
+            lift
+            className="flex flex-col justify-between gap-5 border border-border p-6 md:p-7"
+          >
+            <div>
+              <span className="inline-flex rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium tabular-nums text-terracotta">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-4 text-h4 text-fg">{service.title}</h3>
+              <p className="mt-3 border-t border-border pt-3 text-body text-muted">{service.desc}</p>
+            </div>
           </Tile>
         ))}
       </div>

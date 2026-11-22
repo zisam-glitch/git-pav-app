@@ -10,6 +10,7 @@ import { HomeTeamCarousel } from "@/components/home/home-team-carousel";
 import { Marquee } from "@/components/home/marquee";
 import { Overview } from "@/components/home/overview";
 import { ScrollProgress } from "@/components/home/scroll-progress";
+import { ServiceTabs } from "@/components/home/service-tabs";
 import { VideoSection } from "@/components/home/video-section";
 import { TestimonialsSection } from "@/components/testimonials/testimonials-section";
 import { HOME_TESTIMONIALS } from "@/content/testimonials";
@@ -27,8 +28,9 @@ function Home() {
       <Header />
       <HeroSlider />
       <Marquee />
-      <Overview />
+      <ServiceTabs />
       <HomeEmergency />
+      <Overview />
       <VideoSection />
       <Counters />
       <HomeTeamCarousel />

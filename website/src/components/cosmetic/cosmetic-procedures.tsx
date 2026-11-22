@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { BookButton, ButtonLink, Carousel, Heading, Section, Tile } from "@/components/hims";
 
 const PROCEDURES = [
@@ -33,7 +34,10 @@ export function CosmeticProcedures() {
   return (
     <Section id="procedures" theme="white" aria-labelledby="cosmetic-procedures-heading">
       <div className="max-w-2xl">
-        <div id="cosmetic-procedures-heading">
+        <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
+          Treatment Options
+        </span>
+        <div id="cosmetic-procedures-heading" className="mt-4">
           <Heading size="h2-md" accent="Cosmetic Dentistry Procedures" tone="terracotta" inline>
             Popular
           </Heading>
@@ -45,25 +49,26 @@ export function CosmeticProcedures() {
           <Tile
             key={proc.id}
             as="article"
-            tone="cream"
+            tone={index % 2 === 1 ? "sage" : "cream"}
             lift
-            className="flex h-full flex-col justify-between gap-6 p-6 md:p-7"
+            className="flex h-full flex-col justify-between gap-6 border border-border/60 p-6 md:p-8"
           >
             <div>
-              <span className="text-small font-medium text-terracotta tabular-nums">
+              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-terracotta tabular-nums">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-3 text-h4 text-fg">{proc.title}</h3>
-              <p className="mt-3 text-body text-muted">{proc.desc}</p>
+              <h3 className="mt-4 text-h4 text-fg">{proc.title}</h3>
+              <p className="mt-3 text-body leading-relaxed text-muted">{proc.desc}</p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
-              <BookButton variant="outline" size="sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-5">
+              <BookButton variant="default" size="sm">
                 Book Now
               </BookButton>
               {"to" in proc && proc.to ? (
-                <ButtonLink to={proc.to} variant="ghost" size="sm">
-                  Learn more
+                <ButtonLink to={proc.to} variant="ghost" size="sm" className="gap-1">
+                  <span>Learn more</span>
+                  <ArrowUpRight aria-hidden className="size-3.5" />
                 </ButtonLink>
               ) : null}
             </div>

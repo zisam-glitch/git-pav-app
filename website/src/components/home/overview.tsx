@@ -1,4 +1,4 @@
-import { Phone, Plus } from "lucide-react";
+import { Phone } from "lucide-react";
 import { BookButton, ButtonLink, CallButton, Heading, Section, Tile } from "@/components/hims";
 import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
@@ -31,8 +31,7 @@ export function Overview() {
           <ul className="mt-8 grid max-w-xl gap-3 text-body sm:grid-cols-2">
             {POINTS.map((point) => (
               <li key={point} className="flex items-start gap-2.5">
-                <Plus aria-hidden className="mt-1 size-4 shrink-0 text-terracotta" />
-                <span>{point}</span>
+                <span className="font-medium text-terracotta">+</span> <span>{point}</span>
               </li>
             ))}
           </ul>

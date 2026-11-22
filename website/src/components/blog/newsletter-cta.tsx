@@ -1,6 +1,6 @@
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { Heading, Section, Tile } from "@/components/hims";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,35 +29,42 @@ export function NewsletterCta() {
   };
 
   return (
-    <Section theme="cream" width="wide" space="default">
-      <div className="grid items-center gap-8 rounded-xl border border-border bg-white p-6 md:p-12 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-        <div>
-          <Heading as="h2" size="h2-md" accent="to Your Inbox" tone="terracotta">
+    <Section theme="white" width="wide" space="default" className="pt-0">
+      <div className="grid items-center gap-8 rounded-xl bg-brown px-6 py-10 text-white md:px-14 md:py-14 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+        <div className="min-w-0">
+          <p className="text-caption font-medium tracking-[0.14em] uppercase text-gold">
+            Patient Journal &amp; Care
+          </p>
+          <Heading as="h2" size="h2-md" accent="to Your Inbox" tone="gold" className="mt-3">
             Get Smile Advice Delivered
           </Heading>
-          <p className="mt-4 text-lead text-muted">
+          <p className="mt-4 text-lead text-white/80">
             Join our patient community across West Yorkshire for monthly dental hygiene tips,
             cosmetic guides, and exclusive clinic treatment offers.
           </p>
+
+          <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-white/15 pt-6">
+            <BookButton variant="gold">Book Now</BookButton>
+            <CallButton variant="glass" />
+          </div>
         </div>
 
-        <div>
+        <div className="min-w-0 rounded-xl border border-white/15 bg-white/7 p-5 md:p-7">
           {subscribed ? (
-            <Tile tone="sage" className="p-6">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-fg" aria-hidden="true" />
-                <div>
-                  <p className="text-label text-fg">You&apos;re Subscribed!</p>
-                  <p className="mt-1 text-small text-muted">
-                    Thank you. We&apos;ll send you our latest guides and advice once a month.
-                  </p>
-                </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-gold" aria-hidden="true" />
+              <div>
+                <p className="text-label text-white">You&apos;re Subscribed!</p>
+                <p className="mt-1 text-small leading-relaxed text-white/80">
+                  Thank you. We&apos;ll send you our latest guides and advice once a month.
+                </p>
               </div>
-            </Tile>
+            </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3">
+              <p className="text-label text-white">Subscribe to Pav Dental Guides</p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <Label htmlFor="newsletter-email" className="sr-only">
                     Email address
                   </Label>
@@ -69,18 +76,19 @@ export function NewsletterCta() {
                     placeholder="Enter your email address..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="border-transparent bg-white text-fg"
                   />
                 </div>
-                <Button type="submit" disabled={loading} className="h-14 px-7">
+                <Button type="submit" variant="gold" disabled={loading} className="h-14 px-7">
                   {loading ? "Subscribing..." : "Subscribe"}
                 </Button>
               </div>
-              {error ? <p className="text-small font-medium text-danger">{error}</p> : null}
+              {error ? <p className="text-small font-medium text-gold">{error}</p> : null}
             </form>
           )}
 
-          <p className="mt-4 flex items-center gap-2 text-caption text-muted">
-            <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+          <p className="mt-4 flex items-center gap-2 text-caption text-white/75">
+            <ShieldCheck className="size-4 shrink-0 text-gold" aria-hidden="true" />
             <span>Zero spam. Unsubscribe at any time with one click.</span>
           </p>
         </div>

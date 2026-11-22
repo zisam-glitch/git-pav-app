@@ -8,18 +8,21 @@ export function VideoSection() {
 
   return (
     <Section id="video" theme="white" space="default">
-      <div className="max-w-2xl">
-        <Heading as="h2" size="h2-md" accent="cavities?" tone="terracotta">
-          What causes
-        </Heading>
-        <p className="mt-4 text-lead text-muted">
-          Watch our short dental guide explaining what causes cavities and how daily care protects
-          your enamel.
-        </p>
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div className="max-w-2xl">
+          <Heading as="h2" size="h2-md" accent="cavities?" tone="terracotta">
+            What causes
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            Watch our short dental guide explaining what causes cavities and how daily care protects
+            your enamel.
+          </p>
+        </div>
+        <p className="text-small text-subtle">Patient guide · Pav Dental Bradford</p>
       </div>
 
-      <div className="mt-8 overflow-hidden rounded-xl border border-border bg-cream">
-        <div className="relative aspect-video bg-cream">
+      <div className="mt-8 overflow-hidden rounded-xl bg-sand">
+        <div className="relative aspect-video bg-sand">
           {isPlaying ? (
             <div className="relative size-full">
               <iframe
@@ -43,12 +46,17 @@ export function VideoSection() {
           ) : (
             <>
               <img
-                src="/media/thumbnails/1.jpg"
-                alt="What causes cavities? educational dental video thumbnail"
+                src="/images/generated/home-cavities-poster.jpg"
+                alt="Sculptural porcelain tooth form and brushed-steel dental mirror on honed limestone"
                 loading="lazy"
+                width={1600}
+                height={900}
                 className="size-full object-cover object-center"
               />
-              <div className="absolute inset-0 bg-black/25" />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent"
+              />
 
               <div className="absolute inset-0 flex items-center justify-center">
                 <button
@@ -59,6 +67,12 @@ export function VideoSection() {
                 >
                   <Play aria-hidden className="size-8 translate-x-0.5 fill-current sm:size-9" />
                 </button>
+              </div>
+
+              <div className="pointer-events-none absolute bottom-5 left-5 sm:bottom-8 sm:left-8">
+                <span className="inline-flex items-center rounded-pill bg-white px-4 py-2 text-small font-medium text-fg shadow-soft">
+                  Watch: What causes cavities?
+                </span>
               </div>
             </>
           )}

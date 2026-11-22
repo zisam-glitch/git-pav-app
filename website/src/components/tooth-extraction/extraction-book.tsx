@@ -14,7 +14,10 @@ export function ExtractionBook() {
     <Section theme="white" space="default">
       <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <Heading as="h2" size="h2-md" accent="Today" tone="terracotta">
+          <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            Same-Day Appointments
+          </p>
+          <Heading as="h2" size="h2-md" accent="Today" tone="terracotta" className="mt-4">
             Book Your Appointment
           </Heading>
           <p className="mt-4 max-w-xl text-lead text-muted">
@@ -24,7 +27,9 @@ export function ExtractionBook() {
 
           <ul className="mt-8 space-y-3 text-body">
             <li className="flex items-center gap-3">
-              <Phone aria-hidden className="size-5 shrink-0 text-terracotta" />
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+                <Phone aria-hidden className="size-4" />
+              </span>
               <a
                 href={PRACTICE_PHONE_HREF}
                 className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
@@ -33,11 +38,15 @@ export function ExtractionBook() {
               </a>
             </li>
             <li className="flex items-center gap-3 text-fg">
-              <MapPin aria-hidden className="size-5 shrink-0 text-terracotta" />
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+                <MapPin aria-hidden className="size-4" />
+              </span>
               <span>786 Leeds Road, Bradford, BD3 9TY</span>
             </li>
             <li className="flex items-center gap-3 text-fg">
-              <Clock aria-hidden className="size-5 shrink-0 text-terracotta" />
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+                <Clock aria-hidden className="size-4" />
+              </span>
               <span>{PRACTICE_HOURS}</span>
             </li>
           </ul>
@@ -48,17 +57,25 @@ export function ExtractionBook() {
           </div>
         </div>
 
-        <Tile tone="cream" className="p-6 md:p-8">
+        <Tile tone="cream" className="border border-border p-6 md:p-8">
           <Heading as="h3" size="h3-md">
             Why Choose PavDental?
           </Heading>
           <ul className="mt-6 divide-y divide-border">
-            {REASONS.map((reason) => (
-              <li key={reason} className="flex items-center gap-3 py-4 text-lead text-fg">
-                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white text-terracotta">
-                  <Check aria-hidden className="size-4" />
+            {REASONS.map((reason, index) => (
+              <li
+                key={reason}
+                className="flex items-center justify-between gap-3 py-4 text-lead text-fg"
+              >
+                <span className="flex items-center gap-3">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white text-terracotta">
+                    <Check aria-hidden className="size-4" />
+                  </span>
+                  <span>{reason}</span>
                 </span>
-                <span>{reason}</span>
+                <span className="rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium text-muted tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
               </li>
             ))}
           </ul>

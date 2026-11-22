@@ -1,8 +1,15 @@
 import { BookButton, CallButton, Heading, Media, Section, SplitFeature } from "@/components/hims";
 
+const PAGE_JUMPS = [
+  { num: "01", label: "Our Story", href: "#our-story" },
+  { num: "02", label: "The Dream & Team", href: "#dream-team" },
+  { num: "03", label: "A Legacy Fulfilled", href: "#legacy-fulfilled" },
+  { num: "04", label: "The Future of Dentistry", href: "#future-dentistry" },
+] as const;
+
 export function Hero() {
   return (
-    <Section theme="white" space="default">
+    <Section id="our-story" theme="white" space="default">
       <SplitFeature
         reverse
         media={
@@ -16,13 +23,15 @@ export function Hero() {
         }
       >
         <div>
-          <p className="text-small font-medium text-terracotta">Bradford · Our Story</p>
+          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
+            Bradford · Our Story
+          </span>
           <Heading
             as="h1"
             size="hero"
             accent="Care and Innovation"
             tone="terracotta"
-            className="mt-3"
+            className="mt-4"
           >
             A Legacy of
           </Heading>
@@ -38,6 +47,27 @@ export function Hero() {
           </div>
         </div>
       </SplitFeature>
+
+      {/* Hims "On this page" numbered jump-link rail (Mobbin a02b45d0) */}
+      <nav
+        aria-label="On this page"
+        className="mt-10 flex flex-wrap items-center gap-2.5 border-t border-border pt-6"
+      >
+        <span className="mr-2 text-caption font-medium text-subtle">On this page</span>
+        {PAGE_JUMPS.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className="group inline-flex items-center gap-2.5 rounded-pill border border-border bg-cream py-1.5 pr-4 pl-2 text-small font-medium text-fg t-colors hover:border-black hover:bg-white"
+          >
+            <span className="inline-flex size-6 items-center justify-center rounded-pill bg-white text-caption font-medium text-terracotta t-colors group-hover:bg-black group-hover:text-white">
+              {item.num}
+            </span>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </nav>
     </Section>
   );
 }
+

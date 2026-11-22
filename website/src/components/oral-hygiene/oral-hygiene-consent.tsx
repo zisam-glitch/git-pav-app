@@ -36,8 +36,10 @@ export function OralHygieneConsent() {
   return (
     <Section theme="brown" width="bento" space="lg">
       <div className="max-w-2xl">
-        <p className="text-label text-gold">Oral Hygiene and Gum Care Advice</p>
-        <Heading as="h2" size="hero" accent="Informed Consent" tone="gold" className="mt-3">
+        <p className="inline-flex rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-gold">
+          Oral Hygiene and Gum Care Advice
+        </p>
+        <Heading as="h2" size="hero" accent="Informed Consent" tone="gold" className="mt-4">
           Understanding
         </Heading>
         <p className="mt-4 text-lead text-white/80">
@@ -47,10 +49,21 @@ export function OralHygieneConsent() {
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
-        {CONSENT_ITEMS.map((item) => (
-          <Tile key={item.title} tone="glass" className="flex flex-col gap-3 p-6">
-            <item.icon aria-hidden className="size-5 text-gold" />
-            <h3 className="text-h4 text-white">{item.title}</h3>
+        {CONSENT_ITEMS.map((item, index) => (
+          <Tile
+            key={item.title}
+            tone="glass"
+            className="flex flex-col gap-4 border border-white/12 p-6"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="grid size-9 place-items-center rounded-full bg-white/10 text-gold">
+                <item.icon aria-hidden className="size-4" />
+              </span>
+              <span className="rounded-pill bg-white/10 px-2.5 py-0.5 text-caption font-medium text-gold tabular-nums">
+                0{index + 1}
+              </span>
+            </div>
+            <h3 className="border-t border-white/12 pt-4 text-h4 text-white">{item.title}</h3>
             <p className="text-body text-white/80">{item.desc}</p>
           </Tile>
         ))}

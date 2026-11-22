@@ -1,5 +1,5 @@
-import { useNavigate } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
@@ -7,14 +7,17 @@ import { Input } from "@/components/ui/input";
 import { ProductRevealCard } from "@/components/ui/product-reveal-card";
 import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { SHOP_CATEGORIES } from "./shop-catalog-data";
 import type { Product } from "./shop-data";
 
 interface ShopCatalogProps {
   products?: Product[];
   isLoading?: boolean;
+  unavailable?: boolean;
   onQuickView?: (product: Product) => void;
   onAddToCart: (product: Product, quantity?: number, variant?: unknown) => void;
   hideHeading?: boolean;
+  hideCategoryFilters?: boolean;
 }
 
 const SORT_OPTIONS = [
@@ -26,11 +29,12 @@ const SORT_OPTIONS = [
 export function ShopCatalog({
   products = [],
   isLoading = false,
+  unavailable = false,
   onQuickView,
   onAddToCart,
   hideHeading = false,
+  hideCategoryFilters = false,
 }: ShopCatalogProps) {
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("featured");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -39,16 +43,26 @@ export function ShopCatalog({
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set(products.map((p) => p.category));
-    const categoryList = Array.from(uniqueCategories).map((cat) => ({
+    const orderedSlugs = [
+      ...SHOP_CATEGORIES.map((c) => c.slug).filter((slug) => uniqueCategories.has(slug)),
+      ...Array.from(uniqueCategories).filter(
+        (slug) => !SHOP_CATEGORIES.some((c) => c.slug === slug),
+      ),
+    ];
+    const categoryList = orderedSlugs.map((cat) => ({
       id: cat,
-      label: products.find((p) => p.category === cat)?.categoryLabel || cat,
+      label:
+        SHOP_CATEGORIES.find((c) => c.slug === cat)?.name ||
+        products.find((p) => p.category === cat)?.categoryLabel ||
+        cat,
     }));
     return [{ id: "all", label: "All Products" }, ...categoryList];
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     const list = products.filter((p) => {
-      const matchesCat = selectedCategory === "all" || p.category === selectedCategory;
+      const matchesCat =
+        hideCategoryFilters || selectedCategory === "all" || p.category === selectedCategory;
       const q = searchQuery.toLowerCase().trim();
       const matchesQuery =
         !q ||
@@ -65,10 +79,11 @@ export function ShopCatalog({
     }
 
     return list;
-  }, [products, selectedCategory, sortBy, searchQuery]);
+  }, [products, selectedCategory, sortBy, searchQuery, hideCategoryFilters]);
 
   const handleAdd = (product: Product) => {
-    onAddToCart(product, 1);
+    const defaultVariant = product.variants?.find((v) => v.stock_qty > 0) ?? null;
+    onAddToCart(product, 1, defaultVariant);
     setJustAddedId(product.id);
     setTimeout(() => setJustAddedId(null), 1200);
   };
@@ -85,25 +100,29 @@ export function ShopCatalog({
     });
   };
 
-  const handleQuickView = (product: Product) => {
-    if (onQuickView) {
-      onQuickView(product);
-      return;
-    }
-    navigate({ to: "/shop/$productSlug", params: { productSlug: product.slug } });
-  };
+  const activeCategoryMeta =
+    selectedCategory !== "all"
+      ? SHOP_CATEGORIES.find((cat) => cat.slug === selectedCategory)
+      : undefined;
 
   return (
     <Section id="catalog" theme="white" aria-label="Product catalogue">
       {!hideHeading ? (
-        <div className="max-w-2xl">
-          <Heading as="h2" size="h2" accent="Products" tone="terracotta" inline>
-            Our
-          </Heading>
-          <p className="mt-4 text-lead text-muted">
-            Professional dental care products designed by our clinical team for your daily oral
-            health routine.
-          </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <Heading as="h2" size="h2" accent="Products" tone="terracotta" inline>
+              Our
+            </Heading>
+            <p className="mt-4 text-lead text-muted">
+              Clinician-selected oral care essentials formulated for daily enamel protection,
+              brightening, and gum health.
+            </p>
+          </div>
+          {!isLoading && products.length > 0 ? (
+            <p className="text-small text-subtle tabular-nums">
+              Showing {filteredProducts.length} of {products.length} products
+            </p>
+          ) : null}
         </div>
       ) : null}
 
@@ -114,7 +133,7 @@ export function ShopCatalog({
           !hideHeading && "mt-10",
         )}
       >
-        {categories.length > 1 ? (
+        {!hideCategoryFilters && categories.length > 1 ? (
           <>
             <div className="sm:hidden">
               <Select
@@ -152,11 +171,13 @@ export function ShopCatalog({
             </div>
           </>
         ) : (
-          <div />
+          <p className="text-small text-subtle tabular-nums">
+            {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+          </p>
         )}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative w-full sm:w-60">
+          <div className="relative w-full sm:w-64">
             <Search
               aria-hidden
               className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-subtle"
@@ -188,23 +209,46 @@ export function ShopCatalog({
         </div>
       </div>
 
+      {!hideCategoryFilters && activeCategoryMeta ? (
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-cream px-5 py-3.5 text-small">
+          <span className="text-muted">
+            Viewing <strong className="font-medium text-fg">{activeCategoryMeta.name}</strong> —{" "}
+            {activeCategoryMeta.description}
+          </span>
+          <Link
+            to="/category/$slug"
+            params={{ slug: activeCategoryMeta.slug }}
+            className="inline-flex shrink-0 items-center gap-1.5 font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+          >
+            <span>Open {activeCategoryMeta.name} page</span>
+            <ArrowRight aria-hidden className="size-3.5" />
+          </Link>
+        </div>
+      ) : null}
+
       {/* Product Grid */}
       {isLoading ? (
         <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
           <p className="text-h4 text-fg">Loading products...</p>
           <p className="mt-2 text-small text-muted">
-            Please wait while we fetch our dental care products.
+            Please wait while we load our dental care catalogue.
           </p>
         </Tile>
       ) : filteredProducts.length === 0 ? (
         <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
           <p className="text-h4 text-fg">
-            {products.length === 0 ? "No products available" : "No products found"}
+            {unavailable
+              ? "Shop catalogue temporarily unavailable"
+              : products.length === 0
+                ? "No products available in this category"
+                : "No matching products found"}
           </p>
           <p className="mt-2 text-small text-muted">
-            {products.length === 0
-              ? "Check back soon for new dental care products."
-              : "Try resetting your search query or selecting another category."}
+            {unavailable
+              ? "Our online store is currently being updated. Please check back shortly or call 0800 1938 786."
+              : products.length === 0
+                ? "Explore our full clinician-selected dental care catalogue."
+                : "Try resetting your search query or selecting another category."}
           </p>
           {products.length > 0 ? (
             <Button
@@ -230,7 +274,7 @@ export function ShopCatalog({
               isJustAdded={justAddedId === product.id}
               onAdd={() => handleAdd(product)}
               onFavorite={() => handleFavorite(product.id)}
-              onQuickView={() => handleQuickView(product)}
+              onQuickView={onQuickView ? () => onQuickView(product) : undefined}
             />
           ))}
         </div>

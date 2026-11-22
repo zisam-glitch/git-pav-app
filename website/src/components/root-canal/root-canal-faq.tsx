@@ -45,10 +45,13 @@ const FAQS: FaqItem[] = [
 
 export function RootCanalFaq() {
   return (
-    <Section theme="white" space="default">
+    <Section theme="sand" space="default">
       <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
         <div className="lg:sticky lg:top-24">
-          <Heading as="h2" size="h2-md" accent="Questions" tone="terracotta">
+          <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            Patient Guidance
+          </p>
+          <Heading as="h2" size="h2-md" accent="Questions" tone="terracotta" className="mt-4">
             Frequently Asked
           </Heading>
           <div className="mt-6 flex flex-wrap gap-3">

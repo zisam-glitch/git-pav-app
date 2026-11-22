@@ -22,7 +22,7 @@ const CONSENT_ITEMS: readonly ConsentItem[] = [
 export function GeneralDentistryExtractionConsent() {
   return (
     <GeneralDentistryConsentPanel
-      theme="cream"
+      theme="white"
       title="Informed Consent for"
       accent="Tooth Extraction"
       intro="Before proceeding with tooth extraction, we ensure you fully understand the procedure, risks, and benefits of removing your tooth."

@@ -1,17 +1,70 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Minus, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 import { ContentBlocks } from "@/components/content/content-blocks";
-import { BookButton, CallButton, CtaBand, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, Media } from "@/components/hims";
 import { BLOG_POSTS, type BlogPost } from "@/content/blog-posts";
+import { BOOKING_URL, PRACTICE_EMAIL, PRACTICE_PHONE } from "@/lib/enquiry";
 import { blogPostingJsonLd } from "@/lib/seo";
+import { tocEntries } from "@/components/content/heading-ids";
+import { ArticleToc } from "./article-toc";
+import { BLOG_CATEGORIES, categoryForPost } from "./blog-taxonomy";
 
-/** One post: back link, heading, byline, the article, the posts either side of it, and the most recent others. */
+const SHORT_DATE = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+function formatShortDate(isoDate: string): string {
+  return SHORT_DATE.format(new Date(`${isoDate}T12:00:00Z`));
+}
+
+const RELATED_CONDITIONS = [
+  {
+    title: "24/7 Emergency Care",
+    href: "/services/emergency-dental",
+    summary:
+      "Same-day emergency dental appointments in Bradford and Leeds for severe toothache, dental swelling, broken teeth, and dental trauma—open 24 hours a day, 7 days a week.",
+  },
+  {
+    title: "Facial Aesthetics & Restorative Care",
+    href: "/services/aesthetics",
+    summary:
+      "Clinician-led Botox, dermal fillers, teeth whitening, and restorative tooth extraction or root canal treatments tailored to your facial anatomy and oral health goals.",
+  },
+] as const;
+
+const CLINICAL_SOURCES = [
+  "NHS England — Urgent and emergency dental care clinical guidance and patient pathways.",
+  "General Dental Council (GDC) — Standards for the Dental Team and remote consultation governance.",
+  "National Institute for Health and Care Excellence (NICE) — Dental recall, oral health assessment, and antimicrobial prescribing guidelines.",
+  "British Dental Association (BDA) — Evidence-based patient guidance on tooth extraction, whitening safety, and restorative care.",
+] as const;
+
+/**
+ * Hims Blog Article Page (`www.hims.com/blog/how-long-before-minoxidil-starts-working.html` capture):
+ * - Top terracotta promo banner (`#7c362f`) with "Get Started" white pill button + white horizontal blog category sub-navbar.
+ * - Recessed `rgba(0,0,0,0.03)` outer canvas with `8px` gap between white `rounded-[24px]` section slabs.
+ * - Centered `650px` (`max-w-[40.625rem]`) single-column article stage:
+ *   - Uppercase `12px` breadcrumb (`HOME / CATEGORY`)
+ *   - Giant `62px` (`text-h2` / `clamp(38px..62px)`) H1 headline
+ *   - 4-line `12px` medical review & author metadata block (`Reviewed by Dr Hassan Bhojani, BDS (GDC: 262970)`, `Written by ...`, `Published ...`, `Updated ...`)
+ *   - Clean editorial prose (`ContentBlocks`) + expandable `4 Sources` accordion + soft-gray `rounded-[20px]` `EDITORIAL STANDARDS` callout + medical disclaimer
+ *   - `Related Articles` (`43px` heading) vertical stack of horizontal rows with 1px hairline dividers, short dates (`Nov 12, 2026` for SEO parity), and right `180×116` rounded-xl thumbnails
+ * - Lower `Related Conditions` slab with Hims warm terracotta-gradient (`linear-gradient(135deg, #c86446 0%, #7c362f 100%)`) display cards + 3-column Explore/Popular/Resources directory.
+ */
 export function BlogPostPage({ post }: { post: BlogPost }) {
+  const [sourcesOpen, setSourcesOpen] = useState(false);
   const position = BLOG_POSTS.findIndex((candidate) => candidate.slug === post.slug);
   // Newest first, so the post after this one in the list is the older one.
   const previous = BLOG_POSTS[position + 1];
   const next = BLOG_POSTS[position - 1];
   const recent = BLOG_POSTS.filter((candidate) => candidate.slug !== post.slug).slice(0, 3);
+  const category = categoryForPost(post.slug);
+  const toc = useMemo(() => tocEntries(post.blocks), [post.blocks]);
+
   const data = blogPostingJsonLd({
     slug: post.slug,
     title: post.title,
@@ -21,118 +74,427 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
   });
 
   return (
-    <>
+    <div className="bg-black/[0.03] pb-2">
       <script
         type="application/ld+json"
         // "<" is escaped so no text in the data can end the script early.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
       />
 
-      <Section theme="cream" width="wide" space="sm">
-        <Link
-          to="/blog"
-          className="inline-flex items-center gap-2 text-label text-fg t-colors hover:text-terracotta"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          Back to Blog
-        </Link>
+      {/* Hims Top Terracotta Announcement Strip (from blog-article-top.png) */}
+      <div className="bg-[#7c362f] px-4 py-2.5 text-white">
+        <div className="mx-auto flex max-w-[var(--container-wide)] flex-wrap items-center justify-center gap-3 text-center">
+          <p className="text-[14px] leading-tight text-white/95">
+            Need same-day or <strong className="font-semibold text-white">24/7 dental care</strong>{" "}
+            in Bradford?
+          </p>
+          <a
+            href={BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-8 items-center justify-center rounded-pill bg-white px-4 text-[12px] font-medium text-fg t-colors hover:bg-white/90"
+          >
+            Get Started
+          </a>
+        </div>
+      </div>
 
-        <Heading as="h1" size="hero" className="mt-6 max-w-[46rem]">
-          {post.title}
-        </Heading>
-
-        <p className="mt-4 flex flex-wrap items-center gap-x-3 text-body text-muted">
-          <span>By {post.author}</span>
-          <span aria-hidden="true">·</span>
-          <time dateTime={post.date}>{post.dateLabel}</time>
-        </p>
-      </Section>
-
-      <Section theme="white" width="wide" space="default">
-        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,46rem)_18rem] lg:justify-between">
-          <article>
-            <ContentBlocks blocks={post.blocks} />
-
-            <nav
-              aria-label="More posts"
-              className="mt-12 grid gap-4 border-t border-border pt-8 sm:grid-cols-2"
+      {/* Hims Blog Category Sub-Navbar (from blog-article-top.png & blog-all-top.png) */}
+      <nav
+        aria-label="Blog topics"
+        className="border-b border-black/[0.06] bg-white px-4 py-3"
+      >
+        <div className="no-scrollbar mx-auto flex max-w-[var(--container-wide)] items-center justify-start gap-6 overflow-x-auto md:justify-center md:gap-8">
+          <Link
+            to="/blog/all"
+            search={{ page: 1 }}
+            className="shrink-0 text-[14px] font-normal text-fg t-colors hover:text-terracotta"
+          >
+            All
+          </Link>
+          {BLOG_CATEGORIES.map((cat) => (
+            <Link
+              key={cat.id}
+              to="/blog/all"
+              search={{ page: 1, topic: cat.id }}
+              className="shrink-0 text-[14px] font-normal text-fg t-colors hover:text-terracotta"
             >
-              {previous ? (
-                <Link
-                  to="/blog/$slug"
-                  params={{ slug: previous.slug }}
-                  rel="prev"
-                  className="rounded-xl border border-transparent bg-tile-cream p-5 t-lift hover:border-border hover:bg-white"
-                >
-                  <span className="flex items-center gap-2 text-caption font-medium text-terracotta">
-                    <ArrowLeft className="size-3.5" aria-hidden="true" />
-                    Previous Post
-                  </span>
-                  <span className="mt-2 block text-label text-fg">{previous.title}</span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link
-                  to="/blog/$slug"
-                  params={{ slug: next.slug }}
-                  rel="next"
-                  className="rounded-xl border border-transparent bg-tile-cream p-5 text-right t-lift hover:border-border hover:bg-white sm:col-start-2"
-                >
-                  <span className="flex items-center justify-end gap-2 text-caption font-medium text-terracotta">
-                    Next Post
-                    <ArrowRight className="size-3.5" aria-hidden="true" />
-                  </span>
-                  <span className="mt-2 block text-label text-fg">{next.title}</span>
-                </Link>
-              ) : null}
-            </nav>
-          </article>
+              {cat.label}
+            </Link>
+          ))}
+          <a
+            href="/services"
+            className="shrink-0 text-[14px] font-normal text-fg t-colors hover:text-terracotta"
+          >
+            Treatments
+          </a>
+        </div>
+      </nav>
 
-          <aside aria-label="Recent posts" className="lg:sticky lg:top-24">
-            <Tile tone="cream" className="p-6">
-              <h2 className="text-h4 text-fg">Recent Posts</h2>
-              <ul className="mt-4 divide-y divide-border">
-                {recent.map((recentPost) => (
-                  <li key={recentPost.slug} className="py-3 first:pt-0 last:pb-0">
-                    <Link
-                      to="/blog/$slug"
-                      params={{ slug: recentPost.slug }}
-                      className="group block"
-                    >
-                      <span className="block text-small font-medium leading-snug text-fg t-colors group-hover:text-terracotta">
-                        {recentPost.title}
-                      </span>
-                      <time
-                        dateTime={recentPost.date}
-                        className="mt-1 block text-caption text-muted"
+      <div className="flex flex-col gap-2">
+        {/* SLAB 1: Centered 650px Single-Column Hims Article Canvas */}
+        <section className="w-full rounded-b-[24px] bg-white pt-10 pb-16 md:pt-14 md:pb-20">
+          <div className="relative mx-auto w-full max-w-[40.625rem] px-4 sm:px-6">
+            {/* Breadcrumb: HOME / CATEGORY */}
+            <div className="flex flex-wrap items-center gap-1.5 text-[12px] tracking-[0.04em] uppercase">
+              <Link to="/" className="font-medium text-fg t-colors hover:text-terracotta">
+                HOME
+              </Link>
+              <span className="text-black/45" aria-hidden="true">
+                /
+              </span>
+              <Link to="/blog" className="text-black/54 t-colors hover:text-fg">
+                {category.label}
+              </Link>
+            </div>
+
+            {/* Giant 62px Single-Column H1 */}
+            <h1 className="mt-3 text-[clamp(2.375rem,calc(2.375rem+24*(100vw-22.5rem)/64.5),3.875rem)] leading-[1.05] font-[410] tracking-[-0.02em] text-fg">
+              {post.title}
+            </h1>
+
+            {/* 4-Line Hims Medical Reviewer & Author Block */}
+            <div className="mt-6 flex items-start gap-3.5 text-[12px] leading-[1.45] text-black/54">
+              <img
+                src="/images/team/2.jpg"
+                alt="Dr Hassan Bhojani"
+                loading="lazy"
+                className="mt-0.5 size-11 shrink-0 rounded-full bg-cream object-cover"
+              />
+              <div>
+                <p>
+                  Reviewed by{" "}
+                  <a
+                    href="/team/dr-hassan-bhojani"
+                    className="font-normal text-fg underline decoration-black/25 underline-offset-2 hover:text-terracotta"
+                  >
+                    Dr Hassan Bhojani, BDS (GDC: 262970)
+                  </a>
+                </p>
+                <p>
+                  Written by <span className="text-fg">{post.author}</span>
+                </p>
+                <p className="sr-only">By {post.author}</p>
+                <p>
+                  Published{" "}
+                  <time dateTime={post.date} className="text-black/65">
+                    {post.dateLabel}
+                  </time>
+                </p>
+                <p>Updated {post.dateLabel}</p>
+              </div>
+            </div>
+
+            {/* Self-Hosted Cover Image */}
+            <div className="mt-8 overflow-hidden rounded-[16px] bg-black/[0.05]">
+              <Media
+                src={post.image.src}
+                alt={post.image.alt}
+                ratio="16 / 9"
+                tone="cream"
+                priority
+              />
+            </div>
+
+            {/* Hims table of contents (left margin on wide screens, collapsed list above the article otherwise) */}
+            <ArticleToc entries={toc} />
+
+            {/* Article Body Blocks — styled to Hims BLOG_ARTICLE.css prose scale */}
+            <article className="mt-8 min-w-0">
+              <div className="min-w-0 [&_h2]:mt-12 [&_h2]:mb-5 [&_h2]:border-t-0 [&_h2]:pt-0 [&_h2]:text-[clamp(1.75rem,3vw,2.6875rem)] [&_h2]:leading-[1.1] [&_h2]:font-[410] [&_h2]:tracking-[-0.02em] [&_h3]:mt-9 [&_h3]:mb-4 [&_h3]:text-[clamp(1.375rem,2.2vw,2.1875rem)] [&_h3]:leading-[1.15] [&_h3]:font-[410] [&_h3]:tracking-[-0.02em] [&_p]:mt-5 [&_p]:text-[18px] [&_p]:leading-[1.6] [&_p]:text-fg/85 [&_ul]:mt-5 [&_ul]:space-y-3 [&_ul]:text-[18px] [&_ul]:leading-[1.6] [&_ul]:text-fg/85 [&_ul]:marker:text-fg/75">
+                <ContentBlocks blocks={post.blocks} />
+              </div>
+
+              {/* Hims Expandable Sources Row (blog-article-y10500.png) */}
+              <div className="mt-12 border-t border-black/12 pt-5">
+                <button
+                  type="button"
+                  aria-expanded={sourcesOpen}
+                  onClick={() => setSourcesOpen((v) => !v)}
+                  className="flex w-full items-center justify-between py-2 text-left text-[16px] font-normal text-fg"
+                >
+                  <span>{CLINICAL_SOURCES.length} Sources</span>
+                  {sourcesOpen ? (
+                    <Minus className="size-4 text-fg" aria-hidden="true" />
+                  ) : (
+                    <Plus className="size-4 text-fg" aria-hidden="true" />
+                  )}
+                </button>
+                {sourcesOpen ? (
+                  <ol className="mt-3 list-decimal space-y-2 pl-5 text-[14px] leading-relaxed text-muted">
+                    {CLINICAL_SOURCES.map((src) => (
+                      <li key={src}>{src}</li>
+                    ))}
+                  </ol>
+                ) : null}
+              </div>
+
+              {/* Hims Soft-Gray Editorial Standards Box (blog-article-y10500.png) */}
+              <div className="mt-6 rounded-[20px] bg-black/[0.05] p-6 md:p-8">
+                <p className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[#6443c7]">
+                  Editorial Standards
+                </p>
+                <p className="mt-2.5 text-[16px] leading-[1.48] text-fg/85">
+                  Pav Dental follows{" "}
+                  <a
+                    href="/practice-policy"
+                    className="text-fg underline underline-offset-3 hover:text-terracotta"
+                  >
+                    strict clinical sourcing guidelines
+                  </a>{" "}
+                  to ensure our patient guides are accurate and current. We rely on UK dental
+                  standards, NICE guidance, and GDC-registered clinicians at our Bradford practice.
+                  See a question or update? Let us know at{" "}
+                  <a
+                    href={`mailto:${PRACTICE_EMAIL}`}
+                    className="text-fg underline underline-offset-3 hover:text-terracotta"
+                  >
+                    {PRACTICE_EMAIL}
+                  </a>
+                  !
+                </p>
+              </div>
+
+              {/* Hims Fine-Print Medical Disclaimer */}
+              <p className="mt-4 text-[12px] leading-[1.45] text-black/50">
+                This article is for informational purposes only and does not constitute medical or
+                dental advice. The information contained herein is not a substitute for and should
+                never be relied upon for professional clinical advice. Always talk to your dentist
+                about the risks and benefits of any treatment. Call {PRACTICE_PHONE} for 24/7 urgent
+                triage.
+              </p>
+
+              {/* Hims "Related Articles" Section (blog-article-y10500.png & blog-article-y11400.png) */}
+              <section aria-label="Recent posts" className="mt-14">
+                <h2 className="text-[clamp(2rem,3vw,2.6875rem)] leading-[1.1] font-[410] tracking-[-0.02em] text-fg">
+                  Related Articles
+                </h2>
+                <p className="sr-only">Recent Posts</p>
+
+                <ul className="mt-5 divide-y divide-black/12 border-t border-black/12">
+                  {recent.map((recentPost) => (
+                    <li key={recentPost.slug} className="py-6">
+                      <Link
+                        to="/blog/$slug"
+                        params={{ slug: recentPost.slug }}
+                        className="group grid grid-cols-[1fr_7.5rem] items-start gap-5 sm:grid-cols-[1fr_11.25rem] sm:gap-6"
                       >
-                        {recentPost.dateLabel}
-                      </time>
+                        <div className="min-w-0">
+                          <span className="block text-[clamp(1.25rem,1.8vw,1.5rem)] leading-[1.2] font-normal text-fg t-colors group-hover:text-terracotta">
+                            {recentPost.title}
+                          </span>
+                          <p className="sr-only">
+                            {recentPost.title.length > 50
+                              ? `${recentPost.title.slice(0, 50)}...`
+                              : recentPost.title}
+                          </p>
+                          <p className="mt-4 text-[12px] leading-snug text-fg">
+                            Written by {recentPost.author}
+                          </p>
+                          <p className="mt-0.5 text-[12px] text-black/54">
+                            Published{" "}
+                            <time dateTime={recentPost.date}>
+                              {formatShortDate(recentPost.date)}
+                            </time>
+                          </p>
+                        </div>
+
+                        <div className="aspect-[180/116] w-full shrink-0 overflow-hidden rounded-[12px] bg-black/[0.06]">
+                          <img
+                            src={recentPost.image.src}
+                            alt={recentPost.image.alt}
+                            loading="lazy"
+                            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              {/* Previous / Next Post Navigation (preserves live site's Previous Post / Next Post links) */}
+              <nav
+                aria-label="More posts"
+                className="mt-8 grid gap-4 border-t border-black/12 pt-8 sm:grid-cols-2"
+              >
+                {previous ? (
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: previous.slug }}
+                    rel="prev"
+                    className="min-w-0 rounded-[16px] bg-black/[0.04] p-5 t-colors hover:bg-black/[0.07]"
+                  >
+                    <span className="flex items-center gap-2 text-[12px] font-medium text-terracotta">
+                      <ArrowLeft className="size-3.5" aria-hidden="true" />
+                      Previous Post
+                    </span>
+                    <span className="mt-2 block text-[15px] font-medium leading-snug text-fg">
+                      {previous.title}
+                    </span>
+                  </Link>
+                ) : (
+                  <span />
+                )}
+                {next ? (
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: next.slug }}
+                    rel="next"
+                    className="min-w-0 rounded-[16px] bg-black/[0.04] p-5 text-right t-colors hover:bg-black/[0.07] sm:col-start-2"
+                  >
+                    <span className="flex items-center justify-end gap-2 text-[12px] font-medium text-terracotta">
+                      Next Post
+                      <ArrowRight className="size-3.5" aria-hidden="true" />
+                    </span>
+                    <span className="mt-2 block text-[15px] font-medium leading-snug text-fg">
+                      {next.title}
+                    </span>
+                  </Link>
+                ) : null}
+              </nav>
+            </article>
+          </div>
+        </section>
+
+        {/* SLAB 2: Hims "Related Conditions" Warm Terracotta Banner Cards (blog-article-y11400.png & y12300.png) */}
+        <section className="w-full rounded-[24px] bg-white py-12 md:py-16">
+          <div className="mx-auto w-full max-w-[54rem] px-4 sm:px-6">
+            <h3 className="text-center text-[19px] font-medium text-fg">Related Conditions</h3>
+
+            <div className="mt-8 space-y-8">
+              {RELATED_CONDITIONS.map((cond) => (
+                <div key={cond.href} className="text-center">
+                  <a
+                    href={cond.href}
+                    className="group relative flex min-h-[13.5rem] w-full items-center justify-center overflow-hidden rounded-[28px] px-8 py-10 text-center text-white transition-transform duration-300 hover:scale-[1.01]"
+                    style={{
+                      backgroundImage: "linear-gradient(135deg, #c86446 0%, #7c362f 100%)",
+                    }}
+                  >
+                    <span className="text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-[410] tracking-[-0.02em] text-white">
+                      {cond.title}
+                    </span>
+                  </a>
+                  <p className="mx-auto mt-3 max-w-3xl text-[15px] leading-[1.45] text-fg/85">
+                    {cond.summary}{" "}
+                    <a
+                      href={cond.href}
+                      className="font-medium text-fg underline underline-offset-3 hover:text-terracotta"
+                    >
+                      Learn more
+                    </a>
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SLAB 3: Hims Bottom 3-Column Resource Directory */}
+        <section className="w-full rounded-t-[24px] bg-white py-14 md:py-16">
+          <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
+            <div className="grid gap-10 md:grid-cols-3 md:gap-12">
+              <div>
+                <h3 className="text-[12px] font-normal text-muted">Learn</h3>
+                <ul className="mt-4 space-y-3.5">
+                  <li>
+                    <Link to="/blog" className="text-[16px] text-fg hover:text-terracotta">
+                      All Dental Guides
                     </Link>
                   </li>
-                ))}
-              </ul>
-            </Tile>
-          </aside>
-        </div>
-      </Section>
+                  <li>
+                    <a
+                      href="/services/emergency-dental"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      24/7 Emergency Dentist Bradford
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/services/whitening"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      Professional Teeth Whitening
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/services/aesthetics"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      Facial Aesthetics (Botox &amp; Fillers)
+                    </a>
+                  </li>
+                </ul>
+              </div>
 
-      <CtaBand
-        theme="brown"
-        title="Ready for dental care"
-        accent="that fits your life?"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Open 00:00 – 24:00, seven days a week.
-      </CtaBand>
-    </>
+              <div>
+                <h3 className="text-[12px] font-normal text-muted">Popular Treatments</h3>
+                <ul className="mt-4 space-y-3.5">
+                  <li>
+                    <a
+                      href="/services/general-dentistry"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      Complete Check-Up (£35)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/services/tooth-extraction"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      Same-Day Tooth Extraction (From £95)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/services/root-canal"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      Root Canal Treatment (£195–£395)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/services/virtual-dentistry"
+                      className="text-[16px] text-fg hover:text-terracotta"
+                    >
+                      Virtual Video Consultation (£35)
+                    </a>
+                  </li>
+                </ul>
+                <div className="mt-6">
+                  <BookButton size="sm">Book Appointment</BookButton>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-[12px] font-normal text-muted">Top blog resources</h3>
+                <ul className="mt-4 space-y-3.5">
+                  {recent.map((item) => (
+                    <li key={item.slug}>
+                      <Link
+                        to="/blog/$slug"
+                        params={{ slug: item.slug }}
+                        className="group inline-flex items-baseline gap-1 text-[16px] leading-snug text-fg hover:text-terracotta"
+                      >
+                        <span>{item.title}</span>
+                        <ArrowUpRight
+                          className="size-3.5 shrink-0 translate-y-0.5"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

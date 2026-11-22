@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Megaphone } from "lucide-react";
 import { BookButton, ButtonLink, CallButton, Heading, Section, Tile } from "@/components/hims";
-import { api } from "@/lib/api";
+import { api, HAS_API_BASE } from "@/lib/api";
 import { BOOKING_URL } from "@/lib/enquiry";
 
 const REASONS = [
@@ -25,6 +25,8 @@ export function SpecialAnnouncement() {
   const { data: announcements } = useQuery({
     queryKey: ["active-announcements"],
     queryFn: () => api.announcements.list(),
+    enabled: HAS_API_BASE,
+    retry: false,
   });
 
   const active = announcements?.find((a) => a.is_active);
@@ -57,7 +59,10 @@ export function SpecialAnnouncement() {
       )}
 
       <div className="max-w-3xl">
-        <Heading as="h2" size="h2" accent="Pav Dental" tone="gold">
+        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
+          Bradford Price Guarantee
+        </span>
+        <Heading as="h2" size="h2" accent="Pav Dental" tone="gold" className="mt-4">
           <span id="announcement-heading">Special Announcement from</span>
         </Heading>
         <p className="mt-5 text-lead text-white/80">
@@ -67,7 +72,8 @@ export function SpecialAnnouncement() {
         </p>
       </div>
 
-      <Tile tone="glass" className="mt-10 bg-brown-deep p-6 md:p-10">
+      {/* Hims high-contrast spotlight panel (Mobbin e4eccce0) */}
+      <Tile tone="glass" className="mt-10 border border-white/15 bg-brown-deep p-6 md:p-10">
         <div className="grid items-center gap-6 md:grid-cols-[1.4fr_auto]">
           <div>
             <h3 className="text-h3-md text-gold">Our Price Match Promise</h3>
@@ -88,9 +94,12 @@ export function SpecialAnnouncement() {
       <div className="mt-10">
         <h3 className="text-h4 text-white">Choose Pav Dental for:</h3>
         <div className="mt-5 grid gap-5 md:grid-cols-3">
-          {REASONS.map((reason) => (
-            <Tile key={reason.title} tone="glass" className="p-6">
-              <h4 className="text-h4 text-gold">{reason.title}</h4>
+          {REASONS.map((reason, idx) => (
+            <Tile key={reason.title} tone="glass" className="border border-white/12 p-6 md:p-8">
+              <span className="inline-flex size-8 items-center justify-center rounded-pill bg-gold/15 text-caption font-medium text-gold">
+                0{idx + 1}
+              </span>
+              <h4 className="mt-4 text-h4 text-gold">{reason.title}</h4>
               <p className="mt-3 text-body text-white/80">{reason.description}</p>
             </Tile>
           ))}

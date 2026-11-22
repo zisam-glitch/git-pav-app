@@ -9,6 +9,7 @@ import {
   Media,
   Section,
   SplitFeature,
+  Tile,
   type ConsentItem,
 } from "@/components/hims";
 import { WhiteningComparison } from "./whitening-comparison";
@@ -36,7 +37,7 @@ const WHITENING_CONSENT_ITEMS: readonly ConsentItem[] = [
 
 export function WhiteningPage() {
   return (
-    <main className="bg-white">
+    <main className="bg-bg">
       <Section
         id="top"
         theme="white"
@@ -57,7 +58,16 @@ export function WhiteningPage() {
           }
         >
           <div>
-            <Heading as="h1" size="hero" accent="Developed for You" tone="terracotta">
+            <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
+              Professional Teeth Whitening
+            </span>
+            <Heading
+              as="h1"
+              size="hero"
+              accent="Developed for You"
+              tone="terracotta"
+              className="mt-4"
+            >
               Designed by Dentists
             </Heading>
             <p className="mt-5 max-w-xl text-lead text-muted">
@@ -65,6 +75,22 @@ export function WhiteningPage() {
               remove stains and discoloration, giving you the confidence to flash your pearly
               whites.
             </p>
+
+            <div className="mt-6 grid max-w-xl grid-cols-3 gap-3">
+              <Tile tone="cream" className="border border-border/60 p-3.5">
+                <p className="text-caption font-medium text-copper">Whitening Strips</p>
+                <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£65</p>
+              </Tile>
+              <Tile tone="sage" className="border border-border/60 p-3.5">
+                <p className="text-caption font-medium text-copper">Home Kits</p>
+                <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£295</p>
+              </Tile>
+              <Tile tone="cream" className="border border-border/60 p-3.5">
+                <p className="text-caption font-medium text-copper">Home &amp; In-Office</p>
+                <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£495</p>
+              </Tile>
+            </div>
+
             <div className="mt-8 flex flex-wrap gap-3">
               <BookButton>Book Now</BookButton>
               <ButtonLink href="#products" variant="outline">
@@ -72,7 +98,7 @@ export function WhiteningPage() {
               </ButtonLink>
               <CallButton variant="ghost" />
             </div>
-            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-small text-muted">
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
               <a
                 href="#comparison-matrix"
                 className="underline underline-offset-4 t-colors hover:text-terracotta"

@@ -8,7 +8,7 @@ import { ShopCatalog } from "@/components/shop/shop-catalog";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { useCartStore } from "@/lib/cart-store";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
+import { api, HAS_API_BASE } from "@/lib/api";
 import { useState } from "react";
 import { ShoppingBag, ArrowLeft } from "lucide-react";
 import type { Product } from "@/components/shop/shop-data";
@@ -23,9 +23,11 @@ function CategoryRoute() {
   const { items, addItem, updateQuantity, removeItem, clearCart } = useCartStore();
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const { data: apiProducts, isLoading } = useQuery({
+  const { data: apiProducts, isLoading, isError } = useQuery({
     queryKey: ["products", "category", slug],
     queryFn: () => api.products.list({ category: slug }),
+    enabled: HAS_API_BASE,
+    retry: false,
   });
 
   const productsToDisplay: Product[] = (apiProducts || []).map((p) => ({
@@ -79,6 +81,7 @@ function CategoryRoute() {
       <ShopCatalog
         products={productsToDisplay}
         isLoading={isLoading}
+        unavailable={!HAS_API_BASE || isError}
         hideHeading
         onAddToCart={(p) => {
           addItem(p, 1);

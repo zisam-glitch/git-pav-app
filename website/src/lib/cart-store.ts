@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { api } from "./api";
+import { api, HAS_API_BASE } from "./api";
 
 export interface CartStoreItem {
   id: string; // cart item id or temporary id
@@ -116,7 +116,8 @@ export const useCartStore = create<CartState>()(
 
         set({ items: nextItems });
 
-        // Remote sync
+        // Remote sync when backend is configured
+        if (!HAS_API_BASE) return;
         try {
           const result = await api.cart.addItem({
             productId: product.id,
@@ -129,8 +130,8 @@ export const useCartStore = create<CartState>()(
           if (result.success) {
             await state.syncCart();
           }
-        } catch (err) {
-          console.error("Failed to sync add item to server:", err);
+        } catch {
+          // Keep optimistic local bag state when remote cart is unreachable.
         }
       },
 
@@ -146,14 +147,15 @@ export const useCartStore = create<CartState>()(
         );
         set({ items: nextItems });
 
+        if (!HAS_API_BASE) return;
         try {
           await api.cart.updateItem({
             itemId,
             quantity,
             sessionId: state.sessionId,
           });
-        } catch (err) {
-          console.error("Failed to sync update quantity to server:", err);
+        } catch {
+          // Keep optimistic local bag state when remote cart is unreachable.
         }
       },
 
@@ -162,13 +164,14 @@ export const useCartStore = create<CartState>()(
         const nextItems = state.items.filter((it) => it.id !== itemId);
         set({ items: nextItems });
 
+        if (!HAS_API_BASE) return;
         try {
           await api.cart.removeItem({
             itemId,
             sessionId: state.sessionId,
           });
-        } catch (err) {
-          console.error("Failed to sync remove item to server:", err);
+        } catch {
+          // Keep optimistic local bag state when remote cart is unreachable.
         }
       },
 
@@ -176,10 +179,11 @@ export const useCartStore = create<CartState>()(
         const state = get();
         set({ items: [], appliedDiscount: null });
 
+        if (!HAS_API_BASE) return;
         try {
           await api.cart.clear(state.sessionId);
-        } catch (err) {
-          console.error("Failed to sync clear cart to server:", err);
+        } catch {
+          // Keep optimistic local bag state when remote cart is unreachable.
         }
       },
 
@@ -206,6 +210,7 @@ export const useCartStore = create<CartState>()(
       },
 
       syncCart: async () => {
+        if (!HAS_API_BASE) return;
         const state = get();
         const sid = state.sessionId || getOrGenerateSessionId();
         set({ isLoading: true });
@@ -225,13 +230,9 @@ export const useCartStore = create<CartState>()(
                 itemTotal: it.itemTotal,
               })),
             });
-          } else {
-            // If cart is empty on server, keep local items but mark them as needing sync
-            // This prevents losing items if the server cart was cleared unexpectedly
-            console.log("Server cart is empty, keeping local items");
           }
-        } catch (err) {
-          console.warn("Could not sync remote cart:", err);
+        } catch {
+          // Keep local bag items when remote cart sync is unavailable.
         } finally {
           set({ isLoading: false });
         }

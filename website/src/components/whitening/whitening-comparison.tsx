@@ -4,6 +4,7 @@ const COMPARISON_COLUMNS = [
   {
     id: "whitening-strips",
     name: "Whitening Strips",
+    eyebrow: "On-the-Go Maintenance",
     price: "£65",
     options: "Professional Whitening Strips · Dissolving Whitening Strips",
     contents: "14 applications (28 strips)",
@@ -15,6 +16,7 @@ const COMPARISON_COLUMNS = [
   {
     id: "home-teeth-whitening",
     name: "Home Teeth Whitening",
+    eyebrow: "Dentist-Crafted Trays",
     price: "£295",
     options: "Day Whitening Kits · Night Whitening Kits",
     contents: "4 x 3ml syringes and a 30ml pre-polishing paste",
@@ -27,6 +29,7 @@ const COMPARISON_COLUMNS = [
   {
     id: "home-in-office-whitening",
     name: "Home & In Office Whitening",
+    eyebrow: "Dual-Action Hybrid",
     price: "£495",
     options: "BEAM In-Office Whitening Gel · BEAM Professional Whitening Kit",
     contents: "In-office whitening session with pre-whitening varnish, plus at-home kit",
@@ -50,11 +53,16 @@ const ROWS: Array<{
 
 export function WhiteningComparison() {
   return (
-    <Section id="comparison-matrix" theme="sand">
+    <Section id="comparison-matrix" theme="sand" aria-labelledby="whitening-comparison-heading">
       <div className="max-w-2xl">
-        <Heading size="h2-md" accent="Whitening Ranges" tone="terracotta" inline>
-          Compare Our
-        </Heading>
+        <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
+          Transparent Pricing (£65 – £495)
+        </span>
+        <div id="whitening-comparison-heading" className="mt-4">
+          <Heading size="h2-md" accent="Whitening Ranges" tone="terracotta" inline>
+            Compare Our
+          </Heading>
+        </div>
         <p className="mt-4 text-lead text-muted">
           Side-by-side overview of our three whitening options, formulas, and what is included.
         </p>
@@ -65,11 +73,14 @@ export function WhiteningComparison() {
         <table className="w-full border-collapse text-left">
           <thead>
             <tr className="border-b border-border bg-cream">
-              <th className="w-1/4 px-6 py-5 text-small font-medium text-muted">Feature</th>
+              <th className="w-1/4 px-6 py-6 text-small font-medium text-muted">Feature</th>
               {COMPARISON_COLUMNS.map((col) => (
-                <th key={col.id} className="w-1/4 px-6 py-5 align-top">
-                  <div className="text-h4 text-fg">{col.name}</div>
-                  <div className="mt-1 text-h3-md text-fg tabular-nums">{col.price}</div>
+                <th key={col.id} className="w-1/4 px-6 py-6 align-top">
+                  <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-copper">
+                    {col.eyebrow}
+                  </span>
+                  <div className="mt-3 text-h4 text-fg">{col.name}</div>
+                  <div className="mt-1 text-h3-md text-terracotta tabular-nums">{col.price}</div>
                 </th>
               ))}
             </tr>
@@ -79,13 +90,13 @@ export function WhiteningComparison() {
               <tr key={row.key}>
                 <td className="px-6 py-4 align-top text-label text-fg">{row.label}</td>
                 {COMPARISON_COLUMNS.map((col) => (
-                  <td key={col.id} className="px-6 py-4 align-top text-small text-muted">
+                  <td key={col.id} className="px-6 py-4 align-top text-small leading-relaxed text-muted">
                     {col[row.key]}
                   </td>
                 ))}
               </tr>
             ))}
-            <tr>
+            <tr className="bg-cream/50">
               <td className="px-6 py-5 text-label text-fg">Appointment</td>
               {COMPARISON_COLUMNS.map((col) => (
                 <td key={col.id} className="px-6 py-5">
@@ -102,10 +113,15 @@ export function WhiteningComparison() {
       {/* Mobile stacked comparison cards */}
       <div className="mt-8 grid gap-4 md:hidden">
         {COMPARISON_COLUMNS.map((col) => (
-          <Tile key={col.id} as="article" tone="white" className="p-6">
-            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-4">
-              <h3 className="text-h4 text-fg">{col.name}</h3>
-              <span className="text-h3-md text-fg tabular-nums">{col.price}</span>
+          <Tile key={col.id} as="article" tone="white" className="border border-border p-6">
+            <div className="flex items-start justify-between gap-4 border-b border-border pb-4">
+              <div>
+                <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3 py-0.5 text-caption font-medium text-copper">
+                  {col.eyebrow}
+                </span>
+                <h3 className="mt-2 text-h4 text-fg">{col.name}</h3>
+              </div>
+              <span className="text-h3-md text-terracotta tabular-nums">{col.price}</span>
             </div>
             <dl className="mt-4 divide-y divide-border">
               {ROWS.map((row) => (
@@ -115,7 +131,7 @@ export function WhiteningComparison() {
                 </div>
               ))}
             </dl>
-            <div className="mt-4">
+            <div className="mt-4 pt-2">
               <BookButton variant={col.buttonVariant} className="w-full">
                 Book Now
               </BookButton>

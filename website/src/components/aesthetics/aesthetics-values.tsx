@@ -17,23 +17,35 @@ const VALUES = [
 
 export function AestheticsValues() {
   return (
-    <Section theme="cream" aria-labelledby="aesthetics-values-heading">
+    <Section theme="white" aria-labelledby="aesthetics-values-heading">
       <div className="max-w-2xl">
-        <div id="aesthetics-values-heading">
+        <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
+          Clinical Ethos
+        </span>
+        <div id="aesthetics-values-heading" className="mt-4">
           <Heading size="h2-md" accent="Values" tone="terracotta" inline>
             Our
           </Heading>
         </div>
       </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
+      <div className="mt-10 grid gap-5 md:grid-cols-3">
         {VALUES.map((value, index) => (
-          <Tile key={value.title} tone="white" className="p-6 md:p-8">
-            <span className="text-small font-medium text-terracotta tabular-nums">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <h3 className="mt-3 text-h4 text-fg">{value.title}</h3>
-            <p className="mt-3 text-body text-muted">{value.desc}</p>
+          <Tile
+            key={value.title}
+            tone={index === 1 ? "sage" : "cream"}
+            lift
+            className="flex flex-col justify-between gap-6 border border-border/60 p-6 md:p-8"
+          >
+            <div>
+              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-copper tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-5 text-h4 text-fg">{value.title}</h3>
+              <p className="mt-3 border-t border-border pt-4 text-body leading-relaxed text-muted">
+                {value.desc}
+              </p>
+            </div>
           </Tile>
         ))}
       </div>

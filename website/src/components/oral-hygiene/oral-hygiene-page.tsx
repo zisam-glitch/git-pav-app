@@ -20,13 +20,13 @@ export function OralHygienePage() {
       <OralHygieneFaq />
       <ContactForm />
       <CtaBand
-        theme="brown"
+        theme="navy"
         title="Ready for healthier gums"
         accent="and a cleaner smile?"
-        tone="gold"
+        tone="butter"
         actions={
           <>
-            <BookButton variant="gold">Book Now</BookButton>
+            <BookButton variant="butter">Book Now</BookButton>
             <CallButton variant="glass" />
           </>
         }

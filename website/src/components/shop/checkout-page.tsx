@@ -5,7 +5,7 @@ import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api } from "@/lib/api";
+import { api, HAS_API_BASE } from "@/lib/api";
 import { useCartStore } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
 import { ShopMedia } from "./shop-media";
@@ -53,6 +53,10 @@ export function CheckoutPage() {
   const discountAmount = getDiscountAmount();
 
   useEffect(() => {
+    if (!HAS_API_BASE || items.length === 0) {
+      setLoadingShipping(false);
+      return;
+    }
     let active = true;
     async function loadShipping() {
       try {
@@ -62,8 +66,8 @@ export function CheckoutPage() {
         if (methods.length > 0 && !useCartStore.getState().selectedShippingMethodId) {
           setShippingMethodId(methods[0].id);
         }
-      } catch (err) {
-        console.error("Failed to load shipping methods:", err);
+      } catch {
+        // Fall back to standard UK delivery calculation when shipping API is unreachable.
       } finally {
         if (active) setLoadingShipping(false);
       }
@@ -72,7 +76,7 @@ export function CheckoutPage() {
     return () => {
       active = false;
     };
-  }, [setShippingMethodId]);
+  }, [items.length, setShippingMethodId]);
 
   const selectedMethod =
     shippingMethods.find((m) => m.id === selectedShippingMethodId) || shippingMethods[0];

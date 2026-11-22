@@ -11,13 +11,16 @@ export function OralHygieneHero() {
     >
       <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <p className="text-label text-terracotta">Preventative Hygiene Care</p>
+          <p className="inline-flex items-center gap-2 rounded-pill border border-border bg-sage px-3.5 py-1.5 text-caption font-medium text-fg">
+            <span aria-hidden className="size-1.5 rounded-full bg-terracotta" />
+            Preventative Hygiene Care
+          </p>
           <Heading
             as="h1"
             size="hero"
             accent="Oral Hygiene Care"
             tone="terracotta"
-            className="mt-3"
+            className="mt-4"
           >
             Pav Dental
           </Heading>
@@ -58,7 +61,8 @@ export function OralHygieneHero() {
           src="/images/generated/oral-hygiene-hero.jpg"
           alt="Warm sunlit Pav Dental oral hygiene treatment room with gentle scaling and polishing instruments"
           ratio="4 / 3"
-          tone="cream"
+          tone="sage"
+          className="ring-1 ring-black/8"
           priority
         />
       </div>

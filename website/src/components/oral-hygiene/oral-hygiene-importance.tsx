@@ -12,9 +12,12 @@ const BENEFITS = [
 
 export function OralHygieneImportance() {
   return (
-    <Section id="importance" theme="cream" space="default">
+    <Section id="importance" theme="sand" space="default">
       <div className="max-w-2xl">
-        <Heading as="h2" size="h2-md" accent="Matters" tone="terracotta" inline>
+        <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
+          Clinical Prevention
+        </p>
+        <Heading as="h2" size="h2-md" accent="Matters" tone="terracotta" inline className="mt-4">
           Why Your Oral Hygiene
         </Heading>
         <p className="mt-4 text-lead text-muted">Good hygiene care helps to:</p>
@@ -22,20 +25,32 @@ export function OralHygieneImportance() {
 
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {BENEFITS.map((benefit, index) => (
-          <Tile key={benefit} as="li" tone="white" className="flex items-start gap-4 p-6">
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-cream text-small font-medium text-terracotta tabular-nums">
-              0{index + 1}
-            </span>
-            <div className="flex items-start gap-2 pt-0.5">
-              <Plus aria-hidden className="mt-1 size-4 shrink-0 text-terracotta" />
-              <h3 className="text-h4 text-fg">{benefit}</h3>
+          <Tile
+            key={benefit}
+            as="li"
+            tone="white"
+            lift
+            className="flex flex-col justify-between gap-5 p-6"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="inline-flex rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
+                0{index + 1}
+              </span>
+              <Plus aria-hidden className="size-4 text-terracotta" />
             </div>
+            <h3 className="border-t border-border pt-4 text-h4 text-fg">{benefit}</h3>
           </Tile>
         ))}
       </ul>
 
-      <Tile tone="white" className="mt-6 p-6 md:p-8">
-        <p className="max-w-3xl text-lead text-fg">
+      <Tile
+        tone="navy"
+        className="mt-6 grid items-center gap-4 p-6 md:grid-cols-[auto_1fr] md:gap-8 md:p-8"
+      >
+        <span className="inline-flex w-fit rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-butter">
+          Whole-Body Health
+        </span>
+        <p className="max-w-3xl text-lead text-white/90">
           Poor gum health has been linked to heart disease, diabetes complications, pregnancy risks,
           and infections. Regular dental hygiene visits keep your smile and your health protected.
         </p>

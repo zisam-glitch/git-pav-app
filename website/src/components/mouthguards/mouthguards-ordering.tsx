@@ -7,6 +7,7 @@ type RouteOption = "clinic" | "home";
 
 const PATHWAYS: ReadonlyArray<{
   id: RouteOption;
+  badge: string;
   title: string;
   subtitle: string;
   steps: readonly string[];
@@ -14,6 +15,7 @@ const PATHWAYS: ReadonlyArray<{
 }> = [
   {
     id: "clinic",
+    badge: "In-Clinic Digital Scan",
     title: "Visit Our Clinic",
     subtitle: "Accurate digital scan with quick delivery",
     steps: [
@@ -26,6 +28,7 @@ const PATHWAYS: ReadonlyArray<{
   },
   {
     id: "home",
+    badge: "Postal Impression Kit",
     title: "Order From Home",
     subtitle: "Easy mould kit sent to your door",
     steps: [
@@ -42,12 +45,17 @@ export function MouthguardsOrdering() {
   const [selected, setSelected] = useState<RouteOption>("clinic");
 
   return (
-    <Section id="ordering" theme="cream">
+    <Section id="ordering" theme="cream" aria-labelledby="mouthguards-ordering-heading">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
-          <Heading size="h2-md" accent="Your Mouthguard" tone="terracotta" inline>
-            How to Order
-          </Heading>
+          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
+            Two Ordering Pathways
+          </span>
+          <div id="mouthguards-ordering-heading" className="mt-4">
+            <Heading size="h2-md" accent="Your Mouthguard" tone="terracotta" inline>
+              How to Order
+            </Heading>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2" role="group" aria-label="Ordering route">
@@ -66,22 +74,26 @@ export function MouthguardsOrdering() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
+      <div className="mt-10 grid gap-6 md:grid-cols-2">
         {PATHWAYS.map((pathway) => {
           const isSelected = selected === pathway.id;
           return (
             <Tile
               key={pathway.id}
               tone="white"
+              lift
               className={cn(
-                "flex flex-col justify-between gap-6 p-6 md:p-8 t-colors",
+                "flex flex-col justify-between gap-6 border border-border p-6 md:p-8 t-colors",
                 isSelected && "ring-2 ring-black",
               )}
             >
               <div>
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
                   <div>
-                    <h3 className="text-h3-md text-fg">{pathway.title}</h3>
+                    <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3 py-0.5 text-caption font-medium text-copper">
+                      {pathway.badge}
+                    </span>
+                    <h3 className="mt-3 text-h3-md text-fg">{pathway.title}</h3>
                     <p className="mt-2 text-lead text-muted">{pathway.subtitle}</p>
                   </div>
                   <button
@@ -89,7 +101,7 @@ export function MouthguardsOrdering() {
                     onClick={() => setSelected(pathway.id)}
                     aria-pressed={isSelected}
                     className={cn(
-                      "shrink-0 rounded-pill border px-3 py-1 text-small font-medium t-colors",
+                      "shrink-0 rounded-pill border px-3.5 py-1 text-small font-medium t-colors",
                       isSelected
                         ? "border-black bg-black text-white"
                         : "border-border-strong bg-white text-fg hover:border-black",
@@ -99,10 +111,10 @@ export function MouthguardsOrdering() {
                   </button>
                 </div>
 
-                <ol className="mt-6 divide-y divide-border border-y border-border">
+                <ol className="mt-2 divide-y divide-border">
                   {pathway.steps.map((step, index) => (
-                    <li key={step} className="flex items-baseline gap-4 py-3.5">
-                      <span className="text-small font-medium tabular-nums text-muted">
+                    <li key={step} className="flex items-center gap-4 py-3.5">
+                      <span className="inline-flex items-center rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
                         {index + 1}
                       </span>
                       <span className="text-body text-fg">{step}</span>
@@ -110,10 +122,12 @@ export function MouthguardsOrdering() {
                   ))}
                 </ol>
 
-                <p className="mt-5 text-body text-muted">{pathway.note}</p>
+                <p className="mt-4 rounded-lg bg-cream px-4 py-3 text-small text-muted">
+                  {pathway.note}
+                </p>
               </div>
 
-              <div>
+              <div className="border-t border-border pt-5">
                 {pathway.id === "clinic" ? (
                   <BookButton className="w-full sm:w-auto">Make an Appointment</BookButton>
                 ) : (

@@ -6,7 +6,7 @@ export function EmergencyContactStrip() {
   return (
     <Section theme="cream" space="sm">
       <div className="grid gap-4 sm:grid-cols-3">
-        <Tile tone="white" className="flex items-start gap-4 p-6">
+        <Tile tone="white" lift className="flex items-start gap-4 p-6">
           <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">
             <MapPin aria-hidden className="size-4" />
           </div>
@@ -18,7 +18,7 @@ export function EmergencyContactStrip() {
           </div>
         </Tile>
 
-        <Tile tone="white" className="flex items-start gap-4 p-6">
+        <Tile tone="white" lift className="flex items-start gap-4 p-6">
           <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">
             <Phone aria-hidden className="size-4" />
           </div>
@@ -33,7 +33,7 @@ export function EmergencyContactStrip() {
           </div>
         </Tile>
 
-        <Tile tone="white" className="flex items-start gap-4 p-6">
+        <Tile tone="white" lift className="flex items-start gap-4 p-6">
           <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">
             <Mail aria-hidden className="size-4" />
           </div>

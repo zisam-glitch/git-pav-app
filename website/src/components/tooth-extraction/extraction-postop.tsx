@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { BookButton, CallButton, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type Category = "all" | "first-24h" | "recovery";
 
@@ -109,20 +110,27 @@ const FILTERS: Array<{ id: Category; label: string }> = [
 export function ExtractionPostOp() {
   const [filter, setFilter] = useState<Category>("all");
 
-  const visible =
-    filter === "all" ? INSTRUCTIONS : INSTRUCTIONS.filter((item) => item.category === filter);
-
   return (
     <Section id="post-op" theme="cream" space="default">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div className="max-w-2xl">
-          <Heading as="h2" size="h2-md" accent="Instructions" tone="terracotta" inline>
+          <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            Aftercare &amp; Healing Guide
+          </p>
+          <Heading
+            as="h2"
+            size="h2-md"
+            accent="Instructions"
+            tone="terracotta"
+            inline
+            className="mt-4"
+          >
             Post Operative
           </Heading>
         </div>
 
         <div
-          className="flex flex-wrap gap-2"
+          className="inline-flex flex-wrap gap-1.5 rounded-pill border border-border bg-white p-1.5"
           role="tablist"
           aria-label="Filter post-op instructions"
         >
@@ -134,7 +142,7 @@ export function ExtractionPostOp() {
                 type="button"
                 role="tab"
                 aria-selected={active}
-                variant={active ? "default" : "outline"}
+                variant={active ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setFilter(item.id)}
               >
@@ -146,7 +154,9 @@ export function ExtractionPostOp() {
       </div>
 
       <Tile tone="white" className="mt-8 flex items-start gap-4 p-6">
-        <Info aria-hidden className="mt-1 size-5 shrink-0 text-terracotta" />
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+          <Info aria-hidden className="size-5" />
+        </span>
         <div>
           <h3 className="text-h4 text-fg">Reminder:</h3>
           <p className="mt-2 text-body text-muted">
@@ -158,31 +168,51 @@ export function ExtractionPostOp() {
       </Tile>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {visible.map((section) => (
-          <Tile key={section.title} as="article" tone="white" className="flex flex-col gap-4 p-6">
-            <div className="flex items-center gap-3">
-              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-cream text-terracotta">
-                <section.icon aria-hidden className="size-5" />
+        {INSTRUCTIONS.map((section, index) => {
+          const matches = filter === "all" || section.category === filter;
+          return (
+            <Tile
+              key={section.title}
+              as="article"
+              tone="white"
+              lift
+              hidden={!matches}
+              className={cn("flex flex-col justify-between gap-5 p-6", !matches && "hidden")}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+                    <section.icon aria-hidden className="size-5" />
+                  </span>
+                  <span className="rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3 className="mt-4 border-t border-border pt-4 text-h4 text-fg">
+                  {section.title}
+                </h3>
+                <p className="mt-3 space-y-2 text-body text-muted">
+                  {section.steps.map((step, idx) => (
+                    <span key={step} className="flex items-start gap-2">
+                      {idx > 0 ? " " : null}
+                      <span className="shrink-0 font-medium text-terracotta">- </span>
+                      <span>{step}</span>
+                    </span>
+                  ))}
+                </p>
+              </div>
+              <span className="inline-flex w-fit rounded-pill bg-sand px-3 py-1 text-caption font-medium text-muted">
+                {section.category === "first-24h" ? "First 24 hours" : "Care & follow-up"}
               </span>
-              <h3 className="text-h4 text-fg">{section.title}</h3>
-            </div>
-            <p className="space-y-2 text-body text-muted">
-              {section.steps.map((step, idx) => (
-                <span key={step} className="flex items-start gap-2">
-                  {idx > 0 ? " " : null}
-                  <span className="shrink-0 font-medium text-terracotta">- </span>
-                  <span>{step}</span>
-                </span>
-              ))}
-            </p>
-          </Tile>
-        ))}
+            </Tile>
+          );
+        })}
       </div>
 
       <Tile tone="navy" className="mt-6 p-6 md:p-10">
         <div className="grid items-center gap-6 md:grid-cols-[1.4fr_1fr]">
           <div className="flex items-start gap-4">
-            <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-white/7 text-butter">
+            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 text-butter">
               <AlertTriangle aria-hidden className="size-5" />
             </span>
             <div>

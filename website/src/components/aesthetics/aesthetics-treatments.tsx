@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
 
 const TREATMENTS = [
@@ -36,37 +37,46 @@ const TREATMENTS = [
 export function AestheticsTreatments() {
   return (
     <Section id="treatments" theme="cream" aria-labelledby="aesthetics-treatments-heading">
-      <div className="max-w-2xl">
-        <div id="aesthetics-treatments-heading">
-          <Heading size="h2-md" accent="Treatments" tone="terracotta" inline>
-            Aesthetics
-          </Heading>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl">
+          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
+            Treatment Menu
+          </span>
+          <div id="aesthetics-treatments-heading" className="mt-4">
+            <Heading size="h2-md" accent="Treatments" tone="terracotta" inline>
+              Aesthetics
+            </Heading>
+          </div>
         </div>
+        <ButtonLink href="#pricing" variant="outline" size="sm" className="w-fit">
+          Aesthetics Price List
+        </ButtonLink>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {TREATMENTS.map((item, index) => (
           <Tile
             key={item.id}
             as="article"
             tone="white"
             lift
-            className="flex flex-col justify-between gap-6 p-6 md:p-7"
+            className="flex flex-col justify-between gap-6 p-6 md:p-8"
           >
             <div>
-              <span className="text-small font-medium text-terracotta tabular-nums">
+              <span className="inline-flex items-center rounded-pill bg-cream px-3 py-1 text-caption font-medium text-terracotta tabular-nums">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-3 text-h4 text-fg">{item.title}</h3>
-              <p className="mt-3 text-body text-muted">{item.desc}</p>
+              <h3 className="mt-4 text-h4 text-fg">{item.title}</h3>
+              <p className="mt-3 text-body leading-relaxed text-muted">{item.desc}</p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
-              <BookButton variant="outline" size="sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-5">
+              <BookButton variant="default" size="sm">
                 Book Now
               </BookButton>
-              <ButtonLink href="#pricing" variant="ghost" size="sm">
-                Price List
+              <ButtonLink href="#pricing" variant="ghost" size="sm" className="gap-1">
+                <span>Price List</span>
+                <ArrowUpRight aria-hidden className="size-3.5" />
               </ButtonLink>
             </div>
           </Tile>

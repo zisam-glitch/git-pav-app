@@ -27,7 +27,7 @@ const TIERS: readonly FeeTier[] = [
 export function GeneralDentistryFillingPricingTable() {
   return (
     <GeneralDentistryFeePanel
-      theme="white"
+      theme="cream"
       title="Our White Filling"
       accent="Prices"
       tiers={TIERS}

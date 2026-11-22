@@ -26,22 +26,32 @@ export function EmergencyPricing() {
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
-        <Tile tone="white" lift className="flex flex-col justify-between gap-4 p-6 md:p-8">
+        <Tile tone="white" lift className="flex flex-col justify-between gap-6 p-6 md:p-8">
           <div>
-            <p className="text-caption font-medium text-muted">Standard Hours</p>
-            <p className="mt-2 text-h3 text-fg tabular-nums">£45</p>
-            <p className="mt-2 text-body text-muted">Monday to Friday between 9am – 5pm</p>
+            <span className="inline-flex rounded-pill bg-cream px-3 py-1 text-caption font-medium text-terracotta">
+              Standard Hours
+            </span>
+            <p className="mt-4 text-display text-fg tabular-nums">£45</p>
+            <p className="mt-3 border-t border-border pt-3 text-body text-muted">
+              Monday to Friday between 9am – 5pm
+            </p>
           </div>
           <CallButton variant="default" className="w-full sm:w-auto">
             Call us Now · {PRACTICE_PHONE}
           </CallButton>
         </Tile>
 
-        <Tile tone="sage" lift className="flex flex-col justify-between gap-4 p-6 md:p-8">
+        <Tile
+          tone="sage"
+          lift
+          className="flex flex-col justify-between gap-6 border border-border p-6 md:p-8"
+        >
           <div>
-            <p className="text-caption font-medium text-muted">Out of Hours</p>
-            <p className="mt-2 text-h3 text-fg tabular-nums">£90</p>
-            <p className="mt-2 text-body text-muted">
+            <span className="inline-flex rounded-pill bg-white px-3 py-1 text-caption font-medium text-fg">
+              Out of Hours
+            </span>
+            <p className="mt-4 text-display text-fg tabular-nums">£90</p>
+            <p className="mt-3 border-t border-border pt-3 text-body text-muted">
               Out of Hours – Weekends 9am – 8pm and Weekdays 5pm – 8pm
             </p>
           </div>
@@ -64,19 +74,19 @@ export function EmergencyPricing() {
           {TREATMENT_FEES.map((item) => (
             <li
               key={item.name}
-              className="flex items-center justify-between gap-4 px-5 py-4 md:px-8 md:py-5"
+              className="flex items-center justify-between gap-4 px-5 py-4 t-colors hover:bg-cream/60 md:px-8 md:py-5"
             >
-              <span className="text-body font-medium text-fg">{item.name}</span>
+              <span className="text-body font-medium text-fg">{`${item.name} `}</span>
               <span className="shrink-0 text-lead font-medium text-fg tabular-nums">
-                {item.price}
+                {`– ${item.price}`}
               </span>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-white p-6 md:flex-row md:items-center md:p-8">
-        <p className="text-body text-muted">
+      <div className="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-sand p-6 md:flex-row md:items-center md:p-8">
+        <p className="max-w-xl text-lead text-fg">
           Anyone can book an appointment online with a dentist 24 hours a day, 7 days a week.
         </p>
         <div className="flex flex-wrap gap-3">

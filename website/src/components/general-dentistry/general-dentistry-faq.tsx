@@ -1,4 +1,4 @@
-import { BookButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {
@@ -53,14 +53,18 @@ const FAQS: FaqItem[] = [
 
 export function GeneralDentistryFaq() {
   return (
-    <Section theme="white">
-      <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.7fr] lg:gap-14">
+    <Section theme="cream">
+      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
         <div className="lg:sticky lg:top-24">
-          <Heading size="h2-md" accent="Questions" tone="terracotta">
+          <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            Patient Guidance
+          </p>
+          <Heading size="h2-md" accent="Questions" tone="terracotta" className="mt-4">
             Frequently Asked
           </Heading>
-          <div className="mt-6">
+          <div className="mt-6 flex flex-wrap gap-3">
             <BookButton>Book Appointment</BookButton>
+            <CallButton variant="outline" />
           </div>
         </div>
 

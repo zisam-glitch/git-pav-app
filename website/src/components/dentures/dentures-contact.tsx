@@ -1,4 +1,4 @@
-import { CallButton, Heading, Section } from "@/components/hims";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,8 @@ export function DenturesContact() {
           <p className="mt-4 text-lead text-muted">
             Ready to take control of your dental health? Contact us to book your appointment today!
           </p>
-          <div className="mt-6">
+          <div className="mt-6 flex flex-wrap gap-3">
+            <BookButton>Book Appointment</BookButton>
             <CallButton variant="outline" />
           </div>
         </div>

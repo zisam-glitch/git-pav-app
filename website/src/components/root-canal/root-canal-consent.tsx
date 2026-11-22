@@ -21,14 +21,13 @@ const CONSENT_ITEMS: readonly ConsentItem[] = [
 
 export function RootCanalConsent() {
   return (
-    <div id="consent">
-      <ConsentPanel
-        theme="cream"
-        title="Informed Consent for"
-        accent="Root Canal Treatment"
-        intro="Before proceeding with root canal treatment, we ensure you fully understand the procedure, risks, and benefits of saving your natural tooth."
-        items={CONSENT_ITEMS}
-      />
-    </div>
+    <ConsentPanel
+      id="consent"
+      theme="cream"
+      title="Informed Consent for"
+      accent="Root Canal Treatment"
+      intro="Before proceeding with root canal treatment, we ensure you fully understand the procedure, risks, and benefits of saving your natural tooth."
+      items={CONSENT_ITEMS}
+    />
   );
 }

@@ -7,19 +7,9 @@
  * Do not invent tokens: if you need a value, measure it on the Hims capture first.
  */
 
-/* Brand sans, taken from the Hims capture. A subset: Latin letters, digits, accents, £ € $, curly quotes, dashes, arrows. */
-@font-face {
-  font-family: "CareSans";
-  src: url("/fonts/caresans/CareSans-VF-Roman-subset.woff2") format("woff2");
-  font-weight: 400 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 /*
- * Licence-safe stand-in (SIL OFL). Used for glyphs CareSans lacks, and it is the one-line switch if the CareSans
- * licence is ever a problem: put "Figtree" first in --font-sans below. Figtree runs about 10% wider, so also set
- * heading letter-spacing to -0.02em when you switch.
+ * Brand sans: Figtree (SIL OFL, licence-safe for public deployment).
+ * Figtree runs about 10% wider than CareSans, so heading letter-spacing is set to -0.02em below.
  */
 @font-face {
   font-family: "Figtree";
@@ -82,49 +72,50 @@
   --color-sky: #5c8cb5;
   --color-lime: #e4ff8b; /* announcement strip */
 
-  /* ---- Fonts: Hims uses one sans everywhere (the serif only draws its logo) ---- */
-  --font-sans: "CareSans", "Figtree", Helvetica, Arial, sans-serif;
-  --font-display: "CareSans", "Figtree", Helvetica, Arial, sans-serif;
+  /* ---- Fonts: Figtree (SIL OFL) everywhere ---- */
+  --font-sans: "Figtree", Helvetica, Arial, sans-serif;
+  --font-display: "Figtree", Helvetica, Arial, sans-serif;
 
   /*
    * ---- Type scale. Sizes are fluid: the first number is the size at a 360px screen, the second at 1392px and
-   * wider (the Hims formula). Weight, line-height and tracking are the measured Hims values.
+   * wider (the Hims formula). Weight, line-height and tracking are the measured Hims values (with -0.02em heading
+   * tracking tuned for Figtree's ~10% wider advance width).
    * Use as classes: text-display, text-hero, text-h2, text-h2-md, text-h3, text-h3-md, text-h4, text-lead,
    * text-body, text-label, text-small, text-caption, text-nav, text-nav-lg.
    */
   --text-display: clamp(50px, calc(50px + 32 * (100vw - 360px) / 1032), 82px);
   --text-display--line-height: 1;
-  --text-display--letter-spacing: -0.01em;
+  --text-display--letter-spacing: -0.02em;
   --text-display--font-weight: 410;
 
   --text-hero: clamp(40px, calc(40px + 17 * (100vw - 360px) / 1032), 57px);
   --text-hero--line-height: 1;
-  --text-hero--letter-spacing: -0.01em;
+  --text-hero--letter-spacing: -0.02em;
   --text-hero--font-weight: 420;
 
   --text-h2: clamp(32px, calc(32px + 25 * (100vw - 360px) / 1032), 57px);
   --text-h2--line-height: 1.04;
-  --text-h2--letter-spacing: -0.01em;
+  --text-h2--letter-spacing: -0.02em;
   --text-h2--font-weight: 450;
 
   --text-h2-md: clamp(32px, calc(32px + 16 * (100vw - 360px) / 1032), 48px);
   --text-h2-md--line-height: 1.1;
-  --text-h2-md--letter-spacing: -0.01em;
+  --text-h2-md--letter-spacing: -0.02em;
   --text-h2-md--font-weight: 430;
 
   --text-h3: clamp(25px, calc(25px + 18 * (100vw - 360px) / 1032), 43px);
   --text-h3--line-height: 1;
-  --text-h3--letter-spacing: -0.01em;
+  --text-h3--letter-spacing: -0.02em;
   --text-h3--font-weight: 400;
 
   --text-h3-md: clamp(22px, calc(22px + 11 * (100vw - 360px) / 1032), 33px);
   --text-h3-md--line-height: 1.1;
-  --text-h3-md--letter-spacing: -0.004em;
+  --text-h3-md--letter-spacing: -0.015em;
   --text-h3-md--font-weight: 460;
 
   --text-h4: clamp(20px, calc(20px + 8 * (100vw - 360px) / 1032), 28px);
   --text-h4--line-height: 1.15;
-  --text-h4--letter-spacing: 0em;
+  --text-h4--letter-spacing: -0.01em;
   --text-h4--font-weight: 470;
 
   --text-lead: clamp(18px, calc(18px + 1 * (100vw - 360px) / 1032), 19px);
@@ -201,6 +192,29 @@
     #f4f1e6 100%
   );
   --tile-gradient-sage: linear-gradient(167deg, #e4eee6 0%, #f2f9f4 38%, #f2f9f4 84%, #e4eee6 100%);
+  /* Hims hero category tile hover gradients (measured from www.hims.com TreatmentTileLink::before) */
+  --tile-hover-terracotta: linear-gradient(
+    167deg,
+    #8f2b25 -3.36%,
+    #943c35 33.89%,
+    #943c35 76.39%,
+    #8f2b25 95.99%
+  );
+  --tile-hover-blue: linear-gradient(
+    162deg,
+    #4d88ba 9.21%,
+    #6fa7d7 38.52%,
+    #6fa7d7 74.59%,
+    #4d88ba 87.36%
+  );
+  --tile-hover-copper: linear-gradient(#ad6e4b, #b17d5d 38%, #b17d5d 84%, #ad6e4b);
+  --tile-hover-sky-gold: linear-gradient(
+    167deg,
+    #b3babf -3.36%,
+    #cedbe5 33.89%,
+    #fdeaa0 79.75%,
+    #fdeaa0 95.99%
+  );
 }
 
 @layer base {
@@ -228,7 +242,7 @@
   h4 {
     font-family: var(--font-sans);
     font-weight: 430;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     line-height: 1.05;
     text-wrap: balance;
   }
@@ -371,6 +385,139 @@
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/*
+ * Hims hero category tile hover (measured from www.hims.com TreatmentTileLink .jpHecS/.eaKSmV/.hhXyaE/.gZTCRY):
+ * Tile stays steady in the grid (no scale jump), cross-fading a ::before colour gradient over 400ms ease,
+ * smoothly shifting title/accent/icon colours over 400ms ease, and lifting the floating product cutout.
+ */
+.hero-tile {
+  position: relative;
+  overflow: hidden;
+  background-image: var(--tile-gradient-cream);
+}
+
+.hero-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.hero-tile[data-hover-tone="terracotta"]::before {
+  background-image: var(--tile-hover-terracotta);
+}
+
+.hero-tile[data-hover-tone="blue"]::before {
+  background-image: var(--tile-hover-blue);
+}
+
+.hero-tile[data-hover-tone="copper"]::before {
+  background-image: var(--tile-hover-copper);
+}
+
+.hero-tile[data-hover-tone="sky-gold"]::before {
+  background-image: var(--tile-hover-sky-gold);
+}
+
+.hero-tile-title,
+.hero-tile-accent,
+.hero-tile-icon,
+.hero-tile-badge {
+  transition:
+    color 400ms ease,
+    background-color 400ms ease,
+    border-color 400ms ease;
+}
+
+.hero-tile-media {
+  filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.14));
+  transition:
+    transform 350ms var(--ease-smooth),
+    filter 350ms var(--ease-smooth);
+}
+
+.hero-tile-shadow {
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.22) 0%, rgb(0 0 0 / 0) 70%);
+  transition:
+    transform 350ms var(--ease-smooth),
+    opacity 350ms var(--ease-smooth);
+}
+
+@media (hover: hover) {
+  .hero-tile:hover::before,
+  .hero-tile:focus-visible::before {
+    opacity: 1;
+  }
+
+  .hero-tile[data-hover-tone="terracotta"]:hover .hero-tile-title,
+  .hero-tile[data-hover-tone="terracotta"]:focus-visible .hero-tile-title,
+  .hero-tile[data-hover-tone="blue"]:hover .hero-tile-title,
+  .hero-tile[data-hover-tone="blue"]:focus-visible .hero-tile-title,
+  .hero-tile[data-hover-tone="copper"]:hover .hero-tile-title,
+  .hero-tile[data-hover-tone="copper"]:focus-visible .hero-tile-title {
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .hero-tile[data-hover-tone="terracotta"]:hover .hero-tile-accent,
+  .hero-tile[data-hover-tone="terracotta"]:focus-visible .hero-tile-accent,
+  .hero-tile[data-hover-tone="blue"]:hover .hero-tile-accent,
+  .hero-tile[data-hover-tone="blue"]:focus-visible .hero-tile-accent,
+  .hero-tile[data-hover-tone="copper"]:hover .hero-tile-accent,
+  .hero-tile[data-hover-tone="copper"]:focus-visible .hero-tile-accent,
+  .hero-tile[data-hover-tone="terracotta"]:hover .hero-tile-icon,
+  .hero-tile[data-hover-tone="terracotta"]:focus-visible .hero-tile-icon,
+  .hero-tile[data-hover-tone="blue"]:hover .hero-tile-icon,
+  .hero-tile[data-hover-tone="blue"]:focus-visible .hero-tile-icon,
+  .hero-tile[data-hover-tone="copper"]:hover .hero-tile-icon,
+  .hero-tile[data-hover-tone="copper"]:focus-visible .hero-tile-icon {
+    color: #ffffff;
+  }
+
+  .hero-tile[data-hover-tone="terracotta"]:hover .hero-tile-badge,
+  .hero-tile[data-hover-tone="terracotta"]:focus-visible .hero-tile-badge {
+    background-color: #ffffff;
+    color: #8f2b25;
+  }
+
+  .hero-tile[data-hover-tone="blue"]:hover .hero-tile-badge,
+  .hero-tile[data-hover-tone="blue"]:focus-visible .hero-tile-badge {
+    background-color: #ffffff;
+    color: #1c3e56;
+  }
+
+  .hero-tile[data-hover-tone="sky-gold"]:hover .hero-tile-title,
+  .hero-tile[data-hover-tone="sky-gold"]:focus-visible .hero-tile-title {
+    color: #2e3f43;
+  }
+
+  .hero-tile[data-hover-tone="sky-gold"]:hover .hero-tile-accent,
+  .hero-tile[data-hover-tone="sky-gold"]:focus-visible .hero-tile-accent {
+    color: #1b3745;
+  }
+
+  .hero-tile[data-hover-tone="sky-gold"]:hover .hero-tile-icon,
+  .hero-tile[data-hover-tone="sky-gold"]:focus-visible .hero-tile-icon {
+    color: #000000;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-tile:hover .hero-tile-media,
+    .hero-tile:focus-visible .hero-tile-media {
+      filter: drop-shadow(0 16px 20px rgb(0 0 0 / 0.22));
+      transform: translateY(-6px) scale(1.06) rotate(-2deg);
+    }
+
+    .hero-tile:hover .hero-tile-shadow,
+    .hero-tile:focus-visible .hero-tile-shadow {
+      opacity: 0.72;
+      transform: scaleX(0.86);
+    }
   }
 }
 

@@ -25,27 +25,41 @@ const BENEFITS = [
 
 export function VirtualDentistryBenefits() {
   return (
-    <Section theme="brown" width="bento" space="lg">
-      <div className="max-w-3xl">
-        <Heading as="h2" size="hero" accent="PavDental Virtual Dentist?" tone="gold">
-          Why you should choose
-        </Heading>
+    <Section theme="brown" width="bento" space="lg" aria-labelledby="virtual-benefits-heading">
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-3xl">
+          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
+            Remote Dental Care &amp; E-Prescriptions
+          </span>
+          <div id="virtual-benefits-heading" className="mt-4">
+            <Heading as="h2" size="hero" accent="PavDental Virtual Dentist?" tone="gold">
+              Why you should choose
+            </Heading>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <BookButton variant="gold">Book Appointment</BookButton>
+          <CallButton variant="glass" />
+        </div>
       </div>
 
-      <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {BENEFITS.map((benefit, index) => (
           <Tile
             key={benefit.title}
             as="article"
             tone="glass"
-            className="flex flex-col justify-between gap-4 p-6 md:p-7"
+            className="flex flex-col justify-between gap-4 border border-white/15 p-6 md:p-7"
           >
             <div>
-              <span className="text-caption font-medium text-gold tabular-nums">
+              <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3 py-0.5 text-caption font-medium text-gold tabular-nums">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-3 text-h4 text-white">{benefit.title}</h3>
-              <p className="mt-3 text-body text-white/80">{benefit.desc}</p>
+              <h3 className="mt-4 text-h4 text-white">{benefit.title}</h3>
+              <p className="mt-3 border-t border-white/15 pt-4 text-body leading-relaxed text-white/80">
+                {benefit.desc}
+              </p>
             </div>
           </Tile>
         ))}
@@ -54,14 +68,9 @@ export function VirtualDentistryBenefits() {
           src="/images/generated/virtual-dentistry-benefits.jpg"
           ratio="4 / 3"
           tone="brown"
-          className="h-full bg-white/10"
+          className="h-full bg-white/10 ring-1 ring-white/15"
           alt="Digital dental e-prescription care in warm natural light"
         />
-      </div>
-
-      <div className="mt-8 flex flex-wrap gap-3">
-        <BookButton variant="gold">Book Appointment</BookButton>
-        <CallButton variant="glass" />
       </div>
     </Section>
   );

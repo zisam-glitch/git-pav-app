@@ -30,13 +30,15 @@ export function CosmeticHero() {
         }
       >
         <div>
-          <p className="text-label text-terracotta">Cosmetic Dentistry</p>
+          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
+            Cosmetic Dentistry
+          </span>
           <Heading
             as="h1"
             size="hero"
             accent="Transforming Smiles, Changing Lives"
             tone="terracotta"
-            className="mt-3"
+            className="mt-4"
           >
             Cosmetic Dentistry:
           </Heading>
@@ -52,7 +54,7 @@ export function CosmeticHero() {
             </ButtonLink>
             <CallButton variant="ghost" />
           </div>
-          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-small text-muted">
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
             <a
               href="#financing"
               className="underline underline-offset-4 t-colors hover:text-terracotta"

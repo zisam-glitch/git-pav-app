@@ -56,7 +56,10 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
   return (
     <Section id="roles" theme="cream" space="default">
       <div className="mx-auto max-w-2xl text-center">
-        <Heading as="h2" size="h2-md" accent="Positions" tone="terracotta" inline>
+        <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
+          Clinical &amp; Practice Careers
+        </span>
+        <Heading as="h2" size="h2-md" accent="Positions" tone="terracotta" inline className="mt-4">
           Open
         </Heading>
         <p className="mt-4 text-lead text-muted">
@@ -64,7 +67,7 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
         </p>
       </div>
 
-      <div className="mt-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mt-10 flex flex-col gap-4 rounded-xl border border-border bg-white p-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:max-w-sm">
           <Label htmlFor="vacancy-search" className="sr-only">
             Search roles
@@ -99,36 +102,72 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {filteredVacancies.map((vacancy) => (
-          <Tile
-            key={vacancy.id}
-            tone="white"
-            className="flex flex-col justify-between gap-6 p-6 md:p-8"
-          >
-            <div>
-              <h3 className="text-h4 text-fg">{vacancy.title}</h3>
-              <p className="mt-3 text-body text-muted">{vacancy.description}</p>
-              <p className="mt-4 flex items-center gap-2 text-small text-subtle">
-                <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
-                <span>{vacancy.location}</span>
-              </p>
-            </div>
+        {filteredVacancies.map((vacancy, index) => {
+          const isHighlighted = Boolean(vacancy.featured || vacancy.category === "sponsorship");
+          return (
+            <Tile
+              key={vacancy.id}
+              as="article"
+              tone={isHighlighted ? "sage" : "white"}
+              lift
+              className="flex flex-col justify-between gap-6 border border-border/70 p-6 md:p-8"
+            >
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex size-7 items-center justify-center rounded-pill bg-black text-caption font-medium text-white">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
+                      {vacancy.department}
+                    </span>
+                  </div>
+                  <span className="rounded-pill border border-border bg-cream px-3 py-1 text-caption font-medium text-fg">
+                    {vacancy.contractType}
+                  </span>
+                </div>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Button type="button" onClick={() => onApply(vacancy)}>
-                <span>Apply Now</span>
-                <ArrowRight aria-hidden="true" />
-              </Button>
-              <ButtonLink
-                href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`}
-                variant="outline"
-              >
-                <ExternalLink aria-hidden="true" className="size-4" />
-                <span>Email Us</span>
-              </ButtonLink>
-            </div>
-          </Tile>
-        ))}
+                <h3 className="mt-5 text-h3-md text-fg">{vacancy.title}</h3>
+                <p className="mt-3 text-body leading-relaxed text-muted">{vacancy.description}</p>
+
+                <ul className="mt-5 flex flex-wrap gap-2">
+                  {vacancy.tags.map((tag) => (
+                    <li
+                      key={tag}
+                      className="rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-fg"
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="border-t border-border pt-5">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                  <p className="flex items-center gap-2 text-small text-subtle">
+                    <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+                    <span>{vacancy.location}</span>
+                  </p>
+
+                  <div className="flex flex-wrap gap-2.5">
+                    <Button type="button" onClick={() => onApply(vacancy)}>
+                      <span>Apply Now</span>
+                      <ArrowRight aria-hidden="true" />
+                    </Button>
+                    <ButtonLink
+                      href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`}
+                      variant="outline"
+                      className="bg-white"
+                    >
+                      <ExternalLink aria-hidden="true" className="size-4" />
+                      <span>Email Us</span>
+                    </ButtonLink>
+                  </div>
+                </div>
+              </div>
+            </Tile>
+          );
+        })}
       </div>
 
       {filteredVacancies.length === 0 ? (

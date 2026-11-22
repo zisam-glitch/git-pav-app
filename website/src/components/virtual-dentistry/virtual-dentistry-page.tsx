@@ -9,7 +9,7 @@ import { VirtualDentistryServices } from "./virtual-dentistry-services";
 
 export function VirtualDentistryPage() {
   return (
-    <main>
+    <main className="bg-bg">
       <VirtualDentistryHero />
       <VirtualDentistryPrescriptionProcess />
       <VirtualDentistryHowItWorks />
@@ -29,7 +29,8 @@ export function VirtualDentistryPage() {
           </>
         }
       >
-        £35 Consultation Fee · £25 Prescription Cost · Open 24 hours, 7 days a week.
+        Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
+        check-ups, and advanced technologies like digital imaging and laser dentistry.
       </CtaBand>
     </main>
   );

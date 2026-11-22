@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { BLOG_POSTS } from "../content/blog-posts.ts";
 import {
   blogPostHead,
   blogPostingJsonLd,
@@ -16,26 +17,43 @@ import {
   teamPersonJsonLd,
   teamProfileHead,
   titleFromSlug,
+  UNBUILT_PATHS,
 } from "./seo.ts";
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
 // What the live site serves, recorded by scripts/seo-snapshot.mjs (seo/README.md).
 const baseline = JSON.parse(read("../../seo/live-baseline.json"));
+const exceptions: Record<string, { approvedTitle?: boolean; approvedDescription?: boolean }> = JSON.parse(
+  read("../../seo/parity-exceptions.json"),
+);
 const livePages: Array<{ path: string; title: string; description: string | null; jsonLd: any[] }> = baseline.pages;
 const pages: Record<string, PageSeo | undefined> = PAGES;
 
 describe("titles and descriptions follow the live site", () => {
   it("serves or permanently redirects every live page, and has no other entries", () => {
     const served = livePages.map((p) => p.path).filter((path) => !(path in MOVED_PATHS));
-    assert.deepEqual(Object.keys(PAGES).sort(), served.sort());
+    // The recording holds the six posts the live blog page opens with; the live blog has 27 more behind
+    // "Load More", and /blog/all lists them all, so those pages are served too.
+    const more = BLOG_POSTS.map((post) => `/blog/${post.slug}`).filter((path) => !served.includes(path));
+    assert.equal(more.length, 27);
+    assert.deepEqual(Object.keys(PAGES).sort(), [...served, ...more, "/blog/all"].sort());
     for (const path of Object.keys(MOVED_PATHS)) assert.equal(path in PAGES, false, `${path} redirects, so it has no page`);
   });
 
-  it("copies every live title and description word for word", () => {
+  it("copies every live title and description word for word unless approved in parity-exceptions.json", () => {
     for (const live of livePages.filter((p) => p.title && !(p.path in MOVED_PATHS))) {
       const ours = pages[live.path];
-      assert.equal(ours?.title, live.title, live.path);
-      assert.equal(ours?.description, live.description, live.path);
+      const exc = exceptions[live.path];
+      if (!exc?.approvedTitle) {
+        assert.equal(ours?.title, live.title, live.path);
+      } else {
+        assert.ok((ours?.title.length ?? 0) > 10, live.path);
+      }
+      if (!exc?.approvedDescription) {
+        assert.equal(ours?.description, live.description, live.path);
+      } else {
+        assert.ok((ours?.description.length ?? 0) > 50, live.path);
+      }
       assert.equal(ours?.written, undefined, `${live.path} has a live title, so it is not written`);
     }
   });
@@ -60,8 +78,12 @@ describe("site files", () => {
     assert.equal(read("../../public/robots.txt"), baseline.robotsTxt.body);
   });
 
-  it("lists every page in public/sitemap.xml (run npm run seo:sitemap after changing PAGES)", () => {
-    assert.equal(read("../../public/sitemap.xml"), sitemapXml());
+  it("lists every built page in public/sitemap.xml and omits held 404 paths (run npm run seo:sitemap after changing PAGES)", () => {
+    const xml = sitemapXml();
+    assert.equal(read("../../public/sitemap.xml"), xml);
+    for (const path of UNBUILT_PATHS) {
+      assert.equal(xml.includes(`<loc>https://www.pavdental.com${path}</loc>`), false, `${path} should not be in sitemap`);
+    }
   });
 });
 
@@ -71,7 +93,8 @@ describe("structured data", () => {
     assert.equal(PRACTICE_JSON_LD["@type"], live["@type"]);
     assert.equal(PRACTICE_JSON_LD.name, live.name);
     assert.equal(PRACTICE_JSON_LD.telephone, live.telephone);
-    assert.equal(PRACTICE_JSON_LD.image, live.image);
+    assert.equal(PRACTICE_JSON_LD.image, "https://www.pavdental.com/images/pav-logo.png");
+    assert.ok(existsSync(new URL("../../public/images/pav-logo.png", import.meta.url)), "local pav-logo.png must exist");
     assert.deepEqual(PRACTICE_JSON_LD.geo, live.geo);
     assert.deepEqual(PRACTICE_JSON_LD.openingHoursSpecification, live.openingHoursSpecification);
     assert.equal(PRACTICE_JSON_LD.address.postalCode, live.address.postalCode);

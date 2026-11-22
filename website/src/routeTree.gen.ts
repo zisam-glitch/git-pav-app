@@ -32,6 +32,7 @@ import { Route as TermsAndConditionRouteImport } from './routes/terms-and-condit
 import { Route as VacanciesRouteImport } from './routes/vacancies'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
+import { Route as BlogAllRouteImport } from './routes/blog_.all'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -40,10 +41,12 @@ import { Route as ServicesCosmeticRouteImport } from './routes/services.cosmetic
 import { Route as ServicesCustomGrillzRouteImport } from './routes/services.custom-grillz'
 import { Route as ServicesDenturesRouteImport } from './routes/services.dentures'
 import { Route as ServicesEmergencyDentalRouteImport } from './routes/services.emergency-dental'
+import { Route as ServicesFinanceRouteImport } from './routes/services.finance'
 import { Route as ServicesGeneralDentistryRouteImport } from './routes/services.general-dentistry'
 import { Route as ServicesMobileDentistryRouteImport } from './routes/services.mobile-dentistry'
 import { Route as ServicesMouthguardsRouteImport } from './routes/services.mouthguards'
 import { Route as ServicesOralHygieneRouteImport } from './routes/services.oral-hygiene'
+import { Route as ServicesRegestrationRouteImport } from './routes/services.regestration'
 import { Route as ServicesRootCanalRouteImport } from './routes/services.root-canal'
 import { Route as ServicesToothExtractionRouteImport } from './routes/services.tooth-extraction'
 import { Route as ServicesVirtualDentistryRouteImport } from './routes/services.virtual-dentistry'
@@ -166,6 +169,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogAllRoute = BlogAllRouteImport.update({
+  id: '/blog_/all',
+  path: '/blog/all',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -206,6 +214,11 @@ const ServicesEmergencyDentalRoute = ServicesEmergencyDentalRouteImport.update({
   path: '/services/emergency-dental',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesFinanceRoute = ServicesFinanceRouteImport.update({
+  id: '/services/finance',
+  path: '/services/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesGeneralDentistryRoute =
   ServicesGeneralDentistryRouteImport.update({
     id: '/services/general-dentistry',
@@ -225,6 +238,11 @@ const ServicesMouthguardsRoute = ServicesMouthguardsRouteImport.update({
 const ServicesOralHygieneRoute = ServicesOralHygieneRouteImport.update({
   id: '/services/oral-hygiene',
   path: '/services/oral-hygiene',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRegestrationRoute = ServicesRegestrationRouteImport.update({
+  id: '/services/regestration',
+  path: '/services/regestration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRootCanalRoute = ServicesRootCanalRouteImport.update({
@@ -283,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/vacancies': typeof VacanciesRoute
   '/verify-email': typeof VerifyEmailRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/all': typeof BlogAllRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$id': typeof OrderIdRoute
   '/services/aesthetics': typeof ServicesAestheticsRoute
@@ -290,10 +309,12 @@ export interface FileRoutesByFullPath {
   '/services/custom-grillz': typeof ServicesCustomGrillzRoute
   '/services/dentures': typeof ServicesDenturesRoute
   '/services/emergency-dental': typeof ServicesEmergencyDentalRoute
+  '/services/finance': typeof ServicesFinanceRoute
   '/services/general-dentistry': typeof ServicesGeneralDentistryRoute
   '/services/mobile-dentistry': typeof ServicesMobileDentistryRoute
   '/services/mouthguards': typeof ServicesMouthguardsRoute
   '/services/oral-hygiene': typeof ServicesOralHygieneRoute
+  '/services/regestration': typeof ServicesRegestrationRoute
   '/services/root-canal': typeof ServicesRootCanalRoute
   '/services/tooth-extraction': typeof ServicesToothExtractionRoute
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
@@ -326,6 +347,7 @@ export interface FileRoutesByTo {
   '/vacancies': typeof VacanciesRoute
   '/verify-email': typeof VerifyEmailRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/all': typeof BlogAllRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$id': typeof OrderIdRoute
   '/services/aesthetics': typeof ServicesAestheticsRoute
@@ -333,10 +355,12 @@ export interface FileRoutesByTo {
   '/services/custom-grillz': typeof ServicesCustomGrillzRoute
   '/services/dentures': typeof ServicesDenturesRoute
   '/services/emergency-dental': typeof ServicesEmergencyDentalRoute
+  '/services/finance': typeof ServicesFinanceRoute
   '/services/general-dentistry': typeof ServicesGeneralDentistryRoute
   '/services/mobile-dentistry': typeof ServicesMobileDentistryRoute
   '/services/mouthguards': typeof ServicesMouthguardsRoute
   '/services/oral-hygiene': typeof ServicesOralHygieneRoute
+  '/services/regestration': typeof ServicesRegestrationRoute
   '/services/root-canal': typeof ServicesRootCanalRoute
   '/services/tooth-extraction': typeof ServicesToothExtractionRoute
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
@@ -370,6 +394,7 @@ export interface FileRoutesById {
   '/vacancies': typeof VacanciesRoute
   '/verify-email': typeof VerifyEmailRoute
   '/blog_/$slug': typeof BlogSlugRoute
+  '/blog_/all': typeof BlogAllRoute
   '/category/$slug': typeof CategorySlugRoute
   '/order/$id': typeof OrderIdRoute
   '/services/aesthetics': typeof ServicesAestheticsRoute
@@ -377,10 +402,12 @@ export interface FileRoutesById {
   '/services/custom-grillz': typeof ServicesCustomGrillzRoute
   '/services/dentures': typeof ServicesDenturesRoute
   '/services/emergency-dental': typeof ServicesEmergencyDentalRoute
+  '/services/finance': typeof ServicesFinanceRoute
   '/services/general-dentistry': typeof ServicesGeneralDentistryRoute
   '/services/mobile-dentistry': typeof ServicesMobileDentistryRoute
   '/services/mouthguards': typeof ServicesMouthguardsRoute
   '/services/oral-hygiene': typeof ServicesOralHygieneRoute
+  '/services/regestration': typeof ServicesRegestrationRoute
   '/services/root-canal': typeof ServicesRootCanalRoute
   '/services/tooth-extraction': typeof ServicesToothExtractionRoute
   '/services/virtual-dentistry': typeof ServicesVirtualDentistryRoute
@@ -415,6 +442,7 @@ export interface FileRouteTypes {
     | '/vacancies'
     | '/verify-email'
     | '/blog/$slug'
+    | '/blog/all'
     | '/category/$slug'
     | '/order/$id'
     | '/services/aesthetics'
@@ -422,10 +450,12 @@ export interface FileRouteTypes {
     | '/services/custom-grillz'
     | '/services/dentures'
     | '/services/emergency-dental'
+    | '/services/finance'
     | '/services/general-dentistry'
     | '/services/mobile-dentistry'
     | '/services/mouthguards'
     | '/services/oral-hygiene'
+    | '/services/regestration'
     | '/services/root-canal'
     | '/services/tooth-extraction'
     | '/services/virtual-dentistry'
@@ -458,6 +488,7 @@ export interface FileRouteTypes {
     | '/vacancies'
     | '/verify-email'
     | '/blog/$slug'
+    | '/blog/all'
     | '/category/$slug'
     | '/order/$id'
     | '/services/aesthetics'
@@ -465,10 +496,12 @@ export interface FileRouteTypes {
     | '/services/custom-grillz'
     | '/services/dentures'
     | '/services/emergency-dental'
+    | '/services/finance'
     | '/services/general-dentistry'
     | '/services/mobile-dentistry'
     | '/services/mouthguards'
     | '/services/oral-hygiene'
+    | '/services/regestration'
     | '/services/root-canal'
     | '/services/tooth-extraction'
     | '/services/virtual-dentistry'
@@ -501,6 +534,7 @@ export interface FileRouteTypes {
     | '/vacancies'
     | '/verify-email'
     | '/blog_/$slug'
+    | '/blog_/all'
     | '/category/$slug'
     | '/order/$id'
     | '/services/aesthetics'
@@ -508,10 +542,12 @@ export interface FileRouteTypes {
     | '/services/custom-grillz'
     | '/services/dentures'
     | '/services/emergency-dental'
+    | '/services/finance'
     | '/services/general-dentistry'
     | '/services/mobile-dentistry'
     | '/services/mouthguards'
     | '/services/oral-hygiene'
+    | '/services/regestration'
     | '/services/root-canal'
     | '/services/tooth-extraction'
     | '/services/virtual-dentistry'
@@ -545,6 +581,7 @@ export interface RootRouteChildren {
   VacanciesRoute: typeof VacanciesRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogAllRoute: typeof BlogAllRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrderIdRoute: typeof OrderIdRoute
   ServicesAestheticsRoute: typeof ServicesAestheticsRoute
@@ -552,10 +589,12 @@ export interface RootRouteChildren {
   ServicesCustomGrillzRoute: typeof ServicesCustomGrillzRoute
   ServicesDenturesRoute: typeof ServicesDenturesRoute
   ServicesEmergencyDentalRoute: typeof ServicesEmergencyDentalRoute
+  ServicesFinanceRoute: typeof ServicesFinanceRoute
   ServicesGeneralDentistryRoute: typeof ServicesGeneralDentistryRoute
   ServicesMobileDentistryRoute: typeof ServicesMobileDentistryRoute
   ServicesMouthguardsRoute: typeof ServicesMouthguardsRoute
   ServicesOralHygieneRoute: typeof ServicesOralHygieneRoute
+  ServicesRegestrationRoute: typeof ServicesRegestrationRoute
   ServicesRootCanalRoute: typeof ServicesRootCanalRoute
   ServicesToothExtractionRoute: typeof ServicesToothExtractionRoute
   ServicesVirtualDentistryRoute: typeof ServicesVirtualDentistryRoute
@@ -728,6 +767,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog_/all': {
+      id: '/blog_/all'
+      path: '/blog/all'
+      fullPath: '/blog/all'
+      preLoaderRoute: typeof BlogAllRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -784,6 +830,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesEmergencyDentalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/finance': {
+      id: '/services/finance'
+      path: '/services/finance'
+      fullPath: '/services/finance'
+      preLoaderRoute: typeof ServicesFinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/general-dentistry': {
       id: '/services/general-dentistry'
       path: '/services/general-dentistry'
@@ -810,6 +863,13 @@ declare module '@tanstack/react-router' {
       path: '/services/oral-hygiene'
       fullPath: '/services/oral-hygiene'
       preLoaderRoute: typeof ServicesOralHygieneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/regestration': {
+      id: '/services/regestration'
+      path: '/services/regestration'
+      fullPath: '/services/regestration'
+      preLoaderRoute: typeof ServicesRegestrationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/root-canal': {
@@ -881,6 +941,7 @@ const rootRouteChildren: RootRouteChildren = {
   VacanciesRoute: VacanciesRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   BlogSlugRoute: BlogSlugRoute,
+  BlogAllRoute: BlogAllRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrderIdRoute: OrderIdRoute,
   ServicesAestheticsRoute: ServicesAestheticsRoute,
@@ -888,10 +949,12 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesCustomGrillzRoute: ServicesCustomGrillzRoute,
   ServicesDenturesRoute: ServicesDenturesRoute,
   ServicesEmergencyDentalRoute: ServicesEmergencyDentalRoute,
+  ServicesFinanceRoute: ServicesFinanceRoute,
   ServicesGeneralDentistryRoute: ServicesGeneralDentistryRoute,
   ServicesMobileDentistryRoute: ServicesMobileDentistryRoute,
   ServicesMouthguardsRoute: ServicesMouthguardsRoute,
   ServicesOralHygieneRoute: ServicesOralHygieneRoute,
+  ServicesRegestrationRoute: ServicesRegestrationRoute,
   ServicesRootCanalRoute: ServicesRootCanalRoute,
   ServicesToothExtractionRoute: ServicesToothExtractionRoute,
   ServicesVirtualDentistryRoute: ServicesVirtualDentistryRoute,

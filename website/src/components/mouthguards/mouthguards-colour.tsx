@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -54,36 +54,43 @@ export function MouthguardsColour() {
   );
 
   return (
-    <Section id="colour" theme="cream">
-      <div className="max-w-2xl">
-        <Heading size="h2-md" accent="Colour" tone="terracotta" inline>
-          Choose Your
-        </Heading>
-        <p className="mt-4 text-lead text-muted">
-          You can choose from a variety of colour options, including single colour, two colour
-          combinations, mixed colours, or glitter and special finishes for a more unique look.
-        </p>
+    <Section id="colour" theme="cream" aria-labelledby="mouthguards-colour-heading">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
+            32-Colour Custom Configurator
+          </span>
+          <div id="mouthguards-colour-heading" className="mt-4">
+            <Heading size="h2-md" accent="Colour" tone="terracotta" inline>
+              Choose Your
+            </Heading>
+          </div>
+          <p className="mt-4 text-lead text-muted">
+            You can choose from a variety of colour options, including single colour, two colour
+            combinations, mixed colours, or glitter and special finishes for a more unique look.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Finish style">
+          {FINISH_OPTIONS.map((finish) => (
+            <Button
+              key={finish}
+              type="button"
+              size="sm"
+              variant={selectedFinish === finish ? "default" : "outline"}
+              aria-pressed={selectedFinish === finish}
+              onClick={() => setSelectedFinish(finish)}
+            >
+              {finish}
+            </Button>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2" role="group" aria-label="Finish style">
-        {FINISH_OPTIONS.map((finish) => (
-          <Button
-            key={finish}
-            type="button"
-            size="sm"
-            variant={selectedFinish === finish ? "default" : "outline"}
-            aria-pressed={selectedFinish === finish}
-            onClick={() => setSelectedFinish(finish)}
-          >
-            {finish}
-          </Button>
-        ))}
-      </div>
-
-      <Tile tone="white" className="mt-8 p-5 md:p-6">
+      <Tile tone="white" className="mt-8 border border-border p-5 md:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-tile-cream p-2">
+          <div className="flex items-center gap-5">
+            <div className="size-24 shrink-0 overflow-hidden rounded-xl border border-border bg-tile-cream p-2.5">
               <img
                 src="/media/mg.png"
                 alt={`${selectedColor.name} custom mouthguard preview`}
@@ -92,13 +99,18 @@ export function MouthguardsColour() {
               />
             </div>
             <div>
-              <p className="text-small text-muted">{selectedFinish}</p>
-              <p className="mt-1 text-h4 text-fg">{selectedColor.name}</p>
+              <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3 py-0.5 text-caption font-medium text-copper">
+                {selectedFinish}
+              </span>
+              <p className="mt-2 text-h3-md text-fg">{selectedColor.name}</p>
             </div>
           </div>
-          <ButtonLink href="#contact" variant="outline">
-            Contact us
-          </ButtonLink>
+          <div className="flex flex-wrap gap-3">
+            <BookButton size="sm">Make an Appointment</BookButton>
+            <ButtonLink href="#contact" variant="outline" size="sm">
+              Contact us
+            </ButtonLink>
+          </div>
         </div>
       </Tile>
 
@@ -121,7 +133,7 @@ export function MouthguardsColour() {
               <span className="block aspect-square w-full overflow-hidden rounded-lg bg-tile-cream p-1.5">
                 <img
                   src="/media/mg.png"
-                  alt=""
+                  alt={`${color.name} custom mouthguard swatch`}
                   loading="lazy"
                   className="size-full object-contain t-zoom"
                   style={{ filter: color.filter }}

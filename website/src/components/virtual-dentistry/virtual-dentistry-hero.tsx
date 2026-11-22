@@ -1,4 +1,13 @@
-import { BookButton, CallButton, Heading, Media, Section, Tile } from "@/components/hims";
+import {
+  BookButton,
+  ButtonLink,
+  CallButton,
+  Heading,
+  Media,
+  Section,
+  SplitFeature,
+  Tile,
+} from "@/components/hims";
 
 export function VirtualDentistryHero() {
   return (
@@ -9,48 +18,76 @@ export function VirtualDentistryHero() {
       className="pt-6 md:pt-10"
       aria-label="Virtual dentistry services"
     >
-      <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+      <SplitFeature
+        reverse
+        media={
+          <Media
+            src="/images/generated/virtual-dentistry-hero.jpg"
+            ratio="4 / 3"
+            tone="cream"
+            alt="Virtual dental video consultation on a tablet in warm natural light"
+            priority
+          />
+        }
+      >
         <div>
-          <p className="text-label text-terracotta">Virtual Dental Consultations</p>
+          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
+            Virtual Dental Consultations
+          </span>
           <Heading
             as="h1"
             size="hero"
             accent="Healthcare Services"
             tone="terracotta"
-            className="mt-3"
+            className="mt-4"
           >
             Affordable
           </Heading>
           <p className="mt-5 max-w-xl text-lead text-muted">
-            £35 Consultation Fee and £25 Prescription Cost. Quality medical advice and prescriptions
-            at budget-friendly prices to ensure your health needs are met without breaking the bank.
+            Affordable Healthcare Services: £35 Consultation Fee and £25 Prescription Cost. Quality
+            medical advice and prescriptions at budget-friendly prices to ensure your health needs
+            are met without breaking the bank.
           </p>
 
-          <div className="mt-6 grid max-w-md grid-cols-2 gap-3">
-            <Tile tone="cream" className="p-4">
-              <p className="text-caption font-medium text-muted">Consultation Fee</p>
-              <p className="mt-1 text-h3 text-fg tabular-nums">£35</p>
+          <div className="mt-6 grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-3">
+            <Tile tone="cream" className="border border-border/60 p-4">
+              <p className="text-caption font-medium text-copper">Consultation Fee</p>
+              <p className="mt-1 text-h3-md text-fg tabular-nums">£35</p>
             </Tile>
-            <Tile tone="sage" className="p-4">
-              <p className="text-caption font-medium text-muted">Prescription Cost</p>
-              <p className="mt-1 text-h3 text-fg tabular-nums">£25</p>
+            <Tile tone="sage" className="border border-border/60 p-4">
+              <p className="text-caption font-medium text-copper">Prescription Cost</p>
+              <p className="mt-1 text-h3-md text-fg tabular-nums">£25</p>
+            </Tile>
+            <Tile tone="cream" className="col-span-2 border border-border/60 p-4 sm:col-span-1">
+              <p className="text-caption font-medium text-copper">Availability</p>
+              <p className="mt-1 text-h4 text-fg">24 x 7 Support</p>
             </Tile>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <BookButton>Book appointment</BookButton>
-            <CallButton variant="outline" />
+            <ButtonLink href="#how-it-works" variant="outline">
+              How it works
+            </ButtonLink>
+            <CallButton variant="ghost" />
+          </div>
+
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
+            <a
+              href="#prescription-process"
+              className="underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              How Online Prescription Service Works?
+            </a>
+            <a
+              href="#faq"
+              className="underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              Frequently Asked Questions
+            </a>
           </div>
         </div>
-
-        <Media
-          src="/images/generated/virtual-dentistry-hero.jpg"
-          ratio="4 / 3"
-          tone="cream"
-          alt="Virtual dental video consultation on a tablet in warm natural light"
-          priority
-        />
-      </div>
+      </SplitFeature>
     </Section>
   );
 }

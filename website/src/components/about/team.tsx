@@ -15,7 +15,16 @@ export function Team() {
     <>
       <Section theme="white" space="default">
         <div className="mx-auto max-w-2xl text-center">
-          <Heading as="h2" size="h2" accent="clinicians and care team" tone="terracotta">
+          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
+            Bradford Dental Team
+          </span>
+          <Heading
+            as="h2"
+            size="h2"
+            accent="clinicians and care team"
+            tone="terracotta"
+            className="mt-4"
+          >
             Care led by real
           </Heading>
           <p className="mt-4 text-lead text-muted">

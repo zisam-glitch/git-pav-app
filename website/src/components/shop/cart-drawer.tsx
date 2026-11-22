@@ -195,59 +195,62 @@ export function CartDrawer({
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {items.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-                >
-                  <ShopMedia
-                    src={item.product.image}
-                    alt={item.product.name}
-                    tone="cream"
-                    className="size-16 shrink-0 rounded-lg border border-border"
-                  />
+              {items.map((item) => {
+                const itemKey = item.id || item.product.id;
+                return (
+                  <div
+                    key={itemKey}
+                    className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                  >
+                    <ShopMedia
+                      src={item.product.image}
+                      alt={item.product.name}
+                      tone="cream"
+                      className="size-16 shrink-0 rounded-lg border border-border"
+                    />
 
-                  <div className="min-w-0 flex-1">
-                    <p className="line-clamp-1 text-label text-fg">{item.product.name}</p>
-                    <p className="mt-1 text-small font-medium text-muted tabular-nums">
-                      £{item.product.price.toFixed(2)}
-                    </p>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-1 text-label text-fg">{item.product.name}</p>
+                      <p className="mt-1 text-small font-medium text-muted tabular-nums">
+                        £{item.product.price.toFixed(2)}
+                      </p>
 
-                    <div className="mt-3 flex items-center justify-between">
-                      <div className="inline-flex items-center rounded-pill border border-border-strong bg-cream px-1.5 py-0.5">
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="inline-flex items-center rounded-pill border border-border-strong bg-cream px-1.5 py-0.5">
+                          <button
+                            type="button"
+                            onClick={() => onUpdateQuantity(itemKey, item.quantity - 1)}
+                            className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus aria-hidden className="size-3.5" />
+                          </button>
+                          <span className="w-7 text-center text-small font-medium tabular-nums text-fg">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => onUpdateQuantity(itemKey, item.quantity + 1)}
+                            className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
+                            aria-label="Increase quantity"
+                          >
+                            <Plus aria-hidden className="size-3.5" />
+                          </button>
+                        </div>
+
                         <button
                           type="button"
-                          onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
-                          className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
-                          aria-label="Decrease quantity"
+                          onClick={() => onRemoveItem(itemKey)}
+                          className="grid size-8 place-items-center rounded-pill text-subtle t-colors hover:bg-cream hover:text-danger"
+                          aria-label={`Remove ${item.product.name}`}
                         >
-                          <Minus aria-hidden className="size-3.5" />
-                        </button>
-                        <span className="w-7 text-center text-small font-medium tabular-nums text-fg">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
-                          className="grid size-7 place-items-center rounded-pill text-muted t-colors hover:text-fg"
-                          aria-label="Increase quantity"
-                        >
-                          <Plus aria-hidden className="size-3.5" />
+                          <Trash2 aria-hidden className="size-4" />
                         </button>
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={() => onRemoveItem(item.product.id)}
-                        className="grid size-8 place-items-center rounded-pill text-subtle t-colors hover:bg-cream hover:text-danger"
-                        aria-label={`Remove ${item.product.name}`}
-                      >
-                        <Trash2 aria-hidden className="size-4" />
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

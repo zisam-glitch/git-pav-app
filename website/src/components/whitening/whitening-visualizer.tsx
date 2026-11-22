@@ -18,13 +18,18 @@ export function WhiteningVisualizer() {
     PRODUCTS_DATA.find((item) => item.id === currentShade.recommendedId) ?? PRODUCTS_DATA[1];
 
   return (
-    <Section id="shade-visualizer" theme="white">
+    <Section id="shade-visualizer" theme="brown" space="lg" aria-labelledby="whitening-shade-heading">
       <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
         <div className="max-w-xl">
-          <Heading size="h2-md" accent="shade guide" tone="terracotta" inline>
-            Explore our
-          </Heading>
-          <p className="mt-4 text-lead text-muted">
+          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
+            Interactive VITA 8-Shade Guide
+          </span>
+          <div id="whitening-shade-heading" className="mt-4">
+            <Heading size="h2-md" accent="shade guide" tone="gold" inline>
+              Explore our
+            </Heading>
+          </div>
+          <p className="mt-4 text-lead text-white/80">
             Move through the shade guide to see which of our three dentist-developed whitening
             ranges best matches your smile goals.
           </p>
@@ -35,7 +40,7 @@ export function WhiteningVisualizer() {
           aria-label="Select your current tooth shade"
           className="overflow-x-auto pb-2"
         >
-          <div className="flex items-end gap-1.5">
+          <div className="flex items-end gap-2">
             {VITA_SHADES.map((shade, idx) => {
               const selected = idx === shadeIndex;
               const lightText = !isLightSwatch(shade.color);
@@ -48,13 +53,13 @@ export function WhiteningVisualizer() {
                   aria-label={`Shade ${shade.code}, ${shade.name}`}
                   style={{
                     backgroundColor: shade.color,
-                    height: selected ? "108px" : "76px",
+                    height: selected ? "116px" : "80px",
                   }}
                   className={cn(
-                    "flex w-9 shrink-0 flex-col items-center justify-end rounded-t-md border pb-2 transition-[height,border-color,box-shadow] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:w-10",
+                    "flex w-10 shrink-0 flex-col items-center justify-end rounded-t-lg border pb-2.5 transition-[height,border-color,box-shadow] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 sm:w-11",
                     selected
-                      ? "z-10 border-black shadow-card"
-                      : "border-border-strong/50 opacity-90 hover:opacity-100",
+                      ? "z-10 border-gold ring-2 ring-gold shadow-card"
+                      : "border-white/25 opacity-85 hover:opacity-100",
                   )}
                 >
                   <span
@@ -72,38 +77,49 @@ export function WhiteningVisualizer() {
         </div>
       </div>
 
-      <div className="mt-4 flex justify-between border-t border-border pt-2 text-small text-muted">
-        <span>Deeper shade</span>
-        <span>Brighter shade</span>
+      <div className="mt-4 flex justify-between border-t border-white/15 pt-3 text-small text-white/75">
+        <span>Deeper shade (A4)</span>
+        <span>Brighter shade (BL1)</span>
       </div>
 
-      <Tile tone="cream" className="mt-8 p-6 md:p-8">
+      <Tile tone="glass" className="mt-8 border border-white/15 p-6 md:p-8">
         <div className="grid items-start gap-8 md:grid-cols-[1fr_1fr]">
           <div>
-            <p className="text-small text-muted">
-              Shade {shadeIndex + 1} of {VITA_SHADES.length}
-            </p>
-            <div className="mt-2 flex items-baseline gap-3">
-              <span className="rounded-pill border border-border bg-white px-3 py-0.5 text-small font-medium text-fg tabular-nums">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3 py-0.5 text-caption font-medium text-gold tabular-nums">
+                Shade {shadeIndex + 1} of {VITA_SHADES.length}
+              </span>
+              <span
+                aria-hidden
+                className="inline-block size-5 rounded-full border border-white/30"
+                style={{ backgroundColor: currentShade.color }}
+              />
+            </div>
+            <div className="mt-4 flex items-baseline gap-3">
+              <span className="rounded-pill border border-white/20 bg-white/10 px-3 py-0.5 text-small font-medium text-gold tabular-nums">
                 {currentShade.code}
               </span>
-              <h3 className="text-h3-md text-fg">{currentShade.name}</h3>
+              <h3 className="text-h3-md text-white">{currentShade.name}</h3>
             </div>
-            <p className="mt-3 max-w-md text-body text-muted">{currentShade.desc}</p>
+            <p className="mt-3 max-w-md text-body leading-relaxed text-white/80">
+              {currentShade.desc}
+            </p>
           </div>
 
-          <div className="border-t border-border pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-8">
-            <p className="text-small text-muted">Suggested whitening range</p>
-            <p className="mt-2 text-h3-md text-fg">
-              {recommended.name} — <span className="tabular-nums">{recommended.price}</span>
+          <div className="border-t border-white/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+            <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3 py-0.5 text-caption font-medium text-gold">
+              Suggested whitening range
+            </span>
+            <p className="mt-3 text-h3-md text-white">
+              {recommended.name} — <span className="text-gold tabular-nums">{recommended.price}</span>
             </p>
-            <p className="mt-2 text-small text-muted">
+            <p className="mt-2 text-small leading-relaxed text-white/80">
               {recommended.tags.join(" · ")}. Final shade assessment and suitability are confirmed
               by your dentist at your appointment.
             </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <BookButton>Book Now</BookButton>
-              <ButtonLink href="#comparison-matrix" variant="outline">
+            <div className="mt-6 flex flex-wrap gap-3">
+              <BookButton variant="gold">Book Now</BookButton>
+              <ButtonLink href="#comparison-matrix" variant="glass">
                 Compare treatments
               </ButtonLink>
             </div>

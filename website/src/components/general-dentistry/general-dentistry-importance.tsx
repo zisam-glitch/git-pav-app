@@ -21,37 +21,41 @@ const IMPORTANCE_POINTS = [
 
 export function GeneralDentistryImportance() {
   return (
-    <Section theme="white">
+    <Section theme="sand">
       <div className="max-w-2xl">
-        <Heading size="h2-md" accent="Important?" tone="terracotta" inline>
+        <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
+          Preventative Approach
+        </p>
+        <Heading size="h2-md" accent="Important?" tone="terracotta" inline className="mt-4">
           Why General Dentistry is
         </Heading>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {IMPORTANCE_POINTS.map((point, i) => (
-          <Tile key={point.title} tone="cream" className="p-6">
-            <span className="text-small font-medium tabular-nums text-terracotta">
+          <Tile key={point.title} tone="white" lift className="flex flex-col gap-4 p-6">
+            <span className="inline-flex w-fit rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium tabular-nums text-terracotta">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <p className="mt-3 text-body text-muted">
-              <strong className="font-medium text-fg">
-                {i + 1}. {point.title}:
-              </strong>{" "}
+            <p className="border-t border-border pt-3 text-body text-muted">
+              <strong className="font-medium text-fg">{`${i + 1}. ${point.title}:`}</strong>{" "}
               {point.desc}
             </p>
           </Tile>
         ))}
       </div>
 
-      <div className="mt-6 rounded-xl bg-tile-cream p-6 md:p-8">
+      <Tile
+        tone="sage"
+        className="mt-6 grid items-center gap-4 border border-border p-6 md:grid-cols-[0.45fr_1fr] md:gap-8 md:p-8"
+      >
         <h3 className="text-h4 text-fg">Cost and Insurance</h3>
-        <p className="mt-2 max-w-3xl text-body text-muted">
+        <p className="border-t border-border pt-4 text-body text-muted md:border-t-0 md:border-l md:pt-0 md:pl-8">
           The cost of general dentistry services varies depending on the treatment and location.
           Many dental insurance plans cover the cost of preventative care treatments like regular
           check-ups and cleanings.
         </p>
-      </div>
+      </Tile>
     </Section>
   );
 }

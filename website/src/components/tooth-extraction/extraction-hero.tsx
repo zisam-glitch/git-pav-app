@@ -1,4 +1,12 @@
-import { BookButton, ButtonLink, CallButton, Heading, Media, Section } from "@/components/hims";
+import {
+  BookButton,
+  ButtonLink,
+  CallButton,
+  Heading,
+  Media,
+  Section,
+  Tile,
+} from "@/components/hims";
 
 export function ExtractionHero() {
   return (
@@ -11,13 +19,16 @@ export function ExtractionHero() {
     >
       <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <p className="text-label text-terracotta">Urgent &amp; Surgical Care</p>
+          <p className="inline-flex items-center gap-2 rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            <span aria-hidden className="size-1.5 rounded-full bg-terracotta" />
+            Urgent &amp; Surgical Care
+          </p>
           <Heading
             as="h1"
             size="hero"
             accent="Same day Tooth Extraction"
             tone="terracotta"
-            className="mt-3"
+            className="mt-4"
           >
             Pav Dental:
           </Heading>
@@ -26,6 +37,28 @@ export function ExtractionHero() {
             highest standard of care. Utilizing the latest techniques and technologies, we ensure a
             comfortable and effective treatment experience.
           </p>
+
+          <div className="mt-7 grid max-w-xl gap-3 sm:grid-cols-2">
+            <Tile
+              tone="cream"
+              className="flex flex-col justify-between gap-2 border border-border p-4 md:p-5"
+            >
+              <p className="text-h4 text-fg tabular-nums">From £95</p>
+              <p className="border-t border-border pt-2.5 text-small text-muted">
+                Simple, intermediate, advanced &amp; surgical extractions
+              </p>
+            </Tile>
+            <Tile
+              tone="sage"
+              className="flex flex-col justify-between gap-2 border border-border p-4 md:p-5"
+            >
+              <p className="text-h4 text-fg">Same-Day Relief</p>
+              <p className="border-t border-border pt-2.5 text-small text-muted">
+                Local anaesthetic comfort &amp; comprehensive aftercare
+              </p>
+            </Tile>
+          </div>
+
           <div className="mt-8 flex flex-wrap gap-3">
             <BookButton>Make an Appointment</BookButton>
             <ButtonLink to="/contact-us" variant="outline">
@@ -54,6 +87,7 @@ export function ExtractionHero() {
           alt="Serene Pav Dental oral surgery suite in warm natural light prepared for same-day tooth extraction"
           ratio="4 / 3"
           tone="cream"
+          className="ring-1 ring-black/8"
           priority
         />
       </div>

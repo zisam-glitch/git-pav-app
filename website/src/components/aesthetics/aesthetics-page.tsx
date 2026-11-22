@@ -1,11 +1,10 @@
 import { BookButton, CallButton, CtaBand } from "@/components/hims";
-import { TestimonialsSection } from "@/components/testimonials/testimonials-section";
-import { AESTHETICS_TESTIMONIALS } from "@/content/testimonials";
 import { AestheticsHero } from "./aesthetics-hero";
 import { AestheticsPremium } from "./aesthetics-premium";
 import { AestheticsPricing } from "./aesthetics-pricing";
 import { AestheticsSafety } from "./aesthetics-safety";
 import { AestheticsSafetyBanner } from "./aesthetics-safety-banner";
+import { AestheticsTestimonials } from "./aesthetics-testimonials";
 import { AestheticsTreatments } from "./aesthetics-treatments";
 import { AestheticsValues } from "./aesthetics-values";
 
@@ -17,7 +16,7 @@ export function AestheticsPage() {
       <AestheticsPremium />
       <AestheticsValues />
       <AestheticsPricing />
-      <TestimonialsSection testimonials={AESTHETICS_TESTIMONIALS} theme="warm" />
+      <AestheticsTestimonials />
       <AestheticsSafetyBanner />
       <AestheticsSafety />
       <CtaBand

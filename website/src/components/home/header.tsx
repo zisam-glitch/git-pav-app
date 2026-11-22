@@ -1,8 +1,9 @@
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, ShoppingBag, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BookButton, CallButton } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { NAV_LINKS, SERVICE_PAGES } from "@/content/site-links";
+import { useCartStore } from "@/lib/cart-store";
 import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,9 @@ const FOCUSABLE_SELECTOR =
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const cartCount = useCartStore((state) =>
+    state.items.reduce((sum, item) => sum + item.quantity, 0),
+  );
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
@@ -107,6 +111,18 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <BookButton size="sm" />
+            <a
+              href="/cart"
+              aria-label={cartCount > 0 ? `Shopping bag (${cartCount} items)` : "Shopping bag"}
+              className="relative inline-flex size-9 items-center justify-center rounded-pill text-fg t-colors hover:bg-cream"
+            >
+              <ShoppingBag className="size-5" aria-hidden="true" />
+              {cartCount > 0 ? (
+                <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-pill bg-terracotta text-[11px] leading-none font-medium text-white tabular-nums">
+                  {cartCount}
+                </span>
+              ) : null}
+            </a>
             <Button
               ref={menuButtonRef}
               type="button"

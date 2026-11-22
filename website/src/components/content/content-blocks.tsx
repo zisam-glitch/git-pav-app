@@ -1,7 +1,8 @@
 import { Link, type LinkProps } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Download, FileText } from "lucide-react";
 import type { ReactNode } from "react";
 import { Heading, Media, Section, Tile } from "@/components/hims";
+import { headingIds } from "./heading-ids";
 
 /**
  * One piece of a page's text in reading order, as captured from the live site
@@ -15,7 +16,7 @@ export type RichText = { text: string; links?: InlineLink[] };
 export type ContentBlock =
   | { kind: "heading"; text: string; level?: 2 | 3 }
   | { kind: "paragraph"; text: string; links?: InlineLink[] }
-  | { kind: "list"; items: Array<string | RichText> }
+  | { kind: "list"; items: Array<string | RichText>; ordered?: boolean }
   | { kind: "quote"; text: string }
   | { kind: "table"; header?: boolean; rows: string[][] }
   | { kind: "link"; text: string; href: string }
@@ -25,15 +26,15 @@ export type ContentBlock =
 
 const FILE_TYPES: Record<string, string> = {
   pdf: "PDF",
-  doc: "Word",
-  docx: "Word",
-  png: "Image",
-  jpg: "Image",
-  jpeg: "Image",
+  doc: "DOC",
+  docx: "DOCX",
+  png: "PNG",
+  jpg: "JPG",
+  jpeg: "JPG",
 };
 
-/** "PDF", "Word" or "Image", from the file name, so people know what a download opens. */
-function fileType(href: string): string | null {
+/** "PDF", "DOCX" or "JPG", from the file name, so people know what a download opens. */
+export function documentFileType(href: string): string | null {
   const extension = href.split("?")[0].split(".").pop()?.toLowerCase() ?? "";
   return FILE_TYPES[extension] ?? null;
 }
@@ -48,7 +49,7 @@ function isExternal(href: string): boolean {
   }
 }
 
-const TEXT_LINK_CLASS =
+export const CONTENT_LINK_CLASS =
   "font-medium text-terracotta underline underline-offset-4 t-colors hover:text-rust";
 
 /**
@@ -68,7 +69,7 @@ function renderText(text: string, links?: InlineLink[]): ReactNode {
       <a
         key={index}
         href={link.href}
-        className={TEXT_LINK_CLASS}
+        className={CONTENT_LINK_CLASS}
         {...(isExternal(link.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {link.text}
@@ -80,53 +81,59 @@ function renderText(text: string, links?: InlineLink[]): ReactNode {
   return parts;
 }
 
-function Block({ block }: { block: ContentBlock }): ReactNode {
+function Block({ block, id }: { block: ContentBlock; id?: string }): ReactNode {
   switch (block.kind) {
     case "heading":
       return block.level === 3 ? (
-        <h3 className="mt-8 text-h4 text-fg">{block.text}</h3>
+        <h3 id={id} className="mt-8 scroll-mt-28 text-h4 text-fg">{block.text}</h3>
       ) : (
-        <h2 className="mt-10 text-h3-md text-fg">{block.text}</h2>
+        <h2 id={id} className="mt-10 scroll-mt-28 border-t border-border pt-8 text-h3-md text-fg first:border-t-0 first:pt-0">
+          {block.text}
+        </h2>
       );
     case "paragraph":
       return (
-        <p className="mt-4 text-body leading-relaxed text-fg">
+        <p className="mt-4 text-body leading-[1.7] text-fg/90">
           {renderText(block.text, block.links)}
         </p>
       );
-    case "list":
+    case "list": {
+      const ListTag = block.ordered ? "ol" : "ul";
       return (
-        <ul className="mt-4 list-disc space-y-2.5 pl-5 text-body leading-relaxed text-fg">
-          {block.items.map((item) => {
+        <ListTag
+          className={`mt-4 space-y-2.5 pl-5 text-body leading-[1.68] text-fg/90 marker:text-terracotta ${block.ordered ? "list-decimal" : "list-disc"}`}
+        >
+          {block.items.map((item, itemIndex) => {
             const rich = typeof item === "string" ? { text: item } : item;
             return (
-              <li key={rich.text}>
+              <li key={`${itemIndex}-${rich.text}`}>
                 {renderText(rich.text, "links" in rich ? rich.links : undefined)}
               </li>
             );
           })}
-        </ul>
+        </ListTag>
       );
+    }
     case "quote":
       return (
-        <Tile tone="cream" as="aside" className="mt-8 p-6 md:p-8">
-          <blockquote className="text-h4 text-fg">{block.text}</blockquote>
+        <Tile tone="cream" as="aside" className="mt-8 border-l-2 border-terracotta p-6 md:p-8">
+          <blockquote className="text-h4 leading-snug text-fg">{block.text}</blockquote>
         </Tile>
       );
     case "table": {
       const head = block.header ? block.rows[0] : undefined;
       const body = block.header ? block.rows.slice(1) : block.rows;
       return (
-        <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-white">
-          <table className="w-full min-w-[32rem] border-collapse text-left text-body text-fg">
+        <div className="mt-6 w-full overflow-x-auto rounded-xl border border-border bg-white">
+          <table className="w-full min-w-[30rem] border-collapse text-left text-body text-fg">
             {head && (
-              <thead className="bg-cream text-fg">
+              <thead className="bg-sand text-fg">
                 <tr>
                   {head.map((cell, index) => (
                     <th
                       key={index}
                       scope="col"
-                      className="border-b border-border px-4 py-3 text-label"
+                      className="border-b border-border px-5 py-3.5 text-caption font-medium tracking-[0.06em] uppercase text-fg"
                     >
                       {cell}
                     </th>
@@ -134,11 +141,18 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
                 </tr>
               </thead>
             )}
-            <tbody>
+            <tbody className="divide-y divide-border">
               {body.map((row, rowIndex) => (
-                <tr key={rowIndex} className="border-b border-border last:border-b-0">
+                <tr key={rowIndex} className="t-colors hover:bg-cream/60">
                   {row.map((cell, index) => (
-                    <td key={index} className="px-4 py-3 align-top text-small text-muted">
+                    <td
+                      key={index}
+                      className={
+                        index === 0
+                          ? "px-5 py-4 align-top text-small font-medium leading-relaxed text-fg"
+                          : "px-5 py-4 align-top text-small leading-relaxed text-muted"
+                      }
+                    >
                       {cell}
                     </td>
                   ))}
@@ -154,7 +168,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
         <p className="mt-4">
           <a
             href={block.href}
-            className={TEXT_LINK_CLASS}
+            className={CONTENT_LINK_CLASS}
             {...(isExternal(block.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           >
             {block.text}
@@ -165,21 +179,31 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
       return (
         <ul className="mt-5 grid gap-3 sm:grid-cols-2">
           {block.items.map((item) => {
-            const typeLabel = fileType(item.href);
+            const typeLabel = documentFileType(item.href);
             return (
-              <li key={item.href}>
+              <li key={item.href} className="min-w-0">
                 <a
                   href={item.href}
-                  className="flex h-full items-center justify-between gap-3 rounded-xl border border-transparent bg-tile-cream px-4 py-3.5 text-label text-fg t-lift hover:border-border hover:bg-white"
+                  className="group flex h-full items-center justify-between gap-3 rounded-xl border border-transparent bg-tile-cream px-4 py-4 text-label text-fg t-lift hover:border-border hover:bg-white"
                 >
-                  <span>{item.text}</span>
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-terracotta t-colors group-hover:bg-cream">
+                      <FileText aria-hidden="true" className="size-4" />
+                    </span>
+                    <span className="min-w-0 leading-snug text-fg t-colors group-hover:text-terracotta">
+                      {item.text}
+                    </span>
+                  </span>
                   <span className="flex shrink-0 items-center gap-2">
                     {typeLabel ? (
-                      <span className="rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption font-medium text-terracotta">
+                      <span className="rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption font-medium tracking-[0.04em] text-terracotta">
                         {typeLabel}
                       </span>
                     ) : null}
-                    <ChevronRight aria-hidden className="size-4 text-muted" />
+                    <Download
+                      aria-hidden="true"
+                      className="size-4 text-muted t-colors group-hover:text-fg"
+                    />
                   </span>
                 </a>
               </li>
@@ -191,7 +215,7 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
       return (
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {block.items.map((card) => (
-            <li key={card.href}>
+            <li key={card.href} className="min-w-0">
               <Link
                 to={card.href as LinkProps["to"]}
                 className="group flex h-full flex-col justify-between rounded-xl border border-transparent bg-tile-cream p-5 t-lift hover:border-border hover:bg-white"
@@ -224,11 +248,12 @@ function Block({ block }: { block: ContentBlock }): ReactNode {
 
 /** A page's ported content, in the site's type styles. */
 export function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
+  const ids = headingIds(blocks);
   return (
-    <div className="[&>*:first-child]:mt-0">
+    <div className="min-w-0 [&>*:first-child]:mt-0">
       {/* Blocks are static text in a fixed order, so the position is a stable key. */}
       {blocks.map((block, index) => (
-        <Block key={index} block={block} />
+        <Block key={index} block={block} id={ids[index]} />
       ))}
     </div>
   );
@@ -252,13 +277,16 @@ export function ContentPageBody({
 }) {
   return (
     <>
-      <Section theme="cream" width="prose" space="sm">
+      <Section theme="cream" width="prose" space="sm" className="border-b border-border">
+        <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
+          Pav Dental · Bradford
+        </p>
         {eyebrow ? (
-          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
+          <span className="mt-3 inline-block rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-fg">
             {eyebrow}
           </span>
         ) : null}
-        <Heading as="h1" size="hero" className={eyebrow ? "mt-4" : undefined}>
+        <Heading as="h1" size="hero" className="mt-4">
           {title}
         </Heading>
         {subtitle ? <p className="mt-3 text-lead text-muted">{subtitle}</p> : null}
@@ -270,7 +298,7 @@ export function ContentPageBody({
           <Tile
             tone="cream"
             as="aside"
-            className="mb-8 p-5 text-small leading-relaxed text-fg md:p-6"
+            className="mb-8 border-l-2 border-terracotta p-5 text-small leading-relaxed text-fg md:p-6"
           >
             {notice}
           </Tile>

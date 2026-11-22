@@ -1,4 +1,4 @@
-import { BookButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {
@@ -11,16 +11,7 @@ const FAQS: FaqItem[] = [
   },
   {
     q: "How much do dentures cost?",
-    a: (
-      <div className="space-y-2">
-        <p>Denture prices vary depending on the type. For example:</p>
-        <ul className="list-disc space-y-1 pl-5">
-          <li>Standard dentures are £495.</li>
-          <li>Flexible dentures are £795.</li>
-          <li>Cobalt chromium dentures are £1095.</li>
-        </ul>
-      </div>
-    ),
+    a: "Denture prices vary depending on the type. For example: * Standard dentures are £495. * Flexible dentures are £795. * Cobalt chromium dentures are £1095.",
   },
   {
     q: "How do implant-retained dentures differ from regular implants?",
@@ -55,13 +46,17 @@ const FAQS: FaqItem[] = [
 export function DenturesFaq() {
   return (
     <Section theme="white">
-      <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.7fr] lg:gap-14">
+      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
         <div className="lg:sticky lg:top-24">
-          <Heading size="h2-md" accent="Questions" tone="terracotta">
+          <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            Patient Guidance
+          </p>
+          <Heading size="h2-md" accent="Questions" tone="terracotta" className="mt-4">
             Frequently Asked
           </Heading>
-          <div className="mt-6">
+          <div className="mt-6 flex flex-wrap gap-3">
             <BookButton>Make an Appointment</BookButton>
+            <CallButton variant="outline" />
           </div>
         </div>
 

@@ -3,6 +3,7 @@
 // shows on each card. The cover images are the live site's, hosted on Contentful.
 // Edit the text here from now on.
 import type { ContentBlock } from "@/components/content/content-blocks";
+import { MORE_BLOG_POSTS } from "./blog-posts-more.ts";
 
 export interface BlogPost {
   slug: string;
@@ -18,7 +19,8 @@ export interface BlogPost {
   blocks: ContentBlock[];
 }
 
-export const BLOG_POSTS: BlogPost[] = [
+/** The six posts the live blog page shows before "Load More", with the live pages recorded in seo/. */
+export const SNAPSHOT_POSTS: BlogPost[] = [
   {
     "slug": "can-a-dentist-assess-a-dental-problem-through-a-video-call-what-can-and-cant-be-checked",
     "title": "Can a Dentist Assess a Dental Problem Through a Video Call? What Can and Can't Be Checked",
@@ -26,8 +28,8 @@ export const BLOG_POSTS: BlogPost[] = [
     "dateLabel": "November 12, 2026",
     "author": "Dr Bhojani",
     "image": {
-      "src": "https://images.ctfassets.net/kygl0mrej7ni/fUQmcRs38d6XwriAdpbl8/fda491791450a09e9a938d2df556e54f/Tele-Dentistry_Consultation_at_Home.png",
-      "alt": "//images.ctfassets.net/kygl0mrej7ni/fUQmcRs38d6XwriAdpbl8/fda491791450a09e9a938d2df556e54f/Tele-Dentistry_Consultation_at_Home.png"
+      "src": "/images/blog/video-call-assessment.jpg",
+      "alt": "Patient taking part in a virtual dental video consultation from home"
     },
     "excerpt": "Having a toothache, sore gum or broken tooth can leave you wondering if you should visit the dental ...",
     "blocks": [
@@ -311,8 +313,8 @@ export const BLOG_POSTS: BlogPost[] = [
     "dateLabel": "October 29, 2026",
     "author": "Dr Bhojani",
     "image": {
-      "src": "https://images.ctfassets.net/kygl0mrej7ni/4yR8WtVFUkZn6K0912Kg2z/7619a3cd98a6edabceb66cf225f7c79d/Dental_Extraction_Forceps_Holding_Molar.png",
-      "alt": "//images.ctfassets.net/kygl0mrej7ni/4yR8WtVFUkZn6K0912Kg2z/7619a3cd98a6edabceb66cf225f7c79d/Dental_Extraction_Forceps_Holding_Molar.png"
+      "src": "/images/blog/tooth-extraction-bradford.jpg",
+      "alt": "Clinical illustration of tooth extraction care in Bradford"
     },
     "excerpt": "A toothache is not always a sign that a person needs to have a tooth extracted. In many cases, a den...",
     "blocks": [
@@ -555,8 +557,8 @@ export const BLOG_POSTS: BlogPost[] = [
     "dateLabel": "October 14, 2026",
     "author": "Dr Bhojani",
     "image": {
-      "src": "https://images.ctfassets.net/kygl0mrej7ni/389ErfiV07WpYO3O0BkXGU/4b8de2ebc797657c6dd0035bc08e9f49/24_hour_emergency_dentist.png",
-      "alt": "//images.ctfassets.net/kygl0mrej7ni/389ErfiV07WpYO3O0BkXGU/4b8de2ebc797657c6dd0035bc08e9f49/24_hour_emergency_dentist.png"
+      "src": "/images/blog/emergency-dentist-bradford.jpg",
+      "alt": "24-hour emergency dentist services in Bradford at Pav Dental"
     },
     "excerpt": "Dental problems can happen at any time and they are not always easy to manage at home. A tooth may s...",
     "blocks": [
@@ -840,8 +842,8 @@ export const BLOG_POSTS: BlogPost[] = [
     "dateLabel": "October 6, 2026",
     "author": "Dr Bhojani",
     "image": {
-      "src": "https://images.ctfassets.net/kygl0mrej7ni/5ZqePTb6IRNEwuI9LxtYiH/27b946382f3c42031350a7579c2b568d/3.png",
-      "alt": "//images.ctfassets.net/kygl0mrej7ni/5ZqePTb6IRNEwuI9LxtYiH/27b946382f3c42031350a7579c2b568d/3.png"
+      "src": "/images/blog/botox-vs-dermal-fillers.jpg",
+      "alt": "Botox and dermal fillers facial aesthetics guide from Pav Dental Bradford"
     },
     "excerpt": "Botox and dermal fillers are two common treatments used to improve the appearance of the face. But t...",
     "blocks": [
@@ -1143,8 +1145,8 @@ export const BLOG_POSTS: BlogPost[] = [
     "dateLabel": "September 22, 2026",
     "author": "Dr Bhojani",
     "image": {
-      "src": "https://images.ctfassets.net/kygl0mrej7ni/7B5rNBR6XDl71tlDnZlJdt/a20f380393e402fcbf69b0bef68c2acd/discolour_teeth.png",
-      "alt": "//images.ctfassets.net/kygl0mrej7ni/7B5rNBR6XDl71tlDnZlJdt/a20f380393e402fcbf69b0bef68c2acd/discolour_teeth.png"
+      "src": "/images/blog/whiten-one-tooth.jpg",
+      "alt": "Single-tooth discolouration and teeth whitening guide"
     },
     "excerpt": "It can be surprising when most of your teeth look fairly white but one tooth looks yellow, grey, or ...",
     "blocks": [
@@ -1483,8 +1485,8 @@ export const BLOG_POSTS: BlogPost[] = [
     "dateLabel": "September 10, 2026",
     "author": "Dr Bhojani",
     "image": {
-      "src": "https://images.ctfassets.net/kygl0mrej7ni/5O9q1iObkIWOW6e2gW2gOe/73bcbc7688328ee63b4fa66973d9cd97/24_hour_emergency.png",
-      "alt": "//images.ctfassets.net/kygl0mrej7ni/5O9q1iObkIWOW6e2gW2gOe/73bcbc7688328ee63b4fa66973d9cd97/24_hour_emergency.png"
+      "src": "/images/blog/emergency-dentist-leeds.jpg",
+      "alt": "24-hour emergency dentist access for Leeds and Bradford patients"
     },
     "excerpt": "Toothache doesn't wait for office hours. It can show up anytime then no matter if it's 2am, on a Sun...",
     "blocks": [
@@ -1699,6 +1701,9 @@ export const BLOG_POSTS: BlogPost[] = [
     ]
   }
 ];
+
+/** Every live post, newest first: the six snapshot posts, then the ones behind "Load More". */
+export const BLOG_POSTS: BlogPost[] = [...SNAPSHOT_POSTS, ...MORE_BLOG_POSTS];
 
 export function findBlogPost(slug: string): BlogPost | undefined {
   return BLOG_POSTS.find((post) => post.slug === slug);

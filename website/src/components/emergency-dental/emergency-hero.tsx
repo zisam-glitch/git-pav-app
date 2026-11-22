@@ -20,22 +20,33 @@ export function EmergencyHero() {
     >
       <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <p className="text-label text-terracotta">24/7 Emergency Dental Care</p>
-          <Heading as="h1" size="hero" accent="Dentist" tone="terracotta" inline className="mt-3">
+          <p className="inline-flex items-center gap-2 rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            <span aria-hidden className="size-1.5 rounded-full bg-terracotta" />
+            24/7 Emergency Dental Care
+          </p>
+          <Heading as="h1" size="hero" accent="Dentist" tone="terracotta" inline className="mt-4">
             Emergency
           </Heading>
           <p className="mt-5 max-w-xl text-lead text-muted">
             Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
           </p>
 
-          <div className="mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
-            <Tile tone="cream" className="p-4">
+          <div className="mt-7 grid max-w-xl gap-3 sm:grid-cols-2">
+            <Tile
+              tone="cream"
+              className="flex flex-col justify-between gap-2 border border-border p-5"
+            >
               <p className="text-h4 text-fg tabular-nums">£45 consultation</p>
-              <p className="mt-1 text-small text-muted">Monday to Friday between 9am – 5pm</p>
+              <p className="border-t border-border pt-2.5 text-small text-muted">
+                Monday to Friday between 9am – 5pm
+              </p>
             </Tile>
-            <Tile tone="sage" className="p-4">
+            <Tile
+              tone="sage"
+              className="flex flex-col justify-between gap-2 border border-border p-5"
+            >
               <p className="text-h4 text-fg tabular-nums">£90* out-of-hours consultation</p>
-              <p className="mt-1 text-small text-muted">
+              <p className="border-t border-border pt-2.5 text-small text-muted">
                 Weekends 9am – 8pm and Weekdays 5pm – 8pm
               </p>
             </Tile>
@@ -55,6 +66,7 @@ export function EmergencyHero() {
           alt="Pav Dental emergency dental clinic in Bradford ready for 24-hour urgent dental care"
           ratio="4 / 3"
           tone="navy"
+          className="ring-1 ring-black/8"
           priority
         />
       </div>

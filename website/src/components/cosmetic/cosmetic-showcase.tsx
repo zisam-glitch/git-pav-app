@@ -20,25 +20,33 @@ export function CosmeticShowcase() {
             alt="Cosmetic dental ceramic models and porcelain shade tabs in warm studio light"
             ratio="4 / 3"
             tone="brown"
-            className="bg-white/10"
+            className="bg-white/10 ring-1 ring-white/15"
           />
         }
       >
         <div>
-          <div id="cosmetic-showcase-heading">
-            <Heading size="h2-md" tone="gold">
+          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
+            Treatment Guides
+          </span>
+          <div id="cosmetic-showcase-heading" className="mt-4">
+            <Heading size="h2" tone="gold">
               Procedures
             </Heading>
           </div>
 
-          <ul className="mt-6 flex flex-col gap-3">
-            {PROCEDURES.map((procedure) => (
+          <ul className="mt-8 flex flex-col gap-3">
+            {PROCEDURES.map((procedure, index) => (
               <li key={procedure.label}>
                 <Link
                   to={procedure.to}
-                  className="group flex items-center justify-between gap-4 rounded-xl bg-white/7 px-5 py-4 text-lead text-white t-colors hover:bg-white/15"
+                  className="group flex items-center justify-between gap-4 rounded-xl border border-white/15 bg-white/7 px-5 py-4 text-lead text-white t-colors hover:border-gold/40 hover:bg-white/15"
                 >
-                  <span>{procedure.label}</span>
+                  <span className="flex items-center gap-4">
+                    <span className="text-caption font-medium text-gold tabular-nums">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>{procedure.label}</span>
+                  </span>
                   <ChevronRight
                     aria-hidden
                     className="size-5 shrink-0 text-gold transition-transform duration-200 group-hover:translate-x-0.5"

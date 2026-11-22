@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api } from "@/lib/api";
+import { api, HAS_API_BASE } from "@/lib/api";
 
 interface TreatmentItem {
   name: string;
@@ -143,8 +143,10 @@ export function FeeTable() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const { data } = useQuery({
-    queryKey: ["fee-schedule"],
+    queryKey: ["pricing"],
     queryFn: () => api.pricing.get(),
+    enabled: HAS_API_BASE,
+    retry: false,
   });
 
   const activeCategories: TreatmentCategory[] =
@@ -170,17 +172,19 @@ export function FeeTable() {
     .filter((cat) => cat.items.length > 0);
 
   return (
-    <Section id="fees" theme="cream" width="bento" aria-labelledby="fee-schedule-heading">
+    <Section id="fees" theme="white" width="bento" aria-labelledby="fee-schedule-heading">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
-          <p className="text-small font-medium text-muted">Pav Dental Plans</p>
+          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
+            Pav Dental Plans
+          </span>
           <Heading
             as="h2"
             size="h2-md"
             accent="Fee Schedule"
             tone="terracotta"
             inline
-            className="mt-2"
+            className="mt-4"
           >
             <span id="fee-schedule-heading">Treatment</span>
           </Heading>
@@ -239,15 +243,20 @@ export function FeeTable() {
         })}
       </div>
 
-      {/* Treatment fee tables in Hims white rounded panels */}
+      {/* Treatment fee tables in Hims cream-headed rounded panels */}
       <div className="mt-8 space-y-6">
         {filteredCategories.map((group) => (
           <div
             key={group.category}
             className="overflow-hidden rounded-xl border border-border bg-white"
           >
-            <div className="flex items-center justify-between border-b border-border bg-sand/50 px-5 py-4 md:px-8">
-              <h3 className="text-h4 text-fg">{group.category}</h3>
+            <div className="flex items-center justify-between border-b border-border bg-cream px-5 py-4 md:px-8">
+              <div className="flex items-center gap-3">
+                <h3 className="text-h4 text-fg">{group.category}</h3>
+                <span className="rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption font-medium text-muted">
+                  {group.items.length}
+                </span>
+              </div>
               <span className="text-small font-medium text-muted">Price</span>
             </div>
 
@@ -255,7 +264,7 @@ export function FeeTable() {
               {group.items.map((item, idx) => (
                 <div
                   key={`${group.category}-${item.name}-${idx}`}
-                  className="flex items-center justify-between gap-6 px-5 py-4 md:px-8"
+                  className="flex items-center justify-between gap-6 px-5 py-4 t-colors hover:bg-cream/60 md:px-8"
                 >
                   <span className="text-body text-fg">{item.name}</span>
                   <span className="shrink-0 text-right text-lead font-medium text-fg tabular-nums">
@@ -268,7 +277,7 @@ export function FeeTable() {
         ))}
 
         {filteredCategories.length === 0 && (
-          <div className="rounded-xl border border-border bg-white p-10 text-center">
+          <div className="rounded-xl border border-border bg-cream p-10 text-center">
             <p className="text-lead text-muted">
               No treatments match &ldquo;{search}&rdquo;. Try searching for another service or reset
               the category filter.

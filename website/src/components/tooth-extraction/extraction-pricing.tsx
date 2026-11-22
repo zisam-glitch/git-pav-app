@@ -1,3 +1,4 @@
+import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
 import { BookButton, PricingTiles, Tile, type PricingTier } from "@/components/hims";
 
 const TIERS: readonly PricingTier[] = [
@@ -39,6 +40,24 @@ const TIERS: readonly PricingTier[] = [
   },
 ];
 
+const CONSENT_POINTS = [
+  {
+    title: "Treatment Understanding",
+    desc: "Your clinician explains the tooth removal process and expected recovery time before treatment.",
+    icon: FileText,
+  },
+  {
+    title: "Risks and Benefits",
+    desc: "We talk through potential bleeding, healing guidance, and restorative alternatives to extraction.",
+    icon: AlertCircle,
+  },
+  {
+    title: "Voluntary Participation",
+    desc: "Your participation is voluntary, with time to ask questions at every stage of your appointment.",
+    icon: CheckCircle2,
+  },
+] as const;
+
 export function ExtractionPricing() {
   return (
     <PricingTiles
@@ -48,15 +67,40 @@ export function ExtractionPricing() {
       columns={4}
       ctaLabel="Make an Appointment"
       footer={
-        <Tile tone="cream" className="flex flex-wrap items-center justify-between gap-4 p-6 md:p-8">
-          <div>
-            <h3 className="text-h4 text-fg">Informed Consent for Tooth Extraction</h3>
-            <p className="mt-1 text-body text-muted">
-              Your clinician will talk through your procedure, alternatives, and aftercare before
-              any treatment begins.
-            </p>
+        <Tile tone="cream" className="border border-border p-6 md:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="inline-flex rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
+                Clinical Transparency
+              </p>
+              <h3 className="mt-3 text-h3-md text-fg">Informed Consent for Tooth Extraction</h3>
+              <p className="mt-1 text-body text-muted">
+                Your clinician will talk through your procedure, alternatives, and aftercare before
+                any treatment begins.
+              </p>
+            </div>
+            <BookButton variant="outline">Book Consultation</BookButton>
           </div>
-          <BookButton variant="outline">Book Consultation</BookButton>
+
+          <ul className="mt-6 grid gap-4 border-t border-border pt-6 md:grid-cols-3">
+            {CONSENT_POINTS.map((point) => {
+              const Icon = point.icon;
+              return (
+                <li
+                  key={point.title}
+                  className="flex items-start gap-3.5 rounded-xl border border-border bg-white p-4"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+                    <Icon aria-hidden className="size-4" />
+                  </span>
+                  <div>
+                    <p className="text-label text-fg">{point.title}</p>
+                    <p className="mt-1 text-small text-muted">{point.desc}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </Tile>
       }
     />

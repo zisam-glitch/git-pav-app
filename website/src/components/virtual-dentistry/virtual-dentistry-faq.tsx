@@ -53,12 +53,17 @@ const FAQS: FaqItem[] = [
 
 export function VirtualDentistryFaq() {
   return (
-    <Section theme="white" space="default">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
+    <Section id="faq" theme="white" space="default" aria-labelledby="virtual-faq-heading">
+      <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.7fr] lg:gap-14">
         <div className="lg:sticky lg:top-24">
-          <Heading as="h2" size="h2-md" accent="Question" tone="terracotta">
-            Frequently Asked
-          </Heading>
+          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
+            FAQs
+          </span>
+          <div id="virtual-faq-heading" className="mt-4">
+            <Heading as="h2" size="h2-md" accent="Question" tone="terracotta">
+              Frequently Asked
+            </Heading>
+          </div>
           <p className="mt-4 max-w-sm text-lead text-muted">
             Common questions about booking a video consultation, technology needed, and online
             prescriptions.
@@ -69,7 +74,7 @@ export function VirtualDentistryFaq() {
           </div>
         </div>
 
-        <FaqList items={FAQS} />
+        <FaqList items={FAQS} tone="light" defaultOpen={0} />
       </div>
     </Section>
   );

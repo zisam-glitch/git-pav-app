@@ -14,13 +14,23 @@ export function PetitionMedia() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <Section theme="white" space="default" aria-labelledby="petition-video-heading">
-      <h2 id="petition-video-heading" className="mx-auto max-w-2xl text-center text-h2-md text-fg">
-        {heading}
-      </h2>
+    <Section
+      id="petition-video"
+      theme="cream"
+      space="default"
+      aria-labelledby="petition-video-heading"
+    >
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
+          {PETITION.eyebrow}
+        </span>
+        <h2 id="petition-video-heading" className="mt-4 text-h2-md text-fg">
+          {heading}
+        </h2>
+      </div>
 
-      <div className="mx-auto mt-10 max-w-[960px] overflow-hidden rounded-xl bg-black">
-        <div className="relative aspect-video w-full">
+      <div className="mx-auto mt-10 max-w-[960px] rounded-xl border border-border bg-white p-3 shadow-soft md:p-4">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
           {playing ? (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
@@ -33,7 +43,7 @@ export function PetitionMedia() {
             <>
               <img
                 src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
-                alt=""
+                alt={`${heading} video thumbnail`}
                 loading="lazy"
                 className="size-full object-cover"
               />
@@ -41,9 +51,9 @@ export function PetitionMedia() {
                 type="button"
                 onClick={() => setPlaying(true)}
                 aria-label={`Play the video: ${heading}`}
-                className="absolute inset-0 flex items-center justify-center bg-black/25 t-colors hover:bg-black/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="group absolute inset-0 flex items-center justify-center bg-black/25 t-colors hover:bg-black/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                <span className="flex size-20 items-center justify-center rounded-pill bg-white text-black shadow-card t-colors hover:bg-white/90 sm:size-24">
+                <span className="flex size-20 items-center justify-center rounded-pill bg-white text-black shadow-card t-colors group-hover:scale-105 group-hover:bg-gold sm:size-24">
                   <Play
                     className="size-8 translate-x-0.5 fill-current sm:size-10"
                     aria-hidden="true"

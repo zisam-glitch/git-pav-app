@@ -11,10 +11,13 @@ export function AestheticsSafety() {
   const enquiry = useEnquiry("Facial aesthetics");
 
   return (
-    <Section id="enquire" theme="white" aria-labelledby="aesthetics-enquire-heading">
+    <Section id="enquire" theme="cream" aria-labelledby="aesthetics-enquire-heading">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-[460px]">
-          <div id="aesthetics-enquire-heading">
+          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
+            Clinic Consultation
+          </span>
+          <div id="aesthetics-enquire-heading" className="mt-4">
             <Heading size="h2-md" accent="Appointment" tone="terracotta" inline>
               Book
             </Heading>
@@ -30,9 +33,9 @@ export function AestheticsSafety() {
             to find out more
           </p>
 
-          <ul className="mt-8 space-y-3 text-body">
-            <li className="text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
-            <li>
+          <ul className="mt-8 divide-y divide-border border-y border-border text-body">
+            <li className="py-3 text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
+            <li className="py-3">
               <a
                 href={PRACTICE_PHONE_HREF}
                 className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
@@ -40,7 +43,7 @@ export function AestheticsSafety() {
                 {PRACTICE_PHONE}
               </a>
             </li>
-            <li>
+            <li className="py-3">
               <a
                 href="tel:+447311871456"
                 className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
@@ -48,7 +51,7 @@ export function AestheticsSafety() {
                 44 7311 871456
               </a>
             </li>
-            <li>
+            <li className="py-3">
               <a
                 href={`mailto:${PRACTICE_EMAIL}`}
                 className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
@@ -56,7 +59,7 @@ export function AestheticsSafety() {
                 {PRACTICE_EMAIL}
               </a>
             </li>
-            <li className="text-small text-muted">{PRACTICE_HOURS}</li>
+            <li className="py-3 text-small text-muted">{PRACTICE_HOURS}</li>
           </ul>
 
           <div className="mt-8">
@@ -64,7 +67,7 @@ export function AestheticsSafety() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-cream p-6 md:p-[60px]">
+        <div className="rounded-xl border border-border bg-white p-6 md:p-10 lg:p-12">
           {enquiry.sent ? (
             <div role="status" className="max-w-[460px]">
               <Heading as="h3" size="h3-md">

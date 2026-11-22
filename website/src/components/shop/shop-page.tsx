@@ -1,8 +1,9 @@
 import { ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
-import { api, type Product as ApiProduct } from "@/lib/api";
+import { api, HAS_API_BASE, type Product as ApiProduct } from "@/lib/api";
 import { useCartStore } from "@/lib/cart-store";
 import { CartDrawer } from "./cart-drawer";
+import { mapApiProduct, SHOP_CATALOG_PRODUCTS } from "./shop-catalog-data";
 import type { CartItem, Product } from "./shop-data";
 import { ShopCatalog } from "./shop-catalog";
 import { ShopGuarantee } from "./shop-guarantee";
@@ -10,51 +11,36 @@ import { ShopHero } from "./shop-hero";
 
 export function ShopPage() {
   const [apiProducts, setApiProducts] = useState<ApiProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      api.products
-        .list()
-        .then((data) => {
-          setApiProducts(data);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching products:", err);
-          setIsLoading(false);
-        });
+    if (typeof window === "undefined" || !HAS_API_BASE) {
+      return;
     }
+    let active = true;
+    api.products
+      .list()
+      .then((data) => {
+        if (!active) return;
+        if (Array.isArray(data) && data.length > 0) {
+          setApiProducts(data);
+        }
+      })
+      .catch(() => {
+        // Fall back seamlessly to clinician-selected local catalogue.
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const productsToDisplay: Product[] =
-    apiProducts && apiProducts.length > 0
-      ? apiProducts.map((p) => ({
-          id: p.id,
-          slug: p.slug,
-          name: p.name,
-          category: p.category || "dental-care",
-          categoryLabel: p.category_label || "Dental Care",
-          price: typeof p.price === "string" ? parseFloat(p.price) : p.price,
-          originalPrice: p.original_price
-            ? typeof p.original_price === "string"
-              ? parseFloat(p.original_price)
-              : p.original_price
-            : undefined,
-          image: p.image || "",
-          shortDesc: p.short_desc || "",
-          fullDesc: p.full_desc || "",
-          features: Array.isArray(p.features) ? p.features : [],
-          howToUse: p.how_to_use || "",
-          badge: p.badge || undefined,
-          inStock: p.in_stock,
-        }))
-      : [];
+    apiProducts.length > 0 ? apiProducts.map(mapApiProduct) : SHOP_CATALOG_PRODUCTS;
 
   const { items: storeItems, addItem, updateQuantity, removeItem, clearCart } = useCartStore();
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const cartDrawerItems: CartItem[] = storeItems.map((it) => ({
+    id: it.id,
     product: {
       id: it.productId,
       slug: it.slug,
@@ -77,15 +63,19 @@ export function ShopPage() {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string, quantity: number) => {
-    const item = storeItems.find((i) => i.productId === productId);
+  const handleUpdateQuantity = (itemOrProductId: string, quantity: number) => {
+    const item =
+      storeItems.find((i) => i.id === itemOrProductId) ||
+      storeItems.find((i) => i.productId === itemOrProductId);
     if (item) {
       updateQuantity(item.id, quantity);
     }
   };
 
-  const handleRemoveItem = (productId: string) => {
-    const item = storeItems.find((i) => i.productId === productId);
+  const handleRemoveItem = (itemOrProductId: string) => {
+    const item =
+      storeItems.find((i) => i.id === itemOrProductId) ||
+      storeItems.find((i) => i.productId === itemOrProductId);
     if (item) {
       removeItem(item.id);
     }
@@ -99,7 +89,8 @@ export function ShopPage() {
 
       <ShopCatalog
         products={productsToDisplay}
-        isLoading={isLoading}
+        isLoading={false}
+        unavailable={false}
         onAddToCart={handleAddToCart}
       />
 

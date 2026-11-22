@@ -156,4 +156,8 @@ Headline pattern: **line one in ink (white on dark), line two (or one key phrase
 
 ## Measured later
 
-(Agents: add rows here: element, value, where measured.)
+| Element | Value | Where measured |
+|---|---|---|
+| Hero category tile hover (`TreatmentTileLink::before`) | Steady frame (no scale/shadow lift); `::before` gradient `opacity: 0 -> 1` over `400ms ease`, text/icon `color 400ms ease` | `www.hims.com.zip` (`www.hims.com/index.html` `.jpHecS`, `.eaKSmV`, `.hhXyaE`, `.gZTCRY`) |
+| Hero tile hover gradients | Terracotta `linear-gradient(167deg,#8F2B25 -3.36%,#943C35 33.89%,#943C35 76.39%,#8F2B25 95.99%)`; Blue `linear-gradient(162deg,#4D88BA 9.21%,#6FA7D7 38.52%,#6FA7D7 74.59%,#4D88BA 87.36%)`; Copper `linear-gradient(#AD6E4B,#B17D5D 38%,#B17D5D 84%,#AD6E4B)`; Sky-Gold `linear-gradient(167deg,#B3BABF -3.36%,#CEDBE5 33.89%,#FDEAA0 79.75%,#FDEAA0 95.99%)` | `www.hims.com.zip` (`www.hims.com/index.html`) |
+| Featured banner hover (`FeaturedTileWrapper`) | Steady frame; image wrapper `transform: scale(1.03)` over `300ms cubic-bezier(0.29,0.36,0.04,0.99)`, scrim `opacity 200ms linear` | `www.hims.com.zip` (`www.hims.com/index.html` `.kmMkqF`, `.ioOGUd`) |

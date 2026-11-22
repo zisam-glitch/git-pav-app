@@ -23,7 +23,7 @@ export function OralHygieneShowcase() {
     <Section theme="cream" space="default">
       <SplitFeature
         media={
-          <div className="relative overflow-hidden rounded-xl bg-white">
+          <div className="relative overflow-hidden rounded-xl bg-white ring-1 ring-black/8">
             {activeVideo ? (
               <div className="relative aspect-[4/3] w-full bg-black">
                 <video
@@ -68,18 +68,23 @@ export function OralHygieneShowcase() {
         }
       >
         <div>
-          <p className="text-label text-terracotta">Gentle Clinical Care</p>
-          <Heading as="h2" size="h2-md" accent="in Action" tone="terracotta" className="mt-2">
+          <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
+            Gentle Clinical Care
+          </p>
+          <Heading as="h2" size="h2-md" accent="in Action" tone="terracotta" className="mt-4">
             Hygiene Treatment
           </Heading>
           <div className="mt-6 grid gap-3">
-            {DEMOS.map((demo) => {
+            {DEMOS.map((demo, index) => {
               const isPlaying = activeVideo === demo.id;
               return (
-                <Tile key={demo.id} tone="white" className="p-5">
+                <Tile key={demo.id} tone="white" lift className="p-5 md:p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="text-h4 text-fg">{demo.title}</h3>
+                      <span className="inline-flex rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
+                        0{index + 1}
+                      </span>
+                      <h3 className="mt-3 text-h4 text-fg">{demo.title}</h3>
                       <p className="mt-2 text-body text-muted">{demo.desc}</p>
                     </div>
                     <Button

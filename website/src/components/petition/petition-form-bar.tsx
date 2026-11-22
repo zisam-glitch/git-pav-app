@@ -44,13 +44,19 @@ export function PetitionFormBar() {
   return (
     <Section id="sign-form" theme="brown" space="lg" aria-labelledby="sign-heading">
       <div className="max-w-2xl">
-        <h2 id="sign-heading" className="text-h2-md text-white">
+        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
+          {PETITION.eyebrow}
+        </span>
+        <h2 id="sign-heading" className="mt-4 text-h2-md text-white">
           Sign <span className="text-gold">the Petition</span>
         </h2>
         <p className="mt-3 text-lead text-white/80">{copy.eligibility}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 rounded-xl bg-white/7 p-6 md:p-8">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-8 rounded-xl border border-white/15 bg-white/8 p-6 md:p-8"
+      >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
           <div className="sm:col-span-4">
             <Label htmlFor="pet-name" className="mb-2 block text-white/90">
@@ -63,6 +69,7 @@ export function PetitionFormBar() {
               type="text"
               autoComplete="name"
               placeholder={`${copy.fieldLabels.name} *`}
+              className="bg-white"
             />
           </div>
 
@@ -77,6 +84,7 @@ export function PetitionFormBar() {
               type="email"
               autoComplete="email"
               placeholder={`${copy.fieldLabels.email} *`}
+              className="bg-white"
             />
           </div>
 
@@ -91,6 +99,7 @@ export function PetitionFormBar() {
               type="text"
               autoComplete="postal-code"
               placeholder={`${copy.fieldLabels.postcode} *`}
+              className="bg-white"
             />
           </div>
 
@@ -106,7 +115,7 @@ export function PetitionFormBar() {
           </div>
         </div>
 
-        <div className="mt-5 flex items-center gap-3 text-small text-white/90">
+        <div className="mt-5 flex items-center gap-3 border-t border-white/12 pt-5 text-small text-white/90">
           <input
             id="pet-resident"
             name="resident"

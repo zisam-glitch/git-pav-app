@@ -1,13 +1,14 @@
-import { Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { useId, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export type FaqItem = { q: string; a: ReactNode };
 
 /**
- * Question-and-answer list in the Hims tile style: each row is a rounded cream (or glass) tile with a plus
- * that turns into a cross. Answers stay in the page HTML when closed (search engines read them) and are
- * made inert so keyboard users cannot tab into hidden links. One row is open at a time.
+ * Question-and-answer accordion modelled on Hims web FAQ sections (Mobbin 2c994fe8 & 54b349fb):
+ * clean 1px hairline divider rows with oversized question typography and circular cream +/- toggles.
+ * Answers stay in the server-rendered HTML when closed (search engines read them) and are marked
+ * inert so keyboard users cannot tab into hidden links.
  */
 export function FaqList({
   items,
@@ -24,19 +25,19 @@ export function FaqList({
   const id = useId();
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div
+      className={cn(
+        "divide-y border-y",
+        tone === "dark" ? "divide-white/15 border-white/15" : "divide-border border-border",
+        className,
+      )}
+    >
       {items.map((item, index) => {
         const isOpen = open === index;
         const panelId = `${id}-panel-${index}`;
         const buttonId = `${id}-button-${index}`;
         return (
-          <div
-            key={item.q}
-            className={cn(
-              "rounded-xl t-colors",
-              tone === "dark" ? "bg-white/7" : isOpen ? "bg-white shadow-card" : "bg-cream",
-            )}
-          >
+          <div key={item.q}>
             <h3>
               <button
                 id={buttonId}
@@ -44,18 +45,28 @@ export function FaqList({
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : index)}
-                className="flex w-full items-center justify-between gap-4 rounded-xl px-5 py-4 text-left text-lead font-medium md:px-6 md:py-5"
+                className={cn(
+                  "group flex w-full items-center justify-between gap-6 py-5 text-left text-h4 font-normal t-colors md:py-6",
+                  tone === "dark"
+                    ? "text-white hover:text-gold"
+                    : "text-fg hover:text-terracotta",
+                )}
               >
-                <span>{item.q}</span>
+                <span className="leading-snug">{item.q}</span>
                 <span
                   aria-hidden
                   className={cn(
-                    "grid size-8 shrink-0 place-items-center rounded-full border transition-transform duration-300 ease-in-out",
-                    tone === "dark" ? "border-white/30" : "border-border-strong",
-                    isOpen && "rotate-45",
+                    "grid size-9 shrink-0 place-items-center rounded-pill t-colors",
+                    tone === "dark"
+                      ? isOpen
+                        ? "bg-gold text-brown"
+                        : "bg-white/11 text-white group-hover:bg-white/20"
+                      : isOpen
+                        ? "bg-black text-white"
+                        : "bg-sand text-fg group-hover:bg-cream-deep",
                   )}
                 >
-                  <Plus className="size-4" />
+                  {isOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
                 </span>
               </button>
             </h3>
@@ -72,7 +83,7 @@ export function FaqList({
               <div className="overflow-hidden">
                 <div
                   className={cn(
-                    "px-5 pb-5 text-body md:px-6 md:pb-6",
+                    "max-w-3xl pb-6 text-body leading-relaxed",
                     tone === "dark" ? "text-white/80" : "text-muted",
                   )}
                 >

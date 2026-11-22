@@ -52,7 +52,8 @@ export function FeeTable({
           >
             <div>
               <h3 className="text-h4 text-fg">
-                {tier.label} <span className="font-normal text-muted">({tier.price})</span>
+                {tier.label}{" "}
+                <span className="font-normal text-muted">{`(${tier.price})`}</span>
               </h3>
               <p className="mt-2 max-w-2xl text-body text-muted">{tier.description}</p>
             </div>

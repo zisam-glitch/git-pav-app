@@ -263,14 +263,14 @@ export function comparePage({
   }
 
   if (page.titles.length !== 1) fail("title-count", `${page.titles.length} title tags`);
-  if (live.title) {
+  if (live.title && !exception?.approvedTitle) {
     if (squash(page.titles[0]) !== squash(live.title)) fail("title", `title is "${page.titles[0] ?? ""}", live has "${live.title}"`);
   } else if (!page.titles[0]) {
     fail("title", "no title");
   }
 
   if (page.descriptions.length !== 1) fail("description-count", `${page.descriptions.length} description tags`);
-  if (live.description) {
+  if (live.description && !exception?.approvedDescription) {
     if (squash(page.descriptions[0]) !== squash(live.description)) fail("description", "description differs from live");
   } else if (!page.descriptions[0]) {
     fail("description", "no description");

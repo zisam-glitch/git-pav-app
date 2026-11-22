@@ -1,8 +1,13 @@
-// Base API URL pointing to the Admin Dashboard (default http://localhost:3001 in dev)
-export const API_BASE =
+// Base API URL pointing to the Admin Dashboard (default http://localhost:3001 in local dev).
+const CONFIGURED_API_BASE =
   (typeof window !== "undefined" && (window as any).__ENV__?.VITE_API_BASE_URL) ||
-  import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:3001";
+  import.meta.env?.VITE_API_BASE_URL ||
+  "";
+
+/** True when an admin-dashboard API URL is configured or Vite is running in local dev mode. */
+export const HAS_API_BASE = Boolean(CONFIGURED_API_BASE) || Boolean(import.meta.env?.DEV);
+
+export const API_BASE = CONFIGURED_API_BASE || "http://localhost:3001";
 
 // The shop no longer has accounts: clear a session left by an earlier visit.
 if (typeof window !== "undefined") {

@@ -1,4 +1,4 @@
-import { CheckCircle2, Send } from "lucide-react";
+import { CheckCircle2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,144 +15,149 @@ export function PetitionContact() {
 
   return (
     <Section
-      theme="white"
-      width="max"
-      space="sm"
+      id="petition-contact"
+      theme="sand"
+      space="default"
       aria-labelledby="touch-heading"
-      className="px-2 md:px-4"
     >
-      <div className="rounded-xl bg-cream">
-        <div className="wrap grid items-start gap-8 py-10 md:grid-cols-[0.9fr_1.1fr] md:gap-12 md:py-16">
-          <div className="max-w-[460px]">
-            <p className="text-small font-medium text-muted">Visit</p>
-            <h2 id="touch-heading" className="mt-2 text-h2-md text-fg">
-              {copy.heading}
-            </h2>
-            <p className="mt-4 text-lead text-muted">{copy.intro}</p>
+      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+        <div className="max-w-[460px]">
+          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
+            Bradford Dental Clinic
+          </span>
+          <h2 id="touch-heading" className="mt-4 text-h2-md text-fg">
+            {copy.heading}
+          </h2>
+          <p className="mt-4 text-lead text-muted">{copy.intro}</p>
 
-            <ul className="mt-8 space-y-3 text-body">
-              <li className="text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
-              <li>
+          <ul className="mt-8 space-y-3 text-body">
+            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3 text-fg">
+              <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+              <span>786 Leeds Road, Bradford, BD3 9TY</span>
+            </li>
+            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3">
+              <Phone aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+              <a
+                href={PRACTICE_PHONE_HREF}
+                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+              >
+                {PRACTICE_PHONE}
+              </a>
+            </li>
+            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3">
+              <Mail aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+              <a
+                href={`mailto:${PRACTICE_EMAIL}`}
+                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+              >
+                {PRACTICE_EMAIL}
+              </a>
+            </li>
+          </ul>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <BookButton>{copy.bookLabel}</BookButton>
+            <CallButton variant="outline" className="bg-white" />
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-white p-6 shadow-soft md:p-10">
+          {enquiry.sent ? (
+            <div className="max-w-[460px]" role="status">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
+                <CheckCircle2 className="size-6" aria-hidden="true" />
+              </div>
+              <Heading as="h3" size="h3-md">
+                Message Received
+              </Heading>
+              <p className="mt-3 text-body text-muted">
+                Thank you. Your message has reached the practice, and the team will get back to
+                you. For urgent dental pain, call{" "}
                 <a
                   href={PRACTICE_PHONE_HREF}
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  className="font-medium text-terracotta underline underline-offset-4"
                 >
                   {PRACTICE_PHONE}
                 </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${PRACTICE_EMAIL}`}
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
-                >
-                  {PRACTICE_EMAIL}
-                </a>
-              </li>
-            </ul>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <BookButton>{copy.bookLabel}</BookButton>
-              <CallButton variant="outline" />
+                .
+              </p>
+              <Button type="button" onClick={enquiry.reset} className="mt-6">
+                Send Another Message
+              </Button>
             </div>
-          </div>
-
-          <div className="rounded-xl border border-border bg-white p-6 md:p-[60px]">
-            {enquiry.sent ? (
-              <div className="max-w-[460px]" role="status">
-                <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
-                  <CheckCircle2 className="size-6" aria-hidden="true" />
-                </div>
-                <Heading as="h3" size="h3-md">
-                  Message Received
-                </Heading>
-                <p className="mt-3 text-body text-muted">
-                  Thank you. Your message has reached the practice, and the team will get back to
-                  you. For urgent dental pain, call{" "}
-                  <a
-                    href={PRACTICE_PHONE_HREF}
-                    className="font-medium text-terracotta underline underline-offset-4"
-                  >
-                    {PRACTICE_PHONE}
-                  </a>
-                  .
-                </p>
-                <Button type="button" onClick={enquiry.reset} className="mt-6">
-                  Send Another Message
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={enquiry.submit} className="grid gap-5">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div className="grid gap-2">
-                    <Label htmlFor="touch-name">{copy.fieldLabels.name}</Label>
-                    <Input
-                      id="touch-name"
-                      name="name"
-                      required
-                      type="text"
-                      autoComplete="name"
-                      placeholder="Jane Doe"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="touch-email">{copy.fieldLabels.email}</Label>
-                    <Input
-                      id="touch-email"
-                      name="email"
-                      required
-                      type="email"
-                      autoComplete="email"
-                      placeholder="you@example.com"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="touch-subject">{copy.fieldLabels.subject}</Label>
-                    <Input
-                      id="touch-subject"
-                      name="subject"
-                      required
-                      type="text"
-                      placeholder="NHS dental funding"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="touch-phone">{copy.fieldLabels.phone}</Label>
-                    <Input
-                      id="touch-phone"
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      placeholder="+44"
-                    />
-                  </div>
-                </div>
-
+          ) : (
+            <form onSubmit={enquiry.submit} className="grid gap-5">
+              <div className="grid gap-5 sm:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label htmlFor="touch-message">{copy.fieldLabels.message}</Label>
-                  <Textarea
-                    id="touch-message"
-                    name="message"
+                  <Label htmlFor="touch-name">{copy.fieldLabels.name}</Label>
+                  <Input
+                    id="touch-name"
+                    name="name"
                     required
-                    rows={5}
-                    placeholder="How can we help?"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Jane Doe"
                   />
                 </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="touch-email">{copy.fieldLabels.email}</Label>
+                  <Input
+                    id="touch-email"
+                    name="email"
+                    required
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="touch-subject">{copy.fieldLabels.subject}</Label>
+                  <Input
+                    id="touch-subject"
+                    name="subject"
+                    required
+                    type="text"
+                    placeholder="NHS dental funding"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="touch-phone">{copy.fieldLabels.phone}</Label>
+                  <Input
+                    id="touch-phone"
+                    name="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    placeholder="+44"
+                  />
+                </div>
+              </div>
 
-                {enquiry.error ? (
-                  <p role="alert" className="text-small font-medium text-danger">
-                    {enquiry.error}
-                  </p>
-                ) : null}
+              <div className="grid gap-2">
+                <Label htmlFor="touch-message">{copy.fieldLabels.message}</Label>
+                <Textarea
+                  id="touch-message"
+                  name="message"
+                  required
+                  rows={5}
+                  placeholder="How can we help?"
+                />
+              </div>
 
-                <Button type="submit" disabled={enquiry.sending} className="w-full">
-                  <span>{enquiry.sending ? "Sending…" : copy.submit}</span>
-                  <Send aria-hidden="true" />
-                </Button>
-              </form>
-            )}
-          </div>
+              {enquiry.error ? (
+                <p role="alert" className="text-small font-medium text-danger">
+                  {enquiry.error}
+                </p>
+              ) : null}
+
+              <Button type="submit" disabled={enquiry.sending} className="w-full">
+                <span>{enquiry.sending ? "Sending…" : copy.submit}</span>
+                <Send aria-hidden="true" />
+              </Button>
+            </form>
+          )}
         </div>
       </div>
     </Section>
   );
 }
+

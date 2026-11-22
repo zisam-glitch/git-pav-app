@@ -24,30 +24,37 @@ const EMERGENCY_CONDITIONS = [
 
 export function EmergencyServices() {
   return (
-    <Section id="services" theme="white" space="default">
+    <Section id="services" theme="navy" space="lg">
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div className="max-w-2xl">
-          <Heading as="h2" size="h2-md" accent="The Following" tone="terracotta">
+          <p className="inline-flex items-center rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-butter">
+            Same-Day Clinical Care
+          </p>
+          <Heading as="h2" size="h2-md" accent="The Following" tone="butter" className="mt-4">
             Our Emergency Dentist Can Help With
           </Heading>
         </div>
-        <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+        <CallButton variant="butter">Call us Now · {PRACTICE_PHONE}</CallButton>
       </div>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {EMERGENCY_CONDITIONS.map((cond) => {
+        {EMERGENCY_CONDITIONS.map((cond, index) => {
           const Icon = cond.icon;
           return (
             <Tile
               key={cond.id}
-              tone="cream"
-              lift
-              className="flex flex-col justify-between gap-6 p-6"
+              tone="glass"
+              className="flex flex-col justify-between gap-6 border border-white/12 p-6 t-colors hover:bg-white/12"
             >
-              <div className="grid size-10 place-items-center rounded-full border border-border bg-white text-terracotta">
-                <Icon aria-hidden className="size-4" />
+              <div className="flex items-center justify-between gap-3">
+                <div className="grid size-10 place-items-center rounded-full bg-white/10 text-butter">
+                  <Icon aria-hidden className="size-4" />
+                </div>
+                <span className="rounded-pill bg-white/10 px-2.5 py-0.5 text-caption font-medium text-butter tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
               </div>
-              <h3 className="text-h4 text-fg">{cond.title}</h3>
+              <h3 className="border-t border-white/12 pt-4 text-h4 text-white">{cond.title}</h3>
             </Tile>
           );
         })}

@@ -7,7 +7,7 @@ import { MobileDentistryService } from "./mobile-dentistry-service";
 
 export function MobileDentistryPage() {
   return (
-    <main>
+    <main className="bg-bg">
       <MobileDentistryHero />
       <MobileDentistryBenefits />
       <MobileDentistryService />
@@ -25,7 +25,8 @@ export function MobileDentistryPage() {
           </>
         }
       >
-        786 Leeds Road, Bradford, BD3 9TY · Pav Dental Mobile visits patients across the UK.
+        Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
+        check-ups, and advanced technologies like digital imaging and laser dentistry.
       </CtaBand>
     </main>
   );

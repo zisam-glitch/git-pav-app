@@ -21,21 +21,29 @@ const CHOOSING_FACTORS = [
 
 export function GeneralDentistryChoosing() {
   return (
-    <Section theme="cream">
+    <Section theme="white">
       <div className="max-w-2xl">
-        <Heading size="h2-md" accent="General Dentist" tone="terracotta" inline>
+        <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
+          Choosing Your Clinic
+        </p>
+        <Heading size="h2-md" accent="General Dentist" tone="terracotta" inline className="mt-4">
           How to Choose a
         </Heading>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {CHOOSING_FACTORS.map((factor, i) => (
-          <Tile key={factor.title} tone="white" className="p-6">
-            <span className="text-small font-medium tabular-nums text-terracotta">
+          <Tile
+            key={factor.title}
+            tone="cream"
+            lift
+            className="flex flex-col gap-4 border border-border p-6"
+          >
+            <span className="inline-flex w-fit rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium tabular-nums text-terracotta">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <p className="mt-3 text-body text-muted">
-              <strong className="font-medium text-fg">{factor.title}:</strong> {factor.desc}
+            <p className="border-t border-border pt-3 text-body text-muted">
+              <strong className="font-medium text-fg">{`${factor.title}:`}</strong> {factor.desc}
             </p>
           </Tile>
         ))}

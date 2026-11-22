@@ -23,8 +23,8 @@ export const NAV_LINKS: readonly SiteLink[] = [
 ];
 
 /**
- * Every service page that exists. Finance and Registration are not here: they are not built yet
- * (the owner decides, plan A4 and A5), and a link to a page that returns 404 helps nobody.
+ * Every service page on the site, including FCA-compliant Payment Options (/services/finance)
+ * and privacy-safe Patient Registration (/services/regestration).
  */
 export const SERVICE_PAGES: readonly SiteLink[] = [
   { name: "Whitening", href: "/services/whitening" },
@@ -40,6 +40,8 @@ export const SERVICE_PAGES: readonly SiteLink[] = [
   { name: "Mouthguards", href: "/services/mouthguards" },
   { name: "Mobile Dentistry", href: "/services/mobile-dentistry" },
   { name: "Virtual Dentistry", href: "/services/virtual-dentistry" },
+  { name: "Payment Options", href: "/services/finance" },
+  { name: "Patient Registration", href: "/services/regestration" },
 ];
 
 export const FOOTER = {

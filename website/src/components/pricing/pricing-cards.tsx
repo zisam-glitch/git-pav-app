@@ -1,8 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
-import { BookButton, Heading, Section, Tile, type TileTone } from "@/components/hims";
-import { api } from "@/lib/api";
+import {
+  BookButton,
+  ButtonLink,
+  Heading,
+  Section,
+  Tile,
+  type TileTone,
+} from "@/components/hims";
+import { api, HAS_API_BASE } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 interface PlanFeature {
@@ -72,17 +79,20 @@ const PLANS: Plan[] = [
 ];
 
 const PLAN_TONE: Record<Plan["color"], TileTone> = {
-  bronze: "cream",
+  bronze: "white",
   silver: "sage",
-  gold: "cream",
+  gold: "white",
 };
 
+/** Hims spec-card membership comparison (Mobbin fceeec4f). */
 export function PricingCards() {
   const [isMonthly, setIsMonthly] = useState(true);
 
   const { data } = useQuery({
-    queryKey: ["pricing-plans"],
+    queryKey: ["pricing"],
     queryFn: () => api.pricing.get(),
+    enabled: HAS_API_BASE,
+    retry: false,
   });
 
   const activePlans: Plan[] =
@@ -98,10 +108,20 @@ export function PricingCards() {
       : PLANS;
 
   return (
-    <Section id="plans" theme="white" space="default" aria-labelledby="plans-heading">
+    <Section id="plans" theme="cream" space="default" aria-labelledby="plans-heading">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <Heading as="h2" size="h2-md" accent="Plans" tone="terracotta" inline className="text-fg">
+          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
+            Monthly &amp; Annual Care
+          </span>
+          <Heading
+            as="h2"
+            size="h2-md"
+            accent="Plans"
+            tone="terracotta"
+            inline
+            className="mt-4 text-fg"
+          >
             <span id="plans-heading">Pav Dental</span>
           </Heading>
           <p className="mt-3 text-lead text-muted">
@@ -109,7 +129,7 @@ export function PricingCards() {
           </p>
         </div>
 
-        <div className="inline-flex w-fit items-center gap-3 rounded-pill bg-cream px-4 py-2">
+        <div className="inline-flex w-fit items-center gap-3 rounded-pill border border-border bg-white px-4 py-2.5 shadow-soft">
           <span className={cn("text-small font-medium", isMonthly ? "text-fg" : "text-muted")}>
             Monthly
           </span>
@@ -121,7 +141,7 @@ export function PricingCards() {
             onClick={() => setIsMonthly((v) => !v)}
             className={cn(
               "relative inline-flex h-7 w-12 shrink-0 items-center rounded-pill border-2 border-border-strong t-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              !isMonthly ? "bg-black" : "bg-white",
+              !isMonthly ? "bg-black" : "bg-cream",
             )}
           >
             <span
@@ -148,12 +168,20 @@ export function PricingCards() {
               lift
               className={cn(
                 "flex h-full flex-col justify-between gap-8 p-6 md:p-8",
-                plan.popular && "border border-border",
+                plan.popular ? "border border-black/20 shadow-soft" : "border border-border",
               )}
             >
               <div>
-                <h3 className="text-label text-muted">{plan.name}</h3>
-                <p className="mt-3 flex items-baseline gap-1.5 text-h3 text-fg tabular-nums">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-label tracking-wide text-muted">{plan.name}</h3>
+                  {plan.popular ? (
+                    <span className="rounded-pill bg-black px-3 py-1 text-caption font-medium text-white">
+                      Most Popular
+                    </span>
+                  ) : null}
+                </div>
+
+                <p className="mt-4 flex items-baseline gap-1.5 text-h3 text-fg tabular-nums">
                   <span>£{displayPrice}</span>
                   <span className="text-small text-muted">/ month</span>
                 </p>
@@ -162,9 +190,22 @@ export function PricingCards() {
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3 text-body">
                       {feature.included ? (
-                        <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-fg" />
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            "mt-0.5 grid size-5 shrink-0 place-items-center rounded-pill",
+                            plan.popular ? "bg-black text-white" : "bg-sand text-fg",
+                          )}
+                        >
+                          <Check className="size-3" />
+                        </span>
                       ) : (
-                        <X aria-hidden="true" className="mt-1 size-4 shrink-0 text-subtle" />
+                        <span
+                          aria-hidden="true"
+                          className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-pill bg-cream text-subtle"
+                        >
+                          <X className="size-3" />
+                        </span>
                       )}
                       <span className={feature.included ? "text-fg" : "text-muted"}>
                         {feature.text}
@@ -180,6 +221,15 @@ export function PricingCards() {
             </Tile>
           );
         })}
+      </div>
+
+      <div className="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-white px-6 py-5 sm:flex-row sm:items-center">
+        <p className="text-small text-muted">
+          Prefer to pay per visit or review our written treatment plans before committing?
+        </p>
+        <ButtonLink href="/services/finance" variant="outline" size="sm" className="shrink-0">
+          Explore Payment Options
+        </ButtonLink>
       </div>
     </Section>
   );

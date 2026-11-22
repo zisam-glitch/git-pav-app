@@ -36,3 +36,17 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
 ## Open questions for the lead
 
 1. No invented or repo-only claims found on `/petition`; all copy is strictly backed by `website/src/content/petition.ts` and verified by `petition.test.ts`.
+
+## Pass 2
+
+**Capture used.** `/benefits.html` for the cards and the stacked flow ([benefits.md](../hims-patterns/benefits.md)); the homepage newsletter lead capture for the form cards. Recipe: [people-recipe.md](../hims-patterns/people-recipe.md).
+
+**Status: not rebuilt in pass 2** (the allowance ran out). Route and components are untouched, so the sign form (`api.forms.submitPetition`, required resident tick), the lazy YouTube player and the contact form still work as in pass 1. SEO fingerprint OK, parity 88% (unchanged). No counters, no signers.
+
+**Differences found (from reading the code and the pass 1 notes; not yet compared on screen).** Hero is a split hero and the two cards are tiles with icons; the sign form is a brown band; the video sits in a framed card; the contact form is a card beside address chips. These follow the homepage patterns, so the likely work is small: restyle the two cards as `RowCard` or `KeyLineList` rows, check the form card against the Hims lead-capture card (24px radius, 60px padding), and keep every H2 ("Sign the Petition" twice, "Share with Others", "Petition for NHS Dental Funding in Bradford", "Get In Touch").
+
+**Left to do.** Compare at 1440 and 390, rebuild only what differs, save shots to `docs/redesign/website/shots/petition/`, re-run fingerprint and parity.
+
+**Possible invented labels to review.** The chip "Bradford Dental Clinic" above "Get In Touch" in `petition-contact.tsx`; the placeholders "Jane Doe", "you@example.com", "NHS dental funding", "How can we help?"; the thanks text "Thank you. Your message has reached the practice, and the team will get back to you." Everything in `PETITION` (content file) is live wording.
+
+**Wording changes.** None. **Images needed.** None new (`petition-hero` is wired).

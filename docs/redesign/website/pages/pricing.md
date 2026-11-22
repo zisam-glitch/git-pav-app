@@ -57,3 +57,26 @@ Status: `todo` not started, `built` redesigned but not yet compared, `verified` 
    - Confirm whether `api.pricing.get()` in the Admin Dashboard database is seeded with the live `pricing.txt` values rather than the old repo fallback values.
 4. **Insurance providers (`insurance-providers.tsx`)**:
    - `pricing.txt` only states `We Accept All Insurance Providers` (live site used 6 unlabeled logo images `/images/logo/1.png`–`6.png`). Kept the 6 provider names (`AXA Health`, `Simplyhealth`, `Bupa`, `Aviva`, `Denplan`, `WPA Health Insurance`) and dropped the repo-only `"Direct claim processing and hassle-free coverage with leading UK private dental insurance plans."` claim; confirm the 6 provider names and whether insurer logos should be added.
+
+## Pass 2
+
+**Status: not rebuilt in pass 2.** Agent B ran out of allowance after the hub. Nothing on `/pricing` changed, so rows 1 to 6 above still describe pass 1 work and stay `verified` against pass 1. The kit parts for it are built, compile and are measured but not used yet: `hims/plan-card.tsx`, `check-list.tsx`, `price-list.tsx`, `chip.tsx` (`hims-patterns/listing-recipe.md` says how).
+
+**Captures to use**: `/weight-loss/membership.html` (plan content, chips, tick lists: `hims-patterns/membership.md`), `/labs/biomarkers.html` (hairline rows in a two-column topic band: `biomarkers.md`), `/labs.html` (comparison table: `labs.md`), `/hair-loss.html` (hero band: `hair-loss-category.md`).
+
+**Differences found** (page today at 1440: hero 740, plans 982 on cream, fees 4667 on white, insurance 508 on sand, announcement 1121 on brown):
+1. Hero: split with a picture, a bordered chip and a numbered "On this page" pill rail. Hims: cream band with 60px padding, chip with a gold or rust fill (`Chip`), jump links as 48px outline pills.
+2. Plans: three bordered tiles (white, sage, white) and a hand-made switch. Hims: radius 24, fill black at 3%, 30px padding, tick list with 18px rust discs (`PlanCard` + `CheckList`), the featured plan white with shadow `0 8px 16px rgba(0,0,0,.12)`; the Monthly / Annual switch as a two-button pill.
+3. Fees: 13 bordered tables with a cream header bar. Hims: per category a two-column band (heading left, hairline price rows right, 112px gap, `PriceList`), no card; keep the search and the category tabs as the jump row.
+4. Announcement: the three reasons are an `h4` plus a paragraph but the live line is one sentence ("Affordable Excellence: We ensure ..."): render `<p><strong>Affordable Excellence:</strong> We ensure ...</p>` to match it (parity is 94%, probably these lines).
+
+**Rebuild order**: hero, plans, fees, then insurance and announcement. Keep: both `api.pricing.get()` queries and their fallbacks, the billing switch, the fee search and category tabs, the section ids (`top`, `plans`, `fees`, `insurance`, `announcement`).
+
+**Must stay (SEO)**: H1 "You don't have to Pay for it all at once."; H2s in order "Pav Dental Plans", "Treatment Fee Schedule", "We Accept All Insurance Providers", "Special Announcement from Pav Dental"; H3s BRONZE, SILVER, GOLD, the 13 fee category names, "Our Price Match Promise", "Choose Pav Dental for:"; the link to `/services/finance`. Baselines: 844 words, parity coverage 94%.
+
+**Wording changes**: none made. **Images needed**: none new (`pricing-hero` is wired).
+
+**Open questions for the owner (new)**:
+1. The hero lead on the page is not the live sentence. Live: "With our 0% interest dental finance, treatments from £99 can be started today and paid over convenient monthly instalments." On the page: "Transparent private fees, monthly membership plans, and a clear written treatment plan before you commit." (the note in question 1 above says the live line is used; it is not). Finance wording is the owner's decision, so it was left alone.
+2. Repo-only text still on the page (in `components/pricing/*`): chips "Monthly & Annual Care", "Bradford Clinic · Transparent Fees", "Bradford Price Guarantee", "Dental Insurance"; leads "Membership tiers for regular check-ups, hygiene visits, and treatment savings.", "Complete treatment and fee schedule across examinations, hygiene, restorative care, whitening, and aesthetics.", "Itemised receipts are provided at every appointment for straightforward reimbursement claims."; "Annual (Save 20%)" with yearly prices £7.58 / £12.68 / £15.39; "Most Popular" on SILVER; "Prefer to pay per visit or review our written treatment plans before committing?".
+3. The "not included" state of the AI scan and the WhatsApp number on BRONZE and SILVER comes from pass 1 data; the live text lists both lines under every plan.

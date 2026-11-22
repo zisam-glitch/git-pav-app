@@ -1,4 +1,5 @@
-import { BookButton, Heading, Section, Tile } from "@/components/hims";
+import { BookButton } from "@/components/hims";
+import { ComparisonTable } from "@/components/hims/comparison-table";
 
 const COMPARISON_COLUMNS = [
   {
@@ -40,105 +41,37 @@ const COMPARISON_COLUMNS = [
   },
 ] as const;
 
-const ROWS: Array<{
-  label: string;
-  key: "options" | "contents" | "formula" | "application" | "bestFor";
-}> = [
+const ROW_LABELS = [
   { label: "Options", key: "options" },
   { label: "Pack / Session", key: "contents" },
   { label: "Formula", key: "formula" },
   { label: "Use", key: "application" },
   { label: "Best suited for", key: "bestFor" },
-];
+] as const;
 
 export function WhiteningComparison() {
   return (
-    <Section id="comparison-matrix" theme="sand" aria-labelledby="whitening-comparison-heading">
-      <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-          Transparent Pricing (£65 – £495)
-        </span>
-        <div id="whitening-comparison-heading" className="mt-4">
-          <Heading size="h2-md" accent="Whitening Ranges" tone="terracotta" inline>
-            Compare Our
-          </Heading>
-        </div>
-        <p className="mt-4 text-lead text-muted">
-          Side-by-side overview of our three whitening options, formulas, and what is included.
-        </p>
-      </div>
-
-      {/* Desktop comparison table */}
-      <div className="mt-10 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-border bg-cream">
-              <th className="w-1/4 px-6 py-6 text-small font-medium text-muted">Feature</th>
-              {COMPARISON_COLUMNS.map((col) => (
-                <th key={col.id} className="w-1/4 px-6 py-6 align-top">
-                  <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-copper">
-                    {col.eyebrow}
-                  </span>
-                  <div className="mt-3 text-h4 text-fg">{col.name}</div>
-                  <div className="mt-1 text-h3-md text-terracotta tabular-nums">{col.price}</div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border text-body">
-            {ROWS.map((row) => (
-              <tr key={row.key}>
-                <td className="px-6 py-4 align-top text-label text-fg">{row.label}</td>
-                {COMPARISON_COLUMNS.map((col) => (
-                  <td key={col.id} className="px-6 py-4 align-top text-small leading-relaxed text-muted">
-                    {col[row.key]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-            <tr className="bg-cream/50">
-              <td className="px-6 py-5 text-label text-fg">Appointment</td>
-              {COMPARISON_COLUMNS.map((col) => (
-                <td key={col.id} className="px-6 py-5">
-                  <BookButton size="sm" variant={col.buttonVariant} className="w-full">
-                    Book Now
-                  </BookButton>
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile stacked comparison cards */}
-      <div className="mt-8 grid gap-4 md:hidden">
-        {COMPARISON_COLUMNS.map((col) => (
-          <Tile key={col.id} as="article" tone="white" className="border border-border p-6">
-            <div className="flex items-start justify-between gap-4 border-b border-border pb-4">
-              <div>
-                <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3 py-0.5 text-caption font-medium text-copper">
-                  {col.eyebrow}
-                </span>
-                <h3 className="mt-2 text-h4 text-fg">{col.name}</h3>
-              </div>
-              <span className="text-h3-md text-terracotta tabular-nums">{col.price}</span>
-            </div>
-            <dl className="mt-4 divide-y divide-border">
-              {ROWS.map((row) => (
-                <div key={row.key} className="py-3">
-                  <dt className="text-caption font-medium text-muted">{row.label}</dt>
-                  <dd className="mt-1 text-small text-fg">{col[row.key]}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="mt-4 pt-2">
-              <BookButton variant={col.buttonVariant} className="w-full">
-                Book Now
-              </BookButton>
-            </div>
-          </Tile>
-        ))}
-      </div>
-    </Section>
+    <ComparisonTable
+      id="comparison-matrix"
+      theme="sand"
+      title="Compare Our"
+      accent="Whitening Ranges"
+      lead="Side-by-side overview of our three whitening options, formulas, and what is included."
+      columns={COMPARISON_COLUMNS.map((column) => ({
+        id: column.id,
+        name: column.name,
+        eyebrow: column.eyebrow,
+        price: column.price,
+        action: (
+          <BookButton variant={column.buttonVariant} className="w-full">
+            Book Now
+          </BookButton>
+        ),
+      }))}
+      rows={ROW_LABELS.map((row) => ({
+        label: row.label,
+        values: COMPARISON_COLUMNS.map((column) => column[row.key]),
+      }))}
+    />
   );
 }

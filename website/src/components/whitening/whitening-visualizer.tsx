@@ -18,7 +18,12 @@ export function WhiteningVisualizer() {
     PRODUCTS_DATA.find((item) => item.id === currentShade.recommendedId) ?? PRODUCTS_DATA[1];
 
   return (
-    <Section id="shade-visualizer" theme="brown" space="lg" aria-labelledby="whitening-shade-heading">
+    <Section
+      id="shade-visualizer"
+      theme="brown"
+      space="lg"
+      aria-labelledby="whitening-shade-heading"
+    >
       <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
         <div className="max-w-xl">
           <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
@@ -111,7 +116,8 @@ export function WhiteningVisualizer() {
               Suggested whitening range
             </span>
             <p className="mt-3 text-h3-md text-white">
-              {recommended.name} — <span className="text-gold tabular-nums">{recommended.price}</span>
+              {recommended.name} —{" "}
+              <span className="text-gold tabular-nums">{recommended.price}</span>
             </p>
             <p className="mt-2 text-small leading-relaxed text-white/80">
               {recommended.tags.join(" · ")}. Final shade assessment and suitability are confirmed

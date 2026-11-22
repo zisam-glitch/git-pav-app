@@ -22,12 +22,12 @@ export function RootCanalContact() {
               today!
             </p>
 
-            <ul className="mt-8 space-y-3 text-body">
-              <li className="text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
+            <ul className="mt-8 text-body">
+              <li className="py-2 text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
               <li>
                 <a
                   href={PRACTICE_PHONE_HREF}
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 >
                   {PRACTICE_PHONE}
                 </a>
@@ -35,7 +35,7 @@ export function RootCanalContact() {
               <li>
                 <a
                   href="tel:+447311871456"
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 >
                   44 7311 871456
                 </a>
@@ -43,12 +43,12 @@ export function RootCanalContact() {
               <li>
                 <a
                   href={`mailto:${PRACTICE_EMAIL}`}
-                  className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  className="inline-flex min-h-11 items-center text-fg underline underline-offset-4 t-colors hover:text-terracotta"
                 >
                   {PRACTICE_EMAIL}
                 </a>
               </li>
-              <li className="text-small text-muted">{PRACTICE_HOURS}</li>
+              <li className="py-2 text-small text-muted">{PRACTICE_HOURS}</li>
             </ul>
 
             <div className="mt-8">

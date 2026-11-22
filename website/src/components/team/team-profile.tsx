@@ -1,22 +1,20 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUpRight, CheckCircle2, Clock, Languages, Phone, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { ContentBlock } from "@/components/content/content-blocks";
-import {
-  BookButton,
-  ButtonLink,
-  CallButton,
-  CtaBand,
-  Heading,
-  Section,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, CallButton, CtaBand, Heading, Section } from "@/components/hims";
+import { CheckList } from "@/components/hims/check-list";
+import { NumberedList } from "@/components/hims/numbered-list";
+import { PersonCapsule } from "@/components/hims/person-capsule";
+import { SectionHeader } from "@/components/hims/section-header";
+import { StackedFlow } from "@/components/hims/stacked-flow";
 import { TEAM_MEMBERS, type TeamMember } from "@/content/team-members";
 import { PRACTICE_EMAIL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { teamPersonJsonLd } from "@/lib/seo";
 import { TeamPhoto } from "./team-photo";
 
-const LINK_CLASS = "font-medium text-terracotta underline underline-offset-4 hover:text-copper";
+const LINK_CLASS =
+  "font-medium text-terracotta underline underline-offset-4 t-colors hover:text-rust";
 
 /** Turns the practice's phone number and email inside a line of text into links, and leaves the rest as written. */
 function withContactLinks(text: string): ReactNode[] {
@@ -44,66 +42,55 @@ function withContactLinks(text: string): ReactNode[] {
   return parts;
 }
 
-function Fact({
-  icon: Icon,
-  label,
-  children,
-}: {
-  icon: typeof Clock;
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <li className="flex items-start gap-3 text-body text-fg">
-      <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-pill bg-cream text-terracotta">
-        <Icon className="size-4" aria-hidden="true" />
-      </span>
-      <div>
-        <span className="block text-caption font-medium text-subtle">{label}</span>
-        <span className="text-body text-fg">{children}</span>
-      </div>
-    </li>
-  );
+/** One profile section: its H2 and the blocks under it, up to the next H2. The quote is shown on its own band. */
+type Group = { title?: string; blocks: ContentBlock[] };
+
+function splitProfile(blocks: ContentBlock[]): { groups: Group[]; quotes: string[] } {
+  const groups: Group[] = [];
+  const quotes: string[] = [];
+  for (const block of blocks) {
+    if (block.kind === "quote") {
+      quotes.push(block.text);
+    } else if (block.kind === "heading" && block.level !== 3) {
+      groups.push({ title: block.text, blocks: [] });
+    } else {
+      if (groups.length === 0) groups.push({ blocks: [] });
+      groups[groups.length - 1].blocks.push(block);
+    }
+  }
+  return { groups, quotes };
 }
 
-function ProfileBlock({ block }: { block: ContentBlock }): ReactNode {
+/** Lists of qualifications are numbered, as on the live profiles. */
+const NUMBERED_TITLE = /qualification|education/i;
+
+function listItemText(item: string | { text: string }): string {
+  return typeof item === "string" ? item : item.text;
+}
+
+function ProfileBlock({ block, numbered }: { block: ContentBlock; numbered: boolean }): ReactNode {
   switch (block.kind) {
     case "heading":
-      return block.level === 3 ? (
-        <h3 className="mt-8 text-h4 text-fg">{block.text}</h3>
-      ) : (
-        <h2 className="mt-10 border-t border-border pt-8 text-h3-md text-fg first:mt-0 first:border-t-0 first:pt-0">
-          {block.text}
-        </h2>
-      );
+      return <h3 className="mt-10 text-h4 text-fg first:mt-0">{block.text}</h3>;
     case "paragraph":
-      return <p className="mt-4 text-body leading-relaxed text-muted">{block.text}</p>;
-    case "list":
-      return (
-        <ul className="mt-4 space-y-2.5 text-body text-muted">
-          {block.items.map((item) => {
-            const text = typeof item === "string" ? item : item.text;
-            return (
-              <li
-                key={text}
-                className="flex items-start gap-3 rounded-xl border border-border/70 bg-tile-cream px-4 py-3 text-fg"
-              >
-                <CheckCircle2
-                  aria-hidden="true"
-                  className="mt-0.5 size-4 shrink-0 text-terracotta"
-                />
-                <span>{text}</span>
-              </li>
-            );
-          })}
-        </ul>
+      return <p className="mt-3 text-body text-muted first:mt-0">{block.text}</p>;
+    case "list": {
+      const items = block.items.map(listItemText);
+      return numbered ? (
+        <NumberedList
+          size="text"
+          className="mt-5 first:mt-0"
+          items={items.map((text) => ({ title: text }))}
+        />
+      ) : (
+        <CheckList
+          className={
+            items.length > 8 ? "mt-5 first:mt-0 md:grid-cols-2 md:gap-x-8" : "mt-5 first:mt-0"
+          }
+          items={items}
+        />
       );
-    case "quote":
-      return (
-        <Tile tone="sage" as="aside" className="mt-10 border border-border/70 p-6 md:p-8">
-          <blockquote className="text-h4 text-fg">{block.text}</blockquote>
-        </Tile>
-      );
+    }
     default:
       return null;
   }
@@ -118,6 +105,7 @@ export function TeamProfile({ member }: { member: TeamMember }) {
     photo: member.photo.src,
   });
   const peerMembers = TEAM_MEMBERS.filter((m) => m.slug !== member.slug).slice(0, 4);
+  const { groups, quotes } = splitProfile(member.blocks);
 
   return (
     <>
@@ -136,24 +124,13 @@ export function TeamProfile({ member }: { member: TeamMember }) {
           Back to Team
         </Link>
 
-        <div className="mt-8 grid items-start gap-8 md:grid-cols-[320px_1fr] lg:grid-cols-[360px_1fr] lg:gap-14">
-          <div className="rounded-xl border border-border/70 bg-tile-sage p-3">
-            <div className="overflow-hidden rounded-lg bg-sand">
-              <TeamPhoto
-                member={member}
-                priority
-                className="aspect-[4/5] w-full object-cover object-top"
-              />
-            </div>
-            {member.gdc ? (
-              <div className="mt-3 flex items-center justify-between rounded-lg bg-white px-3.5 py-2.5 text-caption font-medium text-fg">
-                <span className="inline-flex items-center gap-1.5 text-terracotta">
-                  <ShieldCheck aria-hidden="true" className="size-4" />
-                  <span>GDC: {member.gdc}</span>
-                </span>
-                <span className="text-subtle">UK Registered</span>
-              </div>
-            ) : null}
+        <div className="mt-8 grid items-center gap-10 md:grid-cols-[minmax(0,320px)_1fr] md:gap-14 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-24">
+          <div className="mx-auto aspect-[2/3] w-full max-w-[280px] overflow-hidden rounded-[120px] bg-sand shadow-[0_30px_30px_rgb(0_0_0/0.16)] md:max-w-none">
+            <TeamPhoto
+              member={member}
+              priority
+              className="size-full object-cover object-[50%_25%]"
+            />
           </div>
 
           <div>
@@ -162,41 +139,43 @@ export function TeamProfile({ member }: { member: TeamMember }) {
                 {member.role}
               </span>
               {member.gdc ? (
-                <span className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-white px-4 py-1.5 text-small font-medium text-terracotta">
-                  <ShieldCheck aria-hidden="true" className="size-4" />
-                  <span>GDC: {member.gdc}</span>
+                <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-small font-medium text-terracotta">
+                  GDC: {member.gdc}
                 </span>
               ) : null}
             </div>
 
-            <Heading as="h1" size="hero" className="mt-4">
+            <Heading as="h1" size="hero" className="mt-5">
               {member.name}
             </Heading>
 
             {member.summary.map((paragraph) => (
-              <p key={paragraph} className="mt-4 text-lead text-muted">
+              <p key={paragraph} className="mt-5 text-lead text-muted">
                 {paragraph}
               </p>
             ))}
 
             {hasFacts ? (
-              <ul className="mt-6 grid gap-4 rounded-xl border border-border bg-white p-5 sm:grid-cols-2">
+              <dl className="mt-8 divide-y divide-border border-y border-border">
                 {member.languages ? (
-                  <Fact icon={Languages} label="Languages">
-                    {member.languages}
-                  </Fact>
+                  <div className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                    <dt className="text-small text-subtle">Languages</dt>
+                    <dd className="text-body text-fg">{member.languages}</dd>
+                  </div>
                 ) : null}
                 {member.availability ? (
-                  <Fact icon={Clock} label="Availability">
-                    {member.availability}
-                  </Fact>
+                  <div className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                    <dt className="text-small text-subtle">Availability</dt>
+                    <dd className="text-body text-fg">{member.availability}</dd>
+                  </div>
                 ) : null}
                 {member.contact ? (
-                  <Fact icon={Phone} label="Contact">
-                    {withContactLinks(member.contact)}
-                  </Fact>
+                  <div className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                    <dt className="text-small text-subtle">Contact</dt>
+                    <dd className="text-body text-fg">{withContactLinks(member.contact)}</dd>
+                  </div>
                 ) : null}
-              </ul>
+              </dl>
             ) : null}
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -207,92 +186,61 @@ export function TeamProfile({ member }: { member: TeamMember }) {
         </div>
       </Section>
 
-      <Section theme="white" width="prose" space="default">
-        <div>
-          {member.blocks.map((block, index) => (
-            <ProfileBlock key={index} block={block} />
-          ))}
+      <Section theme="white" space="default">
+        <div className="divide-y divide-border">
+          {groups.map((group, index) => {
+            const numbered = group.title ? NUMBERED_TITLE.test(group.title) : false;
+            return (
+              <div
+                key={`${group.title ?? "intro"}-${index}`}
+                className="py-10 first:pt-0 last:pb-0 md:py-14"
+              >
+                <StackedFlow
+                  lead={group.title ? <h2 className="text-h3-md text-fg">{group.title}</h2> : null}
+                >
+                  <div>
+                    {group.blocks.map((block, blockIndex) => (
+                      <ProfileBlock key={blockIndex} block={block} numbered={numbered} />
+                    ))}
+                  </div>
+                </StackedFlow>
+              </div>
+            );
+          })}
         </div>
       </Section>
 
-      {/* Dark brown + gold clinical governance band */}
-      <Section theme="brown" space="default">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <div>
-            <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-              Pav Dental Clinical Governance
-            </span>
-            <Heading
-              as="h2"
-              size="h2-md"
-              accent="across every appointment"
-              tone="gold"
-              className="mt-4"
-            >
-              Regulated Bradford care
-            </Heading>
-            <p className="mt-4 text-body text-white/80">
-              Our clinicians and practice support staff operate from 786 Leeds Road, Bradford, BD3
-              9TY under CQC-aligned governance, cross-infection protocols, and transparent written
-              treatment planning.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Tile tone="glass" className="border border-white/15 p-5">
-              <p className="text-caption font-medium text-gold">24/7 Practice Access</p>
-              <p className="mt-2 text-small text-white/85">
-                Emergency and routine care available 00:00 – 24:00, seven days a week.
-              </p>
-            </Tile>
-            <Tile tone="glass" className="border border-white/15 p-5">
-              <p className="text-caption font-medium text-gold">Written Treatment Plans</p>
-              <p className="mt-2 text-small text-white/85">
-                Every patient receives clear clinical options and itemised fees before treatment.
-              </p>
-            </Tile>
-          </div>
-        </div>
-      </Section>
+      {quotes.map((quote) => (
+        <Section key={quote} theme="navy" space="lg">
+          <figure className="mx-auto max-w-4xl text-center">
+            <blockquote className="text-h3-md text-balance text-white">{quote}</blockquote>
+          </figure>
+        </Section>
+      ))}
 
-      {/* Peer team members */}
       <Section theme="sand" space="default">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-              Meet the Team
-            </span>
-            <Heading as="h2" size="h3" accent="Bradford colleagues" tone="terracotta" inline className="mt-3">
-              More of our
-            </Heading>
-          </div>
-          <ButtonLink to="/team" variant="outline" size="sm">
-            All Dentists &amp; Staff
-          </ButtonLink>
-        </div>
-
-        <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <SectionHeader
+          title="More of our"
+          accent="Bradford colleagues"
+          tone="terracotta"
+          action={
+            <ButtonLink to="/team" variant="outline">
+              All Dentists &amp; Staff
+            </ButtonLink>
+          }
+        />
+        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-14 lg:grid-cols-4 lg:gap-x-8">
           {peerMembers.map((peer) => (
             <li key={peer.slug}>
-              <Link
-                to="/team/$slug"
-                params={{ slug: peer.slug }}
-                className="group flex h-full flex-col justify-between rounded-xl border border-border/60 bg-white p-4 t-lift"
-              >
-                <div>
-                  <div className="aspect-[4/5] overflow-hidden rounded-lg bg-sand">
-                    <TeamPhoto
-                      member={peer}
-                      className="size-full object-cover object-top t-zoom"
-                    />
-                  </div>
-                  <p className="mt-3 text-caption font-medium text-terracotta">{peer.role}</p>
-                  <h3 className="mt-1 text-h4 text-fg">{peer.name}</h3>
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-small font-medium text-fg">
-                  <span>View profile</span>
-                  <ArrowUpRight aria-hidden="true" className="size-4 text-subtle group-hover:text-fg" />
-                </div>
-              </Link>
+              <PersonCapsule
+                slug={peer.slug}
+                name={peer.name}
+                role={peer.role}
+                gdc={peer.gdc}
+                photo={
+                  <TeamPhoto member={peer} className="size-full object-cover object-[50%_25%]" />
+                }
+              />
             </li>
           ))}
         </ul>
@@ -315,4 +263,3 @@ export function TeamProfile({ member }: { member: TeamMember }) {
     </>
   );
 }
-

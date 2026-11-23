@@ -1,6 +1,5 @@
 import { Check, ChevronLeft } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { BookButton } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import {
   type Answers,
@@ -157,15 +156,17 @@ export function RegistrationFlow() {
 
   const phaseIndex = stage === "between" ? phaseOf(screen) : 0;
 
+  if (stage === "done") return <ThankYou headingRef={headingRef} />;
+
   return (
     <main className="min-h-dvh bg-white text-fg">
-      {stage !== "done" ? backButton(cn(BACK, "fixed top-2 left-9 z-10 hidden md:grid")) : null}
+      {backButton(cn(BACK, "fixed top-2 left-9 z-10 hidden md:grid"))}
 
       <div className="mx-auto flex min-h-dvh w-full max-w-[528px] flex-col px-5 md:px-0">
         <div className="pt-4">
           {stage === "questions" ? <ProgressBar screens={screens} current={screen} /> : <div className="h-[5px]" />}
         </div>
-        {stage !== "done" ? <div className="-ml-2 mt-1 md:hidden">{backButton(BACK)}</div> : null}
+        <div className="-ml-2 mt-1 md:hidden">{backButton(BACK)}</div>
 
         <form onSubmit={onNext} noValidate className="flex flex-1 flex-col">
           <div className="flex-1 pt-6 pb-8 md:pt-10">
@@ -185,20 +186,17 @@ export function RegistrationFlow() {
                 sendError={sendError}
               />
             ) : null}
-            {stage === "done" ? <Done headingRef={headingRef} /> : null}
           </div>
 
-          {stage !== "done" ? (
-            <div className="sticky bottom-0 bg-white pt-3 pb-6">
-              <Button
-                type="submit"
-                disabled={stage === "questions" && (!canContinue || sending)}
-                className="h-12 w-full text-[16px] disabled:bg-[#f0f0f0] disabled:text-[#b8b8b8] disabled:opacity-100"
-              >
-                {stage === "questions" && isLast ? (sending ? "Sending…" : "Send my registration") : "Next"}
-              </Button>
-            </div>
-          ) : null}
+          <div className="sticky bottom-0 bg-white pt-3 pb-6">
+            <Button
+              type="submit"
+              disabled={stage === "questions" && (!canContinue || sending)}
+              className="h-12 w-full text-[16px] disabled:bg-[#f0f0f0] disabled:text-[#b8b8b8] disabled:opacity-100"
+            >
+              {stage === "questions" && isLast ? (sending ? "Sending…" : "Send my registration") : "Next"}
+            </Button>
+          </div>
         </form>
       </div>
     </main>
@@ -413,26 +411,39 @@ function ReviewSummary({ answers }: { answers: Answers }) {
   );
 }
 
-function Done({ headingRef }: { headingRef: HeadingRef }) {
+/**
+ * The thank-you page, after the Hims "Before we get to your treatment options" screen: cream page,
+ * a large two-tone headline (brown and gold) centred in the column, and a black pill at the foot.
+ * The live form's thank-you words are kept: thanks for registering, and who to email for support.
+ */
+function ThankYou({ headingRef }: { headingRef: HeadingRef }) {
   return (
-    <div role="status">
-      <Brand />
-      <img src="/images/icon-thank-you.svg" alt="" width={80} height={80} className="mb-5 size-20" />
-      <h1 ref={headingRef} tabIndex={-1} className={HEADING}>
-        Thank you!
-      </h1>
-      <p className="mt-3 text-[16px] leading-6 text-subtle">
-        Thanks for registering. If you ever need support, please feel free to email us at{" "}
-        <a href={`mailto:${PRACTICE_EMAIL}`} className="text-fg underline underline-offset-4">
-          {PRACTICE_EMAIL}
-        </a>
-      </p>
-      <div className="mt-8 flex flex-col gap-3">
-        <BookButton className="h-12 w-full">Book Your First Visit</BookButton>
-        <Button asChild variant="outline" className="h-12 w-full">
-          <a href="/">Back to Home</a>
-        </Button>
+    <main className="flex min-h-dvh flex-col bg-surface text-fg">
+      <div className="mx-auto flex w-full max-w-[528px] flex-1 flex-col px-5 md:px-0">
+        <div role="status" className="flex flex-1 flex-col justify-center py-16">
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-[42px] leading-[1.17] font-medium tracking-[-0.025em] text-[#7a4a2a] outline-none md:text-[56px]"
+          >
+            Thank you for <span className="text-[#c8995f]">registering</span> with Pav Dental.
+          </h1>
+          <p className="mt-6 text-[16px] leading-6 text-[#7a4a2a]/80">
+            If you ever need support, please feel free to email us at{" "}
+            <a href={`mailto:${PRACTICE_EMAIL}`} className="underline underline-offset-4">
+              {PRACTICE_EMAIL}
+            </a>
+          </p>
+        </div>
+        <div className="pb-6">
+          <a
+            href="/"
+            className="flex h-12 w-full items-center justify-center rounded-pill bg-black text-[16px] font-medium text-white transition-colors duration-300 hover:bg-black/80"
+          >
+            Continue
+          </a>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

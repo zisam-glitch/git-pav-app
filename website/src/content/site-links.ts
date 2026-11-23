@@ -85,8 +85,3 @@ export const SOCIAL_LINKS = [
   { name: "TikTok", href: "https://www.tiktok.com/@pavdentalofficial" },
   { name: "YouTube", href: "https://www.youtube.com/@PavDental" },
 ] as const satisfies readonly SiteLink[];
-
-/** True on a single service page (/services/whitening), not on the /services hub. */
-export function isServiceDetailPath(pathname: string): boolean {
-  return pathname.startsWith("/services/") && pathname.length > "/services/".length;
-}

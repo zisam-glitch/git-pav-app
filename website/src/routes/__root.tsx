@@ -1,18 +1,8 @@
-import {
-  createRootRoute,
-  HeadContent,
-  Outlet,
-  redirect,
-  Scripts,
-  useLocation,
-} from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from "@tanstack/react-router";
 import { QueryProvider } from "@/lib/query-provider";
 import { PAGES, PRACTICE_JSON_LD, redirectTarget, SITE_URL } from "@/lib/seo";
-import { cn } from "@/lib/utils";
 import { CookieConsent } from "@/components/home/cookie-consent";
 import { NotFoundPage } from "@/components/not-found/not-found-page";
-import { ServicesSidebar } from "@/components/content/services-sidebar";
-import { isServiceDetailPath } from "@/content/site-links";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -52,28 +42,18 @@ export const Route = createRootRoute({
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
     ],
   }),
-  component: RootComponent,
-});
-
-function RootComponent() {
-  // A service page (/services/whitening) opens the services sidebar beside its content.
-  const servicePage = useLocation({ select: (location) => isServiceDetailPath(location.pathname) });
-
-  return (
+  component: () => (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body className="bg-bg text-fg">
         <QueryProvider>
-          {servicePage ? <ServicesSidebar /> : null}
-          <div className={cn(servicePage && "xl:pl-72")}>
-            <Outlet />
-          </div>
+          <Outlet />
           <CookieConsent />
         </QueryProvider>
         <Scripts />
       </body>
     </html>
-  );
-}
+  ),
+});

@@ -29,7 +29,6 @@ function Home() {
       <HeroSlider />
       <Marquee />
       <ServiceTabs />
-      <HomeEmergency />
       <Overview />
       <HomeEmergency />
       <VideoSection />

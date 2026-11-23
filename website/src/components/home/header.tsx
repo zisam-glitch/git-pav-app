@@ -59,7 +59,7 @@ export function Header() {
             <img
               src="/images/pav-logo.svg"
               alt="Pav Dental"
-              width={1567}
+              width={1964}
               height={569}
               className="h-8 w-auto"
             />

@@ -1,88 +1,27 @@
-import { ArrowRight, Menu, ShoppingBag, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { BookButton, CallButton } from "@/components/hims";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, ShoppingBag } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { BookButton } from "@/components/hims";
 import { NAV_LINKS, SERVICE_PAGES } from "@/content/site-links";
 import { useCartStore } from "@/lib/cart-store";
 import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
 
-const TOP_SERVICES = [
-  { label: "Urgent care", title: "Emergency Dental", href: "/services/emergency-dental" },
-  { label: "Cosmetic", title: "Whitening", href: "/services/whitening" },
-  { label: "Facial aesthetics", title: "Aesthetics", href: "/services/aesthetics" },
-] as const;
+/** Every page in the header menu, in the live order, with Services after About. */
+const HEADER_LINKS = NAV_LINKS.filter((link) => link.href !== "/");
+const ABOUT_INDEX = HEADER_LINKS.findIndex((link) => link.href === "/about");
 
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const LINK_CLASS =
+  "shrink-0 rounded-pill px-3 py-1.5 text-small font-medium text-fg t-colors hover:bg-cream hover:text-muted";
 
+/**
+ * The site header: the logo, the menu on one row (wrapping below the logo on
+ * narrow screens, so there is no hamburger), Book and the bag. Services opens
+ * the service menu. Service pages also open the services sidebar.
+ */
 export function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const cartCount = useCartStore((state) =>
     state.items.reduce((sum, item) => sum + item.quantity, 0),
   );
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const drawerRef = useRef<HTMLElement>(null);
-  const wasOpenRef = useRef(false);
-
-  const closeMenu = useCallback(() => {
-    setMenuOpen(false);
-  }, []);
-
-  useEffect(() => {
-    if (menuOpen) {
-      wasOpenRef.current = true;
-      document.body.style.overflow = "hidden";
-      const frame = window.requestAnimationFrame(() => {
-        closeButtonRef.current?.focus();
-      });
-      return () => {
-        window.cancelAnimationFrame(frame);
-        document.body.style.overflow = "";
-      };
-    }
-
-    document.body.style.overflow = "";
-    if (wasOpenRef.current) {
-      wasOpenRef.current = false;
-      menuButtonRef.current?.focus();
-    }
-    return undefined;
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        closeMenu();
-        return;
-      }
-
-      if (e.key !== "Tab" || !drawerRef.current) return;
-      const focusables = Array.from(
-        drawerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
-      if (focusables.length === 0) return;
-
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (!first || !last) return;
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen, closeMenu]);
 
   return (
     <>
@@ -98,18 +37,38 @@ export function Header() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 h-[49px] rounded-t-header bg-white shadow-nav">
-        <div className="wrap flex h-full items-center justify-between gap-3">
+      <header className="sticky top-0 z-50 rounded-t-header bg-white shadow-nav">
+        <div className="wrap flex flex-wrap items-center gap-x-6 gap-y-2 py-2.5 xl:h-[64px] xl:flex-nowrap xl:py-0">
           <a
             href="/"
             aria-label="Pav Dental home"
-            className="inline-flex shrink-0 items-center rounded-pill py-1 text-nav-lg leading-none font-semibold text-fg t-colors hover:text-muted"
-            onClick={closeMenu}
+            className="inline-flex shrink-0 items-center rounded-pill t-colors"
           >
-            Pav Dental
+            <img
+              src="/images/pav-logo.png"
+              alt="Pav Dental"
+              width={3200}
+              height={869}
+              className="h-8 w-auto"
+            />
           </a>
 
-          <div className="flex items-center gap-2">
+          <nav
+            aria-label="Primary navigation"
+            className="order-last flex w-full min-w-0 flex-wrap items-center gap-x-1 gap-y-1 xl:order-none xl:w-auto xl:flex-1 xl:flex-nowrap xl:justify-center"
+          >
+            {HEADER_LINKS.map((link, index) => (
+              <div key={link.href} className="contents">
+                {index === ABOUT_INDEX + 1 ? <ServicesMenu /> : null}
+                <a href={link.href} className={LINK_CLASS}>
+                  {link.name}
+                </a>
+              </div>
+            ))}
+            {ABOUT_INDEX === -1 ? <ServicesMenu /> : null}
+          </nav>
+
+          <div className="ml-auto flex shrink-0 items-center gap-2">
             <BookButton size="sm" />
             <a
               href="/cart"
@@ -123,139 +82,88 @@ export function Header() {
                 </span>
               ) : null}
             </a>
-            <Button
-              ref={menuButtonRef}
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              aria-controls="site-nav-drawer"
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <Menu className="size-5" aria-hidden="true" />
-            </Button>
           </div>
         </div>
       </header>
+    </>
+  );
+}
+
+/** The Services item in the menu: a button that opens the list of every service page. */
+function ServicesMenu() {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function onPointerDown(event: PointerEvent) {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative shrink-0 xl:static xl:flex">
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((value) => !value)}
+        className={LINK_CLASS + " inline-flex items-center gap-1"}
+      >
+        Services
+        <ChevronDown
+          className={cn("size-4 transition-transform duration-200", open && "rotate-180")}
+          aria-hidden="true"
+        />
+      </button>
 
       <div
-        className={cn(
-          "fixed inset-0 z-[70] bg-black/44 transition-opacity duration-300 ease-smooth",
-          menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
-        )}
-        aria-hidden="true"
-        onClick={closeMenu}
-      />
-
-      <aside
-        ref={drawerRef}
-        id="site-nav-drawer"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Site navigation"
-        aria-hidden={!menuOpen}
-        inert={!menuOpen}
-        className={cn(
-          "fixed inset-y-0 right-0 z-[71] flex w-full max-w-[547px] flex-col bg-white shadow-card transition-transform duration-300 ease-smooth md:rounded-l-xl",
-          menuOpen ? "translate-x-0" : "translate-x-full",
-        )}
+        id={panelId}
+        hidden={!open}
+        className="absolute top-full left-0 z-[60] mt-2 w-[min(640px,calc(100vw-2rem))] rounded-xl bg-white p-4 shadow-card xl:top-[calc(100%+8px)] xl:left-1/2 xl:-translate-x-1/2"
       >
-        <div className="flex h-[49px] shrink-0 items-center justify-between px-6">
-          <span className="text-caption font-medium text-subtle">Menu</span>
-          <Button
-            ref={closeButtonRef}
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label="Close menu"
-            onClick={closeMenu}
-          >
-            <X className="size-5" aria-hidden="true" />
-          </Button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          <nav aria-label="Primary navigation">
-            <p className="mb-2 text-caption font-medium text-subtle">Explore</p>
-            <ul className="space-y-0.5">
-              {NAV_LINKS.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={closeMenu}
-                    className="group flex items-center justify-between rounded-md py-2.5 text-nav-lg text-fg t-colors hover:text-muted"
-                  >
-                    <span>{link.name}</span>
-                    <ArrowRight
-                      className="size-4 shrink-0 text-subtle transition-transform duration-200 group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="mt-8">
-            <p className="mb-3 text-caption font-medium text-subtle">Top services</p>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {TOP_SERVICES.map((service) => (
-                <a
-                  key={service.href}
-                  href={service.href}
-                  onClick={closeMenu}
-                  className="group flex flex-col justify-between gap-4 rounded-xl bg-tile-cream p-4 t-lift hover:bg-white"
-                >
-                  <div>
-                    <span className="block text-caption text-subtle">{service.label}</span>
-                    <span className="mt-1 block text-label text-fg">{service.title}</span>
-                  </div>
-                  <ArrowRight
-                    className="size-4 text-subtle transition-transform duration-200 group-hover:translate-x-0.5"
-                    aria-hidden="true"
-                  />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <nav aria-label="Services" className="mt-8">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-caption font-medium text-subtle">All services</p>
+        <p className="px-3 pb-2 text-caption font-medium text-subtle">Our services</p>
+        <ul className="grid gap-0.5 sm:grid-cols-2 md:grid-cols-3">
+          {SERVICE_PAGES.map((service) => (
+            <li key={service.href}>
               <a
-                href="/services"
-                onClick={closeMenu}
-                className="text-caption font-medium text-fg underline underline-offset-4 hover:text-muted"
+                href={service.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-3 py-2 text-small text-fg t-colors hover:bg-cream hover:text-muted"
               >
-                View all
+                {service.name}
               </a>
-            </div>
-            <ul className="space-y-0.5">
-              {SERVICE_PAGES.map((service) => (
-                <li key={service.href}>
-                  <a
-                    href={service.href}
-                    onClick={closeMenu}
-                    className="group flex items-center justify-between rounded-md py-2 text-nav-lg text-fg t-colors hover:text-muted"
-                  >
-                    <span>{service.name}</span>
-                    <ArrowRight
-                      className="size-4 shrink-0 text-subtle transition-transform duration-200 group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6">
-            <BookButton className="w-full" />
-            <CallButton variant="outline" className="w-full" />
-          </div>
-        </div>
-      </aside>
-    </>
+            </li>
+          ))}
+        </ul>
+        <a
+          href="/services"
+          onClick={() => setOpen(false)}
+          className="mt-3 block border-t border-border px-3 pt-3 text-small font-medium text-fg underline underline-offset-4 hover:text-muted"
+        >
+          View all services
+        </a>
+      </div>
+    </div>
   );
 }

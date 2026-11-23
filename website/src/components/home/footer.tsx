@@ -149,6 +149,9 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-caption text-white/66 sm:flex-row sm:items-center sm:justify-between">
+          <a href="/" aria-label="Pav Dental home" className="inline-flex w-fit rounded-lg bg-white p-2">
+            <img src="/images/pav-logo.png" alt="Pav Dental" width={3200} height={869} className="h-9 w-auto" />
+          </a>
           <p>Copyright {new Date().getFullYear()} Pav Dental.</p>
           <p>786 Leeds Road, Bradford, BD3 9TY</p>
         </div>

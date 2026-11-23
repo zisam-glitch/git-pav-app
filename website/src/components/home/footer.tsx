@@ -155,7 +155,7 @@ export function Footer() {
 
         <a href="/" aria-label="Pav Dental home" className="mt-12 flex justify-center pt-2">
           <img
-            src="/images/pav-logo-light.svg"
+            src="/images/pav-logo-gray.svg"
             alt="Pav Dental"
             width={1964}
             height={569}

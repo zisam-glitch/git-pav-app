@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   CalendarCheck,
   CheckCircle2,
@@ -29,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { useEnquiry } from "@/lib/use-enquiry";
+import { RegistrationFlow } from "./registration-flow";
 import {
   CONTACT_TIME_OPTIONS,
   REGISTRATION_BENEFITS,
@@ -39,10 +41,14 @@ import {
 const STEP_ICONS = [CalendarCheck, ShieldCheck, ClipboardList] as const;
 
 export function RegistrationPage() {
+  const [flowOpen, setFlowOpen] = useState(false);
+  const start = () => setFlowOpen(true);
+
   return (
     <>
-      <RegistrationHero />
+      <RegistrationHero onStart={start} />
       <RegistrationSteps />
+      <RegistrationStartSection onStart={start} />
       <RegistrationEnquirySection />
       <RegistrationBenefitsStrip />
       <RegistrationFaqSection />
@@ -60,12 +66,14 @@ export function RegistrationPage() {
       >
         786 Leeds Road, Bradford, BD3 9TY · {PRACTICE_HOURS}.
       </CtaBand>
+
+      <RegistrationFlow open={flowOpen} onClose={() => setFlowOpen(false)} />
     </>
   );
 }
 
 /** Hims onboarding hero (Mobbin 24789ec8): calm cream surface, clear value prop and direct actions. */
-function RegistrationHero() {
+function RegistrationHero({ onStart }: { onStart: () => void }) {
   return (
     <Section id="top" theme="cream" aria-label="New patient registration at Pav Dental">
       <SplitFeature
@@ -90,13 +98,16 @@ function RegistrationHero() {
           </Heading>
 
           <p className="mt-5 max-w-xl text-lead text-muted">
-            Becoming a Pav Dental patient takes minutes. Book online 24/7 with no waiting lists,
-            complete your confidential medical history privately in clinic, and receive clear
-            written treatment plans from your very first visit.
+            Becoming a Pav Dental patient takes minutes. Register online in about 8 minutes, book
+            24/7 with no waiting lists, and receive clear written treatment plans from your very
+            first visit.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <BookButton>Book Your First Visit</BookButton>
+            <Button type="button" onClick={onStart}>
+              Register online
+            </Button>
+            <BookButton variant="outline">Book Your First Visit</BookButton>
             <CallButton variant="outline">Call {PRACTICE_PHONE}</CallButton>
           </div>
 
@@ -111,7 +122,7 @@ function RegistrationHero() {
             </li>
             <li className="flex items-center gap-2">
               <Lock aria-hidden="true" className="size-4 text-terracotta" />
-              <span>Private in-clinic intake</span>
+              <span>Secure online registration</span>
             </li>
           </ul>
         </div>
@@ -138,8 +149,8 @@ function RegistrationSteps() {
           <span id="registration-steps-heading">Three simple steps to</span>
         </Heading>
         <p className="mt-4 text-lead text-muted">
-          No lengthy paper packets or sensitive web forms — just straightforward access to calm,
-          clinician-led dental care in Bradford.
+          No paper packets to fill in at the desk: register online in a few minutes, then book 24/7
+          for calm, clinician-led dental care in Bradford.
         </p>
       </div>
 
@@ -176,9 +187,79 @@ function RegistrationSteps() {
   );
 }
 
+const REGISTRATION_HAVE_TO_HAND = [
+  "Your mobile number, email and an emergency contact",
+  "Your NHS number and GP surgery, if you have them (both optional)",
+  "A list of the medications you take",
+  "About 8 minutes. Stop at any time: nothing is saved until you send it",
+] as const;
+
+/** The online registration: what to have ready, how the answers are looked after, and the start button. */
+function RegistrationStartSection({ onStart }: { onStart: () => void }) {
+  return (
+    <Section id="register-online" theme="sand" aria-labelledby="register-online-heading">
+      <div className="grid items-center gap-10 lg:grid-cols-[1fr_0.9fr] lg:gap-14">
+        <div className="max-w-xl">
+          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
+            New patient registration
+          </span>
+          <Heading as="h2" size="h2-md" accent="in about 8 minutes" tone="terracotta" className="mt-4">
+            <span id="register-online-heading">Register online</span>
+          </Heading>
+          <p className="mt-4 text-lead text-muted">
+            One short question group at a time: about you, your health and your teeth. Your dentist
+            reads it before you arrive, so your first visit starts with your care, not paperwork.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button type="button" onClick={onStart}>
+              Start registration
+            </Button>
+            <CallButton variant="outline">Call {PRACTICE_PHONE}</CallButton>
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          <Tile tone="white" className="p-6 md:p-8">
+            <h3 className="text-h4 text-fg">Have these to hand</h3>
+            <ul className="mt-4 grid gap-3 text-body text-muted">
+              {REGISTRATION_HAVE_TO_HAND.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle2 aria-hidden="true" className="mt-1 size-4 shrink-0 text-terracotta" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Tile>
+          <Tile tone="sage" className="p-6">
+            <div className="flex items-start gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-pill bg-white text-fg">
+                <Lock aria-hidden="true" className="size-4" />
+              </span>
+              <div>
+                <h3 className="text-label text-fg">How your answers are looked after</h3>
+                <p className="mt-1.5 text-small text-muted">
+                  Your registration goes to our secure dashboard for the Bradford team. Health
+                  details are never sent by email. Read our{" "}
+                  <Link
+                    to="/privacy-policy"
+                    className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
+              </div>
+            </div>
+          </Tile>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 /**
- * Privacy-safe registration enquiry section (Mobbin fceeec4f spec-card + clean intake layout).
- * Collects basic contact details only — never NHS number, ethnicity, or medical history.
+ * Registration callback request (Mobbin fceeec4f spec-card + clean intake layout).
+ * Contact details only: health information goes through the online registration above.
  */
 function RegistrationEnquirySection() {
   const { sending, sent, error, submit, reset } = useEnquiry("New Patient Registration");
@@ -210,10 +291,10 @@ function RegistrationEnquirySection() {
                 <Lock aria-hidden="true" className="size-4" />
               </span>
               <div>
-                <h3 className="text-label text-fg">Your health data stays private</h3>
+                <h3 className="text-label text-fg">Keep health details for the registration</h3>
                 <p className="mt-1.5 text-small text-muted">
                   Please do not enter your NHS number, medical history, or clinical details in this
-                  form. Our clinicians collect health information confidentially in clinic.
+                  callback form. The online registration above is built for them.
                 </p>
               </div>
             </div>

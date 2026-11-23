@@ -3,17 +3,17 @@ import type { FaqItem } from "@/components/hims";
 export const REGISTRATION_STEPS = [
   {
     step: "01",
-    badge: "24/7 Access",
-    title: "Book Online or Call",
+    badge: "About 8 minutes",
+    title: "Register Online",
     description:
-      "Choose a convenient appointment time — daytime, evening, or weekend — using our online Setmore booking page or by calling our Bradford reception team on 0800 1938 786.",
+      "Answer a few short questions about you, your health and your teeth, one step at a time. Nothing is saved until you send it. Then book a convenient time on our Setmore page, or call our Bradford reception team on 0800 1938 786.",
   },
   {
     step: "02",
     badge: "Privacy First",
-    title: "Complete Medical History Privately in Clinic",
+    title: "We Set Up Your Patient Record",
     description:
-      "We protect your NHS number and medical history by never asking for sensitive health data on an open website form. Your confidential clinical intake is completed securely in person when you arrive.",
+      "Your registration goes to our secure dashboard for the Bradford team. We never email your answers, so your NHS number and medical history are seen only by the people who look after your care.",
   },
   {
     step: "03",
@@ -54,8 +54,8 @@ export const CONTACT_TIME_OPTIONS = [
 
 export const REGISTRATION_FAQS: FaqItem[] = [
   {
-    q: "Why don't you ask for my NHS number or medical history online?",
-    a: "Your clinical information is private. Rather than collecting sensitive medical history, ethnicity, or NHS details through an open website form, we complete your confidential clinical intake securely with our team when you visit our Bradford clinic.",
+    q: "What happens to the information I give when I register?",
+    a: "Your registration is sent to our secure dashboard, where only our Bradford team can read it. We never email your answers, and nothing is stored in your browser. Your NHS number, ethnic group and anything about your health are optional or only used to set up your care. Our Privacy Policy explains how we look after it.",
   },
   {
     q: "Are you currently accepting new patients in Bradford?",
@@ -63,7 +63,7 @@ export const REGISTRATION_FAQS: FaqItem[] = [
   },
   {
     q: "What should I bring to my first visit?",
-    a: "Simply bring photo ID if available and a list of any current medications so you can share them privately with your dentist during your in-clinic medical history check.",
+    a: "Simply bring photo ID if available and your list of current medications. Your dentist will go through your medical history with you in private at your first visit.",
   },
   {
     q: "How much is a new patient examination?",

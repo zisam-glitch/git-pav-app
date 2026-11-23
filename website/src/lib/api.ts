@@ -1,3 +1,5 @@
+import type { RegistrationPayload } from "@/content/registration-form";
+
 // Base API URL pointing to the Admin Dashboard (default http://localhost:3001 in local dev).
 const CONFIGURED_API_BASE =
   (typeof window !== "undefined" && (window as any).__ENV__?.VITE_API_BASE_URL) ||
@@ -283,6 +285,12 @@ export const api = {
       }),
     submitPetition: (data: PetitionFormData) =>
       apiFetch<{ success: boolean; id: string }>("/api/v1/forms/petition", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    /** The new patient registration. It holds health information: the dashboard stores it and emails no answers. */
+    submitRegistration: (data: RegistrationPayload) =>
+      apiFetch<{ success: boolean; id: string }>("/api/v1/forms/registration", {
         method: "POST",
         body: JSON.stringify(data),
       }),

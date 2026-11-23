@@ -1,4 +1,4 @@
-import { Check, CheckCircle2, ChevronLeft } from "lucide-react";
+import { Check, ChevronLeft } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { BookButton } from "@/components/hims";
 import { Button } from "@/components/ui/button";
@@ -417,9 +417,7 @@ function Done({ headingRef }: { headingRef: HeadingRef }) {
   return (
     <div role="status">
       <Brand />
-      <span className="mb-5 grid size-14 place-items-center rounded-pill bg-sage text-fg">
-        <CheckCircle2 aria-hidden="true" className="size-7" />
-      </span>
+      <img src="/images/icon-thank-you.svg" alt="" width={80} height={80} className="mb-5 size-20" />
       <h1 ref={headingRef} tabIndex={-1} className={HEADING}>
         Thank you!
       </h1>

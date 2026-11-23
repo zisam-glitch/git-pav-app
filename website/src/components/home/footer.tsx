@@ -149,35 +149,19 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-caption text-white/66 sm:flex-row sm:items-center sm:justify-between">
-          <a href="/" aria-label="Pav Dental home" className="inline-flex w-fit shrink-0">
-            <img
-              src="/images/pav-logo-light.svg"
-              alt="Pav Dental"
-              width={1964}
-              height={569}
-              className="h-12 w-auto"
-            />
-          </a>
           <p>Copyright {new Date().getFullYear()} Pav Dental.</p>
           <p>786 Leeds Road, Bradford, BD3 9TY</p>
         </div>
 
-        <div className="mt-8 overflow-hidden pt-2" aria-hidden="true">
-          <svg viewBox="0 0 1200 215" className="block h-auto w-full select-none text-white/17">
-            <text
-              x="50%"
-              y="84%"
-              textAnchor="middle"
-              fill="currentColor"
-              fontFamily="var(--font-sans)"
-              fontWeight="600"
-              fontSize="215"
-              letterSpacing="-0.02em"
-            >
-              Pav Dental
-            </text>
-          </svg>
-        </div>
+        <a href="/" aria-label="Pav Dental home" className="mt-12 flex justify-center pt-2">
+          <img
+            src="/images/pav-logo-light.svg"
+            alt="Pav Dental"
+            width={1964}
+            height={569}
+            className="block h-auto w-full max-w-[900px] select-none"
+          />
+        </a>
       </div>
     </footer>
   );

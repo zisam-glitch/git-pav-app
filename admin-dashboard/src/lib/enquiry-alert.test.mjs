@@ -76,6 +76,15 @@ describe("enquiryAlertEmail", () => {
     assert.match(job.text, /Read it on the dashboard's Submissions page\./);
   });
 
+  it("announces a patient registration with contact details only, never the answers", () => {
+    const email = enquiryAlertEmail({ ...alert, kind: "registration" }, "https://dashboard.example.test", now);
+    assert.equal(email.subject, "New patient registration from the website");
+    assert.match(email.text, /A patient registration came in through the website/);
+    assert.match(email.text, /\/dashboard\/submissions/);
+    assert.match(email.text, /health details never travel by email/);
+    assert.doesNotMatch(email.text, /NHS|medical|allerg/i);
+  });
+
   it("escapes what the sender typed in the HTML version", () => {
     const email = enquiryAlertEmail({ ...alert, name: "<b>Jane</b> & co" }, null, now);
     assert.match(email.html, /Name: &lt;b&gt;Jane&lt;\/b&gt; &amp; co/);

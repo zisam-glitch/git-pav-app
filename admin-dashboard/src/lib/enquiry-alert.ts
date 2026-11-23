@@ -8,7 +8,7 @@
 // booking requests can describe symptoms, and emails sent through Postmark
 // carry administrative details only (docs/compliance/dpa-tracker.md).
 
-export type EnquiryKind = "contact" | "booking" | "vacancy";
+export type EnquiryKind = "contact" | "booking" | "vacancy" | "registration";
 
 export interface EnquiryAlert {
   kind: EnquiryKind;
@@ -44,6 +44,13 @@ const KINDS: Record<EnquiryKind, { subject: string; what: string; page: string; 
   vacancy: {
     subject: "New job application from the website",
     what: "A job application",
+    page: "/dashboard/submissions",
+    pageName: "Submissions",
+  },
+  // Name and contact details only: the answers (medical and dental history, NHS number) stay in the dashboard.
+  registration: {
+    subject: "New patient registration from the website",
+    what: "A patient registration",
     page: "/dashboard/submissions",
     pageName: "Submissions",
   },

@@ -31,7 +31,7 @@
   },
   "/services/regestration": {
     "minCoverage": 0,
-    "reason": "Owner approved privacy-safe patient registration page without third-party health-data web form (19 Nov 2026)."
+    "reason": "Owner asked for the live form's questions as an online registration that goes to the dashboard instead of the live site's third-party form (24 Nov 2026). The page's own text is not compared with the live page."
   },
   "/shop": {
     "minCoverage": 0,

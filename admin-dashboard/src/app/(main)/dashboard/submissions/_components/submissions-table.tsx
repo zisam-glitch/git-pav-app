@@ -71,6 +71,7 @@ export function SubmissionsTable() {
     contact: "bg-blue-500/10 text-blue-600 border-blue-200",
     vacancy: "bg-purple-500/10 text-purple-600 border-purple-200",
     petition: "bg-amber-500/10 text-amber-600 border-amber-200",
+    registration: "bg-emerald-500/10 text-emerald-600 border-emerald-200",
     other: "bg-muted text-muted-foreground",
   };
 
@@ -86,6 +87,7 @@ export function SubmissionsTable() {
             <SelectItem value="contact">Contact Messages</SelectItem>
             <SelectItem value="vacancy">Job Applications</SelectItem>
             <SelectItem value="petition">Petitions</SelectItem>
+            <SelectItem value="registration">Patient Registrations</SelectItem>
           </SelectContent>
         </Select>
 
@@ -124,7 +126,8 @@ export function SubmissionsTable() {
               submissions.map((sub) => {
                 const name = sub.data?.name || sub.data?.fullName || "Anonymous";
                 const email = sub.data?.email || "No email";
-                const summary = sub.data?.subject || sub.data?.position || sub.data?.message?.slice(0, 50) || "—";
+                const summary =
+                  sub.data?.subject || sub.data?.position || sub.data?.summary || sub.data?.message?.slice(0, 50) || "—";
 
                 return (
                   <TableRow

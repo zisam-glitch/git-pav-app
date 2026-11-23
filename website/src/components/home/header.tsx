@@ -266,7 +266,8 @@ function MenuDrawer({
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          <nav aria-label="Menu pages">
+          {/* From xl the same pages are in the bar, so the list is not repeated here. */}
+          <nav aria-label="Menu pages" className="xl:hidden">
             <p className="mb-2 text-caption font-medium text-subtle">Explore</p>
             <ul className="space-y-0.5">
               {NAV_LINKS.map((link) => (
@@ -287,7 +288,7 @@ function MenuDrawer({
             </ul>
           </nav>
 
-          <div className="mt-8">
+          <div className="mt-8 xl:mt-0">
             <p className="mb-3 text-caption font-medium text-subtle">Top services</p>
             <div className="grid gap-3 sm:grid-cols-3">
               {TOP_SERVICES.map((service) => (

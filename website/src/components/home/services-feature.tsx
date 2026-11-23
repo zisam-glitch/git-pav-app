@@ -65,7 +65,7 @@ const SERVICES: readonly LiveHomeService[] = [
     ctaLabel: "Explore whitening",
     to: "/services/whitening",
     imgSrc: "/images/home/teeth-stack.jpg",
-    imgAlt: "Four smooth lavender and sage porcelain tooth models stacked in mid-air",
+    imgAlt: "Three smooth lavender, cream and sage porcelain tooth models stacked in mid-air",
   },
   {
     id: "general-dentistry",

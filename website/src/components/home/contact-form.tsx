@@ -69,7 +69,7 @@ export function ContactForm() {
         <div className="relative overflow-hidden rounded-[32px] bg-[#9a6a3d]">
           <img
             src="/images/home/banner-smile.jpg"
-            alt="Smiling young man in an olive knit polo against a warm caramel backdrop"
+            alt="Smiling young woman in an olive knit polo against a warm caramel backdrop"
             loading="lazy"
             width={1536}
             height={1024}

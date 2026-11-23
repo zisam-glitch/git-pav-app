@@ -36,7 +36,7 @@ export function CareFeature() {
             </h2>
             <img
               src="/images/home/phone-hand.jpg"
-              alt="Hand holding a smartphone showing an appointment calendar on a warm amber background"
+              alt="Hand holding a white smartphone showing an appointment calendar against a warm amber backdrop"
               loading="lazy"
               width={1024}
               height={1536}
@@ -54,7 +54,7 @@ export function CareFeature() {
           <article className="relative min-h-[460px] overflow-hidden rounded-[28px] md:min-h-[508px]">
             <img
               src="/images/home/smile-sunny.jpg"
-              alt="Silver-haired woman laughing with her eyes closed under a bright blue sky"
+              alt="Smiling older man with a daisy behind his ear, laughing under a bright blue sky"
               loading="lazy"
               width={1024}
               height={1280}
@@ -82,7 +82,7 @@ export function CareFeature() {
         <article className={cn(CARD, "relative flex min-h-[560px] flex-col p-6 md:p-10")}>
           <img
             src="/images/home/teeth-stack.jpg"
-            alt="Smooth lavender and sage porcelain tooth models stacked in the air"
+            alt="Three smooth lavender, cream and sage porcelain tooth models stacked in mid-air"
             loading="lazy"
             width={1024}
             height={1024}

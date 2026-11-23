@@ -54,7 +54,7 @@ export function CheckUpFeature() {
         <div className="relative mx-auto mt-8 w-[min(560px,86%)] md:mt-10">
           <img
             src="/images/home/sky-family.jpg"
-            alt="Smiling father carrying his laughing young son on his shoulders outdoors in evening sunlight"
+            alt="Smiling woman carrying her laughing young daughter on her shoulders against a pale evening sky"
             width={1024}
             height={1536}
             fetchPriority="high"

@@ -114,10 +114,6 @@ export function ShopCatalog({
             <h2 className={TITLE}>
               Our <span className={MUTED_TITLE}>Products</span>
             </h2>
-            <p className="mt-4 text-[clamp(17px,1.4vw,20px)] leading-[1.4] text-[#55565a]">
-              Happy Tooth oral care essentials for stronger enamel, a whiter smile and fresher
-              breath.
-            </p>
           </div>
           {!isLoading && products.length > 0 ? (
             <p className="text-small text-subtle tabular-nums">
@@ -130,7 +126,7 @@ export function ShopCatalog({
       {/* Filter Controls Row */}
       <div
         className={cn(
-          "flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between",
+          "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between",
           !hideHeading && "mt-10",
         )}
       >
@@ -149,7 +145,7 @@ export function ShopCatalog({
                 ))}
               </Select>
             </div>
-            <div className="hidden flex-wrap items-center gap-2 sm:flex">
+            <div className="hidden flex-1 flex-wrap items-center gap-2 sm:flex">
               {categories.map((cat) => {
                 const active = selectedCategory === cat.id;
                 return (
@@ -177,7 +173,7 @@ export function ShopCatalog({
           </p>
         )}
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center lg:ml-auto">
           <div className="relative w-full sm:w-64">
             <Search
               aria-hidden
@@ -193,20 +189,6 @@ export function ShopCatalog({
             />
           </div>
 
-          <div className="w-full sm:w-52">
-            <Select
-              aria-label="Sort products"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="h-12 leading-[2.75rem]"
-            >
-              {SORT_OPTIONS.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.label}
-                </option>
-              ))}
-            </Select>
-          </div>
         </div>
       </div>
 

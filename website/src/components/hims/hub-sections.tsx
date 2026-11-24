@@ -152,3 +152,103 @@ export function FaqSplit({
     </div>
   );
 }
+
+export type ProductItem = {
+  pills?: string[];
+  title: string;
+  sub?: string;
+  text: ReactNode;
+  image: string;
+  alt: string;
+  position?: string;
+  action: ReactNode;
+  link?: ReactNode;
+};
+
+/** The "For spontaneous sex" product rail of hims.com/erectile-dysfunction: grey image tile, pills, name, price line, text, button, safety link. */
+export function ProductRail({ items, label }: { items: ProductItem[]; label: string }) {
+  return (
+    <ul
+      aria-label={label}
+      className="-mx-4 flex list-none snap-x gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] md:mx-0 md:px-0"
+    >
+      {items.map((item) => (
+        <li
+          key={item.title}
+          className="flex w-[84%] shrink-0 snap-start flex-col sm:w-[46%] lg:w-[31.8%]"
+        >
+          <div className={cn(HUB_CARD, "relative overflow-hidden")}>
+            <img
+              src={item.image}
+              alt={item.alt}
+              loading="lazy"
+              style={{ objectPosition: item.position }}
+              className="aspect-[4/3] w-full object-cover"
+            />
+            {item.pills?.length ? (
+              <div className="absolute top-4 left-4 flex gap-1.5">
+                {item.pills.map((p) => (
+                  <span
+                    key={p}
+                    className="rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-medium text-[#2a2a2c]"
+                  >
+                    {p}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          <h3 className={cn("mt-5 text-[24px] leading-[1.15] font-normal tracking-[-0.01em]", INK)}>
+            {item.title}
+          </h3>
+          {item.sub ? <p className="mt-1 text-[14px] text-[#8b8d92]">{item.sub}</p> : null}
+          <div className="mt-2 flex-1 text-[14px] leading-[1.5] text-[#6b6b70]">{item.text}</div>
+          <div className="mt-5 [&>a]:w-full [&>button]:w-full">{item.action}</div>
+          {item.link ? (
+            <div className="mt-3 text-center text-[14px] text-[#55565a] underline underline-offset-4">
+              {item.link}
+            </div>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** "Let's get to the hard facts": the accordion and two buttons on the left, one tall rounded photo on the right. */
+export function FaqPhoto({
+  id,
+  title,
+  items,
+  actions,
+  image,
+  alt,
+}: {
+  id?: string;
+  title: string;
+  items: FaqItem[];
+  actions: ReactNode;
+  image: string;
+  alt: string;
+}) {
+  return (
+    <div className="grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+      <div>
+        <h2
+          id={id}
+          className={cn(
+            "text-[clamp(30px,3vw,40px)] leading-[1.1] font-normal tracking-[-0.02em]",
+            INK,
+          )}
+        >
+          {title}
+        </h2>
+        <FaqList items={items} tone="light" defaultOpen={0} className="mt-8" />
+        <div className="mt-8 flex flex-wrap gap-3">{actions}</div>
+      </div>
+      <div className="overflow-hidden rounded-[24px] lg:sticky lg:top-28">
+        <img src={image} alt={alt} loading="lazy" className="aspect-[4/5] w-full object-cover" />
+      </div>
+    </div>
+  );
+}

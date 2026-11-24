@@ -29,7 +29,11 @@ export {
   ExplainCards,
   StepBand,
   FaqSplit,
+  FaqPhoto,
+  ProductRail,
   HUB_CARD,
   type RailItem,
   type WhyItem,
+  type ProductItem,
 } from "./hub-sections";
+export { PhotoHero } from "./photo-hero";

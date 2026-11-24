@@ -12,10 +12,10 @@ export function OralHygienePage() {
   return (
     <main>
       <OralHygieneHero />
-      <OralHygieneImportance />
       <OralHygienePricing />
-      <OralHygieneShowcase />
+      <OralHygieneImportance />
       <OralHygieneWhoNeeds />
+      <OralHygieneShowcase />
       <OralHygieneConsent />
       <OralHygieneFaq />
       <ContactForm />

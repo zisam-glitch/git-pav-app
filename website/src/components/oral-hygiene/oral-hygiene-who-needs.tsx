@@ -1,5 +1,4 @@
-import { Plus } from "lucide-react";
-import { Heading, Section, Tile } from "@/components/hims";
+import { HUB_CARD, Section, SectionHead } from "@/components/hims";
 
 const INDICATORS = [
   "Bleeding gums",
@@ -13,50 +12,23 @@ const INDICATORS = [
 
 export function OralHygieneWhoNeeds() {
   return (
-    <Section theme="white" space="default">
-      <div className="max-w-2xl">
-        <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-          When to Visit
+    <Section theme="white" space="sm" aria-labelledby="hygiene-who-heading">
+      <SectionHead id="hygiene-who-heading" title="Who Needs Hygiene Treatment?">
+        You may need to see our hygienist if you have:
+      </SectionHead>
+      <div className={`${HUB_CARD} mt-10 p-7 md:p-10`}>
+        <ul className="grid list-none gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+          {INDICATORS.map((item) => (
+            <li key={item} className="border-b border-black/10 py-4 text-[18px] text-[#2a2a2c]">
+              {item}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-8 max-w-3xl text-[17px] leading-[1.5] text-[#55565a]">
+          Regular hygiene appointments are also essential if you wear braces, dentures, crowns,
+          veneers, bridges, or implants.
         </p>
-        <Heading as="h2" size="h2-md" accent="Treatment?" tone="terracotta" inline className="mt-4">
-          Who Needs Hygiene
-        </Heading>
-        <p className="mt-4 text-lead text-muted">You may need to see our hygienist if you have:</p>
       </div>
-
-      <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {INDICATORS.map((item, index) => (
-          <Tile
-            key={item}
-            as="li"
-            tone="cream"
-            lift
-            className="flex flex-col justify-between gap-5 border border-border p-6"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
-                0{index + 1}
-              </span>
-              <Plus aria-hidden className="size-4 text-terracotta" />
-            </div>
-            <h3 className="border-t border-border pt-4 text-h4 text-fg">{item}</h3>
-          </Tile>
-        ))}
-
-        <Tile
-          as="li"
-          tone="grey"
-          className="flex flex-col justify-between gap-4 border border-border p-6"
-        >
-          <span className="inline-flex w-fit rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium text-fg">
-            Restorative Care
-          </span>
-          <p className="border-t border-border pt-4 text-body font-medium text-fg">
-            Regular hygiene appointments are also essential if you wear braces, dentures, crowns,
-            veneers, bridges, or implants.
-          </p>
-        </Tile>
-      </ul>
     </Section>
   );
 }

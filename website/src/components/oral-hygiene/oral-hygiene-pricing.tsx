@@ -1,4 +1,4 @@
-import { PricingTiles, type PricingTier } from "@/components/hims";
+import { BookButton, ProductRail, Section, SectionHead, type PricingTier } from "@/components/hims";
 
 const SERVICES: readonly PricingTier[] = [
   {
@@ -34,14 +34,45 @@ const SERVICES: readonly PricingTier[] = [
   },
 ];
 
+const IMAGES = [
+  { src: "/images/generated/oral-hygiene-showcase.jpg", pos: "20% 50%" },
+  { src: "/images/generated/oral-hygiene-hero.jpg", pos: "70% 50%" },
+  { src: "/images/generated/home-checkup.jpg", pos: "50% 50%" },
+];
+
 export function OralHygienePricing() {
   return (
-    <PricingTiles
-      title="Our Hygiene"
-      accent="Services"
-      tiers={SERVICES}
-      columns={3}
-      ctaLabel="Make an Appointment"
-    />
+    <Section id="pricing" theme="white" aria-labelledby="hygiene-services-heading">
+      <SectionHead
+        id="hygiene-services-heading"
+        title="Our Hygiene Services"
+        action={
+          <span className="hidden max-w-xs text-[15px] text-[#6b6b70] md:block">
+            Gentle scale and polish appointments from £45.
+          </span>
+        }
+      />
+      <div className="mt-10">
+        <ProductRail
+          label="Our Hygiene Services"
+          items={SERVICES.map((s, i) => ({
+            pills: [s.price],
+            title: s.name,
+            sub: `${s.price}`,
+            text: (
+              <>
+                <p>{s.description}</p>
+                <p className="mt-2 font-medium text-[#2a2a2c]">{s.bestFor}</p>
+              </>
+            ),
+            image: IMAGES[i].src,
+            position: IMAGES[i].pos,
+            alt: i === 0 ? "Professional dental hygiene instruments in warm studio light" : "",
+            action: <BookButton>Make an Appointment</BookButton>,
+            link: <a href="#consent">Informed consent</a>,
+          }))}
+        />
+      </div>
+    </Section>
   );
 }

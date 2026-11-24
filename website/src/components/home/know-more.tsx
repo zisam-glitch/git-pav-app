@@ -76,8 +76,8 @@ export function KnowMore() {
           ) : (
             <>
               <img
-                src="/images/home/cavities.jpg"
-                alt="Porcelain tooth model beside a steel dental mirror on pale limestone"
+                src="/images/home/care-brush.jpg"
+                alt="Woman laughing with a bright smile, holding a toothbrush beside her cheek"
                 loading="lazy"
                 width={1536}
                 height={1024}
@@ -101,8 +101,8 @@ export function KnowMore() {
         </li>
         <li className={BIG_CARD}>
           <img
-            src="/images/home/mobile-care.jpg"
-            alt="Dentist with a leather dental case greeted at a front door by an elderly resident"
+            src="/images/home/care-visit.jpg"
+            alt="Dentist with a leather dental bag warmly greeted at a front door by a smiling elderly man"
             loading="lazy"
             width={1536}
             height={1024}
@@ -121,8 +121,8 @@ export function KnowMore() {
         </li>
         <li className={BIG_CARD}>
           <img
-            src="/images/home/clinic-night.jpg"
-            alt="Modern dental treatment room glowing with warm light at night"
+            src="/images/home/care-nurse.jpg"
+            alt="Dental nurse answering a late-night call at a reception desk lit by a warm lamp"
             loading="lazy"
             width={1536}
             height={1024}

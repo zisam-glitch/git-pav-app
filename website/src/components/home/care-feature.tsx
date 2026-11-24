@@ -36,10 +36,10 @@ export function CareFeature() {
             </h2>
             <img
               src="/images/home/phone-emergency.webp"
-              alt="Hand holding a smartphone whose screen shows a dental treatment room at night"
+              alt="Hand holding a smartphone showing the Pav Dental emergency dental page"
               loading="lazy"
-              width={454}
-              height={638}
+              width={773}
+              height={1085}
               className="absolute right-4 bottom-0 h-[52%] w-auto sm:right-8 sm:h-[82%]"
             />
             <ButtonLink

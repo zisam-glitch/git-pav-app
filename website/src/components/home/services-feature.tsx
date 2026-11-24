@@ -40,8 +40,8 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "We understand that dental emergencies can occur at any time, which is why we offer same day emergency dental care 24-hours a day, seven days a week, including National and Bank Holidays. Our dedicated team is always on hand to provide immediate and effective dental treatment, ensuring that you receive the care you need when you need it most.",
     ctaLabel: "Read More",
     to: "/services/emergency-dental",
-    imgSrc: "/images/home/clinic-night.jpg",
-    imgAlt: "Modern dental treatment room glowing with warm light at night",
+    imgSrc: "/images/home/care-nurse.jpg",
+    imgAlt: "Dental nurse answering a late-night call at a reception desk lit by a warm lamp",
   },
   {
     id: "aesthetics",
@@ -54,8 +54,8 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "At Pav Dental Aesthetics, we offer a range of top-quality aesthetic treatments designed to enhance your natural beauty and boost your confidence. Our services include Botox, dermal fillers, chemical peels, lip enhancement, and microneedling, all performed using premium-grade products for exceptional results. Our dedicated team provides expert guidance, ensuring personalized care and a commitment to quality. Contact us at 0800 099 6375 to learn more about our offers and packages, and experience the finest aesthetic treatments available.",
     ctaLabel: "Learn more",
     to: "/services/aesthetics",
-    imgSrc: "/images/home/serum-hand.jpg",
-    imgAlt: "Hand holding an amber glass dropper serum bottle against a soft cream backdrop",
+    imgSrc: "/images/home/smile-sunny.jpg",
+    imgAlt: "Smiling older man with a daisy behind his ear, laughing under a bright blue sky",
     contactNote: { label: "Aesthetics enquiries: 0800 099 6375", href: "tel:08000996375" },
   },
   {
@@ -81,8 +81,8 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "Welcome to your guide to General Dentistry, the foundation of oral health and wellness. From routine check-ups and dental fillings to complex root canals and extractions, general dentistry services are designed to maintain and enhance your dental health. Discover the importance of early diagnosis, preventative care, and the wide range of treatments available to ensure a lifetime of healthy smiles.",
     ctaLabel: "Explore general care",
     to: "/services/general-dentistry",
-    imgSrc: "/images/home/instruments.jpg",
-    imgAlt: "Dental mirror, probe and steel tray laid out on a pale sage surface",
+    imgSrc: "/images/home/banner-smile.jpg",
+    imgAlt: "Smiling young woman in an olive knit polo against a warm caramel backdrop",
   },
   {
     id: "tooth-extraction",
@@ -94,8 +94,8 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "At Pav Dental, our experienced oral surgeons use the latest techniques and technologies to ensure a comfortable and effective treatment experience. We offer guaranteed same-day tooth extractions for immediate pain relief. With transparent pricing for simple, intermediate, and complex extractions, you can trust us for professional care that prioritizes your needs. Follow our post-operative instructions for a smooth recovery, and book your appointment today to receive compassionate, state-of-the-art dental care.",
     ctaLabel: "Explore extractions",
     to: "/services/tooth-extraction",
-    imgSrc: "/images/home/cavities.jpg",
-    imgAlt: "Porcelain tooth model beside a steel dental mirror on pale limestone",
+    imgSrc: "/images/home/care-brush.jpg",
+    imgAlt: "Woman laughing with a bright smile, holding a toothbrush beside her cheek",
   },
   {
     id: "mobile-dentistry",
@@ -107,8 +107,8 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "Pav Dental Mobile offers comprehensive dental services delivered right to your home. With extensive experience in both traditional and mobile dentistry, we ensure top-notch care using the latest technology and equipment. Ideal for care homes, we help make your home oral-health CQC-compliant and work with NHS partners. Our modern, well-equipped mobile surgery serves patients across the UK, bringing convenience and expert dental care directly to your doorstep. Contact us at hello@pavdental.com to schedule your appointment today.",
     ctaLabel: "Explore mobile care",
     to: "/services/mobile-dentistry",
-    imgSrc: "/images/home/mobile-care.jpg",
-    imgAlt: "Dentist with a leather dental case greeted at a front door by an elderly resident",
+    imgSrc: "/images/home/care-visit.jpg",
+    imgAlt: "Dentist with a leather dental bag warmly greeted at a front door by a smiling elderly man",
     contactNote: { label: "Email hello@pavdental.com", href: "mailto:hello@pavdental.com" },
   },
 ];
@@ -150,11 +150,11 @@ export function ServicesFeature() {
           <h2 className="mt-2 text-h3-md text-white">{active.heading}</h2>
           <img
             src={active.phoneSrc}
-            alt={`Hand holding a smartphone whose screen shows: ${active.imgAlt}`}
+            alt={`Hand holding a smartphone showing the Pav Dental ${active.tabLabel} page`}
             loading="lazy"
-            width={454}
-            height={638}
-            className="mt-6 h-auto w-[min(250px,64%)] drop-shadow-[0_18px_28px_rgba(60,30,0,0.35)]"
+            width={773}
+            height={1085}
+            className="mt-6 h-auto w-[min(300px,72%)] drop-shadow-[0_18px_28px_rgba(60,30,0,0.35)]"
           />
           {active.subtitle ? (
             <p className={cn("mt-6 max-w-md text-lead", GOLD)}>{active.subtitle}</p>

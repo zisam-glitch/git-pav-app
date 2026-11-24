@@ -1,6 +1,7 @@
 import { ShieldCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { PETITION } from "@/content/petition";
+import { PetitionField } from "./petition-field";
 import { api } from "@/lib/api";
 
 type Status = "idle" | "sending" | "signed" | "failed";
@@ -37,102 +38,91 @@ export function PetitionFormBar() {
     }
   }
 
-  const field =
-    "h-12 w-full border-2 border-black bg-white px-4 text-[16px] text-black outline-none placeholder:text-black/45 focus:bg-[#fff8e8]";
-  const label = "mb-1.5 block text-[14px] font-bold text-black";
-
   return (
-    <section
-      id="sign-form"
-      aria-labelledby="sign-heading"
-      className="scroll-mt-24 border-2 border-black bg-white p-6 shadow-[8px_8px_0_0_#000] md:p-8"
-    >
-      <h2 id="sign-heading" className="text-[28px] leading-tight font-extrabold uppercase">
-        Sign the Petition
-      </h2>
-      <p className="mt-2 text-[16px] text-black/75">{copy.eligibility}</p>
+    <section id="sign-form" aria-labelledby="sign-heading" className="scroll-mt-24 px-3 md:px-4">
+      <div className="relative mx-auto max-w-[1392px] overflow-hidden rounded-[28px] bg-[#453421]">
+        <img
+          src="/images/generated/about-hero.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 size-full object-cover opacity-25"
+        />
+        <div className="relative px-6 py-12 md:px-14 md:py-20">
+          <div className="max-w-[460px]">
+            <h2
+              id="sign-heading"
+              className="text-[clamp(32px,4vw,52px)] leading-[1.05] font-medium tracking-[-0.02em] text-white"
+            >
+              Sign the Petition
+            </h2>
+            <p className="mt-3 text-[18px] text-white/85">{copy.eligibility}</p>
 
-      <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
-        <div>
-          <label htmlFor="pet-name" className={label}>
-            {copy.fieldLabels.name} *
-          </label>
-          <input
-            id="pet-name"
-            name="name"
-            required
-            type="text"
-            autoComplete="name"
-            placeholder={copy.fieldLabels.name}
-            className={field}
-          />
-        </div>
-        <div>
-          <label htmlFor="pet-email" className={label}>
-            {copy.fieldLabels.email} *
-          </label>
-          <input
-            id="pet-email"
-            name="email"
-            required
-            type="email"
-            autoComplete="email"
-            placeholder={copy.fieldLabels.email}
-            className={field}
-          />
-        </div>
-        <div>
-          <label htmlFor="pet-postcode" className={label}>
-            {copy.fieldLabels.postcode} *
-          </label>
-          <input
-            id="pet-postcode"
-            name="postcode"
-            required
-            type="text"
-            autoComplete="postal-code"
-            placeholder={copy.fieldLabels.postcode}
-            className={field}
-          />
-        </div>
+            <form onSubmit={handleSubmit} className="mt-8 grid gap-3">
+              <PetitionField
+                id="pet-name"
+                name="name"
+                required
+                type="text"
+                autoComplete="name"
+                label={copy.fieldLabels.name}
+              />
+              <PetitionField
+                id="pet-email"
+                name="email"
+                required
+                type="email"
+                autoComplete="email"
+                label={copy.fieldLabels.email}
+              />
+              <PetitionField
+                id="pet-postcode"
+                name="postcode"
+                required
+                type="text"
+                autoComplete="postal-code"
+                label={copy.fieldLabels.postcode}
+              />
 
-        <div className="flex items-center gap-3 text-[15px]">
-          <input
-            id="pet-resident"
-            name="resident"
-            type="checkbox"
-            required
-            className="size-5 accent-black"
-          />
-          <label htmlFor="pet-resident">{copy.residentLabel}</label>
+              <div className="mt-1 flex items-center gap-3 text-[15px] text-white">
+                <input
+                  id="pet-resident"
+                  name="resident"
+                  type="checkbox"
+                  required
+                  className="size-4 accent-[#f3b968]"
+                />
+                <label htmlFor="pet-resident">{copy.residentLabel}</label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="mt-2 h-14 w-full rounded-full bg-black text-[16px] font-medium text-white t-colors hover:bg-[#1b1b1b] disabled:opacity-60"
+              >
+                {status === "sending" ? "Submitting..." : copy.submit}
+              </button>
+
+              {status === "signed" ? (
+                <p
+                  role="status"
+                  className="flex items-center gap-2 rounded-[14px] bg-white px-4 py-3 text-[15px] font-medium text-[#1b1b1b]"
+                >
+                  <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+                  {copy.thanks}
+                </p>
+              ) : null}
+              {status === "failed" ? (
+                <p
+                  role="alert"
+                  className="rounded-[14px] bg-[#f6e6e2] px-4 py-3 text-[15px] font-medium text-[#8a4242]"
+                >
+                  {copy.failed}
+                </p>
+              ) : null}
+            </form>
+          </div>
         </div>
-
-        <button
-          type="submit"
-          disabled={status === "sending"}
-          className="h-14 w-full border-2 border-black bg-[#ffc671] text-[17px] font-extrabold uppercase shadow-[4px_4px_0_0_#000] t-colors hover:bg-black hover:text-white disabled:opacity-60"
-        >
-          {status === "sending" ? "Submitting..." : copy.submit}
-        </button>
-
-        {status === "signed" ? (
-          <p
-            role="status"
-            className="flex items-center gap-2 border-2 border-black bg-[#e4eee6] px-4 py-3 text-[15px] font-bold"
-          >
-            <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
-            {copy.thanks}
-          </p>
-        ) : null}
-        {status === "failed" ? (
-          <p
-            role="alert"
-            className="border-2 border-black bg-[#f6e6e2] px-4 py-3 text-[15px] font-bold text-[#8a4242]"
-          >
-            {copy.failed}
-          </p>
-        ) : null}
-      </form>
+      </div>
     </section>
   );
 }

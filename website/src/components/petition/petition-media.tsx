@@ -16,17 +16,22 @@ export function PetitionMedia() {
     <section
       id="petition-video"
       aria-labelledby="petition-video-heading"
-      className="border-y-2 border-black bg-[#ffc671] py-14 md:py-20"
+      className="py-14 md:py-24"
     >
       <div className="mx-auto w-full max-w-[1392px] px-4">
-        <h2
-          id="petition-video-heading"
-          className="max-w-[900px] text-[clamp(30px,4vw,56px)] leading-[1.02] font-extrabold uppercase"
-        >
-          {heading}
-        </h2>
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-[14px] tracking-wide text-[#b5644a]">
+            {PETITION.eyebrow.toLowerCase()}
+          </p>
+          <h2
+            id="petition-video-heading"
+            className="mt-3 text-[clamp(32px,4vw,56px)] leading-[1.05] font-normal tracking-[-0.03em] text-[#1b1b1b]"
+          >
+            {heading}
+          </h2>
+        </div>
 
-        <div className="mt-8 border-2 border-black bg-black shadow-[10px_10px_0_0_#000]">
+        <div className="mx-auto mt-10 max-w-[1100px] overflow-hidden rounded-[24px] bg-black">
           <div className="relative aspect-video w-full">
             {playing ? (
               <iframe
@@ -48,9 +53,9 @@ export function PetitionMedia() {
                   type="button"
                   onClick={() => setPlaying(true)}
                   aria-label={`Play the video: ${heading}`}
-                  className="group absolute inset-0 flex items-center justify-center bg-black/30 t-colors hover:bg-black/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  className="group absolute inset-0 flex items-center justify-center bg-black/25 t-colors hover:bg-black/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 >
-                  <span className="flex size-20 items-center justify-center rounded-full border-2 border-black bg-white text-black shadow-[4px_4px_0_0_#000] t-colors group-hover:bg-[#ffc671] sm:size-24">
+                  <span className="flex size-20 items-center justify-center rounded-full bg-white text-[#1b1b1b] shadow-[0_10px_36px_rgba(20,20,40,0.25)] t-colors group-hover:scale-105 sm:size-24">
                     <Play
                       className="size-8 translate-x-0.5 fill-current sm:size-10"
                       aria-hidden="true"

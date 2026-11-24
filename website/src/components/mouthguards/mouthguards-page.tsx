@@ -1,20 +1,16 @@
 import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { ContactForm } from "@/components/home/contact-form";
-import { MouthguardsColour } from "./mouthguards-colour";
-import { MouthguardsHero } from "./mouthguards-hero";
 import { MouthguardsOrdering } from "./mouthguards-ordering";
-import { MouthguardsPersonalisation } from "./mouthguards-personalisation";
+import { MouthguardsProduct } from "./mouthguards-product";
 import { MouthguardsUsers } from "./mouthguards-users";
 import { MouthguardsWhyChoose } from "./mouthguards-why-choose";
 
 export function MouthguardsPage() {
   return (
-    <main className="bg-bg">
-      <MouthguardsHero />
+    <main className="bg-white">
+      <MouthguardsProduct />
       <MouthguardsOrdering />
       <MouthguardsWhyChoose />
-      <MouthguardsColour />
-      <MouthguardsPersonalisation />
       <MouthguardsUsers />
       <ContactForm />
       <CtaBand

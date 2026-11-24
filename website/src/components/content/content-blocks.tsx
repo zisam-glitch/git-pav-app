@@ -85,9 +85,14 @@ function Block({ block, id }: { block: ContentBlock; id?: string }): ReactNode {
   switch (block.kind) {
     case "heading":
       return block.level === 3 ? (
-        <h3 id={id} className="mt-8 scroll-mt-28 text-h4 text-fg">{block.text}</h3>
+        <h3 id={id} className="mt-8 scroll-mt-28 text-h4 text-fg">
+          {block.text}
+        </h3>
       ) : (
-        <h2 id={id} className="mt-10 scroll-mt-28 border-t border-border pt-8 text-h3-md text-fg first:border-t-0 first:pt-0">
+        <h2
+          id={id}
+          className="mt-10 scroll-mt-28 border-t border-border pt-8 text-h3-md text-fg first:border-t-0 first:pt-0"
+        >
           {block.text}
         </h2>
       );

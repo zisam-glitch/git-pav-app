@@ -96,7 +96,10 @@ export function CheckUpFeature() {
                 height={900}
                 className="size-[190px] object-contain md:size-[230px]"
               />
-              <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md" />
+              <span
+                aria-hidden
+                className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md"
+              />
             </div>
             <div className="relative z-10 mt-5 flex justify-end">
               <CallButton variant="default" className="bg-[#0f2b36]">

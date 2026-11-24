@@ -44,7 +44,11 @@ export function TopTicker() {
         onClick={() => setPaused((v) => !v)}
         className="grid size-6 shrink-0 place-items-center rounded-full text-fg t-colors hover:bg-black/5 motion-reduce:hidden"
       >
-        {paused ? <Play aria-hidden className="size-3" /> : <Pause aria-hidden className="size-3" />}
+        {paused ? (
+          <Play aria-hidden className="size-3" />
+        ) : (
+          <Pause aria-hidden className="size-3" />
+        )}
       </button>
     </div>
   );

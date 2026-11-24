@@ -51,9 +51,7 @@ export function FaqList({
                 className={cn(
                   "group flex w-full items-center justify-between gap-6 py-5 text-left font-normal t-colors md:py-6",
                   large ? "t-hims-faq" : "text-h4",
-                  tone === "dark"
-                    ? "text-white hover:text-gold"
-                    : "text-fg hover:text-terracotta",
+                  tone === "dark" ? "text-white hover:text-gold" : "text-fg hover:text-terracotta",
                 )}
               >
                 <span className="leading-snug">{item.q}</span>

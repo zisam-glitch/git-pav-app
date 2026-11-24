@@ -51,7 +51,14 @@ export function EmergencyContactForm() {
             <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
               Urgent Enquiry
             </p>
-            <Heading as="h2" size="h2-md" accent="a message" tone="terracotta" inline className="mt-4">
+            <Heading
+              as="h2"
+              size="h2-md"
+              accent="a message"
+              tone="terracotta"
+              inline
+              className="mt-4"
+            >
               Send us
             </Heading>
             <p className="mt-4 text-lead text-muted">

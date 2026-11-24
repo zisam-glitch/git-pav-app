@@ -53,7 +53,7 @@ const ROWS: Array<{
 
 export function WhiteningComparison() {
   return (
-    <Section id="comparison-matrix" theme="sand" aria-labelledby="whitening-comparison-heading">
+    <Section id="comparison-matrix" theme="white" aria-labelledby="whitening-comparison-heading">
       <div className="max-w-2xl">
         <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
           Transparent Pricing (£65 – £495)
@@ -90,7 +90,10 @@ export function WhiteningComparison() {
               <tr key={row.key}>
                 <td className="px-6 py-4 align-top text-label text-fg">{row.label}</td>
                 {COMPARISON_COLUMNS.map((col) => (
-                  <td key={col.id} className="px-6 py-4 align-top text-small leading-relaxed text-muted">
+                  <td
+                    key={col.id}
+                    className="px-6 py-4 align-top text-small leading-relaxed text-muted"
+                  >
                     {col[row.key]}
                   </td>
                 ))}

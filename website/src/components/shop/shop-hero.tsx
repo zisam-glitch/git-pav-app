@@ -18,7 +18,11 @@ const HERO_TILES = HERO_CATEGORY_SLUGS.map((slug) =>
  */
 export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps) {
   return (
-    <section id="top" aria-label="Shop dental products" className="bg-white pt-8 pb-10 md:pt-12 md:pb-14">
+    <section
+      id="top"
+      aria-label="Shop dental products"
+      className="bg-white pt-8 pb-10 md:pt-12 md:pb-14"
+    >
       <div className={CONTAINER}>
         {/* The page keeps its heading for search engines and screen readers, but it is not shown. */}
         <h1 className="sr-only">Happy Tooth oral care at Pav Dental</h1>

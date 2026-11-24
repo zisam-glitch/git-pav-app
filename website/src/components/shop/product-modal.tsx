@@ -136,7 +136,11 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                 </button>
               </div>
 
-              <Button type="button" onClick={handleAdd} className="h-12 flex-1 rounded-full bg-[#1b1b1b] text-white hover:bg-black">
+              <Button
+                type="button"
+                onClick={handleAdd}
+                className="h-12 flex-1 rounded-full bg-[#1b1b1b] text-white hover:bg-black"
+              >
                 <ShoppingBag aria-hidden className="size-4" />
                 <span>
                   {added

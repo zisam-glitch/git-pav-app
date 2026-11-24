@@ -61,8 +61,13 @@ const PHASES: { title: string; text: string; heading: string; sections: SectionI
   },
 ];
 
-const phaseOf = (screen: Screen) => PHASES.findIndex((phase) => phase.sections.includes(screen.section));
-const normal = (value: string) => value.toLowerCase().replace(/[:?\s]+$/g, "").trim();
+const phaseOf = (screen: Screen) =>
+  PHASES.findIndex((phase) => phase.sections.includes(screen.section));
+const normal = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[:?\s]+$/g, "")
+    .trim();
 
 export function RegistrationFlow() {
   const [stage, setStage] = useState<Stage>("intro");
@@ -74,9 +79,15 @@ export function RegistrationFlow() {
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   const screens = useMemo(() => visibleScreens(answers), [answers]);
-  const index = Math.max(0, screens.findIndex((screen) => screen.id === screenId));
+  const index = Math.max(
+    0,
+    screens.findIndex((screen) => screen.id === screenId),
+  );
   const screen = screens[index] as Screen;
-  const errors = useMemo(() => (stage === "questions" ? validateScreen(screen, answers) : {}), [stage, screen, answers]);
+  const errors = useMemo(
+    () => (stage === "questions" ? validateScreen(screen, answers) : {}),
+    [stage, screen, answers],
+  );
   const canContinue = Object.keys(errors).length === 0;
   const isLast = index === screens.length - 1;
 
@@ -86,8 +97,10 @@ export function RegistrationFlow() {
     headingRef.current?.focus({ preventScroll: true });
   }, [stage, screenId]);
 
-  const setAnswer = (id: string, value: string | string[]) => setAnswers((current) => ({ ...current, [id]: value }));
-  const touch = (id: string) => setTouched((current) => (current[id] ? current : { ...current, [id]: true }));
+  const setAnswer = (id: string, value: string | string[]) =>
+    setAnswers((current) => ({ ...current, [id]: value }));
+  const touch = (id: string) =>
+    setTouched((current) => (current[id] ? current : { ...current, [id]: true }));
 
   async function submit() {
     const payload = buildPayload(answers);
@@ -103,7 +116,9 @@ export function RegistrationFlow() {
       setTouched({});
       setStage("done");
     } catch {
-      setSendError(`Your registration didn't send. Please try again, or call us on ${PRACTICE_PHONE}.`);
+      setSendError(
+        `Your registration didn't send. Please try again, or call us on ${PRACTICE_PHONE}.`,
+      );
     } finally {
       setSending(false);
     }
@@ -152,7 +167,8 @@ export function RegistrationFlow() {
         <ChevronLeft aria-hidden="true" className="size-6" />
       </button>
     );
-  const BACK = "grid size-10 place-items-center rounded-pill text-fg transition-colors hover:bg-black/5";
+  const BACK =
+    "grid size-10 place-items-center rounded-pill text-fg transition-colors hover:bg-black/5";
 
   const phaseIndex = stage === "between" ? phaseOf(screen) : 0;
 
@@ -164,15 +180,25 @@ export function RegistrationFlow() {
 
       <div className="mx-auto flex min-h-dvh w-full max-w-[528px] flex-col px-5 md:px-0">
         <div className="pt-4">
-          {stage === "questions" ? <ProgressBar screens={screens} current={screen} /> : <div className="h-[5px]" />}
+          {stage === "questions" ? (
+            <ProgressBar screens={screens} current={screen} />
+          ) : (
+            <div className="h-[5px]" />
+          )}
         </div>
         <div className="-ml-2 mt-1 md:hidden">{backButton(BACK)}</div>
 
         <form onSubmit={onNext} noValidate className="flex flex-1 flex-col">
           <div className="flex-1 pt-6 pb-8 md:pt-10">
-            {stage === "intro" ? <UpNext headingRef={headingRef} phase={0} heading={PHASES[0]?.heading ?? ""} intro /> : null}
+            {stage === "intro" ? (
+              <UpNext headingRef={headingRef} phase={0} heading={PHASES[0]?.heading ?? ""} intro />
+            ) : null}
             {stage === "between" ? (
-              <UpNext headingRef={headingRef} phase={phaseIndex} heading={PHASES[phaseIndex]?.heading ?? ""} />
+              <UpNext
+                headingRef={headingRef}
+                phase={phaseIndex}
+                heading={PHASES[phaseIndex]?.heading ?? ""}
+              />
             ) : null}
             {stage === "questions" ? (
               <QuestionStep
@@ -194,7 +220,11 @@ export function RegistrationFlow() {
               disabled={stage === "questions" && (!canContinue || sending)}
               className="h-12 w-full text-[16px] disabled:bg-[#f0f0f0] disabled:text-[#b8b8b8] disabled:opacity-100"
             >
-              {stage === "questions" && isLast ? (sending ? "Sending…" : "Send my registration") : "Next"}
+              {stage === "questions" && isLast
+                ? sending
+                  ? "Sending…"
+                  : "Send my registration"
+                : "Next"}
             </Button>
           </div>
         </form>
@@ -205,7 +235,9 @@ export function RegistrationFlow() {
 
 /** Thin segments, one per section, filling as the patient moves through it. */
 function ProgressBar({ screens, current }: { screens: Screen[]; current: Screen }) {
-  const sections = SECTIONS.filter((section) => screens.some((screen) => screen.section === section.id));
+  const sections = SECTIONS.filter((section) =>
+    screens.some((screen) => screen.section === section.id),
+  );
   const currentSection = sections.findIndex((section) => section.id === current.section);
   return (
     <div
@@ -220,7 +252,11 @@ function ProgressBar({ screens, current }: { screens: Screen[]; current: Screen 
         const inSection = screens.filter((screen) => screen.section === section.id);
         const position = inSection.findIndex((screen) => screen.id === current.id);
         const fill =
-          sectionIndex < currentSection ? 100 : sectionIndex === currentSection ? ((position + 1) / inSection.length) * 100 : 0;
+          sectionIndex < currentSection
+            ? 100
+            : sectionIndex === currentSection
+              ? ((position + 1) / inSection.length) * 100
+              : 0;
         return (
           <div
             key={section.id}
@@ -240,10 +276,19 @@ function ProgressBar({ screens, current }: { screens: Screen[]; current: Screen 
 
 type HeadingRef = React.RefObject<HTMLHeadingElement | null>;
 
-const HEADING = "text-[28px] leading-[1.12] font-medium tracking-[-0.01em] text-fg outline-none md:text-[32px]";
+const HEADING =
+  "text-[28px] leading-[1.12] font-medium tracking-[-0.01em] text-fg outline-none md:text-[32px]";
 
 function Brand() {
-  return <img src="/images/pav-logo.svg" alt="Pav Dental" width={1964} height={569} className="mb-6 h-7 w-auto" />;
+  return (
+    <img
+      src="/images/pav-logo.svg"
+      alt="Pav Dental"
+      width={1964}
+      height={569}
+      className="mb-6 h-7 w-auto"
+    />
+  );
 }
 
 /** The Hims "Up next" screen: finished parts ticked, the current part in a card, the rest pale. */
@@ -266,7 +311,8 @@ function UpNext({
       </h1>
       {intro ? (
         <p className="mt-3 text-[16px] leading-6 text-subtle">
-          It takes about 8 minutes. Nothing is saved until you send it, and we never email health details.
+          It takes about 8 minutes. Nothing is saved until you send it, and we never email health
+          details.
         </p>
       ) : null}
 
@@ -279,10 +325,16 @@ function UpNext({
               {i < PHASES.length - 1 ? (
                 <span
                   aria-hidden="true"
-                  className={cn("absolute top-5 bottom-0 left-[9px] w-px", active ? "bg-terracotta" : "bg-black/15")}
+                  className={cn(
+                    "absolute top-5 bottom-0 left-[9px] w-px",
+                    active ? "bg-terracotta" : "bg-black/15",
+                  )}
                 />
               ) : null}
-              <span aria-hidden="true" className="relative z-10 mt-1 grid size-5 shrink-0 place-items-center bg-white">
+              <span
+                aria-hidden="true"
+                className="relative z-10 mt-1 grid size-5 shrink-0 place-items-center bg-white"
+              >
                 {done ? (
                   <Check className="size-4 text-[#a3a3a3]" strokeWidth={2.5} />
                 ) : (
@@ -300,7 +352,14 @@ function UpNext({
                   <p className="mt-1 text-[13px] leading-5 text-subtle">{item.text}</p>
                 </div>
               ) : (
-                <p className={cn("pt-0.5 text-[18px] leading-7", done ? "text-[#a3a3a3]" : "text-[#a3a3a3]")}>{item.title}</p>
+                <p
+                  className={cn(
+                    "pt-0.5 text-[18px] leading-7",
+                    done ? "text-[#a3a3a3]" : "text-[#a3a3a3]",
+                  )}
+                >
+                  {item.title}
+                </p>
               )}
             </li>
           );
@@ -345,7 +404,9 @@ function QuestionStep({
       <h1 ref={headingRef} tabIndex={-1} className={HEADING}>
         {screen.title}
       </h1>
-      {screen.description ? <p className="mt-3 text-[16px] leading-6 text-subtle">{screen.description}</p> : null}
+      {screen.description ? (
+        <p className="mt-3 text-[16px] leading-6 text-subtle">{screen.description}</p>
+      ) : null}
 
       {screen.section === "review" ? <ReviewSummary answers={answers} /> : null}
 
@@ -366,7 +427,12 @@ function QuestionStep({
       {screen.section === "review" ? (
         <p className="mt-6 text-[14px] leading-5 text-subtle">
           Read how we look after your information in our{" "}
-          <a href="/privacy-policy" target="_blank" rel="noopener" className="text-fg underline underline-offset-4">
+          <a
+            href="/privacy-policy"
+            target="_blank"
+            rel="noopener"
+            className="text-fg underline underline-offset-4"
+          >
             Privacy Policy
           </a>
           .
@@ -405,7 +471,8 @@ function ReviewSummary({ answers }: { answers: Answers }) {
         ))}
       </dl>
       <p className="mt-4 border-t border-black/10 pt-3 text-[14px] leading-5 text-subtle">
-        {count} answers in {sections.length} sections will be sent. Use the back arrow if you want to change anything.
+        {count} answers in {sections.length} sections will be sent. Use the back arrow if you want
+        to change anything.
       </p>
     </div>
   );

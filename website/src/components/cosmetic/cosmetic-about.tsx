@@ -1,15 +1,8 @@
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-} from "@/components/hims";
+import { BookButton, ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
 
 export function CosmeticAbout() {
   return (
-    <Section theme="cream" aria-labelledby="cosmetic-about-heading">
+    <Section theme="white" aria-labelledby="cosmetic-about-heading">
       <SplitFeature
         media={
           <Media

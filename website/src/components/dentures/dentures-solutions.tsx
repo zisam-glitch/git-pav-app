@@ -10,7 +10,7 @@ const SOLUTIONS = [
 
 export function DenturesSolutions() {
   return (
-    <Section id="solutions" theme="cream">
+    <Section id="solutions" theme="white">
       <div className="max-w-2xl">
         <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
           Tailored Restorations

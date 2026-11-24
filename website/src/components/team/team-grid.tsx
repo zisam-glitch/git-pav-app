@@ -76,7 +76,9 @@ export function TeamGrid() {
                             <span className="text-[12px] text-[#5b3fc4]">GDC: {member.gdc}</span>
                           ) : null}
                         </h2>
-                        <p className="mt-0.5 text-[12px] leading-snug text-[#6d6e72]">{member.role}</p>
+                        <p className="mt-0.5 text-[12px] leading-snug text-[#6d6e72]">
+                          {member.role}
+                        </p>
                       </div>
                     </div>
                     <p className="mt-5 line-clamp-4 text-[14px] leading-[1.5] text-[#55565a]">
@@ -135,7 +137,11 @@ export function TeamGrid() {
                   key={title}
                   className="flex gap-5 border-b border-[#1b1b1b]/10 py-7 first:pt-0 last:border-0 last:pb-0"
                 >
-                  <Icon aria-hidden strokeWidth={1.3} className="mt-1 size-9 shrink-0 text-[#1b1b1b]" />
+                  <Icon
+                    aria-hidden
+                    strokeWidth={1.3}
+                    className="mt-1 size-9 shrink-0 text-[#1b1b1b]"
+                  />
                   <div>
                     <h3 className="text-[clamp(20px,1.7vw,24px)] leading-[1.15] text-[#1b1b1b]">
                       {title.split(" ").slice(0, -1).join(" ")}{" "}
@@ -163,7 +169,10 @@ export function TeamGrid() {
           <p className="mx-auto mt-6 max-w-[34rem] text-[17px] leading-[1.45] text-[#55565a]">
             786 Leeds Road, Bradford, BD3 9TY · Open 24 hours, 7 days a week.
           </p>
-          <div aria-hidden className="mx-auto mt-10 h-24 w-px border-l border-dotted border-[#8a4242]/60" />
+          <div
+            aria-hidden
+            className="mx-auto mt-10 h-24 w-px border-l border-dotted border-[#8a4242]/60"
+          />
           <div className="-mt-1 flex flex-wrap items-center justify-center gap-3">
             <BookButton>Book Now</BookButton>
             <CallButton variant="outline" />

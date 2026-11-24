@@ -21,7 +21,7 @@ const IMPORTANCE_POINTS = [
 
 export function GeneralDentistryImportance() {
   return (
-    <Section theme="sand">
+    <Section theme="white">
       <div className="max-w-2xl">
         <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
           Preventative Approach
@@ -46,7 +46,7 @@ export function GeneralDentistryImportance() {
       </div>
 
       <Tile
-        tone="sage"
+        tone="grey"
         className="mt-6 grid items-center gap-4 border border-border p-6 md:grid-cols-[0.45fr_1fr] md:gap-8 md:p-8"
       >
         <h3 className="text-h4 text-fg">Cost and Insurance</h3>

@@ -115,7 +115,10 @@ export function CartPage() {
         <div className="mt-4 grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr] lg:gap-6">
           <ul className="space-y-3">
             {items.map((it) => (
-              <li key={it.id} className="relative flex overflow-hidden rounded-[20px] bg-white shadow-[0_10px_36px_rgba(20,20,40,0.06)]">
+              <li
+                key={it.id}
+                className="relative flex overflow-hidden rounded-[20px] bg-white shadow-[0_10px_36px_rgba(20,20,40,0.06)]"
+              >
                 <div className="size-[112px] shrink-0 bg-[#f4f3e0] sm:size-[140px]">
                   <img
                     src={it.image}
@@ -249,7 +252,11 @@ export function CartPage() {
             </div>
 
             <div className="flex items-start gap-3 rounded-[20px] bg-[#f4f3e0] p-5">
-              <ShieldCheck aria-hidden strokeWidth={1.4} className="mt-0.5 size-6 shrink-0 text-[#1b1b1b]" />
+              <ShieldCheck
+                aria-hidden
+                strokeWidth={1.4}
+                className="mt-0.5 size-6 shrink-0 text-[#1b1b1b]"
+              />
               <div>
                 <p className="text-[16px] text-[#1b1b1b]">Happy Tooth, our sister company</p>
                 <p className="mt-1 text-[14px] leading-[1.45] text-[#55565a]">

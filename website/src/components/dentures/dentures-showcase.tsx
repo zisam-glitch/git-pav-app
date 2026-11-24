@@ -1,5 +1,13 @@
 import { Layers, Sparkles } from "lucide-react";
-import { BookButton, CallButton, Heading, Media, Section, SplitFeature, Tile } from "@/components/hims";
+import {
+  BookButton,
+  CallButton,
+  Heading,
+  Media,
+  Section,
+  SplitFeature,
+  Tile,
+} from "@/components/hims";
 
 const SHOWCASE_OPTIONS = [
   {
@@ -42,11 +50,7 @@ export function DenturesShowcase() {
             {SHOWCASE_OPTIONS.map((option, i) => {
               const Icon = option.icon;
               return (
-                <Tile
-                  key={option.id}
-                  tone="glass"
-                  className="border border-white/12 p-5 md:p-6"
-                >
+                <Tile key={option.id} tone="glass" className="border border-white/12 p-5 md:p-6">
                   <div className="flex items-center justify-between gap-3">
                     <span className="grid size-9 place-items-center rounded-full bg-white/10 text-gold">
                       <Icon aria-hidden className="size-4" />

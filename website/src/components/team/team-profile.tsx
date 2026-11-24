@@ -70,7 +70,10 @@ function ProfileBlock({ block }: { block: ContentBlock }): ReactNode {
           {block.items.map((item) => {
             const text = typeof item === "string" ? item : item.text;
             return (
-              <li key={text} className="flex items-start gap-3 text-[17px] leading-[1.45] text-[#1b1b1b]">
+              <li
+                key={text}
+                className="flex items-start gap-3 text-[17px] leading-[1.45] text-[#1b1b1b]"
+              >
                 <Tick />
                 <span>{text}</span>
               </li>
@@ -299,7 +302,10 @@ export function TeamProfile({ member }: { member: TeamMember }) {
           <p className="mx-auto mt-6 max-w-[34rem] text-[17px] leading-[1.45] text-[#55565a]">
             786 Leeds Road, Bradford, BD3 9TY · Open 24 hours, 7 days a week.
           </p>
-          <div aria-hidden className="mx-auto mt-10 h-24 w-px border-l border-dotted border-[#8a4242]/60" />
+          <div
+            aria-hidden
+            className="mx-auto mt-10 h-24 w-px border-l border-dotted border-[#8a4242]/60"
+          />
           <div className="-mt-1 flex flex-wrap items-center justify-center gap-3">
             <BookButton>Book Now</BookButton>
             <CallButton variant="outline" />

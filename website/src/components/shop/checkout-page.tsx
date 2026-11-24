@@ -378,7 +378,9 @@ export function CheckoutPage() {
 
           <aside className="space-y-3 lg:sticky lg:top-24">
             <div className={`${SOFT_CARD} space-y-6 p-6 md:p-8`}>
-              <h2 className="text-[clamp(22px,2vw,28px)] leading-[1.1] text-[#1b1b1b]">Review order</h2>
+              <h2 className="text-[clamp(22px,2vw,28px)] leading-[1.1] text-[#1b1b1b]">
+                Review order
+              </h2>
 
               <ul className="max-h-80 space-y-3 overflow-y-auto pr-1">
                 {items.map((it) => (
@@ -469,7 +471,11 @@ export function CheckoutPage() {
             </div>
 
             <div className="flex items-start gap-3 rounded-[20px] bg-[#f4f3e0] p-5">
-              <ShieldCheck aria-hidden strokeWidth={1.4} className="mt-0.5 size-6 shrink-0 text-[#1b1b1b]" />
+              <ShieldCheck
+                aria-hidden
+                strokeWidth={1.4}
+                className="mt-0.5 size-6 shrink-0 text-[#1b1b1b]"
+              />
               <div>
                 <p className="text-[16px] text-[#1b1b1b]">Secure checkout</p>
                 <p className="mt-1 text-[14px] leading-[1.45] text-[#55565a]">

@@ -36,7 +36,7 @@ const TREATMENTS = [
 
 export function AestheticsTreatments() {
   return (
-    <Section id="treatments" theme="cream" aria-labelledby="aesthetics-treatments-heading">
+    <Section id="treatments" theme="white" aria-labelledby="aesthetics-treatments-heading">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">

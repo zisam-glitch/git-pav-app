@@ -20,7 +20,7 @@ export function OralHygieneShowcase() {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   return (
-    <Section theme="cream" space="default">
+    <Section theme="white" space="default">
       <SplitFeature
         media={
           <div className="relative overflow-hidden rounded-xl bg-white ring-1 ring-black/8">

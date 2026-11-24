@@ -21,7 +21,7 @@ const CHOOSING_FACTORS = [
 
 export function CosmeticFinancing() {
   return (
-    <Section id="financing" theme="sand" aria-labelledby="cosmetic-financing-heading">
+    <Section id="financing" theme="white" aria-labelledby="cosmetic-financing-heading">
       <Tile tone="white" className="border border-border p-6 md:p-10">
         <div className="grid items-center gap-8 md:grid-cols-[1.4fr_auto]">
           <div>
@@ -53,7 +53,14 @@ export function CosmeticFinancing() {
           <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
             Patient Checklist
           </span>
-          <Heading as="h3" size="h3" accent="General Dentist" tone="terracotta" inline className="mt-4">
+          <Heading
+            as="h3"
+            size="h3"
+            accent="General Dentist"
+            tone="terracotta"
+            inline
+            className="mt-4"
+          >
             How to Choose a
           </Heading>
         </div>

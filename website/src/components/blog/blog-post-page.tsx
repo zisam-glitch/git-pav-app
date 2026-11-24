@@ -100,10 +100,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
       </div>
 
       {/* Hims Blog Category Sub-Navbar (from blog-article-top.png & blog-all-top.png) */}
-      <nav
-        aria-label="Blog topics"
-        className="border-b border-black/[0.06] bg-white px-4 py-3"
-      >
+      <nav aria-label="Blog topics" className="border-b border-black/[0.06] bg-white px-4 py-3">
         <div className="no-scrollbar mx-auto flex max-w-[var(--container-wide)] items-center justify-start gap-6 overflow-x-auto md:justify-center md:gap-8">
           <Link
             to="/blog/all"

@@ -49,7 +49,8 @@ const FEATURED_TILES = [
     href: BOOKING_URL,
     external: true,
     imgSrc: "/images/home/tile-mirror.webp",
-    imgAlt: "Soft 3D off-white matte tablet speckled with terracotta, with an engraved dental mirror",
+    imgAlt:
+      "Soft 3D off-white matte tablet speckled with terracotta, with an engraved dental mirror",
   },
   {
     id: "whitening",

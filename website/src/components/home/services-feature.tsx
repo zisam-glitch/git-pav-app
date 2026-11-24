@@ -114,7 +114,10 @@ const POINTS = [
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const WALL = Array.from({ length: 20 }, (_, i) => `/images/home/wall-${String(i + 1).padStart(2, "0")}.webp`);
+const WALL = Array.from(
+  { length: 20 },
+  (_, i) => `/images/home/wall-${String(i + 1).padStart(2, "0")}.webp`,
+);
 
 const STATS = [
   ["2", "Doctors / Dentist"],
@@ -134,10 +137,18 @@ export function ServicesFeature() {
   const [ethosOpen, setEthosOpen] = useState(false);
 
   return (
-    <section id="services" className="relative -mt-8 rounded-t-[32px] bg-[#ab742d] pt-2 pb-[4.5rem] text-white md:pb-[5.5rem]">
+    <section
+      id="services"
+      className="relative -mt-8 rounded-t-[32px] bg-[#ab742d] pt-2 pb-[4.5rem] text-white md:pb-[5.5rem]"
+    >
       <div className="wrap-bento mt-0 grid max-w-[1396px] gap-2.5 pt-10 md:pt-14 lg:grid-cols-2">
         {/* Left: the six live service blurbs, one at a time */}
-        <article className={cn(CARD, "flex flex-col items-center px-6 py-10 text-center md:px-10 md:py-14")}>
+        <article
+          className={cn(
+            CARD,
+            "flex flex-col items-center px-6 py-10 text-center md:px-10 md:py-14",
+          )}
+        >
           <p className={cn("text-small font-medium", GOLD)}>{active.badge}</p>
           <h2 className="mt-2 t-hims-feature text-white">{active.heading}</h2>
           <img
@@ -165,7 +176,10 @@ export function ServicesFeature() {
                   {service.contactNote?.email ? null : (
                     <Link
                       to={service.to}
-                      className={cn("whitespace-nowrap text-small font-medium underline underline-offset-4", GOLD)}
+                      className={cn(
+                        "whitespace-nowrap text-small font-medium underline underline-offset-4",
+                        GOLD,
+                      )}
                     >
                       {service.ctaLabel}
                     </Link>
@@ -188,7 +202,10 @@ export function ServicesFeature() {
                         <span className="text-small text-white/80"> and Email </span>
                         <a
                           href={`mailto:${service.contactNote.email}`}
-                          className={cn("text-small font-medium underline underline-offset-4", GOLD)}
+                          className={cn(
+                            "text-small font-medium underline underline-offset-4",
+                            GOLD,
+                          )}
                         >
                           {service.contactNote.email}
                         </a>
@@ -229,7 +246,10 @@ export function ServicesFeature() {
         {/* Right: comprehensive services, a perspective photo wall, and the list */}
         <div className="flex flex-col gap-2.5">
           <article
-            className={cn(CARD, "flex flex-1 flex-col items-center overflow-hidden pt-10 text-center md:pt-14")}
+            className={cn(
+              CARD,
+              "flex flex-1 flex-col items-center overflow-hidden pt-10 text-center md:pt-14",
+            )}
           >
             <h2 className="px-6 t-hims-feature text-white md:px-10">
               Comprehensive Dental Services:{" "}
@@ -261,7 +281,9 @@ export function ServicesFeature() {
           <ul className={cn(CARD, "divide-y divide-white/15 px-6 py-2 md:px-10")}>
             {POINTS.map((point) => (
               <li key={point} className="flex items-center gap-3 py-3.5 t-hims-body">
-                <span aria-hidden className={cn("w-4 shrink-0 text-center t-hims-lead", GOLD)}>+</span>{" "}
+                <span aria-hidden className={cn("w-4 shrink-0 text-center t-hims-lead", GOLD)}>
+                  +
+                </span>{" "}
                 <span>{point}</span>
               </li>
             ))}
@@ -301,41 +323,41 @@ export function ServicesFeature() {
               </div>
             </div>
             <div className="mx-auto max-w-[760px]">
-            <div
-              id="ethos-text"
-              className={cn(
-                "mt-6 space-y-3 t-hims-lead text-white/90",
-                !ethosOpen &&
-                  "max-h-[7.2rem] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]",
-              )}
-            >
-              <p>
-                At Pav Dental we hold a strong ethos in delivering the best dental care possible for
-                all of our patients. We believe a healthy and happy smile is true to one’s nature in
-                expression of themselves and we are committed to making sure all of our patients can
-                be confident and satisfied with the care they receive from the moment they walk
-                through our doors. We uphold community values and believe we have an important
-                responsibility in serving our community to the best our ability.
-              </p>
-              <p>
-                We appreciate no two patients are the same and are committed to delivering care and
-                treatment tailored to fulfil the dental care you deserve. Dentistry is a fundamental
-                aspect of any individual well being and we are determined to ensure excellence no
-                matter what your needs may be.
-              </p>
-            </div>
-            <button
-              type="button"
-              aria-expanded={ethosOpen}
-              aria-controls="ethos-text"
-              onClick={() => setEthosOpen((v) => !v)}
-              className={cn("mt-3 text-small font-medium underline underline-offset-4", GOLD)}
-            >
-              {ethosOpen ? "Show less" : "Read more"}
-            </button>
-            <p className="mt-6 text-label">Dr. Hassan Bhojani</p>
-            <p className="text-small text-white/80">Founder &amp; Principal Dentist</p>
-            <BookNow />
+              <div
+                id="ethos-text"
+                className={cn(
+                  "mt-6 space-y-3 t-hims-lead text-white/90",
+                  !ethosOpen &&
+                    "max-h-[7.2rem] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]",
+                )}
+              >
+                <p>
+                  At Pav Dental we hold a strong ethos in delivering the best dental care possible
+                  for all of our patients. We believe a healthy and happy smile is true to one’s
+                  nature in expression of themselves and we are committed to making sure all of our
+                  patients can be confident and satisfied with the care they receive from the moment
+                  they walk through our doors. We uphold community values and believe we have an
+                  important responsibility in serving our community to the best our ability.
+                </p>
+                <p>
+                  We appreciate no two patients are the same and are committed to delivering care
+                  and treatment tailored to fulfil the dental care you deserve. Dentistry is a
+                  fundamental aspect of any individual well being and we are determined to ensure
+                  excellence no matter what your needs may be.
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-expanded={ethosOpen}
+                aria-controls="ethos-text"
+                onClick={() => setEthosOpen((v) => !v)}
+                className={cn("mt-3 text-small font-medium underline underline-offset-4", GOLD)}
+              >
+                {ethosOpen ? "Show less" : "Read more"}
+              </button>
+              <p className="mt-6 text-label">Dr. Hassan Bhojani</p>
+              <p className="text-small text-white/80">Founder &amp; Principal Dentist</p>
+              <BookNow />
             </div>
           </div>
 
@@ -380,7 +402,9 @@ function BookNow() {
 function HoursChips() {
   return (
     <div className="text-left">
-      <p className="rounded-t-lg bg-[#6b430f]/80 px-3 py-2 text-caption font-medium">Working Hours</p>
+      <p className="rounded-t-lg bg-[#6b430f]/80 px-3 py-2 text-caption font-medium">
+        Working Hours
+      </p>
       <ul className="space-y-1">
         {DAYS.map((day) => (
           <li

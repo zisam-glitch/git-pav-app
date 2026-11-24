@@ -11,7 +11,7 @@ const REGISTRATION_INFO = [
 
 export function VirtualDentistryRegistration() {
   return (
-    <Section theme="cream" space="default" aria-labelledby="virtual-registration-heading">
+    <Section theme="white" space="default" aria-labelledby="virtual-registration-heading">
       <SplitFeature
         reverse
         media={

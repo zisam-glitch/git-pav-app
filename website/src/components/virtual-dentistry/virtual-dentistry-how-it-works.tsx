@@ -68,7 +68,7 @@ export function VirtualDentistryHowItWorks() {
 
         <Tile
           as="article"
-          tone="cream"
+          tone="grey"
           lift
           className="flex flex-col justify-between gap-4 border border-border/60 p-6 md:p-8"
         >

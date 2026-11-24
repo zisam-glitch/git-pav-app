@@ -102,7 +102,11 @@ export function PricingCards() {
       : PLANS;
 
   return (
-    <section id="plans" aria-labelledby="plans-heading" className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24">
+    <section
+      id="plans"
+      aria-labelledby="plans-heading"
+      className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24"
+    >
       <div className={CONTAINER}>
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
@@ -115,7 +119,12 @@ export function PricingCards() {
           </div>
 
           <div className="inline-flex w-fit items-center gap-3 rounded-full bg-white px-4 py-2.5 shadow-[0_10px_36px_rgba(20,20,40,0.07)]">
-            <span className={cn("text-small font-medium", isMonthly ? "text-[#1b1b1b]" : "text-[#8b8d92]")}>
+            <span
+              className={cn(
+                "text-small font-medium",
+                isMonthly ? "text-[#1b1b1b]" : "text-[#8b8d92]",
+              )}
+            >
               Monthly
             </span>
             <button
@@ -136,7 +145,12 @@ export function PricingCards() {
                 )}
               />
             </button>
-            <span className={cn("text-small font-medium", !isMonthly ? "text-[#1b1b1b]" : "text-[#8b8d92]")}>
+            <span
+              className={cn(
+                "text-small font-medium",
+                !isMonthly ? "text-[#1b1b1b]" : "text-[#8b8d92]",
+              )}
+            >
               Annual (Save 20%)
             </span>
           </div>
@@ -201,7 +215,11 @@ export function PricingCards() {
                                 : "bg-[#efece6] text-[#8b8d92]",
                           )}
                         >
-                          {feature.included ? <Check className="size-3" /> : <X className="size-3" />}
+                          {feature.included ? (
+                            <Check className="size-3" />
+                          ) : (
+                            <X className="size-3" />
+                          )}
                         </span>
                         <span
                           className={cn(

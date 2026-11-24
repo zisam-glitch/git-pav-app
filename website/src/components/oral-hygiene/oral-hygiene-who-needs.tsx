@@ -45,7 +45,7 @@ export function OralHygieneWhoNeeds() {
 
         <Tile
           as="li"
-          tone="sage"
+          tone="grey"
           className="flex flex-col justify-between gap-4 border border-border p-6"
         >
           <span className="inline-flex w-fit rounded-pill bg-white px-2.5 py-0.5 text-caption font-medium text-fg">

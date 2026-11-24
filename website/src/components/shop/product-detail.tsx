@@ -261,9 +261,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
     "@context": "https://schema.org/",
     "@type": "Product",
     name: productData.name,
-    image: images.map((img) =>
-      img.startsWith("/") ? `https://www.pavdental.com${img}` : img,
-    ),
+    image: images.map((img) => (img.startsWith("/") ? `https://www.pavdental.com${img}` : img)),
     description: productData.shortDesc || productData.fullDesc,
     brand: {
       "@type": "Brand",
@@ -312,7 +310,9 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
       {/* Hims Split PDP Stage (Mobbin 43693059 + 16099344) */}
       <section className="pb-14 md:pb-24">
-        <div className={`${CONTAINER} grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14`}>
+        <div
+          className={`${CONTAINER} grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14`}
+        >
           {/* Left: Full-bleed Warm Cream Product Stage with Bottom-Centered Circular Thumbnails */}
           <div className="lg:sticky lg:top-24 lg:col-span-6">
             <div className="relative overflow-hidden rounded-[24px] bg-[#fbfbee]">
@@ -387,7 +387,9 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
             {/* Price & Stock Pill */}
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-[26px] text-[#1b1b1b] tabular-nums">£{currentPrice.toFixed(2)}</span>
+              <span className="text-[26px] text-[#1b1b1b] tabular-nums">
+                £{currentPrice.toFixed(2)}
+              </span>
               {productData.originalPrice ? (
                 <span className="text-lead text-muted line-through tabular-nums">
                   £{productData.originalPrice.toFixed(2)}
@@ -428,8 +430,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {variants.map((v) => {
                     const isSelected = activeVariant?.id === v.id;
-                    const label =
-                      Object.values(v.attributes || {}).join(" · ") || v.sku;
+                    const label = Object.values(v.attributes || {}).join(" · ") || v.sku;
                     const attrKey = Object.keys(v.attributes || {})[0];
                     const optionPrice = v.price_override
                       ? parseFloat(String(v.price_override))
@@ -595,7 +596,10 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
 
       {/* Hims Clinical Spec Summary Card on Warm Sand (Mobbin fceeec4f) */}
       {productData.clinicalSpec ? (
-        <section aria-label="Clinical specification summary" className="bg-[#f7f5f2] py-14 md:py-24">
+        <section
+          aria-label="Clinical specification summary"
+          className="bg-[#f7f5f2] py-14 md:py-24"
+        >
           <div className={`${CONTAINER} grid items-start gap-8 lg:grid-cols-12 lg:gap-12`}>
             <div className="lg:col-span-4">
               <p className="text-small text-[#55565a]">Clinical Specification</p>
@@ -603,8 +607,8 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 Product details <span className={MUTED_TITLE}>at a glance</span>
               </h2>
               <p className="mt-3 text-small leading-relaxed text-muted">
-                Key formulation, suitability, and Bradford dispensary details reviewed by our
-                dental team.
+                Key formulation, suitability, and Bradford dispensary details reviewed by our dental
+                team.
               </p>
             </div>
 
@@ -653,48 +657,48 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
       {relatedProducts.length > 0 ? (
         <section aria-label="Complementary oral care products" className="bg-white py-14 md:py-24">
           <div className={CONTAINER}>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className={TITLE}>
-              Complementary <span className={MUTED_TITLE}>Oral Care</span>
-            </h2>
-            <Link
-              to="/shop"
-              className="text-small font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
-            >
-              View all products
-            </Link>
-          </div>
-          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-            {relatedProducts.map((rel) => (
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className={TITLE}>
+                Complementary <span className={MUTED_TITLE}>Oral Care</span>
+              </h2>
               <Link
-                key={rel.id}
-                to="/shop/$productSlug"
-                params={{ productSlug: rel.slug }}
-                className="group flex flex-col justify-between rounded-[20px] bg-[#fbfbee] p-4 t-colors hover:bg-[#eeedd6]"
+                to="/shop"
+                className="text-small font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
               >
-                <div>
-                  <ShopMedia
-                    src={rel.image}
-                    alt={rel.name}
-                    ratio="4 / 3"
-                    tone="cream"
-                    className="rounded-lg"
-                    imgClassName="t-zoom"
-                  />
-                  <p className="mt-3 text-caption text-subtle">{rel.categoryLabel}</p>
-                  <h3 className="mt-1 line-clamp-2 text-label text-fg">{rel.name}</h3>
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                  <span className="text-label text-fg tabular-nums">
-                    £{parseFloat(String(rel.price)).toFixed(2)}
-                  </span>
-                  <span className="text-caption font-medium text-muted group-hover:text-terracotta">
-                    View details →
-                  </span>
-                </div>
+                View all products
               </Link>
-            ))}
-          </div>
+            </div>
+            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+              {relatedProducts.map((rel) => (
+                <Link
+                  key={rel.id}
+                  to="/shop/$productSlug"
+                  params={{ productSlug: rel.slug }}
+                  className="group flex flex-col justify-between rounded-[20px] bg-[#fbfbee] p-4 t-colors hover:bg-[#eeedd6]"
+                >
+                  <div>
+                    <ShopMedia
+                      src={rel.image}
+                      alt={rel.name}
+                      ratio="4 / 3"
+                      tone="cream"
+                      className="rounded-lg"
+                      imgClassName="t-zoom"
+                    />
+                    <p className="mt-3 text-caption text-subtle">{rel.categoryLabel}</p>
+                    <h3 className="mt-1 line-clamp-2 text-label text-fg">{rel.name}</h3>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+                    <span className="text-label text-fg tabular-nums">
+                      £{parseFloat(String(rel.price)).toFixed(2)}
+                    </span>
+                    <span className="text-caption font-medium text-muted group-hover:text-terracotta">
+                      View details →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       ) : null}

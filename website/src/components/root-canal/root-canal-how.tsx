@@ -34,14 +34,7 @@ export function RootCanalHow() {
           <p className="inline-flex items-center rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-gold">
             Step-by-Step Clinical Walkthrough
           </p>
-          <Heading
-            as="h2"
-            size="hero"
-            accent="is done."
-            tone="gold"
-            inline
-            className="mt-4"
-          >
+          <Heading as="h2" size="hero" accent="is done." tone="gold" inline className="mt-4">
             How the Root canal treatment
           </Heading>
         </div>

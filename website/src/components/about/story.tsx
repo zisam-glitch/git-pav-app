@@ -77,7 +77,10 @@ export function Story() {
   return (
     <>
       {/* Hero: a centred two-tone statement (Hims "Through Hims…" section), the banner, then chips */}
-      <section id="our-story" className="scroll-mt-20 bg-white pt-14 pb-14 text-center md:pt-24 md:pb-24">
+      <section
+        id="our-story"
+        className="scroll-mt-20 bg-white pt-14 pb-14 text-center md:pt-24 md:pb-24"
+      >
         <div className="wrap-bento max-w-[1396px]">
           <h1 className="mx-auto max-w-[18ch] text-[clamp(40px,5.6vw,84px)] leading-[1.02] font-normal tracking-[-0.03em] text-[#1b1b1b]">
             A Legacy of <span className="text-[#b5644a]">Care and Innovation</span>
@@ -178,9 +181,9 @@ export function Story() {
               A Legacy <span className="text-[#b5644a]">Fulfilled</span>
             </h2>
             <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#55565a]">
-              Tragically, Dr. Pav passed away before witnessing the clinic&apos;s realization.
-              Their shared vision now rests with Dr. Hassan as a profound responsibility. Fueled by
-              a deep respect for their collaboration, Dr Hassan vowed to complete the final step:
+              Tragically, Dr. Pav passed away before witnessing the clinic&apos;s realization. Their
+              shared vision now rests with Dr. Hassan as a profound responsibility. Fueled by a deep
+              respect for their collaboration, Dr Hassan vowed to complete the final step:
             </p>
           </div>
           <ol className="mt-12 grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
@@ -212,11 +215,13 @@ export function Story() {
                 </div>
               </li>
             ))}
-            <li className={`${SOFT_CARD} flex flex-col justify-center gap-6 bg-[#f7f5f2] p-7 shadow-none md:col-span-2 md:p-9 lg:col-span-1`}>
+            <li
+              className={`${SOFT_CARD} flex flex-col justify-center gap-6 bg-[#f7f5f2] p-7 shadow-none md:col-span-2 md:p-9 lg:col-span-1`}
+            >
               <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#1b1b1b]">
-                While we must forgive past failings and present obstacles, the future of this
-                clinic demands unwavering standards. We will never compromise on the quality,
-                compassion, or dedication to access that Dr. Pav envisioned.
+                While we must forgive past failings and present obstacles, the future of this clinic
+                demands unwavering standards. We will never compromise on the quality, compassion,
+                or dedication to access that Dr. Pav envisioned.
               </p>
               <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#1b1b1b]">
                 We invite you to join us on this journey, as we honor a remarkable legacy and build

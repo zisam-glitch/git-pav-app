@@ -52,7 +52,9 @@ export function GeneralDentistryServices() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="mt-4 text-h4 text-fg">{service.title}</h3>
-              <p className="mt-3 border-t border-border pt-3 text-body text-muted">{service.desc}</p>
+              <p className="mt-3 border-t border-border pt-3 text-body text-muted">
+                {service.desc}
+              </p>
             </div>
           </Tile>
         ))}

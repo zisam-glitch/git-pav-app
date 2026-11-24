@@ -55,29 +55,53 @@ function ErrorText({ id, error }: { id: string; error?: string }) {
   );
 }
 
-function BoxLabel({ htmlFor, children, optional }: { htmlFor: string; children: ReactNode; optional?: boolean }) {
+function BoxLabel({
+  htmlFor,
+  children,
+  optional,
+}: {
+  htmlFor: string;
+  children: ReactNode;
+  optional?: boolean;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-3">
       <label htmlFor={htmlFor} className="block text-[12px] leading-4 text-subtle">
         {children}
       </label>
-      {optional ? <span className="shrink-0 text-[12px] leading-4 text-subtle">Optional</span> : null}
+      {optional ? (
+        <span className="shrink-0 text-[12px] leading-4 text-subtle">Optional</span>
+      ) : null}
     </div>
   );
 }
 
 function Question({ id, children, hidden }: { id: string; children: ReactNode; hidden?: boolean }) {
   return (
-    <legend id={id} className={cn("mb-4 block text-[22px] leading-[1.2] font-medium text-fg", hidden && "sr-only")}>
+    <legend
+      id={id}
+      className={cn(
+        "mb-4 block text-[22px] leading-[1.2] font-medium text-fg",
+        hidden && "sr-only",
+      )}
+    >
       {children}
     </legend>
   );
 }
 
-const OptionalTag = () => <span className="ml-2 align-middle text-[12px] font-normal text-subtle">Optional</span>;
+const OptionalTag = () => (
+  <span className="ml-2 align-middle text-[12px] font-normal text-subtle">Optional</span>
+);
 
 function TextBox({ field, answers, error, onChange, onBlur }: FieldViewProps) {
-  if (field.kind !== "text" && field.kind !== "textarea" && field.kind !== "email" && field.kind !== "tel") return null;
+  if (
+    field.kind !== "text" &&
+    field.kind !== "textarea" &&
+    field.kind !== "email" &&
+    field.kind !== "tel"
+  )
+    return null;
   const id = `reg-${field.id}`;
   const value = text(answers[field.id]);
   const long = field.label.length > 46;
@@ -214,7 +238,13 @@ function Indicator({ selected, square }: { selected: boolean; square?: boolean }
         selected ? "border-terracotta bg-terracotta" : "border-[#c4c4c4] bg-white",
       )}
     >
-      {selected ? square ? <Check className="size-3.5" strokeWidth={3} /> : <span className="size-2 rounded-pill bg-white" /> : null}
+      {selected ? (
+        square ? (
+          <Check className="size-3.5" strokeWidth={3} />
+        ) : (
+          <span className="size-2 rounded-pill bg-white" />
+        )
+      ) : null}
     </span>
   );
 }
@@ -242,7 +272,9 @@ function Choice({ field, answers, error, hideLabel, onChange, onBlur }: FieldVie
               onBlur={() => onBlur(field.id)}
               className="peer sr-only"
             />
-            <span className={cn(CARD_BASE, value === option ? "border-terracotta" : "border-[#d9d9d9]")}>
+            <span
+              className={cn(CARD_BASE, value === option ? "border-terracotta" : "border-[#d9d9d9]")}
+            >
               <span>{option}</span>
               <Indicator selected={value === option} />
             </span>
@@ -259,7 +291,10 @@ function Multi({ field, answers, error, hideLabel, onChange, onBlur }: FieldView
   const id = `reg-${field.id}`;
   const chosen = Array.isArray(answers[field.id]) ? (answers[field.id] as string[]) : [];
   const toggle = (option: string) =>
-    onChange(field.id, chosen.includes(option) ? chosen.filter((item) => item !== option) : [...chosen, option]);
+    onChange(
+      field.id,
+      chosen.includes(option) ? chosen.filter((item) => item !== option) : [...chosen, option],
+    );
 
   return (
     <fieldset aria-describedby={error ? `${id}-error` : undefined}>
@@ -284,7 +319,9 @@ function Multi({ field, answers, error, hideLabel, onChange, onBlur }: FieldView
                   onBlur={() => onBlur(field.id)}
                   className="peer sr-only"
                 />
-                <span className={cn(CARD_BASE, selected ? "border-terracotta" : "border-[#d9d9d9]")}>
+                <span
+                  className={cn(CARD_BASE, selected ? "border-terracotta" : "border-[#d9d9d9]")}
+                >
                   <span>{option}</span>
                   <Indicator selected={selected} square />
                 </span>
@@ -319,7 +356,10 @@ function Agree({ field, answers, error, onChange, onBlur }: FieldViewProps) {
   const checked = answers[field.id] === "yes";
   return (
     <div>
-      <label htmlFor={id} className="flex cursor-pointer items-start gap-3 text-[14px] leading-5 text-fg">
+      <label
+        htmlFor={id}
+        className="flex cursor-pointer items-start gap-3 text-[14px] leading-5 text-fg"
+      >
         <input
           id={id}
           name={field.id}

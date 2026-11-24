@@ -31,13 +31,29 @@ const HOVER_CONFIG: Record<
   string,
   { hoverTone: HoverTone; accentTone: AccentTone; label?: string }
 > = {
-  "/services/emergency-dental": { hoverTone: "blue", accentTone: "clay", label: "24/7 Urgent Care" },
-  "/services/tooth-extraction": { hoverTone: "terracotta", accentTone: "terracotta", label: "From £95" },
+  "/services/emergency-dental": {
+    hoverTone: "blue",
+    accentTone: "clay",
+    label: "24/7 Urgent Care",
+  },
+  "/services/tooth-extraction": {
+    hoverTone: "terracotta",
+    accentTone: "terracotta",
+    label: "From £95",
+  },
   "/services/root-canal": { hoverTone: "copper", accentTone: "copper", label: "From £195" },
   "/services/oral-hygiene": { hoverTone: "sky-gold", accentTone: "clay", label: "From £45" },
-  "/services/general-dentistry": { hoverTone: "terracotta", accentTone: "terracotta", label: "Check-Up £35" },
+  "/services/general-dentistry": {
+    hoverTone: "terracotta",
+    accentTone: "terracotta",
+    label: "Check-Up £35",
+  },
   "/services/dentures": { hoverTone: "copper", accentTone: "copper", label: "From £495" },
-  "/services/whitening": { hoverTone: "sky-gold", accentTone: "terracotta", label: "In-Clinic & Home" },
+  "/services/whitening": {
+    hoverTone: "sky-gold",
+    accentTone: "terracotta",
+    label: "In-Clinic & Home",
+  },
   "/services/cosmetic": { hoverTone: "terracotta", accentTone: "clay", label: "Smile Design" },
   "/services/aesthetics": { hoverTone: "copper", accentTone: "copper", label: "Clinician-Led" },
   "/services/custom-grillz": { hoverTone: "sky-gold", accentTone: "clay", label: "Custom Crafted" },
@@ -57,10 +73,7 @@ const HOVER_CONFIG: Record<
 };
 
 const BUILT_HREFS = new Map<string, LinkProps["to"]>(
-  SERVICE_PAGES.map((page): [string, LinkProps["to"]] => [
-    page.href,
-    page.href as LinkProps["to"],
-  ]),
+  SERVICE_PAGES.map((page): [string, LinkProps["to"]] => [page.href, page.href as LinkProps["to"]]),
 );
 
 function splitTitleWords(title: string): { leadWord: string; accentWord?: string } {
@@ -167,7 +180,10 @@ export function ServicesHub() {
                         {service.label}
                       </span>
                     ) : null}
-                    <ChevronRight aria-hidden className="hero-tile-icon mt-0.5 size-5 shrink-0 text-fg" />
+                    <ChevronRight
+                      aria-hidden
+                      className="hero-tile-icon mt-0.5 size-5 shrink-0 text-fg"
+                    />
                   </span>
                 </div>
 

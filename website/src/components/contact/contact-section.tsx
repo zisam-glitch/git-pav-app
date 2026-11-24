@@ -24,7 +24,8 @@ const MAPS_EMBED_URL =
  * on the home, About and pricing pages.
  */
 const COLUMN = "mx-auto w-full max-w-[768px] px-4";
-const H2 = "text-[clamp(22px,2.2vw,28px)] leading-[1.15] font-normal tracking-[-0.01em] text-[#1b1b1b]";
+const H2 =
+  "text-[clamp(22px,2.2vw,28px)] leading-[1.15] font-normal tracking-[-0.01em] text-[#1b1b1b]";
 const DESC = "mt-1.5 text-[15px] leading-[1.4] text-[#6d6e72]";
 const WHITE_PILL =
   "inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] text-[#1b1b1b] shadow-[0_6px_22px_rgba(20,20,40,0.07)] t-colors hover:bg-[#faf9f6]";
@@ -100,7 +101,11 @@ function MessageForm() {
       <h2 className={H2}>Send us Message</h2>
       <p className={DESC}>Send an enquiry to our Bradford dental team.</p>
 
-      <div className="mt-5 flex flex-wrap gap-3" role="group" aria-label="What is your enquiry about?">
+      <div
+        className="mt-5 flex flex-wrap gap-3"
+        role="group"
+        aria-label="What is your enquiry about?"
+      >
         {TOPICS.map((topic) => (
           <button
             key={topic}
@@ -147,13 +152,22 @@ function MessageForm() {
           <form onSubmit={(e) => submit(e)} className="grid gap-5">
             <p className="text-[clamp(24px,2.6vw,34px)] leading-[1.15] font-normal tracking-[-0.015em] text-[#1b1b1b]">
               Share a few details about{" "}
-              <span className="text-[#b08968]">{subject ? subject.toLowerCase() : "your visit"}</span>
+              <span className="text-[#b08968]">
+                {subject ? subject.toLowerCase() : "your visit"}
+              </span>
             </p>
 
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="contact-name">Full Name</Label>
-                <Input id="contact-name" name="name" autoComplete="name" required placeholder="Jane Doe" className={FIELD} />
+                <Input
+                  id="contact-name"
+                  name="name"
+                  autoComplete="name"
+                  required
+                  placeholder="Jane Doe"
+                  className={FIELD}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="contact-email">Email Address</Label>
@@ -212,14 +226,21 @@ function MessageForm() {
               </p>
             ) : null}
 
-            <Button type="submit" disabled={sending} className="h-12 w-full rounded-full bg-black text-[16px] text-white">
+            <Button
+              type="submit"
+              disabled={sending}
+              className="h-12 w-full rounded-full bg-black text-[16px] text-white"
+            >
               <span>{sending ? "Sending…" : "Send Message"}</span>
               <Send aria-hidden="true" className="size-4" />
             </Button>
 
             <p className="text-center text-caption text-[#8b8d92]">
               By contacting us, you agree to our{" "}
-              <Link to="/terms-and-condition" className="text-[#1b1b1b] underline underline-offset-4">
+              <Link
+                to="/terms-and-condition"
+                className="text-[#1b1b1b] underline underline-offset-4"
+              >
                 Terms &amp; Conditions
               </Link>{" "}
               and{" "}
@@ -297,7 +318,9 @@ function Visit() {
         </div>
         <div className="flex items-center gap-3 px-5 py-4">
           <MapPin aria-hidden="true" className="size-5 shrink-0 text-[#b08968]" />
-          <p className="text-[15px] text-[#1b1b1b]">Pav Dental · 786 Leeds Road, Bradford, BD3 9TY</p>
+          <p className="text-[15px] text-[#1b1b1b]">
+            Pav Dental · 786 Leeds Road, Bradford, BD3 9TY
+          </p>
         </div>
       </div>
     </section>

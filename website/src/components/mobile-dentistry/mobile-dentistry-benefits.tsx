@@ -13,7 +13,7 @@ const BENEFITS = [
 
 export function MobileDentistryBenefits() {
   return (
-    <Section id="benefits" theme="cream" space="default" aria-labelledby="mobile-benefits-heading">
+    <Section id="benefits" theme="white" space="default" aria-labelledby="mobile-benefits-heading">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">

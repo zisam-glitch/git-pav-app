@@ -1,14 +1,12 @@
 import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
 import {
+  ServiceHeroLayout,
   BookButton,
   ButtonLink,
   CallButton,
   ConsentPanel,
   CtaBand,
   Heading,
-  Media,
-  Section,
-  SplitFeature,
   Tile,
   type ConsentItem,
 } from "@/components/hims";
@@ -38,26 +36,19 @@ const WHITENING_CONSENT_ITEMS: readonly ConsentItem[] = [
 export function WhiteningPage() {
   return (
     <main className="bg-bg">
-      <Section
-        id="top"
-        theme="white"
-        space="sm"
-        className="pt-6 md:pt-10"
-        aria-label="Teeth whitening services"
-      >
-        <SplitFeature
-          reverse
-          media={
-            <Media
-              src="/images/generated/whitening-hero.jpg"
-              alt="Bright minimalist teeth whitening consultation room and care vessels in warm sunlight"
-              ratio="4 / 3"
-              tone="cream"
-              priority
-            />
-          }
-        >
-          <div>
+      <ServiceHeroLayout
+        label="Teeth whitening services"
+        images={[
+          {
+            src: "/images/generated/whitening-hero.jpg",
+            alt: "Bright minimalist teeth whitening consultation room and care vessels in warm sunlight",
+          },
+          { src: "/images/generated/whitening-home-in-office.jpg", alt: "" },
+          { src: "/images/generated/whitening-home-kit.jpg", alt: "" },
+          { src: "/images/generated/whitening-strips.jpg", alt: "" },
+        ]}
+        head={
+          <>
             <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
               Professional Teeth Whitening
             </span>
@@ -70,51 +61,51 @@ export function WhiteningPage() {
             >
               Designed by Dentists
             </Heading>
-            <p className="mt-5 max-w-xl text-lead text-muted">
-              We offer a carefully curated selection of whitening ranges designed to effectively
-              remove stains and discoloration, giving you the confidence to flash your pearly
-              whites.
-            </p>
+          </>
+        }
+      >
+        <p className="mt-5 max-w-xl text-lead text-muted">
+          We offer a carefully curated selection of whitening ranges designed to effectively remove
+          stains and discoloration, giving you the confidence to flash your pearly whites.
+        </p>
 
-            <div className="mt-6 grid max-w-xl grid-cols-3 gap-3">
-              <Tile tone="cream" className="border border-border/60 p-3.5">
-                <p className="text-caption font-medium text-copper">Whitening Strips</p>
-                <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£65</p>
-              </Tile>
-              <Tile tone="sage" className="border border-border/60 p-3.5">
-                <p className="text-caption font-medium text-copper">Home Kits</p>
-                <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£295</p>
-              </Tile>
-              <Tile tone="cream" className="border border-border/60 p-3.5">
-                <p className="text-caption font-medium text-copper">Home &amp; In-Office</p>
-                <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£495</p>
-              </Tile>
-            </div>
+        <div className="mt-6 grid max-w-xl grid-cols-3 gap-3">
+          <Tile tone="grey" className="border border-border/60 p-3.5">
+            <p className="text-caption font-medium text-copper">Whitening Strips</p>
+            <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£65</p>
+          </Tile>
+          <Tile tone="grey" className="border border-border/60 p-3.5">
+            <p className="text-caption font-medium text-copper">Home Kits</p>
+            <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£295</p>
+          </Tile>
+          <Tile tone="grey" className="border border-border/60 p-3.5">
+            <p className="text-caption font-medium text-copper">Home &amp; In-Office</p>
+            <p className="mt-1 text-h4 font-medium text-fg tabular-nums">£495</p>
+          </Tile>
+        </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <BookButton>Book Now</BookButton>
-              <ButtonLink href="#products" variant="outline">
-                Explore ranges
-              </ButtonLink>
-              <CallButton variant="ghost" />
-            </div>
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
-              <a
-                href="#comparison-matrix"
-                className="underline underline-offset-4 t-colors hover:text-terracotta"
-              >
-                Compare treatments (£65 – £495)
-              </a>
-              <a
-                href="#consent"
-                className="underline underline-offset-4 t-colors hover:text-terracotta"
-              >
-                Informed Consent for Tooth Whitening
-              </a>
-            </div>
-          </div>
-        </SplitFeature>
-      </Section>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <BookButton>Book Now</BookButton>
+          <ButtonLink href="#products" variant="outline">
+            Explore ranges
+          </ButtonLink>
+          <CallButton variant="ghost" />
+        </div>
+        <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
+          <a
+            href="#comparison-matrix"
+            className="underline underline-offset-4 t-colors hover:text-terracotta"
+          >
+            Compare treatments (£65 – £495)
+          </a>
+          <a
+            href="#consent"
+            className="underline underline-offset-4 t-colors hover:text-terracotta"
+          >
+            Informed Consent for Tooth Whitening
+          </a>
+        </div>
+      </ServiceHeroLayout>
 
       <WhiteningProducts />
       <WhiteningVisualizer />

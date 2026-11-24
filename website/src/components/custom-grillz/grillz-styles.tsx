@@ -30,7 +30,7 @@ const STYLES = [
 
 export function GrillzStyles() {
   return (
-    <Section id="styles" theme="cream" aria-labelledby="grillz-styles-heading">
+    <Section id="styles" theme="white" aria-labelledby="grillz-styles-heading">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
@@ -42,9 +42,9 @@ export function GrillzStyles() {
             </Heading>
           </div>
           <p className="mt-4 text-lead text-muted">
-            Mix and match metals and gems for a truly unique creation. From fully iced-out designs to
-            subtle accents, we tailor each piece to your specifications. Our expert team is dedicated
-            to bringing your vision to life with precision and flair.
+            Mix and match metals and gems for a truly unique creation. From fully iced-out designs
+            to subtle accents, we tailor each piece to your specifications. Our expert team is
+            dedicated to bringing your vision to life with precision and flair.
           </p>
         </div>
 

@@ -111,7 +111,7 @@ export function ExtractionPostOp() {
   const [filter, setFilter] = useState<Category>("all");
 
   return (
-    <Section id="post-op" theme="cream" space="default">
+    <Section id="post-op" theme="white" space="default">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div className="max-w-2xl">
           <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">

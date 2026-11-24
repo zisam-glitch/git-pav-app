@@ -54,7 +54,7 @@ export function MouthguardsColour() {
   );
 
   return (
-    <Section id="colour" theme="cream" aria-labelledby="mouthguards-colour-heading">
+    <Section id="colour" theme="white" aria-labelledby="mouthguards-colour-heading">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
           <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">

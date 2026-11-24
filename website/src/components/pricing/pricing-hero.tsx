@@ -81,7 +81,10 @@ export function PricingHero() {
                   height={627}
                   className="absolute inset-0 size-full object-cover object-right transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-                <span aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent" />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent"
+                />
                 <h3 className="relative text-[20px] leading-[1.2] font-normal">
                   {tile.lead}
                   <br />

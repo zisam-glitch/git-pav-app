@@ -27,7 +27,10 @@ export function CareFeature() {
   const go = (next: number) => setIndex((next + count) % count);
 
   return (
-    <section id="care" className="relative -mt-8 rounded-[32px] bg-[#5a87ab] pt-14 pb-10 text-white md:pt-[4.5rem] md:pb-14">
+    <section
+      id="care"
+      className="relative -mt-8 rounded-[32px] bg-[#5a87ab] pt-14 pb-10 text-white md:pt-[4.5rem] md:pb-14"
+    >
       <div className="wrap-bento grid max-w-[1396px] gap-2.5 lg:grid-cols-2">
         <div className="flex flex-col gap-2.5">
           <article className={cn(CARD, "relative flex min-h-[420px] overflow-hidden p-6 md:p-10")}>
@@ -60,7 +63,10 @@ export function CareFeature() {
               height={1280}
               className="absolute inset-0 size-full object-cover"
             />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-[#2e4d66]/70 via-transparent to-transparent" />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-b from-[#2e4d66]/70 via-transparent to-transparent"
+            />
             <h3 className="relative z-10 max-w-[55%] p-6 t-hims-card text-white md:p-10">
               Explore our treatments
             </h3>

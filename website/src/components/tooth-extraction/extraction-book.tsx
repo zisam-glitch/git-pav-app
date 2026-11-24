@@ -57,7 +57,7 @@ export function ExtractionBook() {
           </div>
         </div>
 
-        <Tile tone="cream" className="border border-border p-6 md:p-8">
+        <Tile tone="grey" className="border border-border p-6 md:p-8">
           <Heading as="h3" size="h3-md">
             Why Choose PavDental?
           </Heading>

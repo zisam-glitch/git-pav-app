@@ -10,7 +10,7 @@ export function MobileDentistryContact() {
   const enquiry = useEnquiry("Mobile dentistry");
 
   return (
-    <Section id="contact" theme="cream" aria-labelledby="mobile-contact-heading">
+    <Section id="contact" theme="white" aria-labelledby="mobile-contact-heading">
       <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
         <div className="max-w-[460px]">
           <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
@@ -22,8 +22,7 @@ export function MobileDentistryContact() {
             </Heading>
           </div>
           <p className="mt-4 text-lead text-muted">
-            Ready to take control of your dental health? Contact us to book your appointment
-            today!
+            Ready to take control of your dental health? Contact us to book your appointment today!
           </p>
           <ul className="mt-8 divide-y divide-border border-y border-border text-body">
             <li className="py-3 text-fg">786 Leeds Road, Bradford, BD3 9TY</li>
@@ -66,8 +65,7 @@ export function MobileDentistryContact() {
                 Message received
               </Heading>
               <p className="mt-3 text-body text-muted">
-                Thank you. Your message has reached the practice, and the team will get back to
-                you.
+                Thank you. Your message has reached the practice, and the team will get back to you.
               </p>
               <Button className="mt-6" onClick={enquiry.reset}>
                 Send another message

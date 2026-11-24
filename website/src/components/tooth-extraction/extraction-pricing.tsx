@@ -67,7 +67,7 @@ export function ExtractionPricing() {
       columns={4}
       ctaLabel="Make an Appointment"
       footer={
-        <Tile tone="cream" className="border border-border p-6 md:p-8">
+        <Tile tone="grey" className="border border-border p-6 md:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="inline-flex rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">

@@ -52,15 +52,17 @@ export function ShopGuarantee() {
         <div className={`${CONTAINER} grid items-stretch gap-3 lg:grid-cols-[1fr_1.1fr] lg:gap-4`}>
           <div className={`${SOFT_CARD} flex flex-col justify-between gap-8 p-7 md:p-10`}>
             <div>
-            <p className="text-small text-[#55565a]">Clinical Standards &amp; UK Distance Selling</p>
-            <h2 className="mt-3 text-[clamp(32px,3.4vw,50px)] leading-[1.04] font-normal tracking-[-0.025em] text-[#1b1b1b]">
-              Better oral care, <span className={MUTED_TITLE}>delivered directly</span>
-            </h2>
-            <p className={`mt-5 ${LEAD}`}>
-              Every product in our store is made by Happy Tooth, our sister company—no third-party
-              marketplace resellers, clear UK pricing, and straightforward support from the Pav
-              Dental team whenever you need advice.
-            </p>
+              <p className="text-small text-[#55565a]">
+                Clinical Standards &amp; UK Distance Selling
+              </p>
+              <h2 className="mt-3 text-[clamp(32px,3.4vw,50px)] leading-[1.04] font-normal tracking-[-0.025em] text-[#1b1b1b]">
+                Better oral care, <span className={MUTED_TITLE}>delivered directly</span>
+              </h2>
+              <p className={`mt-5 ${LEAD}`}>
+                Every product in our store is made by Happy Tooth, our sister company—no third-party
+                marketplace resellers, clear UK pricing, and straightforward support from the Pav
+                Dental team whenever you need advice.
+              </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <ButtonLink href="#catalog">
@@ -79,9 +81,15 @@ export function ShopGuarantee() {
                   key={pillar.title}
                   className="flex gap-5 border-b border-[#1b1b1b]/10 py-7 first:pt-0 last:border-0 last:pb-0"
                 >
-                  <Icon aria-hidden strokeWidth={1.3} className="mt-1 size-9 shrink-0 text-[#1b1b1b]" />
+                  <Icon
+                    aria-hidden
+                    strokeWidth={1.3}
+                    className="mt-1 size-9 shrink-0 text-[#1b1b1b]"
+                  />
                   <div>
-                    <h3 className="text-[clamp(20px,1.7vw,24px)] leading-[1.15] text-[#1b1b1b]">{pillar.title}</h3>
+                    <h3 className="text-[clamp(20px,1.7vw,24px)] leading-[1.15] text-[#1b1b1b]">
+                      {pillar.title}
+                    </h3>
                     <p className="mt-2 text-[15px] leading-[1.5] text-[#55565a]">{pillar.body}</p>
                   </div>
                 </li>
@@ -92,7 +100,11 @@ export function ShopGuarantee() {
       </section>
 
       {/* Questions: the Hims accordion */}
-      <section id="guarantee" aria-label="Shop frequently asked questions" className="scroll-mt-20 bg-white py-14 md:py-24">
+      <section
+        id="guarantee"
+        aria-label="Shop frequently asked questions"
+        className="scroll-mt-20 bg-white py-14 md:py-24"
+      >
         <div className={`${CONTAINER} grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16`}>
           <div className="lg:sticky lg:top-24">
             <h2 className={TITLE}>

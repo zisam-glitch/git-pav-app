@@ -27,7 +27,12 @@ export function ProductRevealCard({
 }: ProductRevealCardProps) {
   const link = (children: React.ReactNode, label: string, extra?: string) =>
     onQuickView ? (
-      <button type="button" onClick={onQuickView} aria-label={label} className={cn("block w-full text-left", extra)}>
+      <button
+        type="button"
+        onClick={onQuickView}
+        aria-label={label}
+        className={cn("block w-full text-left", extra)}
+      >
         {children}
       </button>
     ) : (

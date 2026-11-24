@@ -3,19 +3,50 @@ import { Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-const EXPLORE = "inline-flex h-[34px] items-center rounded-pill bg-white px-5 text-small font-medium text-black t-colors hover:bg-white/85";
+const EXPLORE =
+  "inline-flex h-[34px] items-center rounded-pill bg-white px-5 text-small font-medium text-black t-colors hover:bg-white/85";
 
 const TOPICS = [
-  { title: "Emergency Dental", sub: "24/7 care", to: "/services/emergency-dental", tone: "from-[#d1673f] to-[#8a3a34]" },
-  { title: "Mobile Dentistry", sub: "At-home care", to: "/services/mobile-dentistry", tone: "from-[#a15a6b] to-[#6d47b0]" },
-  { title: "Aesthetics", sub: "Facial aesthetics", to: "/services/aesthetics", tone: "from-[#d1673f] to-[#8a3a34]" },
-  { title: "General Dentistry", sub: "Preventive care", to: "/services/general-dentistry", tone: "from-[#a15a6b] to-[#6d47b0]" },
-  { title: "Tooth Extraction", sub: "Same-day relief", to: "/services/tooth-extraction", tone: "from-[#d1673f] to-[#8a3a34]" },
-  { title: "Whitening", sub: "Teeth whitening", to: "/services/whitening", tone: "from-[#a15a6b] to-[#6d47b0]" },
+  {
+    title: "Emergency Dental",
+    sub: "24/7 care",
+    to: "/services/emergency-dental",
+    tone: "from-[#d1673f] to-[#8a3a34]",
+  },
+  {
+    title: "Mobile Dentistry",
+    sub: "At-home care",
+    to: "/services/mobile-dentistry",
+    tone: "from-[#a15a6b] to-[#6d47b0]",
+  },
+  {
+    title: "Aesthetics",
+    sub: "Facial aesthetics",
+    to: "/services/aesthetics",
+    tone: "from-[#d1673f] to-[#8a3a34]",
+  },
+  {
+    title: "General Dentistry",
+    sub: "Preventive care",
+    to: "/services/general-dentistry",
+    tone: "from-[#a15a6b] to-[#6d47b0]",
+  },
+  {
+    title: "Tooth Extraction",
+    sub: "Same-day relief",
+    to: "/services/tooth-extraction",
+    tone: "from-[#d1673f] to-[#8a3a34]",
+  },
+  {
+    title: "Whitening",
+    sub: "Teeth whitening",
+    to: "/services/whitening",
+    tone: "from-[#a15a6b] to-[#6d47b0]",
+  },
 ] as const;
 
-
-const BIG_CARD = "relative aspect-[4/5] w-[86vw] shrink-0 snap-start overflow-hidden rounded-[28px] bg-[#c9b8a0] sm:aspect-[16/10] sm:w-[68vw] md:w-[72vw] lg:aspect-[1380/736] lg:w-[min(72vw,1380px)]";
+const BIG_CARD =
+  "relative aspect-[4/5] w-[86vw] shrink-0 snap-start overflow-hidden rounded-[28px] bg-[#c9b8a0] sm:aspect-[16/10] sm:w-[68vw] md:w-[72vw] lg:aspect-[1380/736] lg:w-[min(72vw,1380px)]";
 
 /** The Hims "here's what you need to know" band: big photo cards, a row of gradient topic cards, a facts strip and a progress bar. */
 export function KnowMore() {
@@ -75,7 +106,10 @@ export function KnowMore() {
                 height={1024}
                 className="absolute inset-0 size-full object-cover"
               />
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent"
+              />
               <h3 className="relative z-10 max-w-[60%] p-6 t-hims-feature text-white md:p-10">
                 What causes cavities?
               </h3>
@@ -83,7 +117,10 @@ export function KnowMore() {
                 type="button"
                 onClick={() => setPlaying(true)}
                 aria-label="Play What causes cavities? video"
-                className={cn(EXPLORE, "absolute bottom-6 left-1/2 -translate-x-1/2 gap-2 md:bottom-10 h-[64px] px-8 text-label")}
+                className={cn(
+                  EXPLORE,
+                  "absolute bottom-6 left-1/2 -translate-x-1/2 gap-2 md:bottom-10 h-[64px] px-8 text-label",
+                )}
               >
                 <Play aria-hidden className="size-4 fill-current" />
                 Watch
@@ -100,13 +137,19 @@ export function KnowMore() {
             height={1024}
             className="absolute inset-0 size-full object-cover"
           />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent"
+          />
           <h3 className="relative z-10 max-w-[60%] p-6 t-hims-feature text-white md:p-10">
             Mobile Dentistry at Your Doorstep
           </h3>
           <Link
             to="/services/mobile-dentistry"
-            className={cn(EXPLORE, "absolute bottom-6 left-1/2 h-[64px] -translate-x-1/2 px-8 text-label md:bottom-10")}
+            className={cn(
+              EXPLORE,
+              "absolute bottom-6 left-1/2 h-[64px] -translate-x-1/2 px-8 text-label md:bottom-10",
+            )}
           >
             Explore
           </Link>
@@ -120,13 +163,19 @@ export function KnowMore() {
             height={1024}
             className="absolute inset-0 size-full object-cover"
           />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent"
+          />
           <h3 className="relative z-10 max-w-[60%] p-6 t-hims-feature text-white md:p-10">
             24/7 Emergency Dental Services in Bradford
           </h3>
           <Link
             to="/services/emergency-dental"
-            className={cn(EXPLORE, "absolute bottom-6 left-1/2 h-[64px] -translate-x-1/2 px-8 text-label md:bottom-10")}
+            className={cn(
+              EXPLORE,
+              "absolute bottom-6 left-1/2 h-[64px] -translate-x-1/2 px-8 text-label md:bottom-10",
+            )}
           >
             Explore
           </Link>
@@ -150,7 +199,10 @@ export function KnowMore() {
         ))}
       </ul>
 
-      <div aria-hidden className="mx-auto mt-12 h-2 w-[91px] overflow-hidden rounded-full bg-[#ece7df]">
+      <div
+        aria-hidden
+        className="mx-auto mt-12 h-2 w-[91px] overflow-hidden rounded-full bg-[#ece7df]"
+      >
         <div
           className="h-full w-[64px] rounded-full bg-black"
           style={{ transform: `translateX(${progress * 27}px)` }}

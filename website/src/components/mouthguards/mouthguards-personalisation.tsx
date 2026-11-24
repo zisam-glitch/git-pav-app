@@ -22,7 +22,11 @@ export function MouthguardsPersonalisation() {
     PERSONALISATION_OPTIONS[0];
 
   return (
-    <Section id="personalisation" theme="white" aria-labelledby="mouthguards-personalisation-heading">
+    <Section
+      id="personalisation"
+      theme="white"
+      aria-labelledby="mouthguards-personalisation-heading"
+    >
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-xl">
           <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
@@ -55,7 +59,7 @@ export function MouthguardsPersonalisation() {
           </ul>
         </div>
 
-        <Tile tone="cream" className="border border-border p-6 md:p-8">
+        <Tile tone="grey" className="border border-border p-6 md:p-8">
           <div className="grid gap-5">
             <div className="grid gap-2">
               <Label htmlFor="mg-personalisation-input">{active.label}</Label>
@@ -69,9 +73,7 @@ export function MouthguardsPersonalisation() {
 
             <div className="rounded-xl border border-border bg-white px-5 py-4">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-caption font-medium text-copper">
-                  Preview ({active.label})
-                </p>
+                <p className="text-caption font-medium text-copper">Preview ({active.label})</p>
                 <span className="inline-flex items-center rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta">
                   Custom Inscription
                 </span>

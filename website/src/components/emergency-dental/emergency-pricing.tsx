@@ -15,7 +15,7 @@ const TREATMENT_FEES = [
 
 export function EmergencyPricing() {
   return (
-    <Section id="pricing" theme="cream" space="default">
+    <Section id="pricing" theme="white" space="default">
       <div className="max-w-2xl">
         <Heading as="h2" size="h2-md" accent="cost?" tone="terracotta" inline>
           How much does it
@@ -42,7 +42,7 @@ export function EmergencyPricing() {
         </Tile>
 
         <Tile
-          tone="sage"
+          tone="grey"
           lift
           className="flex flex-col justify-between gap-6 border border-border p-6 md:p-8"
         >

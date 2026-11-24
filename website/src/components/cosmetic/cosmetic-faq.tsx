@@ -1,11 +1,4 @@
-import {
-  BookButton,
-  CallButton,
-  FaqList,
-  Heading,
-  Section,
-  type FaqItem,
-} from "@/components/hims";
+import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {

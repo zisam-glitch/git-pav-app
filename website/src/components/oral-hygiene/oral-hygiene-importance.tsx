@@ -12,7 +12,7 @@ const BENEFITS = [
 
 export function OralHygieneImportance() {
   return (
-    <Section id="importance" theme="sand" space="default">
+    <Section id="importance" theme="white" space="default">
       <div className="max-w-2xl">
         <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
           Clinical Prevention

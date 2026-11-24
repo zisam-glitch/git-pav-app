@@ -33,7 +33,7 @@ const USER_TYPES = [
 
 export function MouthguardsUsers() {
   return (
-    <Section theme="sand" aria-labelledby="mouthguards-users-heading">
+    <Section theme="white" aria-labelledby="mouthguards-users-heading">
       <div className="max-w-2xl">
         <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
           Tailored for Every Discipline

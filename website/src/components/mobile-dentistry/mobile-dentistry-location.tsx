@@ -10,7 +10,7 @@ import {
 
 export function MobileDentistryLocation() {
   return (
-    <Section id="location" theme="sand" space="default" aria-labelledby="mobile-location-heading">
+    <Section id="location" theme="white" space="default" aria-labelledby="mobile-location-heading">
       <SplitFeature
         media={
           <Media

@@ -10,7 +10,7 @@ export function DenturesContact() {
   const enquiry = useEnquiry("Dentures");
 
   return (
-    <Section id="contact" theme="cream">
+    <Section id="contact" theme="white">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-[460px]">
           <Heading size="h2-md" accent="Touch" tone="terracotta" inline>

@@ -25,7 +25,7 @@ const BENEFITS = [
 
 export function CosmeticBenefits() {
   return (
-    <Section theme="cream" aria-labelledby="cosmetic-benefits-heading">
+    <Section theme="white" aria-labelledby="cosmetic-benefits-heading">
       <div className="max-w-2xl">
         <div id="cosmetic-benefits-heading">
           <Heading size="h2-md" accent="Cosmetic Dentistry" tone="terracotta" inline>

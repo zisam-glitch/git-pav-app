@@ -1,11 +1,4 @@
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-} from "@/components/hims";
+import { BookButton, ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
 
 export function AestheticsPremium() {
   return (

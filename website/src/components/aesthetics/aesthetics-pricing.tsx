@@ -41,7 +41,7 @@ const PRICE_CATEGORIES = [
 
 export function AestheticsPricing() {
   return (
-    <Section id="pricing" theme="cream" aria-labelledby="aesthetics-pricing-heading">
+    <Section id="pricing" theme="white" aria-labelledby="aesthetics-pricing-heading">
       <div className="max-w-2xl">
         <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
           Transparent Clinic Fees
@@ -82,7 +82,9 @@ export function AestheticsPricing() {
                 {category.rows.map((row) => (
                   <li key={row.item} className="flex items-center justify-between gap-4 py-3.5">
                     <span className="text-body font-medium text-fg">{row.item}</span>
-                    <span className="text-h4 font-medium text-copper tabular-nums">{row.price}</span>
+                    <span className="text-h4 font-medium text-copper tabular-nums">
+                      {row.price}
+                    </span>
                   </li>
                 ))}
               </ul>

@@ -12,7 +12,7 @@ export function VirtualDentistryPrescriptionProcess() {
   return (
     <Section
       id="prescription-process"
-      theme="cream"
+      theme="white"
       space="default"
       aria-labelledby="virtual-prescription-heading"
     >

@@ -105,24 +105,61 @@ export function ContactForm() {
                 <form onSubmit={onSubmit} className="mt-8 grid gap-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="grid gap-1.5">
-                      <label htmlFor="name" className="text-small font-medium">Full Name</label>
-                      <input id="name" name="name" autoComplete="name" required placeholder="Jane Doe" className={FIELD} />
+                      <label htmlFor="name" className="text-small font-medium">
+                        Full Name
+                      </label>
+                      <input
+                        id="name"
+                        name="name"
+                        autoComplete="name"
+                        required
+                        placeholder="Jane Doe"
+                        className={FIELD}
+                      />
                     </div>
                     <div className="grid gap-1.5">
-                      <label htmlFor="email" className="text-small font-medium">Email Address</label>
-                      <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" className={FIELD} />
+                      <label htmlFor="email" className="text-small font-medium">
+                        Email Address
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        placeholder="you@example.com"
+                        className={FIELD}
+                      />
                     </div>
                     <div className="grid gap-1.5">
-                      <label htmlFor="phone" className="text-small font-medium">Phone</label>
-                      <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="+44" className={FIELD} />
+                      <label htmlFor="phone" className="text-small font-medium">
+                        Phone
+                      </label>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        autoComplete="tel"
+                        placeholder="+44"
+                        className={FIELD}
+                      />
                     </div>
                     <div className="grid gap-1.5">
-                      <label htmlFor="subject" className="text-small font-medium">Subject</label>
-                      <input id="subject" name="subject" placeholder="Check-up / emergency" className={FIELD} />
+                      <label htmlFor="subject" className="text-small font-medium">
+                        Subject
+                      </label>
+                      <input
+                        id="subject"
+                        name="subject"
+                        placeholder="Check-up / emergency"
+                        className={FIELD}
+                      />
                     </div>
                   </div>
                   <div className="grid gap-1.5">
-                    <label htmlFor="message" className="text-small font-medium">Your Message</label>
+                    <label htmlFor="message" className="text-small font-medium">
+                      Your Message
+                    </label>
                     <textarea
                       id="message"
                       name="message"
@@ -133,7 +170,10 @@ export function ContactForm() {
                     />
                   </div>
                   {error ? (
-                    <p role="alert" className="rounded-lg bg-white px-3 py-2 text-small font-medium text-danger">
+                    <p
+                      role="alert"
+                      className="rounded-lg bg-white px-3 py-2 text-small font-medium text-danger"
+                    >
                       {error}
                     </p>
                   ) : null}
@@ -148,9 +188,17 @@ export function ContactForm() {
               )}
               <p className="mt-6 text-caption text-white/90">
                 786 Leeds Road, Bradford, BD3 9TY ·{" "}
-                <a className="underline" href={PRACTICE_PHONE_HREF}>{PRACTICE_PHONE}</a> ·{" "}
-                <a className="underline" href="tel:+447311871456">+44 7311 871456</a> ·{" "}
-                <a className="underline" href={`mailto:${PRACTICE_EMAIL}`}>{PRACTICE_EMAIL}</a>
+                <a className="underline" href={PRACTICE_PHONE_HREF}>
+                  {PRACTICE_PHONE}
+                </a>{" "}
+                ·{" "}
+                <a className="underline" href="tel:+447311871456">
+                  +44 7311 871456
+                </a>{" "}
+                ·{" "}
+                <a className="underline" href={`mailto:${PRACTICE_EMAIL}`}>
+                  {PRACTICE_EMAIL}
+                </a>
                 <br />
                 Founder &amp; principal dentist — Dr Hassan Bhojani. Registered with the General
                 Dental Council. Regulated by the Care Quality Commission.

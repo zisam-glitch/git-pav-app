@@ -18,7 +18,10 @@ export function CheckoutSteps({ current }: { current: (typeof STEPS)[number]["id
           <li key={step.id} className="flex items-center gap-3">
             <span
               aria-current={active ? "step" : undefined}
-              className={cn("flex items-center gap-2", active ? "text-[#1b1b1b]" : "text-[#9a9a9e]")}
+              className={cn(
+                "flex items-center gap-2",
+                active ? "text-[#1b1b1b]" : "text-[#9a9a9e]",
+              )}
             >
               <Icon aria-hidden strokeWidth={1.4} className="size-6" />
               <span className="hidden sm:inline">{step.label}</span>

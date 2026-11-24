@@ -173,7 +173,11 @@ export function FeeTable() {
     .filter((cat) => cat.items.length > 0);
 
   return (
-    <section id="fees" aria-labelledby="fee-schedule-heading" className="scroll-mt-20 bg-white py-14 md:py-24">
+    <section
+      id="fees"
+      aria-labelledby="fee-schedule-heading"
+      className="scroll-mt-20 bg-white py-14 md:py-24"
+    >
       <div className={CONTAINER}>
         <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
           <div>
@@ -219,7 +223,9 @@ export function FeeTable() {
                 onClick={() => setSelectedCategory(name)}
                 className={cn(
                   "rounded-full px-4 py-2 text-[15px] t-colors",
-                  active ? "bg-[#1b1b1b] text-white" : "bg-[#f4f1ea] text-[#1b1b1b] hover:bg-[#ebe6dc]",
+                  active
+                    ? "bg-[#1b1b1b] text-white"
+                    : "bg-[#f4f1ea] text-[#1b1b1b] hover:bg-[#ebe6dc]",
                 )}
               >
                 {name === "All" ? `All (${activeCategories.length})` : name}

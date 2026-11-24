@@ -11,12 +11,7 @@ import {
 
 export function VirtualDentistryServices() {
   return (
-    <Section
-      id="services"
-      theme="sand"
-      space="default"
-      aria-labelledby="virtual-services-heading"
-    >
+    <Section id="services" theme="white" space="default" aria-labelledby="virtual-services-heading">
       <SplitFeature
         media={
           <Media

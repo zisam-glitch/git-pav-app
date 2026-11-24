@@ -36,7 +36,7 @@ export function CareFeature() {
             </h2>
             <img
               src="/images/home/phone-emergency.webp"
-              alt="Hand holding a smartphone showing the Pav Dental emergency dental page"
+              alt="Hand holding a smartphone showing a Pav Dental emergency dentist app screen"
               loading="lazy"
               width={773}
               height={1085}

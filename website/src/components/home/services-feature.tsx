@@ -150,7 +150,7 @@ export function ServicesFeature() {
           <h2 className="mt-2 text-h3-md text-white">{active.heading}</h2>
           <img
             src={active.phoneSrc}
-            alt={`Hand holding a smartphone showing the Pav Dental ${active.tabLabel} page`}
+            alt={`Hand holding a smartphone showing a Pav Dental ${active.tabLabel} app screen`}
             loading="lazy"
             width={773}
             height={1085}

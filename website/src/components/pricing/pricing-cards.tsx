@@ -1,16 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Section,
-  Tile,
-  type TileTone,
-} from "@/components/hims";
+import { BookButton, ButtonLink } from "@/components/hims";
 import { api, HAS_API_BASE } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "./tokens";
 
 interface PlanFeature {
   text: string;
@@ -78,13 +72,13 @@ const PLANS: Plan[] = [
   },
 ];
 
-const PLAN_TONE: Record<Plan["color"], TileTone> = {
-  bronze: "white",
-  silver: "sage",
-  gold: "white",
+const TIER_DOT: Record<Plan["color"], string> = {
+  bronze: "#c0875a",
+  silver: "#aeb0b5",
+  gold: "#d9a93e",
 };
 
-/** Hims spec-card membership comparison (Mobbin fceeec4f). */
+/** Membership plans: Hims soft cards, with the popular plan as a dark card (Sana pricing). */
 export function PricingCards() {
   const [isMonthly, setIsMonthly] = useState(true);
 
@@ -108,129 +102,142 @@ export function PricingCards() {
       : PLANS;
 
   return (
-    <Section id="plans" theme="cream" space="default" aria-labelledby="plans-heading">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-            Monthly &amp; Annual Care
-          </span>
-          <Heading
-            as="h2"
-            size="h2-md"
-            accent="Plans"
-            tone="terracotta"
-            inline
-            className="mt-4 text-fg"
-          >
-            <span id="plans-heading">Pav Dental</span>
-          </Heading>
-          <p className="mt-3 text-lead text-muted">
-            Membership tiers for regular check-ups, hygiene visits, and treatment savings.
-          </p>
-        </div>
+    <section id="plans" aria-labelledby="plans-heading" className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24">
+      <div className="wrap-bento max-w-[1396px]">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className={TITLE} id="plans-heading">
+              Pav Dental <span className={MUTED_TITLE}>Plans</span>
+            </h2>
+            <p className={`mt-4 max-w-[34rem] ${LEAD}`}>
+              Membership tiers for regular check-ups, hygiene visits, and treatment savings.
+            </p>
+          </div>
 
-        <div className="inline-flex w-fit items-center gap-3 rounded-pill border border-border bg-white px-4 py-2.5 shadow-soft">
-          <span className={cn("text-small font-medium", isMonthly ? "text-fg" : "text-muted")}>
-            Monthly
-          </span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={!isMonthly}
-            aria-label="Toggle annual billing"
-            onClick={() => setIsMonthly((v) => !v)}
-            className={cn(
-              "relative inline-flex h-7 w-12 shrink-0 items-center rounded-pill border-2 border-border-strong t-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              !isMonthly ? "bg-black" : "bg-cream",
-            )}
-          >
-            <span
+          <div className="inline-flex w-fit items-center gap-3 rounded-full bg-white px-4 py-2.5 shadow-[0_10px_36px_rgba(20,20,40,0.07)]">
+            <span className={cn("text-small font-medium", isMonthly ? "text-[#1b1b1b]" : "text-[#8b8d92]")}>
+              Monthly
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={!isMonthly}
+              aria-label="Toggle annual billing"
+              onClick={() => setIsMonthly((v) => !v)}
               className={cn(
-                "pointer-events-none block size-5 rounded-full transition-transform duration-200",
-                !isMonthly ? "translate-x-[22px] bg-white" : "translate-x-[2px] bg-black",
-              )}
-            />
-          </button>
-          <span className={cn("text-small font-medium", !isMonthly ? "text-fg" : "text-muted")}>
-            Annual (Save 20%)
-          </span>
-        </div>
-      </div>
-
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        {activePlans.map((plan) => {
-          const displayPrice = isMonthly ? plan.price : plan.yearlyPrice;
-          return (
-            <Tile
-              key={plan.name}
-              as="article"
-              tone={PLAN_TONE[plan.color]}
-              lift
-              className={cn(
-                "flex h-full flex-col justify-between gap-8 p-6 md:p-8",
-                plan.popular ? "border border-black/20 shadow-soft" : "border border-border",
+                "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full t-colors focus-visible:ring-2 focus-visible:ring-[#5b3fc4] focus-visible:ring-offset-2 focus-visible:outline-none",
+                !isMonthly ? "bg-[#5b3fc4]" : "bg-[#d9d6cf]",
               )}
             >
-              <div>
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-label tracking-wide text-muted">{plan.name}</h3>
-                  {plan.popular ? (
-                    <span className="rounded-pill bg-black px-3 py-1 text-caption font-medium text-white">
-                      Most Popular
+              <span
+                className={cn(
+                  "pointer-events-none block size-5 rounded-full bg-white shadow transition-transform duration-200",
+                  !isMonthly ? "translate-x-[24px]" : "translate-x-[4px]",
+                )}
+              />
+            </button>
+            <span className={cn("text-small font-medium", !isMonthly ? "text-[#1b1b1b]" : "text-[#8b8d92]")}>
+              Annual (Save 20%)
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-12 grid gap-3 lg:grid-cols-3 lg:gap-4">
+          {activePlans.map((plan) => {
+            const displayPrice = isMonthly ? plan.price : plan.yearlyPrice;
+            const dark = Boolean(plan.popular);
+            return (
+              <article
+                key={plan.name}
+                className={cn(
+                  "flex h-full flex-col justify-between gap-8 p-7 md:p-9",
+                  dark ? "rounded-[22px] bg-[#1b1b1b] text-white" : SOFT_CARD,
+                )}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="flex items-center gap-2.5 text-[15px] tracking-[0.12em]">
+                      <span
+                        aria-hidden
+                        className="size-3.5 rounded-full"
+                        style={{ backgroundColor: TIER_DOT[plan.color] ?? TIER_DOT.bronze }}
+                      />
+                      {plan.name}
+                    </h3>
+                    {plan.popular ? (
+                      <span className="rounded-full bg-white px-3 py-1 text-caption font-medium text-[#1b1b1b]">
+                        Most Popular
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <p className="mt-6 flex items-baseline gap-2 tabular-nums">
+                    <span className="text-[clamp(44px,4.2vw,64px)] leading-none font-normal tracking-[-0.03em]">
+                      £{displayPrice}
                     </span>
-                  ) : null}
-                </div>
+                    <span className={cn("text-small", dark ? "text-white/70" : "text-[#55565a]")}>
+                      / month
+                    </span>
+                  </p>
 
-                <p className="mt-4 flex items-baseline gap-1.5 text-h3 text-fg tabular-nums">
-                  <span>£{displayPrice}</span>
-                  <span className="text-small text-muted">/ month</span>
-                </p>
-
-                <ul className="mt-6 space-y-3 border-t border-border pt-6">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-3 text-body">
-                      {feature.included ? (
+                  <ul
+                    className={cn(
+                      "mt-8 space-y-3.5 border-t pt-7",
+                      dark ? "border-white/15" : "border-[#1b1b1b]/10",
+                    )}
+                  >
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-3 text-[16px] leading-snug">
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "mt-0.5 grid size-5 shrink-0 place-items-center rounded-pill",
-                            plan.popular ? "bg-black text-white" : "bg-sand text-fg",
+                            "mt-0.5 grid size-5 shrink-0 place-items-center rounded-full",
+                            feature.included
+                              ? dark
+                                ? "bg-white text-[#1b1b1b]"
+                                : "bg-[#5b3fc4] text-white"
+                              : dark
+                                ? "bg-white/10 text-white/50"
+                                : "bg-[#efece6] text-[#8b8d92]",
                           )}
                         >
-                          <Check className="size-3" />
+                          {feature.included ? <Check className="size-3" /> : <X className="size-3" />}
                         </span>
-                      ) : (
                         <span
-                          aria-hidden="true"
-                          className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-pill bg-cream text-subtle"
+                          className={cn(
+                            feature.included
+                              ? dark
+                                ? "text-white"
+                                : "text-[#1b1b1b]"
+                              : dark
+                                ? "text-white/50"
+                                : "text-[#8b8d92]",
+                          )}
                         >
-                          <X className="size-3" />
+                          {feature.text}
                         </span>
-                      )}
-                      <span className={feature.included ? "text-fg" : "text-muted"}>
-                        {feature.text}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <BookButton variant={plan.popular ? "default" : "outline"} className="w-full">
-                Book Now
-              </BookButton>
-            </Tile>
-          );
-        })}
-      </div>
+                <BookButton variant={dark ? "gold" : "outline"} className="w-full">
+                  Book Now
+                </BookButton>
+              </article>
+            );
+          })}
+        </div>
 
-      <div className="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-white px-6 py-5 sm:flex-row sm:items-center">
-        <p className="text-small text-muted">
-          Prefer to pay per visit or review our written treatment plans before committing?
-        </p>
-        <ButtonLink href="/services/finance" variant="outline" size="sm" className="shrink-0">
-          Explore Payment Options
-        </ButtonLink>
+        <div className="mt-6 flex flex-col items-start justify-between gap-4 rounded-[22px] bg-white px-6 py-5 shadow-[0_10px_36px_rgba(20,20,40,0.07)] sm:flex-row sm:items-center">
+          <p className="text-small text-[#55565a]">
+            Prefer to pay per visit or review our written treatment plans before committing?
+          </p>
+          <ButtonLink href="/services/finance" variant="outline" size="sm" className="shrink-0">
+            Explore Payment Options
+          </ButtonLink>
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }

@@ -1,4 +1,4 @@
-import { Heading, Section, Tile } from "@/components/hims";
+import { LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "./tokens";
 
 const INSURANCE_PROVIDERS = [
   "AXA Health",
@@ -11,40 +11,36 @@ const INSURANCE_PROVIDERS = [
 
 export function InsuranceProviders() {
   return (
-    <Section id="insurance" theme="sand" aria-labelledby="insurance-heading">
-      <div className="max-w-2xl">
-        <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-          Dental Insurance
-        </span>
-        <Heading
-          as="h2"
-          size="h2-md"
-          accent="Insurance Providers"
-          tone="terracotta"
-          inline
-          className="mt-4"
-        >
-          <span id="insurance-heading">We Accept All</span>
-        </Heading>
-        <p className="mt-3 text-lead text-muted">
-          Itemised receipts are provided at every appointment for straightforward reimbursement
-          claims.
-        </p>
-      </div>
+    <section
+      id="insurance"
+      aria-labelledby="insurance-heading"
+      className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24"
+    >
+      <div className="wrap-bento max-w-[1396px]">
+        <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
+          <div>
+            <p className="text-small text-[#55565a]">Dental Insurance</p>
+            <h2 className={`mt-2 ${TITLE}`} id="insurance-heading">
+              We Accept All <span className={MUTED_TITLE}>Insurance Providers</span>
+            </h2>
+          </div>
+          <p className={LEAD}>
+            Itemised receipts are provided at every appointment for straightforward reimbursement
+            claims.
+          </p>
+        </div>
 
-      <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {INSURANCE_PROVIDERS.map((provider) => (
-          <li key={provider}>
-            <Tile
-              tone="white"
-              lift
-              className="flex h-24 items-center justify-center px-4 text-center"
+        <ul className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 lg:gap-4">
+          {INSURANCE_PROVIDERS.map((provider) => (
+            <li
+              key={provider}
+              className={`${SOFT_CARD} flex h-28 items-center justify-center px-4 text-center text-[18px] text-[#1b1b1b]`}
             >
-              <span className="text-label text-fg">{provider}</span>
-            </Tile>
-          </li>
-        ))}
-      </ul>
-    </Section>
+              {provider}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }

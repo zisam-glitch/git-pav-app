@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
+import { Minus, Plus, Search } from "lucide-react";
 import { useState } from "react";
-import { Heading, Section } from "@/components/hims";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api, HAS_API_BASE } from "@/lib/api";
+import { cn } from "@/lib/utils";
+import { LEAD, MUTED_TITLE, TITLE } from "./tokens";
 
 interface TreatmentItem {
   name: string;
@@ -172,113 +173,107 @@ export function FeeTable() {
     .filter((cat) => cat.items.length > 0);
 
   return (
-    <Section id="fees" theme="white" width="bento" aria-labelledby="fee-schedule-heading">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl">
-          <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
-            Pav Dental Plans
-          </span>
-          <Heading
-            as="h2"
-            size="h2-md"
-            accent="Fee Schedule"
-            tone="terracotta"
-            inline
-            className="mt-4"
-          >
-            <span id="fee-schedule-heading">Treatment</span>
-          </Heading>
-          <p className="mt-3 text-lead text-muted">
-            Complete treatment and fee schedule across examinations, hygiene, restorative care,
-            whitening, and aesthetics.
-          </p>
-        </div>
-
-        <div className="relative w-full md:max-w-sm">
-          <label htmlFor="fee-search" className="sr-only">
-            Search treatments
-          </label>
-          <Search
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted"
-          />
-          <Input
-            id="fee-search"
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search treatments (e.g. hygiene, whitening, crown)..."
-            className="h-12 rounded-pill pl-11"
-          />
-        </div>
-      </div>
-
-      {/* Category filter pills */}
-      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Treatment categories">
-        <Button
-          type="button"
-          role="tab"
-          aria-selected={selectedCategory === "All"}
-          variant={selectedCategory === "All" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSelectedCategory("All")}
-        >
-          All ({activeCategories.length})
-        </Button>
-        {activeCategories.map((cat) => {
-          const active = selectedCategory === cat.category;
-          return (
-            <Button
-              key={cat.category}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              variant={active ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedCategory(cat.category)}
-            >
-              {cat.category}
-            </Button>
-          );
-        })}
-      </div>
-
-      {/* Treatment fee tables in Hims cream-headed rounded panels */}
-      <div className="mt-8 space-y-6">
-        {filteredCategories.map((group) => (
-          <div
-            key={group.category}
-            className="overflow-hidden rounded-xl border border-border bg-white"
-          >
-            <div className="flex items-center justify-between border-b border-border bg-cream px-5 py-4 md:px-8">
-              <div className="flex items-center gap-3">
-                <h3 className="text-h4 text-fg">{group.category}</h3>
-                <span className="rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption font-medium text-muted">
-                  {group.items.length}
-                </span>
-              </div>
-              <span className="text-small font-medium text-muted">Price</span>
-            </div>
-
-            <div className="divide-y divide-border">
-              {group.items.map((item, idx) => (
-                <div
-                  key={`${group.category}-${item.name}-${idx}`}
-                  className="flex items-center justify-between gap-6 px-5 py-4 t-colors hover:bg-cream/60 md:px-8"
-                >
-                  <span className="text-body text-fg">{item.name}</span>
-                  <span className="shrink-0 text-right text-lead font-medium text-fg tabular-nums">
-                    {item.fee}
-                  </span>
-                </div>
-              ))}
-            </div>
+    <section id="fees" aria-labelledby="fee-schedule-heading" className="scroll-mt-20 bg-white py-14 md:py-24">
+      <div className="wrap-bento max-w-[1396px]">
+        <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
+          <div>
+            <p className="text-small text-[#55565a]">Pav Dental Plans</p>
+            <h2 className={`mt-2 ${TITLE}`} id="fee-schedule-heading">
+              Treatment <span className={MUTED_TITLE}>Fee Schedule</span>
+            </h2>
+            <p className={`mt-4 max-w-[36rem] ${LEAD}`}>
+              Complete treatment and fee schedule across examinations, hygiene, restorative care,
+              whitening, and aesthetics.
+            </p>
           </div>
-        ))}
+
+          <div className="relative w-full">
+            <label htmlFor="fee-search" className="sr-only">
+              Search treatments
+            </label>
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-5 size-4 -translate-y-1/2 text-[#55565a]"
+            />
+            <Input
+              id="fee-search"
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search treatments (e.g. hygiene, whitening, crown)..."
+              className="h-14 rounded-full border-0 bg-[#f4f1ea] pl-12 text-[16px]"
+            />
+          </div>
+        </div>
+
+        {/* Category filter pills */}
+        <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Treatment categories">
+          {["All", ...activeCategories.map((c) => c.category)].map((name) => {
+            const active = selectedCategory === name;
+            return (
+              <button
+                key={name}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setSelectedCategory(name)}
+                className={cn(
+                  "rounded-full px-4 py-2 text-[15px] t-colors",
+                  active ? "bg-[#1b1b1b] text-white" : "bg-[#f4f1ea] text-[#1b1b1b] hover:bg-[#ebe6dc]",
+                )}
+              >
+                {name === "All" ? `All (${activeCategories.length})` : name}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Hims FAQ-style rows: a big title with a round plus, opening to the fee list */}
+        <div className="mt-10 border-t border-[#1b1b1b]/10">
+          {filteredCategories.map((group, index) => (
+            <details
+              key={`${group.category}-${query ? "q" : "all"}`}
+              open={Boolean(query) || selectedCategory !== "All" || index === 0}
+              className="group border-b border-[#1b1b1b]/10"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 md:py-8 [&::-webkit-details-marker]:hidden">
+                <span className="flex items-baseline gap-4">
+                  <span className="text-[clamp(24px,2.8vw,40px)] leading-[1.1] font-normal tracking-[-0.02em] text-[#1b1b1b]">
+                    {group.category}
+                  </span>
+                  <span className="text-small text-[#8b8d92]">{group.items.length}</span>
+                </span>
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#efece6] text-[#1b1b1b]">
+                  <Plus aria-hidden className="size-4 group-open:hidden" />
+                  <Minus aria-hidden className="hidden size-4 group-open:block" />
+                </span>
+              </summary>
+              <div className="pb-6 md:pb-8">
+                <div className="flex items-center justify-between pb-3 text-small text-[#8b8d92]">
+                  <span>Treatment</span>
+                  <span>Price</span>
+                </div>
+                <ul className="divide-y divide-[#1b1b1b]/10">
+                  {group.items.map((item, idx) => (
+                    <li
+                      key={`${group.category}-${item.name}-${idx}`}
+                      className="flex items-center justify-between gap-6 py-4"
+                    >
+                      <span className="text-[17px] text-[#1b1b1b]">{item.name}</span>
+                      <span className="shrink-0 text-right text-[clamp(20px,1.8vw,26px)] tracking-[-0.01em] text-[#1b1b1b] tabular-nums">
+                        {item.fee}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          ))}
+        </div>
 
         {filteredCategories.length === 0 && (
-          <div className="rounded-xl border border-border bg-cream p-10 text-center">
-            <p className="text-lead text-muted">
+          <div className="mt-8 rounded-[22px] bg-[#f4f1ea] p-10 text-center">
+            <p className={LEAD}>
               No treatments match &ldquo;{search}&rdquo;. Try searching for another service or reset
               the category filter.
             </p>
@@ -297,6 +292,6 @@ export function FeeTable() {
           </div>
         )}
       </div>
-    </Section>
+    </section>
   );
 }

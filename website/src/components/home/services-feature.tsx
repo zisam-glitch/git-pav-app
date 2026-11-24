@@ -149,7 +149,7 @@ export function ServicesFeature() {
             className="mt-6 h-auto w-[min(300px,72%)] drop-shadow-[0_18px_28px_rgba(60,30,0,0.35)]"
           />
           {active.subtitle ? (
-            <p className={cn("mt-6 max-w-md t-hims-lead", GOLD)}>{active.subtitle}</p>
+            <p className={cn("mt-6 max-w-lg t-hims-card", GOLD)}>{active.subtitle}</p>
           ) : null}
           <div className="mt-3 w-full">
             {SERVICES.map((service) => (
@@ -160,7 +160,7 @@ export function ServicesFeature() {
                 aria-labelledby={`tab-${service.id}`}
                 hidden={service.id !== active.id}
               >
-                <p className="mx-auto max-w-md t-hims-body text-white/90">
+                <p className="mx-auto max-w-[32rem] t-hims-body text-white/90">
                   {service.copy}{" "}
                   {service.contactNote?.email ? null : (
                     <Link
@@ -235,7 +235,7 @@ export function ServicesFeature() {
               Comprehensive Dental Services:{" "}
               <span className={GOLD}>Book Online, Specialized Care, and Insurance Support</span>
             </h2>
-            <p className="mt-5 max-w-md px-6 t-hims-body text-white/90">
+            <p className="mx-auto mt-5 w-full max-w-[32rem] px-6 t-hims-body text-white/90 md:px-0">
               Providing expert oral surgery, comprehensive dental hygiene assessments, cosmetic
               dentistry, special care services, and public health insurance assistance, our clinic
               ensures top-notch care for all your dental needs. Enjoy the convenience of free online

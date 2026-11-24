@@ -9,6 +9,7 @@ export { CtaBand } from "./cta-band";
 export { SplitFeature } from "./split-feature";
 export { Stat } from "./stat";
 export { Media } from "./media";
+export { SectionHead } from "./section-head";
 export { ServiceHeroLayout } from "./service-hero";
 export { FeeTable, type FeeTier } from "./fee-table";
 export { PricingTiles, type PricingTier } from "./pricing-tiles";

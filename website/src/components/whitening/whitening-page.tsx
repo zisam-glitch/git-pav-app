@@ -10,10 +10,8 @@ import {
   Tile,
   type ConsentItem,
 } from "@/components/hims";
-import { WhiteningComparison } from "./whitening-comparison";
 import { WhiteningFaq } from "./whitening-faq";
 import { WhiteningProducts } from "./whitening-products";
-import { WhiteningVisualizer } from "./whitening-visualizer";
 
 const WHITENING_CONSENT_ITEMS: readonly ConsentItem[] = [
   {
@@ -93,7 +91,7 @@ export function WhiteningPage() {
         </div>
         <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
           <a
-            href="#comparison-matrix"
+            href="#products"
             className="underline underline-offset-4 t-colors hover:text-terracotta"
           >
             Compare treatments (£65 – £495)
@@ -108,12 +106,10 @@ export function WhiteningPage() {
       </ServiceHeroLayout>
 
       <WhiteningProducts />
-      <WhiteningVisualizer />
-      <WhiteningComparison />
 
       <ConsentPanel
         id="consent"
-        theme="cream"
+        theme="white"
         title="Informed Consent for"
         accent="Tooth Whitening"
         intro="Before starting a course of teeth whitening, please review the clinical guidance and suitability considerations with your prescribing dentist."

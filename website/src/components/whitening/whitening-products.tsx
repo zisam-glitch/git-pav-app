@@ -1,90 +1,56 @@
-import { ArrowUpRight } from "lucide-react";
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-  Tile,
-} from "@/components/hims";
+import { BookButton, SectionHead, Section } from "@/components/hims";
 import { PRODUCTS_DATA } from "./whitening-data";
 
+/** The three live whitening ranges as Hims product cards: grey image tile, name, price, text, button. */
 export function WhiteningProducts() {
   return (
     <Section id="products" theme="white" aria-labelledby="whitening-products-heading">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Dentist-Formulated Ranges
-          </span>
-          <div id="whitening-products-heading" className="mt-4">
-            <Heading size="h2-md" accent="Whitening" tone="terracotta" inline>
-              Award Winning
-            </Heading>
-          </div>
-          <p className="mt-4 text-lead text-muted">
-            Experience our award-winning whitening treatments for a brilliantly radiant smile.
-            Discover the difference of our acclaimed whitening services today.
-          </p>
-        </div>
+      <SectionHead
+        id="whitening-products-heading"
+        label="Our whitening ranges"
+        accent="Award Winning"
+        title="Whitening"
+        action={<BookButton>Book Now</BookButton>}
+      >
+        Experience our award-winning whitening treatments for a brilliantly radiant smile. Discover
+        the difference of our acclaimed whitening services today.
+      </SectionHead>
 
-        <ButtonLink href="#comparison-matrix" variant="outline" size="sm" className="w-fit">
-          Compare all ranges
-        </ButtonLink>
-      </div>
-
-      <div className="mt-10 space-y-6">
-        {PRODUCTS_DATA.map((product, i) => (
-          <Tile
-            key={product.id}
-            as="article"
-            tone="white"
-            lift
-            className="border border-border p-6 md:p-10"
-          >
-            <SplitFeature
-              reverse={i % 2 === 1}
-              media={<Media src={product.image} alt={product.alt} ratio="4 / 3" tone="cream" />}
-            >
-              <div>
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="inline-flex items-center rounded-pill bg-cream px-3 py-1 text-caption font-medium text-terracotta tabular-nums">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {product.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-pill border border-border bg-cream px-3 py-1 text-caption font-medium text-copper"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-h4 font-medium text-terracotta tabular-nums">
-                    {product.price}
-                  </span>
-                </div>
-
-                <h3 className="mt-5 text-h3-md text-fg">
-                  {product.name} - <span className="tabular-nums">{product.price}</span>
-                </h3>
-
-                <p className="mt-4 text-body leading-relaxed text-muted">{product.description}</p>
-
-                <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-border pt-5">
-                  <BookButton>Appointment</BookButton>
-                  <ButtonLink href="#comparison-matrix" variant="ghost" className="gap-1">
-                    <span>Compare options</span>
-                    <ArrowUpRight aria-hidden className="size-4" />
-                  </ButtonLink>
-                </div>
+      <ul className="mt-10 grid list-none gap-4 md:grid-cols-3">
+        {PRODUCTS_DATA.map((product) => (
+          <li key={product.id} className="flex flex-col rounded-[24px] bg-[#f7f7f7] p-3">
+            <div className="overflow-hidden rounded-[18px] bg-[#efe9dd]">
+              <img
+                src={product.image}
+                alt={product.alt}
+                loading="lazy"
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+            <div className="flex flex-1 flex-col px-3 pt-5 pb-3">
+              <h3 className="text-[28px] leading-[1.1] font-normal tracking-[-0.02em] text-[#2a2a2c]">
+                {product.name} - <span className="tabular-nums">{product.price}</span>
+              </h3>
+              <ul className="mt-3 flex list-none flex-wrap gap-2">
+                {product.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full bg-white px-3 py-1 text-[13px] text-[#55565a]"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 flex-1 text-[15px] leading-[1.5] text-[#6b6b70]">
+                {product.description}
+              </p>
+              <div className="mt-6">
+                <BookButton className="w-full">Appointment</BookButton>
               </div>
-            </SplitFeature>
-          </Tile>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   );
 }

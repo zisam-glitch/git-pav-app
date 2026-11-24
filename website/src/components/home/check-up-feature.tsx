@@ -1,5 +1,5 @@
 import { ButtonLink, CallButton } from "@/components/hims";
-import { BOOKING_URL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+import { BOOKING_URL, PRACTICE_PHONE } from "@/lib/enquiry";
 
 const NODES = [
   { left: "3%", top: "78%", size: 34 },
@@ -98,19 +98,10 @@ export function CheckUpFeature() {
               />
               <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md" />
             </div>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
+            <div className="relative z-10 mt-5 flex justify-end">
               <CallButton variant="default" className="bg-[#0f2b36]">
-                Call us Now
+                Call us Now · {PRACTICE_PHONE}
               </CallButton>
-              <a
-                href={PRACTICE_PHONE_HREF}
-                className="text-label text-[#0f2b36] underline underline-offset-4"
-              >
-                {PRACTICE_PHONE}
-              </a>
-              <ButtonLink href={BOOKING_URL} variant="outline" className="bg-transparent">
-                Book Online
-              </ButtonLink>
             </div>
           </article>
 
@@ -121,17 +112,17 @@ export function CheckUpFeature() {
                 Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments
               </span>
             </h3>
-            <div className="relative mt-4 min-h-[300px] flex-1">
+            <div className="relative mt-4 min-h-[320px] flex-1">
               <img
                 src="/images/home/phone-aesthetics.webp"
                 alt="Hand holding a smartphone showing a Pav Dental aesthetic treatments app screen"
                 loading="lazy"
                 width={773}
                 height={1085}
-                className="absolute bottom-[-2.5rem] left-1/2 h-[min(430px,100%)] w-auto -translate-x-1/2 md:bottom-[-3rem] md:h-[480px]"
+                className="absolute bottom-[-3rem] left-1/2 h-[calc(100%+3rem)] w-auto max-w-none -translate-x-1/2"
               />
             </div>
-            <div className="relative z-10 mt-5 flex">
+            <div className="relative z-10 mt-5 flex justify-end">
               <ButtonLink to="/services/aesthetics" variant="default" className="bg-[#0f2b36]">
                 Learn more
               </ButtonLink>

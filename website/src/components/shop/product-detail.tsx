@@ -562,10 +562,9 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                   <ShieldCheck aria-hidden className="size-5" />
                 </div>
                 <div className="text-small">
-                  <p className="font-medium text-fg">Clinician-Selected &amp; Bradford Dispatched</p>
+                  <p className="font-medium text-fg">Made by Happy Tooth, our sister company</p>
                   <p className="mt-1 leading-relaxed text-muted">
-                    Checked and packed at Pav Dental ({SHOP_DISPATCH_ADDRESS}). Unsure whether this
-                    suits your teeth or gums? Call{" "}
+                    Unsure whether this suits your teeth or gums? Call{" "}
                     <a
                       href={PRACTICE_PHONE_HREF}
                       className="font-medium text-fg underline underline-offset-4 hover:text-terracotta"

@@ -115,8 +115,8 @@ export function ShopCatalog({
               Our <span className={MUTED_TITLE}>Products</span>
             </h2>
             <p className="mt-4 text-[clamp(17px,1.4vw,20px)] leading-[1.4] text-[#55565a]">
-              Clinician-selected oral care essentials formulated for daily enamel protection,
-              brightening, and gum health.
+              Happy Tooth oral care essentials for stronger enamel, a whiter smile and fresher
+              breath.
             </p>
           </div>
           {!isLoading && products.length > 0 ? (
@@ -248,7 +248,7 @@ export function ShopCatalog({
             {unavailable
               ? "Our online store is currently being updated. Please check back shortly or call 0800 1938 786."
               : products.length === 0
-                ? "Explore our full clinician-selected dental care catalogue."
+                ? "Explore our full Happy Tooth catalogue."
                 : "Try resetting your search query or selecting another category."}
           </p>
           {products.length > 0 ? (

@@ -16,27 +16,27 @@ const DELIVERY_PILLARS = [
   },
   {
     icon: MapPin,
-    title: "Dispatched from Bradford Clinic",
-    body: `Packed and quality-checked by our clinical team at ${SHOP_DISPATCH_ADDRESS}, with free Clinic Click & Collect available 7 days a week.`,
+    title: "Click & Collect in Bradford",
+    body: `Free Clinic Click & Collect is available at ${SHOP_DISPATCH_ADDRESS}, 7 days a week.`,
   },
 ] as const;
 
 const FAQS: FaqItem[] = [
   {
-    q: "Will the 14-day whitening strips cause tooth or gum sensitivity?",
-    a: "Our 14-day whitening strips use a peroxide-free PAP+ active brightening complex paired with hydroxyapatite and potassium citrate. For patients prone to cold sensitivity, we also stock Post-Whitening Sensitivity Relief Gel to calm teeth during and after brightening.",
+    q: "What makes Happy Tooth toothpaste different?",
+    a: "It is made with 10% micro-hydroxyapatite to strengthen enamel, cleans without harsh SLS, has no artificial sweeteners or artificial colors, and is 100% fluoride-free. It comes in six flavours: Fresh Mint, Vanilla Frosting, Sweet Orange, Mint Brownie, Lemon Twist and Strawberry Bubblegum.",
   },
   {
-    q: "Who can order Whitening Top-Up Syringes?",
-    a: "Our single (£45) and 4-pack (£95) top-up syringes match our published clinic fees and are formulated for adults aged 18+ who already own dentist-fitted custom whitening trays. If you need custom trays made first, book a whitening consultation at our Bradford clinic.",
+    q: "Are the natural whitening strips enamel safe?",
+    a: "Happy Tooth describes its Natural Whitening Strips as sparkly white, enamel safe and sensitivity free, made with clean ingredients. Each pack holds 14 treatments. If you have sensitive teeth or gums, call us on 0800 1938 786 or book a consultation before you start.",
   },
   {
-    q: "How much is UK delivery and where do orders ship from?",
-    a: `All orders are dispatched from Pav Dental at ${SHOP_DISPATCH_ADDRESS}. UK tracked delivery is free on orders over £40 and £3.99 on orders under £40. Orders placed before 2 PM Monday–Friday are dispatched the same working day, or you can collect in clinic.`,
+    q: "How much is UK delivery?",
+    a: `UK tracked delivery is free on orders over £40 and £3.99 on orders under £40. You can also collect free from Pav Dental at ${SHOP_DISPATCH_ADDRESS}.`,
   },
   {
     q: "What is your UK returns and refunds policy?",
-    a: "Under UK distance-selling rules, you may return unopened, sealed hygiene products and oral care devices within 14 days of receipt for a full refund. For hygiene and patient safety reasons, opened consumables (such as strips, syringes, toothpaste, or unsealed brush heads) cannot be returned unless faulty or damaged on arrival.",
+    a: "Under UK distance-selling rules, you may return unopened, sealed hygiene products and oral care devices within 14 days of receipt for a full refund. For hygiene and patient safety reasons, opened consumables (such as strips, toothpaste, or unsealed brush heads) cannot be returned unless faulty or damaged on arrival.",
   },
 ];
 
@@ -53,12 +53,12 @@ export function ShopGuarantee() {
           <div className={`${SOFT_CARD} p-7 md:p-10`}>
             <p className="text-small text-[#55565a]">Clinical Standards &amp; UK Distance Selling</p>
             <h2 className={`mt-3 ${TITLE}`}>
-              Clinic-grade care, <span className={MUTED_TITLE}>delivered directly</span>
+              Better oral care, <span className={MUTED_TITLE}>delivered directly</span>
             </h2>
             <p className={`mt-5 ${LEAD}`}>
-              Every product in our store is selected by the dental team at Pav Dental Bradford—no
-              third-party marketplace resellers, clear UK pricing, and straightforward clinical
-              support whenever you need advice.
+              Every product in our store is made by Happy Tooth, our sister company—no third-party
+              marketplace resellers, clear UK pricing, and straightforward support from the Pav
+              Dental team whenever you need advice.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="#catalog">

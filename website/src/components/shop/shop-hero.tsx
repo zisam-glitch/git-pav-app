@@ -21,16 +21,16 @@ export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps)
   return (
     <section id="top" aria-label="Shop dental products" className="bg-white pt-10 pb-12 md:pt-16 md:pb-20">
       <div className={CONTAINER}>
-        <p className="text-small text-[#6d6e72]">Pav Dental Clinic Store · Bradford</p>
+        <p className="text-small text-[#6d6e72]">Pav Dental Store · Happy Tooth products</p>
         <h1 className="mt-3 text-[clamp(46px,7vw,104px)] leading-[0.98] font-normal tracking-[-0.035em] text-[#1b1b1b]">
-          <span className="text-[#8a4242]">Designed by</span>
+          <span className="text-[#8a4242]">Happy Tooth</span>
           <br />
-          Dentists
+          oral care
         </h1>
         <p className="mt-6 max-w-[40rem] text-[clamp(17px,1.4vw,20px)] leading-[1.4] text-[#55565a]">
-          Clinician-selected whitening strips, acoustic sonic brushes, fluoride enamel care, and
-          denture hygiene essentials—dispatched directly from our registered clinic at 786 Leeds
-          Road, Bradford.
+          Happy Tooth oral care, from our sister company: fluoride-free hydroxyapatite toothpaste,
+          mineral mouthwash, natural whitening strips, the Happ E-Brush and bundles for the whole
+          family.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <ButtonLink href="#catalog">Browse Products</ButtonLink>
@@ -39,7 +39,7 @@ export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps)
           </ButtonLink>
         </div>
         <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-small text-[#6d6e72]">
-          <li>GDC-registered clinic selection</li>
+          <li>Made by Happy Tooth, our sister company</li>
           <li>Free UK tracked delivery over £40</li>
           <li>14-day UK returns on unopened items</li>
         </ul>

@@ -40,3 +40,4 @@ export {
 } from "./hub-sections";
 export { PhotoHero } from "./photo-hero";
 export { ProductDetail, type DetailOption, type DetailAccordion } from "./product-detail";
+export { TileHub, type HubBigTile, type HubSmallTile } from "./tile-hub";

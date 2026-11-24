@@ -1,51 +1,64 @@
-import { BookButton, CallButton, Heading, ServiceHeroLayout } from "@/components/hims";
+import { BookButton, CallButton, TileHub } from "@/components/hims";
 
 export function GeneralDentistryHero() {
   return (
-    <ServiceHeroLayout
+    <TileHub
       label="General dentistry services"
-      images={[
-        {
-          src: "/images/generated/general-dentistry-hero.jpg",
-          alt: "Minimalist dental examination mirror and ceramic care vessel in warm natural light",
-        },
-        { src: "/images/generated/general-dentistry-showcase.jpg", alt: "" },
-        { src: "/images/generated/home-checkup.jpg", alt: "" },
-      ]}
-      head={
-        <>
-          <p className="inline-flex items-center gap-2 rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            <span aria-hidden className="size-1.5 rounded-full bg-terracotta" />
-            Preventative &amp; Restorative Care
-          </p>
-          <Heading
-            as="h1"
-            size="hero"
-            accent="Gateway to Lifelong Oral Health"
-            tone="terracotta"
-            className="mt-4"
-          >
-            General Dentistry: Your
-          </Heading>
-        </>
+      title="General Dentistry: Your"
+      accent="Gateway to Lifelong Oral Health"
+      lead={
+        <p>
+          Welcome to your guide to General Dentistry, covering check-ups to fillings. Discover how
+          it maintains and improves your dental health for lifelong healthy smiles.
+        </p>
       }
+      big={[
+        {
+          lead: "Our",
+          accent: "Root Canal Prices",
+          cta: "Root canal from £195",
+          image: "/images/generated/root-canal-hero.jpg",
+          alt: "Warm sunlit treatment room prepared for root canal care",
+          href: "#pricing",
+        },
+        {
+          lead: "Our",
+          accent: "Tooth Extraction Prices",
+          cta: "Extractions from £95",
+          image: "/images/generated/tooth-extraction-hero.jpg",
+          alt: "Serene oral surgery suite in warm natural light",
+          href: "#extraction",
+        },
+      ]}
+      small={[
+        {
+          lead: "White",
+          rest: "fillings",
+          image: "/images/generated/general-dentistry-showcase.jpg",
+          href: "#fillings",
+        },
+        {
+          lead: "Services",
+          rest: "offered",
+          image: "/images/generated/general-dentistry-hero.jpg",
+          href: "#services",
+        },
+        {
+          lead: "How cavities",
+          rest: "form",
+          image: "/images/generated/home-cavities-poster.jpg",
+          href: "#cavities",
+        },
+        {
+          lead: "Choosing a",
+          rest: "dentist",
+          image: "/images/generated/home-checkup.jpg",
+          href: "#choosing",
+        },
+      ]}
     >
-      <p className="mt-5 max-w-xl text-lead text-muted">
-        Welcome to your guide to General Dentistry, covering check-ups to fillings. Discover how it
-        maintains and improves your dental health for lifelong healthy smiles.
-      </p>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <BookButton>Book Appointment</BookButton>
-        <CallButton variant="outline" />
-      </div>
-      <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-small text-muted">
-        <a href="#pricing" className="underline underline-offset-4 t-colors hover:text-terracotta">
-          Treatment Prices
-        </a>
-        <a href="#services" className="underline underline-offset-4 t-colors hover:text-terracotta">
-          Services Offered
-        </a>
-      </div>
-    </ServiceHeroLayout>
+      <BookButton>Book Appointment</BookButton>
+      <CallButton variant="outline" />
+    </TileHub>
   );
 }

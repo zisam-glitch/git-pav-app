@@ -36,6 +36,14 @@ export function Header() {
   );
   const [menuOpen, setMenuOpen] = useState(false);
   const [showServices, setShowServices] = useState(false);
+  // Square the bar's top corners once it sticks to the top of the window.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const servicesButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -62,7 +70,12 @@ export function Header() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 h-[49px] rounded-t-header bg-white shadow-nav xl:h-[64px]">
+      <header
+        className={cn(
+          "sticky top-0 z-50 h-[49px] bg-white shadow-nav xl:h-[64px]",
+          !scrolled && "rounded-t-header",
+        )}
+      >
         <div className="wrap flex h-full items-center justify-between gap-3 xl:gap-6">
           <a
             href="/"

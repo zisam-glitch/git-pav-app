@@ -267,12 +267,12 @@ export function ServicesFeature() {
                 ))}
               </ul>
               <img
-                src="/images/home/hassan-hims.jpg"
+                src="/images/home/hassan-wide.jpg"
                 alt="Dr Hassan Bhojani, founder and principal dentist at Pav Dental, in a white coat against a warm studio backdrop"
                 loading="lazy"
                 width={1100}
                 height={1473}
-                className="mx-auto aspect-[17/10] w-full max-w-[560px] rounded-[32px] object-cover object-[50%_18%]"
+                className="mx-auto aspect-[17/10] w-full max-w-[560px] rounded-[32px] object-cover object-center"
               />
               <div className="hidden max-w-[300px] justify-self-start lg:block">
                 <HoursChips />

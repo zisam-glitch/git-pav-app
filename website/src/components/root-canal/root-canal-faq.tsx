@@ -1,4 +1,4 @@
-import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, FaqList, Section, SectionHead, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {
@@ -45,23 +45,14 @@ const FAQS: FaqItem[] = [
 
 export function RootCanalFaq() {
   return (
-    <Section theme="white" space="default">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Patient Guidance
-          </p>
-          <Heading as="h2" size="h2-md" accent="Questions" tone="terracotta" className="mt-4">
-            Frequently Asked
-          </Heading>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <BookButton>Book Now</BookButton>
-            <CallButton variant="outline" />
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
+    <Section id="faq" theme="white" aria-labelledby="root-canal-faq-heading">
+      <SectionHead
+        id="root-canal-faq-heading"
+        label="FAQs"
+        title="Frequently Asked Questions"
+        action={<BookButton>Book Appointment</BookButton>}
+      />
+      <FaqList items={FAQS} tone="light" defaultOpen={0} className="mt-10" />
     </Section>
   );
 }

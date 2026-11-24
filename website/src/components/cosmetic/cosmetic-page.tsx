@@ -10,11 +10,11 @@ import { CosmeticShowcase } from "./cosmetic-showcase";
 
 export function CosmeticPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <CosmeticHero />
-      <CosmeticAbout />
       <CosmeticProcedures />
       <CosmeticBenefits />
+      <CosmeticAbout />
       <CosmeticFinancing />
       <CosmeticShowcase />
       <CosmeticFaq />

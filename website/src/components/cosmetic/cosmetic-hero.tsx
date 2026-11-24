@@ -29,7 +29,26 @@ export function CosmeticHero() {
         </>
       }
     >
-      <p className="mt-5 max-w-xl text-lead text-muted">
+      <ul className="list-none space-y-3">
+        {["Enhanced Appearance", "Boosted Confidence", "Long-Lasting Results"].map((t) => (
+          <li key={t} className="flex items-center gap-3 text-[17px] text-[#55565a]">
+            <span className="grid size-5 place-items-center rounded-full bg-[#8a4242] text-white">
+              <svg viewBox="0 0 12 12" className="size-3" aria-hidden="true">
+                <path
+                  d="M2.5 6.2l2.2 2.2 4.8-4.8"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            {t}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-6 max-w-xl text-[15px] leading-[1.5] text-[#6b6b70]">
         Welcome to your definitive guide on Cosmetic Dentistry, where science meets art to enhance
         your smile. Explore teeth whitening, porcelain veneers, and more to achieve a dazzling smile
         and transform your confidence and appearance.

@@ -1,24 +1,29 @@
-import { Heading, Section, Tile } from "@/components/hims";
+import { BookButton, Section, SectionHead, WhyCards } from "@/components/hims";
 
 const BENEFITS = [
   {
-    title: "1. Enhanced Appearance:",
+    lead: "1. Enhanced",
+    rest: "Appearance:",
     desc: "The most obvious benefit is a more attractive smile.",
   },
   {
-    title: "2. Boosted Confidence:",
+    lead: "2. Boosted",
+    rest: "Confidence:",
     desc: "A better smile often leads to increased self-esteem and confidence.",
   },
   {
-    title: "3. Improved Oral Health:",
+    lead: "3. Improved",
+    rest: "Oral Health:",
     desc: "Some procedures can help improve your oral health by making cleaning easier.",
   },
   {
-    title: "4. Long-Lasting Results:",
+    lead: "4. Long-Lasting",
+    rest: "Results:",
     desc: "Many cosmetic dentistry procedures offer long-term or permanent solutions.",
   },
   {
-    title: "5. Wider Range of Options:",
+    lead: "5. Wider Range",
+    rest: "of Options:",
     desc: "There are treatments available for almost every aesthetic issue you might have with your teeth.",
   },
 ] as const;
@@ -26,24 +31,13 @@ const BENEFITS = [
 export function CosmeticBenefits() {
   return (
     <Section theme="white" aria-labelledby="cosmetic-benefits-heading">
-      <div className="max-w-2xl">
-        <div id="cosmetic-benefits-heading">
-          <Heading size="h2-md" accent="Cosmetic Dentistry" tone="terracotta" inline>
-            Benefits of
-          </Heading>
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {BENEFITS.map((benefit, index) => (
-          <Tile key={benefit.title} tone="white" className="p-6 md:p-7">
-            <span className="text-small font-medium text-terracotta tabular-nums">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <h3 className="mt-3 text-h4 text-fg">{benefit.title}</h3>
-            <p className="mt-2 text-body text-muted">{benefit.desc}</p>
-          </Tile>
-        ))}
+      <SectionHead
+        id="cosmetic-benefits-heading"
+        title="Benefits of Cosmetic Dentistry"
+        action={<BookButton>Book Now</BookButton>}
+      />
+      <div className="mt-10">
+        <WhyCards items={BENEFITS.map((b) => ({ lead: b.lead, rest: b.rest, text: b.desc }))} />
       </div>
     </Section>
   );

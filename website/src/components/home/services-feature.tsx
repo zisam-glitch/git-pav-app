@@ -222,13 +222,13 @@ export function ServicesFeature() {
             <BookNow />
             <div
               aria-hidden
-              className="relative mt-6 min-h-[260px] w-full flex-1 overflow-hidden [perspective:700px]"
+              className="relative -mt-2 min-h-[300px] w-full flex-1 overflow-hidden [perspective:600px]"
             >
-              <div className="absolute inset-x-[-10%] bottom-[-16%] grid grid-cols-5 gap-3 [transform:rotateX(50deg)] [transform-origin:50%_100%] [mask-image:linear-gradient(to_top,#000_50%,transparent)]">
+              <div className="absolute inset-x-[-12%] bottom-[-22%] grid grid-cols-5 gap-2.5 [transform:rotateX(38deg)] [transform-origin:50%_100%] [mask-image:linear-gradient(to_top,#000_50%,transparent)]">
                 {WALL.map((src) => (
                   <div
                     key={src}
-                    className="aspect-[4/3] w-full rounded-lg bg-cover bg-center"
+                    className="aspect-[5/4] w-full rounded-xl bg-cover bg-center"
                     style={{ backgroundImage: `url(${src})` }}
                   />
                 ))}

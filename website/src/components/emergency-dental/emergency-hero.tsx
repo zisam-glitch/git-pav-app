@@ -1,63 +1,40 @@
-import {
-  ServiceHeroLayout,
-  BookButton,
-  ButtonLink,
-  CallButton,
-  Heading,
-  Tile,
-} from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims";
 import { PRACTICE_PHONE } from "@/lib/enquiry";
 
+/**
+ * Hims full-photo hero (hims.com/psychiatry): the photo fills the first screen, the headline,
+ * one line of text and the buttons sit over it, and the next section slides up over its bottom
+ * edge with rounded top corners. A dark gradient on the left keeps the text readable.
+ */
 export function EmergencyHero() {
   return (
-    <ServiceHeroLayout
-      label="Emergency Dentist"
-      images={[
-        {
-          src: "/images/generated/emergency-dental-hero.jpg",
-          alt: "Pav Dental emergency dental clinic in Bradford ready for 24-hour urgent dental care",
-        },
-        { src: "/images/generated/home-emergency-suite.jpg", alt: "" },
-        { src: "/images/generated/home-emergency-night.jpg", alt: "" },
-      ]}
-      head={
-        <>
-          <p className="inline-flex items-center gap-2 rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            <span aria-hidden className="size-1.5 rounded-full bg-terracotta" />
-            24/7 Emergency Dental Care
-          </p>
-          <Heading as="h1" size="hero" accent="Dentist" tone="terracotta" inline className="mt-4">
-            Emergency
-          </Heading>
-        </>
-      }
+    <section
+      id="top"
+      aria-label="Emergency Dentist"
+      className="relative isolate flex min-h-[calc(100svh-72px)] items-center overflow-hidden bg-[#0e1a2b] pb-24 text-white md:min-h-[640px]"
     >
-      <p className="mt-5 max-w-xl text-lead text-muted">
-        Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
-      </p>
-
-      <div className="mt-7 grid max-w-xl gap-3 sm:grid-cols-2">
-        <Tile tone="grey" className="flex flex-col justify-between gap-2 border border-border p-5">
-          <p className="text-h4 text-fg tabular-nums">£45 consultation</p>
-          <p className="border-t border-border pt-2.5 text-small text-muted">
-            Monday to Friday between 9am – 5pm
+      <img
+        src="/images/generated/emergency-dental-hero.jpg"
+        alt="Pav Dental emergency dental clinic in Bradford ready for 24-hour urgent dental care"
+        fetchPriority="high"
+        className="absolute top-0 right-0 -z-20 h-full w-[130%] max-w-none object-cover object-[50%_68%] md:w-[120%]"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(8,14,26,0.92)_0%,rgba(8,14,26,0.78)_38%,rgba(8,14,26,0.15)_75%),linear-gradient(0deg,rgba(8,14,26,0.55)_0%,transparent_35%)]"
+      />
+      <div className="mx-auto w-full max-w-[1392px] px-4 pt-16 md:pt-20">
+        <div className="max-w-[640px]">
+          <h1 className="text-hero">Emergency Dentist</h1>
+          <p className="mt-5 max-w-lg text-lead text-white/90">
+            Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
           </p>
-        </Tile>
-        <Tile tone="grey" className="flex flex-col justify-between gap-2 border border-border p-5">
-          <p className="text-h4 text-fg tabular-nums">£90* out-of-hours consultation</p>
-          <p className="border-t border-border pt-2.5 text-small text-muted">
-            Weekends 9am – 8pm and Weekdays 5pm – 8pm
-          </p>
-        </Tile>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <CallButton variant="light">Call us Now · {PRACTICE_PHONE}</CallButton>
+            <BookButton variant="glass">Book Online</BookButton>
+          </div>
+        </div>
       </div>
-
-      <div className="mt-8 flex flex-wrap gap-3">
-        <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
-        <BookButton variant="outline">Book Online</BookButton>
-        <ButtonLink href="#pricing" variant="ghost">
-          How much does it cost?
-        </ButtonLink>
-      </div>
-    </ServiceHeroLayout>
+    </section>
   );
 }

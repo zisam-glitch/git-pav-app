@@ -315,7 +315,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         <div className={`${CONTAINER} grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14`}>
           {/* Left: Full-bleed Warm Cream Product Stage with Bottom-Centered Circular Thumbnails */}
           <div className="lg:sticky lg:top-24 lg:col-span-6">
-            <div className="relative overflow-hidden rounded-[24px] bg-[#f4f3e0]">
+            <div className="relative overflow-hidden rounded-[24px] bg-[#fbfbee]">
               <div className="relative aspect-square w-full overflow-hidden">
                 <ShopMedia
                   src={images[selectedImageIndex]}
@@ -323,6 +323,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                   tone="cream"
                   priority
                   className="size-full rounded-none bg-transparent"
+                  imgClassName="brightness-[1.06] contrast-[0.97]"
                 />
                 {productData.badge ? (
                   <span className="absolute top-4 left-4 rounded-full bg-[#dff1e4] px-3.5 py-1 text-[12px] text-[#256b3b]">
@@ -669,7 +670,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 key={rel.id}
                 to="/shop/$productSlug"
                 params={{ productSlug: rel.slug }}
-                className="group flex flex-col justify-between rounded-[20px] bg-[#f4f3e0] p-4 t-colors hover:bg-[#eeedd6]"
+                className="group flex flex-col justify-between rounded-[20px] bg-[#fbfbee] p-4 t-colors hover:bg-[#eeedd6]"
               >
                 <div>
                   <ShopMedia

@@ -45,7 +45,7 @@ export function ProductRevealCard({
     <article
       data-slot="product-reveal-card"
       className={cn(
-        "group relative flex min-h-[520px] flex-col justify-between overflow-hidden rounded-[20px] bg-[#f4f3e0] p-5",
+        "group relative flex min-h-[520px] flex-col justify-between overflow-hidden rounded-[20px] bg-[#fbfbee] p-5",
         className,
       )}
     >
@@ -57,14 +57,14 @@ export function ProductRevealCard({
             alt={product.name}
             loading="lazy"
             decoding="async"
-            className="size-full object-cover object-[50%_55%] t-zoom"
+            className="size-full object-cover object-[50%_55%] brightness-[1.06] contrast-[0.97] t-zoom"
           />,
           `View ${product.name}`,
           "size-full",
         )}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-[#f4f3e0] to-[#f4f3e0]/0"
+          className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-[#fbfbee] to-[#fbfbee]/0"
         />
       </div>
 

@@ -29,14 +29,14 @@ export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps)
               key={tile.slug}
               to="/category/$slug"
               params={{ slug: tile.slug }}
-              className="group relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#f4f3e0] p-5"
+              className="group relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#fbfbee] p-5"
             >
               {/* The packshot fades into the tile, so photo and tile read as one surface. */}
               <img
                 src={tile.image}
                 alt={tile.name}
                 loading="eager"
-                className="absolute inset-y-0 right-0 h-full w-[46%] object-cover object-[55%_50%] [mask-image:linear-gradient(to_right,transparent,#000_30%)] transition-transform duration-500 group-hover:scale-105"
+                className="absolute inset-y-0 right-0 h-full w-[46%] brightness-[1.06] contrast-[0.97] object-cover object-[55%_50%] [mask-image:linear-gradient(to_right,transparent,#000_30%)] transition-transform duration-500 group-hover:scale-105"
               />
               <div className="relative flex items-center justify-between gap-2">
                 <span className="max-w-[56%] text-[19px] leading-[1.2] text-[#37556e]">

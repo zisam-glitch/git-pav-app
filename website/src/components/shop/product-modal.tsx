@@ -45,10 +45,10 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
       aria-modal="true"
       aria-label={product.name}
       onClick={onClose}
-      className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-black/44 p-4"
+      className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-black/40 p-4"
     >
       <div
-        className="relative my-8 w-full max-w-2xl rounded-xl bg-white p-6 shadow-card sm:p-8"
+        className="relative my-8 w-full max-w-2xl rounded-[22px] bg-[#f7f5f2] p-6 shadow-[0_10px_36px_rgba(20,20,40,0.12)] sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <Button
@@ -64,10 +64,10 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
         <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2">
           {/* Product Image */}
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-cream">
+          <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#fbfbee]">
             <ShopMedia src={product.image} alt={product.name} tone="cream" />
             {product.badge ? (
-              <span className="absolute top-3 left-3 rounded-pill bg-brown px-3 py-1 text-caption font-medium text-white">
+              <span className="absolute top-3 left-3 rounded-full bg-[#f3f0a8] px-3 py-1 text-[12px] font-medium text-[#1b1b1b]">
                 {product.badge}
               </span>
             ) : null}
@@ -88,7 +88,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                   £{product.originalPrice.toFixed(2)}
                 </span>
               ) : null}
-              <span className="rounded-pill bg-sage px-3 py-1 text-caption font-medium text-fg">
+              <span className="rounded-full bg-white px-3 py-1 text-[12px] font-medium text-[#1b1b1b]">
                 In Stock &amp; Ready to Dispatch
               </span>
             </div>
@@ -100,7 +100,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                 <p className="text-small font-medium text-fg">Clinical Highlights:</p>
                 {product.features.map((feat, idx) => (
                   <div key={idx} className="flex items-start gap-2 text-small text-muted">
-                    <CheckCircle2 aria-hidden className="mt-0.5 size-4 shrink-0 text-terracotta" />
+                    <CheckCircle2 aria-hidden className="mt-0.5 size-4 shrink-0 text-[#f3b968]" />
                     <span>{feat}</span>
                   </div>
                 ))}
@@ -108,7 +108,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             ) : null}
 
             {product.howToUse ? (
-              <Tile tone="cream" className="p-3.5 text-small text-muted">
+              <Tile tone="white" className="rounded-[14px] p-3.5 text-small text-muted">
                 <span className="mb-1 block font-medium text-fg">Directions for Use:</span>
                 <span>{product.howToUse}</span>
               </Tile>
@@ -116,7 +116,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
             {/* Quantity and Add to Bag */}
             <div className="flex items-center gap-3 pt-2">
-              <div className="inline-flex h-12 items-center rounded-pill border-2 border-border-strong bg-white px-2">
+              <div className="inline-flex h-12 items-center rounded-pill border border-[#e4e0d8] bg-white px-2">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -136,7 +136,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                 </button>
               </div>
 
-              <Button type="button" onClick={handleAdd} className="flex-1">
+              <Button type="button" onClick={handleAdd} className="h-12 flex-1 rounded-full bg-[#1b1b1b] text-white hover:bg-black">
                 <ShoppingBag aria-hidden className="size-4" />
                 <span>
                   {added

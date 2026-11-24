@@ -110,13 +110,13 @@ function CategoryRoute() {
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}
-        className="fixed right-6 bottom-6 z-40 inline-flex h-12 items-center gap-2.5 rounded-pill bg-black px-5 text-label text-white shadow-card t-colors hover:bg-black/85"
+        className="fixed right-6 bottom-6 z-40 inline-flex h-14 items-center gap-2.5 rounded-full bg-[#1b1b1b] px-6 text-[15px] font-medium text-white shadow-[0_10px_36px_rgba(20,20,40,0.22)] t-colors hover:bg-black"
         aria-label={`View shopping bag (${totalItemCount} items)`}
       >
         <div className="relative">
           <ShoppingBag aria-hidden className="size-5" />
           {totalItemCount > 0 ? (
-            <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-pill bg-gold text-caption font-medium text-brown tabular-nums">
+            <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-[#f3f0a8] text-[12px] font-medium text-[#1b1b1b] tabular-nums">
               {totalItemCount}
             </span>
           ) : null}

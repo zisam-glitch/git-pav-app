@@ -15,3 +15,11 @@ export { FeeTable, type FeeTier } from "./fee-table";
 export { PricingTiles, type PricingTier } from "./pricing-tiles";
 export { ConsentPanel, type ConsentItem } from "./consent-panel";
 export { ACCENT_TEXT, type AccentTone } from "./tones";
+export {
+  FeatureBento,
+  StepsPanel,
+  CompareTable,
+  IncludedList,
+  DarkQuestion,
+  FloatingCta,
+} from "./service-sections";

@@ -25,7 +25,7 @@ const FEATURED_TILES = [
     href: BOOKING_URL,
     external: true,
     imgSrc: "/images/home/tile-mirror.webp",
-    imgAlt: "Soft 3D polished steel dental mirror and probe with terracotta handles, crossed",
+    imgAlt: "Soft 3D off-white matte tablet speckled with terracotta, with an engraved dental mirror",
   },
   {
     id: "emergency",
@@ -38,7 +38,7 @@ const FEATURED_TILES = [
     to: "/services/emergency-dental" as const,
     external: false,
     imgSrc: "/images/home/tile-case.webp",
-    imgAlt: "Soft 3D coral-red rounded tablet with an embossed white tooth and a plus sign",
+    imgAlt: "Soft 3D sky-blue matte tablet with an engraved tooth and a plus sign",
   },
   {
     id: "aesthetics",
@@ -165,7 +165,7 @@ export function HeroSlider() {
                   fetchPriority="high"
                   width={480}
                   height={360}
-                  className="hero-tile-media max-h-[164px] w-auto max-w-[80%] object-contain"
+                  className="hero-tile-media size-[104px] object-contain"
                 />
                 <span
                   aria-hidden
@@ -220,7 +220,7 @@ export function HeroSlider() {
                   loading="eager"
                   width={160}
                   height={112}
-                  className="hero-tile-media max-h-12 w-auto max-w-full object-contain"
+                  className="hero-tile-media size-10 object-contain"
                 />
                 <span
                   aria-hidden

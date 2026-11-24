@@ -90,11 +90,11 @@ export function CheckUpFeature() {
             <div className="mt-6 flex min-h-[240px] flex-1 flex-col items-center justify-center">
               <img
                 src="/images/home/tile-case.webp"
-                alt="Soft 3D coral-red rounded tablet with an embossed white tooth and a plus sign"
+                alt="Soft 3D sky-blue matte tablet with an engraved tooth and a plus sign"
                 loading="lazy"
-                width={760}
-                height={741}
-                className="max-h-[300px] w-auto md:max-h-[340px]"
+                width={900}
+                height={900}
+                className="size-[190px] object-contain md:size-[230px]"
               />
               <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md" />
             </div>

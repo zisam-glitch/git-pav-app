@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Phone } from "lucide-react";
 import { useState } from "react";
-import { BookButton, ButtonLink } from "@/components/hims";
+import { BookButton } from "@/components/hims";
 import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
 
@@ -156,7 +156,15 @@ export function ServicesFeature() {
                 aria-labelledby={`tab-${service.id}`}
                 hidden={service.id !== active.id}
               >
-                <p className="mx-auto max-w-md t-hims-body text-white/90">{service.copy}</p>
+                <p className="mx-auto max-w-md t-hims-body text-white/90">
+                  {service.copy}{" "}
+                  <Link
+                    to={service.to}
+                    className={cn("whitespace-nowrap text-small font-medium underline underline-offset-4", GOLD)}
+                  >
+                    {service.ctaLabel}
+                  </Link>
+                </p>
                 {service.contactNote ? (
                   <p className="mt-4">
                     <a
@@ -174,13 +182,10 @@ export function ServicesFeature() {
               </div>
             ))}
           </div>
-          <ButtonLink to={active.to} variant="glass" className={cn(PILL, "mt-7 border-0")}>
-            {active.ctaLabel}
-          </ButtonLink>
           <div
             role="tablist"
             aria-label="Pav Dental services"
-            className="mt-8 flex flex-wrap justify-center gap-2"
+            className="mt-7 flex flex-wrap justify-center gap-2"
           >
             {SERVICES.map((service) => (
               <button

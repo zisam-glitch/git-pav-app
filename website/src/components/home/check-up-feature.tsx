@@ -90,10 +90,10 @@ export function CheckUpFeature() {
             <div className="mt-6 flex min-h-[240px] flex-1 flex-col items-center justify-center">
               <img
                 src="/images/home/tile-case.webp"
-                alt="Soft 3D navy emergency first-aid case with a gold clasp and a white tooth emblem"
+                alt="Soft 3D coral-red rounded tablet with an embossed white tooth and a plus sign"
                 loading="lazy"
-                width={494}
-                height={383}
+                width={760}
+                height={741}
                 className="max-h-[300px] w-auto md:max-h-[340px]"
               />
               <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md" />

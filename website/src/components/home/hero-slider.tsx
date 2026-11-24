@@ -38,7 +38,7 @@ const FEATURED_TILES = [
     to: "/services/emergency-dental" as const,
     external: false,
     imgSrc: "/images/home/tile-case.webp",
-    imgAlt: "Soft 3D navy emergency first-aid case with a gold clasp and a white tooth emblem",
+    imgAlt: "Soft 3D coral-red rounded tablet with an embossed white tooth and a plus sign",
   },
   {
     id: "aesthetics",
@@ -81,7 +81,7 @@ const SECONDARY_TILES = [
     hoverTone: "copper" as const,
     to: "/services/mobile-dentistry" as const,
     imgSrc: "/images/home/tile-van.webp",
-    imgAlt: "Soft 3D mobile dental surgery van in white with a navy stripe and a tooth emblem",
+    imgAlt: "Soft 3D teal toy-style mobile dentistry van with a white roof and an embossed tooth",
   },
 ] as const;
 

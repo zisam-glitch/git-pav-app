@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { BookButton, ButtonLink, Heading, Section, Tile } from "@/components/hims";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { BookButton, ExplainCards, Section, SectionHead } from "@/components/hims";
 
 type RouteOption = "clinic" | "home";
 
@@ -42,103 +39,35 @@ const PATHWAYS: ReadonlyArray<{
 ];
 
 export function MouthguardsOrdering() {
-  const [selected, setSelected] = useState<RouteOption>("clinic");
-
   return (
     <Section id="ordering" theme="white" aria-labelledby="mouthguards-ordering-heading">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Two Ordering Pathways
-          </span>
-          <div id="mouthguards-ordering-heading" className="mt-4">
-            <Heading size="h2-md" accent="Your Mouthguard" tone="terracotta" inline>
-              How to Order
-            </Heading>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Ordering route">
-          {PATHWAYS.map((pathway) => (
-            <Button
-              key={pathway.id}
-              type="button"
-              size="sm"
-              variant={selected === pathway.id ? "default" : "outline"}
-              aria-pressed={selected === pathway.id}
-              onClick={() => setSelected(pathway.id)}
-            >
-              {pathway.title}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
-        {PATHWAYS.map((pathway) => {
-          const isSelected = selected === pathway.id;
-          return (
-            <Tile
-              key={pathway.id}
-              tone="white"
-              lift
-              className={cn(
-                "flex flex-col justify-between gap-6 border border-border p-6 md:p-8 t-colors",
-                isSelected && "ring-2 ring-black",
-              )}
-            >
-              <div>
-                <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
-                  <div>
-                    <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3 py-0.5 text-caption font-medium text-copper">
-                      {pathway.badge}
-                    </span>
-                    <h3 className="mt-3 text-h3-md text-fg">{pathway.title}</h3>
-                    <p className="mt-2 text-lead text-muted">{pathway.subtitle}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(pathway.id)}
-                    aria-pressed={isSelected}
-                    className={cn(
-                      "shrink-0 rounded-pill border px-3.5 py-1 text-small font-medium t-colors",
-                      isSelected
-                        ? "border-black bg-black text-white"
-                        : "border-border-strong bg-white text-fg hover:border-black",
-                    )}
-                  >
-                    {isSelected ? "Selected" : "Choose"}
-                  </button>
-                </div>
-
-                <ol className="mt-2 divide-y divide-border">
-                  {pathway.steps.map((step, index) => (
-                    <li key={step} className="flex items-center gap-4 py-3.5">
-                      <span className="inline-flex items-center rounded-pill bg-cream px-2.5 py-0.5 text-caption font-medium text-terracotta tabular-nums">
-                        {index + 1}
+      <SectionHead
+        id="mouthguards-ordering-heading"
+        title="How to Order Your Mouthguard"
+        action={<BookButton>Make an Appointment</BookButton>}
+      />
+      <div className="mt-10">
+        <ExplainCards
+          items={PATHWAYS.map((p) => ({
+            title: p.title,
+            text: (
+              <>
+                <p className="font-medium text-[#2a2a2c]">{p.subtitle}</p>
+                <ol className="mt-4 list-none space-y-2">
+                  {p.steps.map((step, i) => (
+                    <li key={step} className="flex gap-3">
+                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-white text-[13px] font-medium text-[#2a2a2c]">
+                        {i + 1}
                       </span>
-                      <span className="text-body text-fg">{step}</span>
+                      <span>{step}</span>
                     </li>
                   ))}
                 </ol>
-
-                <p className="mt-4 rounded-lg bg-cream px-4 py-3 text-small text-muted">
-                  {pathway.note}
-                </p>
-              </div>
-
-              <div className="border-t border-border pt-5">
-                {pathway.id === "clinic" ? (
-                  <BookButton className="w-full sm:w-auto">Make an Appointment</BookButton>
-                ) : (
-                  <ButtonLink href="#contact" variant="outline" className="w-full sm:w-auto">
-                    Contact us
-                  </ButtonLink>
-                )}
-              </div>
-            </Tile>
-          );
-        })}
+                <p className="mt-4">{p.note}</p>
+              </>
+            ),
+          }))}
+        />
       </div>
     </Section>
   );

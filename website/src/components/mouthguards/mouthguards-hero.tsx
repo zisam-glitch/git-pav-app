@@ -1,16 +1,42 @@
-import {
-  ServiceHeroLayout,
-  BookButton,
-  ButtonLink,
-  CallButton,
-  Heading,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, ProductDetail } from "@/components/hims";
+
+const OPTIONS = [
+  {
+    id: "clinic",
+    name: "Visit Our Clinic",
+    price: "Digital scan",
+    note: "Accurate digital scan with quick delivery",
+  },
+  {
+    id: "home",
+    name: "Order From Home",
+    price: "Mould kit",
+    note: "Easy mould kit sent to your door",
+  },
+];
 
 export function MouthguardsHero() {
   return (
-    <ServiceHeroLayout
+    <ProductDetail
       label="Custom sports mouthguards"
+      pill="Athletic & Everyday Oral Protection"
+      title={
+        <>
+          Custom Sports <span className="text-[#8a4242]">Mouthguards</span>
+        </>
+      }
+      text={
+        <>
+          <p className="font-medium text-[#2a2a2c]">
+            Designed for comfort, accuracy and full protection
+          </p>
+          <p className="mt-3 text-[16px] leading-[1.5]">
+            At Pav Dental, you can order a high quality custom mouthguard in the way that suits you
+            best. Every mouthguard is created using precise digital or physical impressions with
+            full control over colour, style and custom features.
+          </p>
+        </>
+      }
       images={[
         {
           src: "/images/generated/mouthguards-hero.jpg",
@@ -19,63 +45,59 @@ export function MouthguardsHero() {
         { src: "/images/generated/home-checkup.jpg", alt: "" },
         { src: "/images/generated/home-general-dentistry.jpg", alt: "" },
       ]}
-      head={
-        <>
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            Athletic &amp; Everyday Oral Protection
-          </span>
-          <Heading as="h1" size="hero" accent="Mouthguards" tone="terracotta" className="mt-4">
-            Custom Sports
-          </Heading>
-        </>
-      }
-    >
-      <p className="mt-5 text-lead font-medium text-fg">
-        Designed for comfort, accuracy and full protection
-      </p>
-      <p className="mt-3 max-w-xl text-body leading-relaxed text-muted">
-        At Pav Dental, you can order a high quality custom mouthguard in the way that suits you
-        best. Every mouthguard is created using precise digital or physical impressions with full
-        control over colour, style and custom features.
-      </p>
-
-      <div className="mt-6 grid max-w-xl grid-cols-3 gap-3">
-        <Tile tone="grey" className="border border-border/60 p-3.5">
-          <p className="text-caption font-medium text-copper">Impressions</p>
-          <p className="mt-1 text-label text-fg">Digital or Mould Kit</p>
-        </Tile>
-        <Tile tone="grey" className="border border-border/60 p-3.5">
-          <p className="text-caption font-medium text-copper">Customisation</p>
-          <p className="mt-1 text-label text-fg">32 Colour Swatches</p>
-        </Tile>
-        <Tile tone="grey" className="border border-border/60 p-3.5">
-          <p className="text-caption font-medium text-copper">Personalisation</p>
-          <p className="mt-1 text-label text-fg">Name, Team &amp; Logo</p>
-        </Tile>
-      </div>
-
-      <div className="mt-8 flex flex-wrap gap-3">
-        <BookButton>Make an Appointment</BookButton>
+      optionsTitle="How to Order Your Mouthguard"
+      options={OPTIONS}
+      primary={() => <BookButton>Make an Appointment</BookButton>}
+      secondary={
         <ButtonLink href="#contact" variant="outline">
           Contact us
         </ButtonLink>
-        <CallButton variant="ghost" />
-      </div>
-
-      <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-5 text-small text-muted">
-        <a href="#ordering" className="underline underline-offset-4 t-colors hover:text-terracotta">
-          How to Order Your Mouthguard
-        </a>
-        <a href="#colour" className="underline underline-offset-4 t-colors hover:text-terracotta">
-          Choose Your Colour
-        </a>
-        <a
-          href="#personalisation"
-          className="underline underline-offset-4 t-colors hover:text-terracotta"
-        >
-          Add Personalisation
-        </a>
-      </div>
-    </ServiceHeroLayout>
+      }
+      accordions={[
+        {
+          title: "Impressions: digital or mould kit",
+          body: (
+            <p>
+              Digital Scan or Mould Kit: every mouthguard is created using precise digital or
+              physical impressions.
+            </p>
+          ),
+        },
+        {
+          title: "Choose Your Colour",
+          body: (
+            <p>
+              You can choose from a variety of colour options, including single colour, two colour
+              combinations, mixed colours, or glitter and special finishes for a more unique look.
+            </p>
+          ),
+        },
+        {
+          title: "Add Personalisation",
+          body: (
+            <p>
+              Personalise your mouthguard with your name, initials, team name, number, or even a
+              custom logo if required.
+            </p>
+          ),
+        },
+        {
+          title: "Jump to",
+          body: (
+            <p className="flex flex-wrap gap-x-6 gap-y-2">
+              <a href="#ordering" className="underline underline-offset-4">
+                How to Order Your Mouthguard
+              </a>
+              <a href="#colour" className="underline underline-offset-4">
+                Choose Your Colour
+              </a>
+              <a href="#personalisation" className="underline underline-offset-4">
+                Add Personalisation
+              </a>
+            </p>
+          ),
+        },
+      ]}
+    />
   );
 }

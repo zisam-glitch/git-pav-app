@@ -45,7 +45,12 @@ export const VACANCIES: Vacancy[] = [
     location: "786 Leeds Road, Bradford, BD3 9TY",
     description:
       "Associate Dentist is a licensed dental professional who provides comprehensive dental care to patients. They diagnose and treat dental issues, educate patients about oral health, and promote preventive dental care.",
-    tags: ["Established Patient List", "50% Private Split", "Digital Scanners", "Full Clinical Autonomy"],
+    tags: [
+      "Established Patient List",
+      "50% Private Split",
+      "Digital Scanners",
+      "Full Clinical Autonomy",
+    ],
     salaryNote: "High Earning Potential + 50% Private Split",
     featured: true,
   },
@@ -94,8 +99,12 @@ export const VACANCIES: Vacancy[] = [
     location: "786 Leeds Road, Bradford, BD3 9TY",
     description:
       "Pav Dental is seeking qualified dentists from abroad and offering foreign visa sponsorship to support their relocation and employment. This position is designed to provide skilled dental professionals with an opportunity to work in a new environment, expand their expertise, and contribute to the oral health of the community.",
-    tags: ["Home Office Sponsor", "Relocation Support", "GDC / Performer Number Guidance", "Full Visa Assistance"],
+    tags: [
+      "Home Office Sponsor",
+      "Relocation Support",
+      "GDC / Performer Number Guidance",
+      "Full Visa Assistance",
+    ],
     salaryNote: "Tier 2 Eligible Salary Package + Relocation Assistance",
   },
 ];
-

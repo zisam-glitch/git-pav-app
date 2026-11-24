@@ -1,6 +1,4 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { Heading, Media, Section, SplitFeature, Tile } from "@/components/hims";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
 
 interface VisaSponsorshipBannerProps {
   onApplySponsorship: () => void;
@@ -26,56 +24,50 @@ const SPONSORSHIP_PILLARS = [
 
 export function VisaSponsorshipBanner({ onApplySponsorship }: VisaSponsorshipBannerProps) {
   return (
-    <Section id="sponsorship" theme="brown" space="lg">
-      <SplitFeature
-        reverse
-        media={
-          <Media
-            src="/images/generated/vacancies-sponsorship.jpg"
-            alt="Clinical dental environment welcoming international dental professionals"
-            ratio="4 / 3"
-            tone="brown"
-            className="bg-white/10"
-          />
-        }
-      >
-        <div>
-          <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-            International Dental Talent
-          </span>
-          <Heading as="h2" size="hero" accent="and Sponsorship" tone="gold" inline className="mt-4">
-            Foreign Visa
-          </Heading>
-          <p className="mt-5 text-lead text-white/80">
+    <section id="sponsorship" className="scroll-mt-24 bg-black text-white">
+      <div className="mx-auto w-full max-w-[1392px] px-4 py-16 md:py-24">
+        <p className="text-[14px] tracking-[0.14em] text-white/55 uppercase">
+          International Dental Talent
+        </p>
+        <h2 className="mt-5 text-[clamp(44px,7vw,112px)] leading-[0.92] font-medium tracking-[-0.045em]">
+          Foreign Visa
+          <span className="block text-white/40">and Sponsorship</span>
+        </h2>
+
+        <div className="mt-12 grid gap-8 lg:grid-cols-2 lg:gap-16">
+          <p className="text-[clamp(20px,1.8vw,26px)] leading-[1.35] text-white/85">
             Pav Dental is seeking qualified dentists from abroad and offering foreign visa
             sponsorship to support their relocation and employment. This position is designed to
             provide skilled dental professionals with an opportunity to work in a new environment,
             expand their expertise, and contribute to the oral health of the community.
           </p>
-          <div className="mt-8">
-            <Button type="button" variant="gold" onClick={onApplySponsorship}>
-              <span>Apply Now</span>
-              <ArrowRight aria-hidden="true" />
-            </Button>
+          <div>
+            <button
+              type="button"
+              onClick={onApplySponsorship}
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-7 text-[16px] font-medium text-black t-colors hover:bg-white/85"
+            >
+              Apply Now
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+            </button>
           </div>
         </div>
-      </SplitFeature>
 
-      {/* Hims dark spotlight pillar cards (Mobbin e4eccce0) */}
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
-        {SPONSORSHIP_PILLARS.map((pillar) => (
-          <Tile key={pillar.step} tone="glass" className="border border-white/15 p-6">
-            <div className="flex items-center justify-between gap-3">
-              <span className="inline-flex size-8 items-center justify-center rounded-pill bg-gold/15 text-caption font-medium text-gold">
-                {pillar.step}
-              </span>
-              <CheckCircle2 aria-hidden="true" className="size-4 text-gold" />
-            </div>
-            <h3 className="mt-4 text-h4 text-gold">{pillar.title}</h3>
-            <p className="mt-2 text-body text-white/80">{pillar.body}</p>
-          </Tile>
-        ))}
+        <ul className="mt-14 list-none border-t border-white/30">
+          {SPONSORSHIP_PILLARS.map((pillar) => (
+            <li
+              key={pillar.step}
+              className="grid gap-3 border-b border-white/15 py-7 md:grid-cols-[100px_1fr_1.2fr] md:gap-10"
+            >
+              <span className="text-[16px] text-white/50 tabular-nums">{pillar.step}</span>
+              <h3 className="text-[26px] leading-tight font-medium tracking-[-0.02em]">
+                {pillar.title}
+              </h3>
+              <p className="max-w-[520px] text-[17px] leading-[1.5] text-white/70">{pillar.body}</p>
+            </li>
+          ))}
+        </ul>
       </div>
-    </Section>
+    </section>
   );
 }

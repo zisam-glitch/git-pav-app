@@ -19,7 +19,7 @@ export function VacanciesPage() {
     VACANCIES.find((v) => v.category === "sponsorship") ?? VACANCIES[VACANCIES.length - 1];
 
   return (
-    <div className="bg-white text-fg">
+    <div className="bg-white text-black">
       <VacanciesHero />
       <VacanciesList onApply={handleApply} />
       <VisaSponsorshipBanner onApplySponsorship={() => handleApply(sponsorshipVacancy)} />

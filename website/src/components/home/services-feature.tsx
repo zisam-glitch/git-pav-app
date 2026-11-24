@@ -255,7 +255,7 @@ export function ServicesFeature() {
               Exceptional Dentistry That <span className={cn("block", GOLD)}>You Can Rely On</span>
             </h2>
             <div className="mt-8 grid items-start gap-4 lg:grid-cols-[1fr_auto_1fr]">
-              <ul className="hidden max-w-[260px] space-y-1 justify-self-end lg:block">
+              <ul className="relative z-10 hidden max-w-[260px] space-y-1 justify-self-end lg:-mr-16 lg:mt-8 lg:block">
                 {STATS.map(([value, label]) => (
                   <li
                     key={label}
@@ -274,7 +274,7 @@ export function ServicesFeature() {
                 height={1473}
                 className="mx-auto aspect-[17/10] w-full max-w-[560px] rounded-[32px] object-cover object-center"
               />
-              <div className="hidden max-w-[300px] justify-self-start lg:block">
+              <div className="relative z-10 hidden max-w-[300px] justify-self-start lg:-ml-16 lg:block">
                 <HoursChips />
               </div>
             </div>

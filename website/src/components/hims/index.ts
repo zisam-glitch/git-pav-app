@@ -31,6 +31,8 @@ export {
   FaqSplit,
   FaqPhoto,
   ProductRail,
+  CheckRows,
+  SplitPhoto,
   HUB_CARD,
   type RailItem,
   type WhyItem,

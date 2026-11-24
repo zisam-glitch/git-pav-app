@@ -1,4 +1,4 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
 import { VirtualDentistryBenefits } from "./virtual-dentistry-benefits";
 import { VirtualDentistryFaq } from "./virtual-dentistry-faq";
 import { VirtualDentistryHero } from "./virtual-dentistry-hero";
@@ -9,14 +9,14 @@ import { VirtualDentistryServices } from "./virtual-dentistry-services";
 
 export function VirtualDentistryPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <VirtualDentistryHero />
       <VirtualDentistryPrescriptionProcess />
       <VirtualDentistryHowItWorks />
       <VirtualDentistryBenefits />
-      <VirtualDentistryFaq />
       <VirtualDentistryRegistration />
       <VirtualDentistryServices />
+      <VirtualDentistryFaq />
       <CtaBand
         theme="brown"
         title="Need dental advice"
@@ -32,6 +32,9 @@ export function VirtualDentistryPage() {
         Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
         check-ups, and advanced technologies like digital imaging and laser dentistry.
       </CtaBand>
+      <FloatingCta>
+        <BookButton>Book Now</BookButton>
+      </FloatingCta>
     </main>
   );
 }

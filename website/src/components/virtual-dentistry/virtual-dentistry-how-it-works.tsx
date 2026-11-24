@@ -1,4 +1,4 @@
-import { BookButton, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, ExplainCards, Section, SectionHead, SplitPhoto } from "@/components/hims";
 
 const DETAILED_STEPS = [
   {
@@ -27,70 +27,25 @@ const OUTCOMES = [
 
 export function VirtualDentistryHowItWorks() {
   return (
-    <Section id="how-it-works" theme="white" space="default" aria-labelledby="virtual-how-heading">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            Step-by-Step Guide
-          </span>
-          <div id="virtual-how-heading" className="mt-4">
-            <Heading as="h2" size="h2-md" accent="works?" tone="terracotta" inline>
-              How it
-            </Heading>
-          </div>
-        </div>
-
-        <BookButton size="sm" variant="outline">
-          Book appointment
-        </BookButton>
+    <Section id="how-it-works" theme="white" aria-labelledby="virtual-how-heading">
+      <SectionHead
+        id="virtual-how-heading"
+        title="How it works?"
+        action={<BookButton>Book appointment</BookButton>}
+      />
+      <div className="mt-10">
+        <ExplainCards
+          items={DETAILED_STEPS.map((step) => ({ title: step.title, text: step.desc }))}
+        />
       </div>
-
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
-        {DETAILED_STEPS.map((step, i) => (
-          <Tile
-            key={step.title}
-            as="article"
-            tone={i === 1 ? "sage" : "cream"}
-            lift
-            className="flex flex-col justify-between gap-4 border border-border/60 p-6 md:p-8"
-          >
-            <div>
-              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-copper tabular-nums">
-                {step.badge}
-              </span>
-              <h3 className="mt-4 text-h4 text-fg">{step.title}</h3>
-              <p className="mt-3 border-t border-border pt-4 text-body leading-relaxed text-muted">
-                {step.desc}
-              </p>
-            </div>
-          </Tile>
-        ))}
-
-        <Tile
-          as="article"
-          tone="grey"
-          lift
-          className="flex flex-col justify-between gap-4 border border-border/60 p-6 md:p-8"
-        >
-          <div>
-            <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-copper tabular-nums">
-              04 · Follow-Up Care
-            </span>
-            <h3 className="mt-4 text-h4 text-fg">Step 4: Post-Consultation Outcomes</h3>
-            <p className="mt-3 border-t border-border pt-4 text-body leading-relaxed text-muted">
-              Following your consultation, a range of outcomes will be tailored to your specific
-              needs, including:
-            </p>
-            <ul className="mt-3 space-y-2.5 text-body text-muted">
-              {OUTCOMES.map((outcome) => (
-                <li key={outcome} className="flex gap-2.5">
-                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-terracotta" />
-                  <span>{outcome}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Tile>
+      <div className="mt-20">
+        <SplitPhoto
+          title="Step 4: Post-Consultation Outcomes"
+          lead="Following your consultation, a range of outcomes will be tailored to your specific needs, including:"
+          ticks={[...OUTCOMES]}
+          image="/images/generated/virtual-dentistry-hero.jpg"
+          alt="Virtual dental video consultation on a tablet in warm natural light"
+        />
       </div>
     </Section>
   );

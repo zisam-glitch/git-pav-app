@@ -14,7 +14,15 @@ export type RailItem = { label?: string; title: string; text: string; action?: R
  * The horizontal card rail of hims.com/hair-loss ("Featured reviews", "More care to regrow hair"):
  * wide grey cards that scroll sideways, each with a small coloured label, a title and text.
  */
-export function CardRail({ items, label }: { items: RailItem[]; label: string }) {
+export function CardRail({
+  items,
+  label,
+  tone = "grey",
+}: {
+  items: RailItem[];
+  label: string;
+  tone?: "grey" | "beige";
+}) {
   return (
     <ul
       aria-label={label}
@@ -248,6 +256,102 @@ export function FaqPhoto({
       </div>
       <div className="overflow-hidden rounded-[24px] lg:sticky lg:top-28">
         <img src={image} alt={alt} loading="lazy" className="aspect-[4/5] w-full object-cover" />
+      </div>
+    </div>
+  );
+}
+
+/** "Get complete support in one membership": a narrow column of grey rows, each a title, a line of text and a tick on the right. */
+export function CheckRows({ items }: { items: { title: string; text?: string }[] }) {
+  return (
+    <ul className="mx-auto max-w-[560px] list-none space-y-3">
+      {items.map((item) => (
+        <li
+          key={item.title}
+          className="flex items-start justify-between gap-5 rounded-[18px] bg-[#f6f6f4] px-6 py-5"
+        >
+          <div>
+            <p className="text-[17px] font-medium text-[#2a2a2c]">{item.title}</p>
+            {item.text ? (
+              <p className="mt-1 text-[14px] leading-[1.5] text-[#6b6b70]">{item.text}</p>
+            ) : null}
+          </div>
+          <svg
+            viewBox="0 0 16 16"
+            className="mt-1 size-5 shrink-0 text-[#1b1b1b]"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 8.4l3.2 3.2L13 4.8"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** "Your membership comes with support": heading, amber-tick list and button on the left, one rounded photo on the right. */
+export function SplitPhoto({
+  id,
+  title,
+  lead,
+  ticks,
+  action,
+  image,
+  alt,
+}: {
+  id?: string;
+  title: string;
+  lead?: ReactNode;
+  ticks: string[];
+  action?: ReactNode;
+  image: string;
+  alt: string;
+}) {
+  return (
+    <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2
+          id={id}
+          className={cn(
+            "text-[clamp(32px,3.6vw,48px)] leading-[1.08] font-normal tracking-[-0.025em]",
+            INK,
+          )}
+        >
+          {title}
+        </h2>
+        {lead ? (
+          <div className="mt-5 max-w-xl text-[17px] leading-[1.5] text-[#55565a]">{lead}</div>
+        ) : null}
+        <ul className="mt-7 list-none space-y-3">
+          {ticks.map((t) => (
+            <li key={t} className="flex items-start gap-3 text-[16px] text-[#2a2a2c]">
+              <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#f3b968]">
+                <svg viewBox="0 0 12 12" className="size-3" aria-hidden="true">
+                  <path
+                    d="M2.5 6.2l2.2 2.2 4.8-4.8"
+                    fill="none"
+                    stroke="#2a2418"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              {t}
+            </li>
+          ))}
+        </ul>
+        {action ? <div className="mt-8">{action}</div> : null}
+      </div>
+      <div className="overflow-hidden rounded-[24px]">
+        <img src={image} alt={alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
       </div>
     </div>
   );

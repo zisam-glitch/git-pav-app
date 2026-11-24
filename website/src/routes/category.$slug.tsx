@@ -3,7 +3,7 @@ import { shopCategoryHead } from "@/lib/seo";
 import { Header } from "@/components/home/header";
 import { Footer } from "@/components/home/footer";
 import { ScrollProgress } from "@/components/home/scroll-progress";
-import { Heading, Section } from "@/components/hims";
+import { CONTAINER, LEAD, MUTED_TITLE, TITLE } from "@/components/pricing/tokens";
 import { ShopCatalog } from "@/components/shop/shop-catalog";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { useCartStore } from "@/lib/cart-store";
@@ -11,6 +11,11 @@ import { useQuery } from "@tanstack/react-query";
 import { api, HAS_API_BASE } from "@/lib/api";
 import { useState } from "react";
 import { ShoppingBag, ArrowLeft } from "lucide-react";
+import {
+  getCatalogProductsByCategory,
+  getCategoryMeta,
+  mapApiProduct,
+} from "@/components/shop/shop-catalog-data";
 import type { Product } from "@/components/shop/shop-data";
 
 export const Route = createFileRoute("/category/$slug")({
@@ -30,58 +35,40 @@ function CategoryRoute() {
     retry: false,
   });
 
-  const productsToDisplay: Product[] = (apiProducts || []).map((p) => ({
-    id: p.id,
-    slug: p.slug,
-    name: p.name,
-    category: p.category || "dental-care",
-    categoryLabel: p.category_label || p.category_name || "Dental Care",
-    price: typeof p.price === "string" ? parseFloat(p.price) : p.price,
-    originalPrice: p.original_price
-      ? typeof p.original_price === "string"
-        ? parseFloat(p.original_price)
-        : p.original_price
-      : undefined,
-    image: p.image || "",
-    shortDesc: p.short_desc || "",
-    fullDesc: p.full_desc || "",
-    features: Array.isArray(p.features) ? p.features : [],
-    howToUse: p.how_to_use || "",
-    badge: p.badge || undefined,
-    inStock: p.in_stock,
-  }));
+  // The built-in Happy Tooth catalogue answers when the API has nothing for this category.
+  const fromApi: Product[] = (apiProducts || []).map(mapApiProduct);
+  const productsToDisplay: Product[] =
+    fromApi.length > 0 ? fromApi : getCatalogProductsByCategory(slug);
 
   const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  const categoryTitle = slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  const categoryMeta = getCategoryMeta(slug);
 
   return (
     <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
 
-      <Section theme="cream" space="sm" aria-label="Category header">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <section aria-label="Category header" className="bg-white pt-10 pb-6 md:pt-14">
+        <div className={CONTAINER}>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 text-small font-medium text-muted t-colors hover:text-fg"
+            className="inline-flex items-center gap-2 text-small text-[#6d6e72] t-colors hover:text-[#1b1b1b]"
           >
             <ArrowLeft aria-hidden className="size-4" />
             <span>All Categories</span>
           </Link>
+          <h1 className={`mt-5 ${TITLE}`}>
+            {categoryMeta.shortTitle} <span className={MUTED_TITLE}>{categoryMeta.accentWord}</span>
+          </h1>
+          <p className={`mt-4 max-w-[40rem] ${LEAD}`}>{categoryMeta.description}</p>
         </div>
-        <Heading as="h1" size="h2" className="mt-4">
-          {categoryTitle}
-        </Heading>
-      </Section>
+      </section>
 
       <ShopCatalog
         products={productsToDisplay}
-        isLoading={isLoading}
-        unavailable={!HAS_API_BASE || isError}
+        isLoading={isLoading && productsToDisplay.length === 0}
+        unavailable={productsToDisplay.length === 0 && (!HAS_API_BASE || isError)}
         hideHeading
         onAddToCart={(p) => {
           addItem(p, 1);

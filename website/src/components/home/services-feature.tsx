@@ -23,8 +23,6 @@ interface LiveHomeService {
   copy: string;
   ctaLabel: string;
   to: ServiceRoute;
-  imgSrc: string;
-  imgAlt: string;
   contactNote?: { label: string; href: string };
 }
 
@@ -40,8 +38,6 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "We understand that dental emergencies can occur at any time, which is why we offer same day emergency dental care 24-hours a day, seven days a week, including National and Bank Holidays. Our dedicated team is always on hand to provide immediate and effective dental treatment, ensuring that you receive the care you need when you need it most.",
     ctaLabel: "Read More",
     to: "/services/emergency-dental",
-    imgSrc: "/images/home/care-nurse.jpg",
-    imgAlt: "Dental nurse answering a late-night call at a reception desk lit by a warm lamp",
   },
   {
     id: "aesthetics",
@@ -54,8 +50,6 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "At Pav Dental Aesthetics, we offer a range of top-quality aesthetic treatments designed to enhance your natural beauty and boost your confidence. Our services include Botox, dermal fillers, chemical peels, lip enhancement, and microneedling, all performed using premium-grade products for exceptional results. Our dedicated team provides expert guidance, ensuring personalized care and a commitment to quality. Contact us at 0800 099 6375 to learn more about our offers and packages, and experience the finest aesthetic treatments available.",
     ctaLabel: "Learn more",
     to: "/services/aesthetics",
-    imgSrc: "/images/home/smile-sunny.jpg",
-    imgAlt: "Smiling older man with a daisy behind his ear, laughing under a bright blue sky",
     contactNote: { label: "Aesthetics enquiries: 0800 099 6375", href: "tel:08000996375" },
   },
   {
@@ -68,8 +62,6 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "Discover a carefully curated selection of whitening ranges at Pav Dental, meticulously crafted to effectively remove stains and discoloration, giving you the confidence to flash your pearly whites. From professional whitening strips to in-office treatments, our range offers convenience, effectiveness, and professional-grade results. Book your appointment today and experience the difference of our award-winning whitening treatments.",
     ctaLabel: "Explore whitening",
     to: "/services/whitening",
-    imgSrc: "/images/home/teeth-stack.jpg",
-    imgAlt: "Three smooth lavender, cream and sage porcelain tooth models stacked in mid-air",
   },
   {
     id: "general-dentistry",
@@ -81,8 +73,6 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "Welcome to your guide to General Dentistry, the foundation of oral health and wellness. From routine check-ups and dental fillings to complex root canals and extractions, general dentistry services are designed to maintain and enhance your dental health. Discover the importance of early diagnosis, preventative care, and the wide range of treatments available to ensure a lifetime of healthy smiles.",
     ctaLabel: "Explore general care",
     to: "/services/general-dentistry",
-    imgSrc: "/images/home/banner-smile.jpg",
-    imgAlt: "Smiling young woman in an olive knit polo against a warm caramel backdrop",
   },
   {
     id: "tooth-extraction",
@@ -94,8 +84,6 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "At Pav Dental, our experienced oral surgeons use the latest techniques and technologies to ensure a comfortable and effective treatment experience. We offer guaranteed same-day tooth extractions for immediate pain relief. With transparent pricing for simple, intermediate, and complex extractions, you can trust us for professional care that prioritizes your needs. Follow our post-operative instructions for a smooth recovery, and book your appointment today to receive compassionate, state-of-the-art dental care.",
     ctaLabel: "Explore extractions",
     to: "/services/tooth-extraction",
-    imgSrc: "/images/home/care-brush.jpg",
-    imgAlt: "Woman laughing with a bright smile, holding a toothbrush beside her cheek",
   },
   {
     id: "mobile-dentistry",
@@ -107,8 +95,6 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "Pav Dental Mobile offers comprehensive dental services delivered right to your home. With extensive experience in both traditional and mobile dentistry, we ensure top-notch care using the latest technology and equipment. Ideal for care homes, we help make your home oral-health CQC-compliant and work with NHS partners. Our modern, well-equipped mobile surgery serves patients across the UK, bringing convenience and expert dental care directly to your doorstep. Contact us at hello@pavdental.com to schedule your appointment today.",
     ctaLabel: "Explore mobile care",
     to: "/services/mobile-dentistry",
-    imgSrc: "/images/home/care-visit.jpg",
-    imgAlt: "Dentist with a leather dental bag warmly greeted at a front door by a smiling elderly man",
     contactNote: { label: "Email hello@pavdental.com", href: "mailto:hello@pavdental.com" },
   },
 ];
@@ -123,6 +109,8 @@ const POINTS = [
 ];
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const WALL = Array.from({ length: 20 }, (_, i) => `/images/home/wall-${String(i + 1).padStart(2, "0")}.webp`);
 
 const STATS = [
   ["2", "Doctors / Dentist"],
@@ -139,7 +127,7 @@ const PILL =
 export function ServicesFeature() {
   const [activeId, setActiveId] = useState(SERVICES[0].id);
   const active = SERVICES.find((s) => s.id === activeId) ?? SERVICES[0];
-  const gridImages = SERVICES.map((s) => ({ src: s.imgSrc }));
+  const [ethosOpen, setEthosOpen] = useState(false);
 
   return (
     <section id="services" className="relative -mt-8 rounded-t-[32px] bg-[#ab742d] pt-2 pb-[4.5rem] text-white md:pb-[5.5rem]">
@@ -234,18 +222,16 @@ export function ServicesFeature() {
             <BookNow />
             <div
               aria-hidden
-              className="relative mt-8 h-[220px] w-full overflow-hidden [perspective:700px] md:h-[300px]"
+              className="relative mt-6 min-h-[260px] w-full flex-1 overflow-hidden [perspective:700px]"
             >
-              <div className="absolute inset-x-[-6%] bottom-[-18%] grid grid-cols-6 gap-2.5 [transform:rotateX(52deg)] [transform-origin:50%_100%] [mask-image:linear-gradient(to_top,#000_55%,transparent)]">
-                {Array.from({ length: 18 }, (_, i) => gridImages[(i * 5 + (i >> 2)) % gridImages.length]).map(
-                  (image, i) => (
-                    <div
-                      key={i}
-                      className="aspect-[4/3] w-full rounded-lg bg-cover bg-center"
-                      style={{ backgroundImage: `url(${image.src})` }}
-                    />
-                  ),
-                )}
+              <div className="absolute inset-x-[-10%] bottom-[-16%] grid grid-cols-5 gap-3 [transform:rotateX(50deg)] [transform-origin:50%_100%] [mask-image:linear-gradient(to_top,#000_50%,transparent)]">
+                {WALL.map((src) => (
+                  <div
+                    key={src}
+                    className="aspect-[4/3] w-full rounded-lg bg-cover bg-center"
+                    style={{ backgroundImage: `url(${src})` }}
+                  />
+                ))}
               </div>
             </div>
           </article>
@@ -265,7 +251,7 @@ export function ServicesFeature() {
       <div className="wrap-bento mt-2.5 max-w-[1396px]">
         <article className={cn(CARD, "px-4 py-10 md:px-10 md:py-14")}>
           <div className="relative mx-auto text-center">
-            <h2 className="text-h2-md text-white">
+            <h2 className="text-[clamp(40px,4.7vw,66px)] leading-[1.02] font-[430] tracking-[-0.02em] text-white">
               Exceptional Dentistry That <span className={cn("block", GOLD)}>You Can Rely On</span>
             </h2>
             <div className="mt-8 grid items-start gap-4 lg:grid-cols-[1fr_auto_1fr]">
@@ -273,7 +259,7 @@ export function ServicesFeature() {
                 {STATS.map(([value, label]) => (
                   <li
                     key={label}
-                    className="flex items-center justify-between gap-3 rounded-lg bg-[#6b430f]/80 px-3 py-2.5 text-left text-small"
+                    className="flex items-center justify-between gap-3 rounded-lg bg-[#6b430f]/80 px-3 py-2 text-left text-caption"
                   >
                     <span>{label}</span>
                     <span className={GOLD}>{value}</span>
@@ -281,19 +267,26 @@ export function ServicesFeature() {
                 ))}
               </ul>
               <img
-                src="/images/team/2.jpg"
-                alt="Dr Hassan Bhojani, founder and principal dentist at Pav Dental"
+                src="/images/home/hassan-hims.jpg"
+                alt="Dr Hassan Bhojani, founder and principal dentist at Pav Dental, in a white coat against a warm studio backdrop"
                 loading="lazy"
-                width={668}
-                height={668}
-                className="mx-auto aspect-square w-[min(340px,78vw)] rounded-[32px] object-cover object-top"
+                width={1100}
+                height={1473}
+                className="mx-auto aspect-[3/4] w-[min(320px,78vw)] rounded-[32px] object-cover object-top"
               />
               <div className="hidden max-w-[300px] justify-self-start lg:block">
                 <HoursChips />
               </div>
             </div>
             <div className="mx-auto max-w-[760px]">
-            <div className="mt-6 space-y-3 text-body text-white/90">
+            <div
+              id="ethos-text"
+              className={cn(
+                "mt-6 space-y-3 text-[17px] leading-[1.35] text-white/90",
+                !ethosOpen &&
+                  "max-h-[7.2rem] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]",
+              )}
+            >
               <p>
                 At Pav Dental we hold a strong ethos in delivering the best dental care possible for
                 all of our patients. We believe a healthy and happy smile is true to one’s nature in
@@ -309,6 +302,15 @@ export function ServicesFeature() {
                 matter what your needs may be.
               </p>
             </div>
+            <button
+              type="button"
+              aria-expanded={ethosOpen}
+              aria-controls="ethos-text"
+              onClick={() => setEthosOpen((v) => !v)}
+              className={cn("mt-3 text-small font-medium underline underline-offset-4", GOLD)}
+            >
+              {ethosOpen ? "Show less" : "Read more"}
+            </button>
             <p className="mt-6 text-label">Dr. Hassan Bhojani</p>
             <p className="text-small text-white/80">Founder &amp; Principal Dentist</p>
             <BookNow />
@@ -321,7 +323,7 @@ export function ServicesFeature() {
               {STATS.map(([value, label]) => (
                 <li
                   key={label}
-                  className="flex items-center justify-between gap-3 rounded-lg bg-[#6b430f]/60 px-3 py-2.5 text-small"
+                  className="flex items-center justify-between gap-3 rounded-lg bg-[#6b430f]/60 px-3 py-2 text-caption"
                 >
                   <span>{label}</span>
                   <span className={GOLD}>{value}</span>

@@ -81,12 +81,12 @@ export function CareFeature() {
 
         <article className={cn(CARD, "relative flex min-h-[560px] flex-col p-6 md:p-10")}>
           <img
-            src="/images/home/teeth-stack.jpg"
-            alt="Three smooth lavender, cream and sage porcelain tooth models stacked in mid-air"
+            src="/images/home/tile-smile.webp"
+            alt="Soft 3D lavender matte tablet with an engraved smiling face"
             loading="lazy"
-            width={1024}
-            height={1024}
-            className="size-24 rounded-[20px] object-cover md:size-32"
+            width={1240}
+            height={1262}
+            className="size-[104px] object-contain md:size-[120px]"
           />
           <h2 className="mt-5 text-h4 text-white">{TESTIMONIALS_HEADING}</h2>
           <p className="mt-1 max-w-md text-small text-white/70">{TESTIMONIALS_INTRO}</p>

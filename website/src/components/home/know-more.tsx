@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { PRACTICE_EMAIL, PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
 
 const EXPLORE = "inline-flex h-[34px] items-center rounded-pill bg-white px-5 text-small font-medium text-black t-colors hover:bg-white/85";
@@ -15,13 +14,6 @@ const TOPICS = [
   { title: "Whitening", sub: "Teeth whitening", to: "/services/whitening", tone: "from-[#a15a6b] to-[#6d47b0]" },
 ] as const;
 
-const FACTS = [
-  { text: "786 Leeds Road, Bradford, BD3 9TY" },
-  { text: PRACTICE_HOURS },
-  { text: PRACTICE_PHONE, href: PRACTICE_PHONE_HREF },
-  { text: PRACTICE_EMAIL, href: `mailto:${PRACTICE_EMAIL}` },
-  { text: "Free online appointment booking" },
-] as const;
 
 const BIG_CARD = "relative aspect-[4/5] w-[86vw] shrink-0 snap-start overflow-hidden rounded-[28px] bg-[#c9b8a0] sm:aspect-[16/10] sm:w-[68vw] md:w-[72vw] lg:aspect-[1380/736] lg:w-[min(72vw,1380px)]";
 
@@ -121,8 +113,8 @@ export function KnowMore() {
         </li>
         <li className={BIG_CARD}>
           <img
-            src="/images/home/care-nurse.jpg"
-            alt="Dental nurse answering a late-night call at a reception desk lit by a warm lamp"
+            src="/images/home/care-emergency.jpg"
+            alt="Dentist in a navy tunic reassuring a patient with a toothache in a clinic at night"
             loading="lazy"
             width={1536}
             height={1024}
@@ -158,23 +150,7 @@ export function KnowMore() {
         ))}
       </ul>
 
-      <div className="mx-auto mt-14 max-w-[1386px] px-4 md:mt-24">
-        <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 rounded-[28px] bg-[#f6f1e9] px-6 py-8 text-center text-label text-[#6f6a5e] md:py-12">
-          {FACTS.map((fact) => (
-            <li key={fact.text}>
-              {"href" in fact ? (
-                <a href={fact.href} className="t-colors hover:text-fg">
-                  {fact.text}
-                </a>
-              ) : (
-                fact.text
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div aria-hidden className="mx-auto mt-10 h-2 w-[91px] overflow-hidden rounded-full bg-[#ece7df]">
+      <div aria-hidden className="mx-auto mt-12 h-2 w-[91px] overflow-hidden rounded-full bg-[#ece7df]">
         <div
           className="h-full w-[64px] rounded-full bg-black"
           style={{ transform: `translateX(${progress * 27}px)` }}

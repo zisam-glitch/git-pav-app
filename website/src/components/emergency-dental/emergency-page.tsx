@@ -1,5 +1,7 @@
 import { TestimonialsSection } from "@/components/testimonials/testimonials-section";
 import { HOME_TESTIMONIALS } from "@/content/testimonials";
+import { CallButton, FloatingCta } from "@/components/hims";
+import { PRACTICE_PHONE } from "@/lib/enquiry";
 import { EmergencyBanner } from "./emergency-banner";
 import { EmergencyContactForm } from "./emergency-contact-form";
 import { EmergencyContactStrip } from "./emergency-contact-strip";
@@ -10,7 +12,7 @@ import { EmergencyServices } from "./emergency-services";
 
 export function EmergencyDentalPage() {
   return (
-    <main>
+    <main className="bg-white">
       <EmergencyHero />
       <EmergencyPricing />
       <EmergencyServices />
@@ -19,6 +21,9 @@ export function EmergencyDentalPage() {
       <TestimonialsSection testimonials={HOME_TESTIMONIALS} />
       <EmergencyContactStrip />
       <EmergencyContactForm />
+      <FloatingCta>
+        <CallButton>Call us Now · {PRACTICE_PHONE}</CallButton>
+      </FloatingCta>
     </main>
   );
 }

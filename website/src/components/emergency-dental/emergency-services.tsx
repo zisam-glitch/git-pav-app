@@ -1,64 +1,52 @@
-import {
-  Activity,
-  AlertCircle,
-  Droplets,
-  Flame,
-  Shield,
-  Sparkles,
-  Wrench,
-  Zap,
-} from "lucide-react";
-import { CallButton, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, CallButton, Section, SectionHead } from "@/components/hims";
 import { PRACTICE_PHONE } from "@/lib/enquiry";
 
 const EMERGENCY_CONDITIONS = [
-  { id: "toothache", title: "Toothache", icon: Zap },
-  { id: "sensitivity", title: "Sensitivity", icon: Activity },
-  { id: "broken-filling", title: "Broken Filling Tooth", icon: Sparkles },
-  { id: "swelling-abscess", title: "Swelling/Abscess", icon: Flame },
-  { id: "denture-adjustment", title: "Denture Adjustment", icon: Wrench },
-  { id: "recement-crowns", title: "Re-cement Crowns", icon: Shield },
-  { id: "dental-trauma", title: "Dental Trauma", icon: AlertCircle },
-  { id: "painful-gums", title: "Painful Gums", icon: Droplets },
+  { id: "toothache", title: "Toothache" },
+  { id: "sensitivity", title: "Sensitivity" },
+  { id: "broken-filling", title: "Broken Filling Tooth" },
+  { id: "swelling-abscess", title: "Swelling/Abscess" },
+  { id: "denture-adjustment", title: "Denture Adjustment" },
+  { id: "recement-crowns", title: "Re-cement Crowns" },
+  { id: "dental-trauma", title: "Dental Trauma" },
+  { id: "painful-gums", title: "Painful Gums" },
 ] as const;
+
+const GRADIENTS = [
+  "linear-gradient(160deg,#b5644a,#7a3a3a)",
+  "linear-gradient(160deg,#c98b6b,#8a4242)",
+  "linear-gradient(160deg,#6f5a43,#3a2c1b)",
+  "linear-gradient(160deg,#8a6f55,#5a4630)",
+];
 
 export function EmergencyServices() {
   return (
-    <Section id="services" theme="navy" space="lg">
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div className="max-w-2xl">
-          <p className="inline-flex items-center rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-butter">
-            Same-Day Clinical Care
-          </p>
-          <Heading as="h2" size="h2-md" accent="The Following" tone="butter" className="mt-4">
-            Our Emergency Dentist Can Help With
-          </Heading>
-        </div>
-        <CallButton variant="butter">Call us Now · {PRACTICE_PHONE}</CallButton>
-      </div>
-
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {EMERGENCY_CONDITIONS.map((cond, index) => {
-          const Icon = cond.icon;
-          return (
-            <Tile
-              key={cond.id}
-              tone="glass"
-              className="flex flex-col justify-between gap-6 border border-white/12 p-6 t-colors hover:bg-white/12"
+    <Section id="services" theme="white" aria-labelledby="emergency-services-heading">
+      <SectionHead
+        id="emergency-services-heading"
+        title="Our Emergency Dentist Can Help With The Following"
+        action={<CallButton>Call us Now · {PRACTICE_PHONE}</CallButton>}
+      />
+      <ul className="mt-10 grid list-none gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {EMERGENCY_CONDITIONS.map((cond, i) => (
+          <li key={cond.id}>
+            <div
+              className="flex aspect-[4/3] items-end rounded-[22px] p-5 text-white"
+              style={{ background: GRADIENTS[i % 4] }}
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className="grid size-10 place-items-center rounded-full bg-white/10 text-butter">
-                  <Icon aria-hidden className="size-4" />
-                </div>
-                <span className="rounded-pill bg-white/10 px-2.5 py-0.5 text-caption font-medium text-butter tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              </div>
-              <h3 className="border-t border-white/12 pt-4 text-h4 text-white">{cond.title}</h3>
-            </Tile>
-          );
-        })}
-      </div>
+              <span className="grid size-10 place-items-center rounded-full bg-white/20 text-[15px] tabular-nums">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </div>
+            <h3 className="mt-4 text-[22px] leading-[1.15] font-normal text-[#2a2a2c]">
+              {cond.title}
+            </h3>
+            <BookButton variant="ghost" size="sm" className="mt-1 -ml-3">
+              Book now →
+            </BookButton>
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 }

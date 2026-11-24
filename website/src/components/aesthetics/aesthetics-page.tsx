@@ -10,7 +10,7 @@ import { AestheticsValues } from "./aesthetics-values";
 
 export function AestheticsPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <AestheticsHero />
       <AestheticsTreatments />
       <AestheticsPremium />

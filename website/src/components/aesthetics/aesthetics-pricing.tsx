@@ -5,7 +5,7 @@ const PRICE_CATEGORIES = [
     title: "Dermal Fillers",
     eyebrow: "Volume & Contour",
     fromPrice: "£100",
-    tone: "white" as const,
+    tone: "grey" as const,
     rows: [
       { item: "0.5ML", price: "£100" },
       { item: "0.7ML", price: "£150" },
@@ -19,7 +19,7 @@ const PRICE_CATEGORIES = [
     title: "Botox",
     eyebrow: "Anti-Wrinkle",
     fromPrice: "£180",
-    tone: "sage" as const,
+    tone: "grey" as const,
     rows: [
       { item: "1 AREA", price: "£180" },
       { item: "2 AREAS", price: "£240" },
@@ -31,7 +31,7 @@ const PRICE_CATEGORIES = [
     title: "Others",
     eyebrow: "Skin Boosters",
     fromPrice: "£160",
-    tone: "white" as const,
+    tone: "grey" as const,
     rows: [
       { item: "PROFHILO FIRST DOSE", price: "£249" },
       { item: "SOSUM BOOSTER", price: "£160" },

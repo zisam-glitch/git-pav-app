@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { CalendarCheck, Siren, Video } from "lucide-react";
-import type { ReactNode } from "react";
 import { BookButton, CallButton } from "@/components/hims";
 
 /**
@@ -24,54 +23,49 @@ const PAGE_JUMPS = [
   { label: "The Future of Dentistry", href: "#future-dentistry" },
 ] as const;
 
-interface Milestone {
-  pill: string;
-  title: string;
-  body: ReactNode;
-  tile?: string;
-}
-
-const DREAM_STEPS: readonly Milestone[] = [
+const DREAM_STEPS = [
   {
-    pill: "Step 1",
+    step: "Step 1",
     title: "Dream",
     body: "Envisioning a patient-centered clinic where the best dental care meets the flexibility of mobile services.",
-    tile: "/images/home/tile-smile.webp",
+    icon: "/images/home/about-icon-dream.webp",
   },
   {
-    pill: "Step 2",
+    step: "Step 2",
     title: "Creating a Partnership",
     body: "Building a foundation of shared passion and complementary expertise.",
-    tile: "/images/home/tile-mirror.webp",
+    icon: "/images/home/about-icon-partner.webp",
   },
   {
-    pill: "Step 3",
+    step: "Step 3",
     title: "Reaching Shared Value between the Partnership",
     body: "Defining their commitment to patient well-being and professional excellence.",
-    tile: "/images/home/tile-tooth.webp",
+    icon: "/images/home/about-icon-value.webp",
   },
   {
-    pill: "Step 4",
+    step: "Step 4",
     title: "Creating a Very Detailed Roadmap",
     body: "Outlining every stage, from cutting-edge technology acquisition to community outreach.",
-    tile: "/images/home/tile-van.webp",
+    icon: "/images/home/about-icon-roadmap.webp",
   },
-];
+] as const;
 
-const LEGACY_STEPS: readonly Milestone[] = [
+const LEGACY_CARDS = [
   {
     pill: "Step 5",
     title: "Executing",
     body: "Bringing this dental clinic to life, serving our community with the same care and innovation Dr. Pav championed.",
-    tile: "/images/home/tile-case.webp",
+    image: "/images/home/about-executing.webp",
+    alt: "Gloved dentist's hands holding a dental mirror and probe in a warm, sunlit clinic",
   },
   {
     pill: "Always",
     title: "Inspiration and Growth",
     body: "“We can achieve all our dreams if we are brave enough to pursue them.” This philosophy, shared by Dr. Pav and Dr. Hassan, will forever guide our practice.",
-    tile: "/images/home/tile-strips.webp",
+    image: "/images/home/about-inspiration.webp",
+    alt: "A smiling dentist in a white coat against a warm sand-coloured wall (illustration, not a member of staff)",
   },
-];
+] as const;
 
 const APP_FEATURES = [
   { icon: CalendarCheck, text: "Schedule routine checkups and cleanings at your home or office." },
@@ -79,164 +73,157 @@ const APP_FEATURES = [
   { icon: Video, text: "Consult virtually with our dentists for immediate advice." },
 ] as const;
 
-/** Left: title and intro. Right: the purple milestone timeline. */
-function Milestones({
-  id,
-  title,
-  intro,
-  items,
-}: {
-  id: string;
-  title: string;
-  intro: string;
-  items: readonly Milestone[];
-}) {
-  return (
-    <section id={id} className="scroll-mt-20 bg-white py-14 md:py-24">
-      <div className="wrap-bento grid max-w-[1396px] gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <h2 className={TITLE}>{title}</h2>
-          <p className="mt-6 max-w-[34rem] text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#55565a]">
-            {intro}
-          </p>
-        </div>
-        <ol className="relative">
-          {items.map((item) => (
-            <li key={item.title} className="relative pb-14 pl-10 last:pb-0">
-              <span
-                aria-hidden
-                className="absolute top-0 left-0 size-3.5 rounded-full ring-[5px] ring-white"
-                style={{ backgroundColor: PURPLE }}
-              />
-              <span
-                aria-hidden
-                className="absolute top-6 bottom-2 left-[4px] w-[6px] rounded-full"
-                style={{ backgroundColor: PURPLE }}
-              />
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <span
-                    className="inline-flex rounded-full px-2.5 py-[3px] text-[11px] leading-none text-white"
-                    style={{ backgroundColor: PURPLE }}
-                  >
-                    {item.pill}
-                  </span>
-                  <h3 className="mt-3 text-[clamp(26px,2.8vw,40px)] leading-[1.1] font-normal tracking-[-0.02em] text-[#1b1b1b]">
-                    {item.title}
-                  </h3>
-                </div>
-                {item.tile ? (
-                  <span className="flex size-[92px] shrink-0 items-center justify-center rounded-2xl bg-[#f4f1ea] md:size-[116px]">
-                    <img
-                      src={item.tile}
-                      alt=""
-                      aria-hidden
-                      loading="lazy"
-                      width={160}
-                      height={160}
-                      className="size-[72px] object-contain md:size-[88px]"
-                    />
-                  </span>
-                ) : null}
-              </div>
-              <p className={`mt-5 ${BODY}`}>{item.body}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
 export function Story() {
   return (
     <>
-      {/* Hero: gradient banner, then the title beside "On this page" */}
-      <section id="our-story" className="scroll-mt-20 bg-white pt-4 pb-14 md:pb-24">
+      {/* Hero: a centred two-tone statement (Hims "Through Hims…" section), the banner, then chips */}
+      <section id="our-story" className="scroll-mt-20 bg-white pt-14 pb-14 text-center md:pt-24 md:pb-24">
         <div className="wrap-bento max-w-[1396px]">
+          <h1 className="mx-auto max-w-[18ch] text-[clamp(40px,5.6vw,84px)] leading-[1.02] font-normal tracking-[-0.03em] text-[#1b1b1b]">
+            A Legacy of <span className="text-[#b5644a]">Care and Innovation</span>
+          </h1>
+          <p className="mx-auto mt-7 max-w-[40rem] text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#55565a]">
+            Our dental clinic isn&apos;t just about delivering exceptional oral healthcare;
+            it&apos;s a testament to the vision of the late Dr. Pavan Bhogal. Dr. Pav was a
+            passionate believer that dentistry could – and should – extend beyond traditional
+            practice, providing unparalleled convenience and accessibility.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <BookButton>Book Now</BookButton>
+            <CallButton variant="outline" />
+          </div>
           <img
             src="/images/home/about-banner.webp"
             alt="A hand holding a phone with the Pav Dental app and a dentist's hand holding a mirror, among floating patient-record cards"
             width={2200}
             height={767}
             fetchPriority="high"
-            className="aspect-[2200/767] w-full rounded-[28px] object-cover"
+            className="mt-14 aspect-[2200/767] w-full rounded-[28px] object-cover"
           />
-          <div className="mt-14 grid gap-12 md:mt-20 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
-            <div>
-              <h1 className={TITLE}>A Legacy of Care and Innovation</h1>
-              <p className="mt-7 max-w-[36rem] text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#55565a]">
-                Our dental clinic isn&apos;t just about delivering exceptional oral healthcare;
-                it&apos;s a testament to the vision of the late Dr. Pavan Bhogal. Dr. Pav was a
-                passionate believer that dentistry could – and should – extend beyond traditional
-                practice, providing unparalleled convenience and accessibility.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <BookButton>Book Now</BookButton>
-                <CallButton variant="outline" />
-              </div>
-            </div>
-            <nav aria-label="On this page" className="lg:pt-6">
-              <p className="text-[20px] text-[#55565a]">On this page:</p>
-              <ol className="mt-5 space-y-3.5">
-                {PAGE_JUMPS.map((item, i) => (
-                  <li key={item.href}>
-                    <a
-                      href={item.href}
-                      className="inline-flex items-center gap-4 text-[20px] text-[#1b1b1b] underline decoration-[#1b1b1b]/40 underline-offset-4 t-colors hover:decoration-[#1b1b1b]"
+          <nav aria-label="On this page" className="mt-8">
+            <p className="text-small text-[#55565a]">On this page:</p>
+            <ol className="mt-3 flex flex-wrap items-center justify-center gap-2.5">
+              {PAGE_JUMPS.map((item, i) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className="inline-flex items-center gap-2.5 rounded-full bg-[#f4f1ea] py-1.5 pr-4 pl-1.5 text-[16px] text-[#1b1b1b] t-colors hover:bg-[#ebe6dc]"
+                  >
+                    <span
+                      className="inline-flex size-7 items-center justify-center rounded-full text-[14px] text-white"
+                      style={{ backgroundColor: PURPLE }}
                     >
-                      <span
-                        className="inline-flex size-[30px] items-center justify-center rounded-full text-[15px] text-white no-underline"
-                        style={{ backgroundColor: PURPLE }}
-                      >
-                        {i + 1}
-                      </span>
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          </div>
+                      {i + 1}
+                    </span>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
         </div>
       </section>
 
-      <Milestones
-        id="dream-team"
-        title="The Dream and The Team"
-        intro="Dr. Pav's dream was shared, nurtured, and diligently planned alongside his close friend and colleague, Dr. Hassan. Together, they meticulously crafted a plan, encompassing these crucial steps:"
-        items={DREAM_STEPS}
-      />
-
-      <Milestones
-        id="legacy-fulfilled"
-        title="A Legacy Fulfilled"
-        intro="Tragically, Dr. Pav passed away before witnessing the clinic's realization. Their shared vision now rests with Dr. Hassan as a profound responsibility. Fueled by a deep respect for their collaboration, Dr Hassan vowed to complete the final step:"
-        items={LEGACY_STEPS}
-      />
-
-      {/* Portrait banner and the two closing paragraphs */}
-      <section className="bg-white pb-14 md:pb-24">
+      {/* The Dream and The Team: Hims "Total care, totally different" row of soft cards with line icons */}
+      <section id="dream-team" className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24">
         <div className="wrap-bento max-w-[1396px]">
-          <img
-            src="/images/home/hassan-wide.jpg"
-            alt="Dr Hassan Bhojani, founder and principal dentist at Pav Dental"
-            loading="lazy"
-            width={1360}
-            height={800}
-            className="aspect-[17/10] w-full rounded-[28px] object-cover md:aspect-[2/1]"
-          />
-          <div className="mt-10 grid gap-8 md:grid-cols-2 md:gap-20">
-            <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#1b1b1b]">
-              While we must forgive past failings and present obstacles, the future of this clinic
-              demands unwavering standards. We will never compromise on the quality, compassion, or
-              dedication to access that Dr. Pav envisioned.
-            </p>
-            <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#1b1b1b]">
-              We invite you to join us on this journey, as we honor a remarkable legacy and build a
-              future where dental care is truly accessible to all.
+          <div className="grid items-end gap-6 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+            <h2 className={TITLE}>
+              The Dream <span className="text-[#8b8d92]">and The Team</span>
+            </h2>
+            <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#55565a]">
+              Dr. Pav&apos;s dream was shared, nurtured, and diligently planned alongside his close
+              friend and colleague, Dr. Hassan. Together, they meticulously crafted a plan,
+              encompassing these crucial steps:
             </p>
           </div>
+          <ol className="mt-12 grid gap-3 md:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+            {DREAM_STEPS.map((item) => (
+              <li
+                key={item.title}
+                className={`${SOFT_CARD} flex min-h-[360px] flex-col justify-between p-6 md:p-7`}
+              >
+                <div>
+                  <span
+                    className="inline-flex rounded-full px-2.5 py-[3px] text-[11px] leading-none text-white"
+                    style={{ backgroundColor: PURPLE }}
+                  >
+                    {item.step}
+                  </span>
+                  <h3 className="mt-4 text-[clamp(22px,1.9vw,28px)] leading-[1.12] font-normal tracking-[-0.015em] text-[#1b1b1b]">
+                    {item.title}
+                  </h3>
+                  <p className={`mt-3 ${BODY}`}>{item.body}</p>
+                </div>
+                <img
+                  src={item.icon}
+                  alt=""
+                  aria-hidden
+                  loading="lazy"
+                  width={180}
+                  height={180}
+                  className="mt-6 size-[120px] object-contain mix-blend-multiply"
+                />
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* A Legacy Fulfilled: Hims "personalised treatment plan" tall photo cards */}
+      <section id="legacy-fulfilled" className="scroll-mt-20 bg-white py-14 md:py-24">
+        <div className="wrap-bento max-w-[1396px]">
+          <div className="grid items-end gap-6 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+            <h2 className={TITLE}>
+              A Legacy <span className="text-[#b5644a]">Fulfilled</span>
+            </h2>
+            <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#55565a]">
+              Tragically, Dr. Pav passed away before witnessing the clinic&apos;s realization.
+              Their shared vision now rests with Dr. Hassan as a profound responsibility. Fueled by
+              a deep respect for their collaboration, Dr Hassan vowed to complete the final step:
+            </p>
+          </div>
+          <ol className="mt-12 grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+            {LEGACY_CARDS.map((card) => (
+              <li
+                key={card.title}
+                className="relative flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[28px] bg-[#e9e2d6] text-white lg:min-h-[560px]"
+              >
+                <img
+                  src={card.image}
+                  alt={card.alt}
+                  loading="lazy"
+                  width={800}
+                  height={1067}
+                  className="absolute inset-0 size-full object-cover"
+                />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+                />
+                <div className="relative p-6 md:p-8">
+                  <span className="inline-flex rounded-full bg-white/25 px-3 py-1 text-[12px] leading-none backdrop-blur">
+                    {card.pill}
+                  </span>
+                  <h3 className="mt-3 text-[clamp(26px,2.4vw,36px)] leading-[1.08] font-normal tracking-[-0.02em]">
+                    {card.title}
+                  </h3>
+                  <p className="mt-3 text-[15px] leading-[1.4] text-white/90">{card.body}</p>
+                </div>
+              </li>
+            ))}
+            <li className={`${SOFT_CARD} flex flex-col justify-center gap-6 bg-[#f7f5f2] p-7 shadow-none md:col-span-2 md:p-9 lg:col-span-1`}>
+              <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#1b1b1b]">
+                While we must forgive past failings and present obstacles, the future of this
+                clinic demands unwavering standards. We will never compromise on the quality,
+                compassion, or dedication to access that Dr. Pav envisioned.
+              </p>
+              <p className="text-[clamp(18px,1.5vw,22px)] leading-[1.35] text-[#1b1b1b]">
+                We invite you to join us on this journey, as we honor a remarkable legacy and build
+                a future where dental care is truly accessible to all.
+              </p>
+            </li>
+          </ol>
         </div>
       </section>
 

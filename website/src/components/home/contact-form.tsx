@@ -60,8 +60,8 @@ export function ContactForm() {
     <>
       <section id="faq" className="bg-white pb-6 md:pb-10">
         <div className="mx-auto max-w-[736px] px-4">
-          <h2 className="mb-6 text-h2-md text-fg">Frequently Asked Questions</h2>
-          <FaqList items={homeFaqs()} defaultOpen={null} />
+          <h2 className="mb-6 t-hims-section text-fg">Frequently Asked Questions</h2>
+          <FaqList items={homeFaqs()} defaultOpen={null} large />
         </div>
       </section>
 
@@ -81,8 +81,8 @@ export function ContactForm() {
           />
           <div className="relative z-10 px-6 py-12 md:min-h-[780px] md:px-[3.5rem] md:py-16">
             <div className="max-w-[460px] text-white">
-              <h2 className="text-h2-md">Get In Touch</h2>
-              <p className="mt-4 text-lead">
+              <h2 className="t-hims-section">Get In Touch</h2>
+              <p className="mt-4 t-hims-lead">
                 Ready to take control of your dental health? Contact us to book your appointment
                 today!
               </p>

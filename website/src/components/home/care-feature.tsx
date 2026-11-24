@@ -31,7 +31,7 @@ export function CareFeature() {
       <div className="wrap-bento grid max-w-[1396px] gap-2.5 lg:grid-cols-2">
         <div className="flex flex-col gap-2.5">
           <article className={cn(CARD, "relative flex min-h-[420px] overflow-hidden p-6 md:p-10")}>
-            <h2 className="relative z-10 max-w-full text-h3-md text-white sm:max-w-[60%]">
+            <h2 className="relative z-10 max-w-full t-hims-card text-white sm:max-w-[60%]">
               Require emergency dental care and want same day treatment?
             </h2>
             <img
@@ -61,7 +61,7 @@ export function CareFeature() {
               className="absolute inset-0 size-full object-cover"
             />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-[#2e4d66]/70 via-transparent to-transparent" />
-            <h3 className="relative z-10 max-w-[55%] p-6 text-h3-md text-white md:p-10">
+            <h3 className="relative z-10 max-w-[55%] p-6 t-hims-card text-white md:p-10">
               Explore our treatments
             </h3>
             <ul className="absolute right-6 bottom-6 flex flex-col items-end gap-2.5 md:right-10 md:bottom-10">
@@ -88,7 +88,7 @@ export function CareFeature() {
             height={1262}
             className="size-[104px] object-contain md:size-[120px]"
           />
-          <h2 className="mt-5 text-h4 text-white">{TESTIMONIALS_HEADING}</h2>
+          <h2 className="mt-5 t-hims-lead text-white">{TESTIMONIALS_HEADING}</h2>
           <p className="mt-1 max-w-md text-small text-white/70">{TESTIMONIALS_INTRO}</p>
 
           <div
@@ -106,7 +106,7 @@ export function CareFeature() {
                   i === index ? "opacity-100" : "invisible opacity-0",
                 )}
               >
-                <blockquote className="text-h4 font-normal text-white">{item.text}</blockquote>
+                <blockquote className="t-hims-quote text-white">{item.text}</blockquote>
                 <figcaption className="mt-5 text-small font-medium text-white/70">
                   {item.title}
                 </figcaption>

@@ -135,7 +135,7 @@ export function ServicesFeature() {
         {/* Left: the six live service blurbs, one at a time */}
         <article className={cn(CARD, "flex flex-col items-center px-6 py-10 text-center md:px-10 md:py-14")}>
           <p className={cn("text-small font-medium", GOLD)}>{active.badge}</p>
-          <h2 className="mt-2 text-h3-md text-white">{active.heading}</h2>
+          <h2 className="mt-2 t-hims-feature text-white">{active.heading}</h2>
           <img
             src={active.phoneSrc}
             alt={`Hand holding a smartphone showing a Pav Dental ${active.tabLabel} app screen`}
@@ -145,7 +145,7 @@ export function ServicesFeature() {
             className="mt-6 h-auto w-[min(300px,72%)] drop-shadow-[0_18px_28px_rgba(60,30,0,0.35)]"
           />
           {active.subtitle ? (
-            <p className={cn("mt-6 max-w-md text-lead", GOLD)}>{active.subtitle}</p>
+            <p className={cn("mt-6 max-w-md t-hims-lead", GOLD)}>{active.subtitle}</p>
           ) : null}
           <div className="mt-3 w-full">
             {SERVICES.map((service) => (
@@ -156,7 +156,7 @@ export function ServicesFeature() {
                 aria-labelledby={`tab-${service.id}`}
                 hidden={service.id !== active.id}
               >
-                <p className="mx-auto max-w-md text-body text-white/90">{service.copy}</p>
+                <p className="mx-auto max-w-md t-hims-body text-white/90">{service.copy}</p>
                 {service.contactNote ? (
                   <p className="mt-4">
                     <a
@@ -209,11 +209,11 @@ export function ServicesFeature() {
           <article
             className={cn(CARD, "flex flex-1 flex-col items-center overflow-hidden pt-10 text-center md:pt-14")}
           >
-            <h2 className="px-6 text-h3-md text-white md:px-10">
+            <h2 className="px-6 t-hims-feature text-white md:px-10">
               Comprehensive Dental Services:{" "}
               <span className={GOLD}>Book Online, Specialized Care, and Insurance Support</span>
             </h2>
-            <p className="mt-5 max-w-md px-6 text-body text-white/90">
+            <p className="mt-5 max-w-md px-6 t-hims-body text-white/90">
               Providing expert oral surgery, comprehensive dental hygiene assessments, cosmetic
               dentistry, special care services, and public health insurance assistance, our clinic
               ensures top-notch care for all your dental needs. Enjoy the convenience of free online
@@ -238,8 +238,8 @@ export function ServicesFeature() {
 
           <ul className={cn(CARD, "divide-y divide-white/15 px-6 py-2 md:px-10")}>
             {POINTS.map((point) => (
-              <li key={point} className="flex items-center gap-3 py-3.5 text-body">
-                <span aria-hidden className={cn("w-4 shrink-0 text-center text-lead", GOLD)}>+</span>{" "}
+              <li key={point} className="flex items-center gap-3 py-3.5 t-hims-body">
+                <span aria-hidden className={cn("w-4 shrink-0 text-center t-hims-lead", GOLD)}>+</span>{" "}
                 <span>{point}</span>
               </li>
             ))}
@@ -251,7 +251,7 @@ export function ServicesFeature() {
       <div className="wrap-bento mt-2.5 max-w-[1396px]">
         <article className={cn(CARD, "px-4 py-10 md:px-10 md:py-14")}>
           <div className="relative mx-auto text-center">
-            <h2 className="text-[clamp(40px,4.7vw,66px)] leading-[1.02] font-[430] tracking-[-0.02em] text-white">
+            <h2 className="text-[clamp(38px,4.3vw,62px)] leading-[1.02] font-[430] tracking-[-0.02em] text-white">
               Exceptional Dentistry That <span className={cn("block", GOLD)}>You Can Rely On</span>
             </h2>
             <div className="mt-8 grid items-start gap-4 lg:grid-cols-[1fr_auto_1fr]">
@@ -282,7 +282,7 @@ export function ServicesFeature() {
             <div
               id="ethos-text"
               className={cn(
-                "mt-6 space-y-3 text-[17px] leading-[1.35] text-white/90",
+                "mt-6 space-y-3 t-hims-lead text-white/90",
                 !ethosOpen &&
                   "max-h-[7.2rem] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]",
               )}

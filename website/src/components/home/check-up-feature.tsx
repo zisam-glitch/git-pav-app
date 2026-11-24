@@ -45,8 +45,8 @@ export function CheckUpFeature() {
 
         <div className="relative mx-auto max-w-[760px] text-center">
           <p className="text-caption font-medium tracking-wide text-[#27434f]">ACCESSIBLE SMILES</p>
-          <h2 className="mt-2 text-h2-md text-[#0f2b36]">Complete Dental Check-Up</h2>
-          <p className="mt-2 text-h4 text-[#5f7d86]">
+          <h2 className="mt-2 t-hims-title text-[#0f2b36]">Complete Dental Check-Up</h2>
+          <p className="mt-2 t-hims-lead text-[#5f7d86]">
             £35 Only £7.60 more than the NHS fee (£27.40), with faster access and premium service
           </p>
         </div>
@@ -76,13 +76,13 @@ export function CheckUpFeature() {
 
         <div className="relative mx-auto -mt-2 grid max-w-[1396px] gap-2.5 md:grid-cols-2 lg:px-[3.2rem]">
           <article className="relative flex min-h-[480px] flex-col overflow-hidden rounded-[28px] bg-[#fdf5d6]/90 p-6 md:min-h-[610px] md:p-10">
-            <h3 className="text-h3-md text-[#0f2b36]">
+            <h3 className="t-hims-card text-[#0f2b36]">
               Emergency Dentist
               <span className="mt-1 block text-[#5f7d86]">
                 Covering Bradford 24 Hours 7 days of the week including National and Bank Holidays
               </span>
             </h3>
-            <p className="mt-3 text-body text-[#0f2b36]">
+            <p className="mt-3 t-hims-body text-[#0f2b36]">
               £45 consultation
               <br />
               £90* out-of-hours consultation
@@ -106,7 +106,7 @@ export function CheckUpFeature() {
           </article>
 
           <article className="relative flex min-h-[480px] flex-col overflow-hidden rounded-[28px] bg-[#fdf5d6]/90 p-6 md:min-h-[610px] md:p-10">
-            <h3 className="text-h3-md text-[#0f2b36]">
+            <h3 className="t-hims-card text-[#0f2b36]">
               Facial Aesthetics
               <span className="mt-1 block text-[#5f7d86]">
                 Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments

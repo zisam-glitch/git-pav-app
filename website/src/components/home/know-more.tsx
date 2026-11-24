@@ -37,7 +37,7 @@ export function KnowMore() {
 
   return (
     <section id="know" className="overflow-hidden bg-white py-14 md:py-20">
-      <h2 className="px-4 text-center text-h2-md text-fg">
+      <h2 className="px-4 text-center t-hims-section text-fg">
         Here&apos;s what you <span className="block text-clay">need to know</span>
       </h2>
 
@@ -76,7 +76,7 @@ export function KnowMore() {
                 className="absolute inset-0 size-full object-cover"
               />
               <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
-              <h3 className="relative z-10 max-w-[60%] p-6 text-h3-md text-white md:p-10">
+              <h3 className="relative z-10 max-w-[60%] p-6 t-hims-feature text-white md:p-10">
                 What causes cavities?
               </h3>
               <button
@@ -101,7 +101,7 @@ export function KnowMore() {
             className="absolute inset-0 size-full object-cover"
           />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
-          <h3 className="relative z-10 max-w-[60%] p-6 text-h3-md text-white md:p-10">
+          <h3 className="relative z-10 max-w-[60%] p-6 t-hims-feature text-white md:p-10">
             Mobile Dentistry at Your Doorstep
           </h3>
           <Link
@@ -121,7 +121,7 @@ export function KnowMore() {
             className="absolute inset-0 size-full object-cover"
           />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
-          <h3 className="relative z-10 max-w-[60%] p-6 text-h3-md text-white md:p-10">
+          <h3 className="relative z-10 max-w-[60%] p-6 t-hims-feature text-white md:p-10">
             24/7 Emergency Dental Services in Bradford
           </h3>
           <Link
@@ -143,7 +143,7 @@ export function KnowMore() {
                 topic.tone,
               )}
             >
-              <span className="text-h3-md">{topic.title}</span>
+              <span className="t-hims-topic">{topic.title}</span>
               <span className="mt-1 text-small text-white/80">{topic.sub}</span>
             </Link>
           </li>

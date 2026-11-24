@@ -3,7 +3,7 @@ import { ArrowRight, Clock, ShieldCheck, Wrench } from "lucide-react";
 import { BookButton, ButtonLink, CallButton } from "@/components/hims";
 import { CONTAINER, LEAD } from "@/components/pricing/tokens";
 import { TEAM_MEMBERS } from "@/content/team-members";
-import { TeamPhoto } from "./team-photo";
+import { restyledPhoto } from "@/content/team-restyled";
 
 const GOVERNANCE_PILLARS = [
   {
@@ -60,9 +60,12 @@ export function TeamGrid() {
                   <div>
                     <div className="flex items-center gap-3">
                       <span className="size-11 shrink-0 overflow-hidden rounded-full bg-[#e4e1da]">
-                        <TeamPhoto
-                          member={member}
-                          priority={index < 4}
+                        <img
+                          src={restyledPhoto(member.slug)}
+                          alt={member.photo.alt}
+                          width={88}
+                          height={88}
+                          loading={index < 4 ? "eager" : "lazy"}
                           className="size-full object-cover object-top"
                         />
                       </span>

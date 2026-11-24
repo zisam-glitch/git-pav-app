@@ -1,22 +1,16 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUpRight, CheckCircle2, Clock, Languages, Phone, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock } from "lucide-react";
 import type { ContentBlock } from "@/components/content/content-blocks";
-import {
-  BookButton,
-  ButtonLink,
-  CallButton,
-  CtaBand,
-  Heading,
-  Section,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, CallButton } from "@/components/hims";
+import { CONTAINER, LEAD } from "@/components/pricing/tokens";
 import { TEAM_MEMBERS, type TeamMember } from "@/content/team-members";
+import { restyledPhoto } from "@/content/team-restyled";
 import { PRACTICE_EMAIL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 import { teamPersonJsonLd } from "@/lib/seo";
-import { TeamPhoto } from "./team-photo";
 
-const LINK_CLASS = "font-medium text-terracotta underline underline-offset-4 hover:text-copper";
+const LINK_CLASS = "text-[#1b1b1b] underline underline-offset-4";
+const SOFT = "rounded-[22px] bg-white shadow-[0_10px_36px_rgba(20,20,40,0.07)]";
 
 /** Turns the practice's phone number and email inside a line of text into links, and leaves the rest as written. */
 function withContactLinks(text: string): ReactNode[] {
@@ -44,25 +38,15 @@ function withContactLinks(text: string): ReactNode[] {
   return parts;
 }
 
-function Fact({
-  icon: Icon,
-  label,
-  children,
-}: {
-  icon: typeof Clock;
-  label: string;
-  children: ReactNode;
-}) {
+/** A tick in the amber circle Hims uses for its provider bullets. */
+function Tick() {
   return (
-    <li className="flex items-start gap-3 text-body text-fg">
-      <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-pill bg-cream text-terracotta">
-        <Icon className="size-4" aria-hidden="true" />
-      </span>
-      <div>
-        <span className="block text-caption font-medium text-subtle">{label}</span>
-        <span className="text-body text-fg">{children}</span>
-      </div>
-    </li>
+    <span
+      aria-hidden
+      className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#f3b968] text-[#1b1b1b]"
+    >
+      <Check className="size-3" strokeWidth={3} />
+    </span>
   );
 }
 
@@ -70,28 +54,24 @@ function ProfileBlock({ block }: { block: ContentBlock }): ReactNode {
   switch (block.kind) {
     case "heading":
       return block.level === 3 ? (
-        <h3 className="mt-8 text-h4 text-fg">{block.text}</h3>
+        <h3 className="mt-8 text-[clamp(20px,1.8vw,24px)] leading-[1.2] font-normal text-[#1b1b1b]">
+          {block.text}
+        </h3>
       ) : (
-        <h2 className="mt-10 border-t border-border pt-8 text-h3-md text-fg first:mt-0 first:border-t-0 first:pt-0">
+        <h2 className="mt-12 border-t border-[#1b1b1b]/10 pt-10 text-[clamp(26px,2.6vw,36px)] leading-[1.1] font-normal tracking-[-0.02em] text-[#1b1b1b] first:mt-0 first:border-t-0 first:pt-0">
           {block.text}
         </h2>
       );
     case "paragraph":
-      return <p className="mt-4 text-body leading-relaxed text-muted">{block.text}</p>;
+      return <p className="mt-4 text-[17px] leading-[1.55] text-[#55565a]">{block.text}</p>;
     case "list":
       return (
-        <ul className="mt-4 space-y-2.5 text-body text-muted">
+        <ul className="mt-5 space-y-3">
           {block.items.map((item) => {
             const text = typeof item === "string" ? item : item.text;
             return (
-              <li
-                key={text}
-                className="flex items-start gap-3 rounded-xl border border-border/70 bg-tile-cream px-4 py-3 text-fg"
-              >
-                <CheckCircle2
-                  aria-hidden="true"
-                  className="mt-0.5 size-4 shrink-0 text-terracotta"
-                />
+              <li key={text} className="flex items-start gap-3 text-[17px] leading-[1.45] text-[#1b1b1b]">
+                <Tick />
                 <span>{text}</span>
               </li>
             );
@@ -100,16 +80,22 @@ function ProfileBlock({ block }: { block: ContentBlock }): ReactNode {
       );
     case "quote":
       return (
-        <Tile tone="sage" as="aside" className="mt-10 border border-border/70 p-6 md:p-8">
-          <blockquote className="text-h4 text-fg">{block.text}</blockquote>
-        </Tile>
+        <aside className="mt-12 rounded-[24px] bg-[#1b1b1b] p-8 md:p-10">
+          <blockquote className="text-[clamp(22px,2.4vw,32px)] leading-[1.25] tracking-[-0.01em] text-white">
+            {block.text}
+          </blockquote>
+        </aside>
       );
     default:
       return null;
   }
 }
 
-/** One person's page: photo, role, name, introduction and the sections of their profile. */
+/**
+ * One person's page, after the Hims provider block "Adjust medication anytime with a provider":
+ * name, summary and tick bullets with a black pill on the left; a large rounded portrait with a
+ * floating name tag on the right. Below it, the profile text in one quiet column.
+ */
 export function TeamProfile({ member }: { member: TeamMember }) {
   const hasFacts = Boolean(member.languages || member.availability || member.contact);
   const personData = teamPersonJsonLd(member.slug, {
@@ -127,192 +113,199 @@ export function TeamProfile({ member }: { member: TeamMember }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personData).replace(/</g, "\\u003c") }}
       />
 
-      <Section theme="cream" space="default">
-        <Link
-          to="/team"
-          className="inline-flex items-center gap-2 rounded-pill border border-border bg-white px-4 py-1.5 text-small font-medium text-fg t-colors hover:border-black hover:text-terracotta"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          Back to Team
-        </Link>
+      <section className="bg-white pt-8 pb-14 md:pt-12 md:pb-24">
+        <div className={CONTAINER}>
+          <Link
+            to="/team"
+            className="inline-flex items-center gap-2 text-small text-[#55565a] t-colors hover:text-[#1b1b1b]"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            Back to Team
+          </Link>
 
-        <div className="mt-8 grid items-start gap-8 md:grid-cols-[320px_1fr] lg:grid-cols-[360px_1fr] lg:gap-14">
-          <div className="rounded-xl border border-border/70 bg-tile-sage p-3">
-            <div className="overflow-hidden rounded-lg bg-sand">
-              <TeamPhoto
-                member={member}
-                priority
+          <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-20">
+            <div>
+              <p className="flex flex-wrap items-center gap-2.5 text-[15px] text-[#55565a]">
+                <span>{member.role}</span>
+                {member.gdc ? (
+                  <span className="rounded-md bg-[#f3f0a8] px-2 py-0.5 text-[12px] leading-none text-[#5c5a10]">
+                    GDC: {member.gdc}
+                  </span>
+                ) : null}
+              </p>
+              <h1 className="mt-3 text-[clamp(38px,4.4vw,64px)] leading-[1.03] font-normal tracking-[-0.025em] text-[#1b1b1b]">
+                {member.name}
+              </h1>
+
+              {member.summary.map((paragraph) => (
+                <p key={paragraph} className={`mt-5 ${LEAD}`}>
+                  {paragraph}
+                </p>
+              ))}
+
+              {hasFacts ? (
+                <ul className="mt-6 space-y-3 text-[16px] leading-[1.45] text-[#1b1b1b]">
+                  {member.languages ? (
+                    <li className="flex items-start gap-3">
+                      <Tick />
+                      <span>
+                        <span className="text-[#8b8d92]">Languages: </span>
+                        {member.languages}
+                      </span>
+                    </li>
+                  ) : null}
+                  {member.availability ? (
+                    <li className="flex items-start gap-3">
+                      <Tick />
+                      <span>
+                        <span className="text-[#8b8d92]">Availability: </span>
+                        {member.availability}
+                      </span>
+                    </li>
+                  ) : null}
+                  {member.contact ? (
+                    <li className="flex items-start gap-3">
+                      <Tick />
+                      <span>
+                        <span className="text-[#8b8d92]">Contact: </span>
+                        {withContactLinks(member.contact)}
+                      </span>
+                    </li>
+                  ) : null}
+                </ul>
+              ) : null}
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <BookButton>Book Now</BookButton>
+                <CallButton variant="outline" />
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-[24px] bg-[#efe6d6]">
+              <img
+                src={restyledPhoto(member.slug)}
+                alt={member.photo.alt}
+                width={900}
+                height={900}
+                fetchPriority="high"
                 className="aspect-[4/5] w-full object-cover object-top"
               />
-            </div>
-            {member.gdc ? (
-              <div className="mt-3 flex items-center justify-between rounded-lg bg-white px-3.5 py-2.5 text-caption font-medium text-fg">
-                <span className="inline-flex items-center gap-1.5 text-terracotta">
-                  <ShieldCheck aria-hidden="true" className="size-4" />
-                  <span>GDC: {member.gdc}</span>
-                </span>
-                <span className="text-subtle">UK Registered</span>
+              <div className="absolute bottom-4 left-4 rounded-xl bg-white px-4 py-2.5 shadow-[0_8px_24px_rgba(20,20,40,0.12)]">
+                <p className="text-[14px] leading-tight text-[#1b1b1b]">{member.name}</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-[#6d6e72]">{member.role}</p>
               </div>
-            ) : null}
-          </div>
-
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-small font-medium text-fg">
-                {member.role}
-              </span>
-              {member.gdc ? (
-                <span className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-white px-4 py-1.5 text-small font-medium text-terracotta">
-                  <ShieldCheck aria-hidden="true" className="size-4" />
-                  <span>GDC: {member.gdc}</span>
-                </span>
-              ) : null}
-            </div>
-
-            <Heading as="h1" size="hero" className="mt-4">
-              {member.name}
-            </Heading>
-
-            {member.summary.map((paragraph) => (
-              <p key={paragraph} className="mt-4 text-lead text-muted">
-                {paragraph}
-              </p>
-            ))}
-
-            {hasFacts ? (
-              <ul className="mt-6 grid gap-4 rounded-xl border border-border bg-white p-5 sm:grid-cols-2">
-                {member.languages ? (
-                  <Fact icon={Languages} label="Languages">
-                    {member.languages}
-                  </Fact>
-                ) : null}
-                {member.availability ? (
-                  <Fact icon={Clock} label="Availability">
-                    {member.availability}
-                  </Fact>
-                ) : null}
-                {member.contact ? (
-                  <Fact icon={Phone} label="Contact">
-                    {withContactLinks(member.contact)}
-                  </Fact>
-                ) : null}
-              </ul>
-            ) : null}
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <BookButton>Book Now</BookButton>
-              <CallButton variant="outline" />
             </div>
           </div>
         </div>
-      </Section>
+      </section>
 
-      <Section theme="white" width="prose" space="default">
-        <div>
+      <section className="bg-[#f7f5f2] py-14 md:py-24">
+        <div className="mx-auto w-full max-w-[768px] px-4">
           {member.blocks.map((block, index) => (
             <ProfileBlock key={index} block={block} />
           ))}
         </div>
-      </Section>
+      </section>
 
-      {/* Dark brown + gold clinical governance band */}
-      <Section theme="brown" space="default">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <div>
-            <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-              Pav Dental Clinical Governance
-            </span>
-            <Heading
-              as="h2"
-              size="h2-md"
-              accent="across every appointment"
-              tone="gold"
-              className="mt-4"
-            >
-              Regulated Bradford care
-            </Heading>
-            <p className="mt-4 text-body text-white/80">
-              Our clinicians and practice support staff operate from 786 Leeds Road, Bradford, BD3
-              9TY under CQC-aligned governance, cross-infection protocols, and transparent written
-              treatment planning.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Tile tone="glass" className="border border-white/15 p-5">
-              <p className="text-caption font-medium text-gold">24/7 Practice Access</p>
-              <p className="mt-2 text-small text-white/85">
-                Emergency and routine care available 00:00 – 24:00, seven days a week.
+      {/* Standards: two soft cards */}
+      <section className="bg-white py-14 md:py-24">
+        <div className={CONTAINER}>
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+            <div>
+              <p className="text-small text-[#55565a]">Pav Dental Clinical Governance</p>
+              <h2 className="mt-3 text-[clamp(28px,3.2vw,48px)] leading-[1.05] font-normal tracking-[-0.02em] text-[#1b1b1b]">
+                Regulated Bradford care{" "}
+                <span className="text-[#8b8d92]">across every appointment</span>
+              </h2>
+              <p className="mt-5 text-[17px] leading-[1.45] text-[#55565a]">
+                Our clinicians and practice support staff operate from 786 Leeds Road, Bradford, BD3
+                9TY under CQC-aligned governance, cross-infection protocols, and transparent written
+                treatment planning.
               </p>
-            </Tile>
-            <Tile tone="glass" className="border border-white/15 p-5">
-              <p className="text-caption font-medium text-gold">Written Treatment Plans</p>
-              <p className="mt-2 text-small text-white/85">
-                Every patient receives clear clinical options and itemised fees before treatment.
-              </p>
-            </Tile>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+              <div className={`${SOFT} p-6`}>
+                <Clock aria-hidden strokeWidth={1.3} className="size-8" />
+                <p className="mt-5 text-[19px] text-[#1b1b1b]">24/7 Practice Access</p>
+                <p className="mt-2 text-[14px] leading-[1.5] text-[#55565a]">
+                  Emergency and routine care available 00:00 – 24:00, seven days a week.
+                </p>
+              </div>
+              <div className={`${SOFT} p-6`}>
+                <Check aria-hidden strokeWidth={1.3} className="size-8" />
+                <p className="mt-5 text-[19px] text-[#1b1b1b]">Written Treatment Plans</p>
+                <p className="mt-2 text-[14px] leading-[1.5] text-[#55565a]">
+                  Every patient receives clear clinical options and itemised fees before treatment.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </Section>
+      </section>
 
-      {/* Peer team members */}
-      <Section theme="sand" space="default">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-              Meet the Team
-            </span>
-            <Heading as="h2" size="h3" accent="Bradford colleagues" tone="terracotta" inline className="mt-3">
-              More of our
-            </Heading>
+      {/* Colleagues, as the grey provider cards */}
+      <section className="bg-[#f7f5f2] py-14 md:py-24">
+        <div className={CONTAINER}>
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <h2 className="text-[clamp(28px,3.2vw,44px)] leading-[1.05] font-normal tracking-[-0.02em] text-[#1b1b1b]">
+              More of our <span className="text-[#8b8d92]">Bradford colleagues</span>
+            </h2>
+            <ButtonLink to="/team" variant="outline" size="sm">
+              All Dentists &amp; Staff
+            </ButtonLink>
           </div>
-          <ButtonLink to="/team" variant="outline" size="sm">
-            All Dentists &amp; Staff
-          </ButtonLink>
-        </div>
 
-        <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {peerMembers.map((peer) => (
-            <li key={peer.slug}>
-              <Link
-                to="/team/$slug"
-                params={{ slug: peer.slug }}
-                className="group flex h-full flex-col justify-between rounded-xl border border-border/60 bg-white p-4 t-lift"
-              >
-                <div>
-                  <div className="aspect-[4/5] overflow-hidden rounded-lg bg-sand">
-                    <TeamPhoto
-                      member={peer}
-                      className="size-full object-cover object-top t-zoom"
-                    />
+          <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+            {peerMembers.map((peer) => (
+              <li key={peer.slug}>
+                <Link
+                  to="/team/$slug"
+                  params={{ slug: peer.slug }}
+                  className="group flex h-full flex-col justify-between gap-6 rounded-[20px] bg-white p-5 shadow-[0_10px_36px_rgba(20,20,40,0.06)] t-colors hover:bg-[#faf9f6]"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="size-11 shrink-0 overflow-hidden rounded-full bg-[#e4e1da]">
+                      <img
+                        src={restyledPhoto(peer.slug)}
+                        alt={peer.photo.alt}
+                        width={88}
+                        height={88}
+                        loading="lazy"
+                        className="size-full object-cover object-top"
+                      />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-[17px] leading-tight text-[#1b1b1b]">{peer.name}</h3>
+                      <p className="mt-0.5 text-[12px] leading-snug text-[#6d6e72]">{peer.role}</p>
+                    </div>
                   </div>
-                  <p className="mt-3 text-caption font-medium text-terracotta">{peer.role}</p>
-                  <h3 className="mt-1 text-h4 text-fg">{peer.name}</h3>
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-small font-medium text-fg">
-                  <span>View profile</span>
-                  <ArrowUpRight aria-hidden="true" className="size-4 text-subtle group-hover:text-fg" />
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Section>
+                  <span className="grid size-8 place-items-center rounded-full bg-[#f4f1ea] text-[#1b1b1b] t-colors group-hover:bg-black group-hover:text-white">
+                    <ArrowRight aria-hidden className="size-4" />
+                    <span className="sr-only">View profile</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
-      <CtaBand
-        theme="brown"
-        title="Care led by"
-        accent="our Bradford team"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Open 24 hours, 7 days a week.
-      </CtaBand>
+      {/* Closing statement */}
+      <section className="bg-white pt-16 pb-20 text-center md:pt-28 md:pb-28">
+        <div className={CONTAINER}>
+          <h2 className="mx-auto max-w-[16ch] text-[clamp(38px,5.4vw,80px)] leading-[1.02] font-normal tracking-[-0.03em] text-[#1b1b1b]">
+            Care led by <span className="text-[#8a4242]">our Bradford team</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-[34rem] text-[17px] leading-[1.45] text-[#55565a]">
+            786 Leeds Road, Bradford, BD3 9TY · Open 24 hours, 7 days a week.
+          </p>
+          <div aria-hidden className="mx-auto mt-10 h-24 w-px border-l border-dotted border-[#8a4242]/60" />
+          <div className="-mt-1 flex flex-wrap items-center justify-center gap-3">
+            <BookButton>Book Now</BookButton>
+            <CallButton variant="outline" />
+          </div>
+        </div>
+      </section>
     </>
   );
 }
-

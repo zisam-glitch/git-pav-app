@@ -13,7 +13,7 @@ export function CheckUpFeature() {
   return (
     <section
       id="check-up"
-      className="overflow-hidden rounded-t-[32px] bg-gradient-to-b from-[#c7d8e5] via-[#dcdfc9] to-[#f5e5a0] pb-10 md:pb-14"
+      className="overflow-hidden rounded-t-[32px] bg-gradient-to-b from-[#c7d8e5] via-[#dcdfc9] to-[#f5e5a0] pb-[4.5rem] md:pb-[5.5rem]"
     >
       <div className="relative mx-auto max-w-[1728px] px-4 pt-14 md:pt-[4.5rem]">
         <svg
@@ -87,14 +87,17 @@ export function CheckUpFeature() {
               <br />
               £90* out-of-hours consultation
             </p>
-            <img
-              src="/images/home/clinic-night.jpg"
-              alt="Modern dental treatment room glowing with warm light at night"
-              loading="lazy"
-              width={1536}
-              height={1024}
-              className="mt-6 min-h-0 w-full flex-1 rounded-[20px] object-cover"
-            />
+            <div className="mt-6 flex min-h-[240px] flex-1 flex-col items-center justify-center">
+              <img
+                src="/images/home/tile-capsule.webp"
+                alt="Soft 3D navy and gold dental-care capsule case floating above a gentle shadow"
+                loading="lazy"
+                width={229}
+                height={264}
+                className="max-h-[300px] w-auto md:max-h-[340px]"
+              />
+              <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md" />
+            </div>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <CallButton variant="default" className="bg-[#0f2b36]">
                 Call us Now
@@ -118,14 +121,17 @@ export function CheckUpFeature() {
                 Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments
               </span>
             </h3>
-            <img
-              src="/images/home/serum-hand.jpg"
-              alt="Hand holding an amber glass dropper serum bottle against a soft cream backdrop"
-              loading="lazy"
-              width={1024}
-              height={1024}
-              className="mt-6 min-h-0 w-full flex-1 rounded-[20px] object-cover"
-            />
+            <div className="mt-6 flex min-h-[240px] flex-1 flex-col items-center justify-center">
+              <img
+                src="/images/home/tile-serum.webp"
+                alt="Soft 3D amber glass dropper bottle leaning on a travertine pebble"
+                loading="lazy"
+                width={224}
+                height={299}
+                className="max-h-[300px] w-auto md:max-h-[340px]"
+              />
+              <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#7a4a1d]/25 blur-md" />
+            </div>
             <div className="mt-5 flex">
               <ButtonLink to="/services/aesthetics" variant="default" className="bg-[#0f2b36]">
                 Learn more

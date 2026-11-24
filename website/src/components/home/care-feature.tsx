@@ -27,7 +27,7 @@ export function CareFeature() {
   const go = (next: number) => setIndex((next + count) % count);
 
   return (
-    <section id="care" className="mt-2.5 rounded-[32px] bg-[#5a87ab] py-10 text-white md:py-14">
+    <section id="care" className="relative -mt-8 rounded-[32px] bg-[#5a87ab] pt-14 pb-10 text-white md:pt-[4.5rem] md:pb-14">
       <div className="wrap-bento grid max-w-[1396px] gap-2.5 lg:grid-cols-2">
         <div className="flex flex-col gap-2.5">
           <article className={cn(CARD, "relative flex min-h-[420px] overflow-hidden p-6 md:p-10")}>
@@ -35,12 +35,12 @@ export function CareFeature() {
               Require emergency dental care and want same day treatment?
             </h2>
             <img
-              src="/images/home/phone-hand.jpg"
-              alt="Hand holding a white smartphone showing an appointment calendar against a warm amber backdrop"
+              src="/images/home/phone-emergency.webp"
+              alt="Hand holding a smartphone whose screen shows a dental treatment room at night"
               loading="lazy"
-              width={1024}
-              height={1536}
-              className="absolute right-6 bottom-0 h-[48%] w-auto rounded-t-[24px] sm:h-[78%] object-cover"
+              width={454}
+              height={638}
+              className="absolute right-4 bottom-0 h-[52%] w-auto sm:right-8 sm:h-[82%]"
             />
             <ButtonLink
               to="/services/emergency-dental"

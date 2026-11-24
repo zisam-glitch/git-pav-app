@@ -15,6 +15,7 @@ type ServiceRoute =
 
 interface LiveHomeService {
   id: string;
+  phoneSrc: string;
   tabLabel: string;
   badge: string;
   heading: string;
@@ -31,6 +32,7 @@ interface LiveHomeService {
 const SERVICES: readonly LiveHomeService[] = [
   {
     id: "emergency-dental",
+    phoneSrc: "/images/home/phone-emergency.webp",
     tabLabel: "Emergency Dental",
     badge: "24/7 Urgent Care",
     heading: "24/7 Emergency Dental Services in Bradford",
@@ -43,6 +45,7 @@ const SERVICES: readonly LiveHomeService[] = [
   },
   {
     id: "aesthetics",
+    phoneSrc: "/images/home/phone-aesthetics.webp",
     tabLabel: "Aesthetics",
     badge: "Facial Aesthetics",
     heading: "Pav Dental Aesthetics Award-Winning Clinic",
@@ -57,6 +60,7 @@ const SERVICES: readonly LiveHomeService[] = [
   },
   {
     id: "whitening",
+    phoneSrc: "/images/home/phone-whitening.webp",
     tabLabel: "Whitening",
     badge: "Teeth Whitening",
     heading: "Brighten Your Smile with Advanced Whitening Solutions",
@@ -69,6 +73,7 @@ const SERVICES: readonly LiveHomeService[] = [
   },
   {
     id: "general-dentistry",
+    phoneSrc: "/images/home/phone-general.webp",
     tabLabel: "General Dentistry",
     badge: "Preventive Care",
     heading: "General Dentistry Gateway to Lifelong Oral Health",
@@ -81,6 +86,7 @@ const SERVICES: readonly LiveHomeService[] = [
   },
   {
     id: "tooth-extraction",
+    phoneSrc: "/images/home/phone-extraction.webp",
     tabLabel: "Tooth Extraction",
     badge: "Same-Day Relief",
     heading: "Swift Tooth Extraction Your Trusted Partner in Oral Health",
@@ -93,6 +99,7 @@ const SERVICES: readonly LiveHomeService[] = [
   },
   {
     id: "mobile-dentistry",
+    phoneSrc: "/images/home/phone-mobile.webp",
     tabLabel: "Mobile Dentistry",
     badge: "At-Home Care",
     heading: "Mobile Dentistry at Your Doorstep",
@@ -135,19 +142,19 @@ export function ServicesFeature() {
   const gridImages = SERVICES.map((s) => ({ src: s.imgSrc }));
 
   return (
-    <section id="services" className="rounded-[32px] bg-[#ab742d] pt-2 pb-10 text-white md:pb-14">
+    <section id="services" className="relative -mt-8 rounded-t-[32px] bg-[#ab742d] pt-2 pb-[4.5rem] text-white md:pb-[5.5rem]">
       <div className="wrap-bento mt-0 grid max-w-[1396px] gap-2.5 pt-10 md:pt-14 lg:grid-cols-2">
         {/* Left: the six live service blurbs, one at a time */}
         <article className={cn(CARD, "flex flex-col items-center px-6 py-10 text-center md:px-10 md:py-14")}>
           <p className={cn("text-small font-medium", GOLD)}>{active.badge}</p>
           <h2 className="mt-2 text-h3-md text-white">{active.heading}</h2>
           <img
-            src={active.imgSrc}
-            alt={active.imgAlt}
+            src={active.phoneSrc}
+            alt={`Hand holding a smartphone whose screen shows: ${active.imgAlt}`}
             loading="lazy"
-            width={768}
-            height={1024}
-            className="mt-6 aspect-[3/4] w-[min(240px,62%)] rounded-[28px] object-cover shadow-card"
+            width={454}
+            height={638}
+            className="mt-6 h-auto w-[min(250px,64%)] drop-shadow-[0_18px_28px_rgba(60,30,0,0.35)]"
           />
           {active.subtitle ? (
             <p className={cn("mt-6 max-w-md text-lead", GOLD)}>{active.subtitle}</p>

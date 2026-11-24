@@ -24,8 +24,8 @@ const FEATURED_TILES = [
     badgeClass: "bg-terracotta text-white",
     href: BOOKING_URL,
     external: true,
-    imgSrc: "/images/generated/home-tile-checkup.png",
-    imgAlt: "Sculptural terracotta and champagne dental mirror floating on warm cream",
+    imgSrc: "/images/home/tile-tooth.webp",
+    imgAlt: "Soft 3D cream molar tooth with a blue glow floating above a gentle shadow",
   },
   {
     id: "emergency",
@@ -37,8 +37,8 @@ const FEATURED_TILES = [
     badgeClass: "bg-navy text-white",
     to: "/services/emergency-dental" as const,
     external: false,
-    imgSrc: "/images/generated/home-tile-emergency.png",
-    imgAlt: "Minimalist midnight-navy and gold dental care capsule floating on warm cream",
+    imgSrc: "/images/home/tile-capsule.webp",
+    imgAlt: "Soft 3D navy and gold dental-care capsule case floating above a gentle shadow",
   },
   {
     id: "aesthetics",
@@ -48,8 +48,8 @@ const FEATURED_TILES = [
     hoverTone: "copper" as const,
     to: "/services/aesthetics" as const,
     external: false,
-    imgSrc: "/images/generated/home-tile-aesthetics.png",
-    imgAlt: "Frosted amber glass serum bottle beside a travertine pebble on warm cream",
+    imgSrc: "/images/home/tile-serum.webp",
+    imgAlt: "Soft 3D amber glass dropper bottle leaning on a travertine pebble",
   },
   {
     id: "whitening",
@@ -59,8 +59,8 @@ const FEATURED_TILES = [
     hoverTone: "sky-gold" as const,
     to: "/services/whitening" as const,
     external: false,
-    imgSrc: "/images/generated/home-tile-whitening.png",
-    imgAlt: "Matte porcelain whitening applicator pen with sage tray case on warm cream",
+    imgSrc: "/images/home/tile-whitening.webp",
+    imgAlt: "Soft 3D sage and white whitening pen crossed over its charging tray",
   },
 ] as const;
 
@@ -71,8 +71,8 @@ const SECONDARY_TILES = [
     accentTone: "terracotta" as const,
     hoverTone: "terracotta" as const,
     to: "/services/general-dentistry" as const,
-    imgSrc: "/images/generated/home-tile-general.png",
-    imgAlt: "Minimalist brushed titanium dental care instrument",
+    imgSrc: "/images/home/tile-mirror.webp",
+    imgAlt: "Soft 3D terracotta dental mirror floating above a gentle shadow",
   },
   {
     title: "Mobile",
@@ -80,8 +80,8 @@ const SECONDARY_TILES = [
     accentTone: "copper" as const,
     hoverTone: "copper" as const,
     to: "/services/mobile-dentistry" as const,
-    imgSrc: "/images/generated/home-tile-mobile.png",
-    imgAlt: "Compact matte sand portable dental care case",
+    imgSrc: "/images/home/tile-bag.webp",
+    imgAlt: "Soft 3D sand-coloured portable dental bag with a brass clasp",
   },
 ] as const;
 

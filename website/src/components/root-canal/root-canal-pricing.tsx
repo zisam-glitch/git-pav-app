@@ -1,6 +1,12 @@
-import { PricingTiles, type PricingTier } from "@/components/hims";
+import {
+  BookButton,
+  CompareTable,
+  FeatureBento,
+  Section,
+  type PricingTier,
+} from "@/components/hims";
 
-const TIERS: readonly PricingTier[] = [
+export const TIERS: readonly PricingTier[] = [
   {
     id: "basic",
     eyebrow: "Basic Root Canal (£195)",
@@ -33,16 +39,77 @@ const TIERS: readonly PricingTier[] = [
   },
 ];
 
+const [BASIC, MID, ADV] = TIERS;
+const IMG = "/images/generated/root-canal-hero.jpg";
+
 export function RootCanalPricing() {
   return (
-    <PricingTiles
-      id="pricing"
-      theme="white"
-      title="Our Root Canal"
-      accent="Prices"
-      tiers={TIERS}
-      columns={3}
-      ctaLabel="Make an Appointment"
-    />
+    <>
+      <Section id="pricing" theme="white" aria-labelledby="root-canal-prices-heading">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2
+            id="root-canal-prices-heading"
+            className="text-[clamp(34px,4vw,52px)] leading-[1.05] font-normal tracking-[-0.025em] text-[#2a2a2c]"
+          >
+            Our Root Canal <span className="text-[#8a4242]">Prices</span>
+          </h2>
+        </div>
+        <div className="mt-12">
+          <FeatureBento
+            feature={{
+              title: ADV.name,
+              kicker: ADV.bestFor?.replace("Best for: ", ""),
+              price: ADV.price,
+              image: IMG,
+              alt: "Warm sunlit Pav Dental treatment room prepared for root canal care",
+              href: "#compare",
+            }}
+            items={[
+              {
+                title: BASIC.name,
+                kicker: BASIC.bestFor?.replace("Best for: ", ""),
+                price: BASIC.price,
+                image: "/images/generated/root-canal-how.jpg",
+                alt: "",
+                href: "#compare",
+              },
+              {
+                title: MID.name,
+                kicker: MID.bestFor?.replace("Best for: ", ""),
+                price: MID.price,
+                image: "/images/generated/home-checkup.jpg",
+                alt: "",
+                href: "#compare",
+              },
+            ]}
+            help={{
+              title: "Talk to our team",
+              text: "Not sure which tier your tooth needs? Book an appointment and we will assess it.",
+              cta: <BookButton variant="gold">Make an Appointment</BookButton>,
+            }}
+          />
+        </div>
+      </Section>
+
+      <Section id="compare" theme="white" aria-labelledby="root-canal-compare-heading">
+        <div className="mx-auto max-w-[900px]">
+          <h2
+            id="root-canal-compare-heading"
+            className="text-[clamp(34px,4vw,52px)] leading-[1.05] font-normal tracking-[-0.025em] text-[#2a2a2c]"
+          >
+            A range of <span className="text-[#4a5c66]">options</span>
+          </h2>
+          <div className="mt-10">
+            <CompareTable
+              columns={TIERS.map((t) => ({ name: t.name, sub: t.price }))}
+              rows={[
+                { label: "Best for", cells: TIERS.map((t) => (t.bestFor ?? "").replace("Best for: ", "")) },
+                { label: "Details", cells: TIERS.map((t) => t.description) },
+              ]}
+            />
+          </div>
+        </div>
+      </Section>
+    </>
   );
 }

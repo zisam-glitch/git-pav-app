@@ -49,10 +49,11 @@ export function ShopGuarantee() {
         aria-label="Clinical guarantee and UK delivery standards"
         className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24"
       >
-        <div className={`${CONTAINER} grid items-start gap-3 lg:grid-cols-[1fr_1.1fr] lg:gap-4`}>
-          <div className={`${SOFT_CARD} p-7 md:p-10`}>
+        <div className={`${CONTAINER} grid items-stretch gap-3 lg:grid-cols-[1fr_1.1fr] lg:gap-4`}>
+          <div className={`${SOFT_CARD} flex flex-col justify-between gap-8 p-7 md:p-10`}>
+            <div>
             <p className="text-small text-[#55565a]">Clinical Standards &amp; UK Distance Selling</p>
-            <h2 className={`mt-3 ${TITLE}`}>
+            <h2 className="mt-3 text-[clamp(32px,3.4vw,50px)] leading-[1.04] font-normal tracking-[-0.025em] text-[#1b1b1b]">
               Better oral care, <span className={MUTED_TITLE}>delivered directly</span>
             </h2>
             <p className={`mt-5 ${LEAD}`}>
@@ -60,7 +61,8 @@ export function ShopGuarantee() {
               marketplace resellers, clear UK pricing, and straightforward support from the Pav
               Dental team whenever you need advice.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            </div>
+            <div className="flex flex-wrap gap-3">
               <ButtonLink href="#catalog">
                 Shop All Products
                 <ArrowRight aria-hidden className="size-4" />
@@ -69,7 +71,7 @@ export function ShopGuarantee() {
             </div>
           </div>
 
-          <ul className={`${SOFT_CARD} p-7 md:p-10`}>
+          <ul className={`${SOFT_CARD} flex flex-col justify-between p-7 md:p-10`}>
             {DELIVERY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (

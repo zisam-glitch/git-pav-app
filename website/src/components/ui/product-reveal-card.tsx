@@ -46,7 +46,7 @@ export function ProductRevealCard({
     <article
       data-slot="product-reveal-card"
       className={cn(
-        "group flex flex-col justify-between rounded-[20px] bg-[#f6f6f4] p-5 t-colors hover:bg-[#f0f0ed]",
+        "group flex flex-col justify-between rounded-[20px] bg-[#f4f3e0] p-5 t-colors hover:bg-[#eeedd6]",
         className,
       )}
     >

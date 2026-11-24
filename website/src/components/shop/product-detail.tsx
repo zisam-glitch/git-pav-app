@@ -315,8 +315,8 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
         <div className={`${CONTAINER} grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14`}>
           {/* Left: Full-bleed Warm Cream Product Stage with Bottom-Centered Circular Thumbnails */}
           <div className="lg:sticky lg:top-24 lg:col-span-6">
-            <div className="relative overflow-hidden rounded-[24px] bg-[#f1ebdf] p-4 sm:p-6">
-              <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f1ebdf]">
+            <div className="relative overflow-hidden rounded-[24px] bg-[#f4f3e0] p-4 sm:p-6">
+              <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f4f3e0]">
                 <ShopMedia
                   src={images[selectedImageIndex]}
                   alt={productData.name}
@@ -669,7 +669,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 key={rel.id}
                 to="/shop/$productSlug"
                 params={{ productSlug: rel.slug }}
-                className="group flex flex-col justify-between rounded-[20px] bg-[#f6f6f4] p-4 t-colors hover:bg-[#f0f0ed]"
+                className="group flex flex-col justify-between rounded-[20px] bg-[#f4f3e0] p-4 t-colors hover:bg-[#eeedd6]"
               >
                 <div>
                   <ShopMedia

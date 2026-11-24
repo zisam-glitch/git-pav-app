@@ -15,19 +15,6 @@ const HERO_PHRASES = [
 
 const FEATURED_TILES = [
   {
-    id: "checkup",
-    title: "Complete",
-    accent: "Check-Up",
-    accentTone: "terracotta" as const,
-    hoverTone: "terracotta" as const,
-    badge: "£35",
-    badgeClass: "bg-terracotta text-white",
-    href: BOOKING_URL,
-    external: true,
-    imgSrc: "/images/home/tile-mirror.webp",
-    imgAlt: "Soft 3D off-white matte tablet speckled with terracotta, with an engraved dental mirror",
-  },
-  {
     id: "emergency",
     title: "Emergency",
     accent: "Dentist",
@@ -50,6 +37,19 @@ const FEATURED_TILES = [
     external: false,
     imgSrc: "/images/home/tile-vial.webp",
     imgAlt: "Soft 3D frosted glass vial with a gold cap beside a slim syringe",
+  },
+  {
+    id: "checkup",
+    title: "Complete",
+    accent: "Check-Up",
+    accentTone: "terracotta" as const,
+    hoverTone: "terracotta" as const,
+    badge: "£35",
+    badgeClass: "bg-terracotta text-white",
+    href: BOOKING_URL,
+    external: true,
+    imgSrc: "/images/home/tile-mirror.webp",
+    imgAlt: "Soft 3D off-white matte tablet speckled with terracotta, with an engraved dental mirror",
   },
   {
     id: "whitening",

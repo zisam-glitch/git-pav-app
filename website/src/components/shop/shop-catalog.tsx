@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Heading, Section, Tile } from "@/components/hims";
+import { CONTAINER, MUTED_TITLE, TITLE } from "@/components/pricing/tokens";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductRevealCard } from "@/components/ui/product-reveal-card";
@@ -106,14 +106,15 @@ export function ShopCatalog({
       : undefined;
 
   return (
-    <Section id="catalog" theme="white" aria-label="Product catalogue">
+    <section id="catalog" aria-label="Product catalogue" className="scroll-mt-20 bg-white pb-14 md:pb-24">
+      <div className={CONTAINER}>
       {!hideHeading ? (
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <Heading as="h2" size="h2" accent="Products" tone="terracotta" inline>
-              Our
-            </Heading>
-            <p className="mt-4 text-lead text-muted">
+            <h2 className={TITLE}>
+              Our <span className={MUTED_TITLE}>Products</span>
+            </h2>
+            <p className="mt-4 text-[clamp(17px,1.4vw,20px)] leading-[1.4] text-[#55565a]">
               Clinician-selected oral care essentials formulated for daily enamel protection,
               brightening, and gum health.
             </p>
@@ -158,10 +159,10 @@ export function ShopCatalog({
                     onClick={() => setSelectedCategory(cat.id)}
                     aria-pressed={active}
                     className={cn(
-                      "rounded-pill border px-4 py-2 text-small font-medium t-colors",
+                      "rounded-full px-4 py-2 text-[15px] t-colors",
                       active
-                        ? "border-black bg-black text-white"
-                        : "border-border bg-cream text-fg hover:border-black",
+                        ? "bg-[#1b1b1b] text-white"
+                        : "bg-[#f4f1ea] text-[#1b1b1b] hover:bg-[#ebe6dc]",
                     )}
                   >
                     {cat.label}
@@ -188,7 +189,7 @@ export function ShopCatalog({
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-12 pl-10"
+              className="h-12 rounded-full border-0 bg-[#f4f1ea] pl-10"
             />
           </div>
 
@@ -210,7 +211,7 @@ export function ShopCatalog({
       </div>
 
       {!hideCategoryFilters && activeCategoryMeta ? (
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-cream px-5 py-3.5 text-small">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#f6f6f4] px-5 py-3.5 text-small">
           <span className="text-muted">
             Viewing <strong className="font-medium text-fg">{activeCategoryMeta.name}</strong> —{" "}
             {activeCategoryMeta.description}
@@ -228,14 +229,14 @@ export function ShopCatalog({
 
       {/* Product Grid */}
       {isLoading ? (
-        <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
+        <div className="mt-10 rounded-[22px] bg-[#f6f6f4] p-10 text-center md:p-14">
           <p className="text-h4 text-fg">Loading products...</p>
           <p className="mt-2 text-small text-muted">
             Please wait while we load our dental care catalogue.
           </p>
-        </Tile>
+        </div>
       ) : filteredProducts.length === 0 ? (
-        <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
+        <div className="mt-10 rounded-[22px] bg-[#f6f6f4] p-10 text-center md:p-14">
           <p className="text-h4 text-fg">
             {unavailable
               ? "Shop catalogue temporarily unavailable"
@@ -263,9 +264,9 @@ export function ShopCatalog({
               Show All Products
             </Button>
           ) : null}
-        </Tile>
+        </div>
       ) : (
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
           {filteredProducts.map((product) => (
             <ProductRevealCard
               key={product.id}
@@ -279,6 +280,7 @@ export function ShopCatalog({
           ))}
         </div>
       )}
-    </Section>
+      </div>
+    </section>
   );
 }

@@ -15,7 +15,8 @@ import {
   Truck,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { ButtonLink, FaqList, Heading, Section, Tile, type FaqItem } from "@/components/hims";
+import { ButtonLink, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { CONTAINER, MUTED_TITLE, SOFT_CARD, TITLE } from "@/components/pricing/tokens";
 import { Button } from "@/components/ui/button";
 import { api, HAS_API_BASE, type ProductVariant } from "@/lib/api";
 import { PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
@@ -287,13 +288,8 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
       />
 
       {/* Clean Hims Breadcrumb Bar */}
-      <Section
-        theme="white"
-        space="none"
-        className="border-b border-border py-4"
-        aria-label="Breadcrumb"
-      >
-        <nav className="flex flex-wrap items-center gap-2 text-small text-muted">
+      <div className={`${CONTAINER} py-5`} aria-label="Breadcrumb">
+        <nav className="flex flex-wrap items-center gap-2 text-small text-[#6d6e72]">
           <Link
             to="/shop"
             className="inline-flex items-center gap-1.5 font-medium text-muted t-colors hover:text-fg"
@@ -312,24 +308,24 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
           <ChevronRight aria-hidden className="size-3.5 text-subtle" />
           <span className="truncate text-fg">{productData.name}</span>
         </nav>
-      </Section>
+      </div>
 
       {/* Hims Split PDP Stage (Mobbin 43693059 + 16099344) */}
-      <Section theme="white">
-        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
+      <section className="pb-14 md:pb-24">
+        <div className={`${CONTAINER} grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14`}>
           {/* Left: Full-bleed Warm Cream Product Stage with Bottom-Centered Circular Thumbnails */}
           <div className="lg:sticky lg:top-24 lg:col-span-6">
-            <div className="relative overflow-hidden rounded-xl border border-border/70 bg-tile-cream p-5 sm:p-8">
-              <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white">
+            <div className="relative overflow-hidden rounded-[24px] bg-[#f1ebdf] p-4 sm:p-6">
+              <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f1ebdf]">
                 <ShopMedia
                   src={images[selectedImageIndex]}
                   alt={productData.name}
                   tone="cream"
                   priority
-                  className="size-full rounded-xl"
+                  className="size-full rounded-[18px] bg-transparent"
                 />
                 {productData.badge ? (
-                  <span className="absolute top-4 left-4 rounded-pill bg-brown px-4 py-1 text-caption font-medium text-white">
+                  <span className="absolute top-4 left-4 rounded-full bg-[#dff1e4] px-3.5 py-1 text-[12px] text-[#256b3b]">
                     {productData.badge}
                   </span>
                 ) : null}
@@ -340,7 +336,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                   <div
                     role="tablist"
                     aria-label="Product views"
-                    className="inline-flex items-center gap-2.5 rounded-pill border border-border bg-white px-3 py-2 shadow-soft"
+                    className="inline-flex items-center gap-2.5 rounded-full bg-white/90 px-3 py-2 shadow-[0_8px_24px_rgba(20,20,40,0.1)]"
                   >
                     {images.map((img, idx) => {
                       const active = selectedImageIndex === idx;
@@ -379,44 +375,44 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
               <Link
                 to="/category/$slug"
                 params={{ slug: productData.category }}
-                className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-fg t-colors hover:border-fg"
+                className="inline-flex items-center rounded-full bg-[#efefec] px-3 py-1 text-[12px] text-[#1b1b1b] t-colors hover:bg-[#e6e6e2]"
               >
                 {productData.categoryLabel}
               </Link>
-              <Heading as="h1" size="h2-md" className="mt-3">
+              <h1 className="mt-3 text-[clamp(30px,3.2vw,44px)] leading-[1.06] font-normal tracking-[-0.02em] text-[#1b1b1b]">
                 {productData.name}
-              </Heading>
+              </h1>
             </div>
 
             {/* Price & Stock Pill */}
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-h3 text-fg tabular-nums">£{currentPrice.toFixed(2)}</span>
+              <span className="text-[26px] text-[#1b1b1b] tabular-nums">£{currentPrice.toFixed(2)}</span>
               {productData.originalPrice ? (
                 <span className="text-lead text-muted line-through tabular-nums">
                   £{productData.originalPrice.toFixed(2)}
                 </span>
               ) : null}
               {isCurrentInStock ? (
-                <span className="rounded-pill bg-sage px-3.5 py-1 text-caption font-medium text-fg">
+                <span className="rounded-full bg-[#dff1e4] px-3 py-1 text-[12px] text-[#256b3b]">
                   {currentStockQty < 10
                     ? `Low Stock · Only ${currentStockQty} left`
                     : "In Stock · Ready to Dispatch"}
                 </span>
               ) : (
-                <span className="rounded-pill bg-sand px-3.5 py-1 text-caption font-medium text-rust">
+                <span className="rounded-full bg-[#f4e3df] px-3 py-1 text-[12px] text-[#8a4242]">
                   Out of Stock
                 </span>
               )}
             </div>
 
             {/* Clinical Description */}
-            <p className="text-body leading-relaxed text-muted">
+            <p className="text-[16px] leading-[1.55] text-[#55565a]">
               {productData.fullDesc || productData.shortDesc}
             </p>
 
             {/* Hims Selectable Option / Variant Cards (Mobbin 43693059) */}
             {variants.length > 0 ? (
-              <div className="space-y-3 border-t border-border pt-5">
+              <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
                   <p className="text-small font-medium text-fg">Choose Option</p>
                   {activeVariant?.sku ? (
@@ -447,12 +443,12 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                         disabled={outOfStock}
                         aria-pressed={isSelected}
                         className={cn(
-                          "flex items-start justify-between gap-3 rounded-xl border-2 p-4 text-left t-colors",
+                          "flex items-start justify-between gap-3 rounded-2xl border p-4 text-left t-colors",
                           isSelected
-                            ? "border-black bg-cream"
+                            ? "border-black bg-white shadow-[0_8px_24px_rgba(20,20,40,0.08)]"
                             : outOfStock
-                              ? "cursor-not-allowed border-border bg-cream/50 text-subtle opacity-60"
-                              : "border-border bg-white hover:border-border-strong",
+                              ? "cursor-not-allowed border-[#e4e1da] bg-[#f6f6f4] text-subtle opacity-60"
+                              : "border-[#e4e1da] bg-white hover:border-[#bdb8ad]",
                         )}
                       >
                         <div className="flex items-start gap-3">
@@ -488,7 +484,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
             ) : null}
 
             {/* Clean Delivery & Dispatch Summary Strip */}
-            <div className="rounded-xl border border-border bg-cream p-4">
+            <div className="rounded-2xl bg-[#f6f6f4] p-4">
               <div className="grid grid-cols-1 gap-3 text-small sm:grid-cols-2">
                 <div className="flex items-start gap-2.5">
                   <Truck aria-hidden className="mt-0.5 size-4 shrink-0 text-terracotta" />
@@ -517,7 +513,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
             <div className="space-y-3 pt-1">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-small font-medium text-fg">Quantity</span>
-                <div className="inline-flex h-11 items-center rounded-pill border-2 border-border-strong bg-white px-2">
+                <div className="inline-flex h-11 items-center rounded-full border border-[#d6d2c8] bg-white px-2">
                   <button
                     type="button"
                     disabled={!isCurrentInStock || quantity <= 1}
@@ -546,7 +542,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                 type="button"
                 onClick={handleAdd}
                 disabled={!isCurrentInStock}
-                className="h-14 w-full text-label"
+                className="h-14 w-full rounded-full bg-black text-[16px] text-white hover:bg-black/85"
               >
                 <ShoppingBag aria-hidden className="size-4" />
                 <span>
@@ -560,9 +556,9 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
             </div>
 
             {/* Clinical Care Callout Card (Mobbin 43693059) */}
-            <Tile tone="sage" className="border border-border/60 p-5">
+            <div className={`${SOFT_CARD} p-5`}>
               <div className="flex items-start gap-3.5">
-                <div className="grid size-10 shrink-0 place-items-center rounded-pill bg-white text-fg">
+                <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[#f4f1ea] text-[#1b1b1b]">
                   <ShieldCheck aria-hidden className="size-5" />
                 </div>
                 <div className="text-small">
@@ -587,7 +583,7 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                   </p>
                 </div>
               </div>
-            </Tile>
+            </div>
 
             {/* Stacked Hims Hairline Accordions (Mobbin 16099344) */}
             <div className="pt-2">
@@ -595,26 +591,24 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
             </div>
           </div>
         </div>
-      </Section>
+      </section>
 
       {/* Hims Clinical Spec Summary Card on Warm Sand (Mobbin fceeec4f) */}
       {productData.clinicalSpec ? (
-        <Section theme="sand" aria-label="Clinical specification summary">
-          <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-12">
+        <section aria-label="Clinical specification summary" className="bg-[#f7f5f2] py-14 md:py-24">
+          <div className={`${CONTAINER} grid items-start gap-8 lg:grid-cols-12 lg:gap-12`}>
             <div className="lg:col-span-4">
-              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-fg">
-                Clinical Specification
-              </span>
-              <Heading as="h2" size="h3-md" accent="at a glance" tone="terracotta" className="mt-4">
-                Product details
-              </Heading>
+              <p className="text-small text-[#55565a]">Clinical Specification</p>
+              <h2 className="mt-3 text-[clamp(28px,3vw,44px)] leading-[1.05] font-normal tracking-[-0.02em] text-[#1b1b1b]">
+                Product details <span className={MUTED_TITLE}>at a glance</span>
+              </h2>
               <p className="mt-3 text-small leading-relaxed text-muted">
                 Key formulation, suitability, and Bradford dispensary details reviewed by our
                 dental team.
               </p>
             </div>
 
-            <Tile tone="cream" className="border border-border p-6 md:p-8 lg:col-span-8">
+            <div className={`${SOFT_CARD} p-6 md:p-8 lg:col-span-8`}>
               <dl className="divide-y divide-border">
                 <div className="grid grid-cols-1 gap-1 py-4 first:pt-0 sm:grid-cols-3 sm:gap-4">
                   <dt className="text-small font-medium text-subtle">Key Ingredients / Build</dt>
@@ -650,18 +644,19 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
                   </dd>
                 </div>
               </dl>
-            </Tile>
+            </div>
           </div>
-        </Section>
+        </section>
       ) : null}
 
       {/* Complementary Oral Care Related Products Strip */}
       {relatedProducts.length > 0 ? (
-        <Section theme="cream" aria-label="Complementary oral care products">
+        <section aria-label="Complementary oral care products" className="bg-white py-14 md:py-24">
+          <div className={CONTAINER}>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <Heading as="h2" size="h3-md" accent="Oral Care" tone="terracotta" inline>
-              Complementary
-            </Heading>
+            <h2 className={TITLE}>
+              Complementary <span className={MUTED_TITLE}>Oral Care</span>
+            </h2>
             <Link
               to="/shop"
               className="text-small font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
@@ -669,13 +664,13 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
               View all products
             </Link>
           </div>
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
             {relatedProducts.map((rel) => (
               <Link
                 key={rel.id}
                 to="/shop/$productSlug"
                 params={{ productSlug: rel.slug }}
-                className="group flex flex-col justify-between rounded-xl border border-border/70 bg-white p-4 t-lift"
+                className="group flex flex-col justify-between rounded-[20px] bg-[#f6f6f4] p-4 t-colors hover:bg-[#f0f0ed]"
               >
                 <div>
                   <ShopMedia
@@ -700,7 +695,8 @@ export function ProductDetail({ productSlug, onAddToCart }: ProductDetailProps) 
               </Link>
             ))}
           </div>
-        </Section>
+          </div>
+        </section>
       ) : null}
     </div>
   );

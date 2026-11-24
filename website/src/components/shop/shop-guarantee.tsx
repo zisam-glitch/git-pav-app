@@ -1,13 +1,6 @@
-import { ArrowRight, MapPin, RotateCcw, ShieldCheck, Truck } from "lucide-react";
-import {
-  ButtonLink,
-  CallButton,
-  FaqList,
-  Heading,
-  Section,
-  Tile,
-  type FaqItem,
-} from "@/components/hims";
+import { ArrowRight, MapPin, RotateCcw, Truck } from "lucide-react";
+import { ButtonLink, CallButton, FaqList, type FaqItem } from "@/components/hims";
+import { CONTAINER, LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "@/components/pricing/tokens";
 import { SHOP_DISPATCH_ADDRESS } from "./shop-catalog-data";
 
 const DELIVERY_PILLARS = [
@@ -50,68 +43,60 @@ const FAQS: FaqItem[] = [
 export function ShopGuarantee() {
   return (
     <>
-      {/* Rich Brown + Gold Clinical Guarantee & UK Delivery / Returns Band */}
-      <Section
+      {/* Delivery and returns: the Hims "by the numbers" card pair */}
+      <section
         id="clinical-guarantee"
-        theme="brown"
         aria-label="Clinical guarantee and UK delivery standards"
+        className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24"
       >
-        <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <span className="inline-flex items-center gap-2 rounded-pill border border-white/15 bg-white/7 px-3.5 py-1 text-caption font-medium text-gold">
-              <ShieldCheck aria-hidden className="size-3.5" />
-              <span>Clinical Standards &amp; UK Distance Selling</span>
-            </span>
-            <Heading as="h2" size="h2-md" accent="delivered directly" tone="gold" className="mt-5">
-              Clinic-grade care,
-            </Heading>
-            <p className="mt-4 text-lead text-white/80">
+        <div className={`${CONTAINER} grid items-start gap-3 lg:grid-cols-[1fr_1.1fr] lg:gap-4`}>
+          <div className={`${SOFT_CARD} p-7 md:p-10`}>
+            <p className="text-small text-[#55565a]">Clinical Standards &amp; UK Distance Selling</p>
+            <h2 className={`mt-3 ${TITLE}`}>
+              Clinic-grade care, <span className={MUTED_TITLE}>delivered directly</span>
+            </h2>
+            <p className={`mt-5 ${LEAD}`}>
               Every product in our store is selected by the dental team at Pav Dental Bradford—no
               third-party marketplace resellers, clear UK pricing, and straightforward clinical
               support whenever you need advice.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="#catalog" variant="gold">
+              <ButtonLink href="#catalog">
                 Shop All Products
                 <ArrowRight aria-hidden className="size-4" />
               </ButtonLink>
-              <CallButton variant="glass" />
+              <CallButton variant="outline" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:col-span-7">
+          <ul className={`${SOFT_CARD} p-7 md:p-10`}>
             {DELIVERY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (
-                <Tile
+                <li
                   key={pillar.title}
-                  tone="glass"
-                  className="border border-white/15 p-6 md:p-7"
+                  className="flex gap-5 border-b border-[#1b1b1b]/10 py-7 first:pt-0 last:border-0 last:pb-0"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="grid size-11 shrink-0 place-items-center rounded-pill bg-gold text-brown">
-                      <Icon aria-hidden className="size-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-h4 text-white">{pillar.title}</h3>
-                      <p className="mt-2 text-small leading-relaxed text-white/80">{pillar.body}</p>
-                    </div>
+                  <Icon aria-hidden strokeWidth={1.3} className="mt-1 size-9 shrink-0 text-[#1b1b1b]" />
+                  <div>
+                    <h3 className="text-[clamp(20px,1.7vw,24px)] leading-[1.15] text-[#1b1b1b]">{pillar.title}</h3>
+                    <p className="mt-2 text-[15px] leading-[1.5] text-[#55565a]">{pillar.body}</p>
                   </div>
-                </Tile>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
-      </Section>
+      </section>
 
-      {/* Clean Cream FAQ Accordion Band */}
-      <Section id="guarantee" theme="cream" aria-label="Shop frequently asked questions">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-14">
-          <div className="lg:sticky lg:top-20">
-            <Heading as="h2" size="h2-md" accent="Questions" tone="terracotta">
-              Frequently Asked
-            </Heading>
-            <p className="mt-4 text-lead text-muted">
+      {/* Questions: the Hims accordion */}
+      <section id="guarantee" aria-label="Shop frequently asked questions" className="scroll-mt-20 bg-white py-14 md:py-24">
+        <div className={`${CONTAINER} grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16`}>
+          <div className="lg:sticky lg:top-24">
+            <h2 className={TITLE}>
+              Frequently Asked <span className={MUTED_TITLE}>Questions</span>
+            </h2>
+            <p className={`mt-4 ${LEAD}`}>
               Clear answers on product suitability, UK tracked delivery, Bradford click &amp;
               collect, and our 14-day returns policy.
             </p>
@@ -125,7 +110,7 @@ export function ShopGuarantee() {
 
           <FaqList items={FAQS} />
         </div>
-      </Section>
+      </section>
     </>
   );
 }

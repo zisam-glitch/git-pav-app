@@ -6,3 +6,5 @@ export const SOFT_CARD = "rounded-[22px] bg-white shadow-[0_10px_36px_rgba(20,20
 export const CLAY = "text-[#b5644a]";
 export const MUTED_TITLE = "text-[#8b8d92]";
 export const PURPLE = "#5b3fc4";
+/** One fixed content width for every pricing section (the 1360px grid Hims uses, plus 16px gutters). */
+export const CONTAINER = "mx-auto w-full max-w-[1392px] px-4";

@@ -3,7 +3,7 @@ import { Megaphone } from "lucide-react";
 import { BookButton, ButtonLink, CallButton } from "@/components/hims";
 import { api, HAS_API_BASE } from "@/lib/api";
 import { BOOKING_URL } from "@/lib/enquiry";
-import { CLAY, LEAD, SOFT_CARD, TITLE } from "./tokens";
+import { CLAY, LEAD, SOFT_CARD, TITLE, CONTAINER } from "./tokens";
 
 const REASONS = [
   {
@@ -38,7 +38,7 @@ export function SpecialAnnouncement() {
       aria-labelledby="announcement-heading"
       className="scroll-mt-20 bg-white py-14 md:py-24"
     >
-      <div className="wrap-bento max-w-[1396px]">
+      <div className={CONTAINER}>
         {active && (
           <div className="mb-10 flex flex-col items-start justify-between gap-4 rounded-[22px] bg-[#f4f1ea] p-6 sm:flex-row sm:items-center">
             <div className="flex items-start gap-3">

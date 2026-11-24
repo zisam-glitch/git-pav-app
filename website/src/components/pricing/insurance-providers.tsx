@@ -1,4 +1,4 @@
-import { LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "./tokens";
+import { LEAD, MUTED_TITLE, SOFT_CARD, TITLE, CONTAINER } from "./tokens";
 
 const INSURANCE_PROVIDERS = [
   "AXA Health",
@@ -16,7 +16,7 @@ export function InsuranceProviders() {
       aria-labelledby="insurance-heading"
       className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24"
     >
-      <div className="wrap-bento max-w-[1396px]">
+      <div className={CONTAINER}>
         <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
           <div>
             <p className="text-small text-[#55565a]">Dental Insurance</p>

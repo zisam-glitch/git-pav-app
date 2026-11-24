@@ -4,7 +4,7 @@ import { useState } from "react";
 import { BookButton, ButtonLink } from "@/components/hims";
 import { api, HAS_API_BASE } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "./tokens";
+import { LEAD, MUTED_TITLE, SOFT_CARD, TITLE, CONTAINER } from "./tokens";
 
 interface PlanFeature {
   text: string;
@@ -103,7 +103,7 @@ export function PricingCards() {
 
   return (
     <section id="plans" aria-labelledby="plans-heading" className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24">
-      <div className="wrap-bento max-w-[1396px]">
+      <div className={CONTAINER}>
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className={TITLE} id="plans-heading">

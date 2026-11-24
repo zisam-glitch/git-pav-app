@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api, HAS_API_BASE } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { LEAD, MUTED_TITLE, TITLE } from "./tokens";
+import { LEAD, MUTED_TITLE, TITLE, CONTAINER } from "./tokens";
 
 interface TreatmentItem {
   name: string;
@@ -174,7 +174,7 @@ export function FeeTable() {
 
   return (
     <section id="fees" aria-labelledby="fee-schedule-heading" className="scroll-mt-20 bg-white py-14 md:py-24">
-      <div className="wrap-bento max-w-[1396px]">
+      <div className={CONTAINER}>
         <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
           <div>
             <p className="text-small text-[#55565a]">Pav Dental Plans</p>

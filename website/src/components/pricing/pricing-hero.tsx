@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { BookButton, ButtonLink, CallButton } from "@/components/hims";
+import { CONTAINER } from "./tokens";
 
 /**
  * Pricing hero, built to the structure of hims.com's top-of-page block (measured on the live
@@ -13,31 +14,31 @@ const FEATURED = [
     lead: "Start your",
     accent: "membership today",
     label: "Compare our plans",
-    imageClass: "right-0",
+    image: "/images/home/pricing-tile-plans.webp",
   },
   {
     href: "#fees",
     lead: "Treatments",
     accent: "from £99",
     label: "See the fee schedule",
-    imageClass: "left-1/2 -translate-x-1/2",
+    image: "/images/home/pricing-tile-fees.webp",
   },
 ] as const;
 
 const PILLS = [
-  { href: "#plans", before: "Choose a", accent: "plan", image: "/images/home/tile-smile.webp" },
-  { href: "#fees", before: "Check a", accent: "fee", image: "/images/home/tile-mirror.webp" },
+  { href: "#plans", before: "Choose a", accent: "plan", image: "/images/home/price-plan.webp" },
+  { href: "#fees", before: "Check a", accent: "fee", image: "/images/home/price-fee.webp" },
   {
     href: "#insurance",
     before: "Use your",
     accent: "insurance",
-    image: "/images/home/tile-case.webp",
+    image: "/images/home/price-insurance.webp",
   },
   {
     href: "#announcement",
     before: "Our price",
     accent: "match promise",
-    image: "/images/home/tile-strips.webp",
+    image: "/images/home/price-match.webp",
   },
 ] as const;
 
@@ -48,7 +49,7 @@ export function PricingHero() {
       aria-label="Dental pricing and payment options"
       className="scroll-mt-20 bg-white pt-8 pb-12 md:pt-12 md:pb-20"
     >
-      <div className="mx-auto w-full max-w-[1440px] px-4">
+      <div className={CONTAINER}>
         <p className="text-caption font-medium tracking-[0.12em] text-[#5f6064] uppercase">
           Bradford Clinic · Transparent Fees
         </p>
@@ -76,14 +77,14 @@ export function PricingHero() {
                 className="group relative flex min-h-[199px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#e7ddd2] p-5 text-white"
               >
                 <img
-                  src="/images/home/pricing-banner.webp"
+                  src={tile.image}
                   alt=""
                   aria-hidden
-                  width={2200}
-                  height={767}
-                  className={`absolute top-0 h-full w-[175%] max-w-none object-cover ${tile.imageClass}`}
+                  width={1800}
+                  height={627}
+                  className="absolute inset-0 size-full object-cover object-right transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-                <span aria-hidden className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/15 to-transparent" />
+                <span aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent" />
                 <h3 className="relative text-[20px] leading-[1.2] font-normal">
                   {tile.lead}
                   <br />

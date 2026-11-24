@@ -88,7 +88,7 @@ export function ProductRevealCard({
         ) : null}
       </div>
 
-      <div className="relative flex flex-wrap items-center gap-2">
+      <div className="relative flex items-center justify-end">
         <button
           type="button"
           disabled={!product.inStock}
@@ -116,13 +116,6 @@ export function ProductRevealCard({
             </>
           )}
         </button>
-        {link(
-          <span className="inline-flex h-11 items-center rounded-full bg-white px-5 text-[14px] text-[#1b1b1b] shadow-[0_0_0_1px_rgba(0,0,0,0.08)] t-colors hover:bg-[#faf9f6]">
-            Learn more
-          </span>,
-          `Learn more about ${product.name}`,
-          "w-auto",
-        )}
       </div>
     </article>
   );

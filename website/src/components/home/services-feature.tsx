@@ -23,7 +23,7 @@ interface LiveHomeService {
   copy: string;
   ctaLabel: string;
   to: ServiceRoute;
-  contactNote?: { label: string; href: string };
+  contactNote?: { label: string; href: string; email?: string };
 }
 
 /** The six services as the live home page words them. */
@@ -50,7 +50,11 @@ const SERVICES: readonly LiveHomeService[] = [
     copy: "At Pav Dental Aesthetics, we offer a range of top-quality aesthetic treatments designed to enhance your natural beauty and boost your confidence. Our services include Botox, dermal fillers, chemical peels, lip enhancement, and microneedling, all performed using premium-grade products for exceptional results. Our dedicated team provides expert guidance, ensuring personalized care and a commitment to quality. Contact us at 0800 099 6375 to learn more about our offers and packages, and experience the finest aesthetic treatments available.",
     ctaLabel: "Learn more",
     to: "/services/aesthetics",
-    contactNote: { label: "Aesthetics enquiries: 0800 099 6375", href: "tel:08000996375" },
+    contactNote: {
+      label: "Aesthetics enquiries: 0800 099 6375",
+      href: "tel:08000996375",
+      email: "hello@pavdental.com",
+    },
   },
   {
     id: "whitening",
@@ -158,12 +162,14 @@ export function ServicesFeature() {
               >
                 <p className="mx-auto max-w-md t-hims-body text-white/90">
                   {service.copy}{" "}
-                  <Link
-                    to={service.to}
-                    className={cn("whitespace-nowrap text-small font-medium underline underline-offset-4", GOLD)}
-                  >
-                    {service.ctaLabel}
-                  </Link>
+                  {service.contactNote?.email ? null : (
+                    <Link
+                      to={service.to}
+                      className={cn("whitespace-nowrap text-small font-medium underline underline-offset-4", GOLD)}
+                    >
+                      {service.ctaLabel}
+                    </Link>
+                  )}
                 </p>
                 {service.contactNote ? (
                   <p className="mt-4">
@@ -177,6 +183,17 @@ export function ServicesFeature() {
                       <Phone aria-hidden className="size-3.5" />
                       <span>{service.contactNote.label}</span>
                     </a>
+                    {service.contactNote.email ? (
+                      <>
+                        <span className="text-small text-white/80"> and Email </span>
+                        <a
+                          href={`mailto:${service.contactNote.email}`}
+                          className={cn("text-small font-medium underline underline-offset-4", GOLD)}
+                        >
+                          {service.contactNote.email}
+                        </a>
+                      </>
+                    ) : null}
                   </p>
                 ) : null}
               </div>

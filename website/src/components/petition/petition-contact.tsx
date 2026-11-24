@@ -1,5 +1,6 @@
 import { CheckCircle2, Mail, MapPin, Phone, Send } from "lucide-react";
-import { BookButton, CallButton, Heading, Section } from "@/components/hims";
+import { BookButton, CallButton, Heading } from "@/components/hims";
+import { CONTAINER, LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "@/components/pricing/tokens";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,41 +15,34 @@ export function PetitionContact() {
   const { contact: copy } = PETITION;
 
   return (
-    <Section
-      id="petition-contact"
-      theme="sand"
-      space="default"
-      aria-labelledby="touch-heading"
-    >
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+    <section id="petition-contact" aria-labelledby="touch-heading" className="pb-20 md:pb-28">
+      <div className={`${CONTAINER} grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14`}>
         <div className="max-w-[460px]">
-          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-            Bradford Dental Clinic
-          </span>
-          <h2 id="touch-heading" className="mt-4 text-h2-md text-fg">
-            {copy.heading}
+          <h2 id="touch-heading" className={TITLE}>
+            Get In <span className={MUTED_TITLE}>Touch</span>
           </h2>
-          <p className="mt-4 text-lead text-muted">{copy.intro}</p>
+          <p className={`${LEAD} mt-5`}>{copy.intro}</p>
+          <span className="sr-only">{copy.heading}</span>
 
           <ul className="mt-8 space-y-3 text-body">
-            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3 text-fg">
-              <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+            <li className="flex items-center gap-3 rounded-[16px] bg-white px-4 py-3 shadow-[0_10px_36px_rgba(20,20,40,0.05)] text-fg">
+              <MapPin aria-hidden="true" className="size-4 shrink-0 text-[#b5644a]" />
               <span>786 Leeds Road, Bradford, BD3 9TY</span>
             </li>
-            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3">
-              <Phone aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+            <li className="flex items-center gap-3 rounded-[16px] bg-white px-4 py-3 shadow-[0_10px_36px_rgba(20,20,40,0.05)]">
+              <Phone aria-hidden="true" className="size-4 shrink-0 text-[#b5644a]" />
               <a
                 href={PRACTICE_PHONE_HREF}
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="text-fg underline underline-offset-4 t-colors hover:text-[#8a4242]"
               >
                 {PRACTICE_PHONE}
               </a>
             </li>
-            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3">
-              <Mail aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+            <li className="flex items-center gap-3 rounded-[16px] bg-white px-4 py-3 shadow-[0_10px_36px_rgba(20,20,40,0.05)]">
+              <Mail aria-hidden="true" className="size-4 shrink-0 text-[#b5644a]" />
               <a
                 href={`mailto:${PRACTICE_EMAIL}`}
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+                className="text-fg underline underline-offset-4 t-colors hover:text-[#8a4242]"
               >
                 {PRACTICE_EMAIL}
               </a>
@@ -61,7 +55,7 @@ export function PetitionContact() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-white p-6 shadow-soft md:p-10">
+        <div className={`${SOFT_CARD} p-6 md:p-10`}>
           {enquiry.sent ? (
             <div className="max-w-[460px]" role="status">
               <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
@@ -71,11 +65,11 @@ export function PetitionContact() {
                 Message Received
               </Heading>
               <p className="mt-3 text-body text-muted">
-                Thank you. Your message has reached the practice, and the team will get back to
-                you. For urgent dental pain, call{" "}
+                Thank you. Your message has reached the practice, and the team will get back to you.
+                For urgent dental pain, call{" "}
                 <a
                   href={PRACTICE_PHONE_HREF}
-                  className="font-medium text-terracotta underline underline-offset-4"
+                  className="font-medium text-[#b5644a] underline underline-offset-4"
                 >
                   {PRACTICE_PHONE}
                 </a>
@@ -157,7 +151,6 @@ export function PetitionContact() {
           )}
         </div>
       </div>
-    </Section>
+    </section>
   );
 }
-

@@ -1,9 +1,5 @@
 import { ShieldCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { Section } from "@/components/hims";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PETITION } from "@/content/petition";
 import { api } from "@/lib/api";
 
@@ -41,97 +37,93 @@ export function PetitionFormBar() {
     }
   }
 
+  const field =
+    "h-12 w-full rounded-[12px] border border-[#e4e0d8] bg-white px-4 text-[16px] text-[#1b1b1b] outline-none placeholder:text-[#9a9a9e] focus:border-[#1b1b1b]";
+  const label = "mb-2 block text-[14px] font-medium text-[#1b1b1b]";
+
   return (
-    <Section id="sign-form" theme="brown" space="lg" aria-labelledby="sign-heading">
-      <div className="max-w-2xl">
-        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-          {PETITION.eyebrow}
-        </span>
-        <h2 id="sign-heading" className="mt-4 text-h2-md text-white">
-          Sign <span className="text-gold">the Petition</span>
-        </h2>
-        <p className="mt-3 text-lead text-white/80">{copy.eligibility}</p>
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 rounded-xl border border-white/15 bg-white/8 p-6 md:p-8"
+    <section
+      id="sign-form"
+      aria-labelledby="sign-heading"
+      className="scroll-mt-28 rounded-[22px] bg-white p-6 shadow-[0_10px_36px_rgba(20,20,40,0.07)] md:p-8 lg:sticky lg:top-28"
+    >
+      <h2
+        id="sign-heading"
+        className="text-[28px] leading-[1.1] font-medium tracking-[-0.02em] text-[#1b1b1b]"
       >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
-          <div className="sm:col-span-4">
-            <Label htmlFor="pet-name" className="mb-2 block text-white/90">
-              {copy.fieldLabels.name}
-            </Label>
-            <Input
-              id="pet-name"
-              name="name"
-              required
-              type="text"
-              autoComplete="name"
-              placeholder={`${copy.fieldLabels.name} *`}
-              className="bg-white"
-            />
-          </div>
+        Sign <span className="text-[#8b8d92]">the Petition</span>
+      </h2>
+      <p className="mt-3 text-[16px] text-[#6b6b70]">{copy.eligibility}</p>
 
-          <div className="sm:col-span-4">
-            <Label htmlFor="pet-email" className="mb-2 block text-white/90">
-              {copy.fieldLabels.email}
-            </Label>
-            <Input
-              id="pet-email"
-              name="email"
-              required
-              type="email"
-              autoComplete="email"
-              placeholder={`${copy.fieldLabels.email} *`}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <Label htmlFor="pet-postcode" className="mb-2 block text-white/90">
-              {copy.fieldLabels.postcode}
-            </Label>
-            <Input
-              id="pet-postcode"
-              name="postcode"
-              required
-              type="text"
-              autoComplete="postal-code"
-              placeholder={`${copy.fieldLabels.postcode} *`}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <Button
-              type="submit"
-              variant="gold"
-              disabled={status === "sending"}
-              className="h-14 w-full"
-            >
-              {status === "sending" ? "Submitting..." : copy.submit}
-            </Button>
-          </div>
+      <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
+        <div>
+          <label htmlFor="pet-name" className={label}>
+            {copy.fieldLabels.name}
+          </label>
+          <input
+            id="pet-name"
+            name="name"
+            required
+            type="text"
+            autoComplete="name"
+            placeholder={`${copy.fieldLabels.name} *`}
+            className={field}
+          />
+        </div>
+        <div>
+          <label htmlFor="pet-email" className={label}>
+            {copy.fieldLabels.email}
+          </label>
+          <input
+            id="pet-email"
+            name="email"
+            required
+            type="email"
+            autoComplete="email"
+            placeholder={`${copy.fieldLabels.email} *`}
+            className={field}
+          />
+        </div>
+        <div>
+          <label htmlFor="pet-postcode" className={label}>
+            {copy.fieldLabels.postcode}
+          </label>
+          <input
+            id="pet-postcode"
+            name="postcode"
+            required
+            type="text"
+            autoComplete="postal-code"
+            placeholder={`${copy.fieldLabels.postcode} *`}
+            className={field}
+          />
         </div>
 
-        <div className="mt-5 flex items-center gap-3 border-t border-white/12 pt-5 text-small text-white/90">
+        <div className="flex items-center gap-3 text-[14px] text-[#1b1b1b]">
           <input
             id="pet-resident"
             name="resident"
             type="checkbox"
             required
-            className="size-4 accent-gold"
+            className="size-4 accent-[#1b1b1b]"
           />
           <label htmlFor="pet-resident">{copy.residentLabel}</label>
         </div>
 
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className="mt-2 h-14 w-full rounded-full bg-[#1b1b1b] text-[16px] font-medium text-white t-colors hover:bg-black disabled:opacity-60"
+        >
+          {status === "sending" ? "Submitting..." : copy.submit}
+        </button>
+
         {status === "signed" ? (
           <p
             role="status"
-            className="mt-5 flex items-center gap-2 rounded-lg bg-white/12 px-4 py-3 text-small font-medium text-white"
+            className="flex items-center gap-2 rounded-[12px] bg-[#f3f0a8] px-4 py-3 text-[14px] font-medium text-[#1b1b1b]"
           >
-            <ShieldCheck className="size-4 shrink-0 text-gold" aria-hidden="true" />
+            <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
             {copy.thanks}
           </p>
         ) : null}
@@ -139,12 +131,12 @@ export function PetitionFormBar() {
         {status === "failed" ? (
           <p
             role="alert"
-            className="mt-5 rounded-lg bg-black/30 px-4 py-3 text-small font-medium text-white"
+            className="rounded-[12px] bg-[#f6e6e2] px-4 py-3 text-[14px] font-medium text-[#8a4242]"
           >
             {copy.failed}
           </p>
         ) : null}
       </form>
-    </Section>
+    </section>
   );
 }

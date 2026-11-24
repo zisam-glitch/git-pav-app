@@ -55,3 +55,8 @@ Worked out on the home page (branch `claude/home-hims-layout`) and reused for Ab
 
 ## 6. Ship
 Small commits on a branch from fresh main (or the current feature branch), one concern each, `Co-Authored-By` line from the session reminder. Push; the sandbox needs `github.com` allowed for `git push`.
+
+## Lessons from the About page
+- The Hims *About* pages are white, not coloured: a lavender gradient banner (generated), a big light title beside a purple numbered "On this page" list, a purple vertical "milestones" timeline (pill, title, small body, tinted tile), and soft white shadow cards with black line icons. Fetch these with `search_sections` ("Hims company milestones timeline section", "Hims company values section", "Hims leadership team section") and download the hi-res `image_url` (allow `mobbin.com` and `bytescale.mobbin.com` for curl) to read the details before building.
+- Use the Mobbin capture only as a style reference for generation: upload it to Gemini and describe the Pav Dental subject in words.
+- Screenshots in the built-in browser can be stale after a scripted scroll; a one-tick wheel `scroll` forces a repaint.

@@ -1,18 +1,14 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
 import { DenturesContact } from "./dentures-contact";
 import { DenturesFaq } from "./dentures-faq";
-import { DenturesHero } from "./dentures-hero";
-import { DenturesPricing } from "./dentures-pricing";
-import { DenturesShowcase } from "./dentures-showcase";
+import { DenturesProduct } from "./dentures-product";
 import { DenturesSolutions } from "./dentures-solutions";
 
 export function DenturesPage() {
   return (
-    <main className="bg-bg">
-      <DenturesHero />
+    <main className="bg-white">
+      <DenturesProduct />
       <DenturesSolutions />
-      <DenturesShowcase />
-      <DenturesPricing />
       <DenturesFaq />
       <DenturesContact />
       <CtaBand
@@ -30,6 +26,9 @@ export function DenturesPage() {
         Book your free consultation today with one of our GDC-registered dentists to start your
         journey towards a confident, healthy smile.
       </CtaBand>
+      <FloatingCta>
+        <BookButton>Make an Appointment</BookButton>
+      </FloatingCta>
     </main>
   );
 }

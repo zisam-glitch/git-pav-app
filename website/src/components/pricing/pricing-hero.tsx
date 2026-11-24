@@ -50,10 +50,7 @@ export function PricingHero() {
       className="scroll-mt-20 bg-white pt-8 pb-12 md:pt-12 md:pb-20"
     >
       <div className={CONTAINER}>
-        <p className="text-caption font-medium tracking-[0.12em] text-[#5f6064] uppercase">
-          Bradford Clinic · Transparent Fees
-        </p>
-        <h1 className="mt-3 text-[clamp(38px,4vw,57px)] leading-none font-[410] tracking-[-0.01em] text-[rgba(0,0,0,0.88)]">
+        <h1 className="text-[clamp(38px,4vw,57px)] leading-none font-[410] tracking-[-0.01em] text-[rgba(0,0,0,0.88)]">
           You don&apos;t have to Pay <span className="text-[#8a4242]">for it all at once.</span>
         </h1>
         <p className="mt-5 max-w-[40rem] text-[clamp(17px,1.4vw,20px)] leading-[1.35] text-[#55565a]">

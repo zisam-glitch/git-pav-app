@@ -50,27 +50,24 @@ export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps)
               key={tile.slug}
               to="/category/$slug"
               params={{ slug: tile.slug }}
-              className="group flex min-h-[170px] flex-col justify-between rounded-[24px] bg-gradient-to-b from-[#f7f3ea] to-[#f1eadc] p-5 t-colors hover:from-[#f3ede0] hover:to-[#ece3d2]"
+              className="group relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#f4f3e0] p-5"
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[19px] leading-[1.2] text-[#37556e]">
+              {/* The packshot fades into the tile, so photo and tile read as one surface. */}
+              <img
+                src={tile.image}
+                alt={tile.name}
+                loading="eager"
+                className="absolute inset-y-0 right-0 h-full w-[46%] object-cover object-[55%_50%] [mask-image:linear-gradient(to_right,transparent,#000_30%)] transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="relative flex items-center justify-between gap-2">
+                <span className="max-w-[56%] text-[19px] leading-[1.2] text-[#37556e]">
                   {tile.shortTitle} <span className="text-[#8a4242]">{tile.accentWord}</span>
                 </span>
                 <ChevronRight aria-hidden className="size-4 shrink-0 text-[#1b1b1b]" />
               </div>
-              <div className="mt-4 flex items-end justify-between gap-3">
-                <span className="line-clamp-2 max-w-[56%] text-[12px] leading-snug text-[#6d6e72]">
-                  {tile.description}
-                </span>
-                <span className="block size-20 shrink-0 overflow-hidden rounded-2xl bg-white">
-                  <img
-                    src={tile.image}
-                    alt={tile.name}
-                    loading="eager"
-                    className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </span>
-              </div>
+              <span className="relative line-clamp-2 max-w-[50%] text-[12px] leading-snug text-[#6d6e72]">
+                {tile.description}
+              </span>
             </Link>
           ))}
         </div>

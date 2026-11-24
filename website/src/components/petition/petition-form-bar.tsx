@@ -39,89 +39,88 @@ export function PetitionFormBar() {
   }
 
   return (
-    <section id="sign-form" aria-labelledby="sign-heading" className="scroll-mt-24 px-3 md:px-4">
-      <div className="relative mx-auto max-w-[1392px] overflow-hidden rounded-[28px] bg-[#453421]">
-        <img
-          src="/images/generated/about-hero.jpg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 size-full object-cover opacity-25"
-        />
-        <div className="relative px-6 py-12 md:px-14 md:py-20">
-          <div className="max-w-[460px]">
-            <h2
-              id="sign-heading"
-              className="text-[clamp(32px,4vw,52px)] leading-[1.05] font-medium tracking-[-0.02em] text-white"
-            >
-              Sign the Petition
-            </h2>
-            <p className="mt-3 text-[18px] text-white/85">{copy.eligibility}</p>
-
-            <form onSubmit={handleSubmit} className="mt-8 grid gap-3">
-              <PetitionField
-                id="pet-name"
-                name="name"
-                required
-                type="text"
-                autoComplete="name"
-                label={copy.fieldLabels.name}
-              />
-              <PetitionField
-                id="pet-email"
-                name="email"
-                required
-                type="email"
-                autoComplete="email"
-                label={copy.fieldLabels.email}
-              />
-              <PetitionField
-                id="pet-postcode"
-                name="postcode"
-                required
-                type="text"
-                autoComplete="postal-code"
-                label={copy.fieldLabels.postcode}
-              />
-
-              <div className="mt-1 flex items-center gap-3 text-[15px] text-white">
-                <input
-                  id="pet-resident"
-                  name="resident"
-                  type="checkbox"
-                  required
-                  className="size-4 accent-[#f3b968]"
-                />
-                <label htmlFor="pet-resident">{copy.residentLabel}</label>
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === "sending"}
-                className="mt-2 h-14 w-full rounded-full bg-black text-[16px] font-medium text-white t-colors hover:bg-[#1b1b1b] disabled:opacity-60"
-              >
-                {status === "sending" ? "Submitting..." : copy.submit}
-              </button>
-
-              {status === "signed" ? (
-                <p
-                  role="status"
-                  className="flex items-center gap-2 rounded-[14px] bg-white px-4 py-3 text-[15px] font-medium text-[#1b1b1b]"
-                >
-                  <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
-                  {copy.thanks}
-                </p>
-              ) : null}
-              {status === "failed" ? (
-                <p
-                  role="alert"
-                  className="rounded-[14px] bg-[#f6e6e2] px-4 py-3 text-[15px] font-medium text-[#8a4242]"
-                >
-                  {copy.failed}
-                </p>
-              ) : null}
-            </form>
-          </div>
+    <section
+      id="sign-form"
+      aria-labelledby="sign-heading"
+      className="scroll-mt-24 bg-black text-white"
+    >
+      <div className="mx-auto grid w-full max-w-[1392px] gap-12 px-4 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h2
+            id="sign-heading"
+            className="text-[clamp(40px,6vw,88px)] leading-[0.95] font-medium tracking-[-0.04em]"
+          >
+            Sign the
+            <br />
+            Petition
+          </h2>
+          <p className="mt-6 max-w-[420px] text-[19px] leading-[1.45] text-white/70">
+            {copy.eligibility}
+          </p>
         </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid gap-8 [&_label]:text-white/55 [&_input]:text-white [&_input]:border-white/30 [&_input:focus]:border-white"
+        >
+          <PetitionField
+            id="pet-name"
+            name="name"
+            required
+            type="text"
+            autoComplete="name"
+            label={copy.fieldLabels.name}
+          />
+          <PetitionField
+            id="pet-email"
+            name="email"
+            required
+            type="email"
+            autoComplete="email"
+            label={copy.fieldLabels.email}
+          />
+          <PetitionField
+            id="pet-postcode"
+            name="postcode"
+            required
+            type="text"
+            autoComplete="postal-code"
+            label={copy.fieldLabels.postcode}
+          />
+
+          <div className="flex items-center gap-3 text-[16px]">
+            <input
+              id="pet-resident"
+              name="resident"
+              type="checkbox"
+              required
+              className="size-5 accent-white"
+            />
+            <label htmlFor="pet-resident" className="!text-white">
+              {copy.residentLabel}
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="h-14 w-full rounded-full bg-white text-[17px] font-medium text-black t-colors hover:bg-white/85 disabled:opacity-60"
+          >
+            {status === "sending" ? "Submitting..." : copy.submit}
+          </button>
+
+          {status === "signed" ? (
+            <p role="status" className="flex items-center gap-2 text-[17px] font-medium">
+              <ShieldCheck className="size-5 shrink-0" aria-hidden="true" />
+              {copy.thanks}
+            </p>
+          ) : null}
+          {status === "failed" ? (
+            <p role="alert" className="text-[17px] font-medium underline">
+              {copy.failed}
+            </p>
+          ) : null}
+        </form>
       </div>
     </section>
   );

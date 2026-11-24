@@ -272,7 +272,7 @@ export function ServicesFeature() {
                 loading="lazy"
                 width={1100}
                 height={1473}
-                className="mx-auto aspect-[3/4] w-[min(320px,78vw)] rounded-[32px] object-cover object-top"
+                className="mx-auto aspect-[17/10] w-full max-w-[560px] rounded-[32px] object-cover object-[50%_18%]"
               />
               <div className="hidden max-w-[300px] justify-self-start lg:block">
                 <HoursChips />

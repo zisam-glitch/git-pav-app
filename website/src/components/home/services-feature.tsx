@@ -274,7 +274,7 @@ export function ServicesFeature() {
                 height={1473}
                 className="mx-auto aspect-[17/10] w-full max-w-[720px] rounded-[32px] object-cover object-center"
               />
-              <div className="relative z-10 hidden max-w-[300px] justify-self-start lg:-ml-16 lg:block">
+              <div className="relative z-10 hidden max-w-[300px] justify-self-start lg:-ml-16 lg:mt-20 lg:block">
                 <HoursChips />
               </div>
             </div>

@@ -27,7 +27,7 @@ export function Team() {
           </div>
 
           <ul className="mt-12 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
-            {TEAM_MEMBERS.map((member) => (
+            {TEAM_MEMBERS.map((member, index) => (
               <li key={member.slug}>
                 <Link
                   to="/team/$slug"
@@ -36,10 +36,11 @@ export function Team() {
                 >
                   <div className="aspect-[4/5] overflow-hidden rounded-[16px] bg-[#f4f1ea]">
                     <img
-                      src={member.photo.src}
+                      // Restyled portraits for this section only, in team order; /team and the profiles keep the live site's photos.
+                      src={`/images/about/team-${index + 1}.webp`}
                       alt={member.name}
                       loading="lazy"
-                      className="size-full object-cover object-top grayscale t-lift group-hover:scale-[1.03]"
+                      className="size-full object-cover object-top t-lift group-hover:scale-[1.03]"
                     />
                   </div>
                   <div className="px-1.5 pt-4 pb-2">

@@ -39,3 +39,4 @@ export {
   type ProductItem,
 } from "./hub-sections";
 export { PhotoHero } from "./photo-hero";
+export { ProductDetail, type DetailOption, type DetailAccordion } from "./product-detail";

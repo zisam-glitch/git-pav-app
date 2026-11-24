@@ -8,11 +8,11 @@ import { DenturesSolutions } from "./dentures-solutions";
 
 export function DenturesPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <DenturesHero />
-      <DenturesSolutions />
       <DenturesShowcase />
       <DenturesPricing />
+      <DenturesSolutions />
       <DenturesFaq />
       <DenturesContact />
       <CtaBand

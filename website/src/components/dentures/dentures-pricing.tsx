@@ -8,7 +8,7 @@ const DENTURE_TIERS: readonly PricingTier[] = [
     name: "Acrylic Denture",
     description: "• Acrylic Denture - £495",
     bestFor: "Custom-crafted acrylic base with natural tooth shade matching.",
-    tone: "white",
+    tone: "grey",
   },
   {
     id: "flexible",
@@ -17,7 +17,7 @@ const DENTURE_TIERS: readonly PricingTier[] = [
     name: "Flexible (Valplast) Denture",
     description: "• Flexible (Valplast) Denture - £795",
     bestFor: "Lightweight, metal-free flexible resin that adapts gently to your gums.",
-    tone: "sage",
+    tone: "grey",
   },
   {
     id: "cobalt-chromium",
@@ -26,7 +26,7 @@ const DENTURE_TIERS: readonly PricingTier[] = [
     name: "Cobalt Chromium Denture",
     description: "• Cobalt Chromium Denture - £1195",
     bestFor: "Ultra-thin, durable cast framework for superior stability and chewing comfort.",
-    tone: "white",
+    tone: "grey",
   },
 ];
 
@@ -34,7 +34,7 @@ export function DenturesPricing() {
   return (
     <PricingTiles
       id="pricing"
-      theme="sand"
+      theme="white"
       title="Our Denture"
       accent="Prices:"
       lead="Qualifications: Make sure the dentist is board-certified and has good reviews."

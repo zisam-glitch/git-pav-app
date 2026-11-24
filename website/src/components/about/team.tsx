@@ -26,7 +26,7 @@ export function Team() {
             </p>
           </div>
 
-          <ul className="mt-12 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
+          <ul className="mt-12 grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
             {TEAM_MEMBERS.map((member, index) => (
               <li key={member.slug}>
                 <Link
@@ -44,11 +44,13 @@ export function Team() {
                     />
                   </div>
                   <div className="px-1.5 pt-4 pb-2">
-                    <p className="text-[18px] leading-tight text-[#1b1b1b]">{member.name}</p>
+                    <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 text-[18px] leading-tight text-[#1b1b1b]">
+                      <span>{member.name}</span>
+                      {member.gdc ? (
+                        <span className="text-[13px] text-[#5b3fc4]">GDC {member.gdc}</span>
+                      ) : null}
+                    </p>
                     <p className="mt-1 text-[14px] leading-snug text-[#55565a]">{member.role}</p>
-                    {member.gdc ? (
-                      <p className="mt-2 text-[13px] text-[#5b3fc4]">GDC {member.gdc}</p>
-                    ) : null}
                   </div>
                 </Link>
               </li>

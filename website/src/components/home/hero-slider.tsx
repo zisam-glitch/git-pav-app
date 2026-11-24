@@ -24,8 +24,8 @@ const FEATURED_TILES = [
     badgeClass: "bg-terracotta text-white",
     href: BOOKING_URL,
     external: true,
-    imgSrc: "/images/home/tile-tooth.webp",
-    imgAlt: "Soft 3D cream molar tooth with a blue glow floating above a gentle shadow",
+    imgSrc: "/images/home/tile-mirror.webp",
+    imgAlt: "Soft 3D polished steel dental mirror and probe with terracotta handles, crossed",
   },
   {
     id: "emergency",
@@ -37,8 +37,8 @@ const FEATURED_TILES = [
     badgeClass: "bg-navy text-white",
     to: "/services/emergency-dental" as const,
     external: false,
-    imgSrc: "/images/home/tile-capsule.webp",
-    imgAlt: "Soft 3D navy and gold dental-care capsule case floating above a gentle shadow",
+    imgSrc: "/images/home/tile-case.webp",
+    imgAlt: "Soft 3D navy emergency first-aid case with a gold clasp and a white tooth emblem",
   },
   {
     id: "aesthetics",
@@ -48,8 +48,8 @@ const FEATURED_TILES = [
     hoverTone: "copper" as const,
     to: "/services/aesthetics" as const,
     external: false,
-    imgSrc: "/images/home/tile-serum.webp",
-    imgAlt: "Soft 3D amber glass dropper bottle leaning on a travertine pebble",
+    imgSrc: "/images/home/tile-vial.webp",
+    imgAlt: "Soft 3D frosted glass vial with a gold cap beside a slim syringe",
   },
   {
     id: "whitening",
@@ -59,8 +59,8 @@ const FEATURED_TILES = [
     hoverTone: "sky-gold" as const,
     to: "/services/whitening" as const,
     external: false,
-    imgSrc: "/images/home/tile-whitening.webp",
-    imgAlt: "Soft 3D sage and white whitening pen crossed over its charging tray",
+    imgSrc: "/images/home/tile-strips.webp",
+    imgAlt: "Soft 3D whitening strips box with two translucent strips and a small gel syringe",
   },
 ] as const;
 
@@ -71,8 +71,8 @@ const SECONDARY_TILES = [
     accentTone: "terracotta" as const,
     hoverTone: "terracotta" as const,
     to: "/services/general-dentistry" as const,
-    imgSrc: "/images/home/tile-mirror.webp",
-    imgAlt: "Soft 3D terracotta dental mirror floating above a gentle shadow",
+    imgSrc: "/images/home/tile-tooth.webp",
+    imgAlt: "Soft 3D cream molar tooth with a small white filling",
   },
   {
     title: "Mobile",
@@ -80,8 +80,8 @@ const SECONDARY_TILES = [
     accentTone: "copper" as const,
     hoverTone: "copper" as const,
     to: "/services/mobile-dentistry" as const,
-    imgSrc: "/images/home/tile-bag.webp",
-    imgAlt: "Soft 3D sand-coloured portable dental bag with a brass clasp",
+    imgSrc: "/images/home/tile-van.webp",
+    imgAlt: "Soft 3D mobile dental surgery van in white with a navy stripe and a tooth emblem",
   },
 ] as const;
 

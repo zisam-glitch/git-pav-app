@@ -89,11 +89,11 @@ export function CheckUpFeature() {
             </p>
             <div className="mt-6 flex min-h-[240px] flex-1 flex-col items-center justify-center">
               <img
-                src="/images/home/tile-capsule.webp"
-                alt="Soft 3D navy and gold dental-care capsule case floating above a gentle shadow"
+                src="/images/home/tile-case.webp"
+                alt="Soft 3D navy emergency first-aid case with a gold clasp and a white tooth emblem"
                 loading="lazy"
-                width={229}
-                height={264}
+                width={494}
+                height={383}
                 className="max-h-[300px] w-auto md:max-h-[340px]"
               />
               <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#0f2b36]/20 blur-md" />
@@ -121,18 +121,17 @@ export function CheckUpFeature() {
                 Rediscover Your Youthful Radiance with Our Premier Aesthetic Treatments
               </span>
             </h3>
-            <div className="mt-6 flex min-h-[240px] flex-1 flex-col items-center justify-center">
+            <div className="relative mt-4 min-h-[300px] flex-1">
               <img
-                src="/images/home/tile-serum.webp"
-                alt="Soft 3D amber glass dropper bottle leaning on a travertine pebble"
+                src="/images/home/phone-aesthetics.webp"
+                alt="Hand holding a smartphone showing a Pav Dental aesthetic treatments app screen"
                 loading="lazy"
-                width={224}
-                height={299}
-                className="max-h-[300px] w-auto md:max-h-[340px]"
+                width={773}
+                height={1085}
+                className="absolute bottom-[-2.5rem] left-1/2 h-[min(430px,100%)] w-auto -translate-x-1/2 md:bottom-[-3rem] md:h-[480px]"
               />
-              <span aria-hidden className="mt-2 block h-3 w-40 rounded-full bg-[#7a4a1d]/25 blur-md" />
             </div>
-            <div className="mt-5 flex">
+            <div className="relative z-10 mt-5 flex">
               <ButtonLink to="/services/aesthetics" variant="default" className="bg-[#0f2b36]">
                 Learn more
               </ButtonLink>

@@ -38,6 +38,8 @@ export const Route = createRootRoute({
     links: [
       // The brand mark (PD monogram), the same image as the home-screen icon.
       { rel: "icon", type: "image/png", sizes: "512x512", href: "/icons/icon-512.png" },
+      // Browsers request /favicon.ico by default (a 180 px PNG inside an ICO container).
+      { rel: "shortcut icon", href: "/favicon.ico" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },

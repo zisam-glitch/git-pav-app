@@ -269,47 +269,57 @@ export function DarkQuestion({
 }
 
 /**
- * The floating CTA pill at the bottom centre of the screen, with its gold ring.
- * Like the Hims sticky CTA it is hidden at the top of the page, slides up once the
- * visitor has scrolled down past the hero, and slides away again when they scroll back up.
+ * The floating CTA at the bottom centre of the screen, with its gold ring.
+ * Phases: hidden (top of page) -> circle -> open pill, and back again when the visitor returns to the hero.
+ * Once open it stays open whichever way the visitor scrolls, until they are back at the top.
  */
+type CtaPhase = "hidden" | "circle" | "open";
+
 export function FloatingCta({ children }: { children: ReactNode }) {
-  const [visible, setVisible] = useState(false);
-  const [moving, setMoving] = useState(false);
+  const [phase, setPhase] = useState<CtaPhase>("hidden");
 
   useEffect(() => {
-    const SHOW_AFTER = 600; // px scrolled before the pill appears
-    const SETTLE_MS = 180; // quiet time before the pill expands again
-    let lastY = window.scrollY;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const onScroll = () => {
-      const y = window.scrollY;
-      const goingDown = y > lastY;
-      lastY = y;
-      setVisible(y >= SHOW_AFTER && goingDown);
-      setMoving(true);
-      clearTimeout(timer);
-      timer = setTimeout(() => setMoving(false), SETTLE_MS);
+    const SHOW_AFTER = 600; // px scrolled before the CTA appears
+    const STEP_MS = 320; // time each step of the open / close animation takes
+    let shown = false;
+    let timers: ReturnType<typeof setTimeout>[] = [];
+    const clear = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const update = () => {
+      const want = window.scrollY >= SHOW_AFTER;
+      if (want === shown) return;
+      shown = want;
+      clear();
+      if (want) {
+        // Circle appears first, then unfolds into the pill.
+        setPhase("circle");
+        timers.push(setTimeout(() => setPhase("open"), STEP_MS));
+      } else {
+        // Pill folds back to the circle, then the circle goes.
+        setPhase("circle");
+        timers.push(setTimeout(() => setPhase("hidden"), STEP_MS));
+      }
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll);
+      clear();
+      window.removeEventListener("scroll", update);
     };
   }, []);
 
-  // While the page is moving the pill folds down to a gold-ringed black dot (label hidden),
-  // then opens back into the full pill once scrolling stops.
+  const open = phase === "open";
   return (
     <div
       className={cn(
         "pointer-events-none fixed inset-x-0 bottom-5 z-40 flex justify-center transition-[transform,opacity,visibility] duration-300 ease-out motion-reduce:transition-none",
-        visible ? "translate-y-0 opacity-100 visible" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
+        phase === "hidden" ? "invisible translate-y-[calc(100%+2rem)] opacity-0" : "visible translate-y-0 opacity-100",
       )}
     >
       <div
-        className="pointer-events-auto rounded-full p-[3px] transition-[padding] duration-200 ease-out motion-reduce:transition-none"
+        className="pointer-events-auto rounded-full p-[3px]"
         style={{
           background: "linear-gradient(93deg, #eac57d 2.82%, #cf9358 100%)",
           boxShadow: "0 0.875rem 1.25rem 0 rgba(0,0,0,.25)",
@@ -317,11 +327,11 @@ export function FloatingCta({ children }: { children: ReactNode }) {
       >
         <div
           className={cn(
-            // Label, gap and side padding ease together so the pill narrows to a dot and back smoothly.
+            // Label, gap and side padding ease together so the pill folds to a circle and unfolds again.
             "[&_a]:transition-[color,background-color,border-color,box-shadow,transform,font-size,padding,gap] [&_a]:duration-300 [&_a]:ease-in-out motion-reduce:[&_a]:transition-none",
             // Hims' sticky CTA arrow nudges on its own loop, not only on hover.
             "[&_a_svg]:animate-hims-nudge motion-reduce:[&_a_svg]:animate-none",
-            moving && "[&_a]:!text-[0px] [&_a]:!gap-0 [&_a]:!px-4",
+            !open && "[&_a]:!text-[0px] [&_a]:!gap-0 [&_a]:!px-4",
           )}
         >
           {children}

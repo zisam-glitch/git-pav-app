@@ -317,10 +317,9 @@ export function FloatingCta({ children }: { children: ReactNode }) {
       >
         <div
           className={cn(
-            "transition-[max-width] duration-200 ease-out motion-reduce:transition-none",
-            moving
-              ? "overflow-hidden [&_a]:!w-[3.5rem] [&_a]:!gap-0 [&_a]:!px-0 [&_a]:!justify-center [&_a]:!text-[0px] [&_a_svg]:shrink-0"
-              : "",
+            // Label, gap and side padding ease together so the pill narrows to a dot and back smoothly.
+            "[&_a]:transition-[color,background-color,border-color,box-shadow,transform,font-size,padding,gap] [&_a]:duration-300 [&_a]:ease-in-out motion-reduce:[&_a]:transition-none",
+            moving && "[&_a]:!text-[0px] [&_a]:!gap-0 [&_a]:!px-4",
           )}
         >
           {children}

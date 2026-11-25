@@ -31,7 +31,6 @@ function Home() {
       <ServiceTabs />
       <HomeEmergency />
       <Overview />
-      <HomeEmergency />
       <VideoSection />
       <Counters />
       <HomeTeamCarousel />
@@ -39,8 +38,8 @@ function Home() {
       <ContactForm />
       <CtaBand
         theme="brown"
-        title="Ready for dental care"
-        accent="that fits your life?"
+        title="Ready to take control of your dental health?"
+        accent="Contact us to book your appointment today!"
         tone="gold"
         actions={
           <>

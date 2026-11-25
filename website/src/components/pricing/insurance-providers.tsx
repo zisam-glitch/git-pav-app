@@ -26,10 +26,6 @@ export function InsuranceProviders() {
         >
           <span id="insurance-heading">We Accept All</span>
         </Heading>
-        <p className="mt-3 text-lead text-muted">
-          Itemised receipts are provided at every appointment for straightforward reimbursement
-          claims.
-        </p>
       </div>
 
       <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">

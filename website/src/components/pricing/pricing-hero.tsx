@@ -1,6 +1,5 @@
 import {
   BookButton,
-  ButtonLink,
   CallButton,
   Heading,
   Media,
@@ -32,7 +31,7 @@ export function PricingHero() {
       >
         <div>
           <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
-            Bradford Clinic · Transparent Fees
+            Bradford Clinic · Pricing
           </span>
           <Heading
             as="h1"
@@ -43,16 +42,9 @@ export function PricingHero() {
           >
             You don&apos;t have to Pay
           </Heading>
-          <p className="mt-5 max-w-xl text-lead text-muted">
-            Transparent private fees, monthly membership plans, and a clear written treatment plan
-            before you commit.
-          </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <BookButton>Book Now</BookButton>
             <CallButton variant="outline" />
-            <ButtonLink href="/services/finance" variant="ghost">
-              Payment Options
-            </ButtonLink>
           </div>
         </div>
       </SplitFeature>

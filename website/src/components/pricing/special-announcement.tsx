@@ -59,9 +59,6 @@ export function SpecialAnnouncement() {
       )}
 
       <div className="max-w-3xl">
-        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-          Bradford Price Guarantee
-        </span>
         <Heading as="h2" size="h2" accent="Pav Dental" tone="gold" className="mt-4">
           <span id="announcement-heading">Special Announcement from</span>
         </Heading>

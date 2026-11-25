@@ -56,10 +56,22 @@ const KINDS: Record<EnquiryKind, { subject: string; what: string; page: string; 
   },
 };
 
-/** The settings to send with, or null when email is not set up (local development, CI, a placeholder token). */
-export function enquiryAlertConfig(env: Env = process.env): AlertConfig | null {
+/**
+ * What the dashboard's "Email alerts" page saved: it wins over the server's
+ * CLINIC_NOTIFICATION_EMAIL. `enabled: false` turns the alerts off; an empty
+ * list falls back to the environment address.
+ */
+export interface AlertOverride {
+  enabled?: boolean;
+  recipients?: string[] | null;
+}
+
+/** The settings to send with, or null when email is not set up (local development, CI, a placeholder token, alerts switched off). */
+export function enquiryAlertConfig(env: Env = process.env, override: AlertOverride = {}): AlertConfig | null {
+  if (override.enabled === false) return null;
   const token = env.POSTMARK_SERVER_TOKEN?.trim() ?? "";
-  const to = env.CLINIC_NOTIFICATION_EMAIL?.trim() ?? "";
+  const saved = override.recipients?.length ? override.recipients.join(",") : "";
+  const to = saved || (env.CLINIC_NOTIFICATION_EMAIL?.trim() ?? "");
   if (!token || !to || /replace_me|^mock/i.test(token)) return null;
   return {
     token,
@@ -116,20 +128,16 @@ interface SendOptions {
   env?: Env;
   fetchImpl?: typeof fetch;
   now?: Date;
+  /** The dashboard's saved recipients and on/off switch. */
+  override?: AlertOverride;
 }
 
-/**
- * Sends the alert and says what happened. Never throws: the form has already
- * been saved, so a failed email must not fail it. Logs carry no names or
- * addresses.
- */
-export async function sendEnquiryAlert(
-  alert: EnquiryAlert,
-  { env = process.env, fetchImpl = fetch, now = new Date() }: SendOptions = {},
-): Promise<"sent" | "skipped" | "failed"> {
-  const config = enquiryAlertConfig(env);
-  if (!config) return "skipped";
-  const email = enquiryAlertEmail(alert, config.dashboardUrl, now);
+/** One email through Postmark. Never throws; logs carry no names or addresses. */
+async function postEmail(
+  config: AlertConfig,
+  email: { subject: string; text: string; html: string },
+  fetchImpl: typeof fetch,
+): Promise<"sent" | "failed"> {
   try {
     const response = await fetchImpl("https://api.postmarkapp.com/email", {
       method: "POST",
@@ -156,4 +164,35 @@ export async function sendEnquiryAlert(
     console.error("[enquiry-alert] email not sent", { reason: error instanceof Error ? error.name : "unknown" });
     return "failed";
   }
+}
+
+/**
+ * Sends the alert and says what happened. Never throws: the form has already
+ * been saved, so a failed email must not fail it. Logs carry no names or
+ * addresses.
+ */
+export async function sendEnquiryAlert(
+  alert: EnquiryAlert,
+  { env = process.env, fetchImpl = fetch, now = new Date(), override = {} }: SendOptions = {},
+): Promise<"sent" | "skipped" | "failed"> {
+  const config = enquiryAlertConfig(env, override);
+  if (!config) return "skipped";
+  return postEmail(config, enquiryAlertEmail(alert, config.dashboardUrl, now), fetchImpl);
+}
+
+/**
+ * A test message from the dashboard's "Email alerts" page, so staff can see the
+ * address works. It goes to `recipients` even when alerts are switched off, and
+ * says "skipped" only when the server has no Postmark token.
+ */
+export async function sendTestAlert(
+  recipients: string[],
+  { env = process.env, fetchImpl = fetch, now = new Date() }: Omit<SendOptions, "override"> = {},
+): Promise<"sent" | "skipped" | "failed"> {
+  const config = enquiryAlertConfig(env, { recipients });
+  if (!config) return "skipped";
+  const when = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", dateStyle: "medium", timeStyle: "short" }).format(now);
+  const text = `This is a test from the Pav Dental dashboard, sent on ${when}.\n\nIf you can read it, website enquiry alerts will reach this address.`;
+  const html = `<p>${escapeHtml(`This is a test from the Pav Dental dashboard, sent on ${when}.`)}</p><p>If you can read it, website enquiry alerts will reach this address.</p>`;
+  return postEmail(config, { subject: "Test email from the Pav Dental dashboard", text, html }, fetchImpl);
 }

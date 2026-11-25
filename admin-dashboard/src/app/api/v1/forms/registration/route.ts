@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { alertOverride } from "@/lib/email-alert-settings.server";
 import { sendEnquiryAlert } from "@/lib/enquiry-alert";
 import { rateLimit } from "@/lib/rate-limit";
 import { validateRegistration } from "@/lib/registration-submission";
@@ -50,12 +51,15 @@ export async function POST(request: Request) {
       ],
     );
 
-    await sendEnquiryAlert({
-      kind: "registration",
-      name: registration.fullName,
-      email: registration.email,
-      phone: registration.mobilePhone,
-    });
+    await sendEnquiryAlert(
+      {
+        kind: "registration",
+        name: registration.fullName,
+        email: registration.email,
+        phone: registration.mobilePhone,
+      },
+      { override: await alertOverride() },
+    );
 
     return NextResponse.json({ success: true, id: row.id }, { status: 201, headers: CORS_HEADERS });
   } catch (error) {

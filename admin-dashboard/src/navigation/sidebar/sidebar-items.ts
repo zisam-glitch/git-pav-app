@@ -136,6 +136,12 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/submissions",
         icon: Inbox,
       },
+      {
+        id: "pav-email-alerts",
+        title: "Email Alerts",
+        url: "/dashboard/email-alerts",
+        icon: Mail,
+      },
     ],
   },
   {

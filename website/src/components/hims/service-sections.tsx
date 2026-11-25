@@ -1,5 +1,5 @@
 import { ArrowRight, type LucideIcon } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /** Deep brown gradient used where the Hims testosterone page uses its dark teal cards. */
@@ -268,11 +268,36 @@ export function DarkQuestion({
   );
 }
 
-/** The floating "Get started" pill that stays at the bottom centre of the screen, with its warm ring. */
+/**
+ * The floating CTA pill at the bottom centre of the screen, with its gold ring.
+ * Like the Hims sticky CTA it is hidden at the top of the page, slides up once the
+ * visitor has scrolled down past the hero, and slides away again when they scroll back up.
+ */
 export function FloatingCta({ children }: { children: ReactNode }) {
-  // Hims sticky CTA: an opaque gold ring around the pill, shadowed, pinned to the bottom centre of the screen.
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const SHOW_AFTER = 600; // px scrolled before the pill appears
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const goingDown = y > lastY;
+      lastY = y;
+      if (y < SHOW_AFTER) setVisible(false);
+      else setVisible(goingDown);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-5 z-40 flex justify-center">
+    <div
+      className={cn(
+        "pointer-events-none fixed inset-x-0 bottom-5 z-40 flex justify-center transition-[transform,opacity,visibility] duration-300 ease-out motion-reduce:transition-none",
+        visible ? "translate-y-0 opacity-100 visible" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
+      )}
+    >
       <div
         className="pointer-events-auto rounded-full p-[3px]"
         style={{

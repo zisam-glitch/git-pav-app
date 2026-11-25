@@ -1,4 +1,4 @@
-import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, CallButton, FaqPhoto, Section, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {
@@ -45,27 +45,20 @@ const FAQS: FaqItem[] = [
 
 export function ExtractionFaq() {
   return (
-    <Section theme="white" space="default">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Patient Guidance
-          </p>
-          <Heading as="h2" size="h2-md" accent="Question" tone="terracotta" className="mt-4">
-            Frequently Asked
-          </Heading>
-          <p className="mt-4 max-w-sm text-lead text-muted">
-            Common questions about preparation, local anaesthetic, recovery, and tooth replacement
-            options.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <BookButton>Book Now</BookButton>
+    <Section id="faq" theme="white" aria-labelledby="extraction-faq-heading">
+      <FaqPhoto
+        id="extraction-faq-heading"
+        title="Frequently Asked Questions"
+        items={FAQS}
+        image="/images/generated/tooth-extraction-hero.jpg"
+        alt=""
+        actions={
+          <>
+            <BookButton>Make an Appointment</BookButton>
             <CallButton variant="outline" />
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
+          </>
+        }
+      />
     </Section>
   );
 }

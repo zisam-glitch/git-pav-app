@@ -33,6 +33,8 @@ export {
   ProductRail,
   CheckRows,
   SplitPhoto,
+  BeigeGrid,
+  NumberedCards,
   HUB_CARD,
   type RailItem,
   type WhyItem,
@@ -41,3 +43,4 @@ export {
 export { PhotoHero } from "./photo-hero";
 export { ProductDetail, type DetailOption, type DetailAccordion } from "./product-detail";
 export { TileHub, type HubBigTile, type HubSmallTile } from "./tile-hub";
+export { SubNav } from "./sub-nav";

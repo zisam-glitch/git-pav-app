@@ -1,5 +1,12 @@
 import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
-import { BookButton, PricingTiles, Tile, type PricingTier } from "@/components/hims";
+import {
+  BeigeGrid,
+  BookButton,
+  HUB_CARD,
+  Section,
+  SectionHead,
+  type PricingTier,
+} from "@/components/hims";
 
 const TIERS: readonly PricingTier[] = [
   {
@@ -60,49 +67,52 @@ const CONSENT_POINTS = [
 
 export function ExtractionPricing() {
   return (
-    <PricingTiles
-      title="Our Tooth"
-      accent="Extraction Prices"
-      tiers={TIERS}
-      columns={4}
-      ctaLabel="Make an Appointment"
-      footer={
-        <Tile tone="grey" className="border border-border p-6 md:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="inline-flex rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
-                Clinical Transparency
-              </p>
-              <h3 className="mt-3 text-h3-md text-fg">Informed Consent for Tooth Extraction</h3>
-              <p className="mt-1 text-body text-muted">
-                Your clinician will talk through your procedure, alternatives, and aftercare before
-                any treatment begins.
-              </p>
-            </div>
-            <BookButton variant="outline">Book Consultation</BookButton>
+    <Section id="pricing" theme="white" aria-labelledby="extraction-pricing-heading">
+      <SectionHead
+        id="extraction-pricing-heading"
+        title="Our Tooth Extraction Prices"
+        action={<BookButton>Make an Appointment</BookButton>}
+      />
+      <div className="mt-10">
+        <BeigeGrid
+          items={TIERS.map((t) => ({ title: t.name, sub: t.price, text: <p>{t.description}</p> }))}
+        />
+      </div>
+      <div className={`${HUB_CARD} mt-3 p-7 md:p-9`}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="inline-flex rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
+              Clinical Transparency
+            </p>
+            <h3 className="mt-3 text-h3-md text-fg">Informed Consent for Tooth Extraction</h3>
+            <p className="mt-1 text-body text-muted">
+              Your clinician will talk through your procedure, alternatives, and aftercare before
+              any treatment begins.
+            </p>
           </div>
+          <BookButton variant="outline">Book Consultation</BookButton>
+        </div>
 
-          <ul className="mt-6 grid gap-4 border-t border-border pt-6 md:grid-cols-3">
-            {CONSENT_POINTS.map((point) => {
-              const Icon = point.icon;
-              return (
-                <li
-                  key={point.title}
-                  className="flex items-start gap-3.5 rounded-xl border border-border bg-white p-4"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
-                    <Icon aria-hidden className="size-4" />
-                  </span>
-                  <div>
-                    <p className="text-label text-fg">{point.title}</p>
-                    <p className="mt-1 text-small text-muted">{point.desc}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Tile>
-      }
-    />
+        <ul className="mt-6 grid gap-4 border-t border-border pt-6 md:grid-cols-3">
+          {CONSENT_POINTS.map((point) => {
+            const Icon = point.icon;
+            return (
+              <li
+                key={point.title}
+                className="flex items-start gap-3.5 rounded-[16px] bg-white p-4"
+              >
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-cream text-terracotta">
+                  <Icon aria-hidden className="size-4" />
+                </span>
+                <div>
+                  <p className="text-label text-fg">{point.title}</p>
+                  <p className="mt-1 text-small text-muted">{point.desc}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </Section>
   );
 }

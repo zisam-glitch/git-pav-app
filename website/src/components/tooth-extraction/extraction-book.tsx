@@ -1,5 +1,5 @@
 import { Check, Clock, MapPin, Phone } from "lucide-react";
-import { BookButton, CallButton, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 const REASONS = [
@@ -57,7 +57,7 @@ export function ExtractionBook() {
           </div>
         </div>
 
-        <Tile tone="grey" className="border border-border p-6 md:p-8">
+        <div className="rounded-[24px] bg-[#f7f7f7] p-7 md:p-9">
           <Heading as="h3" size="h3-md">
             Why Choose PavDental?
           </Heading>
@@ -79,7 +79,7 @@ export function ExtractionBook() {
               </li>
             ))}
           </ul>
-        </Tile>
+        </div>
       </div>
     </Section>
   );

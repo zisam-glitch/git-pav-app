@@ -356,3 +356,67 @@ export function SplitPhoto({
     </div>
   );
 }
+
+/** "Health signals that tell your unique story": tall beige cards, a title at the top and muted lines at the bottom. */
+export function BeigeGrid({
+  items,
+  columns = 4,
+}: {
+  items: { title: string; sub?: string; lines?: string[]; text?: ReactNode }[];
+  columns?: 2 | 3 | 4;
+}) {
+  return (
+    <ul
+      className={cn(
+        "grid list-none gap-2.5 sm:grid-cols-2",
+        columns === 4 ? "lg:grid-cols-4" : columns === 3 ? "lg:grid-cols-3" : "",
+      )}
+    >
+      {items.map((item) => (
+        <li
+          key={item.title}
+          className="flex min-h-[260px] flex-col justify-between rounded-[20px] bg-[#f1e9de] p-5"
+        >
+          <div>
+            <h3 className="text-[22px] leading-[1.15] font-normal text-[#5a2f2f]">{item.title}</h3>
+            {item.sub ? (
+              <p className="mt-1 text-[15px] text-[#8a4242] tabular-nums">{item.sub}</p>
+            ) : null}
+          </div>
+          <div className="mt-6 text-[14px] leading-[1.5] text-[#8b7f73]">
+            {item.text}
+            {item.lines ? (
+              <ul className="list-none space-y-1">
+                {item.lines.map((l) => (
+                  <li key={l}>{l}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** "Turn your body's data into a clear plan": three beige cards, a numbered circle, a centred title and text. */
+export function NumberedCards({ items }: { items: { title: string; text: string }[] }) {
+  return (
+    <ul className="grid list-none gap-3 md:grid-cols-3">
+      {items.map((item, i) => (
+        <li
+          key={item.title}
+          className="flex min-h-[300px] flex-col items-center rounded-[24px] bg-[#f1e9de] px-6 py-8 text-center"
+        >
+          <span className="grid size-7 place-items-center rounded-full border border-[#8a4242] text-[13px] text-[#8a4242]">
+            {i + 1}
+          </span>
+          <h3 className="mt-5 text-[28px] leading-[1.1] font-normal tracking-[-0.01em] text-[#5a2f2f]">
+            {item.title}
+          </h3>
+          <p className="mt-3 max-w-[300px] text-[15px] leading-[1.5] text-[#8b7f73]">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}

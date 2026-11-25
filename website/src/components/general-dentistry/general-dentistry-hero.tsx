@@ -17,7 +17,7 @@ export function GeneralDentistryHero() {
           lead: "Our",
           accent: "Root Canal Prices",
           cta: "Root canal from £195",
-          image: "/images/generated/root-canal-hero.jpg",
+          image: "/images/generated/general-big-root.jpg",
           alt: "Warm sunlit treatment room prepared for root canal care",
           href: "#pricing",
         },
@@ -25,7 +25,7 @@ export function GeneralDentistryHero() {
           lead: "Our",
           accent: "Tooth Extraction Prices",
           cta: "Extractions from £95",
-          image: "/images/generated/tooth-extraction-hero.jpg",
+          image: "/images/generated/general-big-extraction.jpg",
           alt: "Serene oral surgery suite in warm natural light",
           href: "#extraction",
         },
@@ -34,7 +34,7 @@ export function GeneralDentistryHero() {
         {
           lead: "White",
           rest: "fillings",
-          image: "/images/generated/general-dentistry-showcase.jpg",
+          image: "/images/generated/general-tile-fillings.jpg",
           href: "#fillings",
         },
         {
@@ -46,13 +46,13 @@ export function GeneralDentistryHero() {
         {
           lead: "How cavities",
           rest: "form",
-          image: "/images/generated/home-cavities-poster.jpg",
+          image: "/images/generated/general-tile-cavities.jpg",
           href: "#cavities",
         },
         {
           lead: "Choosing a",
           rest: "dentist",
-          image: "/images/generated/home-checkup.jpg",
+          image: "/images/generated/general-tile-checkup.jpg",
           href: "#choosing",
         },
       ]}

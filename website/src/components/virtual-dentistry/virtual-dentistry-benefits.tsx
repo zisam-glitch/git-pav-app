@@ -34,7 +34,7 @@ export function VirtualDentistryBenefits() {
           ],
           ["/images/generated/virtual-dentistry-hero.jpg", ""],
           ["/images/generated/virtual-dentistry-services.jpg", ""],
-          ["/images/generated/blog-video-consultation.jpg", ""],
+          ["/images/generated/virtual-video.jpg", ""],
         ].map(([src, alt]) => (
           <li key={src} className="overflow-hidden rounded-[24px]">
             <img

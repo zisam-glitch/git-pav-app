@@ -10,7 +10,7 @@ export function AestheticsHero() {
           alt: "Warm sunlit facial aesthetics consultation room at Pav Dental in Bradford",
         },
         { src: "/images/generated/aesthetics-premium.jpg", alt: "" },
-        { src: "/images/generated/home-facial-aesthetics.jpg", alt: "" },
+        { src: "/images/generated/aesthetics-skin.jpg", alt: "" },
       ]}
       head={
         <>

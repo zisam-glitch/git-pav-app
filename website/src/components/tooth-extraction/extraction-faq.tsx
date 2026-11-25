@@ -50,7 +50,7 @@ export function ExtractionFaq() {
         id="extraction-faq-heading"
         title="Frequently Asked Questions"
         items={FAQS}
-        image="/images/generated/tooth-extraction-hero.jpg"
+        image="/images/generated/extraction-tray.jpg"
         alt=""
         actions={
           <>

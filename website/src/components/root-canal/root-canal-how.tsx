@@ -24,7 +24,7 @@ const PROCEDURE_STEPS = [
 const STEP_IMAGES = [
   "/images/generated/root-canal-how.jpg",
   "/images/generated/root-canal-hero.jpg",
-  "/images/generated/home-checkup.jpg",
+  "/images/generated/root-canal-tooth.jpg",
 ];
 
 export function RootCanalHow() {

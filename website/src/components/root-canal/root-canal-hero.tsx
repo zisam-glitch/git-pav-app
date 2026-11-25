@@ -10,8 +10,8 @@ export function RootCanalHero() {
           alt: "Warm sunlit Pav Dental treatment room prepared for root canal care",
         },
         { src: "/images/generated/root-canal-how.jpg", alt: "" },
-        { src: "/images/generated/home-checkup.jpg", alt: "" },
-        { src: "/images/generated/home-general-dentistry.jpg", alt: "" },
+        { src: "/images/generated/root-canal-tooth.jpg", alt: "" },
+        { src: "/images/generated/root-canal-tooth.jpg", alt: "" },
       ]}
       head={
         <>

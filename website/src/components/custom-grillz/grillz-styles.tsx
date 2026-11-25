@@ -28,10 +28,10 @@ const STYLES = [
 ] as const;
 
 const IMAGES = [
-  { src: "/images/generated/custom-grillz-hero.jpg", pos: "30% 50%" },
-  { src: "/images/generated/custom-grillz-craft.jpg", pos: "50% 50%" },
-  { src: "/images/generated/custom-grillz-hero.jpg", pos: "80% 50%" },
-  { src: "/images/generated/custom-grillz-craft.jpg", pos: "20% 60%" },
+  { src: "/images/generated/grillz-gold.jpg", pos: "50% 50%" },
+  { src: "/images/generated/grillz-silver.jpg", pos: "50% 50%" },
+  { src: "/images/generated/grillz-diamond.jpg", pos: "50% 50%" },
+  { src: "/images/generated/grillz-fit.jpg", pos: "50% 50%" },
 ];
 const KINDS = ["GOLD", "SILVER", "DIAMOND", "FIT"];
 

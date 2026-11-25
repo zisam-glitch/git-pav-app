@@ -42,8 +42,8 @@ export function MouthguardsHero() {
           src: "/images/generated/mouthguards-hero.jpg",
           alt: "Custom sports mouthguard on a warm cream tray in soft studio light",
         },
-        { src: "/images/generated/home-checkup.jpg", alt: "" },
-        { src: "/images/generated/home-general-dentistry.jpg", alt: "" },
+        { src: "/images/generated/mouthguards-colour.jpg", alt: "" },
+        { src: "/images/generated/mouthguards-scan.jpg", alt: "" },
       ]}
       optionsTitle="How to Order Your Mouthguard"
       options={OPTIONS}

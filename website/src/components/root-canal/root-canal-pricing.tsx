@@ -77,7 +77,7 @@ export function RootCanalPricing() {
                 title: MID.name,
                 kicker: MID.bestFor?.replace("Best for: ", ""),
                 price: MID.price,
-                image: "/images/generated/home-checkup.jpg",
+                image: "/images/generated/root-canal-tooth.jpg",
                 alt: "",
                 href: "#compare",
               },

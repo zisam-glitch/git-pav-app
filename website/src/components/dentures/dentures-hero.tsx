@@ -40,8 +40,8 @@ export function DenturesHero() {
           alt: "Custom dental prosthetic model on a warm cream ceramic tray in soft studio light",
         },
         { src: "/images/generated/dentures-showcase.jpg", alt: "" },
-        { src: "/images/generated/home-checkup.jpg", alt: "" },
-        { src: "/images/generated/home-general-dentistry.jpg", alt: "" },
+        { src: "/images/generated/dentures-fit.jpg", alt: "" },
+        { src: "/images/generated/dentures-fit.jpg", alt: "" },
       ]}
       optionsTitle="Our Denture Prices:"
       options={OPTIONS}

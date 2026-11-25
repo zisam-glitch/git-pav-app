@@ -37,7 +37,7 @@ const SERVICES: readonly PricingTier[] = [
 const IMAGES = [
   { src: "/images/generated/oral-hygiene-showcase.jpg", pos: "20% 50%" },
   { src: "/images/generated/oral-hygiene-hero.jpg", pos: "70% 50%" },
-  { src: "/images/generated/home-checkup.jpg", pos: "50% 50%" },
+  { src: "/images/generated/oral-hygiene-kit.jpg", pos: "50% 50%" },
 ];
 
 export function OralHygienePricing() {

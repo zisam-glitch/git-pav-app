@@ -160,7 +160,7 @@ export function EmergencyFaq() {
         id="emergency-faq-heading"
         title="Frequently Asked Question"
         items={FAQS}
-        image="/images/generated/home-emergency-night.jpg"
+        image="/images/generated/emergency-night.jpg"
         alt=""
         actions={
           <>

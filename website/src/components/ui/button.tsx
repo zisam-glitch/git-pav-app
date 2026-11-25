@@ -19,7 +19,7 @@ export const buttonVariants = cva(
       variant: {
         default: "bg-black text-white hover:bg-black/80",
         light: "bg-white text-black hover:bg-white/85",
-        outline: "border-border-strong bg-white text-black hover:border-black",
+        outline: "border-transparent bg-[#f6f6f4] text-black hover:bg-[#ebebe6]",
         ghost: "bg-transparent text-fg hover:bg-black/5",
         glass:
           "border-white/17 border-[1px] bg-white/7 text-white hover:bg-white/20 focus-visible:ring-white focus-visible:ring-offset-0",

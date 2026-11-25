@@ -270,14 +270,13 @@ export function DarkQuestion({
 
 /** The floating "Get started" pill that stays at the bottom centre of the screen, with its warm ring. */
 export function FloatingCta({ children }: { children: ReactNode }) {
-  // Hims sticky CTA: a gold ring around the pill, shadowed, pinned to the bottom centre of the screen.
+  // Hims sticky CTA: an opaque gold ring around the pill, shadowed, pinned to the bottom centre of the screen.
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-5 z-40 flex justify-center">
       <div
-        className="pointer-events-auto rounded-full p-3"
+        className="pointer-events-auto rounded-full p-[3px]"
         style={{
-          background:
-            "radial-gradient(217.51% 50.62% at 50% 50%, rgba(255,198,113,.4) 0%, rgba(189,139,65,.4) 36.98%, rgba(255,198,113,.4) 67.19%, rgba(189,139,65,.4) 100%)",
+          background: "linear-gradient(93deg, #eac57d 2.82%, #cf9358 100%)",
           boxShadow: "0 0.875rem 1.25rem 0 rgba(0,0,0,.25)",
         }}
       >

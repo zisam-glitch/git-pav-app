@@ -9,9 +9,6 @@ export function GeneralDentistryCavities() {
     <Section theme="navy" width="bento" space="lg">
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div className="max-w-2xl">
-          <p className="inline-flex items-center rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-butter">
-            Patient Education
-          </p>
           <Heading as="h2" size="h2-md" accent="Form?" tone="butter" inline className="mt-4">
             How Do Dental Cavities
           </Heading>

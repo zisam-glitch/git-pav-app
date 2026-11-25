@@ -1,3 +1,4 @@
+import { ContactForm } from "@/components/home/contact-form";
 import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { DenturesContact } from "./dentures-contact";
 import { DenturesFaq } from "./dentures-faq";
@@ -14,22 +15,7 @@ export function DenturesPage() {
       <DenturesPricing />
       <DenturesSolutions />
       <DenturesFaq />
-      <DenturesContact />
-      <CtaBand
-        theme="brown"
-        title="Book your free consultation"
-        accent="today"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        Book your free consultation today with one of our GDC-registered dentists to start your
-        journey towards a confident, healthy smile.
-      </CtaBand>
+      <ContactForm />
     </main>
   );
 }

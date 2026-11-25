@@ -1,3 +1,4 @@
+import { ContactForm } from "@/components/home/contact-form";
 import {
   AlertCircle,
   Beaker,
@@ -308,24 +309,10 @@ export function WhiteningPage() {
 
       <WhiteningFaq />
 
-      <CtaBand
-        theme="brown"
-        title="Get In"
-        accent="Touch"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Appointment</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        Ready to take control of your dental health? Contact us to book your appointment today!
-      </CtaBand>
-
       <FloatingCta>
         <BookButton>Book Now</BookButton>
       </FloatingCta>
+      <ContactForm />
     </main>
   );
 }

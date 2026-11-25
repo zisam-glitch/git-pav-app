@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  *   butter   butter pill on navy                  sky     sky-blue pill on navy
  */
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-pill border-2 border-transparent text-label transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 ease-in-out select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-pill border-2 border-transparent text-label transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 ease-in-out select-none hover:-translate-y-px hover:scale-[1.03] hover:shadow-[0_14px_32px_rgba(0,0,0,0.27)] active:translate-y-0 active:scale-95 active:shadow-[0_10px_24px_rgba(0,0,0,0.27)] hover:[&_svg]:animate-hims-nudge focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {

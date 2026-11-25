@@ -6,7 +6,7 @@ export function GrillzHero() {
       label="Custom Grillz and Tooth Gems"
       image="/images/generated/custom-grillz-hero.jpg"
       alt="Custom gold and diamond dental grillz presented on a warm cream stone surface"
-      tags={["Bespoke Dental Jewellery", "Crafted for Stardom"]}
+      tags={[]}
       left="Custom Grillz"
       right="and Tooth Gems"
       lead={

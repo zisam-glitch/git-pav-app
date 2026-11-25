@@ -48,9 +48,6 @@ export function EmergencyContactForm() {
       <div className="rounded-xl bg-sand">
         <div className="wrap grid items-start gap-8 py-10 md:grid-cols-[0.9fr_1.1fr] md:gap-12 md:py-16">
           <div className="max-w-[460px]">
-            <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-              Urgent Enquiry
-            </p>
             <Heading
               as="h2"
               size="h2-md"

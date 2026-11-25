@@ -27,9 +27,6 @@ export function GrillzProcess() {
       className="bg-[#120d08]"
       aria-labelledby="grillz-why-pav-heading"
     >
-      <p className="font-mono text-[13px] tracking-wide text-[#ffc671] uppercase">
-        Clinical Craftsmanship
-      </p>
       <h2
         id="grillz-why-pav-heading"
         className="mt-3 max-w-3xl text-[clamp(34px,4.4vw,60px)] leading-[1.04] font-normal tracking-[-0.03em]"

@@ -21,9 +21,6 @@ export function VirtualDentistryHero() {
       ]}
       head={
         <>
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            Virtual Dental Consultations
-          </span>
           <Heading
             as="h1"
             size="hero"

@@ -18,9 +18,6 @@ export function GrillzPricing() {
           />
         </div>
         <div>
-          <p className="font-mono text-[13px] tracking-wide text-[#8a4242] uppercase">
-            Protected Craftsmanship
-          </p>
           <h2
             id="grillz-guarantee-heading"
             className="mt-3 text-[clamp(36px,4.4vw,60px)] leading-[1.04] font-normal tracking-[-0.03em] text-[#2a1c12]"
@@ -33,9 +30,6 @@ export function GrillzPricing() {
           </p>
           <div className="mt-8 grid gap-3">
             <div className="rounded-[20px] bg-white p-6">
-              <p className="font-mono text-[12px] tracking-wide text-[#8b8d92] uppercase">
-                Worldwide Delivery
-              </p>
               <h3 className="mt-2 text-[22px] leading-[1.15] font-normal text-[#2a1c12]">
                 A Dazzling Smile, Just a Click Away!
               </h3>
@@ -46,9 +40,6 @@ export function GrillzPricing() {
               </p>
             </div>
             <div className="rounded-[20px] bg-white p-6">
-              <p className="font-mono text-[12px] tracking-wide text-[#8b8d92] uppercase">
-                Bespoke Design Consultation
-              </p>
               <h3 className="mt-2 text-[22px] leading-[1.15] font-normal text-[#2a1c12]">
                 Shine in Your Unique Way
               </h3>

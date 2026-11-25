@@ -44,9 +44,6 @@ export function GrillzStyles() {
       aria-labelledby="grillz-styles-heading"
     >
       <div className="max-w-3xl">
-        <p className="font-mono text-[13px] tracking-wide text-[#8a4242] uppercase">
-          Custom Grillz Procedures
-        </p>
         <h2
           id="grillz-styles-heading"
           className="mt-3 text-[clamp(34px,4.4vw,60px)] leading-[1.04] font-normal tracking-[-0.03em] text-[#2a1c12]"

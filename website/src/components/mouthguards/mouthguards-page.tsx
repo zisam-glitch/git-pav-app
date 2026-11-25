@@ -17,20 +17,6 @@ export function MouthguardsPage() {
       <MouthguardsUsers />
       <MouthguardsWhyChoose />
       <ContactForm />
-      <CtaBand
-        theme="brown"
-        title="Make an"
-        accent="Appointment"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Make an Appointment</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        Designed for comfort, accuracy and full protection
-      </CtaBand>
       <FloatingCta>
         <BookButton>Make an Appointment</BookButton>
       </FloatingCta>

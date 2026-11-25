@@ -29,9 +29,6 @@ export function MouthguardsPersonalisation() {
     >
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            Bespoke Markings
-          </span>
           <div id="mouthguards-personalisation-heading" className="mt-4">
             <Heading size="h2-md" accent="Personalisation" tone="terracotta" inline>
               Add

@@ -14,9 +14,6 @@ export function CosmeticContact() {
     <Section id="contact" theme="white" aria-labelledby="cosmetic-contact-heading">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-[460px]">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Enquire
-          </span>
           <div id="cosmetic-contact-heading" className="mt-4">
             <Heading size="h2-md" accent="Touch" tone="terracotta" inline>
               Get In

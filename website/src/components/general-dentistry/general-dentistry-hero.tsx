@@ -1,4 +1,4 @@
-import { BookButton, CallButton, TileHub } from "@/components/hims";
+import { TileHub } from "@/components/hims";
 
 export function GeneralDentistryHero() {
   return (
@@ -6,12 +6,6 @@ export function GeneralDentistryHero() {
       label="General dentistry services"
       title="General Dentistry: Your"
       accent="Gateway to Lifelong Oral Health"
-      lead={
-        <p>
-          Welcome to your guide to General Dentistry, covering check-ups to fillings. Discover how
-          it maintains and improves your dental health for lifelong healthy smiles.
-        </p>
-      }
       big={[
         {
           lead: "Our",
@@ -56,9 +50,6 @@ export function GeneralDentistryHero() {
           href: "#choosing",
         },
       ]}
-    >
-      <BookButton>Book Appointment</BookButton>
-      <CallButton variant="outline" />
-    </TileHub>
+    ></TileHub>
   );
 }

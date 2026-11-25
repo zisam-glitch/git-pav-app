@@ -68,9 +68,6 @@ export function OralHygieneShowcase() {
         }
       >
         <div>
-          <p className="inline-flex rounded-pill border border-border bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Gentle Clinical Care
-          </p>
           <Heading as="h2" size="h2-md" accent="in Action" tone="terracotta" className="mt-4">
             Hygiene Treatment
           </Heading>

@@ -25,9 +25,6 @@ export function CosmeticShowcase() {
         }
       >
         <div>
-          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
-            Treatment Guides
-          </span>
           <div id="cosmetic-showcase-heading" className="mt-4">
             <Heading size="h2" tone="gold">
               Procedures

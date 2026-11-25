@@ -23,9 +23,6 @@ export function VirtualDentistryServices() {
         }
       >
         <div>
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Round-the-Clock Access
-          </span>
           <div id="virtual-services-heading" className="mt-4">
             <Heading as="h2" size="h2-md" accent="of Services" tone="terracotta" inline>
               Choose Type
@@ -36,9 +33,6 @@ export function VirtualDentistryServices() {
             <div className="flex items-center justify-between gap-4">
               <span className="grid size-11 place-items-center rounded-lg bg-cream text-terracotta">
                 <Clock aria-hidden className="size-5" />
-              </span>
-              <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3 py-0.5 text-caption font-medium text-copper">
-                £35 Consultation · £25 Prescription
               </span>
             </div>
             <h3 className="mt-5 text-h4 text-fg">24 x 7 Emergency Dentists</h3>

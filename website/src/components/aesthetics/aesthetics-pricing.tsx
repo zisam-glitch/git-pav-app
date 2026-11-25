@@ -43,9 +43,6 @@ export function AestheticsPricing() {
   return (
     <Section id="pricing" theme="white" aria-labelledby="aesthetics-pricing-heading">
       <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-          Transparent Clinic Fees
-        </span>
         <div id="aesthetics-pricing-heading" className="mt-4">
           <Heading size="h2-md" accent="Price List" tone="terracotta" inline>
             Aesthetics

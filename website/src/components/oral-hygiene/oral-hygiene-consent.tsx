@@ -36,9 +36,6 @@ export function OralHygieneConsent() {
   return (
     <Section theme="brown" width="bento" space="lg">
       <div className="max-w-2xl">
-        <p className="inline-flex rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-gold">
-          Oral Hygiene and Gum Care Advice
-        </p>
         <Heading as="h2" size="hero" accent="Informed Consent" tone="gold" className="mt-4">
           Understanding
         </Heading>

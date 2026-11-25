@@ -1,3 +1,4 @@
+import { ContactForm } from "@/components/home/contact-form";
 import {
   BookButton,
   CallButton,
@@ -52,22 +53,7 @@ export function MobileDentistryPage() {
       <MobileDentistryBenefits />
       <MobileDentistryService />
       <MobileDentistryLocation />
-      <MobileDentistryContact />
-      <CtaBand
-        theme="brown"
-        title="Ready to arrange"
-        accent="a mobile visit?"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Appointment</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
-        check-ups, and advanced technologies like digital imaging and laser dentistry.
-      </CtaBand>
+      <ContactForm />
       <FloatingCta>
         <BookButton>Make an Appointment</BookButton>
       </FloatingCta>

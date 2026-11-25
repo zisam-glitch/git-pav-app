@@ -25,9 +25,6 @@ export function GeneralDentistryShowcase() {
         }
       >
         <div>
-          <p className="inline-flex rounded-pill bg-white/10 px-3.5 py-1.5 text-caption font-medium text-gold">
-            Explore Treatments
-          </p>
           <Heading size="h2-md" tone="gold" className="mt-4">
             Procedures
           </Heading>

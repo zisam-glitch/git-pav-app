@@ -14,9 +14,6 @@ export function ExtractionBook() {
     <Section theme="white" space="default">
       <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Same-Day Appointments
-          </p>
           <Heading as="h2" size="h2-md" accent="Today" tone="terracotta" className="mt-4">
             Book Your Appointment
           </Heading>

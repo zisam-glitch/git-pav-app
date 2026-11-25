@@ -36,9 +36,6 @@ export function AestheticsSafetyBanner() {
               <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3 py-0.5 text-caption font-medium text-butter tabular-nums">
                 3
               </span>
-              <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3 py-0.5 text-caption font-medium text-white/85">
-                CQC Regulated Clinic
-              </span>
             </div>
             <div id="aesthetics-safety-heading" className="mt-4">
               <Heading size="h2-md" accent="Keeping You Safe" tone="butter">

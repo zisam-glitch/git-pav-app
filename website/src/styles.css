@@ -34,6 +34,7 @@
 }
 
 @theme {
+  --animate-hims-nudge: hims-nudge 0.7s linear 277ms infinite;
   /* ---- Surfaces and ink (Hims: white page, cream tiles, near-black text) ---- */
   --color-bg: #ffffff;
   --color-surface: #faf8f2;
@@ -547,6 +548,12 @@
   gap: 2.5rem;
   width: max-content;
   animation: marquee 32s linear infinite;
+}
+
+@keyframes hims-nudge {
+  0% { transform: translateX(0) scaleX(1); }
+  80% { transform: translateX(4px) scaleX(1.2); }
+  100% { transform: translateX(0) scaleX(1); }
 }
 
 @keyframes marquee {

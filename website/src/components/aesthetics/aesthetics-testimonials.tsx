@@ -14,9 +14,6 @@ export function AestheticsTestimonials() {
   return (
     <Section theme="white" space="default" aria-labelledby="testimonials-heading">
       <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-          Patient Feedback
-        </span>
         <div id="testimonials-heading" className="mt-4">
           <Heading as="h2" size="h2-md" accent="say?" tone="terracotta" inline>
             {TESTIMONIALS_HEADING.replace(/\s*say\?$/, "")}

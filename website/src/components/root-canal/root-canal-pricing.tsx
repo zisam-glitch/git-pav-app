@@ -103,7 +103,10 @@ export function RootCanalPricing() {
             <CompareTable
               columns={TIERS.map((t) => ({ name: t.name, sub: t.price }))}
               rows={[
-                { label: "Best for", cells: TIERS.map((t) => (t.bestFor ?? "").replace("Best for: ", "")) },
+                {
+                  label: "Best for",
+                  cells: TIERS.map((t) => (t.bestFor ?? "").replace("Best for: ", "")),
+                },
                 { label: "Details", cells: TIERS.map((t) => t.description) },
               ]}
             />

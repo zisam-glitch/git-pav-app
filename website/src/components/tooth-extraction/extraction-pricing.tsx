@@ -81,9 +81,6 @@ export function ExtractionPricing() {
       <div className={`${HUB_CARD} mt-3 p-7 md:p-9`}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="inline-flex rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
-              Clinical Transparency
-            </p>
             <h3 className="mt-3 text-h3-md text-fg">Informed Consent for Tooth Extraction</h3>
             <p className="mt-1 text-body text-muted">
               Your clinician will talk through your procedure, alternatives, and aftercare before

@@ -57,21 +57,6 @@ export function ToothExtractionPage() {
       <ExtractionBook />
       <ExtractionFaq />
       <ContactForm />
-      <CtaBand
-        theme="brown"
-        title="Need urgent relief"
-        accent="or an extraction assessment?"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Simple, intermediate, advanced, and surgical
-        extractions.
-      </CtaBand>
       <FloatingCta>
         <BookButton>Make an Appointment</BookButton>
       </FloatingCta>

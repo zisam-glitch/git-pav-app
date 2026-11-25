@@ -13,9 +13,6 @@ export function MobileDentistryContact() {
     <Section id="contact" theme="white" aria-labelledby="mobile-contact-heading">
       <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
         <div className="max-w-[460px]">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Enquire
-          </span>
           <div id="mobile-contact-heading" className="mt-4">
             <Heading as="h2" size="h2-md" accent="Touch" tone="terracotta" inline>
               Get In

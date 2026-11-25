@@ -19,20 +19,6 @@ export function OralHygienePage() {
       <OralHygieneConsent />
       <OralHygieneFaq />
       <ContactForm />
-      <CtaBand
-        theme="navy"
-        title="Ready for healthier gums"
-        accent="and a cleaner smile?"
-        tone="butter"
-        actions={
-          <>
-            <BookButton variant="butter">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Gentle scale and polish appointments from £45.
-      </CtaBand>
     </main>
   );
 }

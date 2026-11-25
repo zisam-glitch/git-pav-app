@@ -85,11 +85,7 @@ export function ProductDetail({
           <div className="mt-4 text-[18px] leading-[1.4] text-[#6b6b70]">{text}</div>
 
           <p className="mt-7 text-[15px] font-medium text-[#2a2a2c]">{optionsTitle}</p>
-          <div
-            role="radiogroup"
-            aria-label={optionsTitle}
-            className="mt-3 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
-          >
+          <div role="radiogroup" aria-label={optionsTitle} className="mt-3 grid gap-2">
             {options.map((o, i) => (
               <button
                 key={o.id}
@@ -98,23 +94,25 @@ export function ProductDetail({
                 aria-checked={i === sel}
                 onClick={() => setSel(i)}
                 className={cn(
-                  "flex min-h-[110px] flex-col justify-between rounded-[16px] border p-4 text-left t-colors",
+                  "flex items-center justify-between gap-4 rounded-[16px] border px-5 py-4 text-left t-colors",
                   i === sel
                     ? "border-[#1b1b1b] bg-[#f6f6f4]"
                     : "border-[#e1ded8] bg-white hover:border-[#9a9a9e]",
                 )}
               >
+                <span>
+                  <span className="block text-[16px] font-medium text-[#2a2a2c]">{o.name}</span>
+                  <span className="mt-0.5 block text-[14px] text-[#8b8d92] tabular-nums">
+                    {o.price}
+                  </span>
+                </span>
                 <span
                   className={cn(
-                    "grid size-6 place-items-center self-end rounded-full border",
+                    "grid size-6 shrink-0 place-items-center rounded-full border",
                     i === sel ? "border-[#1b1b1b] bg-[#1b1b1b] text-white" : "border-[#cfcac0]",
                   )}
                 >
                   {i === sel ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : null}
-                </span>
-                <span>
-                  <span className="block text-[15px] font-medium text-[#2a2a2c]">{o.name}</span>
-                  <span className="block text-[14px] text-[#8b8d92] tabular-nums">{o.price}</span>
                 </span>
               </button>
             ))}

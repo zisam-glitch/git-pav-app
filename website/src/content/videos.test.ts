@@ -2,7 +2,7 @@
 // The live site's videos are the owner's content: every YouTube address and video file on the new
 // site must be one the live site has (recorded in videos.ts on 25 Nov 2026), and nothing else.
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { PETITION } from "./petition.ts";
@@ -92,5 +92,17 @@ describe("the live site's videos", () => {
         "Root Canal Treatment | Pav Dental",
       ],
     );
+  });
+
+  it("has the live server's own video files in public/video, byte for byte the same size", () => {
+    const sizes: Record<string, number> = { "dent.mp4": 2071232, "dent2.mp4": 1554539, "gen.mp4": 5983941 };
+    for (const [name, size] of Object.entries(sizes)) {
+      const path = new URL(`../../public/video/${name}`, import.meta.url);
+      assert.ok(existsSync(path), `public/video/${name} is missing`);
+      assert.equal(statSync(path).size, size, `public/video/${name} is not the live file`);
+    }
+    for (const video of [...DENTURE_VIDEOS, ...GENERAL_PROCEDURE_VIDEOS]) {
+      if (video.src.startsWith("/video/")) assert.ok(existsSync(new URL(`../../public${video.src}`, import.meta.url)), video.src);
+    }
   });
 });

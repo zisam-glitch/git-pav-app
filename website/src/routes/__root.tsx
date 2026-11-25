@@ -36,7 +36,8 @@ export const Route = createRootRoute({
       { "script:ld+json": PRACTICE_JSON_LD },
     ],
     links: [
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      // The brand mark (PD monogram), the same image as the home-screen icon.
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icons/icon-512.png" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },

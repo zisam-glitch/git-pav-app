@@ -35,6 +35,19 @@ export const HOME_TESTIMONIALS: readonly Testimonial[] = [
 ];
 
 /** Aesthetics page, `/services/aesthetics`. */
+/**
+ * Emergency dental page, `/services/emergency-dental`. The live page shows the home page's four
+ * comments, except that the fourth names a different dentist than the home page's does.
+ */
+export const EMERGENCY_TESTIMONIALS: readonly Testimonial[] = HOME_TESTIMONIALS.map((item) =>
+  item.title === "Explained Everything Before Any Work Started."
+    ? {
+        title: item.title,
+        text: "I would rate this as the best dentist I have ever been to. Sonia, my dentist, made me feel really relaxed through my procedures and explained everything before any work started, so thank you.",
+      }
+    : item,
+);
+
 export const AESTHETICS_TESTIMONIALS: readonly Testimonial[] = [
   {
     title: "Boosted Confidence",

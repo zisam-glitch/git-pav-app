@@ -18,7 +18,7 @@ export function MouthguardsPage() {
       <MouthguardsWhyChoose />
       <ContactForm />
       <FloatingCta>
-        <BookButton arrow>Make an Appointment</BookButton>
+        <BookButton>Make an Appointment</BookButton>
       </FloatingCta>
     </main>
   );

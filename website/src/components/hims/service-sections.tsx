@@ -329,9 +329,7 @@ export function FloatingCta({ children }: { children: ReactNode }) {
           className={cn(
             // Label, gap and side padding ease together so the pill folds to a circle and unfolds again.
             "[&_a]:transition-[color,background-color,border-color,box-shadow,transform,font-size,padding,gap] [&_a]:duration-300 [&_a]:ease-in-out motion-reduce:[&_a]:transition-none",
-            // Hims' sticky CTA arrow nudges on its own loop, not only on hover.
-            "[&_a_svg]:animate-hims-nudge motion-reduce:[&_a_svg]:animate-none",
-            !open && "[&_a]:!text-[0px] [&_a]:!gap-0 [&_a]:!px-4",
+            !open && "[&_a]:!text-[0px] [&_a]:!gap-0 [&_a]:!px-[22px]",
           )}
         >
           {children}

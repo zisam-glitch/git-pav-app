@@ -59,7 +59,7 @@ export function RootCanalPage() {
       <RootCanalFaq />
       <ContactForm />
       <FloatingCta>
-        <BookButton arrow>Book Now</BookButton>
+        <BookButton>Book Now</BookButton>
       </FloatingCta>
     </main>
   );

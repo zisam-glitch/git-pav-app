@@ -310,7 +310,7 @@ export function WhiteningPage() {
       <WhiteningFaq />
 
       <FloatingCta>
-        <BookButton arrow>Book Now</BookButton>
+        <BookButton>Book Now</BookButton>
       </FloatingCta>
       <ContactForm />
     </main>

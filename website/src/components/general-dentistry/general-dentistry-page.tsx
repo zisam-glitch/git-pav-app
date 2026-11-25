@@ -35,7 +35,7 @@ export function GeneralDentistryPage() {
       <GeneralDentistryShowcase />
       <GeneralDentistryFaq />
       <FloatingCta>
-        <BookButton arrow>Book Appointment</BookButton>
+        <BookButton>Book Appointment</BookButton>
       </FloatingCta>
       <ContactForm />
     </main>

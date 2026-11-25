@@ -26,7 +26,7 @@ export function CustomGrillzPage() {
       <ContactForm />
       <GrillzFaq />
       <FloatingCta>
-        <BookButton arrow>Book Now</BookButton>
+        <BookButton>Book Now</BookButton>
       </FloatingCta>
     </main>
   );

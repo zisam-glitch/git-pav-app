@@ -19,7 +19,7 @@ export function VirtualDentistryPage() {
       <VirtualDentistryServices />
       <VirtualDentistryFaq />
       <FloatingCta>
-        <BookButton arrow>Book Now</BookButton>
+        <BookButton>Book Now</BookButton>
       </FloatingCta>
       <ContactForm />
     </main>

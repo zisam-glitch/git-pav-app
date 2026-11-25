@@ -37,6 +37,8 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      // The page font, fetched with the HTML instead of after the stylesheet, so text does not wait for it.
+      { rel: "preload", href: "/fonts/figtree/Figtree-latin-wght-normal.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },

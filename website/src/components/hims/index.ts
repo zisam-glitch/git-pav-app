@@ -44,3 +44,4 @@ export { PhotoHero } from "./photo-hero";
 export { ProductDetail, type DetailOption, type DetailAccordion } from "./product-detail";
 export { TileHub, type HubBigTile, type HubSmallTile } from "./tile-hub";
 export { SubNav } from "./sub-nav";
+export { CinematicHero } from "./cinematic-hero";

@@ -65,10 +65,12 @@ export function CallButton({
   className,
   children,
   href = PRACTICE_PHONE_HREF,
-}: Look & { href?: string }) {
+  arrow,
+}: Look & { href?: string; arrow?: boolean }) {
   return (
     <a href={href} className={cn(buttonVariants({ variant, size }), className)}>
       {children ?? `Call ${PRACTICE_PHONE}`}
+      {arrow ? <ArrowRight aria-hidden="true" /> : null}
     </a>
   );
 }

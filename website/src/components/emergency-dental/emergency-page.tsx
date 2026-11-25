@@ -20,7 +20,7 @@ export function EmergencyDentalPage() {
       <TestimonialsSection testimonials={HOME_TESTIMONIALS} />
       <ContactForm />
       <FloatingCta>
-        <CallButton>Call us Now · {PRACTICE_PHONE}</CallButton>
+        <CallButton arrow>Call us Now · {PRACTICE_PHONE}</CallButton>
       </FloatingCta>
     </main>
   );

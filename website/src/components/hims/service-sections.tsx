@@ -275,22 +275,32 @@ export function DarkQuestion({
  */
 export function FloatingCta({ children }: { children: ReactNode }) {
   const [visible, setVisible] = useState(false);
+  const [moving, setMoving] = useState(false);
 
   useEffect(() => {
     const SHOW_AFTER = 600; // px scrolled before the pill appears
+    const SETTLE_MS = 180; // quiet time before the pill expands again
     let lastY = window.scrollY;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const onScroll = () => {
       const y = window.scrollY;
       const goingDown = y > lastY;
       lastY = y;
-      if (y < SHOW_AFTER) setVisible(false);
-      else setVisible(goingDown);
+      setVisible(y >= SHOW_AFTER && goingDown);
+      setMoving(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => setMoving(false), SETTLE_MS);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
+  // While the page is moving the pill folds down to a gold-ringed black dot (label hidden),
+  // then opens back into the full pill once scrolling stops.
   return (
     <div
       className={cn(
@@ -299,13 +309,22 @@ export function FloatingCta({ children }: { children: ReactNode }) {
       )}
     >
       <div
-        className="pointer-events-auto rounded-full p-[3px]"
+        className="pointer-events-auto rounded-full p-[3px] transition-[padding] duration-200 ease-out motion-reduce:transition-none"
         style={{
           background: "linear-gradient(93deg, #eac57d 2.82%, #cf9358 100%)",
           boxShadow: "0 0.875rem 1.25rem 0 rgba(0,0,0,.25)",
         }}
       >
-        {children}
+        <div
+          className={cn(
+            "transition-[max-width] duration-200 ease-out motion-reduce:transition-none",
+            moving
+              ? "overflow-hidden [&_a]:!w-[3.5rem] [&_a]:!gap-0 [&_a]:!px-0 [&_a]:!justify-center [&_a]:!text-[0px] [&_a_svg]:shrink-0"
+              : "",
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

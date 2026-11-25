@@ -1,60 +1,41 @@
-import {
-  BookButton,
-  ButtonLink,
-  CallButton,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, CallButton, HUB_CARD, Section } from "@/components/hims";
 
 export function MobileDentistryService() {
   return (
-    <Section theme="brown" width="bento" space="lg" aria-labelledby="mobile-service-heading">
-      <SplitFeature
-        reverse
-        media={
-          <Media
-            src="/images/generated/mobile-dentistry-service.jpg"
-            ratio="4 / 3"
-            tone="brown"
-            className="bg-white/10 ring-1 ring-white/15"
-            alt="Modern well-equipped Pav Dental mobile surgery prepared for a home visit"
-          />
-        }
-      >
-        <div>
-          <span className="inline-flex items-center rounded-pill border border-white/15 bg-white/10 px-3.5 py-1 text-caption font-medium text-gold">
-            Fully Equipped Mobile Surgery
-          </span>
-          <div id="mobile-service-heading" className="mt-4">
-            <Heading as="h2" size="hero" accent="to You" tone="gold">
-              We Come
-            </Heading>
-          </div>
-          <p className="mt-5 max-w-lg text-lead text-white/85">
+    <Section id="service" theme="white" space="sm" aria-labelledby="mobile-service-heading">
+      <div className={`${HUB_CARD} grid items-center gap-8 p-4 md:p-6 lg:grid-cols-2 lg:gap-14`}>
+        <div className="px-3 py-4 md:px-6">
+          <h2
+            id="mobile-service-heading"
+            className="text-[clamp(32px,3.6vw,48px)] leading-[1.08] font-normal tracking-[-0.025em] text-[#2a2a2c]"
+          >
+            We Come <span className="text-[#8a4242]">to You</span>
+          </h2>
+          <p className="mt-5 max-w-lg text-[19px] leading-[1.45] text-[#55565a]">
             We have a modern, well-equipped mobile surgery that allows us to visit you in the
             comfort of your own home.
           </p>
-
-          <Tile tone="glass" className="mt-6 border border-white/15 p-5">
-            <p className="text-caption font-medium text-gold">Doorstep Clinical Care</p>
-            <p className="mt-1 text-body text-white/80">
-              Full range of dental services delivered directly to residential homes and care
-              facilities with our latest mobile dental equipment.
-            </p>
-          </Tile>
-
+          <p className="mt-4 max-w-lg text-[15px] leading-[1.5] text-[#6b6b70]">
+            Full range of dental services delivered directly to residential homes and care
+            facilities with our latest mobile dental equipment.
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <BookButton variant="gold">Make an Appointment</BookButton>
-            <ButtonLink href="#contact" variant="glass">
+            <BookButton>Make an Appointment</BookButton>
+            <ButtonLink href="#contact" variant="outline">
               Contact us
             </ButtonLink>
-            <CallButton variant="glass" />
+            <CallButton variant="ghost" />
           </div>
         </div>
-      </SplitFeature>
+        <div className="overflow-hidden rounded-[20px]">
+          <img
+            src="/images/generated/mobile-dentistry-service.jpg"
+            alt="Modern well-equipped Pav Dental mobile surgery prepared for a home visit"
+            loading="lazy"
+            className="aspect-[4/3] w-full object-cover"
+          />
+        </div>
+      </div>
     </Section>
   );
 }

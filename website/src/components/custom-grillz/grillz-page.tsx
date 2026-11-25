@@ -1,5 +1,6 @@
 import { ContactForm } from "@/components/home/contact-form";
-import { BookButton, FloatingCta, SubNav } from "@/components/hims";
+import { BookButton, FloatingCta, SubNav, VideoSection, YouTubeVideo } from "@/components/hims";
+import { YOUTUBE } from "@/content/videos";
 import { GrillzFaq } from "./grillz-faq";
 import { GrillzHero } from "./grillz-hero";
 import { GrillzPricing } from "./grillz-pricing";
@@ -10,6 +11,9 @@ export function CustomGrillzPage() {
   return (
     <main className="bg-white">
       <GrillzHero />
+      <VideoSection>
+        <YouTubeVideo {...YOUTUBE.grillz} title="Custom grillz at Pav Dental" />
+      </VideoSection>
       <SubNav
         label="On this page"
         items={[
@@ -20,6 +24,9 @@ export function CustomGrillzPage() {
         ]}
       />
       <GrillzStyles />
+      <VideoSection title="Custom Grillz" accent="Procedures">
+        <YouTubeVideo {...YOUTUBE.grillz} title="Custom grillz procedures" />
+      </VideoSection>
       <GrillzProcess />
       <GrillzPricing />
       <ContactForm />

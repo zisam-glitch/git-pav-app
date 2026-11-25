@@ -1,7 +1,6 @@
-import { AlertCircle, CheckCircle2, FileText, Play, X } from "lucide-react";
-import { useState } from "react";
-import { Heading, Media, Section, Tile } from "@/components/hims";
-import { Button } from "@/components/ui/button";
+import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
+import { Heading, Section, Tile, YouTubeVideo } from "@/components/hims";
+import { YOUTUBE } from "@/content/videos";
 
 const CONSENT_ITEMS = [
   {
@@ -21,18 +20,7 @@ const CONSENT_ITEMS = [
   },
 ];
 
-const CONSENT_VIDEOS = [
-  { id: "part-1", label: "Informed Consent - Gum Disease Part 1" },
-  { id: "part-2", label: "Informed Consent - Gum Disease Part 2" },
-  { id: "part-3", label: "Informed Consent - Gum Disease Part 3" },
-];
-
 export function OralHygieneConsent() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [activePart, setActivePart] = useState(CONSENT_VIDEOS[0].id);
-
-  const currentVideo = CONSENT_VIDEOS.find((v) => v.id === activePart) ?? CONSENT_VIDEOS[0];
-
   return (
     <Section theme="brown" width="bento" space="lg">
       <div className="max-w-2xl">
@@ -66,76 +54,7 @@ export function OralHygieneConsent() {
         ))}
       </div>
 
-      <div
-        className="mt-8 flex flex-wrap gap-2"
-        role="tablist"
-        aria-label="Informed consent advice"
-      >
-        {CONSENT_VIDEOS.map((video) => {
-          const selected = video.id === activePart;
-          return (
-            <Button
-              key={video.id}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              variant={selected ? "gold" : "glass"}
-              size="sm"
-              onClick={() => setActivePart(video.id)}
-            >
-              {video.label}
-            </Button>
-          );
-        })}
-      </div>
-
-      <div className="mt-6 overflow-hidden rounded-xl bg-brown-deep">
-        <div className="relative aspect-video">
-          {isPlaying ? (
-            <div className="relative size-full">
-              <video
-                src="/media/clinic-reel.mp4"
-                autoPlay
-                controls
-                loop
-                aria-label={currentVideo.label}
-                className="size-full object-cover"
-              />
-              <Button
-                type="button"
-                variant="light"
-                size="icon"
-                onClick={() => setIsPlaying(false)}
-                aria-label="Close informed consent video"
-                className="absolute top-4 right-4 z-20"
-              >
-                <X aria-hidden className="size-4" />
-              </Button>
-            </div>
-          ) : (
-            <div className="relative size-full">
-              <Media
-                src="/images/generated/oral-hygiene-showcase.jpg"
-                alt={currentVideo.label}
-                ratio="16 / 9"
-                tone="brown"
-                className="size-full rounded-none"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40 p-6 text-center">
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying(true)}
-                  className="flex size-20 items-center justify-center rounded-full bg-gold text-brown shadow-card t-colors hover:bg-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:size-24"
-                  aria-label={`Play ${currentVideo.label}`}
-                >
-                  <Play aria-hidden className="size-8 translate-x-0.5 fill-current" />
-                </button>
-                <p className="text-label text-white">{currentVideo.label}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      <YouTubeVideo {...YOUTUBE.oralHygiene} title="Informed consent for dental hygiene treatment" className="mt-8" />
     </Section>
   );
 }

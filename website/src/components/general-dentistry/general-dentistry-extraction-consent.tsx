@@ -1,5 +1,6 @@
 import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
 import { GeneralDentistryConsentPanel, type ConsentItem } from "./general-dentistry-consent-panel";
+import { YOUTUBE } from "@/content/videos";
 
 const CONSENT_ITEMS: readonly ConsentItem[] = [
   {
@@ -27,6 +28,7 @@ export function GeneralDentistryExtractionConsent() {
       accent="Tooth Extraction"
       intro="Before proceeding with tooth extraction, we ensure you fully understand the procedure, risks, and benefits of removing your tooth."
       items={CONSENT_ITEMS}
+      video={{ ...YOUTUBE.extraction, title: "Informed consent for tooth extraction" }}
     />
   );
 }

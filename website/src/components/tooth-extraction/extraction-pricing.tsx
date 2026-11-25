@@ -5,8 +5,10 @@ import {
   HUB_CARD,
   Section,
   SectionHead,
+  YouTubeVideo,
   type PricingTier,
 } from "@/components/hims";
+import { YOUTUBE } from "@/content/videos";
 
 const TIERS: readonly PricingTier[] = [
   {
@@ -109,6 +111,8 @@ export function ExtractionPricing() {
             );
           })}
         </ul>
+
+        <YouTubeVideo {...YOUTUBE.extraction} title="Informed consent for tooth extraction" className="mt-6" />
       </div>
     </Section>
   );

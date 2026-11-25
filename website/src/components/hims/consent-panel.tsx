@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Heading } from "./heading";
 import { Section, type SectionTheme } from "./section";
+import { YouTubeVideo } from "./video-cards";
 
 export type ConsentItem = {
   title: string;
@@ -21,6 +22,7 @@ export function ConsentPanel({
   accent,
   intro,
   items,
+  video,
 }: {
   id?: string;
   theme?: SectionTheme;
@@ -28,6 +30,8 @@ export function ConsentPanel({
   accent?: ReactNode;
   intro: string;
   items: readonly ConsentItem[];
+  /** The practice's consent video for this treatment, if the live page has one. */
+  video?: { id: string; query?: string; title: string };
 }) {
   const panelSurface = theme === "cream" ? "border border-border bg-white" : "bg-cream";
 
@@ -58,6 +62,8 @@ export function ConsentPanel({
             );
           })}
         </ul>
+
+        {video ? <YouTubeVideo id={video.id} query={video.query} title={video.title} className="mt-8" /> : null}
       </div>
     </Section>
   );

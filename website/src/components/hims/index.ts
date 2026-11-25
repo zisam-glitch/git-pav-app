@@ -45,3 +45,4 @@ export { ProductDetail, type DetailOption, type DetailAccordion } from "./produc
 export { TileHub, type HubBigTile, type HubSmallTile } from "./tile-hub";
 export { SubNav } from "./sub-nav";
 export { CinematicHero } from "./cinematic-hero";
+export { VideoRow, VideoSection, YouTubeVideo, type VideoFile } from "./video-cards";

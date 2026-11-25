@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { embedUrl, YOUTUBE } from "@/content/videos";
 
 const EXPLORE =
   "inline-flex h-[34px] items-center rounded-pill bg-white px-5 text-small font-medium text-black t-colors hover:bg-white/85";
@@ -81,7 +82,7 @@ export function KnowMore() {
           {playing ? (
             <>
               <iframe
-                src="https://www.youtube.com/embed/zHXljj727OE?si=Uz7mq8eE5tSAvpgy&autoplay=1&controls=0&loop=1&playlist=zHXljj727OE&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3"
+                src={embedUrl(YOUTUBE.home)}
                 title="What causes cavities? — Pav Dental"
                 className="absolute inset-0 size-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

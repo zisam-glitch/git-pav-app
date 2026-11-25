@@ -1,5 +1,3 @@
-import { Play, X } from "lucide-react";
-import { useState } from "react";
 import { Section, StepsPanel } from "@/components/hims";
 
 const PROCEDURE_STEPS = [
@@ -27,7 +25,6 @@ const STEP_IMAGES = [
 ];
 
 export function RootCanalHow() {
-  const [isPlaying, setIsPlaying] = useState(false);
   return (
     <>
       <Section theme="white" space="sm" aria-labelledby="root-canal-how-heading">
@@ -52,44 +49,12 @@ export function RootCanalHow() {
           })}
         />
         <div className="relative mt-4 aspect-video overflow-hidden rounded-[28px] bg-black">
-          {isPlaying ? (
-            <>
-              <video
-                src="/media/clinic-reel.mp4"
-                autoPlay
-                controls
-                loop
-                aria-label="How the Root canal treatment is done"
-                className="size-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => setIsPlaying(false)}
-                aria-label="Close root canal walkthrough video"
-                className="absolute top-4 right-4 z-20 grid size-10 place-items-center rounded-full bg-white text-black"
-              >
-                <X aria-hidden className="size-4" />
-              </button>
-            </>
-          ) : (
-            <>
-              <img
-                src="/images/generated/root-canal-how.jpg"
-                alt="Pav Dental clinical room prepared for root canal treatment"
-                className="size-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => setIsPlaying(true)}
-                aria-label="Play root canal walkthrough video"
-                className="absolute inset-0 grid place-items-center bg-black/30 t-colors hover:bg-black/15"
-              >
-                <span className="grid size-20 place-items-center rounded-full bg-white text-black sm:size-24">
-                  <Play aria-hidden className="size-8 translate-x-0.5 fill-current" />
-                </span>
-              </button>
-            </>
-          )}
+          <img
+            src="/images/generated/root-canal-how.jpg"
+            alt="Pav Dental clinical room prepared for root canal treatment"
+            loading="lazy"
+            className="size-full object-cover"
+          />
         </div>
       </Section>
     </>

@@ -3,6 +3,7 @@ import { AlertCircle, Beaker, CheckCircle2, Droplets, FileText, Flag, Layers, Sh
 import { BookButton, ButtonLink, CallButton, CompareTable, ConsentPanel, DarkQuestion, FeatureBento, FloatingCta, IncludedList, Section, ServiceHeroLayout, StepsPanel, type ConsentItem } from "@/components/hims";
 import { WhiteningFaq } from "./whitening-faq";
 import { PRODUCTS_DATA } from "./whitening-data";
+import { YOUTUBE } from "@/content/videos";
 
 const [STRIPS, KIT, OFFICE] = PRODUCTS_DATA;
 
@@ -281,6 +282,7 @@ export function WhiteningPage() {
         accent="Tooth Whitening"
         intro="Before starting a course of teeth whitening, please review the clinical guidance and suitability considerations with your prescribing dentist."
         items={WHITENING_CONSENT_ITEMS}
+        video={{ ...YOUTUBE.whitening, title: "Informed consent for tooth whitening" }}
       />
 
       <WhiteningFaq />

@@ -1,6 +1,5 @@
 import { ContactForm } from "@/components/home/contact-form";
-import { BookButton, CallButton, CtaBand, FloatingCta, SubNav } from "@/components/hims";
-import { GrillzContact } from "./grillz-contact";
+import { BookButton, FloatingCta, SubNav } from "@/components/hims";
 import { GrillzFaq } from "./grillz-faq";
 import { GrillzHero } from "./grillz-hero";
 import { GrillzPricing } from "./grillz-pricing";

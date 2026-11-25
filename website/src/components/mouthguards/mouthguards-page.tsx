@@ -1,4 +1,4 @@
-import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
+import { BookButton, FloatingCta } from "@/components/hims";
 import { ContactForm } from "@/components/home/contact-form";
 import { MouthguardsColour } from "./mouthguards-colour";
 import { MouthguardsHero } from "./mouthguards-hero";

@@ -1,5 +1,4 @@
 import { ContactForm } from "@/components/home/contact-form";
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { AestheticsHero } from "./aesthetics-hero";
 import { AestheticsPremium } from "./aesthetics-premium";
 import { AestheticsPricing } from "./aesthetics-pricing";

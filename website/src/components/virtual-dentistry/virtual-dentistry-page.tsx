@@ -1,5 +1,5 @@
 import { ContactForm } from "@/components/home/contact-form";
-import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
+import { BookButton, FloatingCta } from "@/components/hims";
 import { VirtualDentistryBenefits } from "./virtual-dentistry-benefits";
 import { VirtualDentistryFaq } from "./virtual-dentistry-faq";
 import { VirtualDentistryHero } from "./virtual-dentistry-hero";

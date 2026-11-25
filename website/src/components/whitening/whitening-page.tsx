@@ -1,30 +1,6 @@
 import { ContactForm } from "@/components/home/contact-form";
-import {
-  AlertCircle,
-  Beaker,
-  CheckCircle2,
-  Droplets,
-  FileText,
-  Flag,
-  Layers,
-  ShieldCheck,
-} from "lucide-react";
-import {
-  BookButton,
-  ButtonLink,
-  CallButton,
-  CompareTable,
-  ConsentPanel,
-  CtaBand,
-  DarkQuestion,
-  FeatureBento,
-  FloatingCta,
-  IncludedList,
-  Section,
-  ServiceHeroLayout,
-  StepsPanel,
-  type ConsentItem,
-} from "@/components/hims";
+import { AlertCircle, Beaker, CheckCircle2, Droplets, FileText, Flag, Layers, ShieldCheck } from "lucide-react";
+import { BookButton, ButtonLink, CallButton, CompareTable, ConsentPanel, DarkQuestion, FeatureBento, FloatingCta, IncludedList, Section, ServiceHeroLayout, StepsPanel, type ConsentItem } from "@/components/hims";
 import { WhiteningFaq } from "./whitening-faq";
 import { PRODUCTS_DATA } from "./whitening-data";
 

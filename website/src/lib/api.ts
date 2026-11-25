@@ -28,10 +28,16 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
     ...(options?.headers as Record<string, string> || {}),
   };
   
-  const res = await fetch(url, {
-    ...options,
-    headers,
-  });
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...options,
+      headers,
+    });
+  } catch {
+    // Offline, blocked by CORS, or the dashboard is down. Patients should not see the browser's "Failed to fetch".
+    throw new Error("We couldn't reach the practice just now. Please try again, or call us on 0800 1938 786.");
+  }
 
   if (!res.ok) {
     let errMessage = `API Error ${res.status}`;

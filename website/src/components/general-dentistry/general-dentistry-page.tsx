@@ -1,5 +1,5 @@
 import { ContactForm } from "@/components/home/contact-form";
-import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
+import { BookButton, FloatingCta } from "@/components/hims";
 import { GeneralDentistryCavities } from "./general-dentistry-cavities";
 import { GeneralDentistryChoosing } from "./general-dentistry-choosing";
 import { GeneralDentistryExtractionConsent } from "./general-dentistry-extraction-consent";

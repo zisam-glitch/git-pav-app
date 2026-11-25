@@ -1,4 +1,4 @@
-import { BookButton, CallButton, ExplainCards, Section, SectionHead } from "@/components/hims";
+import { BookButton, CallButton, ExplainCards, Section } from "@/components/hims";
 
 const GUARANTEE_CARDS = [
   {

@@ -1,17 +1,7 @@
 import { ContactForm } from "@/components/home/contact-form";
-import {
-  BookButton,
-  ButtonLink,
-  CallButton,
-  CtaBand,
-  DarkQuestion,
-  FloatingCta,
-  IncludedList,
-  Section,
-} from "@/components/hims";
+import { BookButton, ButtonLink, DarkQuestion, FloatingCta, IncludedList, Section } from "@/components/hims";
 import { Clock, Gem, ShieldCheck, Stethoscope } from "lucide-react";
 import { RootCanalConsent } from "./root-canal-consent";
-import { RootCanalContact } from "./root-canal-contact";
 import { RootCanalFaq } from "./root-canal-faq";
 import { RootCanalHero } from "./root-canal-hero";
 import { RootCanalHow } from "./root-canal-how";

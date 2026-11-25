@@ -1,12 +1,4 @@
-import {
-  BookButton,
-  CallButton,
-  CtaBand,
-  FloatingCta,
-  NumberedCards,
-  Section,
-  SubNav,
-} from "@/components/hims";
+import { BookButton, FloatingCta, NumberedCards, Section, SubNav } from "@/components/hims";
 import { ContactForm } from "@/components/home/contact-form";
 import { ExtractionBook } from "./extraction-book";
 import { ExtractionFaq } from "./extraction-faq";

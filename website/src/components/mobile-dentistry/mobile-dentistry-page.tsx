@@ -1,15 +1,6 @@
 import { ContactForm } from "@/components/home/contact-form";
-import {
-  BookButton,
-  CallButton,
-  CtaBand,
-  FloatingCta,
-  NumberedCards,
-  Section,
-  SubNav,
-} from "@/components/hims";
+import { BookButton, FloatingCta, NumberedCards, Section, SubNav } from "@/components/hims";
 import { MobileDentistryBenefits } from "./mobile-dentistry-benefits";
-import { MobileDentistryContact } from "./mobile-dentistry-contact";
 import { MobileDentistryHero } from "./mobile-dentistry-hero";
 import { MobileDentistryLocation } from "./mobile-dentistry-location";
 import { MobileDentistryService } from "./mobile-dentistry-service";

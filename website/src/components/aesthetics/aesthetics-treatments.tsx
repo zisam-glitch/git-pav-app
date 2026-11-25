@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import { BookButton, ButtonLink, CardRail, Section, SectionHead } from "@/components/hims";
 
 const TREATMENTS = [

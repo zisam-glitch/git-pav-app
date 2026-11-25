@@ -1,4 +1,3 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { ContactForm } from "@/components/home/contact-form";
 import { OralHygieneConsent } from "./oral-hygiene-consent";
 import { OralHygieneFaq } from "./oral-hygiene-faq";

@@ -1,7 +1,6 @@
 import { Play, X } from "lucide-react";
 import { useState } from "react";
 import { Section, StepsPanel } from "@/components/hims";
-import { Button } from "@/components/ui/button";
 
 const PROCEDURE_STEPS = [
   {

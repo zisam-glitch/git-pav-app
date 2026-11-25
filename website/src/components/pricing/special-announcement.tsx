@@ -3,7 +3,7 @@ import { Megaphone } from "lucide-react";
 import { BookButton, ButtonLink, CallButton } from "@/components/hims";
 import { api, HAS_API_BASE } from "@/lib/api";
 import { BOOKING_URL } from "@/lib/enquiry";
-import { CLAY, LEAD, SOFT_CARD, TITLE, CONTAINER } from "./tokens";
+import { CLAY, LEAD, SOFT_CARD, CONTAINER } from "./tokens";
 
 const REASONS = [
   {

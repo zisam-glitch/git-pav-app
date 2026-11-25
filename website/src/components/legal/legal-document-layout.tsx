@@ -28,10 +28,10 @@ const LEGAL_POLICY_LINKS = [
 export type LegalPolicyPath = (typeof LEGAL_POLICY_LINKS)[number]["to"];
 
 /**
- * Hims-style editorial legal & policy page shell:
- * - Warm #faf8f2 cream full-bleed header canvas (Mobbin 826e669b)
- * - Sticky desktop numbered "On this page" jump navigation sidebar (Mobbin a02b45d0)
- * - Clean single-column editorial reading column with min-w-0 overflow protection
+ * Hims-style legal & policy page shell:
+ * - Grey rounded hero panel with a two-tone heading, like the Hims product pages
+ * - Sticky "On this page" sidebar in rounded grey tiles
+ * - Each section is its own 24px rounded grey card
  */
 export function LegalDocumentPage({
   currentPath,
@@ -59,14 +59,9 @@ export function LegalDocumentPage({
       <ScrollProgress />
       <Header />
 
-      {/* Warm #faf8f2 cream full-bleed editorial header (Hims Mobbin 826e669b) */}
-      <Section
-        theme="cream"
-        width="wide"
-        space="none"
-        className="border-b border-border py-10 md:py-16"
-      >
-        <div className="max-w-3xl">
+      {/* Grey rounded hero panel with a two-tone heading */}
+      <Section theme="white" width="wide" space="none" className="pt-6 md:pt-10">
+        <div className="max-w-3xl rounded-[24px] bg-[#f6f6f4] p-7 md:p-14">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
               Pav Dental · Bradford
@@ -94,7 +89,7 @@ export function LegalDocumentPage({
           ) : null}
 
           {metaItems && metaItems.length > 0 ? (
-            <dl className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 text-small text-muted">
+            <dl className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-small text-muted">
               {metaItems.map((item) => (
                 <div key={item} className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-terracotta" aria-hidden="true" />
@@ -106,12 +101,12 @@ export function LegalDocumentPage({
         </div>
       </Section>
 
-      {/* Editorial body + sticky numbered "On this page" jump nav (Hims Mobbin a02b45d0) */}
+      {/* Body with a sticky "On this page" jump nav */}
       <Section theme="white" width="wide" space="default">
         <div className="grid items-start gap-10 lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[18.5rem_minmax(0,48rem)] lg:gap-14">
           <aside aria-label="On this page" className="min-w-0 lg:sticky lg:top-24">
             {/* Mobile compact jump menu */}
-            <details className="group rounded-xl border border-border bg-tile-cream lg:hidden">
+            <details className="group rounded-[24px] bg-[#f6f6f4] lg:hidden">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-label text-fg">
                 <span className="text-caption font-medium tracking-[0.12em] uppercase text-muted">
                   On this page ({toc.length})
@@ -121,8 +116,8 @@ export function LegalDocumentPage({
                   className="size-4 text-muted transition-transform duration-200 group-open:rotate-180"
                 />
               </summary>
-              <nav aria-label="Section jump links" className="border-t border-border px-5 py-3">
-                <ol className="divide-y divide-border">
+              <nav aria-label="Section jump links" className="px-5 pb-3">
+                <ol className="divide-y divide-[#e4e4df]">
                   {toc.map((item, index) => (
                     <li key={item.id}>
                       <a
@@ -147,12 +142,12 @@ export function LegalDocumentPage({
 
             {/* Desktop sticky sidebar */}
             <div className="hidden space-y-5 lg:block">
-              <Tile tone="cream" className="border border-border/70 p-6">
+              <Tile tone="cream" className="rounded-[24px] bg-[#f6f6f4] p-6">
                 <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
                   On this page
                 </p>
                 <nav aria-label="Section navigation" className="mt-4">
-                  <ol className="divide-y divide-border">
+                  <ol className="divide-y divide-[#e4e4df]">
                     {toc.map((item, index) => (
                       <li key={item.id}>
                         <a
@@ -177,7 +172,7 @@ export function LegalDocumentPage({
                 </nav>
               </Tile>
 
-              <div className="rounded-xl border border-border bg-white p-5">
+              <div className="rounded-[24px] bg-[#f6f6f4] p-5">
                 <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
                   Practice Policies
                 </p>
@@ -192,8 +187,8 @@ export function LegalDocumentPage({
                           className={cn(
                             "flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-small t-colors",
                             active
-                              ? "bg-cream font-medium text-fg"
-                              : "text-muted hover:bg-cream/60 hover:text-fg",
+                              ? "bg-white font-medium text-fg"
+                              : "text-muted hover:bg-white/70 hover:text-fg",
                           )}
                         >
                           <span>{policy.label}</span>
@@ -218,13 +213,13 @@ export function LegalDocumentPage({
               <Tile
                 tone="cream"
                 as="aside"
-                className="mb-10 border border-border border-l-2 border-l-terracotta p-5 text-small leading-relaxed text-fg md:p-6"
+                className="mb-6 rounded-[24px] bg-[#f6f6f4] p-6 text-small leading-relaxed text-fg md:p-8"
               >
                 {notice}
               </Tile>
             ) : null}
 
-            <div className="divide-y divide-border [&>*:first-child]:pt-0">{children}</div>
+            <div className="space-y-4">{children}</div>
           </article>
         </div>
       </Section>
@@ -247,7 +242,7 @@ export function LegalSection({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="min-w-0 scroll-mt-28 py-8 first:pt-0 md:py-10">
+    <section id={id} className="min-w-0 scroll-mt-28 rounded-[24px] bg-[#f6f6f4] p-6 md:p-10">
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-caption font-medium text-terracotta">{number}</span>
         <h2 className="text-h3-md text-fg">{title}</h2>
@@ -272,22 +267,22 @@ export function LegalTable({
   minWidthClass?: string;
 }) {
   return (
-    <div className="mt-5 w-full overflow-x-auto rounded-xl border border-border bg-white">
+    <div className="mt-5 w-full overflow-x-auto rounded-[24px] bg-white">
       <table className={cn("w-full border-collapse text-left text-body text-fg", minWidthClass)}>
-        <thead className="bg-sand text-fg">
+        <thead className="bg-[#ebebe6] text-fg">
           <tr>
             {headers.map((header) => (
               <th
                 key={header}
                 scope="col"
-                className="border-b border-border px-5 py-3.5 text-caption font-medium tracking-[0.06em] uppercase text-fg"
+                className="px-5 py-3.5 text-caption font-medium tracking-[0.06em] uppercase text-fg"
               >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody className="divide-y divide-[#f0f0ec]">
           {rows.map((row, rowIndex) => (
             <tr key={rowIndex} className="t-colors hover:bg-cream/60">
               {row.map((cell, cellIndex) => (

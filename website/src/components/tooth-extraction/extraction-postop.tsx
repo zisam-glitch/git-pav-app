@@ -79,6 +79,14 @@ export function ExtractionPostOp() {
           }))}
         />
       </div>
+      <div className="mt-3 rounded-[24px] bg-[#f1e9de] p-7 md:p-9">
+        <h3 className="text-[24px] font-normal text-[#5a2f2f]">Watch for Complications:</h3>
+        <p className="mt-3 max-w-3xl text-[16px] leading-[1.5] text-[#8b7f73]">
+          - Look out for signs of infection like fever, severe pain, or swelling that worsens after
+          a few days. Also, be aware of dry socket, a condition where the blood clot fails to
+          develop or is dislodged, leading to delayed healing.
+        </p>
+      </div>
       <div className="mt-3 rounded-[24px] bg-[#f7f7f7] p-7 md:p-9">
         <h3 className="text-[24px] font-normal text-[#2a2a2c]">Reminder:</h3>
         <p className="mt-3 max-w-3xl text-[16px] leading-[1.5] text-[#6b6b70]">

@@ -245,6 +245,10 @@ export function WhiteningPage() {
                   ],
                 },
                 {
+                  label: "Details",
+                  cells: [STRIPS.description, KIT.description, OFFICE.description],
+                },
+                {
                   label: "Best for",
                   cells: [
                     "On-the-go touch-ups and smile maintenance",

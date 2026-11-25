@@ -44,14 +44,16 @@ export function EmergencyPricing() {
         </div>
         <div className="flex min-h-[300px] flex-col justify-between rounded-[24px] bg-[linear-gradient(160deg,#5a4630_0%,#3a2c1b_100%)] p-8 text-white">
           <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-[13px] font-medium">
-            Out of Hours
+            After hours
           </span>
           <div>
-            <p className="text-[clamp(56px,7vw,96px)] leading-none font-normal tracking-[-0.04em] tabular-nums">
-              £90
-            </p>
-            <p className="mt-4 text-[17px] text-white/80">
-              Out of Hours – Weekends 9am – 8pm and Weekdays 5pm – 8pm
+            <p className="leading-none">
+              <span className="text-[clamp(56px,7vw,96px)] font-normal tracking-[-0.04em] tabular-nums">
+                £90
+              </span>{" "}
+              <span className="mt-4 block text-[17px] text-white/80">
+                Out of Hours – Weekends 9am – 8pm and Weekdays 5pm – 8pm
+              </span>
             </p>
           </div>
         </div>
@@ -68,7 +70,11 @@ export function EmergencyPricing() {
       <div className="mt-12">
         <CardRail
           label="Emergency treatment fees"
-          items={TREATMENT_FEES.map((t) => ({ label: t.price, title: t.name, text: "" }))}
+          items={TREATMENT_FEES.map((t) => ({
+            label: "Fee",
+            title: `${t.name} – ${t.price}`,
+            text: "",
+          }))}
         />
       </div>
       <div

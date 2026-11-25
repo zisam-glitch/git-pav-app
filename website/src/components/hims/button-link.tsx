@@ -1,4 +1,5 @@
 import { Link, type LinkProps } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { buttonVariants } from "@/components/ui/button";
@@ -43,7 +44,7 @@ export function ButtonLink({
 }
 
 /** Every Book button goes to the practice's Setmore page (a test enforces it). */
-export function BookButton({ variant, size, className, children = "Book now" }: Look) {
+export function BookButton({ variant, size, className, arrow, children = "Book now" }: Look & { arrow?: boolean }) {
   return (
     <a
       href={BOOKING_URL}
@@ -52,6 +53,7 @@ export function BookButton({ variant, size, className, children = "Book now" }: 
       className={cn(buttonVariants({ variant, size }), className)}
     >
       {children}
+      {arrow ? <ArrowRight aria-hidden="true" /> : null}
     </a>
   );
 }

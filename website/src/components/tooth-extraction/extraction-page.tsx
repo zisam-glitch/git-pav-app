@@ -58,7 +58,7 @@ export function ToothExtractionPage() {
       <ExtractionFaq />
       <ContactForm />
       <FloatingCta>
-        <BookButton>Make an Appointment</BookButton>
+        <BookButton arrow>Make an Appointment</BookButton>
       </FloatingCta>
     </main>
   );

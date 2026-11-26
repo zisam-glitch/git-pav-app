@@ -1,21 +1,25 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
-import { CosmeticAbout } from "./cosmetic-about";
-import { CosmeticBenefits } from "./cosmetic-benefits";
+import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
 import { CosmeticContact } from "./cosmetic-contact";
 import { CosmeticFaq } from "./cosmetic-faq";
-import { CosmeticFinancing } from "./cosmetic-financing";
 import { CosmeticHero } from "./cosmetic-hero";
-import { CosmeticProcedures } from "./cosmetic-procedures";
+import {
+  CosmeticBenefits,
+  CosmeticCosts,
+  CosmeticIntro,
+  CosmeticProcedures,
+  CosmeticQuestion,
+} from "./cosmetic-sections";
 import { CosmeticShowcase } from "./cosmetic-showcase";
 
 export function CosmeticPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <CosmeticHero />
-      <CosmeticAbout />
+      <CosmeticIntro />
       <CosmeticProcedures />
       <CosmeticBenefits />
-      <CosmeticFinancing />
+      <CosmeticCosts />
+      <CosmeticQuestion />
       <CosmeticShowcase />
       <CosmeticFaq />
       <CosmeticContact />
@@ -34,6 +38,9 @@ export function CosmeticPage() {
         Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
         check-ups, and advanced technologies like digital imaging and laser dentistry.
       </CtaBand>
+      <FloatingCta>
+        <BookButton>Book Now</BookButton>
+      </FloatingCta>
     </main>
   );
 }

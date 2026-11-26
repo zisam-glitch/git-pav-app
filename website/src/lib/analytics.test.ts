@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { shouldLoadAnalytics } from "./analytics.ts";
 
 test("analytics loads only after the visitor accepts cookies", () => {
-  assert.equal(shouldLoadAnalytics("accepted", "G-KZVKDLY449"), true);
-  assert.equal(shouldLoadAnalytics("declined", "G-KZVKDLY449"), false);
-  assert.equal(shouldLoadAnalytics(null, "G-KZVKDLY449"), false);
+  assert.equal(shouldLoadAnalytics("accepted", "G-ZZW34YMNDY"), true);
+  assert.equal(shouldLoadAnalytics("declined", "G-ZZW34YMNDY"), false);
+  assert.equal(shouldLoadAnalytics(null, "G-ZZW34YMNDY"), false);
 });
 
 test("analytics needs a real measurement id", () => {

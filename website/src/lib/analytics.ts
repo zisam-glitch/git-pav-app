@@ -2,7 +2,7 @@
 // with IP anonymisation and no ad features. Never send health details as
 // event parameters.
 
-export const GA4_ID: string = (import.meta as any).env?.VITE_GA4_ID || "G-KZVKDLY449";
+export const GA4_ID: string = (import.meta as any).env?.VITE_GA4_ID || "G-ZZW34YMNDY";
 
 const CONSENT_KEY = "cookie_consent";
 

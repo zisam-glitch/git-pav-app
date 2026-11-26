@@ -43,5 +43,5 @@ This folder contains the public-facing marketing website and online shop for Pav
   - After adding a page to `PAGES`, run `npm run seo:sitemap`.
   - `npm run seo:parity` compares a running build with the recorded live site (see `seo/README.md`). CI runs it; a page may not fall behind `seo/parity-ratchet.json`, so after porting a page run it with `--update-ratchet` and commit the file.
 - **Privacy & Security**:
-  - Google Analytics 4 (`G-KZVKDLY449`) must only load after cookie consent is granted.
+  - Google Analytics 4 (`G-ZZW34YMNDY`) must only load after cookie consent is granted.
   - Never commit real secrets or `.env*` files.

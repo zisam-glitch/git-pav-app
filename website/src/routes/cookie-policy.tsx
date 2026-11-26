@@ -69,7 +69,7 @@ function CookiePolicyPage() {
               <>
                 We use Google Analytics 4 (Measurement ID:{" "}
                 <code className="rounded bg-cream px-1.5 py-0.5 text-small text-fg">
-                  G-KZVKDLY449
+                  G-ZZW34YMNDY
                 </code>
                 ) to collect aggregated, anonymised statistics on site usage, page visits, and
                 navigation paths.

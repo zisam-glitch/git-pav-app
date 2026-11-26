@@ -1,5 +1,5 @@
 import { Check, Clock, MapPin, Phone } from "lucide-react";
-import { BookButton, CallButton, Heading, Section, Tile } from "@/components/hims";
+import { BookButton, CallButton, Heading, Section } from "@/components/hims";
 import { PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
 const REASONS = [
@@ -14,9 +14,6 @@ export function ExtractionBook() {
     <Section theme="white" space="default">
       <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
-          <p className="inline-flex rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Same-Day Appointments
-          </p>
           <Heading as="h2" size="h2-md" accent="Today" tone="terracotta" className="mt-4">
             Book Your Appointment
           </Heading>
@@ -57,7 +54,7 @@ export function ExtractionBook() {
           </div>
         </div>
 
-        <Tile tone="cream" className="border border-border p-6 md:p-8">
+        <div className="rounded-[24px] bg-[#f7f7f7] p-7 md:p-9">
           <Heading as="h3" size="h3-md">
             Why Choose PavDental?
           </Heading>
@@ -79,7 +76,7 @@ export function ExtractionBook() {
               </li>
             ))}
           </ul>
-        </Tile>
+        </div>
       </div>
     </Section>
   );

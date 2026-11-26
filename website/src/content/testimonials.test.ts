@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   AESTHETICS_TESTIMONIALS,
+  EMERGENCY_TESTIMONIALS,
   HOME_TESTIMONIALS,
   TESTIMONIALS_HEADING,
   TESTIMONIALS_INTRO,
@@ -17,20 +18,22 @@ const squash = (text: string) => text.replace(/\s+/g, " ").trim();
  * and a comment. The live carousel repeats its entries and ends with a pager ("1", "2", ...),
  * so read up to the pager and keep the first of each.
  */
-function liveSection(file: string) {
+function liveSection(file: string, heading = TESTIMONIALS_HEADING) {
   const lines = read(`../../seo/live-text/${file}`)
     .split("\n")
     .map(squash)
     .filter(Boolean);
-  const start = lines.indexOf(TESTIMONIALS_HEADING);
-  assert.ok(start >= 0, `${file} has the "${TESTIMONIALS_HEADING}" heading`);
+  const start = lines.indexOf(heading);
+  assert.ok(start >= 0, `${file} has the "${heading}" heading`);
+  // The live emergency page breaks the intro sentence over two lines.
+  const wrapped = `${lines[start + 1]} ${lines[start + 2]}` === TESTIMONIALS_INTRO;
   const entries: Testimonial[] = [];
-  for (let i = start + 2; i + 1 < lines.length && !/^\d+$/.test(lines[i]); i += 2) {
+  for (let i = start + (wrapped ? 3 : 2); i + 1 < lines.length && !/^\d+$/.test(lines[i]); i += 2) {
     if (!entries.some((e) => e.title === lines[i] && e.text === lines[i + 1])) {
       entries.push({ title: lines[i], text: lines[i + 1] });
     }
   }
-  return { intro: lines[start + 1], entries };
+  return { intro: wrapped ? TESTIMONIALS_INTRO : lines[start + 1], entries };
 }
 
 describe("the testimonials match the live site", () => {
@@ -52,8 +55,18 @@ describe("the testimonials match the live site", () => {
     );
   });
 
+  it("shows the emergency page comments the live emergency page shows, in the same order", () => {
+    // The live emergency page spells its heading "What peoble say?"; the new site keeps the correct spelling.
+    const live = liveSection("services--emergency-dental.txt", "What peoble say?");
+    assert.equal(live.intro, TESTIMONIALS_INTRO);
+    assert.deepEqual(
+      EMERGENCY_TESTIMONIALS.map((t) => ({ title: squash(t.title), text: squash(t.text) })),
+      live.entries,
+    );
+  });
+
   it("has no names, ratings or star counts that the live comments do not carry", () => {
-    for (const t of [...HOME_TESTIMONIALS, ...AESTHETICS_TESTIMONIALS]) {
+    for (const t of [...HOME_TESTIMONIALS, ...EMERGENCY_TESTIMONIALS, ...AESTHETICS_TESTIMONIALS]) {
       assert.deepEqual(Object.keys(t).sort(), ["text", "title"]);
     }
   });

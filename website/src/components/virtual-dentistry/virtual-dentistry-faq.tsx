@@ -1,4 +1,4 @@
-import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, FaqSplit, Section, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {
@@ -53,29 +53,13 @@ const FAQS: FaqItem[] = [
 
 export function VirtualDentistryFaq() {
   return (
-    <Section id="faq" theme="white" space="default" aria-labelledby="virtual-faq-heading">
-      <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.7fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            FAQs
-          </span>
-          <div id="virtual-faq-heading" className="mt-4">
-            <Heading as="h2" size="h2-md" accent="Question" tone="terracotta">
-              Frequently Asked
-            </Heading>
-          </div>
-          <p className="mt-4 max-w-sm text-lead text-muted">
-            Common questions about booking a video consultation, technology needed, and online
-            prescriptions.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <BookButton>Book appointment</BookButton>
-            <CallButton variant="outline" />
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
+    <Section id="faq" theme="white" aria-labelledby="virtual-faq-heading">
+      <FaqSplit
+        id="virtual-faq-heading"
+        title="Frequently Asked Question"
+        action={<BookButton>Book Appointment</BookButton>}
+        items={FAQS}
+      />
     </Section>
   );
 }

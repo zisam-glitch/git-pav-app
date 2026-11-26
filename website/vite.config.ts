@@ -26,6 +26,14 @@ export default defineConfig(({ command, isPreview }) => ({
       ? [
           nitro({
             preset: "vercel",
+            // Files under public/ keep their names, so they get a long but not permanent cache; hashed build files never change.
+            routeRules: {
+              "/assets/**": { headers: { "cache-control": "public, max-age=31536000, immutable" } },
+              "/fonts/**": { headers: { "cache-control": "public, max-age=31536000, immutable" } },
+              "/images/**": { headers: { "cache-control": "public, max-age=2592000, stale-while-revalidate=604800" } },
+              "/media/**": { headers: { "cache-control": "public, max-age=2592000, stale-while-revalidate=604800" } },
+              "/icons/**": { headers: { "cache-control": "public, max-age=2592000, stale-while-revalidate=604800" } },
+            },
           }),
         ]
       : []),

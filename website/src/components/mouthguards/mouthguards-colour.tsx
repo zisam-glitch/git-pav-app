@@ -54,12 +54,9 @@ export function MouthguardsColour() {
   );
 
   return (
-    <Section id="colour" theme="cream" aria-labelledby="mouthguards-colour-heading">
+    <Section id="colour" theme="white" aria-labelledby="mouthguards-colour-heading">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            32-Colour Custom Configurator
-          </span>
           <div id="mouthguards-colour-heading" className="mt-4">
             <Heading size="h2-md" accent="Colour" tone="terracotta" inline>
               Choose Your
@@ -114,7 +111,7 @@ export function MouthguardsColour() {
         </div>
       </Tile>
 
-      <div className="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
         {COLOR_FILTERS.map((color) => {
           const isSelected = selectedColor.name === color.name;
           return (
@@ -124,13 +121,13 @@ export function MouthguardsColour() {
               aria-pressed={isSelected}
               onClick={() => setSelectedColor(color)}
               className={cn(
-                "group flex flex-col items-center gap-2 rounded-xl border bg-white p-2.5 text-center t-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "group flex flex-col items-center gap-2 rounded-[22px] bg-[#f6f6f4] p-3 text-center t-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 isSelected
-                  ? "border-black ring-2 ring-black shadow-card"
-                  : "border-border hover:border-border-strong",
+                  ? "bg-white ring-2 ring-[#1b1b1b] shadow-[0_10px_36px_rgba(20,20,40,0.12)]"
+                  : "hover:bg-white",
               )}
             >
-              <span className="block aspect-square w-full overflow-hidden rounded-lg bg-tile-cream p-1.5">
+              <span className="block aspect-square w-full overflow-hidden rounded-[16px] bg-[#fbfbee] p-2">
                 <img
                   src="/media/mg.png"
                   alt={`${color.name} custom mouthguard swatch`}
@@ -139,7 +136,7 @@ export function MouthguardsColour() {
                   style={{ filter: color.filter }}
                 />
               </span>
-              <span className="text-caption font-medium text-fg">{color.name}</span>
+              <span className="text-[14px] font-medium text-[#2a2a2c]">{color.name}</span>
             </button>
           );
         })}

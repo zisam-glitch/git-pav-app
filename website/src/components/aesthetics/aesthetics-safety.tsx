@@ -11,12 +11,9 @@ export function AestheticsSafety() {
   const enquiry = useEnquiry("Facial aesthetics");
 
   return (
-    <Section id="enquire" theme="cream" aria-labelledby="aesthetics-enquire-heading">
+    <Section id="enquire" theme="white" aria-labelledby="aesthetics-enquire-heading">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-[460px]">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Clinic Consultation
-          </span>
           <div id="aesthetics-enquire-heading" className="mt-4">
             <Heading size="h2-md" accent="Appointment" tone="terracotta" inline>
               Book

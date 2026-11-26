@@ -111,7 +111,9 @@ export function BlogIndex() {
                 aria-selected={activeCategory === "all"}
                 onClick={() => {
                   setActiveCategory("all");
-                  document.getElementById("latest-articles")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .getElementById("latest-articles")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className={cn(
                   "inline-flex h-14 shrink-0 items-center justify-center rounded-[48px] px-7 text-[14.5px] font-normal transition-all duration-200 active:scale-95",
@@ -129,11 +131,7 @@ export function BlogIndex() {
               <div className="mt-10 grid items-start gap-8 lg:mt-12 lg:grid-cols-[1.38fr_1fr] lg:gap-10">
                 {/* Left Primary Feature */}
                 <article className="min-w-0">
-                  <Link
-                    to="/blog/$slug"
-                    params={{ slug: lead.slug }}
-                    className="group block"
-                  >
+                  <Link to="/blog/$slug" params={{ slug: lead.slug }} className="group block">
                     <div className="t-zoom overflow-hidden rounded-[16px] bg-black/[0.06]">
                       <Media
                         src={lead.image.src}
@@ -181,10 +179,7 @@ export function BlogIndex() {
                   {sideStack.map((post) => {
                     const cat = categoryForPost(post.slug);
                     return (
-                      <article
-                        key={post.slug}
-                        className="py-6 first:pt-0 last:pb-0"
-                      >
+                      <article key={post.slug} className="py-6 first:pt-0 last:pb-0">
                         <Link
                           to="/blog/$slug"
                           params={{ slug: post.slug }}
@@ -232,16 +227,13 @@ export function BlogIndex() {
         </section>
 
         {/* SLAB 2: "Latest" — 3-Column Hims Borderless Editorial Cards + "See all articles" Pill */}
-        <section
-          id="latest-articles"
-          className="w-full rounded-[24px] bg-white py-12 md:py-16"
-        >
+        <section id="latest-articles" className="w-full rounded-[24px] bg-white py-12 md:py-16">
           <div className="mx-auto w-full max-w-[var(--container-wide)] px-4 md:px-8">
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <h2 className="text-[clamp(2.25rem,calc(2.25rem+26*(100vw-22.5rem)/64.5),3.875rem)] leading-[1.04] font-[410] tracking-[-0.02em] text-fg">
                 {activeCategory === "all"
                   ? "Latest"
-                  : BLOG_CATEGORIES.find((c) => c.id === activeCategory)?.label ?? "Latest"}
+                  : (BLOG_CATEGORIES.find((c) => c.id === activeCategory)?.label ?? "Latest")}
               </h2>
               {activeCategory !== "all" ? (
                 <button

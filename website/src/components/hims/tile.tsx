@@ -8,6 +8,7 @@ const TONES = {
   cream: "bg-tile-cream text-fg",
   sage: "bg-tile-sage text-fg",
   white: "border border-border bg-white text-fg",
+  grey: "bg-[#f7f7f7] text-fg !border-transparent !shadow-none",
   brown: "bg-brown text-white",
   navy: "bg-navy text-white",
   glass: "bg-white/7 text-white",

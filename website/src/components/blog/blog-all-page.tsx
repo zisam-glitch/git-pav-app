@@ -59,7 +59,9 @@ export function BlogAllPage({ page, topic }: { page: number; topic?: string }) {
               search={{ page: 1, topic: item.id }}
               className={cn(
                 "shrink-0 text-[16px] font-normal t-colors hover:text-terracotta",
-                category?.id === item.id ? "text-fg underline decoration-2 underline-offset-8" : "text-fg",
+                category?.id === item.id
+                  ? "text-fg underline decoration-2 underline-offset-8"
+                  : "text-fg",
               )}
             >
               {item.label}
@@ -107,7 +109,9 @@ export function BlogAllPage({ page, topic }: { page: number; topic?: string }) {
                         <span className="font-medium text-fg">{post.author}</span> in{" "}
                         <span className="font-medium text-fg">{cat.label}</span>
                       </p>
-                      <p className="mt-2 line-clamp-2 text-[16px] leading-[1.42] text-muted">{post.excerpt}</p>
+                      <p className="mt-2 line-clamp-2 text-[16px] leading-[1.42] text-muted">
+                        {post.excerpt}
+                      </p>
                     </Link>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="inline-flex rounded-[20px] bg-black/[0.06] px-2.5 py-1.5 text-[12px] leading-none text-fg">
@@ -146,7 +150,10 @@ export function BlogAllPage({ page, topic }: { page: number; topic?: string }) {
               <div className="flex items-center gap-2.5 px-3">
                 {pageNumbers(current, lastPage).map((n, index) =>
                   n === 0 ? (
-                    <span key={`gap-${index}`} className="flex w-4 items-center justify-center text-[12px] text-fg">
+                    <span
+                      key={`gap-${index}`}
+                      className="flex w-4 items-center justify-center text-[12px] text-fg"
+                    >
                       ...
                     </span>
                   ) : (

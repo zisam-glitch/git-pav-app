@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { enquiryAlertConfig, enquiryAlertEmail, sendEnquiryAlert } from "./enquiry-alert.ts";
+import { enquiryAlertConfig, enquiryAlertEmail, sendEnquiryAlert, sendTestAlert } from "./enquiry-alert.ts";
 
 const env = {
   POSTMARK_SERVER_TOKEN: "pm-test-token",
@@ -76,6 +76,15 @@ describe("enquiryAlertEmail", () => {
     assert.match(job.text, /Read it on the dashboard's Submissions page\./);
   });
 
+  it("announces a patient registration with contact details only, never the answers", () => {
+    const email = enquiryAlertEmail({ ...alert, kind: "registration" }, "https://dashboard.example.test", now);
+    assert.equal(email.subject, "New patient registration from the website");
+    assert.match(email.text, /A patient registration came in through the website/);
+    assert.match(email.text, /\/dashboard\/submissions/);
+    assert.match(email.text, /health details never travel by email/);
+    assert.doesNotMatch(email.text, /NHS|medical|allerg/i);
+  });
+
   it("escapes what the sender typed in the HTML version", () => {
     const email = enquiryAlertEmail({ ...alert, name: "<b>Jane</b> & co" }, null, now);
     assert.match(email.html, /Name: &lt;b&gt;Jane&lt;\/b&gt; &amp; co/);
@@ -117,5 +126,54 @@ describe("sendEnquiryAlert", () => {
     const { result, logged } = await capturingErrors(() => sendEnquiryAlert(alert, { env, fetchImpl: failing, now }));
     assert.equal(result, "failed");
     assert.match(logged, /TypeError/);
+  });
+});
+
+describe("saved recipients from the dashboard", () => {
+  it("send to the saved addresses instead of the server's default", () => {
+    assert.equal(enquiryAlertConfig(env, { recipients: ["a@example.test", "b@example.test"] }).to, "a@example.test,b@example.test");
+  });
+
+  it("fall back to the server's default when the saved list is empty", () => {
+    assert.equal(enquiryAlertConfig(env, { recipients: [] }).to, "reception@example.test");
+    assert.equal(enquiryAlertConfig(env, { enabled: true }).to, "reception@example.test");
+  });
+
+  it("work without CLINIC_NOTIFICATION_EMAIL, so staff can set the address on the page alone", () => {
+    const { CLINIC_NOTIFICATION_EMAIL, ...noDefault } = env;
+    assert.equal(enquiryAlertConfig(noDefault, { recipients: ["a@example.test"] }).to, "a@example.test");
+    assert.equal(enquiryAlertConfig(noDefault), null);
+  });
+
+  it("turn the alerts off when staff switched them off", () => {
+    assert.equal(enquiryAlertConfig(env, { enabled: false, recipients: ["a@example.test"] }), null);
+  });
+
+  it("are used by sendEnquiryAlert, and nothing is sent when switched off", async () => {
+    const sent = fakeFetch();
+    assert.equal(await sendEnquiryAlert(alert, { env, fetchImpl: sent.impl, now, override: { recipients: ["a@example.test"] } }), "sent");
+    assert.equal(sent.calls[0].payload.To, "a@example.test");
+
+    const off = fakeFetch();
+    assert.equal(await sendEnquiryAlert(alert, { env, fetchImpl: off.impl, now, override: { enabled: false } }), "skipped");
+    assert.equal(off.calls.length, 0);
+  });
+});
+
+describe("sendTestAlert", () => {
+  it("emails the given addresses a plain test message", async () => {
+    const { impl, calls } = fakeFetch();
+    assert.equal(await sendTestAlert(["a@example.test"], { env, fetchImpl: impl, now }), "sent");
+    assert.equal(calls[0].payload.To, "a@example.test");
+    assert.equal(calls[0].payload.Subject, "Test email from the Pav Dental dashboard");
+    assert.match(calls[0].payload.TextBody, /This is a test from the Pav Dental dashboard, sent on 18 Nov 2026, 14:05\./);
+  });
+
+  it("says skipped when the server has no Postmark token, and failed when Postmark refuses", async () => {
+    const { impl } = fakeFetch();
+    assert.equal(await sendTestAlert(["a@example.test"], { env: {}, fetchImpl: impl, now }), "skipped");
+    const refused = fakeFetch(422, { ErrorCode: 300 });
+    const { result } = await capturingErrors(() => sendTestAlert(["a@example.test"], { env, fetchImpl: refused.impl, now }));
+    assert.equal(result, "failed");
   });
 });

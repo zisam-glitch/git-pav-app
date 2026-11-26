@@ -5,7 +5,7 @@ const PRICE_CATEGORIES = [
     title: "Dermal Fillers",
     eyebrow: "Volume & Contour",
     fromPrice: "£100",
-    tone: "white" as const,
+    tone: "grey" as const,
     rows: [
       { item: "0.5ML", price: "£100" },
       { item: "0.7ML", price: "£150" },
@@ -19,7 +19,7 @@ const PRICE_CATEGORIES = [
     title: "Botox",
     eyebrow: "Anti-Wrinkle",
     fromPrice: "£180",
-    tone: "sage" as const,
+    tone: "grey" as const,
     rows: [
       { item: "1 AREA", price: "£180" },
       { item: "2 AREAS", price: "£240" },
@@ -31,7 +31,7 @@ const PRICE_CATEGORIES = [
     title: "Others",
     eyebrow: "Skin Boosters",
     fromPrice: "£160",
-    tone: "white" as const,
+    tone: "grey" as const,
     rows: [
       { item: "PROFHILO FIRST DOSE", price: "£249" },
       { item: "SOSUM BOOSTER", price: "£160" },
@@ -41,11 +41,8 @@ const PRICE_CATEGORIES = [
 
 export function AestheticsPricing() {
   return (
-    <Section id="pricing" theme="cream" aria-labelledby="aesthetics-pricing-heading">
+    <Section id="pricing" theme="white" aria-labelledby="aesthetics-pricing-heading">
       <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-          Transparent Clinic Fees
-        </span>
         <div id="aesthetics-pricing-heading" className="mt-4">
           <Heading size="h2-md" accent="Price List" tone="terracotta" inline>
             Aesthetics
@@ -82,7 +79,9 @@ export function AestheticsPricing() {
                 {category.rows.map((row) => (
                   <li key={row.item} className="flex items-center justify-between gap-4 py-3.5">
                     <span className="text-body font-medium text-fg">{row.item}</span>
-                    <span className="text-h4 font-medium text-copper tabular-nums">{row.price}</span>
+                    <span className="text-h4 font-medium text-copper tabular-nums">
+                      {row.price}
+                    </span>
                   </li>
                 ))}
               </ul>

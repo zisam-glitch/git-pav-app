@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
-import { ACCENT_TEXT, ButtonLink, Heading, Media, Section, SplitFeature } from "@/components/hims";
-import { cn } from "@/lib/utils";
+import { CONTAINER } from "@/components/pricing/tokens";
 import { HERO_CATEGORY_SLUGS, SHOP_CATEGORIES } from "./shop-catalog-data";
 
 interface ShopHeroProps {
@@ -12,83 +11,50 @@ const HERO_TILES = HERO_CATEGORY_SLUGS.map((slug) =>
   SHOP_CATEGORIES.find((cat) => cat.slug === slug),
 ).filter((cat): cat is (typeof SHOP_CATEGORIES)[number] => Boolean(cat));
 
+/**
+ * Shop hero after Hims' category pages ("Hair regrowth personalized to you", Mobbin): a very
+ * large two-tone headline, a short line, and a row of cream category tiles with a product
+ * on the right and a chevron.
+ */
 export function ShopHero({ onCategorySelect: _onCategorySelect }: ShopHeroProps) {
   return (
-    <Section id="top" theme="cream" aria-label="Shop dental products">
-      <SplitFeature
-        reverse
-        media={
-          <Media
-            src="/images/generated/shop-hero.jpg"
-            alt="Curated dental care products arranged on a warm cream studio surface"
-            ratio="4 / 3"
-            tone="sand"
-            priority
-          />
-        }
-      >
-        <div>
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-fg">
-            Pav Dental Clinic Store · Bradford
-          </span>
-          <Heading as="h1" size="hero" accent="Dentists" tone="terracotta" inline className="mt-4">
-            Designed by
-          </Heading>
-          <p className="mt-5 max-w-xl text-lead text-muted">
-            Clinician-selected whitening strips, acoustic sonic brushes, fluoride enamel care, and
-            denture hygiene essentials—dispatched directly from our registered clinic at 786 Leeds
-            Road, Bradford.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="#catalog">Browse Products</ButtonLink>
-            <ButtonLink href="#clinical-guarantee" variant="outline">
-              Delivery &amp; Returns
-            </ButtonLink>
-          </div>
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-small text-muted">
-            <li>GDC-registered clinic selection</li>
-            <li>Free UK tracked delivery over £40</li>
-            <li>14-day UK returns on unopened items</li>
-          </ul>
-        </div>
-      </SplitFeature>
+    <section
+      id="top"
+      aria-label="Shop dental products"
+      className="bg-white pt-8 pb-10 md:pt-12 md:pb-14"
+    >
+      <div className={CONTAINER}>
+        {/* The page keeps its heading for search engines and screen readers, but it is not shown. */}
+        <h1 className="sr-only">Happy Tooth oral care at Pav Dental</h1>
 
-      {/* Hims 4-column category shortcut tiles with 400ms colour-gradient cross-fade on hover */}
-      <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
-        {HERO_TILES.map((tile) => (
-          <Link
-            key={tile.slug}
-            to="/category/$slug"
-            params={{ slug: tile.slug }}
-            data-hover-tone={tile.hoverTone}
-            className="hero-tile group flex min-h-[196px] flex-col justify-between rounded-xl border border-border p-5"
-          >
-            <div className="relative z-10 flex items-center justify-between gap-2">
-              <span className="hero-tile-title text-nav-lg font-[470] text-fg">
-                {tile.shortTitle}{" "}
-                <span className={cn("hero-tile-accent", ACCENT_TEXT[tile.accentTone])}>
-                  {tile.accentWord}
+        <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-4">
+          {HERO_TILES.map((tile) => (
+            <Link
+              key={tile.slug}
+              to="/category/$slug"
+              params={{ slug: tile.slug }}
+              className="group relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#fbfbee] p-5"
+            >
+              {/* The packshot fades into the tile, so photo and tile read as one surface. */}
+              <img
+                src={tile.image}
+                alt={tile.name}
+                loading="eager"
+                className="absolute inset-y-0 right-0 h-full w-[46%] brightness-[1.06] contrast-[0.97] object-cover object-[55%_50%] [mask-image:linear-gradient(to_right,transparent,#000_30%)] transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="relative flex items-center justify-between gap-2">
+                <span className="max-w-[56%] text-[19px] leading-[1.2] text-[#37556e]">
+                  {tile.shortTitle} <span className="text-[#8a4242]">{tile.accentWord}</span>
                 </span>
-              </span>
-              <ChevronRight aria-hidden className="hero-tile-icon size-4 shrink-0 text-fg" />
-            </div>
-
-            <div className="relative z-10 mt-4 flex items-center justify-between gap-3">
-              <span className="hero-tile-title line-clamp-2 max-w-[58%] text-caption text-muted">
+                <ChevronRight aria-hidden className="size-4 shrink-0 text-[#1b1b1b]" />
+              </div>
+              <span className="relative line-clamp-2 max-w-[50%] text-[12px] leading-snug text-[#6d6e72]">
                 {tile.description}
               </span>
-              <span className="hero-tile-media block size-20 shrink-0 overflow-hidden rounded-lg border border-black/10 bg-white">
-                <img
-                  src={tile.image}
-                  alt={tile.name}
-                  loading="eager"
-                  className="size-full object-cover"
-                />
-              </span>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }

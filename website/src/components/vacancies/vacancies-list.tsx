@@ -1,9 +1,5 @@
-import { ArrowRight, Briefcase, ExternalLink, MapPin, Search } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useMemo, useState } from "react";
-import { ButtonLink, Heading, Section, Tile } from "@/components/hims";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PRACTICE_EMAIL } from "@/lib/enquiry";
 import { VACANCIES, type Vacancy } from "./vacancies-data";
 
@@ -24,7 +20,6 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
         v.title.toLowerCase().includes(q) ||
         v.description.toLowerCase().includes(q) ||
         v.department.toLowerCase().includes(q);
-
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchQuery]);
@@ -54,141 +49,115 @@ export function VacanciesList({ onApply }: VacanciesListProps) {
   ];
 
   return (
-    <Section id="roles" theme="cream" space="default">
-      <div className="mx-auto max-w-2xl text-center">
-        <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-          Clinical &amp; Practice Careers
-        </span>
-        <Heading as="h2" size="h2-md" accent="Positions" tone="terracotta" inline className="mt-4">
-          Open
-        </Heading>
-        <p className="mt-4 text-lead text-muted">
-          Explore current roles at 786 Leeds Road, Bradford, BD3 9TY.
-        </p>
-      </div>
-
-      <div className="mt-10 flex flex-col gap-4 rounded-xl border border-border bg-white p-4 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:max-w-sm">
-          <Label htmlFor="vacancy-search" className="sr-only">
+    <section id="roles" className="mx-auto w-full max-w-[1392px] scroll-mt-24 px-4 py-16 md:py-24">
+      <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <p className="text-[14px] tracking-[0.14em] text-black/55 uppercase">
+            Clinical &amp; Practice Careers
+          </p>
+          <h2 className="mt-4 text-[clamp(44px,7vw,112px)] leading-[0.92] font-medium tracking-[-0.045em]">
+            Open Positions
+          </h2>
+          <p className="mt-5 text-[19px] text-black/70">
+            Explore current roles at 786 Leeds Road, Bradford, BD3 9TY.
+          </p>
+        </div>
+        <div className="w-full lg:w-[340px]">
+          <label htmlFor="vacancy-search" className="sr-only">
             Search roles
-          </Label>
-          <Search
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-subtle"
-          />
-          <Input
+          </label>
+          <input
             id="vacancy-search"
             type="text"
             placeholder="Search roles or departments..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-11"
+            className="h-12 w-full border-0 border-b border-black/30 bg-transparent px-0 text-[18px] outline-none placeholder:text-black/40 focus:border-black"
           />
         </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {categories.map((cat) => (
-            <Button
-              key={cat.id}
-              type="button"
-              size="sm"
-              variant={selectedCategory === cat.id ? "default" : "outline"}
-              onClick={() => setSelectedCategory(cat.id)}
-            >
-              {cat.label} ({cat.count})
-            </Button>
-          ))}
-        </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {filteredVacancies.map((vacancy, index) => {
-          const isHighlighted = Boolean(vacancy.featured || vacancy.category === "sponsorship");
-          return (
-            <Tile
-              key={vacancy.id}
-              as="article"
-              tone={isHighlighted ? "sage" : "white"}
-              lift
-              className="flex flex-col justify-between gap-6 border border-border/70 p-6 md:p-8"
-            >
+      <div className="mt-10 flex flex-wrap gap-x-7 gap-y-2 border-b border-black pb-4">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            type="button"
+            onClick={() => setSelectedCategory(cat.id)}
+            aria-pressed={selectedCategory === cat.id}
+            className={`text-[17px] t-colors ${selectedCategory === cat.id ? "font-medium text-black underline underline-offset-[10px] decoration-2" : "text-black/50 hover:text-black"}`}
+          >
+            {cat.label} <span className="tabular-nums">({cat.count})</span>
+          </button>
+        ))}
+      </div>
+
+      <ul className="list-none">
+        {filteredVacancies.map((vacancy, index) => (
+          <li key={vacancy.id}>
+            <article className="grid gap-5 border-b border-black/20 py-9 md:grid-cols-[70px_1.1fr_1.4fr] md:gap-10 md:py-12">
+              <span className="text-[16px] text-black/45 tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+
               <div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex size-7 items-center justify-center rounded-pill bg-black text-caption font-medium text-white">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-terracotta">
-                      {vacancy.department}
-                    </span>
-                  </div>
-                  <span className="rounded-pill border border-border bg-cream px-3 py-1 text-caption font-medium text-fg">
-                    {vacancy.contractType}
-                  </span>
-                </div>
+                <h3 className="text-[clamp(28px,3vw,44px)] leading-[1.05] font-medium tracking-[-0.025em]">
+                  {vacancy.title}
+                </h3>
+                <p className="mt-3 text-[16px] text-black/60">
+                  {vacancy.department} · {vacancy.contractType}
+                </p>
+                <p className="mt-1 text-[16px] text-black/60">{vacancy.location}</p>
+              </div>
 
-                <h3 className="mt-5 text-h3-md text-fg">{vacancy.title}</h3>
-                <p className="mt-3 text-body leading-relaxed text-muted">{vacancy.description}</p>
-
-                <ul className="mt-5 flex flex-wrap gap-2">
+              <div>
+                <p className="text-[18px] leading-[1.5] text-black/75">{vacancy.description}</p>
+                <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-black/55">
                   {vacancy.tags.map((tag) => (
-                    <li
-                      key={tag}
-                      className="rounded-pill border border-border bg-white px-3 py-1 text-caption font-medium text-fg"
-                    >
-                      {tag}
-                    </li>
+                    <li key={tag}>{tag}</li>
                   ))}
                 </ul>
-              </div>
-
-              <div className="border-t border-border pt-5">
-                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                  <p className="flex items-center gap-2 text-small text-subtle">
-                    <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
-                    <span>{vacancy.location}</span>
-                  </p>
-
-                  <div className="flex flex-wrap gap-2.5">
-                    <Button type="button" onClick={() => onApply(vacancy)}>
-                      <span>Apply Now</span>
-                      <ArrowRight aria-hidden="true" />
-                    </Button>
-                    <ButtonLink
-                      href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`}
-                      variant="outline"
-                      className="bg-white"
-                    >
-                      <ExternalLink aria-hidden="true" className="size-4" />
-                      <span>Email Us</span>
-                    </ButtonLink>
-                  </div>
+                <div className="mt-6 flex flex-wrap items-center gap-5">
+                  <button
+                    type="button"
+                    onClick={() => onApply(vacancy)}
+                    className="inline-flex h-12 items-center gap-2 rounded-full bg-black px-7 text-[16px] font-medium text-white t-colors hover:bg-black/80"
+                  >
+                    Apply Now
+                    <ArrowUpRight aria-hidden="true" className="size-4" />
+                  </button>
+                  <a
+                    href={`mailto:${PRACTICE_EMAIL}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`}
+                    className="text-[16px] font-medium underline underline-offset-4"
+                  >
+                    Email Us
+                  </a>
                 </div>
               </div>
-            </Tile>
-          );
-        })}
-      </div>
+            </article>
+          </li>
+        ))}
+      </ul>
 
       {filteredVacancies.length === 0 ? (
-        <Tile tone="white" className="mt-8 p-12 text-center">
-          <Briefcase aria-hidden="true" className="mx-auto size-10 text-subtle" />
-          <p className="mt-4 text-h4 text-fg">No positions match your search</p>
-          <p className="mt-2 text-body text-muted">
+        <div className="border-b border-black/20 py-16">
+          <p className="text-[28px] font-medium tracking-[-0.02em]">
+            No positions match your search
+          </p>
+          <p className="mt-2 text-[18px] text-black/65">
             Try clearing your filters or searching with a different keyword.
           </p>
-          <Button
+          <button
             type="button"
-            className="mt-6"
+            className="mt-6 inline-flex h-12 items-center rounded-full bg-black px-7 text-[16px] font-medium text-white"
             onClick={() => {
               setSelectedCategory("all");
               setSearchQuery("");
             }}
           >
             Reset Filters
-          </Button>
-        </Tile>
+          </button>
+        </div>
       ) : null}
-    </Section>
+    </section>
   );
 }

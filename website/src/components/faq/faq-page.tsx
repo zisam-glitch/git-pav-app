@@ -128,13 +128,7 @@ export function FaqSection() {
             <span className="inline-block rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
               Patient Guidance
             </span>
-            <Heading
-              as="h2"
-              size="h2"
-              accent="Get answers"
-              tone="terracotta"
-              className="mt-4"
-            >
+            <Heading as="h2" size="h2" accent="Get answers" tone="terracotta" className="mt-4">
               Have questions?
             </Heading>
             <p className="mt-4 text-body text-muted">
@@ -180,7 +174,12 @@ export function FaqSection() {
                 Same-day emergency appointments available 24 hours a day, 7 days a week in Bradford.
               </p>
             </div>
-            <ButtonLink to="/services/emergency-dental" variant="outline" size="sm" className="w-fit">
+            <ButtonLink
+              to="/services/emergency-dental"
+              variant="outline"
+              size="sm"
+              className="w-fit"
+            >
               Emergency Dentistry
             </ButtonLink>
           </Tile>
@@ -195,7 +194,12 @@ export function FaqSection() {
                 Complete dental check-ups (£35) and professional Airflow hygiene cleanings.
               </p>
             </div>
-            <ButtonLink to="/services/oral-hygiene" variant="outline" size="sm" className="w-fit bg-white">
+            <ButtonLink
+              to="/services/oral-hygiene"
+              variant="outline"
+              size="sm"
+              className="w-fit bg-white"
+            >
               Oral Hygiene Care
             </ButtonLink>
           </Tile>

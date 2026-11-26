@@ -54,7 +54,9 @@ export function ArticleToc({ entries }: { entries: TocEntry[] }) {
             aria-hidden="true"
           />
         </button>
-        <ol className={cn("mt-3 border-l-2 border-black/12", open ? "block" : "hidden", "xl:block")}>
+        <ol
+          className={cn("mt-3 border-l-2 border-black/12", open ? "block" : "hidden", "xl:block")}
+        >
           {entries.map((entry) => (
             <li key={entry.id} className="flex">
               <a

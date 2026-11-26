@@ -544,7 +544,7 @@ export const PRACTICE_JSON_LD = {
   "@type": "Dentist",
   "@id": `${SITE_URL}/#practice`,
   name: "Pav Dental",
-  image: `${SITE_URL}/images/pav-logo.png`,
+  image: `${SITE_URL}/images/pav-logo.svg`,
   url: `${SITE_URL}/`,
   telephone: "+44 800 193 8786",
   address: {

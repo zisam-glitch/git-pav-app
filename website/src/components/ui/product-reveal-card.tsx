@@ -1,8 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import type { Product } from "@/components/shop/shop-data";
-import { ShopMedia } from "@/components/shop/shop-media";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ProductRevealCardProps {
@@ -16,116 +14,88 @@ interface ProductRevealCardProps {
   className?: string;
 }
 
+/**
+ * A product card in the Hims "Popular" style (Mobbin): a light grey rounded card with the name
+ * and price on top, the product centred, and a black pill beside an outlined "Learn more".
+ */
 export function ProductRevealCard({
   product,
-  isFavorite: _isFavorite = false,
   isJustAdded = false,
   onAdd,
-  onFavorite: _onFavorite,
   onQuickView,
-  enableAnimations: _enableAnimations = true,
   className,
 }: ProductRevealCardProps) {
-  const imageContent = (
-    <div className="relative block w-full overflow-hidden rounded-lg bg-white text-left">
-      <ShopMedia
-        src={product.image}
-        alt={product.name}
-        ratio="4 / 3"
-        tone="sand"
-        className="rounded-lg bg-white"
-        imgClassName="t-zoom"
-      />
-
-      {product.badge ? (
-        <span className="absolute top-3 left-3 rounded-pill bg-brown px-3 py-1 text-caption font-medium text-white">
-          {product.badge}
-        </span>
-      ) : null}
-    </div>
-  );
+  const link = (children: React.ReactNode, label: string, extra?: string) =>
+    onQuickView ? (
+      <button
+        type="button"
+        onClick={onQuickView}
+        aria-label={label}
+        className={cn("block w-full text-left", extra)}
+      >
+        {children}
+      </button>
+    ) : (
+      <Link
+        to="/shop/$productSlug"
+        params={{ productSlug: product.slug }}
+        aria-label={label}
+        className={cn("block w-full text-left", extra)}
+      >
+        {children}
+      </Link>
+    );
 
   return (
     <article
       data-slot="product-reveal-card"
       className={cn(
-        "group flex flex-col justify-between rounded-xl border border-border/70 bg-tile-cream p-5 md:p-6 t-lift hover:bg-white",
+        "group relative flex min-h-[520px] flex-col justify-between overflow-hidden rounded-[20px] bg-[#fbfbee] p-5",
         className,
       )}
     >
-      <div>
-        {onQuickView ? (
-          <button
-            type="button"
-            onClick={onQuickView}
-            aria-label={`View ${product.name}`}
-            className="block w-full text-left"
-          >
-            {imageContent}
-          </button>
-        ) : (
-          <Link
-            to="/shop/$productSlug"
-            params={{ productSlug: product.slug }}
-            aria-label={`View ${product.name}`}
-            className="block w-full text-left"
-          >
-            {imageContent}
-          </Link>
+      {/* The packshot runs to the card's edges and fades into the card colour under the text. */}
+      <div className="absolute inset-x-0 top-28 bottom-0">
+        {link(
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover object-[50%_55%] brightness-[1.06] contrast-[0.97] t-zoom"
+          />,
+          `View ${product.name}`,
+          "size-full",
         )}
-
-        <div className="mt-4">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-2.5 py-0.5 text-caption text-subtle">
-            {product.categoryLabel}
-          </span>
-          <h3 className="mt-2.5 text-h4 text-fg">
-            {onQuickView ? (
-              <button
-                type="button"
-                onClick={onQuickView}
-                className="inline-flex items-start gap-1.5 text-left t-colors hover:text-terracotta"
-              >
-                <span>{product.name}</span>
-                <ArrowUpRight aria-hidden className="mt-1 size-4 shrink-0 text-subtle" />
-              </button>
-            ) : (
-              <Link
-                to="/shop/$productSlug"
-                params={{ productSlug: product.slug }}
-                className="inline-flex items-start gap-1.5 text-left t-colors hover:text-terracotta"
-              >
-                <span>{product.name}</span>
-                <ArrowUpRight aria-hidden className="mt-1 size-4 shrink-0 text-subtle" />
-              </Link>
-            )}
-          </h3>
-          {product.shortDesc ? (
-            <p className="mt-2 line-clamp-2 text-small text-muted">{product.shortDesc}</p>
-          ) : null}
-        </div>
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-[#fbfbee] to-[#fbfbee]/0"
+        />
       </div>
 
-      <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4">
-        <div className="flex flex-col">
-          <div className="flex items-baseline gap-2">
-            <span className="text-h4 text-fg tabular-nums">£{product.price.toFixed(2)}</span>
+      <div className="pointer-events-none relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[12px] text-[#6d6e72]">{product.categoryLabel}</p>
+          <h3 className="mt-0.5 text-[18px] leading-[1.2] text-[#1b1b1b]">{product.name}</h3>
+          <p className="mt-1 flex items-baseline gap-2 text-[15px] text-[#1b1b1b] tabular-nums">
+            £{product.price.toFixed(2)}
             {product.originalPrice ? (
-              <span className="text-small text-muted line-through tabular-nums">
+              <span className="text-[13px] text-[#8b8d92] line-through">
                 £{product.originalPrice.toFixed(2)}
               </span>
             ) : null}
-          </div>
-          {product.variants && product.variants.length > 0 ? (
-            <span className="mt-0.5 text-caption text-subtle">
-              {product.variants.length} options available
-            </span>
-          ) : null}
+          </p>
         </div>
+        {product.badge ? (
+          <span className="shrink-0 rounded-full bg-[#dff1e4] px-2.5 py-0.5 text-[12px] text-[#256b3b]">
+            {product.badge}
+          </span>
+        ) : null}
+      </div>
 
-        <Button
+      <div className="relative flex items-center justify-end">
+        <button
           type="button"
-          size="sm"
-          variant={isJustAdded ? "gold" : "default"}
           disabled={!product.inStock}
           onClick={onAdd}
           aria-label={
@@ -135,22 +105,22 @@ export function ProductRevealCard({
                 ? `${product.name} added to bag`
                 : `Add ${product.name} to bag`
           }
-          className="h-10 px-4"
+          className="inline-flex h-11 items-center gap-1.5 rounded-full bg-black px-5 text-[14px] text-white t-colors hover:bg-black/85 disabled:opacity-50"
         >
           {isJustAdded ? (
             <>
               <Check aria-hidden className="size-4" />
-              <span>Added</span>
+              Added
             </>
           ) : !product.inStock ? (
-            <span>Out of Stock</span>
+            "Out of Stock"
           ) : (
             <>
               <Plus aria-hidden className="size-4" />
-              <span>Add to Bag</span>
+              Add to Bag
             </>
           )}
-        </Button>
+        </button>
       </div>
     </article>
   );

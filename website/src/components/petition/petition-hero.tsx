@@ -1,92 +1,62 @@
-import { ArrowDownRight, HeartHandshake, PenLine, Share2 } from "lucide-react";
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-  Tile,
-} from "@/components/hims";
+import { BookButton } from "@/components/hims";
 import { PETITION } from "@/content/petition";
 
-const CARD_ICONS = [PenLine, Share2] as const;
+const WRAP = "mx-auto w-full max-w-[1392px] px-4";
 
-/** The petition page's opening: the live page's heading, text, two buttons and two cards. */
+/** A very large headline, then the live text in two columns under a hairline. */
 export function PetitionHero() {
   return (
-    <Section theme="white" space="default">
-      <SplitFeature
-        reverse
-        media={
-          <Media
-            src="/images/generated/petition-hero.jpg"
-            alt="Bradford community supporting accessible NHS dental care"
-            ratio="4 / 3"
-            tone="cream"
-            priority
-          />
-        }
-      >
+    <section className={`${WRAP} pt-16 pb-14 md:pt-28 md:pb-20`}>
+      <p className="text-[14px] tracking-[0.14em] text-black/55 uppercase">{PETITION.eyebrow}</p>
+      <h1 className="mt-6 text-[clamp(52px,10.5vw,168px)] leading-[0.92] font-medium tracking-[-0.045em]">
+        NHS Dental
+        <br />
+        Funding Petition
+      </h1>
+
+      <div className="mt-14 grid gap-8 border-t border-black pt-8 md:mt-20 lg:grid-cols-2 lg:gap-16">
+        <p className="text-[clamp(22px,2.2vw,32px)] leading-[1.2] font-medium tracking-[-0.01em]">
+          {PETITION.lead}
+        </p>
         <div>
-          <span className="inline-flex items-center gap-2 rounded-pill border border-border bg-cream px-4 py-1.5 text-caption font-medium text-fg">
-            <HeartHandshake className="size-3.5 text-terracotta" aria-hidden="true" />
-            <span>{PETITION.eyebrow}</span>
-          </span>
-
-          <Heading as="h1" size="hero" accent="Funding Petition" tone="terracotta" className="mt-4">
-            NHS Dental
-          </Heading>
-
-          <p className="mt-5 text-lead font-medium text-fg">{PETITION.lead}</p>
           {PETITION.paragraphs.map((paragraph) => (
-            <p key={paragraph} className="mt-4 text-body leading-relaxed text-muted">
+            <p key={paragraph} className="mb-4 text-[19px] leading-[1.5] text-black/75">
               {paragraph}
             </p>
           ))}
-
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <BookButton>{PETITION.bookLabel}</BookButton>
-            <ButtonLink to="/contact-us" variant="outline">
-              {PETITION.contactLabel}
-            </ButtonLink>
+            <a
+              href="#sign-form"
+              className="inline-flex h-12 items-center rounded-full bg-black px-7 text-[16px] font-medium text-white t-colors hover:bg-black/80"
+            >
+              {PETITION.cards[0].title}
+            </a>
+            <BookButton variant="outline">{PETITION.bookLabel}</BookButton>
           </div>
         </div>
-      </SplitFeature>
-
-      <ul className="mt-12 grid list-none gap-6 sm:grid-cols-2">
-        {PETITION.cards.map((card, index) => {
-          const Icon = CARD_ICONS[index] ?? PenLine;
-          const isSage = index === 1;
-          return (
-            <li key={card.title}>
-              <Tile
-                tone={isSage ? "sage" : "cream"}
-                lift
-                className="flex h-full flex-col justify-between gap-6 border border-border/70 p-6 md:p-8"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex size-10 items-center justify-center rounded-pill bg-white text-terracotta shadow-soft">
-                      <Icon className="size-4" aria-hidden="true" />
-                    </span>
-                    <a
-                      href="#sign-form"
-                      aria-label={card.title}
-                      className="inline-flex size-8 items-center justify-center rounded-pill border border-border bg-white text-fg t-colors hover:border-black hover:bg-black hover:text-white"
-                    >
-                      <ArrowDownRight className="size-4" aria-hidden="true" />
-                    </a>
-                  </div>
-                  <h2 className="mt-5 text-h3-md text-fg">{card.title}</h2>
-                  <p className="mt-3 text-body leading-relaxed text-muted">{card.text}</p>
-                </div>
-              </Tile>
-            </li>
-          );
-        })}
-      </ul>
-    </Section>
+      </div>
+    </section>
   );
 }
 
+/** The two ways to help, as a numbered list between hairlines. */
+export function PetitionCards() {
+  return (
+    <section className={`${WRAP} pb-16 md:pb-24`}>
+      <ul className="list-none border-t border-black">
+        {PETITION.cards.map((card, index) => (
+          <li
+            key={card.title}
+            className="grid gap-3 border-b border-black/20 py-8 md:grid-cols-[120px_1fr_1.2fr] md:gap-10 md:py-10"
+          >
+            <span className="text-[16px] text-black/55 tabular-nums">0{index + 1}</span>
+            <h2 className="text-[clamp(28px,3.2vw,48px)] leading-[1.05] font-medium tracking-[-0.025em]">
+              {card.title}
+            </h2>
+            <p className="max-w-[520px] text-[18px] leading-[1.5] text-black/70">{card.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}

@@ -93,8 +93,8 @@ describe("structured data", () => {
     assert.equal(PRACTICE_JSON_LD["@type"], live["@type"]);
     assert.equal(PRACTICE_JSON_LD.name, live.name);
     assert.equal(PRACTICE_JSON_LD.telephone, live.telephone);
-    assert.equal(PRACTICE_JSON_LD.image, "https://www.pavdental.com/images/pav-logo.png");
-    assert.ok(existsSync(new URL("../../public/images/pav-logo.png", import.meta.url)), "local pav-logo.png must exist");
+    assert.equal(PRACTICE_JSON_LD.image, "https://www.pavdental.com/images/pav-logo.svg");
+    assert.ok(existsSync(new URL("../../public/images/pav-logo.svg", import.meta.url)), "local pav-logo.svg must exist");
     assert.deepEqual(PRACTICE_JSON_LD.geo, live.geo);
     assert.deepEqual(PRACTICE_JSON_LD.openingHoursSpecification, live.openingHoursSpecification);
     assert.equal(PRACTICE_JSON_LD.address.postalCode, live.address.postalCode);

@@ -4,7 +4,7 @@ import { PRACTICE_EMAIL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enqui
 
 export function EmergencyContactStrip() {
   return (
-    <Section theme="cream" space="sm">
+    <Section theme="white" space="sm">
       <div className="grid gap-4 sm:grid-cols-3">
         <Tile tone="white" lift className="flex items-start gap-4 p-6">
           <div className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-cream text-terracotta">

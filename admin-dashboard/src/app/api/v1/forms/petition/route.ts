@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { isValidEmail } from "@/lib/email-alert-settings";
 import { rateLimit } from "@/lib/rate-limit";
 
 const CORS_HEADERS = {
@@ -24,6 +25,10 @@ export async function POST(request: Request) {
 
     if (!body.name?.trim() || !body.email?.trim()) {
       return NextResponse.json({ error: "name and email are required" }, { status: 400, headers: CORS_HEADERS });
+    }
+
+    if (!isValidEmail(body.email.trim())) {
+      return NextResponse.json({ error: "A valid email address is required" }, { status: 400, headers: CORS_HEADERS });
     }
 
     const [row] = await query<{ id: string }>(

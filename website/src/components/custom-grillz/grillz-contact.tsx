@@ -11,20 +11,16 @@ export function GrillzContact() {
   const enquiry = useEnquiry("Custom grillz");
 
   return (
-    <Section id="contact" theme="cream" aria-labelledby="grillz-contact-heading">
+    <Section id="contact" theme="white" aria-labelledby="grillz-contact-heading">
       <div className="grid items-start gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
         <div className="max-w-[460px]">
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Bespoke Design Enquiry
-          </span>
           <div id="grillz-contact-heading" className="mt-4">
             <Heading as="h2" size="h2-md" accent="Touch" tone="terracotta" inline>
               Get In
             </Heading>
           </div>
           <p className="mt-4 text-lead text-muted">
-            Ready to take control of your dental health? Contact us to book your appointment
-            today!
+            Ready to take control of your dental health? Contact us to book your appointment today!
           </p>
 
           <ul className="mt-8 divide-y divide-border border-y border-border text-body">

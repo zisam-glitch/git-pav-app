@@ -1,47 +1,31 @@
-import {
-  BookButton,
-  ButtonLink,
-  Heading,
-  Media,
-  Section,
-  SplitFeature,
-  Tile,
-} from "@/components/hims";
+import { BookButton, ButtonLink, HUB_CARD, Section } from "@/components/hims";
 
 export function MobileDentistryLocation() {
   return (
-    <Section id="location" theme="sand" space="default" aria-labelledby="mobile-location-heading">
-      <SplitFeature
-        media={
-          <Media
+    <Section id="location" theme="white" space="sm" aria-labelledby="mobile-location-heading">
+      <div className={`${HUB_CARD} grid items-center gap-8 p-4 md:p-6 lg:grid-cols-2 lg:gap-14`}>
+        <div className="overflow-hidden rounded-[20px]">
+          <img
             src="/images/generated/mobile-dentistry-location.jpg"
-            ratio="4 / 3"
-            tone="cream"
             alt="Pav Dental Mobile outreach vehicle serving patients across the UK"
+            loading="lazy"
+            className="aspect-[4/3] w-full object-cover"
           />
-        }
-      >
-        <div>
-          <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-copper">
-            Nationwide Outreach
-          </span>
-          <div id="mobile-location-heading" className="mt-4">
-            <Heading as="h2" size="h2-md" accent="coverage" tone="terracotta" inline>
-              Location
-            </Heading>
-          </div>
-          <p className="mt-4 max-w-lg text-lead text-muted">
+        </div>
+        <div className="px-3 py-4 md:px-6">
+          <h2
+            id="mobile-location-heading"
+            className="text-[clamp(32px,3.6vw,48px)] leading-[1.08] font-normal tracking-[-0.025em] text-[#2a2a2c]"
+          >
+            Location
+          </h2>
+          <p className="mt-5 max-w-lg text-[19px] leading-[1.45] text-[#55565a]">
             Pav Dental Mobile visits patients across the UK. Your Smile with Convenient Dental Care
             Right at Your Doorstep.
           </p>
-
-          <Tile tone="white" className="mt-6 border border-border p-5">
-            <p className="text-caption font-medium text-copper">Base &amp; Coverage</p>
-            <p className="mt-1 text-body text-fg">
-              786 Leeds Road, Bradford, BD3 9TY · Serving patients and care homes across the UK.
-            </p>
-          </Tile>
-
+          <p className="mt-4 text-[15px] leading-[1.5] text-[#6b6b70]">
+            786 Leeds Road, Bradford, BD3 9TY · Serving patients and care homes across the UK.
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <BookButton>Make an Appointment</BookButton>
             <ButtonLink href="#contact" variant="outline">
@@ -49,7 +33,7 @@ export function MobileDentistryLocation() {
             </ButtonLink>
           </div>
         </div>
-      </SplitFeature>
+      </div>
     </Section>
   );
 }

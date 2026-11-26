@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Heading, Section, Tile } from "@/components/hims";
+import { CONTAINER, MUTED_TITLE, TITLE } from "@/components/pricing/tokens";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductRevealCard } from "@/components/ui/product-reveal-card";
@@ -106,179 +106,166 @@ export function ShopCatalog({
       : undefined;
 
   return (
-    <Section id="catalog" theme="white" aria-label="Product catalogue">
-      {!hideHeading ? (
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <Heading as="h2" size="h2" accent="Products" tone="terracotta" inline>
-              Our
-            </Heading>
-            <p className="mt-4 text-lead text-muted">
-              Clinician-selected oral care essentials formulated for daily enamel protection,
-              brightening, and gum health.
-            </p>
+    <section
+      id="catalog"
+      aria-label="Product catalogue"
+      className="scroll-mt-20 bg-white pb-14 md:pb-24"
+    >
+      <div className={CONTAINER}>
+        {!hideHeading ? (
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <h2 className={TITLE}>
+                Our <span className={MUTED_TITLE}>Products</span>
+              </h2>
+            </div>
+            {!isLoading && products.length > 0 ? (
+              <p className="text-small text-subtle tabular-nums">
+                Showing {filteredProducts.length} of {products.length} products
+              </p>
+            ) : null}
           </div>
-          {!isLoading && products.length > 0 ? (
+        ) : null}
+
+        {/* Filter Controls Row */}
+        <div
+          className={cn(
+            "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between",
+            !hideHeading && "mt-10",
+          )}
+        >
+          {!hideCategoryFilters && categories.length > 1 ? (
+            <>
+              <div className="sm:hidden">
+                <Select
+                  aria-label="Filter by category"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="hidden flex-1 flex-wrap items-center gap-2 sm:flex">
+                {categories.map((cat) => {
+                  const active = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat.id)}
+                      aria-pressed={active}
+                      className={cn(
+                        "rounded-full px-4 py-2 text-[15px] t-colors",
+                        active
+                          ? "bg-[#1b1b1b] text-white"
+                          : "bg-[#f4f1ea] text-[#1b1b1b] hover:bg-[#ebe6dc]",
+                      )}
+                    >
+                      {cat.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
             <p className="text-small text-subtle tabular-nums">
-              Showing {filteredProducts.length} of {products.length} products
+              {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
             </p>
-          ) : null}
-        </div>
-      ) : null}
+          )}
 
-      {/* Filter Controls Row */}
-      <div
-        className={cn(
-          "flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between",
-          !hideHeading && "mt-10",
-        )}
-      >
-        {!hideCategoryFilters && categories.length > 1 ? (
-          <>
-            <div className="sm:hidden">
-              <Select
-                aria-label="Filter by category"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center lg:ml-auto">
+            <div className="relative w-full sm:w-64">
+              <Search
+                aria-hidden
+                className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-subtle"
+              />
+              <Input
+                type="search"
+                aria-label="Search products"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-12 rounded-full border-0 bg-[#f4f1ea] pl-10"
+              />
+            </div>
+          </div>
+        </div>
+
+        {!hideCategoryFilters && activeCategoryMeta ? (
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#f6f6f4] px-5 py-3.5 text-small">
+            <span className="text-muted">
+              Viewing <strong className="font-medium text-fg">{activeCategoryMeta.name}</strong> —{" "}
+              {activeCategoryMeta.description}
+            </span>
+            <Link
+              to="/category/$slug"
+              params={{ slug: activeCategoryMeta.slug }}
+              className="inline-flex shrink-0 items-center gap-1.5 font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
+            >
+              <span>Open {activeCategoryMeta.name} page</span>
+              <ArrowRight aria-hidden className="size-3.5" />
+            </Link>
+          </div>
+        ) : null}
+
+        {/* Product Grid */}
+        {isLoading ? (
+          <div className="mt-10 rounded-[22px] bg-[#f6f6f4] p-10 text-center md:p-14">
+            <p className="text-h4 text-fg">Loading products...</p>
+            <p className="mt-2 text-small text-muted">
+              Please wait while we load our dental care catalogue.
+            </p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="mt-10 rounded-[22px] bg-[#f6f6f4] p-10 text-center md:p-14">
+            <p className="text-h4 text-fg">
+              {unavailable
+                ? "Shop catalogue temporarily unavailable"
+                : products.length === 0
+                  ? "No products available in this category"
+                  : "No matching products found"}
+            </p>
+            <p className="mt-2 text-small text-muted">
+              {unavailable
+                ? "Our online store is currently being updated. Please check back shortly or call 0800 1938 786."
+                : products.length === 0
+                  ? "Explore our full Happy Tooth catalogue."
+                  : "Try resetting your search query or selecting another category."}
+            </p>
+            {products.length > 0 ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setSelectedCategory("all");
+                  setSearchQuery("");
+                }}
+                className="mt-6"
               >
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.label}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="hidden flex-wrap items-center gap-2 sm:flex">
-              {categories.map((cat) => {
-                const active = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.id)}
-                    aria-pressed={active}
-                    className={cn(
-                      "rounded-pill border px-4 py-2 text-small font-medium t-colors",
-                      active
-                        ? "border-black bg-black text-white"
-                        : "border-border bg-cream text-fg hover:border-black",
-                    )}
-                  >
-                    {cat.label}
-                  </button>
-                );
-              })}
-            </div>
-          </>
+                Show All Products
+              </Button>
+            ) : null}
+          </div>
         ) : (
-          <p className="text-small text-subtle tabular-nums">
-            {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
-          </p>
+          <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+            {filteredProducts.map((product) => (
+              <ProductRevealCard
+                key={product.id}
+                product={product}
+                isFavorite={favorites.has(product.id)}
+                isJustAdded={justAddedId === product.id}
+                onAdd={() => handleAdd(product)}
+                onFavorite={() => handleFavorite(product.id)}
+                onQuickView={onQuickView ? () => onQuickView(product) : undefined}
+              />
+            ))}
+          </div>
         )}
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative w-full sm:w-64">
-            <Search
-              aria-hidden
-              className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-subtle"
-            />
-            <Input
-              type="search"
-              aria-label="Search products"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-12 pl-10"
-            />
-          </div>
-
-          <div className="w-full sm:w-52">
-            <Select
-              aria-label="Sort products"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="h-12 leading-[2.75rem]"
-            >
-              {SORT_OPTIONS.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.label}
-                </option>
-              ))}
-            </Select>
-          </div>
-        </div>
       </div>
-
-      {!hideCategoryFilters && activeCategoryMeta ? (
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-cream px-5 py-3.5 text-small">
-          <span className="text-muted">
-            Viewing <strong className="font-medium text-fg">{activeCategoryMeta.name}</strong> —{" "}
-            {activeCategoryMeta.description}
-          </span>
-          <Link
-            to="/category/$slug"
-            params={{ slug: activeCategoryMeta.slug }}
-            className="inline-flex shrink-0 items-center gap-1.5 font-medium text-fg underline underline-offset-4 t-colors hover:text-terracotta"
-          >
-            <span>Open {activeCategoryMeta.name} page</span>
-            <ArrowRight aria-hidden className="size-3.5" />
-          </Link>
-        </div>
-      ) : null}
-
-      {/* Product Grid */}
-      {isLoading ? (
-        <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
-          <p className="text-h4 text-fg">Loading products...</p>
-          <p className="mt-2 text-small text-muted">
-            Please wait while we load our dental care catalogue.
-          </p>
-        </Tile>
-      ) : filteredProducts.length === 0 ? (
-        <Tile tone="cream" className="mt-10 p-10 text-center md:p-14">
-          <p className="text-h4 text-fg">
-            {unavailable
-              ? "Shop catalogue temporarily unavailable"
-              : products.length === 0
-                ? "No products available in this category"
-                : "No matching products found"}
-          </p>
-          <p className="mt-2 text-small text-muted">
-            {unavailable
-              ? "Our online store is currently being updated. Please check back shortly or call 0800 1938 786."
-              : products.length === 0
-                ? "Explore our full clinician-selected dental care catalogue."
-                : "Try resetting your search query or selecting another category."}
-          </p>
-          {products.length > 0 ? (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setSelectedCategory("all");
-                setSearchQuery("");
-              }}
-              className="mt-6"
-            >
-              Show All Products
-            </Button>
-          ) : null}
-        </Tile>
-      ) : (
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredProducts.map((product) => (
-            <ProductRevealCard
-              key={product.id}
-              product={product}
-              isFavorite={favorites.has(product.id)}
-              isJustAdded={justAddedId === product.id}
-              onAdd={() => handleAdd(product)}
-              onFavorite={() => handleFavorite(product.id)}
-              onQuickView={onQuickView ? () => onQuickView(product) : undefined}
-            />
-          ))}
-        </div>
-      )}
-    </Section>
+    </section>
   );
 }

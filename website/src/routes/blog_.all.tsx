@@ -7,10 +7,11 @@ import { seoHead } from "@/lib/seo";
 
 // "blog_" keeps this a sibling of /blog, like the post route, and a fixed path wins over /blog/$slug.
 export const Route = createFileRoute("/blog_/all")({
-  validateSearch: (search: Record<string, unknown>): { page: number; topic?: string } => {
-    const page = Number.parseInt(String(search.page ?? "1"), 10);
+  // `page` stays undefined when the address has none: a default here would make the router redirect /blog/all to /blog/all?page=1.
+  validateSearch: (search: Record<string, unknown>): { page?: number; topic?: string } => {
+    const page = Number.parseInt(String(search.page ?? ""), 10);
     return {
-      page: Number.isFinite(page) && page > 0 ? page : 1,
+      page: Number.isFinite(page) && page > 1 ? page : undefined,
       topic: typeof search.topic === "string" && search.topic ? search.topic : undefined,
     };
   },
@@ -24,7 +25,7 @@ function BlogAllRoute() {
     <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
-      <BlogAllPage page={page} topic={topic} />
+      <BlogAllPage page={page ?? 1} topic={topic} />
       <Footer />
     </main>
   );

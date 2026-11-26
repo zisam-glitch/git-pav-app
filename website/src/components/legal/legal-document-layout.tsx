@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import type { ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
 import { ScrollProgress } from "@/components/home/scroll-progress";
-import { Heading, Section, Tile } from "@/components/hims";
+import { BookButton, CallButton } from "@/components/hims/button-link";
+import { Heading } from "@/components/hims";
+import { PRACTICE_EMAIL, PRACTICE_PHONE } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
 
 export interface LegalTocItem {
@@ -17,21 +19,49 @@ export const LEGAL_LINK_CLASS =
   "font-medium text-terracotta underline underline-offset-4 t-colors hover:text-rust";
 
 const LEGAL_POLICY_LINKS = [
-  { to: "/privacy-policy", label: "Privacy Policy" },
-  { to: "/terms-and-condition", label: "Terms & Conditions" },
-  { to: "/cookie-policy", label: "Cookie Policy" },
-  { to: "/complaints-policy", label: "Complaints Policy" },
-  { to: "/cctv-policy", label: "CCTV Policy" },
-  { to: "/practice-policy", label: "Practice Policy" },
+  { to: "/privacy-policy", label: "Privacy", blurb: "How we collect, protect and use your records." },
+  { to: "/terms-and-condition", label: "Terms & Conditions", blurb: "The terms for using our website and services." },
+  { to: "/cookie-policy", label: "Cookies", blurb: "Which cookies we use and how to change them." },
+  { to: "/complaints-policy", label: "Complaints", blurb: "How to raise a concern and how we respond." },
+  { to: "/cctv-policy", label: "CCTV", blurb: "Why we use CCTV and how footage is handled." },
+  { to: "/practice-policy", label: "Practice", blurb: "How the practice runs day to day." },
 ] as const;
 
 export type LegalPolicyPath = (typeof LEGAL_POLICY_LINKS)[number]["to"];
 
+const CARD = "rounded-[24px] border border-[#ece8dd] bg-white";
+
+/** The id of the section nearest the top of the screen, so the contents list can follow the reader. */
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = useState(ids[0] ?? "");
+  const key = ids.join("|");
+  useEffect(() => {
+    const els = key
+      .split("|")
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (els.length === 0 || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-120px 0px -60% 0px" },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [key]);
+  return active;
+}
+
 /**
- * Hims-style editorial legal & policy page shell:
- * - Warm #faf8f2 cream full-bleed header canvas (Mobbin 826e669b)
- * - Sticky desktop numbered "On this page" jump navigation sidebar (Mobbin a02b45d0)
- * - Clean single-column editorial reading column with min-w-0 overflow protection
+ * Hims-style legal & policy page:
+ * - Cream hero with a two-tone heading and small fact chips
+ * - A sticky pill switcher between the six policies
+ * - "On this page" list that follows the reader, white 24px section cards on cream
+ * - A dark notice card, then a contact card and tiles for the other policies
  */
 export function LegalDocumentPage({
   currentPath,
@@ -54,90 +84,88 @@ export function LegalDocumentPage({
   toc: LegalTocItem[];
   children: ReactNode;
 }) {
+  const active = useActiveSection(toc.map((item) => item.id));
+  const others = LEGAL_POLICY_LINKS.filter((policy) => policy.to !== currentPath);
+
   return (
-    <main className="min-h-screen bg-white text-fg">
+    <main className="min-h-screen bg-cream text-fg">
       <ScrollProgress />
       <Header />
 
-      {/* Warm #faf8f2 cream full-bleed editorial header (Hims Mobbin 826e669b) */}
-      <Section
-        theme="cream"
-        width="wide"
-        space="none"
-        className="border-b border-border py-10 md:py-16"
-      >
-        <div className="max-w-3xl">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
-              Pav Dental · Bradford
-            </p>
-            {category ? (
-              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3.5 py-1 text-caption font-medium text-fg">
-                {category}
-              </span>
-            ) : null}
-          </div>
-
-          <Heading
-            as="h1"
-            size="hero"
-            accent={titleAccent}
-            tone="terracotta"
-            inline
-            className="mt-5"
-          >
-            {title}
-          </Heading>
-
-          {subtitle ? (
-            <p className="mt-4 max-w-2xl text-lead leading-relaxed text-muted">{subtitle}</p>
-          ) : null}
-
-          {metaItems && metaItems.length > 0 ? (
-            <dl className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 text-small text-muted">
-              {metaItems.map((item) => (
-                <div key={item} className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-terracotta" aria-hidden="true" />
-                  <dd>{item}</dd>
-                </div>
-              ))}
-            </dl>
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-[1392px] px-4 pt-10 pb-8 md:px-10 md:pt-16 md:pb-12">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-pill bg-black px-3.5 py-1 text-caption font-medium text-white">Policies</span>
+          {category ? (
+            <span className="rounded-pill bg-white px-3.5 py-1 text-caption font-medium text-fg ring-1 ring-[#ece8dd]">
+              {category}
+            </span>
           ) : null}
         </div>
-      </Section>
+        <Heading as="h1" size="hero" accent={titleAccent} tone="terracotta" inline className="mt-5 max-w-4xl">
+          {title}
+        </Heading>
+        {subtitle ? <p className="mt-5 max-w-2xl text-lead leading-relaxed text-muted">{subtitle}</p> : null}
+        {metaItems && metaItems.length > 0 ? (
+          <ul className="mt-7 flex list-none flex-wrap gap-2">
+            {metaItems.map((item) => (
+              <li
+                key={item}
+                className="flex items-center gap-2 rounded-pill bg-white px-4 py-2 text-small text-fg ring-1 ring-[#ece8dd]"
+              >
+                <span className="size-1.5 rounded-full bg-[#cf9358]" aria-hidden="true" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </section>
 
-      {/* Editorial body + sticky numbered "On this page" jump nav (Hims Mobbin a02b45d0) */}
-      <Section theme="white" width="wide" space="default">
-        <div className="grid items-start gap-10 lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[18.5rem_minmax(0,48rem)] lg:gap-14">
-          <aside aria-label="On this page" className="min-w-0 lg:sticky lg:top-24">
-            {/* Mobile compact jump menu */}
-            <details className="group rounded-xl border border-border bg-tile-cream lg:hidden">
+      {/* Policy switcher */}
+      <nav aria-label="Policies" className="sticky top-[49px] z-30 border-y md:top-[62px] border-[#ece8dd] bg-cream/95 backdrop-blur">
+        <ul className="mx-auto flex max-w-[1392px] list-none gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] md:px-10">
+          {LEGAL_POLICY_LINKS.map((policy) => {
+            const current = policy.to === currentPath;
+            return (
+              <li key={policy.to} className="shrink-0">
+                <Link
+                  to={policy.to}
+                  aria-current={current ? "page" : undefined}
+                  className={cn(
+                    "inline-flex h-10 items-center rounded-pill px-5 text-small font-medium t-colors",
+                    current ? "bg-black text-white" : "bg-white text-fg ring-1 ring-[#ece8dd] hover:bg-[#f1ede2]",
+                  )}
+                >
+                  {policy.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* Body */}
+      <div className="mx-auto w-full max-w-[1392px] px-4 py-10 md:px-10 md:py-16">
+        <div className="grid items-start gap-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[17rem_minmax(0,52rem)]">
+          <aside aria-label="On this page" className="min-w-0 lg:sticky lg:top-36">
+            {/* Phone: collapsed jump list */}
+            <details className={cn("group lg:hidden", CARD)}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-label text-fg">
-                <span className="text-caption font-medium tracking-[0.12em] uppercase text-muted">
-                  On this page ({toc.length})
-                </span>
+                <span>On this page ({toc.length})</span>
                 <ChevronDown
                   aria-hidden="true"
                   className="size-4 text-muted transition-transform duration-200 group-open:rotate-180"
                 />
               </summary>
-              <nav aria-label="Section jump links" className="border-t border-border px-5 py-3">
-                <ol className="divide-y divide-border">
+              <nav aria-label="Section jump links" className="px-5 pb-3">
+                <ol className="divide-y divide-[#f0ede4]">
                   {toc.map((item, index) => (
                     <li key={item.id}>
-                      <a
-                        href={`#${item.id}`}
-                        className="flex items-baseline justify-between gap-3 py-2.5 text-small text-fg t-colors hover:text-terracotta"
-                      >
-                        <span className="flex items-baseline gap-2.5">
-                          <span className="font-mono text-caption font-medium text-terracotta">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <span>{item.label}</span>
+                      <a href={`#${item.id}`} className="flex items-baseline gap-3 py-2.5 text-small text-fg">
+                        <span className="text-caption font-medium text-[#b9805b]">
+                          {String(index + 1).padStart(2, "0")}
                         </span>
-                        {item.meta ? (
-                          <span className="shrink-0 text-caption text-muted">{item.meta}</span>
-                        ) : null}
+                        <span>{item.label}</span>
                       </a>
                     </li>
                   ))}
@@ -145,96 +173,86 @@ export function LegalDocumentPage({
               </nav>
             </details>
 
-            {/* Desktop sticky sidebar */}
-            <div className="hidden space-y-5 lg:block">
-              <Tile tone="cream" className="border border-border/70 p-6">
-                <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
-                  On this page
-                </p>
-                <nav aria-label="Section navigation" className="mt-4">
-                  <ol className="divide-y divide-border">
-                    {toc.map((item, index) => (
-                      <li key={item.id}>
-                        <a
-                          href={`#${item.id}`}
-                          className="group flex items-baseline justify-between gap-3 py-3 text-small text-fg t-colors first:pt-1 last:pb-1 hover:text-terracotta"
-                        >
-                          <span className="flex items-baseline gap-3">
-                            <span className="font-mono text-caption font-medium text-terracotta">
-                              {String(index + 1).padStart(2, "0")}
-                            </span>
-                            <span className="leading-snug">{item.label}</span>
-                          </span>
-                          {item.meta ? (
-                            <span className="shrink-0 rounded-pill border border-border bg-white px-2 py-0.5 text-caption text-muted">
-                              {item.meta}
-                            </span>
-                          ) : null}
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
-                </nav>
-              </Tile>
-
-              <div className="rounded-xl border border-border bg-white p-5">
-                <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">
-                  Practice Policies
-                </p>
-                <ul className="mt-3 space-y-1">
-                  {LEGAL_POLICY_LINKS.map((policy) => {
-                    const active = policy.to === currentPath;
-                    return (
-                      <li key={policy.to}>
-                        <Link
-                          to={policy.to}
-                          aria-current={active ? "page" : undefined}
-                          className={cn(
-                            "flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-small t-colors",
-                            active
-                              ? "bg-cream font-medium text-fg"
-                              : "text-muted hover:bg-cream/60 hover:text-fg",
-                          )}
-                        >
-                          <span>{policy.label}</span>
-                          <ChevronRight
-                            aria-hidden="true"
-                            className={cn(
-                              "size-3.5 shrink-0",
-                              active ? "text-terracotta" : "text-muted/60",
-                            )}
-                          />
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </div>
+            {/* Desktop: list that follows the reader */}
+            <nav aria-label="Section navigation" className="hidden lg:block">
+              <p className="text-caption font-medium tracking-[0.14em] uppercase text-muted">On this page</p>
+              <ol className="mt-4 list-none border-l border-[#e4dfd0]">
+                {toc.map((item, index) => {
+                  const on = item.id === active;
+                  return (
+                    <li key={item.id}>
+                      <a
+                        href={`#${item.id}`}
+                        aria-current={on ? "location" : undefined}
+                        className={cn(
+                          "-ml-px flex items-baseline gap-3 border-l-2 py-2 pl-4 text-small leading-snug t-colors",
+                          on ? "border-[#cf9358] font-medium text-fg" : "border-transparent text-muted hover:text-fg",
+                        )}
+                      >
+                        <span className="text-caption font-medium text-[#b9805b]">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span>{item.label}</span>
+                        {item.meta ? <span className="ml-auto shrink-0 text-caption text-muted">{item.meta}</span> : null}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
           </aside>
 
           <article className="min-w-0">
             {notice ? (
-              <Tile
-                tone="cream"
-                as="aside"
-                className="mb-10 border border-border border-l-2 border-l-terracotta p-5 text-small leading-relaxed text-fg md:p-6"
-              >
-                {notice}
-              </Tile>
+              <aside className="mb-5 rounded-[24px] bg-[#1b1b1b] p-6 text-small leading-relaxed text-white/85 md:p-8">
+                <p className="mb-2 text-caption font-medium tracking-[0.14em] uppercase text-[#eac57d]">Please note</p>
+                <div className="[&_strong]:font-medium [&_strong]:text-white">{notice}</div>
+              </aside>
             ) : null}
 
-            <div className="divide-y divide-border [&>*:first-child]:pt-0">{children}</div>
+            <div className="space-y-5">{children}</div>
+
+            {/* Questions */}
+            <div className={cn("mt-10 p-6 md:p-10", CARD)}>
+              <h2 className="text-h3-md text-fg">Questions about this policy?</h2>
+              <p className="mt-3 max-w-xl text-body leading-[1.7] text-muted">
+                Call us on {PRACTICE_PHONE} or email{" "}
+                <a href={`mailto:${PRACTICE_EMAIL}`} className={LEGAL_LINK_CLASS}>
+                  {PRACTICE_EMAIL}
+                </a>{" "}
+                and we will help.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <CallButton variant="default">Call {PRACTICE_PHONE}</CallButton>
+                <BookButton variant="outline">Book an appointment</BookButton>
+              </div>
+            </div>
+
+            {/* Other policies */}
+            <h2 className="mt-14 text-h3-md text-fg">Other policies</h2>
+            <ul className="mt-5 grid list-none gap-3 sm:grid-cols-2 [&>li:last-child:nth-child(odd)]:sm:col-span-2">
+              {others.map((policy) => (
+                <li key={policy.to}>
+                  <Link
+                    to={policy.to}
+                    className="block h-full rounded-[24px] bg-[#f1ede2] p-6 t-colors hover:bg-[#e9e4d6]"
+                  >
+                    <span className="block text-label font-medium text-fg">{policy.label}</span>
+                    <span className="mt-1.5 block text-small leading-relaxed text-muted">{policy.blurb}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </article>
         </div>
-      </Section>
+      </div>
 
       <Footer />
     </main>
   );
 }
 
-/** A numbered editorial legal section with crisp spacing and anchor offset. */
+/** A numbered legal section: a white card with a gold number chip and a clear heading. */
 export function LegalSection({
   id,
   number,
@@ -247,21 +265,19 @@ export function LegalSection({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="min-w-0 scroll-mt-28 py-8 first:pt-0 md:py-10">
-      <div className="flex items-baseline gap-3">
-        <span className="font-mono text-caption font-medium text-terracotta">{number}</span>
+    <section id={id} className={cn("min-w-0 scroll-mt-36 p-6 md:p-10", CARD)}>
+      <div className="flex items-center gap-4">
+        <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-pill bg-[#f6e7c9] px-3 text-caption font-medium text-[#7a5520]">
+          {number}
+        </span>
         <h2 className="text-h3-md text-fg">{title}</h2>
       </div>
-      <div className="mt-4 min-w-0 space-y-4 text-body leading-[1.7] text-muted">{children}</div>
+      <div className="mt-5 min-w-0 space-y-4 text-body leading-[1.75] text-muted">{children}</div>
     </section>
   );
 }
 
-/**
- * Structured Hims legal table (Mobbin d30bea96):
- * Soft sand header bar, crisp 1px horizontal dividers, readable 2+ column padding,
- * always wrapped in w-full overflow-x-auto for 0px overflow at 390px.
- */
+/** A legal table: rounded, cream header row, hairline dividers; scrolls sideways on a phone. */
 export function LegalTable({
   headers,
   rows,
@@ -272,22 +288,22 @@ export function LegalTable({
   minWidthClass?: string;
 }) {
   return (
-    <div className="mt-5 w-full overflow-x-auto rounded-xl border border-border bg-white">
+    <div className="mt-5 w-full overflow-x-auto rounded-[20px] border border-[#ece8dd] bg-white">
       <table className={cn("w-full border-collapse text-left text-body text-fg", minWidthClass)}>
-        <thead className="bg-sand text-fg">
+        <thead className="bg-cream text-fg">
           <tr>
             {headers.map((header) => (
               <th
                 key={header}
                 scope="col"
-                className="border-b border-border px-5 py-3.5 text-caption font-medium tracking-[0.06em] uppercase text-fg"
+                className="px-5 py-3.5 text-caption font-medium tracking-[0.06em] uppercase text-fg"
               >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody className="divide-y divide-[#f0ede4]">
           {rows.map((row, rowIndex) => (
             <tr key={rowIndex} className="t-colors hover:bg-cream/60">
               {row.map((cell, cellIndex) => (

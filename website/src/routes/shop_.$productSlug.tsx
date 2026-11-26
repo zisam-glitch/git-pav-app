@@ -37,10 +37,10 @@ function ProductDetailRoute() {
       {bagNotice ? (
         <div
           role="status"
-          className="fixed right-6 bottom-6 z-50 flex items-center gap-3 rounded-pill bg-black px-5 py-3 text-small font-medium text-white shadow-card"
+          className="fixed right-6 bottom-6 z-50 flex items-center gap-4 rounded-full bg-[#1b1b1b] py-2 pr-2 pl-6 text-[15px] font-medium text-white shadow-[0_10px_36px_rgba(20,20,40,0.22)]"
         >
           <span>Added to bag!</span>
-          <Link to="/cart" className="underline underline-offset-4 hover:text-gold">
+          <Link to="/cart" className="rounded-full bg-white px-5 py-2.5 text-[14px] text-[#1b1b1b] t-colors hover:bg-[#f3f0a8]">
             View Bag
           </Link>
         </div>

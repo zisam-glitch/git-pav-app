@@ -1,5 +1,6 @@
 import { AlertCircle, CheckCircle2, FileText } from "lucide-react";
 import { GeneralDentistryConsentPanel, type ConsentItem } from "./general-dentistry-consent-panel";
+import { YOUTUBE } from "@/content/videos";
 
 const CONSENT_ITEMS: readonly ConsentItem[] = [
   {
@@ -27,6 +28,7 @@ export function GeneralDentistryRootCanalConsent() {
       accent="Root Canal Treatment"
       intro="Before proceeding with root canal treatment, we ensure you fully understand the procedure, risks, and benefits of saving your natural tooth."
       items={CONSENT_ITEMS}
+      video={{ ...YOUTUBE.generalRootCanal, title: "Informed consent for root canal treatment" }}
     />
   );
 }

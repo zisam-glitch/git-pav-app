@@ -69,13 +69,7 @@ function FinanceHero() {
             Bradford Clinic · Clear Fees
           </span>
 
-          <Heading
-            as="h1"
-            size="hero"
-            accent="Payment Options"
-            tone="terracotta"
-            className="mt-4"
-          >
+          <Heading as="h1" size="hero" accent="Payment Options" tone="terracotta" className="mt-4">
             Transparent Dental
           </Heading>
 
@@ -112,7 +106,7 @@ function FinanceHero() {
 /** Hims cream bento & spec cards (Mobbin b92190f8 & fceeec4f): three transparent ways patients pay. */
 function PaymentOptionsBento() {
   return (
-    <Section id="options" theme="cream" width="wide" aria-labelledby="options-heading">
+    <Section id="options" theme="white" width="wide" aria-labelledby="options-heading">
       <div className="max-w-2xl">
         <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
           How Patients Pay
@@ -155,8 +149,7 @@ function PaymentOptionsBento() {
               </div>
 
               <h3 className="mt-6 text-h3-md text-fg">
-                {option.title}{" "}
-                <span className="block text-terracotta">{option.accent}</span>
+                {option.title} <span className="block text-terracotta">{option.accent}</span>
               </h3>
 
               <p className="mt-3 text-body text-muted">{option.description}</p>
@@ -237,13 +230,7 @@ function PriceMatchBand() {
         <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
           Our Price Match Promise
         </span>
-        <Heading
-          as="h2"
-          size="h2"
-          accent="our Price Match Promise"
-          tone="gold"
-          className="mt-4"
-        >
+        <Heading as="h2" size="h2" accent="our Price Match Promise" tone="gold" className="mt-4">
           <span id="price-match-heading">Fair fees, backed by</span>
         </Heading>
         <p className="mt-5 text-lead text-white/80">

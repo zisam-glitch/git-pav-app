@@ -16,8 +16,9 @@ export const Route = createFileRoute("/privacy-policy")({
 const TOC: LegalTocItem[] = [
   { id: "data-controller", label: "Data Controller Information" },
   { id: "information-we-collect", label: "Information We Collect" },
+  { id: "online-registration", label: "Online Patient Registration" },
   { id: "lawful-basis", label: "Lawful Basis for Processing" },
-  { id: "third-party-processors", label: "Third-Party Processors", meta: "12" },
+  { id: "third-party-processors", label: "Third-Party Processors", meta: "13" },
   { id: "retention-periods", label: "Retention Periods" },
   { id: "your-rights", label: "Your Rights" },
 ];
@@ -34,7 +35,11 @@ const PROCESSORS: Array<[string, string]> = [
   ],
   [
     "Vercel",
-    "Static asset hosting and serverless web runtime for the marketing site and staff admin dashboard.",
+    "Static asset hosting and serverless web runtime for the marketing site and staff admin dashboard. The admin dashboard, which receives online registrations, runs in London (UK).",
+  ],
+  [
+    "Neon",
+    "Managed PostgreSQL database for the staff admin dashboard, holding website form submissions and online patient registrations. Hosted in London (UK).",
   ],
   [
     "Stripe",
@@ -70,7 +75,7 @@ function PrivacyPolicyPage() {
       titleAccent="Notice"
       subtitle="How Pav Dental collects, protects, and manages your personal and clinical dental records under UK GDPR and the Data Protection Act 2018."
       metaItems={[
-        "Last updated: 27 October 2026",
+        "Last updated: 26 November 2026",
         "Working Compliance Draft (LG-01/LG-02)",
         "UK GDPR & DPA 2018",
       ]}
@@ -140,7 +145,71 @@ function PrivacyPolicyPage() {
         />
       </LegalSection>
 
-      <LegalSection id="lawful-basis" number="03" title="Lawful Basis for Processing">
+      <LegalSection id="online-registration" number="03" title="Online Patient Registration">
+        <p>
+          You can register as a new patient online at{" "}
+          <a href="/services/regestration" className={LEGAL_LINK_CLASS}>
+            pavdental.com/services/regestration
+          </a>
+          . The form asks for the same details we would take at your first visit, so that your
+          dentist has your full history before treating you.
+        </p>
+        <LegalTable
+          headers={["What the form asks for", "Why we need it"]}
+          rows={[
+            [
+              "Name, date of birth, sex as recorded on your NHS record, contact details, address and emergency contact",
+              "To identify you, create your patient record and reach you or your emergency contact about your care.",
+            ],
+            [
+              "NHS number and the GP surgery you are registered with",
+              "To match you to your NHS record and to contact your GP when your treatment needs it.",
+            ],
+            [
+              "Ethnic group (optional)",
+              "Equality monitoring. You can choose not to answer.",
+            ],
+            [
+              "Lifestyle: smoking, vaping, alcohol and recreational drug use",
+              "These affect your gum health, healing and the anaesthetics and medicines we can safely use.",
+            ],
+            [
+              "Medical history: medications, allergies and medical conditions",
+              "So your dentist can treat you safely, for example avoiding a medicine you react to or taking extra care with a heart condition.",
+            ],
+            [
+              "Dental history and any accessibility needs",
+              "To plan your treatment and make sure we can see you comfortably.",
+            ],
+            [
+              "For children: age group, place of birth and, for babies, where the mother was living at the birth",
+              "Details the practice records when registering a child. A parent or guardian completes the form for them.",
+            ],
+          ]}
+        />
+        <p>
+          You confirm your consent at the last step before you send the form. Nothing you enter is
+          saved in your browser: the answers are sent once, securely, to our staff dashboard.
+        </p>
+        <p>
+          <strong className="font-medium text-fg">Where it is kept:</strong> your registration is
+          stored in our staff dashboard, whose server and database are both in London (UK).
+        </p>
+        <p>
+          <strong className="font-medium text-fg">Who can see it:</strong> only Pav Dental staff
+          who sign in to the staff dashboard. When a registration arrives, the alert email to the
+          practice contains only your name and phone number. Your health answers are never sent by
+          email.
+        </p>
+        <p>
+          <strong className="font-medium text-fg">How long we keep it:</strong> your registration
+          becomes part of your patient record and is kept for as long as we hold that record. It is
+          not deleted automatically. You can ask us to delete it or correct it at any time (see Your
+          Rights below).
+        </p>
+      </LegalSection>
+
+      <LegalSection id="lawful-basis" number="04" title="Lawful Basis for Processing">
         <p>
           Under the UK General Data Protection Regulation (UK GDPR) and Data Protection Act 2018:
         </p>
@@ -165,7 +234,7 @@ function PrivacyPolicyPage() {
 
       <LegalSection
         id="third-party-processors"
-        number="04"
+        number="05"
         title="Third-Party Technical Processors & Infrastructure"
       >
         <p>
@@ -177,7 +246,7 @@ function PrivacyPolicyPage() {
         <LegalTable headers={["Processor", "Infrastructure Role & Data Handled"]} rows={PROCESSORS} />
       </LegalSection>
 
-      <LegalSection id="retention-periods" number="05" title="Retention Periods">
+      <LegalSection id="retention-periods" number="06" title="Retention Periods">
         <p>In compliance with GDC Standards and the NHS Records Management Code of Practice:</p>
         <LegalTable
           headers={["Record Category", "Minimum Retention Period"]}
@@ -195,6 +264,10 @@ function PrivacyPolicyPage() {
               "Records are retained until the patient's 25th birthday, or 11 years after the last treatment (whichever is longer).",
             ],
             [
+              "Online Registrations",
+              "Kept as part of your patient record for as long as we hold that record. Not deleted automatically; you can ask us to delete or correct it.",
+            ],
+            [
               "Financial & Transaction Records",
               "Invoices and transaction logs are held for 6 years in accordance with UK statutory tax requirements.",
             ],
@@ -202,7 +275,7 @@ function PrivacyPolicyPage() {
         />
       </LegalSection>
 
-      <LegalSection id="your-rights" number="06" title="Your Rights">
+      <LegalSection id="your-rights" number="07" title="Your Rights">
         <p>You have statutory rights under UK data protection law:</p>
         <ul className="list-disc space-y-2.5 pl-5 marker:text-terracotta">
           <li>

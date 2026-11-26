@@ -1,4 +1,3 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
 import { ContactForm } from "@/components/home/contact-form";
 import { OralHygieneConsent } from "./oral-hygiene-consent";
 import { OralHygieneFaq } from "./oral-hygiene-faq";
@@ -12,27 +11,13 @@ export function OralHygienePage() {
   return (
     <main>
       <OralHygieneHero />
-      <OralHygieneImportance />
       <OralHygienePricing />
-      <OralHygieneShowcase />
+      <OralHygieneImportance />
       <OralHygieneWhoNeeds />
+      <OralHygieneShowcase />
       <OralHygieneConsent />
       <OralHygieneFaq />
       <ContactForm />
-      <CtaBand
-        theme="navy"
-        title="Ready for healthier gums"
-        accent="and a cleaner smile?"
-        tone="butter"
-        actions={
-          <>
-            <BookButton variant="butter">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        786 Leeds Road, Bradford, BD3 9TY · Gentle scale and polish appointments from £45.
-      </CtaBand>
     </main>
   );
 }

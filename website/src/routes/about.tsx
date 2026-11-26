@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Hero } from "@/components/about/hero";
-import { OurStory } from "@/components/about/our-story";
+import { Story } from "@/components/about/story";
 import { Team } from "@/components/about/team";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
@@ -17,8 +16,7 @@ function About() {
     <main className="min-h-screen bg-white text-fg">
       <ScrollProgress />
       <Header />
-      <Hero />
-      <OurStory />
+      <Story />
       <Team />
       <Footer />
     </main>

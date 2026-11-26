@@ -1,13 +1,6 @@
-import { ArrowRight, MapPin, RotateCcw, ShieldCheck, Truck } from "lucide-react";
-import {
-  ButtonLink,
-  CallButton,
-  FaqList,
-  Heading,
-  Section,
-  Tile,
-  type FaqItem,
-} from "@/components/hims";
+import { ArrowRight, MapPin, RotateCcw, Truck } from "lucide-react";
+import { ButtonLink, CallButton, FaqList, type FaqItem } from "@/components/hims";
+import { CONTAINER, LEAD, MUTED_TITLE, SOFT_CARD, TITLE } from "@/components/pricing/tokens";
 import { SHOP_DISPATCH_ADDRESS } from "./shop-catalog-data";
 
 const DELIVERY_PILLARS = [
@@ -23,95 +16,101 @@ const DELIVERY_PILLARS = [
   },
   {
     icon: MapPin,
-    title: "Dispatched from Bradford Clinic",
-    body: `Packed and quality-checked by our clinical team at ${SHOP_DISPATCH_ADDRESS}, with free Clinic Click & Collect available 7 days a week.`,
+    title: "Click & Collect in Bradford",
+    body: `Free Clinic Click & Collect is available at ${SHOP_DISPATCH_ADDRESS}, 7 days a week.`,
   },
 ] as const;
 
 const FAQS: FaqItem[] = [
   {
-    q: "Will the 14-day whitening strips cause tooth or gum sensitivity?",
-    a: "Our 14-day whitening strips use a peroxide-free PAP+ active brightening complex paired with hydroxyapatite and potassium citrate. For patients prone to cold sensitivity, we also stock Post-Whitening Sensitivity Relief Gel to calm teeth during and after brightening.",
+    q: "What makes Happy Tooth toothpaste different?",
+    a: "It is made with 10% micro-hydroxyapatite to strengthen enamel, cleans without harsh SLS, has no artificial sweeteners or artificial colors, and is 100% fluoride-free. It comes in six flavours: Fresh Mint, Vanilla Frosting, Sweet Orange, Mint Brownie, Lemon Twist and Strawberry Bubblegum.",
   },
   {
-    q: "Who can order Whitening Top-Up Syringes?",
-    a: "Our single (£45) and 4-pack (£95) top-up syringes match our published clinic fees and are formulated for adults aged 18+ who already own dentist-fitted custom whitening trays. If you need custom trays made first, book a whitening consultation at our Bradford clinic.",
+    q: "Are the natural whitening strips enamel safe?",
+    a: "Happy Tooth describes its Natural Whitening Strips as sparkly white, enamel safe and sensitivity free, made with clean ingredients. Each pack holds 14 treatments. If you have sensitive teeth or gums, call us on 0800 1938 786 or book a consultation before you start.",
   },
   {
-    q: "How much is UK delivery and where do orders ship from?",
-    a: `All orders are dispatched from Pav Dental at ${SHOP_DISPATCH_ADDRESS}. UK tracked delivery is free on orders over £40 and £3.99 on orders under £40. Orders placed before 2 PM Monday–Friday are dispatched the same working day, or you can collect in clinic.`,
+    q: "How much is UK delivery?",
+    a: `UK tracked delivery is free on orders over £40 and £3.99 on orders under £40. You can also collect free from Pav Dental at ${SHOP_DISPATCH_ADDRESS}.`,
   },
   {
     q: "What is your UK returns and refunds policy?",
-    a: "Under UK distance-selling rules, you may return unopened, sealed hygiene products and oral care devices within 14 days of receipt for a full refund. For hygiene and patient safety reasons, opened consumables (such as strips, syringes, toothpaste, or unsealed brush heads) cannot be returned unless faulty or damaged on arrival.",
+    a: "Under UK distance-selling rules, you may return unopened, sealed hygiene products and oral care devices within 14 days of receipt for a full refund. For hygiene and patient safety reasons, opened consumables (such as strips, toothpaste, or unsealed brush heads) cannot be returned unless faulty or damaged on arrival.",
   },
 ];
 
 export function ShopGuarantee() {
   return (
     <>
-      {/* Rich Brown + Gold Clinical Guarantee & UK Delivery / Returns Band */}
-      <Section
+      {/* Delivery and returns: the Hims "by the numbers" card pair */}
+      <section
         id="clinical-guarantee"
-        theme="brown"
         aria-label="Clinical guarantee and UK delivery standards"
+        className="scroll-mt-20 bg-[#f7f5f2] py-14 md:py-24"
       >
-        <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <span className="inline-flex items-center gap-2 rounded-pill border border-white/15 bg-white/7 px-3.5 py-1 text-caption font-medium text-gold">
-              <ShieldCheck aria-hidden className="size-3.5" />
-              <span>Clinical Standards &amp; UK Distance Selling</span>
-            </span>
-            <Heading as="h2" size="h2-md" accent="delivered directly" tone="gold" className="mt-5">
-              Clinic-grade care,
-            </Heading>
-            <p className="mt-4 text-lead text-white/80">
-              Every product in our store is selected by the dental team at Pav Dental Bradford—no
-              third-party marketplace resellers, clear UK pricing, and straightforward clinical
-              support whenever you need advice.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="#catalog" variant="gold">
+        <div className={`${CONTAINER} grid items-stretch gap-3 lg:grid-cols-[1fr_1.1fr] lg:gap-4`}>
+          <div className={`${SOFT_CARD} flex flex-col justify-between gap-8 p-7 md:p-10`}>
+            <div>
+              <p className="text-small text-[#55565a]">
+                Clinical Standards &amp; UK Distance Selling
+              </p>
+              <h2 className="mt-3 text-[clamp(32px,3.4vw,50px)] leading-[1.04] font-normal tracking-[-0.025em] text-[#1b1b1b]">
+                Better oral care, <span className={MUTED_TITLE}>delivered directly</span>
+              </h2>
+              <p className={`mt-5 ${LEAD}`}>
+                Every product in our store is made by Happy Tooth, our sister company—no third-party
+                marketplace resellers, clear UK pricing, and straightforward support from the Pav
+                Dental team whenever you need advice.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <ButtonLink href="#catalog">
                 Shop All Products
                 <ArrowRight aria-hidden className="size-4" />
               </ButtonLink>
-              <CallButton variant="glass" />
+              <CallButton variant="outline" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:col-span-7">
+          <ul className={`${SOFT_CARD} flex flex-col justify-between p-7 md:p-10`}>
             {DELIVERY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (
-                <Tile
+                <li
                   key={pillar.title}
-                  tone="glass"
-                  className="border border-white/15 p-6 md:p-7"
+                  className="flex gap-5 border-b border-[#1b1b1b]/10 py-7 first:pt-0 last:border-0 last:pb-0"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="grid size-11 shrink-0 place-items-center rounded-pill bg-gold text-brown">
-                      <Icon aria-hidden className="size-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-h4 text-white">{pillar.title}</h3>
-                      <p className="mt-2 text-small leading-relaxed text-white/80">{pillar.body}</p>
-                    </div>
+                  <Icon
+                    aria-hidden
+                    strokeWidth={1.3}
+                    className="mt-1 size-9 shrink-0 text-[#1b1b1b]"
+                  />
+                  <div>
+                    <h3 className="text-[clamp(20px,1.7vw,24px)] leading-[1.15] text-[#1b1b1b]">
+                      {pillar.title}
+                    </h3>
+                    <p className="mt-2 text-[15px] leading-[1.5] text-[#55565a]">{pillar.body}</p>
                   </div>
-                </Tile>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
-      </Section>
+      </section>
 
-      {/* Clean Cream FAQ Accordion Band */}
-      <Section id="guarantee" theme="cream" aria-label="Shop frequently asked questions">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-14">
-          <div className="lg:sticky lg:top-20">
-            <Heading as="h2" size="h2-md" accent="Questions" tone="terracotta">
-              Frequently Asked
-            </Heading>
-            <p className="mt-4 text-lead text-muted">
+      {/* Questions: the Hims accordion */}
+      <section
+        id="guarantee"
+        aria-label="Shop frequently asked questions"
+        className="scroll-mt-20 bg-white py-14 md:py-24"
+      >
+        <div className={`${CONTAINER} grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16`}>
+          <div className="lg:sticky lg:top-24">
+            <h2 className={TITLE}>
+              Frequently Asked <span className={MUTED_TITLE}>Questions</span>
+            </h2>
+            <p className={`mt-4 ${LEAD}`}>
               Clear answers on product suitability, UK tracked delivery, Bradford click &amp;
               collect, and our 14-day returns policy.
             </p>
@@ -125,7 +124,7 @@ export function ShopGuarantee() {
 
           <FaqList items={FAQS} />
         </div>
-      </Section>
+      </section>
     </>
   );
 }

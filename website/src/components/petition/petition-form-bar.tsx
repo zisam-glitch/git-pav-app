@@ -1,10 +1,7 @@
 import { ShieldCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { Section } from "@/components/hims";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PETITION } from "@/content/petition";
+import { PetitionField } from "./petition-field";
 import { api } from "@/lib/api";
 
 type Status = "idle" | "sending" | "signed" | "failed";
@@ -42,109 +39,89 @@ export function PetitionFormBar() {
   }
 
   return (
-    <Section id="sign-form" theme="brown" space="lg" aria-labelledby="sign-heading">
-      <div className="max-w-2xl">
-        <span className="inline-block rounded-pill border border-white/15 bg-white/10 px-4 py-1.5 text-caption font-medium text-gold">
-          {PETITION.eyebrow}
-        </span>
-        <h2 id="sign-heading" className="mt-4 text-h2-md text-white">
-          Sign <span className="text-gold">the Petition</span>
-        </h2>
-        <p className="mt-3 text-lead text-white/80">{copy.eligibility}</p>
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 rounded-xl border border-white/15 bg-white/8 p-6 md:p-8"
-      >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
-          <div className="sm:col-span-4">
-            <Label htmlFor="pet-name" className="mb-2 block text-white/90">
-              {copy.fieldLabels.name}
-            </Label>
-            <Input
-              id="pet-name"
-              name="name"
-              required
-              type="text"
-              autoComplete="name"
-              placeholder={`${copy.fieldLabels.name} *`}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="sm:col-span-4">
-            <Label htmlFor="pet-email" className="mb-2 block text-white/90">
-              {copy.fieldLabels.email}
-            </Label>
-            <Input
-              id="pet-email"
-              name="email"
-              required
-              type="email"
-              autoComplete="email"
-              placeholder={`${copy.fieldLabels.email} *`}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <Label htmlFor="pet-postcode" className="mb-2 block text-white/90">
-              {copy.fieldLabels.postcode}
-            </Label>
-            <Input
-              id="pet-postcode"
-              name="postcode"
-              required
-              type="text"
-              autoComplete="postal-code"
-              placeholder={`${copy.fieldLabels.postcode} *`}
-              className="bg-white"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <Button
-              type="submit"
-              variant="gold"
-              disabled={status === "sending"}
-              className="h-14 w-full"
-            >
-              {status === "sending" ? "Submitting..." : copy.submit}
-            </Button>
-          </div>
+    <section
+      id="sign-form"
+      aria-labelledby="sign-heading"
+      className="scroll-mt-24 bg-black text-white"
+    >
+      <div className="mx-auto grid w-full max-w-[1392px] gap-12 px-4 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h2
+            id="sign-heading"
+            className="text-[clamp(40px,6vw,88px)] leading-[0.95] font-medium tracking-[-0.04em]"
+          >
+            Sign the
+            <br />
+            Petition
+          </h2>
+          <p className="mt-6 max-w-[420px] text-[19px] leading-[1.45] text-white/70">
+            {copy.eligibility}
+          </p>
         </div>
 
-        <div className="mt-5 flex items-center gap-3 border-t border-white/12 pt-5 text-small text-white/90">
-          <input
-            id="pet-resident"
-            name="resident"
-            type="checkbox"
+        <form
+          onSubmit={handleSubmit}
+          className="grid gap-8 [&_label]:text-white/55 [&_input]:text-white [&_input]:border-white/30 [&_input:focus]:border-white"
+        >
+          <PetitionField
+            id="pet-name"
+            name="name"
             required
-            className="size-4 accent-gold"
+            type="text"
+            autoComplete="name"
+            label={copy.fieldLabels.name}
           />
-          <label htmlFor="pet-resident">{copy.residentLabel}</label>
-        </div>
+          <PetitionField
+            id="pet-email"
+            name="email"
+            required
+            type="email"
+            autoComplete="email"
+            label={copy.fieldLabels.email}
+          />
+          <PetitionField
+            id="pet-postcode"
+            name="postcode"
+            required
+            type="text"
+            autoComplete="postal-code"
+            label={copy.fieldLabels.postcode}
+          />
 
-        {status === "signed" ? (
-          <p
-            role="status"
-            className="mt-5 flex items-center gap-2 rounded-lg bg-white/12 px-4 py-3 text-small font-medium text-white"
-          >
-            <ShieldCheck className="size-4 shrink-0 text-gold" aria-hidden="true" />
-            {copy.thanks}
-          </p>
-        ) : null}
+          <div className="flex items-center gap-3 text-[16px]">
+            <input
+              id="pet-resident"
+              name="resident"
+              type="checkbox"
+              required
+              className="size-5 accent-white"
+            />
+            <label htmlFor="pet-resident" className="!text-white">
+              {copy.residentLabel}
+            </label>
+          </div>
 
-        {status === "failed" ? (
-          <p
-            role="alert"
-            className="mt-5 rounded-lg bg-black/30 px-4 py-3 text-small font-medium text-white"
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="h-14 w-full rounded-full bg-white text-[17px] font-medium text-black t-colors hover:bg-white/85 disabled:opacity-60"
           >
-            {copy.failed}
-          </p>
-        ) : null}
-      </form>
-    </Section>
+            {status === "sending" ? "Submitting..." : copy.submit}
+          </button>
+
+          {status === "signed" ? (
+            <p role="status" className="flex items-center gap-2 text-[17px] font-medium">
+              <ShieldCheck className="size-5 shrink-0" aria-hidden="true" />
+              {copy.thanks}
+            </p>
+          ) : null}
+          {status === "failed" ? (
+            <p role="alert" className="text-[17px] font-medium underline">
+              {copy.failed}
+            </p>
+          ) : null}
+        </form>
+      </div>
+    </section>
   );
 }

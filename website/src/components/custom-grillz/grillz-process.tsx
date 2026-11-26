@@ -1,4 +1,4 @@
-import { Heading, Section, Tile } from "@/components/hims";
+import { Section } from "@/components/hims";
 
 const REASONS = [
   {
@@ -21,38 +21,29 @@ const REASONS = [
 
 export function GrillzProcess() {
   return (
-    <Section id="why-pav" theme="white" aria-labelledby="grillz-why-pav-heading">
-      <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-          Clinical Craftsmanship
-        </span>
-        <div id="grillz-why-pav-heading" className="mt-4">
-          <Heading size="h2-md" accent="Pav Dental Grillz?" tone="terracotta" inline>
-            Why Choose
-          </Heading>
-        </div>
-      </div>
-
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <Section
+      id="why-pav"
+      theme="ink"
+      className="bg-[#120d08]"
+      aria-labelledby="grillz-why-pav-heading"
+    >
+      <h2
+        id="grillz-why-pav-heading"
+        className="mt-3 max-w-3xl text-[clamp(34px,4.4vw,60px)] leading-[1.04] font-normal tracking-[-0.03em]"
+      >
+        Why Choose <span className="text-[#ffc671]">Pav Dental Grillz?</span>
+      </h2>
+      <ul className="mt-12 grid list-none gap-px overflow-hidden rounded-[24px] bg-white/15 sm:grid-cols-2 lg:grid-cols-4">
         {REASONS.map((item, i) => (
-          <Tile
-            key={item.title}
-            tone={i % 2 === 1 ? "sage" : "cream"}
-            lift
-            className="flex flex-col justify-between border border-border/60 p-6 md:p-7"
-          >
-            <div>
-              <span className="inline-flex items-center rounded-pill border border-border bg-white px-3 py-0.5 text-caption font-medium text-terracotta tabular-nums">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <p className="mt-4 border-t border-border pt-4 text-body leading-relaxed text-muted">
-                <strong className="mb-2 block text-h4 text-fg">{`${item.title}:`}</strong>
-                {item.desc}
-              </p>
-            </div>
-          </Tile>
+          <li key={item.title} className="bg-[#1b140d] p-7">
+            <span className="font-mono text-[13px] text-[#ffc671]">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p className="mt-6 text-[22px] leading-[1.15] font-normal">{`${item.title}:`}</p>
+            <p className="mt-3 text-[15px] leading-[1.5] text-white/70">{item.desc}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   );
 }

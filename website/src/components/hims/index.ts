@@ -9,7 +9,40 @@ export { CtaBand } from "./cta-band";
 export { SplitFeature } from "./split-feature";
 export { Stat } from "./stat";
 export { Media } from "./media";
+export { SectionHead } from "./section-head";
+export { ServiceHeroLayout } from "./service-hero";
 export { FeeTable, type FeeTier } from "./fee-table";
 export { PricingTiles, type PricingTier } from "./pricing-tiles";
 export { ConsentPanel, type ConsentItem } from "./consent-panel";
 export { ACCENT_TEXT, type AccentTone } from "./tones";
+export {
+  FeatureBento,
+  StepsPanel,
+  CompareTable,
+  IncludedList,
+  DarkQuestion,
+  FloatingCta,
+} from "./service-sections";
+export {
+  CardRail,
+  WhyCards,
+  ExplainCards,
+  StepBand,
+  FaqSplit,
+  FaqPhoto,
+  ProductRail,
+  CheckRows,
+  SplitPhoto,
+  BeigeGrid,
+  NumberedCards,
+  HUB_CARD,
+  type RailItem,
+  type WhyItem,
+  type ProductItem,
+} from "./hub-sections";
+export { PhotoHero } from "./photo-hero";
+export { ProductDetail, type DetailOption, type DetailAccordion } from "./product-detail";
+export { TileHub, type HubBigTile, type HubSmallTile } from "./tile-hub";
+export { SubNav } from "./sub-nav";
+export { CinematicHero } from "./cinematic-hero";
+export { VideoRow, VideoSection, YouTubeVideo, type VideoFile } from "./video-cards";

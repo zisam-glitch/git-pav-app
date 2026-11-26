@@ -1,4 +1,5 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { ContactForm } from "@/components/home/contact-form";
+import { BookButton, FloatingCta } from "@/components/hims";
 import { GeneralDentistryCavities } from "./general-dentistry-cavities";
 import { GeneralDentistryChoosing } from "./general-dentistry-choosing";
 import { GeneralDentistryExtractionConsent } from "./general-dentistry-extraction-consent";
@@ -14,33 +15,29 @@ import { GeneralDentistryShowcase } from "./general-dentistry-showcase";
 
 export function GeneralDentistryPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <GeneralDentistryHero />
-      <GeneralDentistryCavities />
+      <div id="cavities">
+        <GeneralDentistryCavities />
+      </div>
       <GeneralDentistryRootCanalPricingTable />
       <GeneralDentistryRootCanalConsent />
-      <GeneralDentistryExtractionPricingTable />
+      <div id="extraction">
+        <GeneralDentistryExtractionPricingTable />
+      </div>
       <GeneralDentistryExtractionConsent />
-      <GeneralDentistryFillingPricingTable />
+      <div id="fillings">
+        <GeneralDentistryFillingPricingTable />
+      </div>
       <GeneralDentistryServices />
       <GeneralDentistryImportance />
       <GeneralDentistryChoosing />
       <GeneralDentistryShowcase />
       <GeneralDentistryFaq />
-      <CtaBand
-        theme="brown"
-        title="Get In"
-        accent="Touch"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Appointment</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        Ready to take control of your dental health? Contact us to book your appointment today!
-      </CtaBand>
+      <FloatingCta>
+        <BookButton>Book Appointment</BookButton>
+      </FloatingCta>
+      <ContactForm />
     </main>
   );
 }

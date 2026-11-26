@@ -1,4 +1,4 @@
-import { BookButton, CallButton, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, CallButton, FaqPhoto, Section, type FaqItem } from "@/components/hims";
 import { PRACTICE_PHONE } from "@/lib/enquiry";
 
 const FAQS: FaqItem[] = [
@@ -155,23 +155,20 @@ const FAQS: FaqItem[] = [
 
 export function EmergencyFaq() {
   return (
-    <Section theme="sand" space="default">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <p className="inline-flex rounded-pill bg-white px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            Patient Guidance
-          </p>
-          <Heading as="h2" size="h2-md" accent="Question" tone="terracotta" className="mt-4">
-            Frequently Asked
-          </Heading>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <CallButton variant="default">Call us Now · {PRACTICE_PHONE}</CallButton>
+    <Section theme="white" aria-labelledby="emergency-faq-heading">
+      <FaqPhoto
+        id="emergency-faq-heading"
+        title="Frequently Asked Question"
+        items={FAQS}
+        image="/images/generated/emergency-night.jpg"
+        alt=""
+        actions={
+          <>
+            <CallButton>Call us Now · {PRACTICE_PHONE}</CallButton>
             <BookButton variant="outline">Book Online</BookButton>
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
+          </>
+        }
+      />
     </Section>
   );
 }

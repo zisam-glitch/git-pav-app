@@ -3,6 +3,16 @@ import type { ReactNode } from "react";
 import { FOOTER, SERVICE_PAGES, SOCIAL_LINKS } from "@/content/site-links";
 import { PRACTICE_EMAIL, PRACTICE_HOURS, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
 
+/** Service pages that stay on the site and in the header and services hub, but are left out of the footer list. */
+const FOOTER_HIDDEN_SERVICES = new Set([
+  "/services/mouthguards",
+  "/services/mobile-dentistry",
+  "/services/virtual-dentistry",
+  "/services/finance",
+  "/services/regestration",
+]);
+const FOOTER_SERVICE_LINKS = SERVICE_PAGES.filter((link) => !FOOTER_HIDDEN_SERVICES.has(link.href));
+
 /** TikTok's mark (Simple Icons); the icon set in use has none. */
 function TikTok({ className }: { className?: string }) {
   return (
@@ -123,7 +133,7 @@ export function Footer() {
                 {FOOTER.servicesHeading}
               </h2>
               <ul className="space-y-2.5">
-                {SERVICE_PAGES.map((link) => (
+                {FOOTER_SERVICE_LINKS.map((link) => (
                   <li key={link.href}>
                     <a href={link.href} className={footerLinkClass}>
                       {link.name}
@@ -153,22 +163,15 @@ export function Footer() {
           <p>786 Leeds Road, Bradford, BD3 9TY</p>
         </div>
 
-        <div className="mt-8 overflow-hidden pt-2" aria-hidden="true">
-          <svg viewBox="0 0 1200 215" className="block h-auto w-full select-none text-white/17">
-            <text
-              x="50%"
-              y="84%"
-              textAnchor="middle"
-              fill="currentColor"
-              fontFamily="var(--font-sans)"
-              fontWeight="600"
-              fontSize="215"
-              letterSpacing="-0.02em"
-            >
-              Pav Dental
-            </text>
-          </svg>
-        </div>
+        <a href="/" aria-label="Pav Dental home" className="mt-12 flex justify-center pt-2">
+          <img
+            src="/images/pav-logo-gray.svg"
+            alt="Pav Dental"
+            width={1964}
+            height={569}
+            className="block h-auto w-full max-w-[900px] select-none"
+          />
+        </a>
       </div>
     </footer>
   );

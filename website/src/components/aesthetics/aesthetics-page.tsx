@@ -1,4 +1,4 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { ContactForm } from "@/components/home/contact-form";
 import { AestheticsHero } from "./aesthetics-hero";
 import { AestheticsPremium } from "./aesthetics-premium";
 import { AestheticsPricing } from "./aesthetics-pricing";
@@ -10,7 +10,7 @@ import { AestheticsValues } from "./aesthetics-values";
 
 export function AestheticsPage() {
   return (
-    <main className="bg-bg">
+    <main className="bg-white">
       <AestheticsHero />
       <AestheticsTreatments />
       <AestheticsPremium />
@@ -19,21 +19,7 @@ export function AestheticsPage() {
       <AestheticsTestimonials />
       <AestheticsSafetyBanner />
       <AestheticsSafety />
-      <CtaBand
-        theme="brown"
-        title="Book"
-        accent="Appointment"
-        tone="gold"
-        actions={
-          <>
-            <BookButton variant="gold">Book Now</BookButton>
-            <CallButton variant="glass" />
-          </>
-        }
-      >
-        Leading cosmetic and dental care includes teeth whitening, veneers, implants, routine
-        check-ups, and advanced technologies like digital imaging and laser dentistry.
-      </CtaBand>
+      <ContactForm />
     </main>
   );
 }

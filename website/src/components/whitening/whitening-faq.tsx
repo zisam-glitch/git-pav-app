@@ -1,4 +1,4 @@
-import { BookButton, ButtonLink, FaqList, Heading, Section, type FaqItem } from "@/components/hims";
+import { BookButton, FaqList, Section, SectionHead, type FaqItem } from "@/components/hims";
 
 const FAQS: FaqItem[] = [
   {
@@ -46,29 +46,13 @@ const FAQS: FaqItem[] = [
 export function WhiteningFaq() {
   return (
     <Section id="faq" theme="white" aria-labelledby="whitening-faq-heading">
-      <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.7fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24">
-          <span className="inline-flex items-center rounded-pill border border-border bg-cream px-3.5 py-1 text-caption font-medium text-terracotta">
-            FAQs
-          </span>
-          <div id="whitening-faq-heading" className="mt-4">
-            <Heading size="h2-md" accent="Question" tone="terracotta">
-              Frequently Asked
-            </Heading>
-          </div>
-          <p className="mt-4 text-lead text-muted">
-            Guidance on whitening strips, kits, sensitivity, and suitability.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <BookButton>Book Appointment</BookButton>
-            <ButtonLink to="/contact-us" variant="outline">
-              Contact us
-            </ButtonLink>
-          </div>
-        </div>
-
-        <FaqList items={FAQS} tone="light" defaultOpen={0} />
-      </div>
+      <SectionHead
+        id="whitening-faq-heading"
+        label="FAQs"
+        title="Frequently Asked Question"
+        action={<BookButton>Book Appointment</BookButton>}
+      />
+      <FaqList items={FAQS} tone="light" defaultOpen={0} className="mt-10" />
     </Section>
   );
 }

@@ -3,13 +3,7 @@ import type { CSSProperties, PointerEvent, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /** 21st.dev 3D tilt card — perspective follow on pointer. */
-export function TiltCard({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function TiltCard({ children, className }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const onMove = (e: PointerEvent<HTMLDivElement>) => {

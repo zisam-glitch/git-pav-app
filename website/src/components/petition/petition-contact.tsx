@@ -1,11 +1,9 @@
 import { CheckCircle2, Mail, MapPin, Phone, Send } from "lucide-react";
-import { BookButton, CallButton, Heading, Section } from "@/components/hims";
+import { BookButton, CallButton, Heading } from "@/components/hims";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { PETITION } from "@/content/petition";
 import { PRACTICE_EMAIL, PRACTICE_PHONE, PRACTICE_PHONE_HREF } from "@/lib/enquiry";
+import { PetitionField } from "./petition-field";
 import { useEnquiry } from "@/lib/use-enquiry";
 
 /** "Get In Touch": the live page's contact form. Messages go to the practice through the dashboard. */
@@ -14,69 +12,63 @@ export function PetitionContact() {
   const { contact: copy } = PETITION;
 
   return (
-    <Section
+    <section
       id="petition-contact"
-      theme="sand"
-      space="default"
       aria-labelledby="touch-heading"
+      className="border-t border-black"
     >
-      <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
-        <div className="max-w-[460px]">
-          <span className="inline-block rounded-pill border border-border bg-white px-4 py-1.5 text-caption font-medium text-fg">
-            Bradford Dental Clinic
-          </span>
-          <h2 id="touch-heading" className="mt-4 text-h2-md text-fg">
-            {copy.heading}
+      <div className="mx-auto grid w-full max-w-[1392px] gap-12 px-4 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h2
+            id="touch-heading"
+            className="text-[clamp(40px,6vw,88px)] leading-[0.95] font-medium tracking-[-0.04em]"
+          >
+            Get In
+            <br />
+            Touch
           </h2>
-          <p className="mt-4 text-lead text-muted">{copy.intro}</p>
+          <span className="sr-only">{copy.heading}</span>
+          <p className="mt-6 max-w-[440px] text-[19px] leading-[1.45] text-black/70">
+            {copy.intro}
+          </p>
 
-          <ul className="mt-8 space-y-3 text-body">
-            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3 text-fg">
-              <MapPin aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
+          <dl className="mt-10 max-w-[440px] divide-y divide-black/15 border-y border-black/15 text-[18px]">
+            <div className="flex items-center gap-3 py-4">
+              <MapPin aria-hidden="true" className="size-5 shrink-0" />
               <span>786 Leeds Road, Bradford, BD3 9TY</span>
-            </li>
-            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3">
-              <Phone aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
-              <a
-                href={PRACTICE_PHONE_HREF}
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
-              >
+            </div>
+            <div className="flex items-center gap-3 py-4">
+              <Phone aria-hidden="true" className="size-5 shrink-0" />
+              <a href={PRACTICE_PHONE_HREF} className="underline underline-offset-4">
                 {PRACTICE_PHONE}
               </a>
-            </li>
-            <li className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3">
-              <Mail aria-hidden="true" className="size-4 shrink-0 text-terracotta" />
-              <a
-                href={`mailto:${PRACTICE_EMAIL}`}
-                className="text-fg underline underline-offset-4 t-colors hover:text-terracotta"
-              >
+            </div>
+            <div className="flex items-center gap-3 py-4">
+              <Mail aria-hidden="true" className="size-5 shrink-0" />
+              <a href={`mailto:${PRACTICE_EMAIL}`} className="underline underline-offset-4">
                 {PRACTICE_EMAIL}
               </a>
-            </li>
-          </ul>
-
+            </div>
+          </dl>
           <div className="mt-8 flex flex-wrap gap-3">
             <BookButton>{copy.bookLabel}</BookButton>
-            <CallButton variant="outline" className="bg-white" />
+            <CallButton variant="outline" />
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-white p-6 shadow-soft md:p-10">
+        <div>
           {enquiry.sent ? (
-            <div className="max-w-[460px]" role="status">
-              <div className="mb-4 flex size-12 items-center justify-center rounded-pill bg-sage text-fg">
+            <div role="status">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black text-white">
                 <CheckCircle2 className="size-6" aria-hidden="true" />
               </div>
               <Heading as="h3" size="h3-md">
                 Message Received
               </Heading>
               <p className="mt-3 text-body text-muted">
-                Thank you. Your message has reached the practice, and the team will get back to
-                you. For urgent dental pain, call{" "}
-                <a
-                  href={PRACTICE_PHONE_HREF}
-                  className="font-medium text-terracotta underline underline-offset-4"
-                >
+                Thank you. Your message has reached the practice, and the team will get back to you.
+                For urgent dental pain, call{" "}
+                <a href={PRACTICE_PHONE_HREF} className="font-medium underline underline-offset-4">
                   {PRACTICE_PHONE}
                 </a>
                 .
@@ -86,78 +78,71 @@ export function PetitionContact() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={enquiry.submit} className="grid gap-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="touch-name">{copy.fieldLabels.name}</Label>
-                  <Input
-                    id="touch-name"
-                    name="name"
-                    required
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Jane Doe"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="touch-email">{copy.fieldLabels.email}</Label>
-                  <Input
-                    id="touch-email"
-                    name="email"
-                    required
-                    type="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="touch-subject">{copy.fieldLabels.subject}</Label>
-                  <Input
-                    id="touch-subject"
-                    name="subject"
-                    required
-                    type="text"
-                    placeholder="NHS dental funding"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="touch-phone">{copy.fieldLabels.phone}</Label>
-                  <Input
-                    id="touch-phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    placeholder="+44"
-                  />
-                </div>
+            <form onSubmit={enquiry.submit} className="grid gap-8">
+              <div className="grid gap-8 sm:grid-cols-2">
+                <PetitionField
+                  id="touch-name"
+                  name="name"
+                  required
+                  type="text"
+                  autoComplete="name"
+                  label={copy.fieldLabels.name}
+                />
+                <PetitionField
+                  id="touch-email"
+                  name="email"
+                  required
+                  type="email"
+                  autoComplete="email"
+                  label={copy.fieldLabels.email}
+                />
+                <PetitionField
+                  id="touch-subject"
+                  name="subject"
+                  required
+                  type="text"
+                  label={copy.fieldLabels.subject}
+                />
+                <PetitionField
+                  id="touch-phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  label={copy.fieldLabels.phone}
+                />
               </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="touch-message">{copy.fieldLabels.message}</Label>
-                <Textarea
+              <div>
+                <label
+                  htmlFor="touch-message"
+                  className="block text-[13px] tracking-wide text-black/55 uppercase"
+                >
+                  {copy.fieldLabels.message}
+                </label>
+                <textarea
                   id="touch-message"
                   name="message"
                   required
-                  rows={5}
-                  placeholder="How can we help?"
+                  rows={4}
+                  className="mt-1 w-full resize-none border-0 border-b border-black/25 bg-transparent px-0 py-2 text-[20px] outline-none focus:border-black"
                 />
               </div>
-
               {enquiry.error ? (
                 <p role="alert" className="text-small font-medium text-danger">
                   {enquiry.error}
                 </p>
               ) : null}
-
-              <Button type="submit" disabled={enquiry.sending} className="w-full">
+              <button
+                type="submit"
+                disabled={enquiry.sending}
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-black text-[17px] font-medium text-white t-colors hover:bg-black/80 disabled:opacity-60"
+              >
                 <span>{enquiry.sending ? "Sending…" : copy.submit}</span>
-                <Send aria-hidden="true" />
-              </Button>
+                <Send aria-hidden="true" className="size-4" />
+              </button>
             </form>
           )}
         </div>
       </div>
-    </Section>
+    </section>
   );
 }
-

@@ -1,3 +1,5 @@
+import type { RegistrationPayload } from "@/content/registration-form";
+
 // Base API URL pointing to the Admin Dashboard (default http://localhost:3001 in local dev).
 const CONFIGURED_API_BASE =
   (typeof window !== "undefined" && (window as any).__ENV__?.VITE_API_BASE_URL) ||
@@ -26,10 +28,16 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
     ...(options?.headers as Record<string, string> || {}),
   };
   
-  const res = await fetch(url, {
-    ...options,
-    headers,
-  });
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...options,
+      headers,
+    });
+  } catch {
+    // Offline, blocked by CORS, or the dashboard is down. Patients should not see the browser's "Failed to fetch".
+    throw new Error("We couldn't reach the practice just now. Please try again, or call us on 0800 1938 786.");
+  }
 
   if (!res.ok) {
     let errMessage = `API Error ${res.status}`;
@@ -283,6 +291,12 @@ export const api = {
       }),
     submitPetition: (data: PetitionFormData) =>
       apiFetch<{ success: boolean; id: string }>("/api/v1/forms/petition", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    /** The new patient registration. It holds health information: the dashboard stores it and emails no answers. */
+    submitRegistration: (data: RegistrationPayload) =>
+      apiFetch<{ success: boolean; id: string }>("/api/v1/forms/registration", {
         method: "POST",
         body: JSON.stringify(data),
       }),

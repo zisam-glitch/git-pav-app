@@ -1,17 +1,18 @@
 import { PetitionContact } from "./petition-contact";
 import { PetitionFormBar } from "./petition-form-bar";
-import { PetitionHero } from "./petition-hero";
+import { PetitionCards, PetitionHero } from "./petition-hero";
 import { PetitionMedia } from "./petition-media";
 
 /**
- * The petition page, in the order of the live page: heading and text, the two cards, the sign
- * form, the video, then the contact form. The live page's list of signers is not shown (see
- * `content/petition.ts`).
+ * The petition page, minimal and editorial: black on white, a very large headline, hairline
+ * rules instead of cards, one narrow sign form, a large video and a plain contact form. The live
+ * page's list of signers is not shown (see `content/petition.ts`).
  */
 export function PetitionPage() {
   return (
-    <div className="bg-white text-fg">
+    <div className="bg-white text-black">
       <PetitionHero />
+      <PetitionCards />
       <PetitionFormBar />
       <PetitionMedia />
       <PetitionContact />

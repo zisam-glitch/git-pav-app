@@ -15,11 +15,14 @@ export function FaqList({
   tone = "light",
   defaultOpen = 0,
   className,
+  large = false,
 }: {
   items: FaqItem[];
   tone?: "light" | "dark";
   defaultOpen?: number | null;
   className?: string;
+  /** Hims home size: 36px questions. */
+  large?: boolean;
 }) {
   const [open, setOpen] = useState<number | null>(defaultOpen);
   const id = useId();
@@ -46,10 +49,9 @@ export function FaqList({
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : index)}
                 className={cn(
-                  "group flex w-full items-center justify-between gap-6 py-5 text-left text-h4 font-normal t-colors md:py-6",
-                  tone === "dark"
-                    ? "text-white hover:text-gold"
-                    : "text-fg hover:text-terracotta",
+                  "group flex w-full items-center justify-between gap-6 py-5 text-left font-normal t-colors md:py-6",
+                  large ? "t-hims-faq" : "text-h4",
+                  tone === "dark" ? "text-white hover:text-gold" : "text-fg hover:text-terracotta",
                 )}
               >
                 <span className="leading-snug">{item.q}</span>

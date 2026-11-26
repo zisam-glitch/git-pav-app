@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { query } from "@/lib/db/client";
+import { isValidEmail } from "@/lib/email-alert-settings";
+import { alertOverride } from "@/lib/email-alert-settings.server";
 import { sendEnquiryAlert } from "@/lib/enquiry-alert";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -32,6 +34,10 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!isValidEmail(body.email.trim())) {
+      return NextResponse.json({ error: "A valid email address is required" }, { status: 400, headers: CORS_HEADERS });
+    }
+
     const [row] = await query<{ id: string }>(
       `INSERT INTO form_submissions (form_type, data)
        VALUES ('contact', $1)
@@ -47,12 +53,15 @@ export async function POST(request: Request) {
       ],
     );
 
-    await sendEnquiryAlert({
-      kind: "contact",
-      name: body.name.trim(),
-      email: body.email.trim(),
-      phone: body.phone?.trim() || null,
-    });
+    await sendEnquiryAlert(
+      {
+        kind: "contact",
+        name: body.name.trim(),
+        email: body.email.trim(),
+        phone: body.phone?.trim() || null,
+      },
+      { override: await alertOverride() },
+    );
 
     return NextResponse.json({ success: true, id: row.id }, { status: 201, headers: CORS_HEADERS });
   } catch (error) {

@@ -1,4 +1,8 @@
 {
+  "/about": {
+    "minCoverage": 0.76,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
+  },
   "/complaints-policy": {
     "minCoverage": 0,
     "reason": "Keeps the repo's reviewed legal text, which lists the real data processors, instead of the live wording (plan rule 4, decision 5)."
@@ -23,15 +27,39 @@
     "approvedDescription": true,
     "reason": "Owner approved fixing the live meta description location typo from Leeds to Bradford (19 Nov 2026)."
   },
+  "/services/aesthetics": {
+    "minCoverage": 0.96,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
+  },
+  "/services/cosmetic": {
+    "minCoverage": 0.83,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
+  },
+  "/services/emergency-dental": {
+    "minCoverage": 0.95,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
+  },
   "/services/finance": {
     "minCoverage": 0,
     "approvedTitle": true,
     "approvedDescription": true,
     "reason": "Owner approved FCA-compliant non-promotional payment options page replacing the live 0% APR credit promotion (19 Nov 2026)."
   },
+  "/services/oral-hygiene": {
+    "minCoverage": 0.92,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
+  },
   "/services/regestration": {
     "minCoverage": 0,
     "reason": "Owner asked for the live form's questions as an online registration that goes to the dashboard instead of the live site's third-party form (24 Nov 2026). The page's own text is not compared with the live page."
+  },
+  "/services/root-canal": {
+    "minCoverage": 0.91,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
+  },
+  "/services/whitening": {
+    "minCoverage": 0.73,
+    "reason": "Owner approved the Hims-style redesign of this page: live text removed on purpose (the owner said the lost text is fine, 26 Nov 2026). Floor is the coverage the redesign reached."
   },
   "/shop": {
     "minCoverage": 0,

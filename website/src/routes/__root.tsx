@@ -36,7 +36,8 @@ export const Route = createRootRoute({
       { "script:ld+json": PRACTICE_JSON_LD },
     ],
     links: [
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      // The live site's favicon (gold circle with the PD mark), at the same path.
+      { rel: "icon", type: "image/png", sizes: "288x288", href: "/favicon.png" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },

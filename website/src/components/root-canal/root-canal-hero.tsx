@@ -21,10 +21,6 @@ export function RootCanalHero() {
       ]}
       head={
         <>
-          <p className="inline-flex items-center gap-2 rounded-pill border border-border bg-cream px-3.5 py-1.5 text-caption font-medium text-terracotta">
-            <span aria-hidden className="size-1.5 rounded-full bg-terracotta" />
-            Endodontic &amp; Restorative Care
-          </p>
           <Heading
             as="h1"
             size="hero"
@@ -59,7 +55,7 @@ export function RootCanalHero() {
         >
           <p className="text-h4 text-fg">45–90 Minutes</p>
           <p className="border-t border-border pt-2.5 text-small text-muted">
-            Local anaesthesia comfort to save your natural tooth
+            Most root canals, depending on complexity
           </p>
         </Tile>
       </div>

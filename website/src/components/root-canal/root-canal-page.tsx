@@ -1,4 +1,4 @@
-import { BookButton, CallButton, CtaBand } from "@/components/hims";
+import { BookButton, CallButton, CtaBand, FloatingCta } from "@/components/hims";
 import { RootCanalConsent } from "./root-canal-consent";
 import { RootCanalContact } from "./root-canal-contact";
 import { RootCanalFaq } from "./root-canal-faq";
@@ -10,8 +10,8 @@ export function RootCanalPage() {
   return (
     <main>
       <RootCanalHero />
-      <RootCanalHow />
       <RootCanalPricing />
+      <RootCanalHow />
       <RootCanalConsent />
       <RootCanalFaq />
       <RootCanalContact />
@@ -30,6 +30,9 @@ export function RootCanalPage() {
         786 Leeds Road, Bradford, BD3 9TY · Basic (£195), Intermediate (£295), and Advanced (£395)
         root canal treatments.
       </CtaBand>
+      <FloatingCta>
+        <BookButton>Book Now</BookButton>
+      </FloatingCta>
     </main>
   );
 }

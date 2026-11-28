@@ -1,4 +1,5 @@
 import { Router, Response } from "express";
+import type { Prisma } from "@prisma/client";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 import { prisma } from "../lib/prisma";
 import { hasCareRelationship } from "../middleware/patient-access";
@@ -59,12 +60,20 @@ const ROOM_LATE_LIMIT_MS = 2 * 60 * 60 * 1000;
 
 const roomNameFor = (appointmentId: string) => `pav-${appointmentId}`;
 
+function getErrorStatusCode(err: unknown): number | string | undefined {
+  if (typeof err === "object" && err !== null && "statusCode" in err) {
+    const code = (err as { statusCode?: unknown }).statusCode;
+    if (typeof code === "number" || typeof code === "string") return code;
+  }
+  return undefined;
+}
+
 async function getOrCreatePrivateRoom(name: string, expSeconds: number) {
   const headers = { Authorization: `Bearer ${env.dailyApiKey}` };
   try {
     return await dailyApiClient.get<{ name: string; url: string; privacy?: string }>(`/rooms/${name}`, { headers });
-  } catch (err: any) {
-    if (err?.statusCode !== 404) throw err;
+  } catch (err: unknown) {
+    if (getErrorStatusCode(err) !== 404) throw err;
   }
   return dailyApiClient.post<{ name: string; url: string; privacy?: string }>(
     "/rooms",
@@ -160,8 +169,8 @@ router.post("/rooms", requireAuth, validateBody(createVideoRoomSchema), async (r
       expiresAt: new Date(expSeconds * 1000).toISOString(),
       isMock: false,
     });
-  } catch (err: any) {
-    logger.error("[VIDEO ROOM ERROR]", undefined, { status: err?.statusCode ?? "network" });
+  } catch (err: unknown) {
+    logger.error("[VIDEO ROOM ERROR]", undefined, { status: getErrorStatusCode(err) ?? "network" });
     return res.status(502).json({ error: "The video service didn't respond. Please try again." });
   }
 });
@@ -319,7 +328,7 @@ router.post("/submit-triage", requireAuth, validateBody(submitTriageSchema), asy
 
       await tx.appointment.update({
         where: { id: appointmentId },
-        data: { triageData: (await encryptField(mergedTriage)) as any },
+        data: { triageData: (await encryptField(mergedTriage)) as unknown as Prisma.InputJsonValue },
       });
 
       return {
@@ -631,7 +640,7 @@ router.post("/admit-patient", requireAuth, validateBody(admitPatientSchema), asy
         where: { id: appointmentId },
         data: {
           status: "in_progress",
-          triageData: (await encryptField(updatedTriage)) as any,
+          triageData: (await encryptField(updatedTriage)) as unknown as Prisma.InputJsonValue,
         },
       });
 
@@ -718,7 +727,7 @@ router.post("/end-consult", requireAuth, validateBody(endConsultSchema), async (
       where: { id: appointmentId },
       data: {
         status: "completed",
-        triageData: (await encryptField({ ...currentTriage, consultationSummary })) as any,
+        triageData: (await encryptField({ ...currentTriage, consultationSummary })) as unknown as Prisma.InputJsonValue,
       },
     });
     return {

@@ -1,7 +1,7 @@
 import { notifyAppointmentChange } from "../lib/patient-email";
 import { Router, Response } from "express";
 import Stripe from "stripe";
-import { Prisma } from "@prisma/client";
+import { AppointmentStatus, Prisma } from "@prisma/client";
 import { env } from "../config/env";
 import { prisma } from "../lib/prisma";
 import { redis } from "../lib/redis";
@@ -383,8 +383,8 @@ router.post("/appointments", requireAuth, validateBody(createAppointmentSchema),
             endTimeUtc: endDate,
             status: "draft_hold",
             holdExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
-            accessDetails: storedAccessDetails as any,
-            triageData: storedTriageData as any,
+            accessDetails: storedAccessDetails ? (storedAccessDetails as unknown as Prisma.InputJsonValue) : undefined,
+            triageData: storedTriageData ? (storedTriageData as unknown as Prisma.InputJsonValue) : undefined,
             totalPricePence: service.pricePence,
             depositPaidPence: 0,
           },
@@ -415,15 +415,18 @@ router.post("/appointments", requireAuth, validateBody(createAppointmentSchema),
     }
 
     return { appointment, status: 201 };
-  }).then(async (result: any) => {
-    if (result.error) {
+  }).then(async (result) => {
+    if ("error" in result) {
       const { status, ...errorBody } = result;
       return res.status(status || 400).json(errorBody);
     }
     const apt = result.appointment;
     if (apt) {
-      apt.triageData = await decryptField(apt.triageData);
-      apt.accessDetails = await decryptAccessDetails(apt.accessDetails);
+      const [triageData, accessDetails] = await Promise.all([
+        decryptField(apt.triageData),
+        decryptAccessDetails(apt.accessDetails),
+      ]);
+      return res.status(result.status).json({ ...apt, triageData, accessDetails });
     }
     return res.status(result.status).json(apt);
   });
@@ -533,7 +536,7 @@ router.get("/appointments", requireAuth, async (req: AuthRequest, res: Response)
   const appointments = await prisma.appointment.findMany({
     where: {
       patientId: profile.id,
-      ...(req.query.status ? { status: String(req.query.status) as any } : {}),
+      ...(req.query.status ? { status: String(req.query.status) as AppointmentStatus } : {}),
       ...(upcomingOnly
         ? {
             OR: [
@@ -646,9 +649,9 @@ router.get("/appointments/:id/clinical-context", requireAuth, requireRole("clini
   });
   if (!appointment) return res.status(404).json({ error: "Appointment not found" });
 
-  if (appointment.patient) {
-    (appointment.patient as any).medicalHistory = await decryptField(appointment.patient.medicalHistory);
-  }
+  const medicalHistory = appointment.patient
+    ? await decryptField(appointment.patient.medicalHistory)
+    : null;
 
   await createAuditLogWithIntegrity({
     action: "clinical_record.read.appointment_context",
@@ -686,7 +689,7 @@ router.get("/appointments/:id/clinical-context", requireAuth, requireRole("clini
     },
     guardian: null,
     // As recorded by the patient; the app shows "Not recorded" when null.
-    medicalHistory: p.medicalHistory ?? null,
+    medicalHistory: medicalHistory ?? null,
   });
 });
 
@@ -704,7 +707,7 @@ router.patch("/appointments/:id/confirm", requireAuth, validateParams(appointmen
   // No response cache here: a "not paid yet" answer must not be replayed after
   // the patient pays. The handler is idempotent by itself (conditional update,
   // and an already-confirmed appointment returns its stored state).
-  return (async (): Promise<any> => {
+  return (async () => {
     const profile = await prisma.patientProfile.findUnique({
       where: { userId: patientId },
       select: { id: true },
@@ -824,15 +827,14 @@ router.patch("/appointments/:id/confirm", requireAuth, validateParams(appointmen
       message: "Appointment confirmed successfully",
       httpStatus: 200,
     };
-  })().then((result: any) => {
-    if (result.error) {
+  })().then((result) => {
+    if ("error" in result) {
       const body: Record<string, unknown> = { error: result.error };
-      if (result.depositRefunded) body.depositRefunded = true;
-      return res.status(result.httpStatus || result.status || 400).json(body);
+      if ("depositRefunded" in result && result.depositRefunded) body.depositRefunded = true;
+      return res.status(result.status || 400).json(body);
     }
-    const statusCode = result.httpStatus || result.status || 200;
-    const { httpStatus, status, ...responseData } = result;
-    return res.status(statusCode).json(responseData);
+    const { httpStatus, ...responseData } = result;
+    return res.status(httpStatus || 200).json(responseData);
   });
 });
 
@@ -997,7 +999,7 @@ router.post("/appointments/:id/check-in", requireAuth, validateParams(appointmen
   const updated = await prisma.appointment.update({
     where: { id: appointment.id },
     data: {
-      accessDetails: encryptedAccess as any,
+      accessDetails: encryptedAccess as unknown as Prisma.InputJsonValue,
     },
   });
 
